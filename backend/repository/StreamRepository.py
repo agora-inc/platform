@@ -18,9 +18,9 @@ class StreamRepository:
         stream["tags"] = self.tags.getTagsOnStream(stream["id"])
         return stream
 
-    def createStream(self, channelId, channelName, streamName, streamDescription, streamTags):
+    def createStream(self, channelId, channelName, streamName, streamDescription, streamTags, imageUrl):
         cursor = self.db.con.cursor()
-        cursor.execute('INSERT INTO Streams(channel_id, channel_name, name, description) VALUES (%d, "%s", "%s", "%s")' % (channelId, channelName, streamName, streamDescription))
+        cursor.execute('INSERT INTO Streams(channel_id, channel_name, name, description, image_url) VALUES (%d, "%s", "%s", "%s", "%s")' % (channelId, channelName, streamName, streamDescription, imageUrl))
         self.db.con.commit()
         insertId = cursor.lastrowid
 
@@ -34,7 +34,7 @@ class StreamRepository:
         cursor = self.db.con.cursor()
         stream = self.getStreamById(streamId)
 
-        cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description) VALUES (%d, "%s", "%s", "%s")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"]))
+        cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url) VALUES (%d, "%s", "%s", "%s", "%s")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"]))
         insertId = cursor.lastrowid
 
         tagIds = [tag["id"] for tag in stream["tags"]]

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Box, Grid, Heading, Text } from "grommet";
 import VideoCard from "./VideoCard";
 import { UserService } from "../Services/UserService";
@@ -28,12 +29,16 @@ export default class Carousel extends Component<{}, State> {
     return (
       <Box
         direction="row"
-        height="100%"
+        width="100%"
+        height="220px"
         margin="none"
-        pad="none"
+        pad="large"
         align="center"
+        justify="between"
+        background="#606EEB"
+        round="small"
       >
-        <EmptyImage height={400} style={{ margin: 0, padding: 0 }} />
+        {/* <EmptyImage height={400} style={{ margin: 0, padding: 0 }} />
         <Box margin={{ left: "medium" }}>
           <Heading level={3} margin="none">
             Looks like nobody is streaming right now 😞
@@ -41,6 +46,37 @@ export default class Carousel extends Component<{}, State> {
           <Text style={{ fontSize: 22, marginBottom: 10 }}>
             Please check back later!
           </Text>
+        </Box> */}
+        <Box width="60%" gap="small">
+          <Text size="32px" weight="bold" color="white">
+            Oh dear, it looks like nobody is streaming right now :(
+          </Text>
+          <Text size="26px" weight="bold" color="#D8D8D8">
+            While you’re waiting, why not explore some previous streams?
+          </Text>
+        </Box>
+        <Box
+          width="148px"
+          height="72px"
+          background="brand"
+          round="small"
+          justify="center"
+          align="center"
+        >
+          <Link
+            to="/videos/1"
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text size="24px" weight="bold" color="white">
+              Explore
+            </Text>
+          </Link>
         </Box>
       </Box>
     );
@@ -75,10 +111,13 @@ export default class Carousel extends Component<{}, State> {
   render() {
     return (
       <Box
+        width="75.8%"
         margin={{ top: "60px" }}
-        style={{
-          height: 400,
-        }}
+        style={
+          {
+            // height: 400,
+          }
+        }
       >
         {this.state.currentlyLive.length === 0
           ? this.ifNoLiveUsers()

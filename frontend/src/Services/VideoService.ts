@@ -45,4 +45,5 @@ export type Video = {
   name: string;
   description: string;
   tags: Tag[];
+  image_url: string;
 };

@@ -76,7 +76,7 @@ def createStream():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    stream = streams.createStream(params["channelId"], params["channelName"], params["streamName"], params["streamDescription"], params["streamTags"])
+    stream = streams.createStream(params["channelId"], params["channelName"], params["streamName"], params["streamDescription"], params["streamTags"], params["imageUrl"])
     return jsonify(stream)
 
 @app.route('/streams/archive', methods=["POST", "OPTIONS"])
