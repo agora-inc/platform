@@ -1,0 +1,11 @@
+.videocard {
+  color: transparent;
+}
+
+.videocard:hover {
+  color: #555555;
+}
+
+.videocard-background:hover {
+  opacity: 0.2;
+}

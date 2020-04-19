@@ -1,0 +1,13 @@
+#question:hover {
+  background-color: #ededed;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#question .hides {
+  visibility: hidden;
+}
+
+#question:hover .hides {
+  visibility: visible;
+}
