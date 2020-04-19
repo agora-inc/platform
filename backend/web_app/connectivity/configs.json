@@ -1,0 +1,10 @@
+{
+	"db_user_1": {
+			"ip_address": "PLACEHOLDER",
+			"user_name": "PLACEHOLDER"
+			}
+	"db_streaming_1": {
+			"ip": "PLACEHOLDER",
+			"user_name": "PLACEHOLDER"
+			}
+}
