@@ -28,7 +28,7 @@ class VideoRepository:
         for video in videos:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
 
-        return video
+        return videos
 
     def getAllVideos(self):
         cursor = self.db.con.cursor()
