@@ -47,3 +47,16 @@ class VideoRepository:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
         
         return videos
+
+    def getAllVideosWithTag(self, tagName):
+        cursor = self.db.con.cursor()
+        cursor.execute('SELECT id FROM Tags WHERE name = "%s"' % tagName)
+        result = cursor.fetchall()
+
+        if not result:
+            return []
+         
+        tagId = result[0]["id"]
+        cursor.execute('SELECT Videos.id, Videos.channel_id, Videos.name, Videos.description, Videos.date, Videos.views FROM Videos INNER JOIN VideoTags ON Videos.id = VideoTags.video_id WHERE VideoTags.tag_id = %d' % tagId)
+        result = cursor.fetchall()
+        return result

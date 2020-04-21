@@ -127,6 +127,11 @@ def getVideoById():
     id = int(request.args.get("id"))
     return jsonify(videos.getVideoById(id))
 
+@app.route('/videos/tag', methods=["GET"])
+def getVideosWithTag():
+    tagName = request.args.get("tagName")
+    return jsonify(videos.getAllVideosWithTag(tagName))
+
 # --------------------------------------------
 # Q+A ROUTES
 # --------------------------------------------
