@@ -1,0 +1,1 @@
+Folder containing connectivity modules (classes here will handle the connection to the other servers/db/services and will to be imported in /app/__init__.py before being used in routes.py and in their respective repository file)
