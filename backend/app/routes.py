@@ -113,6 +113,10 @@ def scheduleStream():
 def getAllVideos():
     return jsonify(videos.getAllVideos())
 
+@app.route('/videos/recent', methods=["GET"])
+def getRecentVideos():
+    return jsonify(videos.getRecentVideos())
+
 @app.route('/videos/channel', methods=["GET"])
 def getAllVideosForChannel():
     channelId = int(request.args.get("channelId"))

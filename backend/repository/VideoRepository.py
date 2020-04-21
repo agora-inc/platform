@@ -19,9 +19,16 @@ class VideoRepository:
         
         return video
 
+    def getRecentVideos(self):
+        cursor = self.db.con.cursor()
+        cursor.execute('SELECT * FROM Videos ORDER BY date DESC LIMIT 8')
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+
     def getAllVideos(self):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Videos')
+        cursor.execute('SELECT * FROM Videos ORDER BY date DESC')
         videos = cursor.fetchall()
         cursor.close()
 

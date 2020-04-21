@@ -22,6 +22,13 @@ export const theme = {
     colors: {
       brand: "#61EC9F",
     },
+    drop: {
+      background: "transparent",
+      shadowSize: "none",
+      border: {
+        radius: "10px",
+      },
+    },
   },
   tab: {
     color: "grey",

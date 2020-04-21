@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Box, Grid, Heading, Text } from "grommet";
 import VideoCard from "./VideoCard";
 import { UserService } from "../Services/UserService";
-import { ReactComponent as EmptyImage } from "../empty.svg";
+import ShadowBox from "./ShadowBox";
 
 const users = UserService;
 
@@ -27,44 +27,37 @@ export default class Carousel extends Component<{}, State> {
 
   ifNoLiveUsers = () => {
     return (
-      <Box
+      <ShadowBox
         direction="row"
-        width="100%"
-        height="220px"
+        width="60vw"
+        height="175px"
         margin="none"
         pad="large"
         align="center"
         justify="between"
         background="#606EEB"
         round="small"
+        zIndex={1}
       >
-        {/* <EmptyImage height={400} style={{ margin: 0, padding: 0 }} />
-        <Box margin={{ left: "medium" }}>
-          <Heading level={3} margin="none">
-            Looks like nobody is streaming right now 😞
-          </Heading>
-          <Text style={{ fontSize: 22, marginBottom: 10 }}>
-            Please check back later!
-          </Text>
-        </Box> */}
         <Box width="60%" gap="small">
-          <Text size="32px" weight="bold" color="white">
-            Oh dear, it looks like nobody is streaming right now :(
+          <Text size="28px" weight="bold" color="white">
+            Nobody is streaming right now
           </Text>
-          <Text size="26px" weight="bold" color="#D8D8D8">
+          <Text size="22px" color="#D8D8D8">
             While you’re waiting, why not explore some previous streams?
           </Text>
         </Box>
-        <Box
+        <ShadowBox
           width="148px"
-          height="72px"
+          height="62px"
           background="brand"
           round="small"
           justify="center"
           align="center"
+          zIndex={3}
         >
           <Link
-            to="/videos/1"
+            to="/videos"
             style={{
               width: "100%",
               height: "100%",
@@ -77,8 +70,8 @@ export default class Carousel extends Component<{}, State> {
               Explore
             </Text>
           </Link>
-        </Box>
-      </Box>
+        </ShadowBox>
+      </ShadowBox>
     );
   };
 

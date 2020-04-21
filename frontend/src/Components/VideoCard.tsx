@@ -26,7 +26,7 @@ export default class VideoCard extends Component<Props> {
         gridArea={this.props.gridArea}
         style={{ position: "relative" }}
         className="videocard"
-        margin={{ bottom: "small" }}
+        margin={{ bottom: "medium", horizontal: "none" }}
       >
         <Box
           width="100%"
@@ -52,14 +52,15 @@ export default class VideoCard extends Component<Props> {
           round="small"
           onClick={() => {}}
           style={{
-            backgroundImage: `url(${this.props.video.image_url})`,
+            // backgroundImage: `url(${this.props.video.image_url})`,
+            backgroundColor: "pink",
             position: "absolute",
             top: 0,
           }}
         >
           <Link
             to={{
-              pathname: `/videos/${this.props.video.id}`,
+              pathname: `/video/${this.props.video.id}`,
               state: { video: this.props.video },
             }}
             style={{ height: "100%", width: "100%" }}

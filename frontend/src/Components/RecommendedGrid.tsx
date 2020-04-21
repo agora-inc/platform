@@ -26,7 +26,7 @@ export default class RecommendedGrid extends Component<{}, State> {
 
   render() {
     return (
-      <Box direction="row" gap="small" width="82.5%" wrap justify="center">
+      <Box direction="row" gap="medium" width="82.5%" wrap justify="center">
         {this.state.videos.map((video: Video, index: number) => (
           <VideoCard
             width="278px"

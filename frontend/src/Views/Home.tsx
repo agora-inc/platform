@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Box, Heading } from "grommet";
 import Carousel from "../Components/Carousel";
 import RecommendedGrid from "../Components/RecommendedGrid";
@@ -16,7 +17,11 @@ export default class Home extends Component {
         // style={{ height: "150vh" }}
       >
         <Carousel />
-        <Heading style={{ fontSize: 48, marginTop: 60 }}>Recent videos</Heading>
+        <Link to="/videos" style={{ marginTop: 60, marginBottom: 20 }}>
+          <Heading style={{ fontSize: 48 }} margin="none">
+            Recent videos
+          </Heading>
+        </Link>
         <RecommendedGrid />
         <FooterComponent />
       </Box>
