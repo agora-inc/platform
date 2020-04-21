@@ -26,6 +26,8 @@ export default class VideoPage extends Component<Props, State> {
         description: "",
         tags: [],
         image_url: "",
+        date: new Date(),
+        views: 0,
       },
     };
   }

@@ -9,6 +9,7 @@ import SmallSelector from "../Components/SmallSelector";
 interface State {
   videos: Video[];
   loading: boolean;
+  sortBy: string;
 }
 
 export default class AllVideosPage extends Component<{}, State> {
@@ -17,6 +18,7 @@ export default class AllVideosPage extends Component<{}, State> {
     this.state = {
       videos: [],
       loading: true,
+      sortBy: "date",
     };
   }
 
@@ -28,6 +30,32 @@ export default class AllVideosPage extends Component<{}, State> {
       });
     });
   }
+
+  compareVideosByDate = (a: Video, b: Video) => {
+    if (a.date < b.date) {
+      return 1;
+    }
+    if (a.date > b.date) {
+      return -1;
+    }
+    return 0;
+  };
+
+  compareVideosByViews = (a: Video, b: Video) => {
+    if (a.views < b.views) {
+      return 1;
+    }
+    if (a.views > b.views) {
+      return -1;
+    }
+    return 0;
+  };
+
+  sortVideos = () => {
+    return this.state.sortBy === "date"
+      ? this.state.videos.sort(this.compareVideosByDate)
+      : this.state.videos.sort(this.compareVideosByViews);
+  };
 
   render() {
     return (
@@ -47,7 +75,11 @@ export default class AllVideosPage extends Component<{}, State> {
               <Text color="black" weight="bold">
                 Sort by
               </Text>
-              <SmallSelector />
+              <SmallSelector
+                callback={(sortBy: string) =>
+                  this.setState({ sortBy: sortBy.toLowerCase() })
+                }
+              />
             </Box>
           </Box>
           <Box
@@ -57,7 +89,7 @@ export default class AllVideosPage extends Component<{}, State> {
             justify="center"
             margin={{ top: "10px" }}
           >
-            {this.state.videos.map((video: Video, index: number) => (
+            {this.sortVideos().map((video: Video, index: number) => (
               <VideoCard
                 width="278px"
                 height="192px"

@@ -12,6 +12,16 @@ const getAllVideos = (callback: any) => {
     });
 };
 
+const getRecentVideos = (callback: any) => {
+  axios
+    .get(baseApiUrl + "/videos/recent", {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const getAllVideosForChannel = (channelId: number, callback: any) => {
   axios
     .get(baseApiUrl + "/videos/channel?channelId=" + channelId.toString(), {
@@ -34,6 +44,7 @@ const getVideoById = (id: number, callback: any) => {
 
 export const VideoService = {
   getAllVideos,
+  getRecentVideos,
   getAllVideosForChannel,
   getVideoById,
 };
@@ -46,4 +57,6 @@ export type Video = {
   description: string;
   tags: Tag[];
   image_url: string;
+  date: Date;
+  views: number;
 };

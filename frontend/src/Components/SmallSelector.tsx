@@ -2,13 +2,17 @@ import React, { Component } from "react";
 import { Box, DropButton, Text } from "grommet";
 import { FormDown, Checkmark, FormCalendar, View } from "grommet-icons";
 
+interface Props {
+  callback: any;
+}
+
 interface State {
   open: boolean;
   selected: string;
 }
 
-export default class SmallSelector extends Component<{}, State> {
-  constructor(props: any) {
+export default class SmallSelector extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       selected: "Date",
@@ -19,6 +23,7 @@ export default class SmallSelector extends Component<{}, State> {
   select = (option: string) => {
     this.setState({ selected: option }, () => {
       this.toggle();
+      this.props.callback(option);
     });
   };
 
