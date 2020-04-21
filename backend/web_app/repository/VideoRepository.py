@@ -22,9 +22,13 @@ class VideoRepository:
     def getRecentVideos(self):
         cursor = self.db.con.cursor()
         cursor.execute('SELECT * FROM Videos ORDER BY date DESC LIMIT 8')
-        result = cursor.fetchall()
+        videos = cursor.fetchall()
         cursor.close()
-        return result
+
+        for video in videos:
+            video["tags"] = self.tags.getTagsOnVideo(video["id"])
+
+        return video
 
     def getAllVideos(self):
         cursor = self.db.con.cursor()
