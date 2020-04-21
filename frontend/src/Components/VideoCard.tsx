@@ -10,6 +10,8 @@ interface Props {
   width?: any;
   color: string;
   gridArea?: string;
+  margin?: any;
+  pad?: any;
   video: Video;
 }
 
@@ -26,7 +28,11 @@ export default class VideoCard extends Component<Props> {
         gridArea={this.props.gridArea}
         style={{ position: "relative" }}
         className="videocard"
-        margin={{ bottom: "medium", horizontal: "none" }}
+        margin={
+          this.props.margin
+            ? this.props.margin
+            : { bottom: "medium", horizontal: "none" }
+        }
       >
         <Box
           width="100%"

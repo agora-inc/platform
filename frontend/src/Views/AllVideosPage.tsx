@@ -61,10 +61,15 @@ export default class AllVideosPage extends Component<{}, State> {
     return (
       <Box margin={{ top: "10%" }} align="center">
         <Box width="82.5%">
-          <Heading size="4.5rem" margin="none">
+          <Heading size="4.5rem" margin={{ bottom: "small" }}>
             All videos
           </Heading>
-          <Box direction="row" width="100%" justify="between">
+          <Box
+            direction="row"
+            width="100%"
+            justify="between"
+            margin={{ bottom: "small" }}
+          >
             <Box direction="row" align="center" gap="xsmall">
               <Text color="black" weight="bold">
                 Filter by
@@ -91,7 +96,7 @@ export default class AllVideosPage extends Component<{}, State> {
           >
             {this.sortVideos().map((video: Video, index: number) => (
               <VideoCard
-                width="278px"
+                width="276px"
                 height="192px"
                 color="accent-2"
                 video={video}

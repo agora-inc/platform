@@ -40,7 +40,6 @@ export default class VideoPage extends Component<Props, State> {
     if (this.props.location.state) {
       this.setState({ video: this.props.location.state.video });
     } else {
-      console.log(this.props.location.pathname);
       VideoService.getVideoById(
         parseInt(this.props.location.pathname.split("/")[2]),
         (video: Video) => {

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Box } from "grommet";
 import VideoCard from "./VideoCard";
 import { Video, VideoService } from "../Services/VideoService";
-import { UserService } from "../Services/UserService";
 
 interface State {
   videos: Video[];
@@ -27,7 +26,7 @@ export default class RecommendedGrid extends Component<{}, State> {
   render() {
     return (
       <Box direction="row" gap="medium" width="82.5%" wrap justify="center">
-        {this.state.videos.map((video: Video, index: number) => (
+        {this.state.videos.map((video: Video) => (
           <VideoCard
             width="278px"
             height="192px"

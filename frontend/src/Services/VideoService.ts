@@ -32,6 +32,16 @@ const getAllVideosForChannel = (channelId: number, callback: any) => {
     });
 };
 
+const getAllVideosWithTag = (tagName: string, callback: any) => {
+  axios
+    .get(baseApiUrl + "/videos/tag?tagName=" + tagName, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const getVideoById = (id: number, callback: any) => {
   axios
     .get(baseApiUrl + "/videos/video?id=" + id.toString(), {
@@ -46,6 +56,7 @@ export const VideoService = {
   getAllVideos,
   getRecentVideos,
   getAllVideosForChannel,
+  getAllVideosWithTag,
   getVideoById,
 };
 
