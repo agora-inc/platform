@@ -79,7 +79,7 @@ export default class TagPage extends Component<Props, State> {
               pad={{ vertical: "small", horizontal: "medium" }}
               margin={{ left: "xsmall" }}
             >
-              <Text weight="bold" size="24px">
+              <Text color="black" weight="bold" size="24px">
                 {this.state.tagName}
               </Text>
             </Box>
