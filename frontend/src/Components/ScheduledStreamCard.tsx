@@ -3,6 +3,7 @@ import { Box, Text, Button } from "grommet";
 import { Down, Up } from "grommet-icons";
 import { ScheduledStream } from "../Services/ScheduledStreamService";
 import Identicon from "react-identicons";
+import ShadowBox from "../Components/ShadowBox";
 
 interface Props {
   stream: ScheduledStream;
@@ -59,18 +60,20 @@ export default class ScheduledStreamService extends Component<Props, State> {
           </Text>
         </Box>
         <Box direction="row" gap="small" align="center">
-          <Box
+          <ShadowBox
             background="brand"
             width="150px"
             height="35px"
             round="small"
             justify="center"
             align="center"
+            zIndex={5}
+            offset={3.5}
           >
             <Text size="18px" weight="bold" color="white">
               Fri 24 April
             </Text>
-          </Box>
+          </ShadowBox>
           <Box
             direction="row"
             align="end"
@@ -114,30 +117,34 @@ export default class ScheduledStreamService extends Component<Props, State> {
             >
               <Identicon string={this.props.stream.channel_name} size={35} />
             </Box>
-            <Box
+            <ShadowBox
               background="#606EEB"
               width="180px"
               height="35px"
               round="small"
               justify="center"
               align="center"
+              zIndex={5}
+              offset={3.5}
             >
               <Text size="18px" weight="bold" color="white">
                 {this.props.stream.channel_name}
               </Text>
-            </Box>
-            <Box
+            </ShadowBox>
+            <ShadowBox
               background="brand"
               width="240px"
               height="35px"
               round="small"
               justify="center"
               align="center"
+              zIndex={5}
+              offset={3.5}
             >
               <Text size="18px" weight="bold" color="white">
                 Fri 24 April 17:00 BST
               </Text>
-            </Box>
+            </ShadowBox>
           </Box>
           <Box
             direction="row"

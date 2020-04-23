@@ -6,6 +6,7 @@ interface Props {
   height: string;
   width: string;
   zIndex: number;
+  offset?: number;
   [x: string]: any;
 }
 
@@ -38,8 +39,8 @@ export default class ShadowBox extends Component<Props, {}> {
           style={{
             position: "absolute",
             alignSelf: "center",
-            top: 7,
-            left: 7,
+            top: this.props.offset ? this.props.offset : 7,
+            left: this.props.offset ? this.props.offset : 7,
             opacity: "70%",
             zIndex: this.props.zIndex,
           }}
