@@ -1,0 +1,20 @@
+.sliding-underline {
+  position: relative;
+}
+
+.sliding-underline:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 5px;
+  bottom: -2.5px;
+  left: 0;
+  background-color: black;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.sliding-underline:hover:before {
+  visibility: visible;
+  width: 100%;
+}
