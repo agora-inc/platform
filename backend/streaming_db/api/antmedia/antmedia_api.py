@@ -15,7 +15,7 @@ class AntMediaRestApi(object):
         self.api_port = API_PORT
         self.api_app = API_APP
         self.api_version = "v2"
-        self.basepoint = f"http://worldclassresearch.net:{self.api_port}/{self.api_app}/rest/{self.api_version}/"      
+        self.basepoint = f"http://worldclassresearch.net:{self.api_port}/{self.api_app}/rest/{self.api_version}/"
         self.log_folder_path = LOG_FOLDER_PATH
 
     ##############
@@ -59,7 +59,7 @@ class AntMediaRestApi(object):
         endpoint = "broadcasts/create"
         body = {
                 "streamId": id,
-                #"status": "finished",
+                "status": "created",
                 "type": "liveStream",
                 "name": name,
                 "description": description,
@@ -230,9 +230,19 @@ class AntMediaRestApi(object):
     def move_ip_camera(self):
         raise NotImplementedError()
 
-    def set_stream_recording_settings(self, recording_status):
-        raise NotImplementedError()
+    def set_stream_recording_settings(self, id, recording_status):
+        """
+        Changes the stream recording status.
+        """
+        assert(isinstance(recording_status, bool))
+        recording_status = "true" if recording_status else "false"
+        endpoint = f"broadcasts/{id}/recording/{recording_status}"
+        headers = {'Content-type': 'application/json'}
 
+        response = requests.put(self.basepoint + endpoint, headers=headers).json()
+
+        return response
+    
     def add_social_endpoint_to_stream(self, endpoint_service_id):
         raise NotImplementedError()
 
@@ -267,7 +277,7 @@ class AntMediaRestApi(object):
         endpoint = f"broadcasts/{id}/start"
         body = {
             "streamId": id,
-            "type": "ipCamera"
+            "type": "liveStream"
             # "endPointList": [
             #     {
             #     "type": "string",
@@ -397,4 +407,19 @@ class AntMediaRestApi(object):
     
 # Testing unit
 if __name__ == "__main__":
-    pass
+
+    # Test
+    
+    obj = AntMediaRestApi()
+    id = "datasig"
+    
+    print(obj.create_broadcast(id=id, name="seminar-08-05-20", description="Compactness of rough paths", max_duration_in_s=10))
+    print(obj.set_stream_recording_settings(id=id, recording_status=True))
+    print(obj.start_streaming(id=id))
+    print(obj.get_broadcast(id=id))
+
+    import time
+    time.sleep(10)
+
+    print(obj.stop_streaming(id=id))
+    print(obj.delete_broadcast(id=id))
