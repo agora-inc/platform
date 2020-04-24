@@ -24,9 +24,14 @@ cp -r .env_serverless_chat ../src/connect_serverless_ws/.env_serverless_chat
 cp -r .env_serverless_chat ../src/disconnect_serverless_ws/.env_serverless_chat
 cp -r .env_serverless_chat ../src/sendMsg_serverless_ws/.env_serverless_chat
 
-deactivate
+# Update credentials
+cp rds_config.py ../src/connect_serverless_ws
+cp rds_config.py ../src/disconnect_serverless_ws
+cp rds_config.py ../src/sendMsg_serverless_ws
 
-# Package the lambda functions and push them into AWS
+
+# Close environment and package the lambda functions and push them into AWS
+deactivate
 cd ../src
 
 # 1) Push connect
@@ -43,7 +48,7 @@ then
     zip -g function.zip lambda_function.py
 
     # push package on AWS
-    aws lambda update-function-code --function-name connect_serverless_ws --zip-file fileb://function.zip
+    aws lambda update-function-code --function-name connect_serverless_ws --zip-file fileb://function.zip --region eu-west-2a
 
     # Clean exit
     cd ../
