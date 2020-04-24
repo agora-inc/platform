@@ -1,3 +1,7 @@
+# install dependencies
+sudo apt-get install zip
+sudo apt install libpq-dev python-dev
+
 # Command line to push AWS code
 sudo apt  install awscli
 
