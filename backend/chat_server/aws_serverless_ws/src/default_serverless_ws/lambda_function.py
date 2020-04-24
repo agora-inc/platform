@@ -27,8 +27,6 @@ def handler(event, context):
 
     try:
         # get "RemoteAddr" from the HTTP request
-        # get list of all adresses in DB
-        # send msg to all the addresses
 
     except:
 
