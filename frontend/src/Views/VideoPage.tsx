@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box, Grid, Text } from "grommet";
 import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
+import ChatBox from "../Components/ChatBox";
 import ChannelIdCard from "../Components/ChannelIdCard";
 import Tag from "../Components/Tag";
 import { View } from "grommet-icons";
@@ -73,7 +74,7 @@ export default class VideoPage extends Component<Props, State> {
                   {this.state.video!.name}
                 </Text>
               </Box>
-              <Box direction="row" gap="xsmall" width="35%" justify="end">
+              <Box direction="row" gap="small" width="35%" justify="end">
                 <ChannelIdCard channelName={this.state.video!.channel_name} />
                 <Box direction="row" align="center" gap="xxsmall">
                   <View color="black" size="40px" />
@@ -84,7 +85,8 @@ export default class VideoPage extends Component<Props, State> {
               </Box>
             </Box>
           </Box>
-          <Box gridArea="chat" background="accent-2" round="small" />
+          {/* <Box gridArea="chat" background="accent-2" round="small" /> */}
+          <ChatBox gridArea="chat" />
         </Grid>
         <DescriptionAndQuestions
           gridArea="questions"

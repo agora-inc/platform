@@ -65,6 +65,11 @@ const stopLive = (username: string | null, callback: any) => {
     });
 };
 
+export type User = {
+  id: number;
+  username: string;
+};
+
 export const UserService = {
   login,
   logout,
