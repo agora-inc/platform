@@ -1,3 +1,6 @@
+**/.vscode/**
+backend/chat_server/**/*.zip
+backend/**/.env*
 .DS_Store
 frontend/.DS_Store
 backend/.DS_Store
