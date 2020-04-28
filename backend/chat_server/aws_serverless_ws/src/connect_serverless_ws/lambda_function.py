@@ -14,7 +14,7 @@ password = rds_config.password
 db_name = rds_config.name
 con = pymysql.connect(host=host, user=user, password=password, db=db_name, cursorclass=pymysql.cursors.DictCursor)
 
-def _wrapper(body, status_code, header={}):
+def _wrapper(status_code, body, header={}):
     return {"statusCode": status_code, "body": body}
 
 def handler(event, context):
@@ -46,7 +46,7 @@ def handler(event, context):
         # get chat_participant_group_id of the subscribed_chat
         ids = []
         for group_type in ["subscribed", "blocked"]:
-            cursor.execute(f"SELECT id FROM ChatParticipantGroups WHERE chat_id={chat_id} and group_type='{group_type}'")
+            cursor.execute(f"SELECT id, chat_type FROM ChatParticipantGroups WHERE chat_id={chat_id} and group_type='{group_type}'")
             result = cursor.fetchall()
 
             if len(result) > 1:
@@ -58,9 +58,10 @@ def handler(event, context):
                 cursor.close()      
                 return _wrapper(f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} does not exist.", 500)
             else:
-                ids.append(result[0]["id"])
+                ids.append(result[0])
 
-        subscribed_id, blocked_id = ids[0], ids[1]
+        subscribed_id, blocked_id = ids[0]["id"], ids[1]["id"]
+        chat_type = ids[0]["chat_type"]
 
         # check if visiting user is blocked
         cursor.execute(f"SELECT * FROM ChatParticipants WHERE chat_participant_group_id='{blocked_id}' and ip_address='{ip_address}'")
@@ -75,7 +76,7 @@ def handler(event, context):
             cursor.execute(f"INSERT INTO ChatParticipants(user_id, ip_address, chat_participant_group_id, chat_id) VALUES ({user_id}, '{ip_address}', {subscribed_id}, {chat_id})")
             con.commit()
             cursor.close()
-            return _wrapper(200, "success")
+            return _wrapper(200, body={"action": "connect", "chat_participant_group_id": subscribed_id, "group_type": chat_type})
 
     except Exception as e:
         con.commit()
@@ -83,9 +84,9 @@ def handler(event, context):
         return _wrapper(500, f"internal error: {e}")
 
 
-#if __name__ == "__main__":
-    ##############
+if __name__ == "__main__":
+    #############
     # TEST UNIT: #
-    ##############
-    # event_example = {"chat_id": 16, "headers": {"X-Forwarded-For": "192.168.1.1"}}
-    # print(handler(event_example, {}))
+    #############
+    event_example = {"chat_id": 16, "headers": {"X-Forwarded-For": "192.168.1.1"}}
+    print(handler(event_example, {}))
