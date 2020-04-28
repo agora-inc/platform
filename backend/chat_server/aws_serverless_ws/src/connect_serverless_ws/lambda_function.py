@@ -76,7 +76,13 @@ def handler(event, context):
             cursor.execute(f"INSERT INTO ChatParticipants(user_id, ip_address, chat_participant_group_id, chat_id) VALUES ({user_id}, '{ip_address}', {subscribed_id}, {chat_id})")
             con.commit()
             cursor.close()
-            return _wrapper(200, body={"action": "connect", "chat_participant_group_id": subscribed_id, "group_type": chat_type})
+
+            if user_id != "NULL":
+                body={"action": "connect", "chat_participant_group_id": subscribed_id, "group_type": chat_type, "source_user_id": user_id}
+            else:
+                body={"action": "connect", "chat_participant_group_id": subscribed_id, "group_type": chat_type}
+
+            return _wrapper(200, body=body)
 
     except Exception as e:
         con.commit()
