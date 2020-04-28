@@ -84,9 +84,9 @@ def handler(event, context):
         return _wrapper(500, f"internal error: {e}")
 
 
-if __name__ == "__main__":
-    #############
-    # TEST UNIT: #
-    #############
-    event_example = {"chat_id": 16, "headers": {"X-Forwarded-For": "192.168.1.1"}}
-    print(handler(event_example, {}))
+# if __name__ == "__main__":
+#     #############
+#     # TEST UNIT: #
+#     #############
+#     event_example = {"chat_id": 16, "headers": {"X-Forwarded-For": "192.168.1.1"}}
+#     print(handler(event_example, {}))
