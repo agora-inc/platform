@@ -58,7 +58,7 @@ class ChatRepository():
                 moderators_group_id = "NULL"
 
             # Update Chat vals
-            cursor.execute(f"UPDATE Chats set subscribers_group_id={subscribed_id}, blocked_group_id=={blocked_id}, silenced_group_id={silenced_id}, admins_group_id={admin_id}, community_group_id={community_group_id}, moderators_group_id={moderators_group_id} where id={chat_id}")
+            cursor.execute(f"UPDATE Chats set subscribers_group_id={subscribed_id}, blocked_group_id={blocked_id}, silenced_group_id={silenced_id}, admins_group_id={admin_id}, community_group_id={community_group_id}, moderators_group_id={moderators_group_id} where id={chat_id}")
             self.db.con.commit()
 
             cursor.close()
@@ -80,3 +80,21 @@ class ChatRepository():
             cursor.close()
         except Exception as e:
             logging.error(f"delete_chat_backend: exception; {e}")
+
+
+if __name__ == "__main__":
+    import pymysql
+    
+    class Database:
+        def __init__(self):
+            host = "apollo-2.c91ghtqneybi.eu-west-2.rds.amazonaws.com"
+            user = "admin"
+            password = "123.qwe.asd"
+            db = "apollo"
+            self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.
+                                    DictCursor)
+
+    db = Database()
+    obj = ChatRepository(db)
+
+    obj.setup_chat_backend("channel")
