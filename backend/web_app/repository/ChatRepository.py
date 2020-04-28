@@ -24,24 +24,29 @@ class ChatRepository():
             cursor.execute(f'INSERT INTO ChatParticipantGroups(chat_id, group_type, chat_type, channel_id) VALUES ({chat_id}, "subscribed", "channel", {channel_id})')
             self.db.con.commit()
             subscribed_id = cursor.lastrowid
+
+            # 2) blocked group
+            cursor.execute(f'INSERT INTO ChatParticipantGroups(chat_id, group_type, chat_type, channel_id) VALUES ({chat_id}, "blocked", "channel", {channel_id})')
+            self.db.con.commit()
+            blocked_id = cursor.lastrowid
             
             if chat_type != "private":
-                # 2) silenced group
+                # 3) silenced group
                 cursor.execute(f'INSERT INTO ChatParticipantGroups(chat_id, group_type, chat_type, channel_id) VALUES ({chat_id}, "silenced", "channel", {channel_id})')
                 self.db.con.commit()
                 silenced_id = cursor.lastrowid
 
-                # 3) admin group
+                # 4) admin group
                 cursor.execute(f'INSERT INTO ChatParticipantGroups(chat_id, group_type, chat_type, channel_id) VALUES ({chat_id}, "admins", "channel", {channel_id})')
                 self.db.con.commit()
                 admin_id = cursor.lastrowid
 
-                # 4) community group
+                # 5) community group
                 cursor.execute(f'INSERT INTO ChatParticipantGroups(chat_id, group_type, chat_type, channel_id) VALUES ({chat_id}, "community_members", "channel", {channel_id})')
                 self.db.con.commit()
                 community_group_id = cursor.lastrowid
             
-                # 5) moderators group
+                # 6) moderators group
                 cursor.execute(f'INSERT INTO ChatParticipantGroups(chat_id, group_type, chat_type, channel_id) VALUES ({chat_id}, "moderators", "channel", {channel_id})')
                 self.db.con.commit()
                 moderators_group_id = cursor.lastrowid
@@ -53,7 +58,7 @@ class ChatRepository():
                 moderators_group_id = "NULL"
 
             # Update Chat vals
-            cursor.execute(f"UPDATE Chats set subscribers_group_id={subscribed_id}, silenced_group_id={silenced_id}, admins_group_id={admin_id}, community_group_id={community_group_id}, moderators_group_id={moderators_group_id} where id={chat_id}")
+            cursor.execute(f"UPDATE Chats set subscribers_group_id={subscribed_id}, blocked_group_id=={blocked_id}, silenced_group_id={silenced_id}, admins_group_id={admin_id}, community_group_id={community_group_id}, moderators_group_id={moderators_group_id} where id={chat_id}")
             self.db.con.commit()
 
             cursor.close()
