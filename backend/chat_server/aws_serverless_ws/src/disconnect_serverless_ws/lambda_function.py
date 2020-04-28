@@ -14,7 +14,7 @@ password = rds_config.password
 db_name = rds_config.name
 con = pymysql.connect(host=host, user=user, password=password, db=db_name, cursorclass=pymysql.cursors.DictCursor)
 
-def _wrapper(body, status_code, header={}):
+def _wrapper(status_code, body, header={}):
     return {"statusCode": status_code, "body": body}
 
 def handler(event, context):
@@ -39,24 +39,25 @@ def handler(event, context):
         # get chat_participant_group_id of the subscribed_chat
         group_type = "subscribed"
         cursor.execute(f"SELECT id FROM ChatParticipantGroups WHERE chat_id={chat_id} and group_type='{group_type}'")
-        result = cursor.fetchall()
+        chat_participant_group_id = cursor.fetchall()
 
-        if len(result) > 1:
+        if len(chat_participant_group_id) > 1:
             con.commit()
             cursor.close() 
             return _wrapper(f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} is not unique", 500)
-        elif len(result) == 0:
+        elif len(chat_participant_group_id) == 0:
             con.commit()
             cursor.close()      
             return _wrapper(f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} does not exist.", 500)
         else:
-            subscribed_id = result[0]["id"]
+            subscribed_id = chat_participant_group_id[0]["id"]
 
         # remove user from subscribed list
         cursor.execute(f"DELETE FROM ChatParticipants WHERE ip_address='{ip_address}' AND chat_participant_group_id={subscribed_id}")
         con.commit()
         cursor.close()
-        return _wrapper(200, "successfully removed.")
+        
+        return _wrapper(200, {"action": "disconnect", "chat_participant_group_id": chat_participant_group_id[0]["id"]})
 
 
     except Exception as e:
