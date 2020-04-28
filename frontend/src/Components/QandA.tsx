@@ -230,7 +230,6 @@ export default class QandA extends Component<Props, State> {
         </Text>
       );
     } else {
-      console.log("received content: ", content);
       const textArr = content.split("$");
       return (
         <Box
