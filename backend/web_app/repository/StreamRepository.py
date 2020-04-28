@@ -27,20 +27,6 @@ class StreamRepository:
         tagIds = [t["id"] for t in streamTags]
         self.tags.tagStream(insertId, tagIds)
 
-        ## Create the main chat node + special group for bans
-        cursor.execute(f'INSERT INTO Chats(name, chat_type, channel_id) values ("main_chat_node_channel", "public", {channelId})')
-        self.db.con.commit()
-
-        chat_id = cursor.lastrowid
-
-        cursor.execute(f'INSERT INTO ChatParticipantGroups(chat_id, group_type, chat_type, channel_id) VALUES ({chat_id}, "subscribed", "community", {channelId})')
-        self.db.con.commit()
-        cursor.execute(f"UPDATE Chats set subscribers_group_id={cursor.lastrowid} where channel_id={channelId}")
-        
-        cursor.execute(f'INSERT INTO ChatParticipantGroups(chat_id, group_type, chat_type, channel_id) VALUES ({chat_id}, "silenced", "community", {channelId})')
-        self.db.con.commit()
-        cursor.execute(f"UPDATE Chats set silenced_group_id={cursor.lastrowid} where channel_id={channelId}")
-
         cursor.close()
         return self.getStreamById(insertId)
 
