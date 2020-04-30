@@ -32,7 +32,7 @@ class StreamRepository:
         insertId = cursor.lastrowid
 
         streamUrl = "http://localhost:5080/WebRTCApp/streams/%d.m3u8" % insertId
-        cursor.execute('UPDATE Streams SET from_url = %s WHERE id = %d' % (streamUrl, insertId))
+        cursor.execute('UPDATE Streams SET from_url = "%s" WHERE id = %d' % (streamUrl, insertId))
         self.db.con.commit()
 
         tagIds = [t["id"] for t in streamTags]
