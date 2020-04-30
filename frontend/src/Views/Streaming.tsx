@@ -91,7 +91,7 @@ export default class Streaming extends Component<Props, State> {
   startStreaming = (callback: any) => {
     this.setState({ streaming: true }, () => {
       callback();
-      this.webrtc?.publish("agora1", null);
+      this.webrtc?.publish(this.state.streamId.toString(), null);
     });
     // users.goLive(this.state.username, () => {
     //   this.setState({ streaming: true }, () => {

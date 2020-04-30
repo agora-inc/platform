@@ -70,7 +70,11 @@ def stopLive():
 
 # --------------------------------------------
 # STREAM ROUTES
-# --------------------------------------------    
+# --------------------------------------------
+@app.route('/streams/all', methods=["GET"])
+def getAllStreams():
+    return jsonify(streams.getAllStreams())
+
 @app.route('/streams/create', methods=["POST", "OPTIONS"])
 def createStream():
     if request.method == "OPTIONS":
