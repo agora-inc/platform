@@ -8,9 +8,13 @@ class StreamRepository:
     def getAllStreams(self):
         cursor = self.db.con.cursor()
         cursor.execute('SELECT * FROM Streams')
-        result = cursor.fetchall()
+        streams = cursor.fetchall()
         cursor.close()
-        return result
+
+        for stream in streams:
+            stream["tags"] = self.tags.getTagsOnStream(stream["id"])
+
+        return streams
 
     def getStreamById(self, streamId):
         cursor = self.db.con.cursor()
