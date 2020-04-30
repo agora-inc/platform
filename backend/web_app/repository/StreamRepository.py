@@ -5,6 +5,17 @@ class StreamRepository:
         self.db = db
         self.tags = TagRepository.TagRepository(db=self.db)
 
+    def getAllStreams(self):
+        cursor = self.db.con.cursor()
+        cursor.execute('SELECT * FROM Streams')
+        streams = cursor.fetchall()
+        cursor.close()
+
+        for stream in streams:
+            stream["tags"] = self.tags.getTagsOnStream(stream["id"])
+
+        return streams
+
     def getStreamById(self, streamId):
         cursor = self.db.con.cursor()
         cursor.execute('SELECT * FROM Streams WHERE id = %d' % streamId)
@@ -23,6 +34,10 @@ class StreamRepository:
         cursor.execute('INSERT INTO Streams(channel_id, channel_name, name, description, image_url) VALUES (%d, "%s", "%s", "%s", "%s")' % (channelId, channelName, streamName, streamDescription, imageUrl))
         self.db.con.commit()
         insertId = cursor.lastrowid
+
+        streamUrl = "http://localhost:5080/WebRTCApp/streams/%d.m3u8" % insertId
+        cursor.execute('UPDATE Streams SET from_url = "%s" WHERE id = %d' % (streamUrl, insertId))
+        self.db.con.commit()
 
         tagIds = [t["id"] for t in streamTags]
         self.tags.tagStream(insertId, tagIds)
