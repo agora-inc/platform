@@ -3,8 +3,6 @@ import logging
 import rds_config
 import sys
 
-from serverless_db import db 
-
 # logger
 logger = logging.getLogger()
 logger.info("SUCCESS: Connection to RDS instance succeeded")
@@ -16,8 +14,10 @@ class Database:
         user = rds_config.user
         password = rds_config.password
         db_name = rds_config.name
-        self.con = pymysql.connect(host=host, user=user, password=password, db=db_name, curso$
-                                   DictCursor)
+        self.con = pymysql.connect(host=host, user=user, password=password, db=db_name, cursorclass=pymysql.cursors)
+
+def _wrapper(body, status_code, header):
+    return {"statusCode": status_code, "body": body}
 
 
 def handler(event, context):
@@ -25,9 +25,8 @@ def handler(event, context):
     This function fetches content from RDS instance
     """
 
-    try:
-        # get "RemoteAddr" from the HTTP request
+    # get "RemoteAddr" from the HTTP request and add it in the DB
+    id_addr = event["headers"]["X-Forwarded-For"]
+    # test_2 = sourceIP
 
-    except:
-
-        return {"statusCode": 200, "data": event["action"]}
+    return _wrapper()
