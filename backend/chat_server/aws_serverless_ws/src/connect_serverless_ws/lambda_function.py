@@ -12,7 +12,13 @@ host = rds_config.host
 user = rds_config.user
 password = rds_config.password
 db_name = rds_config.name
-con = pymysql.connect(host=host, user=user, password=password, db=db_name, cursorclass=pymysql.cursors.DictCursor)
+
+try:
+    con = pymysql.connect(host=host, user=user, password=password, db=db_name, cursorclass=pymysql.cursors.DictCursor)
+except pymysql.MySQLError as e:
+    logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
+    logger.error(e)
+    sys.exit()
 
 def _wrapper(status_code, body, header={}):
     return {"statusCode": status_code, "body": body}
@@ -21,7 +27,7 @@ def handler(event, context):
     """
     This function fetches content from RDS instance
     """
-
+    return _wrapper(200, event)
     # get "RemoteAddr" from the HTTP request and add it in the DB
     ip_address = event["headers"]["X-Forwarded-For"]
 
@@ -94,5 +100,8 @@ def handler(event, context):
 #     #############
 #     # TEST UNIT: #
 #     #############
+#     import time
 #     event_example = {"chat_id": 16, "headers": {"X-Forwarded-For": "192.168.1.1"}}
+#     time_before = time.time()
 #     print(handler(event_example, {}))
+#     print(time.time() - time_before)
