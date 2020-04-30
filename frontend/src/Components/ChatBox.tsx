@@ -5,8 +5,10 @@ import { User, UserService } from "../Services/UserService";
 import Identicon from "react-identicons";
 import Sockette from "sockette";
 import "emoji-mart/css/emoji-mart.css";
+import "../Styles/emoji-picker.css";
 import { Picker } from "emoji-mart";
 import { InlineMath } from "react-katex";
+import { chatUrl } from "../config";
 
 type Message = {
   username: string;
@@ -25,6 +27,7 @@ interface State {
 }
 
 export default class ChatBox extends Component<Props, State> {
+  private ws: Sockette | null;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -33,6 +36,7 @@ export default class ChatBox extends Component<Props, State> {
       loggedInUser: UserService.getCurrentUser(),
       showEmojiPicker: false,
     };
+    this.ws = null;
   }
 
   componentWillMount() {
@@ -47,6 +51,19 @@ export default class ChatBox extends Component<Props, State> {
     this.setState({ messages: [m1, m2] });
   }
 
+  componentDidMount() {
+    this.ws = new Sockette(chatUrl, {
+      maxAttempts: 1,
+      onopen: (e) => console.log("connected:", e),
+      onmessage: (e) => this.onMessageReceived(e),
+      onerror: (e) => console.log("error:", e),
+    });
+  }
+
+  componentWillUnmount() {
+    this.ws && this.ws.close();
+  }
+
   addEmoji = (e: any) => {
     let sym = e.unified.split("-");
     let codesArray: any[] = [];
@@ -57,6 +74,19 @@ export default class ChatBox extends Component<Props, State> {
     });
   };
 
+  onMessageReceived = ({ data }: any) => {
+    const message = JSON.parse(data);
+    this.setState(
+      {
+        messages: [...this.state.messages, message],
+      },
+      () => {
+        let messagesDiv = document.getElementById("messages");
+        messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
+      }
+    );
+  };
+
   sendMessage = () => {
     if (this.state.newMessageContent === "") {
       return;
@@ -65,6 +95,12 @@ export default class ChatBox extends Component<Props, State> {
       username: this.state.loggedInUser.username,
       content: this.state.newMessageContent,
     };
+    this.ws &&
+      this.ws.json({
+        action: "sendMsg",
+        data: JSON.stringify(newMessage),
+      });
+
     this.setState(
       {
         showEmojiPicker: false,
@@ -131,7 +167,7 @@ export default class ChatBox extends Component<Props, State> {
         style={{ minHeight: 40 }}
         direction="row"
         gap="small"
-        width="60%"
+        width="75%"
         align="start"
         justify={
           message.username === this.state.loggedInUser.username
@@ -272,6 +308,7 @@ export default class ChatBox extends Component<Props, State> {
               bottom: 75,
               zIndex: 10,
               alignSelf: "center",
+              width: "20.83vw",
             }}
           />
         )}

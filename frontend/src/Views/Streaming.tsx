@@ -8,6 +8,9 @@ import StreamerVideoPlayer from "../Components/StreamerVideoPlayer";
 import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
 import AsyncButton from "../Components/AsyncButton";
 import "../Styles/streaming.css";
+import adapter from "webrtc-adapter";
+import { WebRTCAdaptor } from "../Streaming/webrtc_adaptor";
+import { antmediaWebSocketUrl } from "../config";
 
 const users = UserService;
 
@@ -30,6 +33,7 @@ interface MediaDevices {
 }
 
 export default class Streaming extends Component<Props, State> {
+  private webrtc: WebRTCAdaptor | null;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -41,21 +45,53 @@ export default class Streaming extends Component<Props, State> {
       username: users.getCurrentUser(),
       toHome: false,
     };
+    this.webrtc = null;
   }
 
   componentWillMount() {
-    this.startRecording();
+    this.initializeWebRTCAdaptor();
   }
 
   componentWillUnmount() {
-    this.stopStreaming(() => {
-      this.stopRecording();
-    });
+    console.log("UNMOUNTING");
+    this.webrtc?.closeStream();
+    this.webrtc?.closeWebSocket();
   }
+
+  initializeWebRTCAdaptor = () => {
+    const mediaConstraints = {
+      video: {
+        width: 1280,
+        height: 720,
+      },
+      audio: true,
+    };
+    const pc_config = null;
+    const sdpConstraints = {
+      OfferToReceiveAudio: false,
+      OfferToReceiveVideo: false,
+    };
+
+    this.webrtc = new WebRTCAdaptor({
+      websocket_url: antmediaWebSocketUrl,
+      mediaConstraints: mediaConstraints,
+      peerconnection_config: pc_config,
+      sdp_constraints: sdpConstraints,
+      localVideoId: "local",
+      debug: true,
+      callback: (info: any, obj: any) => {
+        console.log(info, obj);
+      },
+      callbackError: (error: any, message: any) => {
+        console.log(error, message);
+      },
+    });
+  };
 
   startStreaming = (callback: any) => {
     this.setState({ streaming: true }, () => {
       callback();
+      this.webrtc?.publish("agora1", null);
     });
     // users.goLive(this.state.username, () => {
     //   this.setState({ streaming: true }, () => {
@@ -65,19 +101,23 @@ export default class Streaming extends Component<Props, State> {
   };
 
   stopStreaming = (callback: any) => {
-    // users.stopLive(this.state.username, () => {
-    //   this.setState({ streaming: false }, () => {
-    //     callback();
-    //   });
-    // });
-    StreamService.archiveStream(this.state.streamId, () => {
-      this.setState({ streaming: false }, () => {
-        callback();
-        this.setState({
-          toHome: true,
-        });
+    this.setState({ streaming: false }, () => {
+      this.webrtc?.stop("agora1");
+      this.webrtc?.closeStream();
+      this.webrtc?.closeWebSocket();
+      callback();
+      this.setState({
+        toHome: true,
       });
     });
+    // StreamService.archiveStream(this.state.streamId, () => {
+    //   this.setState({ streaming: false }, () => {
+    //     callback();
+    //     this.setState({
+    //       toHome: true,
+    //     });
+    //   });
+    // });
   };
 
   startRecording = async () => {
@@ -95,7 +135,6 @@ export default class Streaming extends Component<Props, State> {
 
   stopRecording = () => {
     const videoElem = document.querySelector("video#local") as HTMLMediaElement;
-
     const stream = videoElem.srcObject;
     const tracks = (stream as MediaStream).getTracks();
 

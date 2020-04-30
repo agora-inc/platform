@@ -1,0 +1,12 @@
+.emoji-mart-preview {
+  height: 0;
+  overflow: hidden;
+}
+
+.emoji-mart-bar {
+  margin-top: 10px;
+}
+
+.emoji-mart-anchors {
+  margin-top: -10px;
+}
