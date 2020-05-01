@@ -2,13 +2,13 @@ import pymysql
 import logging
 import rds_cred
 import time
+from tools import Tools
 
-def _wrapper(status_code, body):
-    return {"statusCode": status_code, "body": body}
 
 class ChatDb:
     def __init__(self):
         self._connect_to_db()
+        self.tools = Tools()
 
     def _connect_to_db(self):
         host = rds_cred.host
@@ -47,26 +47,33 @@ class ChatDb:
         """
         ids = []
         try:
+            cursor = self.con.cursor()
             # get id chat_participant_id_subscribed and chat_participant_id_blocked
             for group_type in ["subscribed", "blocked"]:
-                self.con.cursor().execute(f"SELECT id, chat_type FROM ChatParticipantGroups WHERE chat_id={chat_id} and group_type='{group_type}'")
-                result = self.con.cursor().fetchall()
+                cursor.execute(f"SELECT id, chat_type FROM ChatParticipantGroups WHERE chat_id={chat_id} and group_type='{group_type}'")
+                result = cursor.fetchall()
 
                 if len(result) > 1:
                     self.con.commit()
-                    self.con.cursor().close() 
-                    return _wrapper(f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} is not unique", 500)
+                    error_payload = {"msg": f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} is not unique", "src": "db"}
+                    return self.tools._wrapper(500, body=error_payload)
                 elif len(result) == 0:
                     self.con.commit()
-                    self.con.cursor().close()      
-                    return _wrapper(f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} does not exist.", 500)
+                    error_payload = {"msg": f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} does not exist.", "src": "db"}
+                    return self.tools._wrapper(500, body=error_payload)
                 else:
                     ids.append(result[0])
 
+            cursor.close()      
             chat_participant_id_subscribed, chat_participant_id_blocked = ids[0]["id"], ids[1]["id"]
             chat_type = ids[0]["chat_type"]
 
             return chat_participant_id_subscribed, chat_participant_id_blocked, chat_type
 
         except Exception as e:
-            logging.warning(f"get_chat_participant_group_ids: exception: {e}")
+            logging.warning(f"(ChatDb)get_chat_participant_group_ids: exception: {e}")
+
+
+if __name__ == "__main__":
+    obj = ChatDb()
+    print(obj.get_chat_participant_group_ids(18))
