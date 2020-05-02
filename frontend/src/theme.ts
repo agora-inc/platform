@@ -18,6 +18,9 @@ export const theme = {
       streamViewRow1: "70vh",
       streamViewColumn1: "65.2vw",
       streamViewColumn2: "24.2vw",
+      homeRow: "212px",
+      homeColumn1: "389px",
+      homeColumn2: "864px",
     },
     colors: {
       brand: "#61EC9F",

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { Link } from "react-router-dom";
-import { Video } from "../Services/VideoService";
-import { ArtService } from "../Services/ArtService";
+import { Stream } from "../Services/StreamService";
 import "../Styles/videocard.css";
 
 interface Props {
@@ -12,10 +11,10 @@ interface Props {
   gridArea?: string;
   margin?: any;
   pad?: any;
-  video: Video;
+  stream: Stream;
 }
 
-export default class VideoCard extends Component<Props> {
+export default class StreamCard extends Component<Props> {
   constructor(props: Props) {
     super(props);
   }
@@ -48,7 +47,7 @@ export default class VideoCard extends Component<Props> {
           }}
         >
           <Text textAlign="center" size="24px" weight="bold">
-            {this.props.video.name}
+            {this.props.stream.name}
           </Text>
         </Box>
         <Box
@@ -59,15 +58,15 @@ export default class VideoCard extends Component<Props> {
           onClick={() => {}}
           style={{
             // backgroundImage: `url(${this.props.video.image_url})`,
-            backgroundColor: this.props.color,
+            backgroundColor: "pink",
             position: "absolute",
             top: 0,
           }}
         >
           <Link
             to={{
-              pathname: `/video/${this.props.video.id}`,
-              state: { video: this.props.video },
+              pathname: `/stream/${this.props.stream.id}`,
+              state: { stream: this.props.stream },
             }}
             style={{ height: "100%", width: "100%" }}
           ></Link>

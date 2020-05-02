@@ -3,6 +3,26 @@ import axios from "axios";
 import { Tag } from "./TagService";
 import { ArtService } from "./ArtService";
 
+const getAllStreams = (callback: any) => {
+  axios
+    .get(baseApiUrl + "/streams/all", {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const getStreamById = (id: number, callback: any) => {
+  axios
+    .get(baseApiUrl + "/streams/stream?id=" + id.toString(), {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const createStream = (
   channelId: number,
   channelName: string,
@@ -51,6 +71,8 @@ const archiveStream = (streamId: number, callback: any) => {
 };
 
 export const StreamService = {
+  getAllStreams,
+  getStreamById,
   createStream,
   archiveStream,
 };
@@ -60,4 +82,8 @@ export type Stream = {
   channel_id: number;
   channel_name: string;
   name: string;
+  description: string;
+  from_url: string;
+  to_url: string;
+  tags: Tag[];
 };

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Box } from "grommet";
+import { Box, Text } from "grommet";
+import { Link } from "react-router-dom";
 import VideoCard from "./VideoCard";
 import { Video, VideoService } from "../Services/VideoService";
 
@@ -25,15 +26,30 @@ export default class RecommendedGrid extends Component<{}, State> {
 
   render() {
     return (
-      <Box direction="row" gap="medium" width="82.5%" wrap justify="center">
-        {this.state.videos.map((video: Video) => (
-          <VideoCard
-            width="278px"
-            height="192px"
-            color="accent-2"
-            video={video}
-          />
-        ))}
+      <Box width="1293px" margin={{ top: "40px", bottom: "25px" }}>
+        <Link to="/videos">
+          <Text
+            size="32px"
+            weight="bold"
+            color="black"
+            margin="none"
+            className="sliding-underline"
+            alignSelf="start"
+          >
+            Recent videos
+          </Text>
+        </Link>
+        <Box direction="row" width="100%" wrap justify="between">
+          {this.state.videos.map((video: Video) => (
+            <VideoCard
+              width="410px"
+              height="240px"
+              color="#f2f2f2"
+              video={video}
+              // margin="none"
+            />
+          ))}
+        </Box>
       </Box>
     );
   }

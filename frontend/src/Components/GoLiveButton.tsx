@@ -288,7 +288,7 @@ export default class GoLiveButton extends Component<Props, State> {
             {this.state.toStream ? (
               <Redirect
                 to={{
-                  pathname: "/stream",
+                  pathname: "/streaming",
                   state: {
                     stream: this.state.stream,
                   },
