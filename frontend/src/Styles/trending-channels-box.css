@@ -1,0 +1,7 @@
+.trending-channels-box {
+  background-image: linear-gradient(
+    to bottom right,
+    rgba(111, 255, 201, 0.3),
+    rgba(144, 96, 235, 0.3)
+  );
+}

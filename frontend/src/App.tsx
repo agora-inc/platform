@@ -4,6 +4,7 @@ import { Grommet } from "grommet";
 import Home from "./Views/Home";
 import Channel from "./Views/Channel";
 import VideoPage from "./Views/VideoPage";
+import StreamPage from "./Views/StreamPage";
 import TagPage from "./Views/TagPage";
 import Streaming from "./Views/Streaming";
 import AllVideosPage from "./Views/AllVideosPage";
@@ -19,9 +20,10 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route exact path="/videos" component={AllVideosPage} />
         <Route path="/video" component={VideoPage} />
+        <Route path="/stream" component={StreamPage} />
         <Route path="/channel" component={Channel} />
         <Route path="/tag" component={TagPage} />
-        <Route path="/stream" component={Streaming} />
+        <Route path="/streaming" component={Streaming} />
       </Grommet>
     </BrowserRouter>
   );
