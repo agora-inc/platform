@@ -310,6 +310,9 @@ class ChatWsServer:
                 msg = client.recv(self.buffer_size).decode("utf-8")
                 logging.warning(f"wait_for_connection: msg = {msg}.")
 
+                raise Exception("test exception to see that it restarts: to be deleted")
+                break
+
                 try:
                     msg = ast.literal_eval(str(msg))
                     logging.warning(f"Current state of the chat_groups: {self.chat_groups}")
@@ -368,17 +371,18 @@ class ChatWsServer:
         t.name = f"com_thread_({participant.addr}; {participant.chat_participant_id_subscribed}; {participant.name})"
         t.start()
 
-    def load_memory_from_db(self):
+    def fetch_chat_data_from_db(self):
         pass
 
     def _restart(self, tentatives=10, time_interval=3):
         for _ in range(tentatives):
             try:
-                self.load_memory_from_db()
+                self.fetch_chat_data_from_db()
+                logging.warning(f"_restart: restarting attempt: {_}/{tentatives}.")
                 self.run()
-                logging.warning("_restart: successfull reconnection.")
             except Exception as e:
                 logging.warning(f"_restart: reconnection failed, exception: {e}. Attempt number {_}/{tentatives}")
+            logging.warning(f"_restart: sleeping {3} seconds before next tentative.")
             time.sleep(time_interval)
 
     def run(self):

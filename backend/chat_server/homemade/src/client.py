@@ -47,7 +47,7 @@ class Client:
         self.client_socket.connect(self.addr)
 
         # connect to chat
-        #self._connect_to_chat()
+        #self._connect()
 
         # (set thread for listening)
         receive_thread = Thread(target=self.receive_msg)
@@ -55,10 +55,10 @@ class Client:
 
         # Test
         # msg = "This is a message from the client! yoyo!"
-        # self.send_msg(bytes(msg, "utf-8"))
+        # self.send_server(bytes(msg, "utf-8"))
         self.lock = Lock()
 
-    def _connect_to_chat(self):
+    def _connect(self):
         try:
             connect_payload = {
                             "action": "connect",
@@ -71,10 +71,10 @@ class Client:
             if self.user_id != None:
                 connect_payload["user_id"] = self.user_id
 
-            self.send_msg(connect_payload)
+            self.send_server(connect_payload)
 
         except Exception as e:
-            raise Exception(f"_connect_to_chat: Exception. {e}")
+            raise Exception(f"_connect: Exception. {e}")
 
     
     def _disconnect(self, ip_address):
@@ -92,21 +92,34 @@ class Client:
             if self.user_id != None:
                 disconnect_payload["user_id"] = self.user_id
 
-            self.send_msg(disconnect_payload)
-            self.client_socket.close()
+            self.send_server(disconnect_payload)
 
         except Exception as e:
             raise Exception(f"_disconnect_to_chat: Exception. {e}")
 
-    def send_msg(self, raw_msg):
-        print(raw_msg)
-        msg = bytes(str(raw_msg), "utf-8")
+    def send_server(self, dict_msg):
+        logging.warning(f"sendmsg: {dict_msg}")
+        msg = self.tools.dict_to_bytes(dict_msg)
         try:
             self.client_socket.send(msg)
         except Exception as e:
             self.client_socket = socket(AF_INET, SOCK_STREAM)
             self.client_socket.connect(self.addr)
-            raise Exception(f"send_msg: Exception. {e}")
+            raise Exception(f"send_server: Exception. {e}")
+
+
+    def send_msg(self, txt_msg, chat_type="channel", chat_group_id=17, user_name="Martin_Hairer"):
+        logging.warning(f"send_msg: {txt_msg}")
+        payload = {
+                    "msg": txt_msg,
+                    "action": "sendMsg",
+                    "user_name": user_name,
+                    "chat_type": chat_type,
+                    "chat_participant_group_id": chat_group_id
+                    }
+        
+        self.send_server(payload)
+        
 
     def edit_msg(self):
         pass
@@ -120,48 +133,74 @@ class Client:
         while True:
             try:
                 raw_msg = self.client_socket.recv(self.buffer_size)
-                msg = self.tools.bytes_to_dict(raw_msg)
-                logging.info(f"receive_msg: msg = {msg}")
+                try:
+                    msg = self.tools.bytes_to_dict(raw_msg)
+                    logging.info(f"receive_msg: raw_msg = {msg}")
 
-                # if this is a connect msg, store the value of chat_participant_group_id in memory
-                if msg["statusCode"] == 200:
-                    if msg["body"]["action"] == "connect":
-                        print("hehe")
-                        # ANSWER:
-                        #     {
-                        #     "statusCode": 200,
-                        #             "body": {
-                        # 			"action": "connect",
-                        # 			"chat_participant_group_id": 12389203,
-                        # 			"source_user_id": 32423 
-                        # 			"group_type": "private" (possible values: "channel" or "independent")
-                        # 		            }
-                        #     }
-                        self.chat_participant_group_id = msg["body"]["chat_participant_group_id"]
-                else:
-                    print("ERROR MSG RECEIVED: ", msg)
-
-                # make sure memory is safe to access
-                self.lock.acquire()
-                self.messages.append(msg)
-                self.lock.release()
+                    if msg["statusCode"] == 200 and msg["body"]["action"] == "disconnect":
+                        client.client_socket.dkise
 
 
+                except:
+                    pass
+                # msg = self.tools.bytes_to_dict(raw_msg)
+                # logging.info(f"receive_msg: msg = {msg}")
+
+                # # if this is a connect msg, store the value of chat_participant_group_id in memory
+                # if msg["statusCode"] == 200:
+                #     if msg["body"]["action"] == "connect":
+                #         print("hehe")
+                #         # ANSWER:
+                #         #     {
+                #         #     "statusCode": 200,
+                #         #             "body": {
+                #         # 			"action": "connect",
+                #         # 			"chat_participant_group_id": 12389203,
+                #         # 			"source_user_id": 32423 
+                #         # 			"group_type": "private" (possible values: "channel" or "independent")
+                #         # 		            }
+                #         #     }
+                #         self.chat_participant_group_id = msg["body"]["chat_participant_group_id"]
             except Exception as e:
                 raise Exception(f"receive_msg: Exception. {e}")
 
 
 if __name__ == "__main__":
     import time
+    import random
 
-    client = Client(17, chat_participant_group_id=74)
-    client._connect_to_chat()
-    time.sleep(3)
-    client._disconnect("127.0.0.1")
+    # clients = []
+    # for i in range(15,18):
+    #     clients.append(Client(i, 74))
 
-    print("sleepting before disconnecting")
+    # for i in range(len(clients)):
+    #     clients[i]._connect()
+    #     print(f"connect: {i}")
+    #     time.sleep(random.randint(1,2))
+    
+    # for i in range(len(clients)):
+    #     clients[i]._disconnect("127.0.0.1")
+    #     print(f"disconnect: {i}")
+    #     time.sleep(random.randint(10,20))
 
-    print("disconnecting")
+    client = Client(15, 74)
+    client._connect()
+    client.send_msg("yoyo")
+
+
+
+
+
+    # client = Client(17, chat_participant_group_id=74)
+    # client._connect()
+    # client._connect()
+    # client._disconnect("127.0.0.1")
+    # time.sleep(3)
+    # client._connect()
+
+    # print("sleepting before disconnecting")
+
+    # print("disconnecting")
 
 
 
@@ -186,7 +225,7 @@ if __name__ == "__main__":
 #         self.messages = []
 #         receive_thread = Thread(target=self.receive_msg)
 #         receive_thread.start()
-#         self.send_msg(name)
+#         self.send_server(name)
 #         self.lock = Lock()
 
 #     def receive_msg(self):
@@ -206,7 +245,7 @@ if __name__ == "__main__":
 #             except Exception as e:
 #                 raise Exception(f"receive_msg: Exception. {e}")
 
-#     def send_msg(self, msg):
+#     def send_server(self, msg):
 #         """
 #         send messages to server
 #         :param msg: str
@@ -219,7 +258,7 @@ if __name__ == "__main__":
 #         except Exception as e:
 #             self.client_socket = socket(AF_INET, SOCK_STREAM)
 #             self.client_socket.connect(self.ADDR)
-#             raise Exception(f"send_msg: Exception. {e}")
+#             raise Exception(f"send_server: Exception. {e}")
 
 
 #     def get_messages(self):
@@ -237,4 +276,4 @@ if __name__ == "__main__":
 #         return messages_copy
     
 #     def disconnect(self):
-#         self.send_msg("{quit}")
+#         self.send_server("{quit}")
