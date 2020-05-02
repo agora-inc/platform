@@ -9,7 +9,7 @@ from chat_db import ChatDb
 from tools import Tools
 import sys
 from pprint import pprint
-
+from email_notifier import send_error_email
 
 # GLOBAL CONSTANTS
 HOST = ws_config_chat.host
@@ -410,3 +410,4 @@ class ChatWsServer:
 if __name__ == "__main__":
     server = ChatWsServer()
     server.run()
+    send_error_email("ChatWebsocket", "Not running anymore", "")
