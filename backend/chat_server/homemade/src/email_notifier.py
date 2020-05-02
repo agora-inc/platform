@@ -1,20 +1,17 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-mail_content = '''Hello,
-This is a simple mail. There is only text, no attachments are there The mail is sent using Python SMTP library.
-Thank You'''
 
-
-#The mail addresses and password
-sender_address = 'revolutionising.research.errors@gmail.com'
-sender_pass = '123.error.123'
-receiver_address = 'revolutionising.research.errors@gmail.com'
 
 def send_error_email(error_source, short_description, error_msg):
     assert(isinstance(error_source, str))
     assert(isinstance(short_description, str))
     assert(isinstance(error_msg, str))
+
+    #The mail addresses and password
+    sender_address = 'revolutionising.research.errors@gmail.com'
+    sender_pass = '123.error.123'
+    receiver_address = 'revolutionising.research.errors@gmail.com'
 
     #Setup the MIME
     message = MIMEMultipart()
