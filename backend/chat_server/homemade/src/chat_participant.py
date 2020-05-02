@@ -1,11 +1,18 @@
+import time
+
 class ChatParticipant:
     """
-    Represents a person, holds name, socket client and IP address
+    Represents a person, holds name, socket client and IP address chat_group_id_blocked
     """
-    def __init__(self, addr, client):
+    def __init__(self, addr, client, chat_participant_id_subscribed, chat_participant_id_blocked, user_id):
         self.addr = addr
         self.client = client
         self.name = None
+        self.user_id = None
+        self.chat_participant_id_subscribed = chat_participant_id_subscribed
+        self.chat_participant_id_blocked = chat_participant_id_blocked
+        self.flag_connection = True
+        self.creation_time = time.time()
 
     def set_name(self, name):
         """
@@ -16,4 +23,4 @@ class ChatParticipant:
         self.name = name
 
     def __repr__(self):
-        return f"Person({self.addr}, {self.name})"
+        return f"Person({self.addr}, {self.chat_participant_id_subscribed})"

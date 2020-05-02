@@ -8,25 +8,36 @@ logger = logging.getLogger()
 logger.info("SUCCESS: Connection to RDS instance succeeded")
 
 # DB
-class Database:
-    def __init__(self):
-        host = rds_config.host
-        user = rds_config.user
-        password = rds_config.password
-        db_name = rds_config.name
-        self.con = pymysql.connect(host=host, user=user, password=password, db=db_name, cursorclass=pymysql.cursors)
+host = rds_config.host
+user = rds_config.user
+password = rds_config.password
+db_name = rds_config.name
 
-def _wrapper(body, status_code, header):
+try:
+    con = pymysql.connect(host=host, user=user, password=password, db=db_name, cursorclass=pymysql.cursors.DictCursor)
+except pymysql.MySQLError as e:
+    logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
+    logger.error(e)
+    sys.exit()
+
+def _wrapper(status_code, body, header={}):
     return {"statusCode": status_code, "body": body}
-
 
 def handler(event, context):
     """
     This function fetches content from RDS instance
     """
-
     # get "RemoteAddr" from the HTTP request and add it in the DB
-    id_addr = event["headers"]["X-Forwarded-For"]
-    # test_2 = sourceIP
+    return _wrapper(200, "yesbro2")
+    ip_address = event["headers"]["X-Forwarded-For"]
 
-    return _wrapper()
+
+# if __name__ == "__main__":
+#     #############
+#     # TEST UNIT: #
+#     #############
+#     import time
+#     event_example = {"chat_id": 16, "headers": {"X-Forwarded-For": "192.168.1.1"}}
+#     time_before = time.time()
+#     print(handler(event_example, {}))
+#     print(time.time() - time_before)
