@@ -55,11 +55,11 @@ class ChatDb:
 
                 if len(result) > 1:
                     self.con.commit()
-                    error_payload = {"msg": f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} is not unique", "src": "db"}
+                    error_payload = {"error_msg": f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} is not unique", "src": "db"}
                     return self.tools._wrapper(500, body=error_payload)
                 elif len(result) == 0:
                     self.con.commit()
-                    error_payload = {"msg": f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} does not exist.", "src": "db"}
+                    error_payload = {"error_msg": f"internal_db_error: ChatParticipantGroups with group_type '{group_type}' for channel {chat_id} does not exist.", "src": "db"}
                     return self.tools._wrapper(500, body=error_payload)
                 else:
                     ids.append(result[0])
