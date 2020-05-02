@@ -58,7 +58,7 @@ export default class StreamCard extends Component<Props> {
           onClick={() => {}}
           style={{
             // backgroundImage: `url(${this.props.video.image_url})`,
-            backgroundColor: "pink",
+            backgroundColor: this.props.color,
             position: "absolute",
             top: 0,
           }}

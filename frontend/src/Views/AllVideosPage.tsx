@@ -98,7 +98,7 @@ export default class AllVideosPage extends Component<{}, State> {
               <VideoCard
                 width="276px"
                 height="192px"
-                color="accent-2"
+                color="#f2f2f2"
                 video={video}
               />
             ))}

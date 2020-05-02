@@ -58,7 +58,6 @@ export default class ScheduledStreamList extends Component<Props, State> {
         width="100%"
         height="100%"
         // align="center"
-        margin={{ top: "60px" }}
         gridArea={this.props.gridArea}
       >
         <Link to="/scheduled" style={{ marginBottom: 25, padding: 0 }}>

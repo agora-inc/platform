@@ -39,7 +39,13 @@ export default class RecommendedGrid extends Component<{}, State> {
             Recent videos
           </Text>
         </Link>
-        <Box direction="row" width="100%" wrap justify="between">
+        <Box
+          direction="row"
+          width="100%"
+          wrap
+          justify="between"
+          margin={{ top: "20px" }}
+        >
           {this.state.videos.map((video: Video) => (
             <VideoCard
               width="410px"

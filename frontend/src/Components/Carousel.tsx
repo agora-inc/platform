@@ -104,18 +104,27 @@ export default class Carousel extends Component<Props, State> {
       //       color="accent-4"
       //       channelName="ImperialEEE"
       //     /> */}
-      <Box direction="row" gap="medium" width="82.5%" wrap justify="center">
-        {this.state.streams.map((stream: Stream) => (
-          <StreamCard
-            width="278px"
-            height="192px"
-            color="accent-2"
-            stream={stream}
-          />
-        ))}
+      <Box>
+        <Text color="black" weight="bold" size="32px">
+          Live now
+        </Text>
+        <Box
+          direction="row"
+          gap="medium"
+          width="100%"
+          wrap
+          margin={{ top: "20px" }}
+        >
+          {this.state.streams.map((stream: Stream) => (
+            <StreamCard
+              width="270px"
+              height="192px"
+              color="#f2f2f2"
+              stream={stream}
+            />
+          ))}
+        </Box>
       </Box>
-      //   </Grid>
-      // </Box>
     );
   };
 

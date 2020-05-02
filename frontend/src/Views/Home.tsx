@@ -15,9 +15,9 @@ export default class Home extends Component {
       <Box align="center">
         <Grid
           margin={{ top: "xlarge" }}
-          rows={["homeRow", "homeRow", "homeRow"]}
+          rows={["homeRow1", "homeRow2", "homeRow3"]}
           columns={["homeColumn1", "homeColumn2"]}
-          gap="40px"
+          gap="30px"
           areas={[
             { name: "trendingChannels", start: [0, 0], end: [0, 1] },
             { name: "carousel", start: [1, 0], end: [1, 0] },

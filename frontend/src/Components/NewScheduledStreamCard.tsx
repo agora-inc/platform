@@ -12,7 +12,7 @@ export default class NewScheduledStreamCard extends Component<Props> {
     return (
       <Box
         width="270px"
-        height="337px"
+        height="351px"
         background="#f2f2f2"
         round="10px"
         pad="20px"
