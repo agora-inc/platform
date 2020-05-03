@@ -105,9 +105,11 @@ export default class Streaming extends Component<Props, State> {
       this.webrtc?.stop("agora1");
       this.webrtc?.closeStream();
       this.webrtc?.closeWebSocket();
-      callback();
-      this.setState({
-        toHome: true,
+      StreamService.archiveStream(this.state.streamId, () => {
+        callback();
+        this.setState({
+          toHome: true,
+        });
       });
     });
     // StreamService.archiveStream(this.state.streamId, () => {

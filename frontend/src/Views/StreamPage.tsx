@@ -73,7 +73,8 @@ export default class VideoPage extends Component<Props, State> {
             <VideoPlayer
               playerOptions={{
                 autoplay: true,
-                controls: false,
+                controls: true,
+                liveui: false,
                 sources: [
                   {
                     src: this.state.stream.from_url,

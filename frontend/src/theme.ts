@@ -19,7 +19,7 @@ export const theme = {
       streamViewColumn1: "65.2vw",
       streamViewColumn2: "24.2vw",
       homeRow1: "242px",
-      homeRow2: "182px",
+      homeRow2: "172px",
       homeRow3: "212px",
       homeColumn1: "389px",
       homeColumn2: "864px",

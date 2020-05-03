@@ -6,6 +6,7 @@ import ChannelIdCard from "../Components/ChannelIdCard";
 import Tag from "../Components/Tag";
 import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
+import VideoPlayer from "../Components/VideoPlayer";
 
 interface Props {
   location: { pathname: string; state: { video: Video } };
@@ -29,6 +30,7 @@ export default class VideoPage extends Component<Props, State> {
         image_url: "",
         date: new Date(),
         views: 0,
+        url: "",
       },
     };
   }
@@ -67,7 +69,25 @@ export default class VideoPage extends Component<Props, State> {
           ]}
         >
           <Box gridArea="player" justify="between" gap="small">
-            <Box background="#61EC9F" width="100%" height="86%" round="small" />
+            <VideoPlayer
+              playerOptions={{
+                // autoplay: true,
+                controls: true,
+                // liveui: false,
+                sources: [
+                  {
+                    src: this.state.video.url,
+                    type: "video/mp4",
+                  },
+                ],
+                // html5: {
+                //   hls: {
+                //     overrideNative: true,
+                //   },
+                // },
+              }}
+              style={{ width: "100%", height: "86%", borderRadius: 15 }}
+            ></VideoPlayer>
             <Box direction="row" justify="between" align="start">
               <Box gap="xsmall" width="65%">
                 <Text size="34px" weight="bold">

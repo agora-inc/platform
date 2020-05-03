@@ -12,12 +12,12 @@ import "../Styles/home.css";
 export default class Home extends Component {
   render() {
     return (
-      <Box align="center">
+      <Box align="center" className="fadein">
         <Grid
           margin={{ top: "xlarge" }}
           rows={["homeRow1", "homeRow2", "homeRow3"]}
           columns={["homeColumn1", "homeColumn2"]}
-          gap="30px"
+          gap="40px"
           areas={[
             { name: "trendingChannels", start: [0, 0], end: [0, 1] },
             { name: "carousel", start: [1, 0], end: [1, 0] },

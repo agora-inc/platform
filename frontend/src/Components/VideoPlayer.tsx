@@ -41,6 +41,7 @@ export default class VideoPlayer extends Component<Props> {
       <div style={this.props.style}>
         <div data-vjs-player style={{ height: "100%", width: "100%" }}>
           <video
+            data-setup='{"liveui": true}'
             ref={(node) => (this.videoNode = node)}
             className="video-js"
           ></video>

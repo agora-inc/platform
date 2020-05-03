@@ -26,7 +26,7 @@ export default class RecommendedGrid extends Component<{}, State> {
 
   render() {
     return (
-      <Box width="1293px" margin={{ top: "40px", bottom: "25px" }}>
+      <Box width="1293px" margin={{ top: "30px", bottom: "25px" }}>
         <Link to="/videos">
           <Text
             size="32px"
