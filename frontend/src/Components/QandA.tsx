@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { QandAService } from "../Services/QandAService";
-import { UserService } from "../Services/UserService";
+import { UserService, User } from "../Services/UserService";
 import { Add } from "grommet-icons";
 import Loading from "./Loading";
 import LatexInput from "./LatexInput";
@@ -43,8 +43,7 @@ interface State {
   questions: Question[];
   sortBy: string;
   loading: boolean;
-  user: string | null;
-  userId: number;
+  user: User;
   writingQuestion: boolean;
   answeringQuestion: Question | null;
 }
@@ -57,7 +56,6 @@ export default class QandA extends Component<Props, State> {
       sortBy: "top",
       loading: true,
       user: UserService.getCurrentUser(),
-      userId: 20,
       writingQuestion: false,
       answeringQuestion: null,
     };
@@ -132,34 +130,53 @@ export default class QandA extends Component<Props, State> {
   };
 
   onUpvoteQuestionClicked = (question: Question) => {
-    question.upvoters.includes(this.state.user!)
-      ? QandAService.removeQuestionUpvote(
-          20,
+    question.downvoters.includes(this.state.user.username)
+      ? QandAService.removeQuestionDownvote(
+          this.state.user.id,
           question.id,
           (questions: Question[]) => {
+            console.log("user included", questions);
+            this.setState({ questions });
+          }
+        )
+      : question.upvoters.includes(this.state.user.username)
+      ? QandAService.removeQuestionUpvote(
+          this.state.user.id,
+          question.id,
+          (questions: Question[]) => {
+            console.log("user included", questions);
             this.setState({ questions });
           }
         )
       : QandAService.upvoteQuestion(
-          20,
+          this.state.user.id,
           question.id,
           (questions: Question[]) => {
+            console.log("user not included", questions);
             this.setState({ questions });
           }
         );
   };
 
   onDownVoteQuestionClicked = (question: Question) => {
-    question.downvoters.includes(this.state.user!)
+    question.upvoters.includes(this.state.user.username)
+      ? QandAService.removeQuestionUpvote(
+          this.state.user.id,
+          question.id,
+          (questions: Question[]) => {
+            this.setState({ questions });
+          }
+        )
+      : question.downvoters.includes(this.state.user.username)
       ? QandAService.removeQuestionDownvote(
-          20,
+          this.state.user.id,
           question.id,
           (questions: Question[]) => {
             this.setState({ questions });
           }
         )
       : QandAService.downvoteQuestion(
-          20,
+          this.state.user.id,
           question.id,
           (questions: Question[]) => {
             this.setState({ questions });
@@ -168,37 +185,69 @@ export default class QandA extends Component<Props, State> {
   };
 
   onUpvoteAnswerClicked = (answer: Answer) => {
-    answer.upvoters.includes(this.state.user!)
-      ? QandAService.removeAnswerUpvote(
-          20,
+    answer.downvoters.includes(this.state.user.username)
+      ? QandAService.removeAnswerDownvote(
+          this.state.user.id,
           answer.id,
           (questions: Question[]) => {
             this.setState({ questions });
           }
         )
-      : QandAService.upvoteAnswer(20, answer.id, (questions: Question[]) => {
-          this.setState({ questions });
-        });
+      : answer.upvoters.includes(this.state.user.username)
+      ? QandAService.removeAnswerUpvote(
+          this.state.user.id,
+          answer.id,
+          (questions: Question[]) => {
+            this.setState({ questions });
+          }
+        )
+      : QandAService.upvoteAnswer(
+          this.state.user.id,
+          answer.id,
+          (questions: Question[]) => {
+            this.setState({ questions });
+          }
+        );
   };
 
   onDownVoteAnswerClicked = (answer: Answer) => {
-    answer.upvoters.includes(this.state.user!)
-      ? QandAService.removeAnswerDownvote(
-          20,
+    answer.upvoters.includes(this.state.user.username)
+      ? QandAService.removeAnswerUpvote(
+          this.state.user.id,
           answer.id,
           (questions: Question[]) => {
             this.setState({ questions });
           }
         )
-      : QandAService.downvoteAnswer(20, answer.id, (questions: Question[]) => {
-          this.setState({ questions });
-        });
+      : answer.downvoters.includes(this.state.user.username)
+      ? QandAService.removeAnswerDownvote(
+          this.state.user.id,
+          answer.id,
+          (questions: Question[]) => {
+            this.setState({ questions });
+          }
+        )
+      : QandAService.downvoteAnswer(
+          this.state.user.id,
+          answer.id,
+          (questions: Question[]) => {
+            this.setState({ questions });
+          }
+        );
   };
 
   onSubmitClicked = (content: string) => {
     const params = this.props.streamId
-      ? { userId: 20, content: content, streamId: this.props.streamId }
-      : { userId: 20, content: content, videoId: this.props.videoId };
+      ? {
+          userId: this.state.user.id,
+          content: content,
+          streamId: this.props.streamId,
+        }
+      : {
+          userId: this.state.user.id,
+          content: content,
+          videoId: this.props.videoId,
+        };
     console.log("submitted content: ", content);
     this.state.writingQuestion
       ? QandAService.askQuestion(params, (questions: Question[]) => {
@@ -209,7 +258,7 @@ export default class QandA extends Component<Props, State> {
           });
         })
       : QandAService.answerQuestion(
-          20,
+          this.state.user.id,
           this.state.answeringQuestion!.id,
           content,
           (questions: Question[]) => {
@@ -271,11 +320,11 @@ export default class QandA extends Component<Props, State> {
 
   renderQuestion = (question: Question) => {
     const upvoteColor =
-      this.state.user && question.upvoters.includes(this.state.user)
+      this.state.user && question.upvoters.includes(this.state.user.username)
         ? "#61EC9F"
         : "black";
     const downvoteColor =
-      this.state.user && question.downvoters.includes(this.state.user)
+      this.state.user && question.downvoters.includes(this.state.user.username)
         ? "#61EC9F"
         : "black";
     return (
@@ -363,11 +412,11 @@ export default class QandA extends Component<Props, State> {
 
   renderAnswer = (answer: Answer) => {
     const upvoteColor =
-      this.state.user && answer.upvoters.includes(this.state.user)
+      this.state.user && answer.upvoters.includes(this.state.user.username)
         ? "#61EC9F"
         : "black";
     const downvoteColor =
-      this.state.user && answer.downvoters.includes(this.state.user)
+      this.state.user && answer.downvoters.includes(this.state.user.username)
         ? "#61EC9F"
         : "black";
     return (
@@ -420,12 +469,10 @@ export default class QandA extends Component<Props, State> {
     return (
       <Box
         height="100%"
-        // width="100%"
         background="white"
         round="small"
         style={{
           minWidth: "100%",
-          // minHeight: 464,
         }}
         pad="small"
       >
