@@ -119,8 +119,9 @@ class QandARepository:
         cursor.close()
 
         question = self.getQuestionById(questionId)
-        streamOrVideoId = question["stream_id"] or question["video_id"]
-        return self.getAllQuestionsForStream(streamOrVideoId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def downvoteQuestion(self, questionId, userId):
         cursor = self.db.con.cursor()
@@ -130,8 +131,9 @@ class QandARepository:
         cursor.close()
 
         question = self.getQuestionById(questionId)
-        streamOrVideoId = question["stream_id"] or question["video_id"]
-        return self.getAllQuestionsForStream(streamOrVideoId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def upvoteAnswer(self, answerId, userId):
         cursor = self.db.con.cursor()
@@ -142,8 +144,9 @@ class QandARepository:
 
         questionId = self.getAnswerById(answerId)["question_id"]
         question = self.getQuestionById(questionId)
-        streamOrVideoId = question["stream_id"] or question["video_id"]
-        return self.getAllQuestionsForStream(streamOrVideoId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def downvoteAnswer(self, answerId, userId):
         cursor = self.db.con.cursor()
@@ -154,8 +157,9 @@ class QandARepository:
 
         questionId = self.getAnswerById(answerId)["question_id"]
         question = self.getQuestionById(questionId)
-        streamOrVideoId = question["stream_id"] or question["video_id"]
-        return self.getAllQuestionsForStream(streamOrVideoId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def removeQuestionUpvote(self, questionId, userId):
         cursor = self.db.con.cursor()
@@ -165,8 +169,9 @@ class QandARepository:
         cursor.close()
 
         question = self.getQuestionById(questionId)
-        streamOrVideoId = question["stream_id"] or question["video_id"]
-        return self.getAllQuestionsForStream(streamOrVideoId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def removeQuestionDownvote(self, questionId, userId):
         cursor = self.db.con.cursor()
@@ -176,8 +181,9 @@ class QandARepository:
         cursor.close()
 
         question = self.getQuestionById(questionId)
-        streamOrVideoId = question["stream_id"] or question["video_id"]
-        return self.getAllQuestionsForStream(streamOrVideoId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def removeAnswerUpvote(self, answerId, userId):
         cursor = self.db.con.cursor()
@@ -188,8 +194,9 @@ class QandARepository:
 
         questionId = self.getAnswerById(answerId)["question_id"]
         question = self.getQuestionById(questionId)
-        streamOrVideoId = question["stream_id"] or question["video_id"]
-        return self.getAllQuestionsForStream(streamOrVideoId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def removeAnswerDownvote(self, answerId, userId):
         cursor = self.db.con.cursor()
@@ -200,8 +207,9 @@ class QandARepository:
 
         questionId = self.getAnswerById(answerId)["question_id"]
         question = self.getQuestionById(questionId)
-        streamOrVideoId = question["stream_id"] or question["video_id"]
-        return self.getAllQuestionsForStream(streamOrVideoId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def getUpvotersForQuestion(self, questionId):
         users = UserRepository.UserRepository(db=self.db)
