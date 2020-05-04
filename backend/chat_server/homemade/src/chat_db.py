@@ -3,12 +3,28 @@ import logging
 import rds_cred
 import time
 from tools import Tools
+from threading import Thread
 
 
 class ChatDb:
     def __init__(self):
-        self._connect_to_db()
         self.tools = Tools()
+        self._connect_to_db()
+
+        # start thread to keep db connection on
+        # t = Thread(target=self._check_connection, args=())
+        # t.start()
+
+    def get_thread_con(self):
+        host = rds_cred.host
+        user = rds_cred.user
+        psw = rds_cred.psw
+        db = rds_cred.db_name
+        try:
+            con = pymysql.connect(host=host, user=user, password=psw, db=db, cursorclass=pymysql.cursors.DictCursor)
+            return con
+        except Exception as e:
+            logging.warning(f"(ChatDb)_connect_to_db: exception raised: {e}")
 
     def _connect_to_db(self):
         host = rds_cred.host
@@ -27,7 +43,7 @@ class ChatDb:
                 self._connect_to_db()
                 logging.info("(ChatDb)_reconnect: successfull reconnection.")
             except Exception as e:
-                logging.warning(f"(ChatDb)_reconnect_to_db: reconnection failed, exception: {e}. Attempt number {_}/{tentatives}")
+                logging.warning(f"(ChatDb)_reconnect_to_db: reconnection failed, exception: {e}. Attempt number {_ + 1}/{tentatives}")
             time.sleep(time_interval)
 
     def _disconnect_from_db(self):
@@ -72,6 +88,13 @@ class ChatDb:
 
         except Exception as e:
             logging.warning(f"(ChatDb)get_chat_participant_group_ids: exception: {e}")
+
+    def _check_connection(self):
+        while True:
+            if not self.con.open:
+                logging.warning("_check_connection: connection failed; restarting it.")
+                self._reconnect_to_db()
+            time.sleep(0.1)
 
 
 if __name__ == "__main__":
