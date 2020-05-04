@@ -118,8 +118,9 @@ class QandARepository:
         self.db.con.commit()
         cursor.close()
 
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        streamOrVideoId = question["stream_id"] or question["video_id"]
+        return self.getAllQuestionsForStream(streamOrVideoId)
 
     def downvoteQuestion(self, questionId, userId):
         cursor = self.db.con.cursor()
@@ -128,8 +129,9 @@ class QandARepository:
         self.db.con.commit()
         cursor.close()
 
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        streamOrVideoId = question["stream_id"] or question["video_id"]
+        return self.getAllQuestionsForStream(streamOrVideoId)
 
     def upvoteAnswer(self, answerId, userId):
         cursor = self.db.con.cursor()
@@ -139,8 +141,9 @@ class QandARepository:
         cursor.close()
 
         questionId = self.getAnswerById(answerId)["question_id"]
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        streamOrVideoId = question["stream_id"] or question["video_id"]
+        return self.getAllQuestionsForStream(streamOrVideoId)
 
     def downvoteAnswer(self, answerId, userId):
         cursor = self.db.con.cursor()
@@ -150,8 +153,9 @@ class QandARepository:
         cursor.close()
 
         questionId = self.getAnswerById(answerId)["question_id"]
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        streamOrVideoId = question["stream_id"] or question["video_id"]
+        return self.getAllQuestionsForStream(streamOrVideoId)
 
     def removeQuestionUpvote(self, questionId, userId):
         cursor = self.db.con.cursor()
@@ -160,8 +164,9 @@ class QandARepository:
         self.db.con.commit()
         cursor.close()
 
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        streamOrVideoId = question["stream_id"] or question["video_id"]
+        return self.getAllQuestionsForStream(streamOrVideoId)
 
     def removeQuestionDownvote(self, questionId, userId):
         cursor = self.db.con.cursor()
@@ -170,8 +175,9 @@ class QandARepository:
         self.db.con.commit()
         cursor.close()
 
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        streamOrVideoId = question["stream_id"] or question["video_id"]
+        return self.getAllQuestionsForStream(streamOrVideoId)
 
     def removeAnswerUpvote(self, answerId, userId):
         cursor = self.db.con.cursor()
@@ -181,8 +187,9 @@ class QandARepository:
         cursor.close()
 
         questionId = self.getAnswerById(answerId)["question_id"]
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        streamOrVideoId = question["stream_id"] or question["video_id"]
+        return self.getAllQuestionsForStream(streamOrVideoId)
 
     def removeAnswerDownvote(self, answerId, userId):
         cursor = self.db.con.cursor()
@@ -192,8 +199,9 @@ class QandARepository:
         cursor.close()
 
         questionId = self.getAnswerById(answerId)["question_id"]
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        streamOrVideoId = question["stream_id"] or question["video_id"]
+        return self.getAllQuestionsForStream(streamOrVideoId)
 
     def getUpvotersForQuestion(self, questionId):
         users = UserRepository.UserRepository(db=self.db)
