@@ -20,7 +20,8 @@ def send_error_email(error_source, short_description, error_msg):
     message['Subject'] = error_source
 
     #The body and the attachments for the mail
-    message.attach(MIMEText(error_msg, 'plain'))
+    if error_msg != "":
+        message.attach(MIMEText(error_msg, 'plain'))
 
     #Create SMTP session for sending the mail
     session = smtplib.SMTP('smtp.gmail.com', 587) #use gmail with port

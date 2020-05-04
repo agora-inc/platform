@@ -4,6 +4,15 @@ from email.mime.text import MIMEText
 
 
 def send_error_email(error_source, short_description, error_msg):
+    """Function that sends an email to revolutionising.research.errors@gmail.com.
+    error_source + short_description is the "Subject" of the email;
+    error_msg is the content.
+
+    Args:
+        error_source ([type]): [description]
+        short_description ([type]): [description]
+        error_msg ([type]): [description]
+    """
     assert(isinstance(error_source, str))
     assert(isinstance(short_description, str))
     assert(isinstance(error_msg, str))
@@ -17,7 +26,7 @@ def send_error_email(error_source, short_description, error_msg):
     message = MIMEMultipart()
     message['From'] = sender_address
     message['To'] = receiver_address
-    message['Subject'] = error_source
+    message['Subject'] = error_source + ": " + short_description
 
     #The body and the attachments for the mail
     message.attach(MIMEText(error_msg, 'plain'))
