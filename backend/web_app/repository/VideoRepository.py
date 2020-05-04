@@ -61,6 +61,6 @@ class VideoRepository:
             return []
          
         tagId = result[0]["id"]
-        cursor.execute('SELECT Videos.id, Videos.channel_id, Videos.name, Videos.description, Videos.date, Videos.views FROM Videos INNER JOIN VideoTags ON Videos.id = VideoTags.video_id WHERE VideoTags.tag_id = %d ORDER BY Videos.date DESC' % tagId)
+        cursor.execute('SELECT Videos.id, Videos.channel_id, Videos.name, Videos.description, Videos.date, Videos.views, Videos.url FROM Videos INNER JOIN VideoTags ON Videos.id = VideoTags.video_id WHERE VideoTags.tag_id = %d ORDER BY Videos.date DESC' % tagId)
         result = cursor.fetchall()
         return result

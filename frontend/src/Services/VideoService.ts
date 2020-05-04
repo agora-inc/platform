@@ -70,4 +70,5 @@ export type Video = {
   image_url: string;
   date: Date;
   views: number;
+  url: string;
 };
