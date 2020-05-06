@@ -272,6 +272,11 @@ def removeAnswerDownvote():
 def getAllTags():
     return jsonify(tags.getAllTags())
 
+@app.route('/tags/popular', methods=["GET"])
+def getPopularTags():
+    n = int(request.args.get("n"))
+    return jsonify(tags.getPopularTags(n))
+
 @app.route('/tags/add', methods=["POST", "OPTIONS"])
 def addTag():
     if request.method == "OPTIONS":

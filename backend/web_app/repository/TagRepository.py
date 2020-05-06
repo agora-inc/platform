@@ -2,12 +2,37 @@ class TagRepository:
     def __init__(self, db):
         self.db = db
 
+    def getTagById(self, id):
+        cursor = self.db.con.cursor()
+        cursor.execute('SELECT * FROM Tags WHERE id = "%d"' % id)
+        result = cursor.fetchall()
+        cursor.close()
+        if not result:
+            return None
+        else:
+            return result[0]
+
     def getAllTags(self):
         cursor = self.db.con.cursor()
         cursor.execute("SELECT * FROM Tags ORDER BY id DESC")
         result = cursor.fetchall()
         cursor.close()
         return result
+
+    def getPopularTags(self, n):
+        # get all tag ids associated with video objects
+        cursor = self.db.con.cursor()
+        cursor.execute("SELECT tag_id FROM VideoTags")
+        result = cursor.fetchall()
+        cursor.close()
+
+        # sort the tag ids according to how many videos each is associated with
+        videoTagIds = [x["tag_id"] for x in result]
+        sortedTagIds = sorted(list(set(videoTagIds)), key=lambda x: -videoTagIds.count(x))
+
+        # return the 5 most popular tag ids
+        return [self.getTagById(id) for id in sortedTagIds] if len(sortedTagIds) <= n else [self.getTagById(id) for id in sortedTagIds[:n]]
+
 
     def addTag(self, name):
         cursor = self.db.con.cursor()
