@@ -1,5 +1,5 @@
 from app import app, db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository
 from flask import jsonify, request
 from werkzeug import exceptions
 
@@ -9,6 +9,7 @@ questions = QandARepository.QandARepository(db=db)
 streams = StreamRepository.StreamRepository(db=db)
 scheduledStreams = ScheduledStreamRepository.ScheduledStreamRepository(db=db)
 videos = VideoRepository.VideoRepository(db=db)
+channels = ChannelRepository.ChannelRepository(db=db)
 
 # --------------------------------------------
 # USER ROUTES
@@ -67,6 +68,21 @@ def stopLive():
     username = params['username']
     users.stopLive(username)
     return jsonify("Success")
+
+# --------------------------------------------
+# CHANNEL ROUTES
+# --------------------------------------------
+@app.route('/channels/all', methods=["GET"])
+def getAllChannels():
+    return jsonify(channels.getAllChannels())
+
+@app.route('/channels/create', methods=["POST", "OPTIONS"])
+def createChannel():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    name = params["name"]
+    return jsonify(channels.createChannel(name))
 
 # --------------------------------------------
 # STREAM ROUTES
