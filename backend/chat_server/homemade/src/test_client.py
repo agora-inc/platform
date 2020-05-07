@@ -47,6 +47,7 @@ class Client:
         
         # handshake + init connection
         self.client_socket.connect(self.addr)
+        self.send_handshake()
 
         # connect to chat
         #self.connect()
@@ -143,15 +144,13 @@ class Client:
                 try:
                     msg = self.tools.bytes_to_dict(raw_msg)
                     logging.warning(f"receive_msg: msg = {msg}")
-                    logging.warning(f"receive_msg: type msg = {type(msg)}")
-
 
                     if msg["statusCode"] == 200 and msg["body"]["action"] == "disconnect":
                         client.client_socket.close()
 
-
                 except:
                     pass
+
                 # msg = self.tools.bytes_to_dict(raw_msg)
                 # logging.info(f"receive_msg: msg = {msg}")
 
@@ -163,42 +162,68 @@ class Client:
                 #         #     {
                 #         #     "statusCode": 200,
                 #         #             "body": {
-                #         # 			"action": "connect",
+                #        # 			"action": "connect",
                 #         # 			"chat_participant_group_id": 12389203,
                 #         # 			"source_user_id": 32423 
                 #         # 			"gro marking your spawned threads as daemons allows you to exit yoicipant_group_id = msg["body"]["chat_participant_group_id"]
             except Exception as e:
                 raise Exception(f"receive_msg: Exception. {e}")
 
+    def send_handshake(self):
+        handshake_req = """GET / HTTP/1.1
+                Host: localhost:5500
+                User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:75.0) Gecko/20100101 Firefox/75.0
+                Accept: /
+                Accept-Language: en-US,en;q=0.5
+                Accept-Encoding: gzip, deflate
+                Sec-WebSocket-Version: 13
+                Origin: http://localhost:3000
+                Sec-WebSocket-Extensions: permessage-deflate
+                Sec-WebSocket-Key: AgtYvRfpQVCYykSvVSabGQ==
+                DNT: 1
+                Connection: keep-alive, Upgrade
+                Cookie: JSESSIONID=B348ED333491B3BABA4E9BE04D77A1E4
+                Pragma: no-cache
+                Cache-Control: no-cache
+                Upgrade: websocket"""
+
+        msg_bytes = bytes(handshake_req.encode("utf-8"))
+
+        self.client_socket.send(msg_bytes)
+        response = self.client_socket.recv(self.buffer_size)
+
+        logging.warning(f"{response}")
+
+
 
 if __name__ == "__main__":
     import time
     import random
 
-    clients = []
-    for i in range(1000):
-        clients.append(Client(15, 74))
-        print(f"create: {i}")
+    # clients = []
+    # for i in range(500):
+    #     clients.append(Client(15, 74))
+    #     clients[i].connect()
+    #     clients[i].user_name = "JOHN COLTRANE"
+    #     print(f"create: {i}")
+    #     time.sleep(0.2)
 
-    for i in range(len(clients)):
-        clients[i].connect()
-        clients[i].user_name = "JOHN COLTRANE"
-        print(f"connect: {i}")
-        time.sleep(0.1)
-
-    for i in range(len(clients)):
-        clients[i].send_msg("Lets get this working")
-        print(f"send msg: {i}")
-        time.sleep(1)
+    # for i in range(len(clients)):
+    #     clients[i].send_msg("Lets get this working")
+    #     print(f"send msg: {i}")
+    #     time.sleep(0.25)
     
-    for i in range(len(clients)):
-        clients[i]._disconnect("127.0.0.1")
-        print(f"disconnect: {i}")
-        time.sleep(0.1)
+    # for i in range(len(clients)):
+    #     clients[i]._disconnect("127.0.0.1")
+    #     print(f"disconnect: {i}")
+    #     time.sleep(0.1)
 
-    sys.exit()
 
-    # client1 = Client(17, chat_participant_group_id=74, user_id = 11111111)
+    client1 = Client(17, chat_participant_group_id=74, user_id = 11111111)
+
+
+
+
     # client2 = Client(17, chat_participant_group_id=74, user_id = 222222)
     # client3 = Client(17, chat_participant_group_id=74, user_id = 3333333)
     # client4 = Client(17, chat_participant_group_id=74, user_id = 444444444)

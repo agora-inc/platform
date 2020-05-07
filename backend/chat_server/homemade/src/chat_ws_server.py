@@ -2,14 +2,24 @@ from socket import AF_INET, socket, SOCK_STREAM, timeout
 from threading import Thread, enumerate, active_count
 import time
 from chat_participant import ChatParticipant
+from base64 import b64encode
+from hashlib import sha1
 import logging
 import ws_config_chat
 import ast
 from chat_db import ChatDb
 from tools import Tools
 import sys
+import re
 from pprint import pprint
 from email_notifier import send_error_email
+
+"""
+TODO: - Check timeouts for connection in code, erase data in DB of user.
+
+"""
+
+
 
 # GLOBAL CONSTANTS
 HOST = ws_config_chat.host
@@ -30,8 +40,7 @@ class ChatWsServer:
         self.max_connections = MAX_CONNECTIONS
         self.buffer_size = BUFFER_SIZE
 
-        # dictionary indexed by chat_participant_group_id and list of 
-        # participants
+        # dictionary indexed by chat_participant_group_id and list of participants
         self.chat_groups = {}
 
         # connecting to db
@@ -148,41 +157,54 @@ class ChatWsServer:
                     cursor.execute(f"SELECT id FROM ChatParticipants WHERE chat_participant_group_id='{chat_participant_id_subscribed}' and ip_address='{ip_address}'")
                     res = cursor.fetchall()
 
-                    if len(res) > 0:
-                        if chat_participant_id_subscribed in self.chat_groups:
-                            for current_participant in self.chat_groups[chat_participant_id_subscribed]:
-                                if current_participant.addr[0] == ip_address:
-                                    self.chat_groups[chat_participant_id_subscribed].remove(current_participant)
-                                    current_participant.client.close()
-                        else:
-                            self.chat_groups[chat_participant_id_subscribed] = []
-                        
-                        logging.warning(f"handle_client_connect: updated connection of participant in chat_group_id={chat_participant_id_subscribed} and ip={ip_address}")
-                        participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
-                        self.chat_groups[chat_participant_id_subscribed].append(participant)
 
-                    # D. If not blocked or already register, register him
+
+                    # if len(res) > 0:
+                    #     if chat_participant_id_subscribed in self.chat_groups:
+                    #         for current_participant in self.chat_groups[chat_participant_id_subscribed]:
+                    #             if current_participant.addr[0] == ip_address:
+                    #                 self.chat_groups[chat_participant_id_subscribed].remove(current_participant)
+                    #                 current_participant.client.close()
+                    #     else:
+                    #         self.chat_groups[chat_participant_id_subscribed] = []
+                        
+                    #     logging.warning(f"handle_client_connect: updated connection of participant in chat_group_id={chat_participant_id_subscribed} and ip={ip_address}")
+                    #     participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
+                    #     self.chat_groups[chat_participant_id_subscribed].append(participant)
+
+                    # # D. If not blocked or already register, register him
+                    # else:
+
+                    ############################ (Remy)
+                    # TODO: INDENT TWO BELOW PARAGRAPHS (I and II) AND UNCOMMENT COMMENTED ONE! I AM TESTING STUFF
+                    ############################
+
+                    # I) Add in DB
+                    if user_id != None:
+                        cursor.execute(f"INSERT INTO ChatParticipants(user_id, ip_address, chat_participant_group_id, chat_id) VALUES ({user_id}, '{ip_address}', {chat_participant_id_subscribed}, {chat_id})")
                     else:
-                        # I) Add in DB
-                        if user_id != None:
-                            cursor.execute(f"INSERT INTO ChatParticipants(user_id, ip_address, chat_participant_group_id, chat_id) VALUES ({user_id}, '{ip_address}', {chat_participant_id_subscribed}, {chat_id})")
-                        else:
-                            cursor.execute(f"INSERT INTO ChatParticipants(ip_address, chat_participant_group_id, chat_id) VALUES ('{ip_address}', {chat_participant_id_subscribed}, {chat_id})")
-                        con.commit()
-                        cursor.close()
-                        con.close()
+                        cursor.execute(f"INSERT INTO ChatParticipants(ip_address, chat_participant_group_id, chat_id) VALUES ('{ip_address}', {chat_participant_id_subscribed}, {chat_id})")
+                    con.commit()
+                    cursor.close()
+                    con.close()
 
-                        logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in DB")
+                    logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in DB")
 
-                        # II) add in memory
-                        participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
-                        
-                        if chat_participant_id_subscribed in self.chat_groups:
-                            self.chat_groups[chat_participant_id_subscribed].append(participant)
-                        else:
-                            self.chat_groups[chat_participant_id_subscribed] = [participant]
-                        
-                        logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in memory")
+                    # II) add in memory
+                    participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
+                    
+                    if chat_participant_id_subscribed in self.chat_groups:
+                        self.chat_groups[chat_participant_id_subscribed].append(participant)
+                    else:
+                        self.chat_groups[chat_participant_id_subscribed] = [participant]
+                    
+                    logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in memory")
+
+                    ############################ (Remy)
+                    # TODO: INDENT TWO ABOVE PARAGRAPHS (I and II) AND UNCOMMENT ABOVE COMMENTED ONE! I AM TESTING STUFF
+                    ############################
+
+
 
                     # E. send a response
                     if user_id != "NULL":
@@ -287,7 +309,8 @@ class ChatWsServer:
                 self._remove_participant_from_system(ip_address, sub_group_id)
             else:
                 self._remove_participant_from_system(participant=participant)
-
+            
+            
             logging.warning(f"handle_client_disconnect: successfully removed participant ({ip_address}, {sub_group_id}) from the system")
 
         except Exception as e:
@@ -384,26 +407,100 @@ class ChatWsServer:
         self.socket.close()
         logging.warning("wait_for_connection: Server stopped.")
 
-    def _listen_connection_thread(self, client, addr, timeout_on_acceptance=3600):
+    def _listen_connection_thread(self, client, addr, timeout_on_acceptance=10):
+        """ Logic for each new connections.
+
+        it is written such that the handshake at the start is not required.
+        """
         client.settimeout(timeout_on_acceptance)
-        # prevents from reading empty messages
         try:
             msg = client.recv(self.buffer_size).decode("utf-8")
             logging.warning(f"_listen_connection_thread: msg = {msg}.")
 
+            # (prevents from reading empty messages; 5 arbitrary
             if len(msg) > 5:
-                client.settimeout(None)
-                msgs = self.tools.split_concatenated_dict_strings(msg)
+                # A. Forces that the first message is a handshake (and not a json)
+                if "{" not in msg:
+                    logging.warning(f"_listen_connection_thread: received a non-json msg. msg: {msg}.")
+                    response_key = self._get_handshake_key(msg)
 
-                for msg in msgs:
-                    dict_msg = ast.literal_eval(msg)
-                    logging.warning(f"Current state of the chat_groups: {self.chat_groups}")
-                    logging.warning(f"_listen_connection_thread: rcv msg: {dict_msg}, type: {type(dict_msg)}")
+                    if response_key != None:
+                        logging.warning(f"_listen_connection_thread: checking client handshake format.")
+                        self.handle_client_handshake(response_key, client=client)
+                        logging.warning(f"_listen_connection_thread: successfull handshake. Waiting for a connection request.")
 
-                    self.handle_client_connect(msg=dict_msg, ip_address=addr[0], client=client)
+                        # B. If handshake successful, wait for connection request
+                        wait_for_request_msg = True
+                        
+                        # (while loop to filter empty message)
+                        while wait_for_request_msg:
+                            msg = client.recv(self.buffer_size).decode("utf-8")
+
+                            if len(msg) > 5 and "{" in msg:
+                                logging.warning(f"_listen_connection_thread: request msg = {msg}.")
+                                msgs = self.tools.split_concatenated_dict_strings(msg)
+
+                                for msg in msgs:
+                                    dict_msg = ast.literal_eval(msg)
+                                    logging.warning(f"Current state of the chat_groups: {self.chat_groups}")
+                                    logging.warning(f"_listen_connection_thread: rcv msg: {dict_msg}, type: {type(dict_msg)}")
+
+                                    self.handle_client_connect(msg=dict_msg, ip_address=addr[0], client=client)
+                            
+                                wait_for_request_msg = False
 
         except Exception as e:
-            logging.warning(f"wait_for_connection: exception encountered: {e}")
+            logging.warning(f"_listen_connection_thread: exception encountered: {e}")
+
+        finally:
+            logging.warning(f"_listen_connection_thread: thread terminated.")
+
+
+    def handle_client_handshake(self, response_key, client):
+        handshake_ans = (
+            'HTTP/1.1 101 Switching Protocols',
+            'Upgrade: websocket',
+            'Connection: Upgrade',
+            'Sec-WebSocket-Accept: {key}\r\n\r\n'
+            )
+
+        response = '\r\n'.join(handshake_ans).format(key=response_key)
+        client.send(response.encode("utf-8"))
+        logging.warning(f"handle_handshake: handshake from client in good format. Sending response: {response}.")
+
+
+    def _get_handshake_key(self, text_msg):
+        """Example of expected Handshake form:
+
+        GET / HTTP/1.1
+        Connection: keep-alive, Upgrade
+        Host: localhost:5500
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:75.0) Gecko/20100101 Firefox/75.0
+        Origin: http://localhost:3000
+        Accept: /
+        Upgrade: websocket
+        Accept-Language: en-US,en;q=0.5
+        Accept-Encoding: gzip, deflate
+        Sec-WebSocket-Version: 13
+        Sec-WebSocket-Extensions: permessage-deflate
+        Sec-WebSocket-Key: AgtYvRfpQVCYykSvVSabGQ==
+        DNT: 1
+        Cookie: JSESSIONID=B348ED333491B3BABA4E9BE04D77A1E4
+        Pragma: no-cache
+        Cache-Control: no-cache
+        """
+        # get the key
+        key = re.search('Sec-WebSocket-Key:\s+(.*?)[\n\r]+', text_msg)
+        if key is not None:
+            try:
+                key = (key.groups()[0].strip())
+                GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"  # (randomly picked really
+                response_key = b64encode(sha1((key + GUID).encode("utf-8")).digest())
+                
+                return response_key
+
+            except Exception as e:
+                raise Exception(f"_get_handshake_key: received message did not contain a websocket key. Exception: {e}")
 
     def _communication_thread(self, participant, time_sleep=1, timeout=6000):
         logging.warning(f"_communication_thread: number of active threads: {active_count()}")

@@ -27,8 +27,8 @@ class Tools:
 
     def split_concatenated_dict_strings(self, dict_string):
         assert(isinstance(dict_string, str))
+        list_dicts = []
         if len(dict_string) >= 2:
-            list_dicts = []
             if dict_string[0] != "{" and dict_string[-1] != "}":
                 raise Exception("split_concatenated_dict_strings: input is not a dict_string.")
             else:

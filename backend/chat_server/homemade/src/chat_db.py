@@ -97,6 +97,7 @@ class ChatDb:
             time.sleep(0.1)
 
 
-if __name__ == "__main__":
-    obj = ChatDb()
-    print(obj.get_chat_participant_group_ids(18))
+# TEST UNIT:
+# if __name__ == "__main__":
+#     obj = ChatDb()
+#     print(obj.get_chat_participant_group_ids(15))
