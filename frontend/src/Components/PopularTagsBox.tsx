@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
-import { Tag } from "../Services/TagService";
+import Loading from "./Loading";
+import { Tag, TagService } from "../Services/TagService";
 import "../Styles/popular-tags-box.css";
 
 interface Props {
@@ -8,7 +10,8 @@ interface Props {
 }
 
 interface State {
-  tags: string[];
+  tags: Tag[];
+  loading: boolean;
 }
 
 export default class PopularTagsBox extends Component<Props, State> {
@@ -16,18 +19,14 @@ export default class PopularTagsBox extends Component<Props, State> {
     super(props);
     this.state = {
       tags: [],
+      loading: true,
     };
   }
 
   componentWillMount() {
-    const tags = [
-      "Maths",
-      "Bioengineering",
-      "Computing",
-      "Physics",
-      "Machine Learning",
-    ];
-    this.setState({ tags });
+    TagService.getPopular((tags: Tag[]) => {
+      this.setState({ tags: tags, loading: false });
+    });
   }
 
   render() {
@@ -43,21 +42,28 @@ export default class PopularTagsBox extends Component<Props, State> {
         <Text size="32px" weight="bold" color="black" margin="none">
           Popular Tags
         </Text>
+        {this.state.loading && (
+          <Box width="100%" height="80%" justify="center" align="center">
+            <Loading color="black" size={50} />
+          </Box>
+        )}
         <Box direction="row" wrap margin={{ top: "20px" }} gap="small">
-          {this.state.tags.map((tag: string) => (
-            <Box
-              background="white"
-              pad={{ horizontal: "medium" }}
-              height="30px"
-              round="medium"
-              justify="center"
-              align="center"
-              margin={{ bottom: "small" }}
-            >
-              <Text size="16px" weight="bold" color="black">
-                {tag}
-              </Text>
-            </Box>
+          {this.state.tags.map((tag: Tag) => (
+            <Link to={`/tag/${tag.name}`} style={{ textDecoration: "none" }}>
+              <Box
+                background="white"
+                pad={{ horizontal: "medium" }}
+                height="30px"
+                round="medium"
+                justify="center"
+                align="center"
+                margin={{ bottom: "small" }}
+              >
+                <Text size="16px" weight="bold" color="black">
+                  {tag.name}
+                </Text>
+              </Box>
+            </Link>
           ))}
         </Box>
       </Box>

@@ -1,5 +1,8 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
+import Loading from "./Loading";
+import { Channel, ChannelService } from "../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../Styles/trending-channels-box.css";
 
@@ -8,7 +11,9 @@ interface Props {
 }
 
 interface State {
-  channels: string[];
+  channels: Channel[];
+  loading: boolean;
+  focusedChannelName: string;
 }
 
 export default class TrendingChannelsBox extends Component<Props, State> {
@@ -16,30 +21,23 @@ export default class TrendingChannelsBox extends Component<Props, State> {
     super(props);
     this.state = {
       channels: [],
+      loading: true,
+      focusedChannelName: "",
     };
   }
 
   componentWillMount() {
-    const channels = [
-      "ImperialBioEng",
-      "ImperialEEE",
-      "ImperialMaths",
-      "DoCSoc",
-      "Google Brain",
-      "Neuralink",
-      "ImperialDesEng",
-      "RenTec",
-      "Microsoft Research",
-      "PolyAI",
-      "DeepMind",
-      "ImperialPhysics",
-      "OxfordMaths",
-      "CambridgeMaths",
-      "Y Combinator",
-      "Facebook Research",
-    ];
-    this.setState({ channels });
+    ChannelService.getAllChannels((channels: Channel[]) => {
+      this.setState({
+        channels: channels,
+        loading: false,
+      });
+    });
   }
+
+  onChannelFocused = (focusedChannelName: string) => {
+    this.setState({ focusedChannelName });
+  };
 
   render() {
     return (
@@ -52,21 +50,35 @@ export default class TrendingChannelsBox extends Component<Props, State> {
         gridArea={this.props.gridArea}
       >
         <Text size="32px" weight="bold" color="black">
-          Trending channels
+          {this.state.focusedChannelName
+            ? this.state.focusedChannelName
+            : "Trending Channels"}
         </Text>
+        {this.state.loading && (
+          <Box width="100%" height="80%" justify="center" align="center">
+            <Loading color="black" size={50} />
+          </Box>
+        )}
         <Box direction="row" wrap justify="between" margin={{ top: "20px" }}>
-          {this.state.channels.map((channel: string) => (
-            <Box
-              background="white"
-              height="64px"
-              width="64px"
-              round="32px"
-              justify="center"
-              align="center"
-              margin={{ bottom: "20px" }}
+          {this.state.channels.map((channel: Channel) => (
+            <Link
+              to={`/channel/${channel.name}`}
+              style={{ textDecoration: "none" }}
             >
-              <Identicon string={channel} size={36} />
-            </Box>
+              <Box
+                onMouseEnter={() => this.onChannelFocused(channel.name)}
+                onMouseLeave={() => this.setState({ focusedChannelName: "" })}
+                background="white"
+                height="64px"
+                width="64px"
+                round="32px"
+                justify="center"
+                align="center"
+                margin={{ bottom: "20px" }}
+              >
+                <Identicon string={channel.name} size={36} />
+              </Box>
+            </Link>
           ))}
         </Box>
       </Box>

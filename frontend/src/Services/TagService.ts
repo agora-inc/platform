@@ -11,6 +11,16 @@ const getAll = (callback: any) => {
     });
 };
 
+const getPopular = (callback: any) => {
+  axios
+    .get(baseApiUrl + "/tags/popular?n=5", {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then((response) => {
+      callback(response.data);
+    });
+};
+
 const createTag = (tagName: string, callback: any) => {
   axios
     .post(
@@ -25,6 +35,7 @@ const createTag = (tagName: string, callback: any) => {
 
 export const TagService = {
   getAll,
+  getPopular,
   createTag,
 };
 

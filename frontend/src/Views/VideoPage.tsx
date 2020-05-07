@@ -71,22 +71,20 @@ export default class VideoPage extends Component<Props, State> {
           <Box gridArea="player" justify="between" gap="small">
             <VideoPlayer
               playerOptions={{
-                // autoplay: true,
                 controls: true,
-                // liveui: false,
                 sources: [
                   {
                     src: this.state.video.url,
                     type: "video/mp4",
                   },
                 ],
-                // html5: {
-                //   hls: {
-                //     overrideNative: true,
-                //   },
-                // },
               }}
-              style={{ width: "100%", height: "86%", borderRadius: 15 }}
+              style={{
+                width: "100%",
+                height: "86%",
+                borderRadius: 15,
+                overflow: "hidden",
+              }}
             ></VideoPlayer>
             <Box direction="row" justify="between" align="start">
               <Box gap="xsmall" width="65%">
