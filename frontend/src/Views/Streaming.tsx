@@ -6,6 +6,7 @@ import { UserService } from "../Services/UserService";
 import { StreamService } from "../Services/StreamService";
 import StreamerVideoPlayer from "../Components/StreamerVideoPlayer";
 import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
+import ChatBox from "../Components/ChatBox";
 import AsyncButton from "../Components/AsyncButton";
 import "../Styles/streaming.css";
 import adapter from "webrtc-adapter";
@@ -253,7 +254,7 @@ export default class Streaming extends Component<Props, State> {
                 : this.goLiveButton()}
             </Box>
           </Box>
-          <Box gridArea="chat" background="accent-2" round="small" />
+          <ChatBox gridArea="chat" />
         </Grid>
         <DescriptionAndQuestions
           gridArea="questions"

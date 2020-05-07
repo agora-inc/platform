@@ -8,4 +8,4 @@ export const antmediaWebSocketUrl =
 // export const chatUrl =
 //   "wss://3ep4w6auhi.execute-api.eu-west-2.amazonaws.com/pre-alpha";
 
-export const chatUrl = "ws";
+export const chatUrl = "ws://localhost:5500";

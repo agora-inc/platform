@@ -24,6 +24,7 @@ interface State {
   newMessageContent: string;
   loggedInUser: User;
   showEmojiPicker: boolean;
+  pingIntervalId: any;
 }
 
 export default class ChatBox extends Component<Props, State> {
@@ -35,6 +36,7 @@ export default class ChatBox extends Component<Props, State> {
       newMessageContent: "",
       loggedInUser: UserService.getCurrentUser(),
       showEmojiPicker: false,
+      pingIntervalId: null,
     };
     this.ws = null;
   }
@@ -53,16 +55,37 @@ export default class ChatBox extends Component<Props, State> {
 
   componentDidMount() {
     this.ws = new Sockette(chatUrl, {
-      maxAttempts: 1,
+      maxAttempts: 10,
       onopen: (e) => console.log("connected:", e),
       onmessage: (e) => this.onMessageReceived(e),
       onerror: (e) => console.log("error:", e),
     });
+    this.setState({ pingIntervalId: setInterval(this.pingChat, 3000) });
   }
 
   componentWillUnmount() {
+    clearInterval(this.state.pingIntervalId);
     this.ws && this.ws.close();
   }
+
+  pingChat = () => {
+    // this.ws!.json({
+    //   statusCode: 200,
+    //   action: "ping",
+    //   utc_ts_in_s: Math.floor(Date.now() / 1000),
+    // });
+  };
+
+  connectToChat = () => {
+    this.ws?.json({
+      action: "connect",
+      // "ip_address": "192.142.2.32",
+      chat_id: 123123,
+      channel_id: 344444,
+      user_id: this.state.loggedInUser.id,
+      user_name: this.state.loggedInUser.username,
+    });
+  };
 
   addEmoji = (e: any) => {
     let sym = e.unified.split("-");

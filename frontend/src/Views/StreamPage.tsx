@@ -6,7 +6,6 @@ import ChannelIdCard from "../Components/ChannelIdCard";
 import VideoPlayer from "../Components/VideoPlayer";
 import { View } from "grommet-icons";
 import { Stream, StreamService } from "../Services/StreamService";
-import ReactHLS from "react-hls";
 
 interface Props {
   location: { pathname: string; state: { stream: Stream } };
