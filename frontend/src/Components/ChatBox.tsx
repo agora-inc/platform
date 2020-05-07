@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Box, Text, TextInput, Keyboard } from "grommet";
+import Loading from "./Loading";
 import { Send, Emoji } from "grommet-icons";
 import { User, UserService } from "../Services/UserService";
 import Identicon from "react-identicons";
@@ -25,6 +26,7 @@ interface State {
   loggedInUser: User;
   showEmojiPicker: boolean;
   pingIntervalId: any;
+  loading: boolean;
 }
 
 export default class ChatBox extends Component<Props, State> {
@@ -37,30 +39,22 @@ export default class ChatBox extends Component<Props, State> {
       loggedInUser: UserService.getCurrentUser(),
       showEmojiPicker: false,
       pingIntervalId: null,
+      loading: true,
     };
     this.ws = null;
-  }
-
-  componentWillMount() {
-    const m1 = {
-      username: "maxtaylordavies",
-      content: "Hello everyone!",
-    };
-    const m2 = {
-      username: "remymess",
-      content: "Hey!",
-    };
-    this.setState({ messages: [m1, m2] });
   }
 
   componentDidMount() {
     this.ws = new Sockette(chatUrl, {
       maxAttempts: 10,
-      onopen: (e) => console.log("connected:", e),
-      onmessage: (e) => this.onMessageReceived(e),
+      onopen: (e) => {
+        console.log("connected:", e);
+        this.joinChatRoom();
+      },
+      onmessage: (e) => this.handleIncomingWebsocketMessage(e),
       onerror: (e) => console.log("error:", e),
     });
-    this.setState({ pingIntervalId: setInterval(this.pingChat, 3000) });
+    // this.setState({ pingIntervalId: setInterval(this.pingChat, 3000) });
   }
 
   componentWillUnmount() {
@@ -76,14 +70,10 @@ export default class ChatBox extends Component<Props, State> {
     // });
   };
 
-  connectToChat = () => {
+  joinChatRoom = () => {
     this.ws?.json({
-      action: "connect",
-      // "ip_address": "192.142.2.32",
-      chat_id: 123123,
-      channel_id: 344444,
-      user_id: this.state.loggedInUser.id,
-      user_name: this.state.loggedInUser.username,
+      action: "join",
+      chatId: 10,
     });
   };
 
@@ -95,6 +85,32 @@ export default class ChatBox extends Component<Props, State> {
     this.setState({
       newMessageContent: this.state.newMessageContent + emoji,
     });
+  };
+
+  handleIncomingWebsocketMessage = (message: any) => {
+    const data = JSON.parse(message.data);
+    if (data.type === "history") {
+      this.setState(
+        {
+          messages: data.data,
+          loading: false,
+        },
+        () => {
+          let messagesDiv = document.getElementById("messages");
+          messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
+        }
+      );
+    } else if (data.type === "message") {
+      this.setState(
+        {
+          messages: [...this.state.messages, data.data],
+        },
+        () => {
+          let messagesDiv = document.getElementById("messages");
+          messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
+        }
+      );
+    }
   };
 
   onMessageReceived = ({ data }: any) => {
@@ -114,27 +130,17 @@ export default class ChatBox extends Component<Props, State> {
     if (this.state.newMessageContent === "") {
       return;
     }
-    const newMessage = {
-      username: this.state.loggedInUser.username,
-      content: this.state.newMessageContent,
-    };
     this.ws &&
       this.ws.json({
-        action: "sendMsg",
-        data: JSON.stringify(newMessage),
+        action: "onMessage",
+        message: this.state.newMessageContent,
+        username: this.state.loggedInUser.username,
+        chatId: 10,
       });
-
-    this.setState(
-      {
-        showEmojiPicker: false,
-        messages: [...this.state.messages, newMessage],
-        newMessageContent: "",
-      },
-      () => {
-        let messagesDiv = document.getElementById("messages");
-        messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
-      }
-    );
+    this.setState({
+      showEmojiPicker: false,
+      newMessageContent: "",
+    });
   };
 
   renderMessageContent = (content: string) => {
@@ -255,6 +261,11 @@ export default class ChatBox extends Component<Props, State> {
           >
             Live chat
           </Text>
+          {this.state.loading && (
+            <Box height="80%" width="100%" justify="center" align="center">
+              <Loading color="black" size={50} />
+            </Box>
+          )}
           <Box
             height="80%"
             gap="small"
