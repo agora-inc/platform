@@ -35,7 +35,7 @@ class StreamRepository:
         self.db.con.commit()
         insertId = cursor.lastrowid
 
-        streamUrl = "http://localhost:5080/WebRTCApp/streams/%d.m3u8" % insertId
+        streamUrl = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d.m3u8" % insertId
         cursor.execute('UPDATE Streams SET from_url = "%s" WHERE id = %d' % (streamUrl, insertId))
         self.db.con.commit()
 
@@ -49,7 +49,7 @@ class StreamRepository:
         cursor = self.db.con.cursor()
         stream = self.getStreamById(streamId)
 
-        url = "http://localhost:5080/WebRTCApp/streams/%d.mp4" % streamId
+        url = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d.mp4" % streamId
 
         cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url) VALUES (%d, "%s", "%s", "%s", "%s", "%s")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"], url))
         insertId = cursor.lastrowid

@@ -112,7 +112,7 @@ export default class VideoPage extends Component<Props, State> {
           gridArea="questions"
           tags={this.state.stream.tags.map((t: any) => t.name)}
           description={this.state.stream.description}
-          videoId={this.state.stream.id}
+          streamId={this.state.stream.id}
           streamer={false}
         />
       </Box>
