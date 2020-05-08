@@ -1,3 +1,4 @@
+import requests
 from app import app, db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository
 from flask import jsonify, request
@@ -111,6 +112,12 @@ def archiveStream():
     params = request.json
     videoId = streams.archiveStream(params["streamId"])
     return jsonify({"videoId": videoId})
+
+@app.route('/stream/views', methods=["GET"])
+def getViewersOnStream():
+    streamId = request.args.get("streamId")
+    r = requests.get(f"http://localhost:5080/WebRTCAppEE/rest/v2/broadcasts/{streamId}/broadcast-statistics")
+    return r.json()
 
 # --------------------------------------------
 # SCHEDULED STREAM ROUTES

@@ -62,3 +62,4 @@ class StreamRepository:
         self.db.con.commit()
         cursor.close()
         return insertId
+
