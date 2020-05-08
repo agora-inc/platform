@@ -20,7 +20,7 @@ export default class RecommendedGrid extends Component<{}, State> {
 
   componentWillMount() {
     VideoService.getRecentVideos((videos: Video[]) => {
-      this.setState({ videos: videos.reverse(), loading: false });
+      this.setState({ videos, loading: false });
     });
   }
 

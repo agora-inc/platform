@@ -51,7 +51,7 @@ class StreamRepository:
 
         url = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d.mp4" % streamId
 
-        cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url) VALUES (%d, "%s", "%s", "%s", "%s", "%s")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"], url))
+        cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url, chat_id) VALUES (%d, "%s", "%s", "%s", "%s", "%s", "%d")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"], url, streamId))
         insertId = cursor.lastrowid
 
         tagIds = [tag["id"] for tag in stream["tags"]]

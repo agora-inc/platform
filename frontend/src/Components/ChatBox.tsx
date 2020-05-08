@@ -18,6 +18,7 @@ type Message = {
 
 interface Props {
   gridArea?: string;
+  chatId: number;
 }
 
 interface State {
@@ -73,7 +74,7 @@ export default class ChatBox extends Component<Props, State> {
   joinChatRoom = () => {
     this.ws?.json({
       action: "join",
-      chatId: 10,
+      chatId: this.props.chatId,
     });
   };
 
@@ -135,7 +136,7 @@ export default class ChatBox extends Component<Props, State> {
         action: "onMessage",
         message: this.state.newMessageContent,
         username: this.state.loggedInUser.username,
-        chatId: 10,
+        chatId: this.props.chatId,
       });
     this.setState({
       showEmojiPicker: false,

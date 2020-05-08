@@ -71,4 +71,5 @@ export type Video = {
   date: Date;
   views: number;
   url: string;
+  chat_id: number;
 };

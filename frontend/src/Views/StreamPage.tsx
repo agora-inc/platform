@@ -105,7 +105,7 @@ export default class VideoPage extends Component<Props, State> {
               </Box>
             </Box>
           </Box>
-          <ChatBox gridArea="chat" />
+          <ChatBox gridArea="chat" chatId={this.state.stream.id} />
         </Grid>
         <DescriptionAndQuestions
           gridArea="questions"

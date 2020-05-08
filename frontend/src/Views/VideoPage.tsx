@@ -31,6 +31,7 @@ export default class VideoPage extends Component<Props, State> {
         date: new Date(),
         views: 0,
         url: "",
+        chat_id: -1,
       },
     };
   }
@@ -104,7 +105,7 @@ export default class VideoPage extends Component<Props, State> {
             </Box>
           </Box>
           {/* <Box gridArea="chat" background="accent-2" round="small" /> */}
-          <ChatBox gridArea="chat" />
+          <ChatBox gridArea="chat" chatId={this.state.video.chat_id} />
         </Grid>
         <DescriptionAndQuestions
           gridArea="questions"

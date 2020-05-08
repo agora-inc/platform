@@ -254,7 +254,7 @@ export default class Streaming extends Component<Props, State> {
                 : this.goLiveButton()}
             </Box>
           </Box>
-          <ChatBox gridArea="chat" />
+          <ChatBox gridArea="chat" chatId={this.state.streamId} />
         </Grid>
         <DescriptionAndQuestions
           gridArea="questions"
