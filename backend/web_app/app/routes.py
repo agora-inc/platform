@@ -1,7 +1,6 @@
-import requests
 from app import app, db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository
-from flask import jsonify, request
+from flask import jsonify, request, send_file
 from werkzeug import exceptions
 
 users = UserRepository.UserRepository(db=db)
@@ -113,11 +112,11 @@ def archiveStream():
     videoId = streams.archiveStream(params["streamId"])
     return jsonify({"videoId": videoId})
 
-@app.route('/stream/views', methods=["GET"])
-def getViewersOnStream():
-    streamId = request.args.get("streamId")
-    r = requests.get(f"http://localhost:5080/WebRTCAppEE/rest/v2/broadcasts/{streamId}/broadcast-statistics")
-    return r.json()
+@app.route('/streams/stream/thumbnail', methods=["GET"])
+def serveThumbnail():
+    streamId = int(request.args.get("streamId"))
+    fn = f"/usr/local/antmedia/webapps/WebRTCAppEE/previews{streamId}.png"
+    return send_file(fn, mimetype="image/png")
 
 # --------------------------------------------
 # SCHEDULED STREAM ROUTES
