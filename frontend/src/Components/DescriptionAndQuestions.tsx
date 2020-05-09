@@ -20,9 +20,15 @@ export default class DescriptionAndQuestions extends Component<Props> {
   render() {
     return (
       <Box width="90.5%" margin={{ top: "xsmall" }} pad="none">
-        <Tabs justify="start" margin="none">
+        <Tabs justify="start" margin={{ bottom: "12px" }}>
           <Tab title="Description">
-            <Box height="100%" width="100%" round="small" gap="small">
+            <Box
+              height="100%"
+              width="100%"
+              round="small"
+              gap="small"
+              margin={{ right: "12px" }}
+            >
               <Box direction="row" gap="xsmall">
                 {this.props.tags.map((tag: string) => (
                   <Tag tagName={tag} />
