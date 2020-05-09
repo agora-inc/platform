@@ -59,9 +59,9 @@ export default class StreamCard extends Component<Props> {
           onClick={() => {}}
           style={{
             backgroundImage: `url(${
-              baseApiUrl +
-              "/streams/stream/thumbnail?streamId=" +
-              this.props.stream.id
+              "http://agora.stream:5080/WebRTCAppEE/previews/" +
+              this.props.stream.id +
+              ".png"
             })`,
             backgroundSize: "cover",
             position: "absolute",

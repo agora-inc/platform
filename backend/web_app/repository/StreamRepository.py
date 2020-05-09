@@ -35,7 +35,7 @@ class StreamRepository:
         self.db.con.commit()
         insertId = cursor.lastrowid
 
-        streamUrl = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d.m3u8" % insertId
+        streamUrl = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d_720p.m3u8" % insertId
         cursor.execute('UPDATE Streams SET from_url = "%s" WHERE id = %d' % (streamUrl, insertId))
         self.db.con.commit()
 

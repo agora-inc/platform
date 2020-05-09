@@ -60,9 +60,9 @@ export default class VideoCard extends Component<Props> {
           onClick={() => {}}
           style={{
             backgroundImage: `url(${
-              baseApiUrl +
-              "/streams/stream/thumbnail?streamId=" +
-              this.props.video.chat_id
+              "http://agora.stream:5080/WebRTCAppEE/previews/" +
+              this.props.video.chat_id +
+              ".png"
             })`,
             backgroundSize: "cover",
             position: "absolute",
