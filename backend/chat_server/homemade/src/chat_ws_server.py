@@ -2,7 +2,7 @@ from socket import AF_INET, socket, SOCK_STREAM, timeout
 from threading import Thread, enumerate, active_count
 import time
 from chat_participant import ChatParticipant
-from base64 import b64encode
+from base64 import b64encode, b64decode, decodebytes
 from hashlib import sha1
 import logging
 import ws_config_chat
@@ -13,6 +13,8 @@ import sys
 import re
 from pprint import pprint
 from email_notifier import send_error_email
+import cchardet
+
 
 """
 TODO: - Check timeouts for connection in code, erase data in DB of user.
@@ -69,7 +71,8 @@ class ChatWsServer:
             for participant in self.chat_groups[chat_participant_group_id]:
                 client = participant.client
                 try:
-                    byte_msg = self.tools.dict_to_bytes(msg)
+                    # byte_msg = self.tools.dict_to_bytes(msg)
+                    byte_msg = self.encode_websocket_string_msg(str(msg))
                     client.send(byte_msg)
                     logging.warning(f"broadcast: successfully sent msg to client: msg: {msg}; chat_group_id: {chat_participant_group_id}")
                 except Exception as e:
@@ -157,54 +160,41 @@ class ChatWsServer:
                     cursor.execute(f"SELECT id FROM ChatParticipants WHERE chat_participant_group_id='{chat_participant_id_subscribed}' and ip_address='{ip_address}'")
                     res = cursor.fetchall()
 
-
-
-                    # if len(res) > 0:
-                    #     if chat_participant_id_subscribed in self.chat_groups:
-                    #         for current_participant in self.chat_groups[chat_participant_id_subscribed]:
-                    #             if current_participant.addr[0] == ip_address:
-                    #                 self.chat_groups[chat_participant_id_subscribed].remove(current_participant)
-                    #                 current_participant.client.close()
-                    #     else:
-                    #         self.chat_groups[chat_participant_id_subscribed] = []
+                    if len(res) > 0:
+                        if chat_participant_id_subscribed in self.chat_groups:
+                            for current_participant in self.chat_groups[chat_participant_id_subscribed]:
+                                if current_participant.addr[0] == ip_address:
+                                    self.chat_groups[chat_participant_id_subscribed].remove(current_participant)
+                                    current_participant.client.close()
+                        else:
+                            self.chat_groups[chat_participant_id_subscribed] = []
                         
-                    #     logging.warning(f"handle_client_connect: updated connection of participant in chat_group_id={chat_participant_id_subscribed} and ip={ip_address}")
-                    #     participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
-                    #     self.chat_groups[chat_participant_id_subscribed].append(participant)
-
-                    # # D. If not blocked or already register, register him
-                    # else:
-
-                    ############################ (Remy)
-                    # TODO: INDENT TWO BELOW PARAGRAPHS (I and II) AND UNCOMMENT COMMENTED ONE! I AM TESTING STUFF
-                    ############################
-
-                    # I) Add in DB
-                    if user_id != None:
-                        cursor.execute(f"INSERT INTO ChatParticipants(user_id, ip_address, chat_participant_group_id, chat_id) VALUES ({user_id}, '{ip_address}', {chat_participant_id_subscribed}, {chat_id})")
-                    else:
-                        cursor.execute(f"INSERT INTO ChatParticipants(ip_address, chat_participant_group_id, chat_id) VALUES ('{ip_address}', {chat_participant_id_subscribed}, {chat_id})")
-                    con.commit()
-                    cursor.close()
-                    con.close()
-
-                    logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in DB")
-
-                    # II) add in memory
-                    participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
-                    
-                    if chat_participant_id_subscribed in self.chat_groups:
+                        logging.warning(f"handle_client_connect: updated connection of participant in chat_group_id={chat_participant_id_subscribed} and ip={ip_address}")
+                        participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
                         self.chat_groups[chat_participant_id_subscribed].append(participant)
+
+                    # D. If not blocked or already register, register him
                     else:
-                        self.chat_groups[chat_participant_id_subscribed] = [participant]
-                    
-                    logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in memory")
+                        # I) Add in DB
+                        if user_id != None:
+                            cursor.execute(f"INSERT INTO ChatParticipants(user_id, ip_address, chat_participant_group_id, chat_id) VALUES ({user_id}, '{ip_address}', {chat_participant_id_subscribed}, {chat_id})")
+                        else:
+                            cursor.execute(f"INSERT INTO ChatParticipants(ip_address, chat_participant_group_id, chat_id) VALUES ('{ip_address}', {chat_participant_id_subscribed}, {chat_id})")
+                        con.commit()
+                        cursor.close()
+                        con.close()
 
-                    ############################ (Remy)
-                    # TODO: INDENT TWO ABOVE PARAGRAPHS (I and II) AND UNCOMMENT ABOVE COMMENTED ONE! I AM TESTING STUFF
-                    ############################
+                        logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in DB")
 
-
+                        # II) add in memory
+                        participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
+                        
+                        if chat_participant_id_subscribed in self.chat_groups:
+                            self.chat_groups[chat_participant_id_subscribed].append(participant)
+                        else:
+                            self.chat_groups[chat_participant_id_subscribed] = [participant]
+                        
+                        logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in memory")
 
                     # E. send a response
                     if user_id != "NULL":
@@ -216,7 +206,8 @@ class ChatWsServer:
                         body["query_time"] = time.time() - msg["utc_ts_s"]
 
                     payload = self.tools._wrapper(200, body=body)
-                    participant.client.send(bytes(str(payload), "utf8"))
+                    encoded_bytes = self.encode_websocket_string_msg(str(payload))
+                    participant.client.send(encoded_bytes)
 
                     # F. Start listening to the client.
                     logging.warning(f"handle_client_connect: new admitted connection; ip_address: {ip_address}, chat_participant_id_subscribed: {chat_participant_id_subscribed}")
@@ -352,15 +343,18 @@ class ChatWsServer:
 
             else:
                 sub_group_id = participant.chat_participant_id_subscribed
-                payload = {
+                body = {
                             "action": "sendMsg",
                             "user_name": participant.name,
                             "chat_participant_group_id": sub_group_id,
-                            "msg": msg
+                            "msg": msg["msg"]
                             }
 
                 if TESTING:
-                    payload["query_time"] = time.time() - msg["utc_ts_s"]
+                    body["query_time"] = time.time() - msg["utc_ts_s"]
+
+
+                payload = self.tools._wrapper(200, body)
 
                 self.broadcast(payload, sub_group_id)
                 logging.warning("handle_client_sendMsg: msg successfully broadcasted.")    
@@ -380,7 +374,8 @@ class ChatWsServer:
         raise NotImplementedError
 
     def handle_error(self, client, error_dict):
-        client.send(bytes(str(error_dict), "utf-8"))
+        encoded_msg = self.encode_websocket_string_msg(str(error_dict))
+        client.send(encoded_msg)
 
     def wait_for_connection(self):
         """
@@ -407,18 +402,19 @@ class ChatWsServer:
         self.socket.close()
         logging.warning("wait_for_connection: Server stopped.")
 
-    def _listen_connection_thread(self, client, addr, timeout_on_acceptance=10):
+    def _listen_connection_thread(self, client, addr, timeout_on_acceptance=30):
         """ Logic for each new connections.
 
         it is written such that the handshake at the start is not required.
         """
         client.settimeout(timeout_on_acceptance)
         try:
-            msg = client.recv(self.buffer_size).decode("utf-8")
+            msg = client.recv(self.buffer_size)
             logging.warning(f"_listen_connection_thread: msg = {msg}.")
 
             # (prevents from reading empty messages; 5 arbitrary
             if len(msg) > 5:
+                msg = msg.decode("utf-8")
                 # A. Forces that the first message is a handshake (and not a json)
                 if "{" not in msg:
                     logging.warning(f"_listen_connection_thread: received a non-json msg. msg: {msg}.")
@@ -431,23 +427,35 @@ class ChatWsServer:
 
                         # B. If handshake successful, wait for connection request
                         wait_for_request_msg = True
+                        _start_waiting_time = time.time()
                         
-                        # (while loop to filter empty message)
+                        # (while loop to filter empty message and timeout for next message)
                         while wait_for_request_msg:
-                            msg = client.recv(self.buffer_size).decode("utf-8")
+                            if time.time() - _start_waiting_time > timeout_on_acceptance:
+                                payload = {"msg": "connection timed out."}
+                                msg = self.tools._wrapper(408, payload)
+                                # byte_msg = self.tools.dict_to_bytes(msg)
+                                byte_msg = self.encode_websocket_string_msg(str(msg))
+                                client.client.send(byte_msg)
+                                wait_for_request_msg=False
+                            else:
+                                msg = client.recv(self.buffer_size)
+                                if len(msg) > 5:
+                                    logging.warning(f"_listen_connection_thread: raw msg = {msg}.")
+                                    decoded_string = self.decode_websocket_byte_msg(msg)
+                                    logging.warning(f"_listen_connection_thread: decoded_string = {decoded_string}.")
+                                    if "{" in decoded_string:
+                                        logging.warning(f"_listen_connection_thread: request msg = {decoded_string}.")
+                                        msgs = self.tools.split_concatenated_dict_strings(decoded_string)
 
-                            if len(msg) > 5 and "{" in msg:
-                                logging.warning(f"_listen_connection_thread: request msg = {msg}.")
-                                msgs = self.tools.split_concatenated_dict_strings(msg)
+                                        for raw_str in msgs:
+                                            dict_msg = ast.literal_eval(raw_str)
+                                            logging.warning(f"Current state of the chat_groups: {self.chat_groups}")
+                                            logging.warning(f"_listen_connection_thread: rcv msg: {dict_msg}, type: {type(dict_msg)}")
 
-                                for msg in msgs:
-                                    dict_msg = ast.literal_eval(msg)
-                                    logging.warning(f"Current state of the chat_groups: {self.chat_groups}")
-                                    logging.warning(f"_listen_connection_thread: rcv msg: {dict_msg}, type: {type(dict_msg)}")
-
-                                    self.handle_client_connect(msg=dict_msg, ip_address=addr[0], client=client)
-                            
-                                wait_for_request_msg = False
+                                            self.handle_client_connect(msg=dict_msg, ip_address=addr[0], client=client)
+                                    
+                                        wait_for_request_msg = False
 
         except Exception as e:
             logging.warning(f"_listen_connection_thread: exception encountered: {e}")
@@ -494,15 +502,15 @@ class ChatWsServer:
         if key is not None:
             try:
                 key = (key.groups()[0].strip())
-                GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"  # (randomly picked really
-                response_key = b64encode(sha1((key + GUID).encode("utf-8")).digest())
-                
+                GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"  # defined by RFC 6455
+                response_key = b64encode(sha1((key + GUID).encode("utf-8")).digest()).decode("utf-8")
+
                 return response_key
 
             except Exception as e:
                 raise Exception(f"_get_handshake_key: received message did not contain a websocket key. Exception: {e}")
 
-    def _communication_thread(self, participant, time_sleep=1, timeout=6000):
+    def _communication_thread(self, participant, time_sleep=1, timeout=60):
         logging.warning(f"_communication_thread: number of active threads: {active_count()}")
         logging.debug(f"_communication_thread: list of active threads: {enumerate()}")
 
@@ -517,7 +525,8 @@ class ChatWsServer:
                 if time.time() - participant.last_ping > timeout:
                     payload = {"msg": "connection timed out."}
                     msg = self.tools._wrapper(408, payload)
-                    byte_msg = self.tools.dict_to_bytes(msg)
+                    # byte_msg = self.tools.dict_to_bytes(msg)
+                    byte_msg = self.encode_websocket_string_msg(str(msg))
                     participant.client.send(byte_msg)
                     participant.flag_connection=False
 
@@ -527,10 +536,13 @@ class ChatWsServer:
                 else:
                     # handle message msg
                     raw_msg = participant.client.recv(self.buffer_size)
-                    msgs = self.tools.bytes_to_dict(raw_msg)
-                    for msg in msgs:
-                        if len(msg) > 0:
-                            self._on_message(msg, participant=participant)
+                    decoded_msg = self.decode_websocket_byte_msg(raw_msg)
+                    if "{" in decoded_msg and "}" in decoded_msg:
+                        msgs = self.tools.split_concatenated_dict_strings(decoded_msg)
+                        for msg in msgs:
+                            if len(msg) > 0:
+                                msg = ast.literal_eval(msg)
+                                self._on_message(msg, participant=participant)
 
             except Exception as e:
                 logging.warning(f"_communication_thread: exception: {e}")
@@ -578,6 +590,65 @@ class ChatWsServer:
         self.socket.close()
         logging.warning("run: Server stopped.")
         self._restart()
+
+    @staticmethod
+    def decode_websocket_byte_msg(ws_encoded_byte):
+        """Takes a bytes as input and returns a string
+        
+        Stolen from https://stackoverflow.com/questions/8125507/how-can-i-send-and-receive-websocket-messages-on-the-server-side
+        
+        Args:
+            ws_encoded_byte (bytes): decoded bytes
+
+        Returns:
+            string: decoded bytes
+        """
+        byteArray =  ws_encoded_byte 
+        datalength = byteArray[1] & 127
+        indexFirstMask = 2 
+        if datalength == 126:
+            indexFirstMask = 4
+        elif datalength == 127:
+            indexFirstMask = 10
+        masks = [m for m in byteArray[indexFirstMask : indexFirstMask+4]]
+        indexFirstDataByte = indexFirstMask + 4
+        decodedChars = []
+        i = indexFirstDataByte
+        j = 0
+        while i < len(byteArray):
+            decodedChars.append( chr(byteArray[i] ^ masks[j % 4]) )
+            i += 1
+            j += 1
+        return ''.join(decodedChars)
+
+    @staticmethod
+    def encode_websocket_string_msg(string_msg):
+        bytesFormatted = []
+        bytesFormatted.append(129)
+
+        bytesRaw = string_msg.encode()
+        bytesLength = len(bytesRaw)
+        if bytesLength <= 125 :
+            bytesFormatted.append(bytesLength)
+        elif bytesLength >= 126 and bytesLength <= 65535 :
+            bytesFormatted.append(126)
+            bytesFormatted.append( ( bytesLength >> 8 ) & 255 )
+            bytesFormatted.append( bytesLength & 255 )
+        else :
+            bytesFormatted.append( 127 )
+            bytesFormatted.append( ( bytesLength >> 56 ) & 255 )
+            bytesFormatted.append( ( bytesLength >> 48 ) & 255 )
+            bytesFormatted.append( ( bytesLength >> 40 ) & 255 )
+            bytesFormatted.append( ( bytesLength >> 32 ) & 255 )
+            bytesFormatted.append( ( bytesLength >> 24 ) & 255 )
+            bytesFormatted.append( ( bytesLength >> 16 ) & 255 )
+            bytesFormatted.append( ( bytesLength >>  8 ) & 255 )
+            bytesFormatted.append( bytesLength & 255 )
+
+        bytesFormatted = bytes(bytesFormatted)
+        bytesFormatted = bytesFormatted + bytesRaw
+
+        return bytesFormatted
 
 
 if __name__ == "__main__":

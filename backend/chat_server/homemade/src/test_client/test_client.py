@@ -219,7 +219,7 @@ if __name__ == "__main__":
     #     time.sleep(0.1)
 
 
-    client1 = Client(17, chat_participant_group_id=74, user_id = 11111111)
+    client2 = Client(17, chat_participant_group_id=74, user_id = 11111111)
 
 
 
