@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Video } from "../Services/VideoService";
 import { ArtService } from "../Services/ArtService";
 import "../Styles/videocard.css";
+import { baseApiUrl } from "../config";
 
 interface Props {
   height?: any;
@@ -58,8 +59,12 @@ export default class VideoCard extends Component<Props> {
           round="small"
           onClick={() => {}}
           style={{
-            // backgroundImage: `url(${this.props.video.image_url})`,
-            backgroundColor: this.props.color,
+            backgroundImage: `url(${
+              baseApiUrl +
+              "/streams/stream/thumbnail?streamId=" +
+              this.props.video.chat_id
+            })`,
+            backgroundSize: "cover",
             position: "absolute",
             top: 0,
           }}
