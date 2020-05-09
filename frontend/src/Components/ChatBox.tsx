@@ -19,6 +19,7 @@ type Message = {
 interface Props {
   gridArea?: string;
   chatId: number;
+  viewerCountCallback: any;
 }
 
 interface State {
@@ -111,6 +112,8 @@ export default class ChatBox extends Component<Props, State> {
           messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
         }
       );
+    } else if (data.type === "views") {
+      this.props.viewerCountCallback(data.data.views);
     }
   };
 

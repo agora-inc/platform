@@ -12,6 +12,7 @@ import "../Styles/streaming.css";
 import adapter from "webrtc-adapter";
 import { WebRTCAdaptor } from "../Streaming/webrtc_adaptor";
 import { antmediaWebSocketUrl } from "../config";
+import Loading from "../Components/Loading";
 
 const users = UserService;
 
@@ -27,6 +28,7 @@ interface State {
   streaming: boolean;
   username: string | null;
   toHome: boolean;
+  viewCount: number;
 }
 
 interface MediaDevices {
@@ -45,6 +47,7 @@ export default class Streaming extends Component<Props, State> {
       streaming: false,
       username: users.getCurrentUser(),
       toHome: false,
+      viewCount: -1,
     };
     this.webrtc = null;
   }
@@ -195,9 +198,12 @@ export default class Streaming extends Component<Props, State> {
           fontColor="white"
         />
         <View color="black" size="40px" />
-        <Text size="34px" weight="bold">
-          3257
-        </Text>
+        {this.state.viewCount === -1 && <Loading color="grey" size={34} />}
+        {this.state.viewCount !== -1 && (
+          <Text size="34px" weight="bold">
+            {this.state.viewCount}
+          </Text>
+        )}
       </Box>
     );
   };
@@ -254,7 +260,13 @@ export default class Streaming extends Component<Props, State> {
                 : this.goLiveButton()}
             </Box>
           </Box>
-          <ChatBox gridArea="chat" chatId={this.state.streamId} />
+          <ChatBox
+            gridArea="chat"
+            chatId={this.state.streamId}
+            viewerCountCallback={(viewCount: number) =>
+              this.setState({ viewCount })
+            }
+          />
         </Grid>
         <DescriptionAndQuestions
           gridArea="questions"

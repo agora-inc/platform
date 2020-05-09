@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Box, Grid, Text } from "grommet";
 import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
 import ChatBox from "../Components/ChatBox";
+import Loading from "../Components/Loading";
 import ChannelIdCard from "../Components/ChannelIdCard";
 import VideoPlayer from "../Components/VideoPlayer";
 import { View } from "grommet-icons";
@@ -13,6 +14,7 @@ interface Props {
 
 interface State {
   stream: Stream;
+  viewCount: number;
 }
 
 export default class VideoPage extends Component<Props, State> {
@@ -29,6 +31,7 @@ export default class VideoPage extends Component<Props, State> {
         to_url: "",
         tags: [],
       },
+      viewCount: -1,
     };
   }
 
@@ -98,14 +101,25 @@ export default class VideoPage extends Component<Props, State> {
                 <ChannelIdCard channelName={this.state.stream!.channel_name} />
                 <Box direction="row" align="center" gap="xxsmall">
                   <View color="black" size="40px" />
-                  <Text size="34px" weight="bold">
-                    3257
-                  </Text>
+                  {this.state.viewCount === -1 && (
+                    <Loading color="grey" size={34} />
+                  )}
+                  {this.state.viewCount !== -1 && (
+                    <Text size="34px" weight="bold">
+                      {this.state.viewCount}
+                    </Text>
+                  )}
                 </Box>
               </Box>
             </Box>
           </Box>
-          <ChatBox gridArea="chat" chatId={this.state.stream.id} />
+          <ChatBox
+            gridArea="chat"
+            chatId={this.state.stream.id}
+            viewerCountCallback={(viewCount: number) =>
+              this.setState({ viewCount })
+            }
+          />
         </Grid>
         <DescriptionAndQuestions
           gridArea="questions"
