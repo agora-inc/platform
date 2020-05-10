@@ -52,6 +52,9 @@ class StreamRepository:
         cursor = self.db.con.cursor()
         stream = self.getStreamById(streamId)
 
+        if not stream:
+            return -1
+
         url = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d_720p.mp4" % streamId
 
         cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url, chat_id, views, date) VALUES (%d, "%s", "%s", "%s", "%s", "%s", "%d", "%d", "%s")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"], url, streamId, stream["views"], now))

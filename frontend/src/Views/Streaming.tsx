@@ -60,6 +60,7 @@ export default class Streaming extends Component<Props, State> {
     console.log("UNMOUNTING");
     this.webrtc?.closeStream();
     this.webrtc?.closeWebSocket();
+    StreamService.archiveStream(this.state.streamId, () => {});
   }
 
   initializeWebRTCAdaptor = () => {
