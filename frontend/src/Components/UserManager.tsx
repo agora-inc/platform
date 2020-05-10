@@ -22,38 +22,52 @@ export default class UserManager extends Component<{}, State> {
     };
   }
 
-  menu = (
-    <Menu>
-      <Menu.Item
-        key="1"
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "between",
-          width: "100%",
-        }}
-      >
-        <Text>My account</Text>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        key="2"
-        onClick={() => {
-          UserService.logout();
-          this.setState({ isLoggedIn: UserService.isLoggedIn() });
-        }}
-      >
-        <Text>Log out</Text>
-      </Menu.Item>
-    </Menu>
-  );
+  menu = () => {
+    return (
+      <Menu style={{ borderRadius: 10, marginTop: 5 }}>
+        <Box
+          margin="small"
+          gap="xsmall"
+          focusIndicator={false}
+          style={{ pointerEvents: "none" }}
+        >
+          <Identicon string={this.state.user?.username} size={25} />
+          <Text weight="bold" size="20px">
+            {this.state.user?.username}
+          </Text>
+        </Box>
+        <Menu.Divider />
+        <Menu.Item
+          key="1"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "between",
+            width: "100%",
+          }}
+        >
+          <Text>My account</Text>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item
+          key="2"
+          onClick={() => {
+            UserService.logout();
+            this.setState({ isLoggedIn: UserService.isLoggedIn() });
+          }}
+        >
+          <Text>Log out</Text>
+        </Menu.Item>
+      </Menu>
+    );
+  };
 
   loggedInStuff = (username: string) => {
     return (
       <Box direction="row" align="center" justify="center">
         <GoLiveButton margin="none" />
         <Dropdown
-          overlay={this.menu}
+          overlay={this.menu()}
           trigger={["click"]}
           overlayStyle={{ width: 200 }}
         >

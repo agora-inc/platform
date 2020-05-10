@@ -5,6 +5,7 @@ import { Video } from "../Services/VideoService";
 import { ArtService } from "../Services/ArtService";
 import "../Styles/videocard.css";
 import { baseApiUrl } from "../config";
+import Identicon from "react-identicons";
 
 interface Props {
   height?: any;
@@ -16,14 +17,23 @@ interface Props {
   video: Video;
 }
 
-export default class VideoCard extends Component<Props> {
+interface State {
+  focused: boolean;
+}
+
+export default class VideoCard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      focused: false,
+    };
   }
 
   render() {
     return (
       <Box
+        onMouseEnter={() => this.setState({ focused: true })}
+        onMouseLeave={() => this.setState({ focused: false })}
         height={this.props.height}
         width={this.props.width}
         gridArea={this.props.gridArea}
@@ -38,8 +48,7 @@ export default class VideoCard extends Component<Props> {
         <Box
           width="100%"
           height="100%"
-          justify="center"
-          align="center"
+          justify="between"
           pad="small"
           style={{
             position: "absolute",
@@ -48,7 +57,24 @@ export default class VideoCard extends Component<Props> {
             pointerEvents: "none",
           }}
         >
-          <Text textAlign="center" size="24px" weight="bold">
+          <Box direction="row" gap="xsmall" align="center">
+            {this.state.focused && (
+              <Box
+                width="30px"
+                height="30px"
+                round="15px"
+                align="center"
+                justify="center"
+                background="white"
+              >
+                <Identicon string={this.props.video.channel_name} size={20} />
+              </Box>
+            )}
+            <Text size="24px" weight="bold">
+              {this.props.video.channel_name}
+            </Text>
+          </Box>
+          <Text textAlign="end" size="28px" weight="bold">
             {this.props.video.name}
           </Text>
         </Box>
