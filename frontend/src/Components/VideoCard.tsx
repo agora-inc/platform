@@ -39,6 +39,7 @@ export default class VideoCard extends Component<Props, State> {
         gridArea={this.props.gridArea}
         style={{ position: "relative" }}
         className="videocard"
+        pad={this.props.pad ? this.props.pad : "none"}
         margin={
           this.props.margin
             ? this.props.margin

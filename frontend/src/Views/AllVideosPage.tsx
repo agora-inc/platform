@@ -59,24 +59,30 @@ export default class AllVideosPage extends Component<{}, State> {
 
   render() {
     return (
-      <Box margin={{ top: "10%" }} align="center">
-        <Box width="82.5%">
-          <Heading size="4.5rem" margin={{ bottom: "small" }}>
-            All videos
-          </Heading>
+      <Box margin={{ top: "7.5%" }} align="center">
+        <Box width="90%" margin={{ left: "2.5%" }}>
           <Box
             direction="row"
             width="100%"
             justify="between"
-            margin={{ bottom: "small" }}
+            align="end"
+            // margin={{ bottom: "small" }}
           >
-            <Box direction="row" align="center" gap="xsmall">
+            <Heading size="4.5rem" margin="none" style={{ height: "4.5rem" }}>
+              All videos
+            </Heading>
+            {/* <Box direction="row" align="center" gap="xsmall">
               <Text color="black" weight="bold">
                 Filter by
               </Text>
               <SmallSearchBar placeholder="search tags" />
-            </Box>
-            <Box direction="row" align="center" gap="xsmall">
+            </Box> */}
+            <Box
+              direction="row"
+              align="center"
+              gap="xsmall"
+              margin={{ right: "2.5%" }}
+            >
               <Text color="black" weight="bold">
                 Sort by
               </Text>
@@ -89,15 +95,16 @@ export default class AllVideosPage extends Component<{}, State> {
           </Box>
           <Box
             direction="row"
-            gap="medium"
+            gap="2.5%"
             wrap
-            justify="center"
-            margin={{ top: "10px" }}
+            // justify="center"
+            margin={{ top: "20px" }}
           >
             {this.sortVideos().map((video: Video, index: number) => (
               <VideoCard
-                width="276px"
+                width="22.5%"
                 height="192px"
+                // margin="none"
                 color="#f2f2f2"
                 video={video}
               />
