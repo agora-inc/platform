@@ -1,4 +1,5 @@
 from repository import TagRepository
+from datetime import datetime
 
 class StreamRepository:
     def __init__(self, db):
@@ -46,12 +47,14 @@ class StreamRepository:
         return self.getStreamById(insertId)
 
     def archiveStream(self, streamId):
+        now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+
         cursor = self.db.con.cursor()
         stream = self.getStreamById(streamId)
 
         url = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d_720p.mp4" % streamId
 
-        cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url, chat_id) VALUES (%d, "%s", "%s", "%s", "%s", "%s", "%d")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"], url, streamId))
+        cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url, chat_id, views, date) VALUES (%d, "%s", "%s", "%s", "%s", "%s", "%d", "%d", "%s")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"], url, streamId, stream["views"], now))
         insertId = cursor.lastrowid
 
         tagIds = [tag["id"] for tag in stream["tags"]]
