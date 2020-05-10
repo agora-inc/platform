@@ -68,7 +68,7 @@ export default class AllVideosPage extends Component<{}, State> {
             align="end"
             // margin={{ bottom: "small" }}
           >
-            <Heading size="4.5rem" margin="none" style={{ height: "4.5rem" }}>
+            <Heading size="3.5rem" margin="none" style={{ height: "3.5rem" }}>
               All videos
             </Heading>
             {/* <Box direction="row" align="center" gap="xsmall">

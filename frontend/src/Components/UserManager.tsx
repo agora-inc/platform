@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { Box, Button, Text } from "grommet";
-import { User, Logout } from "grommet-icons";
+import { Deploy } from "grommet-icons";
 import LoginModal from "./LoginModal";
 import { UserService } from "../Services/UserService";
+import { Channel, ChannelService } from "../Services/ChannelService";
 import GoLiveButton from "./GoLiveButton";
+import DropdownChannelButton from "./DropdownChannelButton";
+import CreateChannelButton from "./CreateChannelButton";
 import { Avatar, Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../Styles/header.css";
@@ -11,6 +14,7 @@ import "../Styles/header.css";
 interface State {
   isLoggedIn: boolean;
   user: { id: number; username: string } | null;
+  channels: Channel[];
 }
 
 export default class UserManager extends Component<{}, State> {
@@ -19,8 +23,23 @@ export default class UserManager extends Component<{}, State> {
     this.state = {
       isLoggedIn: UserService.isLoggedIn(),
       user: UserService.getCurrentUser(),
+      channels: [],
     };
   }
+
+  componentWillMount() {
+    this.fetchChannels();
+  }
+
+  fetchChannels = () => {
+    this.state.user &&
+      ChannelService.getChannelsForUser(
+        this.state.user.id,
+        (channels: Channel[]) => {
+          this.setState({ channels });
+        }
+      );
+  };
 
   menu = () => {
     return (
@@ -31,12 +50,39 @@ export default class UserManager extends Component<{}, State> {
           focusIndicator={false}
           style={{ pointerEvents: "none" }}
         >
-          <Identicon string={this.state.user?.username} size={25} />
+          <Box
+            height="25px"
+            width="25px"
+            round="12.5px"
+            justify="center"
+            align="center"
+            overflow="hidden"
+          >
+            <Identicon string={this.state.user?.username} size={25} />
+          </Box>
           <Text weight="bold" size="20px">
             {this.state.user?.username}
           </Text>
         </Box>
         <Menu.Divider />
+        <Box
+          margin="small"
+          focusIndicator={false}
+          // style={{ pointerEvents: "none" }}
+          gap="xsmall"
+        >
+          <Text weight="bold" color="black">
+            My channels
+          </Text>
+          {this.state.channels.map((channel: Channel) => (
+            <DropdownChannelButton channel={channel} />
+          ))}
+          <CreateChannelButton />
+        </Box>
+        <Menu.Divider />
+        <Text weight="bold" color="black" margin="small">
+          Account
+        </Text>
         <Menu.Item
           key="1"
           style={{
@@ -44,16 +90,22 @@ export default class UserManager extends Component<{}, State> {
             flexDirection: "row",
             justifyContent: "between",
             width: "100%",
+            marginTop: 3,
+            paddingBottom: 3,
+            paddingTop: 3,
           }}
         >
-          <Text>My account</Text>
+          <Text>Preferences</Text>
         </Menu.Item>
-        <Menu.Divider />
         <Menu.Item
           key="2"
           onClick={() => {
             UserService.logout();
             this.setState({ isLoggedIn: UserService.isLoggedIn() });
+          }}
+          style={{
+            paddingBottom: 3,
+            paddingTop: 3,
           }}
         >
           <Text>Log out</Text>
@@ -92,10 +144,15 @@ export default class UserManager extends Component<{}, State> {
     <Box direction="row" align="center" justify="center">
       <LoginModal
         callback={() => {
-          this.setState({
-            isLoggedIn: UserService.isLoggedIn(),
-            user: UserService.getCurrentUser(),
-          });
+          this.setState(
+            {
+              isLoggedIn: UserService.isLoggedIn(),
+              user: UserService.getCurrentUser(),
+            },
+            () => {
+              this.fetchChannels();
+            }
+          );
         }}
       />
       <Button

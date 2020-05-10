@@ -23,6 +23,16 @@ const createChannel = (name: string, callback: any) => {
     });
 };
 
+const getChannelsForUser = (userId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + "/channels/foruser?userId=" + userId, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -31,4 +41,5 @@ export type Channel = {
 export const ChannelService = {
   getAllChannels,
   createChannel,
+  getChannelsForUser,
 };
