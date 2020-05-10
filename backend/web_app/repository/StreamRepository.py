@@ -46,7 +46,7 @@ class StreamRepository:
         cursor.close()
         return self.getStreamById(insertId)
 
-    def archiveStream(self, streamId):
+    def archiveStream(self, streamId, delete):
         now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
         cursor = self.db.con.cursor()
@@ -57,15 +57,17 @@ class StreamRepository:
 
         url = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d_720p.mp4" % streamId
 
-        cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url, chat_id, views, date) VALUES (%d, "%s", "%s", "%s", "%s", "%s", "%d", "%d", "%s")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"], url, streamId, stream["views"], now))
-        insertId = cursor.lastrowid
+        if not delete:
+            cursor.execute('INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url, chat_id, views, date) VALUES (%d, "%s", "%s", "%s", "%s", "%s", "%d", "%d", "%s")' % (stream["channel_id"], stream["channel_name"], stream["name"], stream["description"], stream["image_url"], url, streamId, stream["views"], now))
+            insertId = cursor.lastrowid
 
-        tagIds = [tag["id"] for tag in stream["tags"]]
-        self.tags.tagVideo(insertId, tagIds)
+            tagIds = [tag["id"] for tag in stream["tags"]]
+            self.tags.tagVideo(insertId, tagIds)
 
-        cursor.execute('UPDATE Questions SET video_id = %d, stream_id = null WHERE stream_id = %d' % (insertId, streamId))
+            cursor.execute('UPDATE Questions SET video_id = %d, stream_id = null WHERE stream_id = %d' % (insertId, streamId))
+
         cursor.execute('DELETE FROM Streams WHERE id = %d' % streamId)
         self.db.con.commit()
         cursor.close()
-        return insertId
+        return insertId if not delete else -1
 

@@ -109,7 +109,7 @@ def archiveStream():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    videoId = streams.archiveStream(params["streamId"])
+    videoId = streams.archiveStream(params["streamId"], params["delete"])
     return jsonify({"videoId": videoId})
 
 @app.route('/streams/stream/thumbnail', methods=["GET"])

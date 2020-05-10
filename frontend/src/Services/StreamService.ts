@@ -53,12 +53,13 @@ const createStream = (
   // });
 };
 
-const archiveStream = (streamId: number, callback: any) => {
+const archiveStream = (streamId: number, del: boolean, callback: any) => {
   axios
     .post(
       baseApiUrl + "/streams/archive",
       {
         streamId: streamId,
+        delete: del,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )

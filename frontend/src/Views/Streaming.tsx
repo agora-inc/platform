@@ -60,7 +60,11 @@ export default class Streaming extends Component<Props, State> {
     console.log("UNMOUNTING");
     this.webrtc?.closeStream();
     this.webrtc?.closeWebSocket();
-    StreamService.archiveStream(this.state.streamId, () => {});
+    StreamService.archiveStream(
+      this.state.streamId,
+      !this.state.streaming,
+      () => {}
+    );
   }
 
   initializeWebRTCAdaptor = () => {
@@ -110,7 +114,7 @@ export default class Streaming extends Component<Props, State> {
       this.webrtc?.stop("agora1");
       this.webrtc?.closeStream();
       this.webrtc?.closeWebSocket();
-      StreamService.archiveStream(this.state.streamId, () => {
+      StreamService.archiveStream(this.state.streamId, false, () => {
         callback();
         this.setState({
           toHome: true,
