@@ -76,6 +76,11 @@ def stopLive():
 def getAllChannels():
     return jsonify(channels.getAllChannels())
 
+@app.route('/channels/foruser', methods=["GET"])
+def getChannelsForUser():
+    userId = int(request.args.get("userId"))
+    return jsonify(channels.getChannelsForUser(userId))
+
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
 def createChannel():
     if request.method == "OPTIONS":
@@ -83,6 +88,15 @@ def createChannel():
     params = request.json
     name = params["name"]
     return jsonify(channels.createChannel(name))
+
+@app.route('/channels/users/add', methods=["POST", "OPTIONS"])
+def addUserToChannel():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    channels.adduserToChannel(params["userId"], params["channelId"])
+    return jsonify("Success")
+
 
 # --------------------------------------------
 # STREAM ROUTES
