@@ -72,6 +72,11 @@ def stopLive():
 # --------------------------------------------
 # CHANNEL ROUTES
 # --------------------------------------------
+@app.route('/channels/channel', methods=["GET"])
+def getChannelByName():
+    name = request.args.get("name")
+    return jsonify(channels.getChannelByName(name))
+
 @app.route('/channels/all', methods=["GET"])
 def getAllChannels():
     return jsonify(channels.getAllChannels())
@@ -97,6 +102,10 @@ def addUserToChannel():
     channels.adduserToChannel(params["userId"], params["channelId"])
     return jsonify("Success")
 
+@app.route('/channels/users', methods=["GET"])
+def getUsersForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getUsersForChannel(channelId))
 
 # --------------------------------------------
 # STREAM ROUTES

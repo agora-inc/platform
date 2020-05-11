@@ -12,6 +12,15 @@ class ChannelRepository:
             return None
         return result[0]
 
+    def getChannelByName(self, name):
+        cursor = self.db.con.cursor()
+        cursor.execute('SELECT * FROM Channels WHERE name = "%s"' % name)
+        result = cursor.fetchall()
+        cursor.close()
+        if not result:
+            return None
+        return result[0]
+
     
     def getAllChannels(self):
         cursor = self.db.con.cursor()
@@ -43,3 +52,11 @@ class ChannelRepository:
         cursor.execute('INSERT INTO ChannelUsers(user_id, channel_id) VALUES (%d, %d)' % (userId, channelId))
         self.db.con.commit()
         cursor.close()
+
+    
+    def getUsersForChannel(self, channelId):
+        cursor = self.db.con.cursor()
+        cursor.execute('SELECT Users.id, Users.username FROM Users INNER JOIN ChannelUsers ON Users.id = ChannelUsers.user_id WHERE ChannelUsers.channel_id = %d' % channelId)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
