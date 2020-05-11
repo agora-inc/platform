@@ -43,7 +43,14 @@ export default class UserManager extends Component<{}, State> {
 
   menu = () => {
     return (
-      <Menu style={{ borderRadius: 10, marginTop: 5 }}>
+      <Menu
+        style={{
+          borderRadius: 10,
+          marginTop: 5,
+          overflow: "hidden",
+          paddingBottom: 0,
+        }}
+      >
         <Box
           margin="small"
           gap="xsmall"
@@ -104,7 +111,7 @@ export default class UserManager extends Component<{}, State> {
             this.setState({ isLoggedIn: UserService.isLoggedIn() });
           }}
           style={{
-            paddingBottom: 3,
+            paddingBottom: 5,
             paddingTop: 3,
           }}
         >

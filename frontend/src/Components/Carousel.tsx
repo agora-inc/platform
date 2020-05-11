@@ -38,19 +38,20 @@ export default class Carousel extends Component<Props, State> {
         margin="none"
         pad="25px"
         justify="between"
-        background="black"
-        round="20px"
+        // background="black"
+        round="10px"
         alignSelf="center"
         // zIndex={1}
+        style={{ border: "3px solid black" }}
       >
-        <Text size="36px" weight="bold" color="white">
+        <Text size="36px" weight="bold" color="black">
           Nobody is streaming right now
         </Text>
         <Box direction="row" justify="between" align="end">
           <Text
-            size="26px"
+            size="23px"
             weight="bold"
-            color="#D8D8D8"
+            // color="#D8D8D8"
             style={{ width: 357 }}
           >
             While you’re waiting, why not explore some previous streams?
@@ -58,7 +59,7 @@ export default class Carousel extends Component<Props, State> {
           <Box
             width="153px"
             height="57px"
-            background="white"
+            background="black"
             round="40px"
             justify="center"
             align="center"
@@ -73,7 +74,7 @@ export default class Carousel extends Component<Props, State> {
                 alignItems: "center",
               }}
             >
-              <Text size="24px" weight="bold" color="black">
+              <Text size="24px" weight="bold" color="white">
                 Explore
               </Text>
             </Link>

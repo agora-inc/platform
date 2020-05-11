@@ -42,10 +42,10 @@ export default class TrendingChannelsBox extends Component<Props, State> {
   render() {
     return (
       <Box
-        pad={{ horizontal: "40px", vertical: "20px" }}
-        width="100%"
-        height="100%"
-        round="15px"
+        pad={{ horizontal: "20px", vertical: "20px" }}
+        // width="100%"
+        // height="100%"
+        round="10px"
         className="trending-channels-box"
         gridArea={this.props.gridArea}
       >

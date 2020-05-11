@@ -32,10 +32,10 @@ export default class PopularTagsBox extends Component<Props, State> {
   render() {
     return (
       <Box
-        pad={{ horizontal: "40px", top: "20px" }}
+        pad={{ horizontal: "20px", top: "20px" }}
         width="100%"
         height="100%"
-        round="15px"
+        round="10px"
         className="popular-tags-box"
         gridArea={this.props.gridArea}
       >

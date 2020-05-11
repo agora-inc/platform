@@ -36,7 +36,7 @@ export default class RecommendedGrid extends Component<{}, State> {
             className="sliding-underline"
             alignSelf="start"
           >
-            Recent videos
+            Recent streams
           </Text>
         </Link>
         <Box

@@ -83,7 +83,7 @@ export default class VideoCard extends Component<Props, State> {
           className="videocard-background"
           height="100%"
           width="100%"
-          round="small"
+          round="10px"
           onClick={() => {}}
           style={{
             backgroundImage: `url(${

@@ -32,7 +32,7 @@ export default class ScheduledStreamService extends Component<Props, State> {
         height="74px"
         gap="small"
         pad={{ horizontal: "small" }}
-        round="small"
+        round="10px"
       >
         <Box direction="row" gap="small" align="center">
           <Box
