@@ -99,13 +99,24 @@ def addUserToChannel():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    channels.adduserToChannel(params["userId"], params["channelId"])
+    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
     return jsonify("Success")
 
 @app.route('/channels/users', methods=["GET"])
 def getUsersForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(channels.getUsersForChannel(channelId))
+    role = request.args.get("role")
+    return jsonify(channels.getUsersForChannel(channelId, role))
+
+@app.route('/channels/followercount', methods=["GET"])
+def getFollowerCountForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(len(channels.getUsersForChannel(channelId, "follower")))
+
+@app.route('/channels/viewcount', methods=["GET"])
+def getViewCountForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getViewsForChannel(channelId))
 
 # --------------------------------------------
 # STREAM ROUTES

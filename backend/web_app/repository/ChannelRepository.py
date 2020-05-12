@@ -47,16 +47,23 @@ class ChannelRepository:
         return result
 
 
-    def adduserToChannel(self, userId, channelId):
+    def addUserToChannel(self, userId, channelId, role):
         cursor = self.db.con.cursor()
-        cursor.execute('INSERT INTO ChannelUsers(user_id, channel_id) VALUES (%d, %d)' % (userId, channelId))
+        cursor.execute('INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES (%d, %d, "%s")' % (userId, channelId, role))
         self.db.con.commit()
         cursor.close()
 
     
-    def getUsersForChannel(self, channelId):
+    def getUsersForChannel(self, channelId, role):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT Users.id, Users.username FROM Users INNER JOIN ChannelUsers ON Users.id = ChannelUsers.user_id WHERE ChannelUsers.channel_id = %d' % channelId)
+        cursor.execute('SELECT Users.id, Users.username FROM Users INNER JOIN ChannelUsers ON Users.id = ChannelUsers.user_id WHERE ChannelUsers.channel_id = %d AND ChannelUsers.role = "%s"' % (channelId, role))
         result = cursor.fetchall()
         cursor.close()
         return result
+
+    def getViewsForChannel(self, channelId):
+        cursor = self.db.con.cursor()
+        cursor.execute('SELECT views FROM Videos where channel_id = %d' % channelId)
+        result = cursor.fetchall()
+        cursor.close()
+        return sum([x["views"] for x in result])
