@@ -13,6 +13,16 @@ const getAllStreams = (callback: any) => {
     });
 };
 
+const getStreamsForChannel = (channelId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + "/streams/channel?channelId=" + channelId, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const getStreamById = (id: number, callback: any) => {
   axios
     .get(baseApiUrl + "/streams/stream?id=" + id.toString(), {
@@ -73,6 +83,7 @@ const archiveStream = (streamId: number, del: boolean, callback: any) => {
 
 export const StreamService = {
   getAllStreams,
+  getStreamsForChannel,
   getStreamById,
   createStream,
   archiveStream,

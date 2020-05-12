@@ -6,7 +6,8 @@ import { ScheduledStream } from "../Services/ScheduledStreamService";
 import "../Styles/home.css";
 
 interface Props {
-  gridArea: string;
+  gridArea?: string;
+  title: boolean;
 }
 
 interface State {
@@ -54,24 +55,21 @@ export default class ScheduledStreamList extends Component<Props, State> {
 
   render() {
     return (
-      <Box
-        width="100%"
-        height="100%"
-        // align="center"
-        gridArea={this.props.gridArea}
-      >
+      <Box height="100%" gridArea={this.props.gridArea}>
         <Link to="/scheduled" style={{ marginBottom: 25, padding: 0 }}>
-          <Text
-            size="32px"
-            weight="bold"
-            color="black"
-            className="sliding-underline"
-            margin="none"
-          >
-            Upcoming streams
-          </Text>
+          {this.props.title && (
+            <Text
+              size="32px"
+              weight="bold"
+              color="black"
+              className="sliding-underline"
+              margin="none"
+            >
+              Upcoming streams
+            </Text>
+          )}
         </Link>
-        <Box gap="small" direction="row" justify="between" width="100%">
+        <Box gap="medium" direction="row" justify="between" width="100%">
           {this.state.scheduledStreams.map((stream: ScheduledStream) => (
             <NewScheduledStreamCard stream={stream} />
           ))}

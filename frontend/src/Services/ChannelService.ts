@@ -44,9 +44,28 @@ const getChannelsForUser = (userId: number, callback: any) => {
     });
 };
 
-const getUsersForChannel = (channelId: number, callback: any) => {
+const getUsersForChannel = (channelId: number, role: string, callback: any) => {
   axios
-    .get(baseApiUrl + "/channels/users?channelId=" + channelId, {
+    .get(
+      baseApiUrl + "/channels/users?channelId=" + channelId + "&role=" + role,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const isUserInChannel = (userId: number, channelId: number, callback: any) => {
+  getUsersForChannel(channelId, "member", (users: User[]) => {
+    callback(users.some((user) => user.id === userId));
+  });
+};
+
+const getViewsForChannel = (channelId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + "/channels/viewcount?channelId=" + channelId, {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then(function (response) {
@@ -54,10 +73,14 @@ const getUsersForChannel = (channelId: number, callback: any) => {
     });
 };
 
-const isUserInChannel = (userId: number, channelId: number, callback: any) => {
-  getUsersForChannel(channelId, (users: User[]) => {
-    callback(users.some((user) => user.id === userId));
-  });
+const getFollowerCountForChannel = (channelId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + "/channels/followercount?channelId=" + channelId, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
 };
 
 export type Channel = {
@@ -72,4 +95,6 @@ export const ChannelService = {
   getChannelsForUser,
   getUsersForChannel,
   isUserInChannel,
+  getViewsForChannel,
+  getFollowerCountForChannel,
 };
