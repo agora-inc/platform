@@ -17,6 +17,18 @@ class StreamRepository:
 
         return streams
 
+    def getStreamsForChannel(self, channelId):
+        cursor = self.db.con.cursor()
+        cursor.execute('SELECT * FROM Streams WHERE channel_id = %d' % channelId)
+        streams = cursor.fetchall()
+        cursor.close()
+
+        for stream in streams:
+            stream["tags"] = self.tags.getTagsOnStream(stream["id"])
+
+        return streams
+
+
     def getStreamById(self, streamId):
         cursor = self.db.con.cursor()
         cursor.execute('SELECT * FROM Streams WHERE id = %d' % streamId)

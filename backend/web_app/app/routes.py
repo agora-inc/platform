@@ -125,6 +125,11 @@ def getViewCountForChannel():
 def getAllStreams():
     return jsonify(streams.getAllStreams())
 
+@app.route('/streams/channel', methods=["GET"])
+def getStreamsForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(streams.getStreamsForChannel(channelId))
+
 @app.route('/streams/stream', methods=["GET"])
 def getStreamById():
     id = int(request.args.get("id"))
