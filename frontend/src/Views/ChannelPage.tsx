@@ -144,7 +144,7 @@ export default class ChannelPage extends Component<Props, State> {
                   height="225px"
                   width="100%"
                   round="10px"
-                  background="pink"
+                  background={this.state.channel?.colour}
                   pad="20px"
                   margin={{ vertical: "40px" }}
                   direction="row"
@@ -175,9 +175,7 @@ export default class ChannelPage extends Component<Props, State> {
                       <Text weight="bold" size="30px">
                         {this.state.channel?.name}
                       </Text>
-                      <Text size="22px">
-                        We work on really deep minds and stuff
-                      </Text>
+                      <Text size="22px">{this.state.channel?.description}</Text>
                     </Box>
                   </Box>
                   <Box justify="between" align="end">

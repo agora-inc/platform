@@ -22,11 +22,11 @@ const getChannelByName = (name: string, callback: any) => {
     });
 };
 
-const createChannel = (name: string, callback: any) => {
+const createChannel = (name: string, description: string, callback: any) => {
   axios
     .post(
-      baseApiUrl + "/users/authenticate",
-      { name: name },
+      baseApiUrl + "/channels/create",
+      { name: name, description: description },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
@@ -83,9 +83,43 @@ const getFollowerCountForChannel = (channelId: number, callback: any) => {
     });
 };
 
+const updateChannelDescription = (
+  channelId: number,
+  newDescription: string,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/updatedescription",
+      { channelId: channelId, newDescription: newDescription },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const updateChannelColour = (
+  channelId: number,
+  newColour: string,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/updatecolour",
+      { channelId: channelId, newColour: newColour },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 export type Channel = {
   id: number;
   name: string;
+  description: string;
+  colour: string;
 };
 
 export const ChannelService = {
@@ -97,4 +131,6 @@ export const ChannelService = {
   isUserInChannel,
   getViewsForChannel,
   getFollowerCountForChannel,
+  updateChannelColour,
+  updateChannelDescription,
 };
