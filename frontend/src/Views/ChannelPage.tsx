@@ -212,7 +212,7 @@ export default class ChannelPage extends Component<Props, State> {
                   weight="bold"
                   color="black"
                 >{`${this.state.channel?.name}'s upcoming streams`}</Text>
-                <ScheduledStreamList title={false} />
+                <ScheduledStreamList title={false} seeMore={false} />
                 <Text
                   size="36px"
                   weight="bold"
