@@ -17,10 +17,12 @@ import cchardet
 
 
 """
-TODO: - Check timeouts for connection in code, erase data in DB of user.
+TODO: - Check timeouts for connection in code.
 
 """
-
+# LOGGER CONFIGS
+LOG_FILENAME = '/home/cloud-user/logs/chat_ws_server.log'
+logging.basicConfig(filename=LOG_FILENAME, format='%(asctime)s %(levelname)s {%(module)s} [%(funcName)s] %(message)s', level=logging.DEBUG, datefmt='%Y-%m-%d,%H:%M:%S')
 
 
 # GLOBAL CONSTANTS
