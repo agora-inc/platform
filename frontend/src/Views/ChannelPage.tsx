@@ -168,6 +168,7 @@ export default class ChannelPage extends Component<Props, State> {
                       background="white"
                       justify="center"
                       align="center"
+                      style={{ minWidth: 120, minHeight: 120 }}
                     >
                       <Identicon string={this.state.channel?.name} size={60} />
                     </Box>

@@ -6,6 +6,7 @@ import { Channel, ChannelService } from "../Services/ChannelService";
 import Loading from "../Components/Loading";
 import Identicon from "react-identicons";
 import ColorPicker from "../Components/ColorPicker";
+import "../Styles/manage-channel.css";
 
 interface Props {
   location: any;
@@ -18,6 +19,7 @@ interface State {
   followerCount: number;
   viewCount: number;
   colour: string;
+  editingDescription: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -30,6 +32,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       followerCount: 0,
       viewCount: 0,
       colour: "pink",
+      editingDescription: false,
     };
   }
 
@@ -38,45 +41,65 @@ export default class ManageChannelPage extends Component<Props, State> {
   }
 
   getChannelAndCheckAccess = () => {
-    if (this.props.location.state) {
-      this.setState(
-        {
-          channel: this.props.location.state.channel,
-          colour: this.props.location.state.channel.colour,
-          allowed: true,
-          loading: false,
-        },
-        () => {
-          this.fetchFollowerCount();
-          this.fetchViewCount();
-        }
-      );
-    } else {
-      ChannelService.getChannelByName(
-        this.props.location.pathname.split("/")[2],
-        (channel: Channel) => {
-          let user = UserService.getCurrentUser();
-          ChannelService.isUserInChannel(
-            user.id,
-            channel.id,
-            (res: boolean) => {
-              this.setState(
-                {
-                  channel: channel,
-                  colour: channel.colour,
-                  allowed: res,
-                  loading: false,
-                },
-                () => {
-                  this.fetchFollowerCount();
-                  this.fetchViewCount();
-                }
-              );
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[2],
+      (channel: Channel) => {
+        let user = UserService.getCurrentUser();
+        ChannelService.isUserInChannel(user.id, channel.id, (res: boolean) => {
+          this.setState(
+            {
+              channel: channel,
+              colour: channel.colour,
+              allowed: res,
+              loading: false,
+            },
+            () => {
+              this.fetchFollowerCount();
+              this.fetchViewCount();
             }
           );
-        }
-      );
-    }
+        });
+      }
+    );
+    // if (this.props.location.state) {
+    //   this.setState(
+    //     {
+    //       channel: this.props.location.state.channel,
+    //       colour: this.props.location.state.channel.colour,
+    //       allowed: true,
+    //       loading: false,
+    //     },
+    //     () => {
+    //       this.fetchFollowerCount();
+    //       this.fetchViewCount();
+    //     }
+    //   );
+    // } else {
+    //   ChannelService.getChannelByName(
+    //     this.props.location.pathname.split("/")[2],
+    //     (channel: Channel) => {
+    //       let user = UserService.getCurrentUser();
+    //       ChannelService.isUserInChannel(
+    //         user.id,
+    //         channel.id,
+    //         (res: boolean) => {
+    //           this.setState(
+    //             {
+    //               channel: channel,
+    //               colour: channel.colour,
+    //               allowed: res,
+    //               loading: false,
+    //             },
+    //             () => {
+    //               this.fetchFollowerCount();
+    //               this.fetchViewCount();
+    //             }
+    //           );
+    //         }
+    //       );
+    //     }
+    //   );
+    // }
   };
 
   fetchFollowerCount = () => {
@@ -104,6 +127,17 @@ export default class ManageChannelPage extends Component<Props, State> {
       colour,
       () => {}
     );
+  };
+
+  onEditDescriptionClicked = () => {
+    if (this.state.editingDescription) {
+      ChannelService.updateChannelDescription(
+        this.state.channel!.id,
+        document.getElementById("description")!.textContent as string,
+        () => {}
+      );
+    }
+    this.setState({ editingDescription: !this.state.editingDescription });
   };
 
   render() {
@@ -152,6 +186,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     background="white"
                     justify="center"
                     align="center"
+                    style={{ minWidth: 120, minHeight: 120 }}
                   >
                     <Identicon string={this.state.channel?.name} size={60} />
                   </Box>
@@ -159,7 +194,34 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text weight="bold" size="30px">
                       {this.state.channel?.name}
                     </Text>
-                    <Text size="22px">{this.state.channel?.description}</Text>
+                    <Text
+                      id="description"
+                      className="channel-description"
+                      size="22px"
+                      margin="none"
+                      contentEditable={this.state.editingDescription}
+                      style={
+                        this.state.editingDescription
+                          ? {
+                              border: `2px solid ${this.state.colour}`,
+                              borderRadius: 7,
+                              padding: 5,
+                            }
+                          : {}
+                      }
+                    >
+                      {this.state.channel?.description}
+                    </Text>
+                    <Box
+                      focusIndicator={false}
+                      margin={{ top: "-10px" }}
+                      pad="none"
+                      onClick={this.onEditDescriptionClicked}
+                    >
+                      <Text style={{ textDecoration: "underline" }} size="16px">
+                        {this.state.editingDescription ? "save" : "edit"}
+                      </Text>
+                    </Box>
                   </Box>
                 </Box>
                 <Box justify="between" align="end">
