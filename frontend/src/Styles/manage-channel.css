@@ -1,0 +1,7 @@
+.channel-description {
+  outline: 0px solid transparent;
+}
+
+.channel-description:focus {
+  outline: 0px solid transparent;
+}
