@@ -81,10 +81,15 @@ class ChannelRepository:
         self.db.con.commit()
         cursor.close()
 
-    
-    def getUsersForChannel(self, channelId, role):
+    def removeUserFromChannel(self, userId, channelId):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT Users.id, Users.username FROM Users INNER JOIN ChannelUsers ON Users.id = ChannelUsers.user_id WHERE ChannelUsers.channel_id = %d AND ChannelUsers.role = "%s"' % (channelId, role))
+        cursor.execute(f'DELETE FROM ChannelUsers WHERE user_id = {userId} AND channel_id = {channelId}')
+        self.db.con.commit()
+        cursor.close()
+    
+    def getUsersForChannel(self, channelId, roles):
+        cursor = self.db.con.cursor()
+        cursor.execute(f'SELECT Users.id, Users.username FROM Users INNER JOIN ChannelUsers ON Users.id = ChannelUsers.user_id WHERE ChannelUsers.channel_id = {channelId} AND ChannelUsers.role IN {tuple(roles)}')
         result = cursor.fetchall()
         cursor.close()
         return result

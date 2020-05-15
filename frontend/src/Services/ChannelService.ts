@@ -44,10 +44,17 @@ const getChannelsForUser = (userId: number, callback: any) => {
     });
 };
 
-const getUsersForChannel = (channelId: number, role: string, callback: any) => {
+const getUsersForChannel = (
+  channelId: number,
+  roles: string[],
+  callback: any
+) => {
   axios
     .get(
-      baseApiUrl + "/channels/users?channelId=" + channelId + "&role=" + role,
+      baseApiUrl +
+        `/channels/users?channelId=${channelId}&role=${roles.reduce(
+          (acc, curr) => acc + `&role=${curr}`
+        )}`,
       {
         headers: { "Access-Control-Allow-Origin": "*" },
       }
@@ -57,10 +64,48 @@ const getUsersForChannel = (channelId: number, role: string, callback: any) => {
     });
 };
 
-const isUserInChannel = (userId: number, channelId: number, callback: any) => {
-  getUsersForChannel(channelId, "member", (users: User[]) => {
+const isUserInChannel = (
+  userId: number,
+  channelId: number,
+  roles: string[],
+  callback: any
+) => {
+  getUsersForChannel(channelId, roles, (users: User[]) => {
     callback(users.some((user) => user.id === userId));
   });
+};
+
+const addUserToChannel = (
+  userId: number,
+  channelId: number,
+  role: string,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/users/add",
+      { userId: userId, channelId: channelId, role: role },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const removeUserFromChannel = (
+  userId: number,
+  channelId: number,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/users/remove",
+      { userId: userId, channelId: channelId },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
 };
 
 const getViewsForChannel = (channelId: number, callback: any) => {
@@ -129,6 +174,8 @@ export const ChannelService = {
   getChannelsForUser,
   getUsersForChannel,
   isUserInChannel,
+  addUserToChannel,
+  removeUserFromChannel,
   getViewsForChannel,
   getFollowerCountForChannel,
   updateChannelColour,

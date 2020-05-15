@@ -103,11 +103,20 @@ def addUserToChannel():
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
     return jsonify("Success")
 
+@app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
+def removeUserForChannel():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    channels.removeUserFromChannel(params["userId"], params["channelId"])
+    return jsonify("Success")
+
 @app.route('/channels/users', methods=["GET"])
 def getUsersForChannel():
     channelId = int(request.args.get("channelId"))
-    role = request.args.get("role")
-    return jsonify(channels.getUsersForChannel(channelId, role))
+    roles = request.args.getlist("role")
+    print(roles)
+    return jsonify(channels.getUsersForChannel(channelId, roles))
 
 @app.route('/channels/followercount', methods=["GET"])
 def getFollowerCountForChannel():

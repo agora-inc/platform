@@ -10,6 +10,7 @@ import Loading from "../Components/Loading";
 import ScheduledStreamList from "../Components/ScheduledStreamList";
 import VideoCard from "../Components/VideoCard";
 import ChannelLiveNowCard from "../Components/ChannelLiveNowCard";
+import "../Styles/channel-page.css";
 
 interface Props {
   location: { pathname: string };
@@ -24,6 +25,8 @@ interface State {
   videos: Video[];
   followerCount: number;
   viewCount: number;
+  following: boolean;
+  user: User | null;
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -37,6 +40,8 @@ export default class ChannelPage extends Component<Props, State> {
       videos: [],
       followerCount: 0,
       viewCount: 0,
+      following: false,
+      user: UserService.getCurrentUser(),
     };
   }
 
@@ -61,17 +66,23 @@ export default class ChannelPage extends Component<Props, State> {
           );
           return;
         }
-        ChannelService.isUserInChannel(user.id, channel.id, (res: boolean) => {
-          this.setState(
-            { channel: channel, admin: res, loading: false },
-            () => {
-              this.fetchStreams();
-              this.fetchVideos();
-              this.fetchFollowerCount();
-              this.fetchViewCount();
-            }
-          );
-        });
+        ChannelService.isUserInChannel(
+          user.id,
+          channel.id,
+          ["owner", "member"],
+          (res: boolean) => {
+            this.setState(
+              { channel: channel, admin: res, loading: false },
+              () => {
+                this.fetchStreams();
+                this.fetchVideos();
+                this.fetchFollowerCount();
+                this.fetchViewCount();
+                this.checkIfFollowing();
+              }
+            );
+          }
+        );
       }
     );
   };
@@ -110,6 +121,39 @@ export default class ChannelPage extends Component<Props, State> {
         this.setState({ viewCount });
       }
     );
+  };
+
+  checkIfFollowing = () => {
+    ChannelService.isUserInChannel(
+      this.state.user!.id,
+      this.state.channel!.id,
+      ["follower"],
+      (following: boolean) => {
+        this.setState({ following });
+      }
+    );
+  };
+
+  onFollowClicked = () => {
+    if (!this.state.following) {
+      ChannelService.addUserToChannel(
+        this.state.user!.id,
+        this.state.channel!.id,
+        "follower",
+        () => {
+          this.fetchFollowerCount();
+        }
+      );
+    } else {
+      ChannelService.removeUserFromChannel(
+        this.state.user!.id,
+        this.state.channel!.id,
+        () => {
+          this.fetchFollowerCount();
+        }
+      );
+    }
+    this.setState({ following: !this.state.following });
   };
 
   render() {
@@ -181,6 +225,7 @@ export default class ChannelPage extends Component<Props, State> {
                   </Box>
                   <Box justify="between" align="end">
                     <Box
+                      className="follow-button"
                       background="white"
                       height="45px"
                       width="100px"
@@ -189,9 +234,11 @@ export default class ChannelPage extends Component<Props, State> {
                       style={{ border: "2px solid black" }}
                       align="center"
                       justify="center"
+                      onClick={this.onFollowClicked}
+                      focusIndicator={false}
                     >
                       <Text weight="bold" color="black">
-                        Follow
+                        {this.state.following ? "Unfollow" : "Follow"}
                       </Text>
                     </Box>
                     <Box direction="row" gap="medium">
