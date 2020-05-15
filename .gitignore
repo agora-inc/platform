@@ -7,4 +7,4 @@ backend/.DS_Store
 backend/**/__pycache__
 frontend/node_modules
 frontend/package_lock.json
-
+**/nohup.out
