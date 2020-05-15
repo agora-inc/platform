@@ -5,6 +5,7 @@ from chat_participant import ChatParticipant
 from base64 import b64encode, b64decode, decodebytes
 from hashlib import sha1
 import logging
+import logging.handlers as handlers
 import ws_config_chat
 import ast
 from chat_db import ChatDb
@@ -18,11 +19,22 @@ import cchardet
 
 """
 TODO: - Check timeouts for connection in code.
-
 """
+
+
 # LOGGER CONFIGS
+LOG_LEVEL = logging.DEBUG
 LOG_FILENAME = '/home/cloud-user/logs/chat_ws_server.log'
-logging.basicConfig(filename=LOG_FILENAME, format='%(asctime)s %(levelname)s {%(module)s} [%(funcName)s] %(message)s', level=logging.DEBUG, datefmt='%Y-%m-%d,%H:%M:%S')
+logger = logging.getLogger()
+logger.setLevel(LOG_LEVEL)
+formatter = logging.Formatter('%(asctime)s %(levelname)s {%(module)s} [%(funcName)s] %(message)s')
+
+# "Log things everydayyyy!" - Snoop Dogg
+logHandler = handlers.TimedRotatingFileHandler(LOG_FILENAME, when='midnight', interval=1)
+logHandler.setLevel(LOG_LEVEL)
+logHandler.setFormatter(formatter)
+logHandler.suffix = "%Y%m%d"
+logger.addHandler(logHandler)
 
 
 # GLOBAL CONSTANTS
