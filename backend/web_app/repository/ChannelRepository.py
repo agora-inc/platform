@@ -67,13 +67,12 @@ class ChannelRepository:
         cursor.close()
         return "ok"
 
-    def getChannelsForUser(self, userId):
+    def getChannelsForUser(self, userId, roles):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT Channels.id, Channels.name, Channels.description, Channels.colour FROM Channels INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id WHERE ChannelUsers.user_id = %d' % userId)
+        cursor.execute(f'SELECT Channels.id, Channels.name, Channels.description, Channels.colour FROM Channels INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id WHERE ChannelUsers.user_id = {userId} AND ChannelUsers.role IN {tuple(roles)}')
         result = cursor.fetchall()
         cursor.close()
         return result
-
 
     def addUserToChannel(self, userId, channelId, role):
         cursor = self.db.con.cursor()

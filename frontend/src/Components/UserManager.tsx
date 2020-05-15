@@ -35,6 +35,7 @@ export default class UserManager extends Component<{}, State> {
     this.state.user &&
       ChannelService.getChannelsForUser(
         this.state.user.id,
+        ["owner", "member"],
         (channels: Channel[]) => {
           this.setState({ channels });
         }

@@ -84,7 +84,8 @@ def getAllChannels():
 @app.route('/channels/foruser', methods=["GET"])
 def getChannelsForUser():
     userId = int(request.args.get("userId"))
-    return jsonify(channels.getChannelsForUser(userId))
+    roles = request.args.getlist("role")
+    return jsonify(channels.getChannelsForUser(userId, roles))
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
 def createChannel():

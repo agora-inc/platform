@@ -34,11 +34,17 @@ const createChannel = (name: string, description: string, callback: any) => {
     });
 };
 
-const getChannelsForUser = (userId: number, callback: any) => {
+const getChannelsForUser = (userId: number, roles: string[], callback: any) => {
   axios
-    .get(baseApiUrl + "/channels/foruser?userId=" + userId, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
+    .get(
+      baseApiUrl +
+        `/channels/forUser?userId=${userId}&role=${roles.reduce(
+          (acc, curr) => acc + `&role=${curr}`
+        )}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
     .then(function (response) {
       callback(response.data);
     });
