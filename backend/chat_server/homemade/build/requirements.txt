@@ -1,8 +1,2 @@
-socket
-threading
-base64
-hashlib
-ast
-re
 pprint
 pymysql
