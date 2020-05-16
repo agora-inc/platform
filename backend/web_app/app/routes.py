@@ -122,7 +122,7 @@ def getUsersForChannel():
 @app.route('/channels/followercount', methods=["GET"])
 def getFollowerCountForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(len(channels.getUsersForChannel(channelId, "follower")))
+    return jsonify(len(channels.getUsersForChannel(channelId, ["follower"])))
 
 @app.route('/channels/viewcount', methods=["GET"])
 def getViewCountForChannel():
