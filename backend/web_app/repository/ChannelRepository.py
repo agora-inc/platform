@@ -88,7 +88,7 @@ class ChannelRepository:
     
     def getUsersForChannel(self, channelId, roles):
         cursor = self.db.con.cursor()
-        cursor.execute(f'SELECT Users.id, Users.username FROM Users INNER JOIN ChannelUsers ON Users.id = ChannelUsers.user_id WHERE ChannelUsers.channel_id = {channelId} AND ChannelUsers.role IN {tuple(roles)}')
+        cursor.execute(f'SELECT Users.id, Users.username FROM Users INNER JOIN ChannelUsers ON Users.id = ChannelUsers.user_id WHERE ChannelUsers.channel_id = {channelId} AND ChannelUsers.role IN {tuple(roles)}'.replace(",)", ")"))
         result = cursor.fetchall()
         cursor.close()
         return result
