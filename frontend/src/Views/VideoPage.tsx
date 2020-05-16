@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useRef, useReducer, Component } from "react";
 import { Box, Grid, Text } from "grommet";
 import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
 import ChatBox from "../Components/ChatBox";
@@ -8,6 +8,21 @@ import Loading from "../Components/Loading";
 import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
 import VideoPlayer from "../Components/VideoPlayer";
+import AsyncButton from "../Components/AsyncButton";
+import { string } from "prop-types";
+import AudioPlayer from "../Components/AudioPlayer";
+
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function delayedGreeting() {
+  console.log("Hello");
+  await sleep(10000);
+  console.log("World!");
+}
+
 
 interface Props {
   location: { pathname: string; state: { video: Video } };
@@ -16,11 +31,13 @@ interface Props {
 interface State {
   video: Video;
   viewCount: number;
+  overlay: boolean;
 }
 
 export default class VideoPage extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    const filters = ['none', 'sepia', 'invert', 'grayscale', 'saturate', 'blur'];
     this.state = {
       video: {
         id: -1,
@@ -36,6 +53,7 @@ export default class VideoPage extends Component<Props, State> {
         chat_id: -1,
       },
       viewCount: -1,
+      overlay: false,
     };
   }
 
@@ -54,6 +72,31 @@ export default class VideoPage extends Component<Props, State> {
         }
       );
     }
+  };
+
+  startClapping = () => {
+    if (!this.state.overlay) {
+      this.setState({
+        overlay: true
+      });
+    }
+
+    /*
+    delayedGreeting();
+
+    this.setState({
+      overlay: false
+    });
+    */
+  };
+
+
+  startClappingButton = () => {
+    return (
+      <button onClick={this.startClapping}>
+        Let's thank the speaker
+      </button>
+    );
   };
 
   render() {
@@ -90,12 +133,25 @@ export default class VideoPage extends Component<Props, State> {
                 overflow: "hidden",
               }}
             ></VideoPlayer>
+
+            {this.state.overlay && 
+              <AudioPlayer
+                pathname="public/auditorium.mp3"
+              ></AudioPlayer>
+            }
+
             <Box direction="row" justify="between" align="start">
               <Box gap="xsmall" width="65%">
                 <Text size="34px" weight="bold">
                   {this.state.video!.name}
                 </Text>
               </Box>
+
+              
+            <Box direction="row" gap="small" width="35%" justify="center">
+              {this.startClappingButton()}
+            </Box>
+
               <Box direction="row" gap="small" width="35%" justify="end">
                 <ChannelIdCard channelName={this.state.video!.channel_name} />
                 <Box direction="row" align="center" gap="xxsmall">
