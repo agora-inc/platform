@@ -50,7 +50,7 @@ export default class ChannelPageScheduledStreamList extends Component<
       </Box>
     ) : (
       <Box>
-        <Box gap="medium" direction="row" justify="between" width="100%">
+        <Box gap="medium" direction="row" width="100%">
           {this.state.scheduledStreams.map((stream: ScheduledStream) => (
             <ChannelPageScheduledStreamCard
               stream={stream}

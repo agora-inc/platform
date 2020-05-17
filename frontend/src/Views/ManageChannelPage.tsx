@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import { Redirect } from "react-router";
 import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
+import { Video, VideoService } from "../Services/VideoService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import Loading from "../Components/Loading";
 import StreamNowButton from "../Components/StreamNowButton";
 import ScheduleStreamButton from "../Components/ScheduleStreamButton";
 import Identicon from "react-identicons";
 import ColorPicker from "../Components/ColorPicker";
+import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
+import VideoCard from "../Components/VideoCard";
 import "../Styles/manage-channel.css";
 
 interface Props {
@@ -25,6 +28,7 @@ interface State {
   channelOwners: User[];
   channelMembers: User[];
   followers: User[];
+  videos: Video[];
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -41,6 +45,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelOwners: [],
       channelMembers: [],
       followers: [],
+      videos: [],
     };
   }
 
@@ -71,6 +76,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 this.fetchOwners();
                 this.fetchMembers();
                 this.fetchFollowers();
+                this.fetchVideos();
               }
             );
           }
@@ -162,6 +168,15 @@ export default class ManageChannelPage extends Component<Props, State> {
       ["follower"],
       (followers: User[]) => {
         this.setState({ followers });
+      }
+    );
+  };
+
+  fetchVideos = () => {
+    VideoService.getAllVideosForChannel(
+      this.state.channel!.id,
+      (videos: Video[]) => {
+        this.setState({ videos });
       }
     );
   };
@@ -402,6 +417,40 @@ export default class ManageChannelPage extends Component<Props, State> {
                     ))}
                   </Box>
                 </Box>
+              </Box>
+              <Text
+                size="28px"
+                weight="bold"
+                color="black"
+                margin={{ top: "40px", bottom: "10px" }}
+              >{`Your upcoming streams`}</Text>
+              <ChannelPageScheduledStreamList
+                channelId={this.state.channel!.id}
+                loggedIn
+              />
+              <Text
+                size="28px"
+                weight="bold"
+                color="black"
+                margin={{ top: "40px" }}
+              >{`Your past streams`}</Text>
+              <Box
+                direction="row"
+                width="100%"
+                wrap
+                justify="between"
+                margin={{ top: "10px" }}
+                // gap="5%"
+              >
+                {this.state.videos.map((video: Video) => (
+                  <VideoCard
+                    width="31.5%"
+                    height="192px"
+                    color="#f2f2f2"
+                    video={video}
+                    // margin="none"
+                  />
+                ))}
               </Box>
             </Box>
           </Box>
