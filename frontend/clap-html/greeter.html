@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="thanksSpeakerPopUp.css">
+  </head>
+  <body>
+    <h1> Hello World </h1>
+    
+    <button onclick="play()">Play Audio</button>
+    <button onclick="thanksSpeaker()"> Let's thank the speaker </button>
+    <button onclick="thanksEveryone()"> Thanks everyone </button>
+    
+    <div class="container">
+      <video id="video-element" class="video">
+        <source src="/home/cloud-user/Videos/interview-caleb.mp4" type="video/mp4" >
+        Your browser does not support the video tag.
+      </video>
+
+      <div class="overlay">
+          <div class="text"> Press the space key to clap </div>
+      </div>
+    </div>
+
+      <div id='controls'>
+        <progress id='progress-bar' min='0' max='100' value='0'>0% played</progress>
+        <button id='btnReplay' class='replay' title='replay' onclick='replayVideo();'>Replay</button>  
+        <button id='btnPlayPause' class='play' title='play' onclick='playPauseVideo();'>Play</button>
+        <button id='btnIncreaseVolume' class='volume-plus' title='increase volume' onclick='setVolume("up");'>Increase volume</button>
+        <button id='btnDecreaseVolume' class='volume-minus' title='decrease volume' onclick='setVolume("down");'>Decrease volume</button>
+        <button id='btnMute' class='mute' title='mute' onclick='muteVolume();'>Mute</button>   
+      </div>
+    </div>  
+
+    <div id="image"></div>
+    <div id="light"></div>
+
+    <script src="videoPlayer.js"></script>
+    <script src="thanksSpeakerButton.js"></script>
+    <script src="playMixture.js"></script>
+    <!-- <script src="clapper.js"></script> -->
+    <!-- <script src="listener.js"></script> -->
+  </body>
+</html>
