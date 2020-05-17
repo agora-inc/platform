@@ -27,7 +27,7 @@ export default class FormContainer extends Component< {}, State> {
         email: '',
         subject: '',
         reports: [],
-        about: ''
+        description: ''
       },
       genderOptions: ['Male', 'Female', 'God'],
       reportOptions: ['Report a bug', 'Suggest a feature']
@@ -54,18 +54,15 @@ export default class FormContainer extends Component< {}, State> {
     let value = e.target.value;
     this.setState( (prevState: any) => (
       { user : {...prevState.user, age: value} }
-    ), () => console.log(this.state.user))
+    ))
   }
 
   handleInput(e: any) {
     let value = e.target.value;
     let name = e.target.name;
-    this.setState( (prevState: any) => {
-       return { 
-          user: {...prevState.user, [name]: value}
-       }
-    }, () => console.log(this.state.user)
-    )
+    this.setState( (prevState: any) => (
+       { user: {...prevState.user, [name]: value} }
+    ))
   }
 
   handleCheckBox(e: any) {
@@ -90,7 +87,7 @@ export default class FormContainer extends Component< {}, State> {
 
     // Send it somewhere
     console.log(userData);
-  } 
+  }
 
   handleClearForm(e: any) {
     // prevents the page from being refreshed on form submission
@@ -124,8 +121,11 @@ export default class FormContainer extends Component< {}, State> {
 
   render() {
     return (
+      <>
+
+
   
-      <form className="overlay" onSubmit={this.handleFormSubmit}>
+      <form onSubmit={this.handleFormSubmit}>
         <FormInput 
           inputType={'text'}
           title= {'Full Name'} 
@@ -163,7 +163,7 @@ export default class FormContainer extends Component< {}, State> {
 
         <FormTextArea
           title={'Description.'}
-          name={'descrption'}
+          name={'description'}
           rows={10}
           cols={80}
           value={this.state.user.description}
@@ -187,7 +187,7 @@ export default class FormContainer extends Component< {}, State> {
      
       </form>
       
-  
+      </>
     );
   }
 }
@@ -197,4 +197,4 @@ const buttonStyle = {
 }
 
 
-// <button className="buttonForm" onClick={this.openNav}> Contact </button>
+//       <button className="buttonForm" onClick={this.openNav}> Contact </button>

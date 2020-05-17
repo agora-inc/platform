@@ -8,13 +8,12 @@ interface Props {
   style: any,
 }
 
-export default class FormInput extends Component<Props> {
+export default class FormButton extends Component<Props> {
   constructor(props: Props) {
     super(props);
   }
   
   render() {
-    console.log(this.props.style);
     return(
       <button 
         style= {this.props.style} 

@@ -11,7 +11,7 @@ interface Props {
   handleChange: any,
 }
 
-export default class FormInput extends Component<Props> {
+export default class FormTextArea extends Component<Props> {
   constructor(props: Props) {
     super(props);
   }
