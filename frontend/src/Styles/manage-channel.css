@@ -5,3 +5,32 @@
 .channel-description:focus {
   outline: 0px solid transparent;
 }
+
+.gradient-border {
+  width: 155px;
+  height: 42px;
+  position: relative;
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background: white;
+  background-origin: border-box;
+  background-clip: padding-box;
+  padding: 10px;
+}
+
+.gradient-border:hover {
+  width: 160px;
+  height: 45px;
+}
+
+.gradient-border::after {
+  position: absolute;
+  top: -3.5px;
+  bottom: -3.5px;
+  left: -3.5px;
+  right: -3.5px;
+  background: linear-gradient(to bottom left, #fd7fa3, #606eeb);
+  content: "";
+  z-index: -1;
+  border-radius: 8px;
+}

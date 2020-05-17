@@ -4,6 +4,8 @@ import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import Loading from "../Components/Loading";
+import StreamNowButton from "../Components/StreamNowButton";
+import ScheduleStreamButton from "../Components/ScheduleStreamButton";
 import Identicon from "react-identicons";
 import ColorPicker from "../Components/ColorPicker";
 import "../Styles/manage-channel.css";
@@ -194,21 +196,24 @@ export default class ManageChannelPage extends Component<Props, State> {
     } else {
       return this.state.allowed ? (
         <Box>
-          {" "}
           <Box
             width="100%"
             height="100%"
             align="center"
-            margin={{ top: "100px" }}
+            margin={{ top: "140px" }}
           >
             <Box width="75%" align="start">
+              <Box direction="row" gap="small">
+                <StreamNowButton margin="none" />
+                <ScheduleStreamButton margin="none" />
+              </Box>
               <Box
                 height="225px"
                 width="100%"
                 round="10px"
                 background={this.state.colour}
                 pad="20px"
-                margin={{ top: "40px", bottom: "30px" }}
+                margin={{ top: "10px", bottom: "30px" }}
                 direction="row"
                 justify="between"
               >
@@ -296,9 +301,23 @@ export default class ManageChannelPage extends Component<Props, State> {
                   round="7.5px"
                   pad="10px"
                 >
-                  <Text weight="bold" size="20px">
-                    Channel owners
-                  </Text>
+                  <Box direction="row" justify="between">
+                    <Text weight="bold" size="20px" color="black">
+                      Channel owners
+                    </Text>
+                    <Box
+                      width="70px"
+                      align="center"
+                      background="white"
+                      pad={{ horizontal: "small", vertical: "3px" }}
+                      round="xsmall"
+                      style={{ border: "2px solid black" }}
+                    >
+                      <Text color="black" style={{ fontWeight: 500 }}>
+                        Add
+                      </Text>
+                    </Box>
+                  </Box>
                   <Box direction="row" wrap margin={{ top: "5px" }}>
                     {this.state.channelOwners.map((owner: User) => (
                       <Box
@@ -321,9 +340,23 @@ export default class ManageChannelPage extends Component<Props, State> {
                   round="7.5px"
                   pad="10px"
                 >
-                  <Text weight="bold" size="20px">
-                    Channel members
-                  </Text>
+                  <Box direction="row" justify="between">
+                    <Text weight="bold" size="20px" color="black">
+                      Channel members
+                    </Text>
+                    <Box
+                      width="70px"
+                      align="center"
+                      background="white"
+                      pad={{ horizontal: "small", vertical: "3px" }}
+                      round="xsmall"
+                      style={{ border: "2px solid black" }}
+                    >
+                      <Text color="black" style={{ fontWeight: 500 }}>
+                        Add
+                      </Text>
+                    </Box>
+                  </Box>
                   <Box direction="row" wrap margin={{ top: "5px" }}>
                     {this.state.channelMembers.map((member: User) => (
                       <Box
@@ -346,7 +379,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                   round="7.5px"
                   pad="10px"
                 >
-                  <Text weight="bold" size="20px">
+                  <Text
+                    weight="bold"
+                    size="20px"
+                    color="black"
+                    style={{ height: "34px" }}
+                  >
                     Followers
                   </Text>
                   <Box direction="row" wrap margin={{ top: "5px" }}>

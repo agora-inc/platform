@@ -38,7 +38,7 @@ const getChannelsForUser = (userId: number, roles: string[], callback: any) => {
   axios
     .get(
       baseApiUrl +
-        `/channels/forUser?userId=${userId}&role=${roles.reduce(
+        `/channels/foruser?userId=${userId}&role=${roles.reduce(
           (acc, curr) => acc + `&role=${curr}`
         )}`,
       {

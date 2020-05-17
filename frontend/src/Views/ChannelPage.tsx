@@ -7,7 +7,7 @@ import { Video, VideoService } from "../Services/VideoService";
 import { Stream, StreamService } from "../Services/StreamService";
 import Identicon from "react-identicons";
 import Loading from "../Components/Loading";
-import ScheduledStreamList from "../Components/ScheduledStreamList";
+import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
 import VideoCard from "../Components/VideoCard";
 import ChannelLiveNowCard from "../Components/ChannelLiveNowCard";
 import "../Styles/channel-page.css";
@@ -181,7 +181,10 @@ export default class ChannelPage extends Component<Props, State> {
               margin={{ top: "100px" }}
             >
               {this.state.streams.length !== 0 && (
-                <ChannelLiveNowCard stream={this.state.streams[0]} />
+                <ChannelLiveNowCard
+                  stream={this.state.streams[0]}
+                  colour={this.state.channel!.colour}
+                />
               )}
               <Box width="75%" align="start">
                 <Box
@@ -224,23 +227,25 @@ export default class ChannelPage extends Component<Props, State> {
                     </Box>
                   </Box>
                   <Box justify="between" align="end">
-                    <Box
-                      className="follow-button"
-                      background="white"
-                      height="45px"
-                      width="100px"
-                      pad="small"
-                      round="small"
-                      style={{ border: "2px solid black" }}
-                      align="center"
-                      justify="center"
-                      onClick={this.onFollowClicked}
-                      focusIndicator={false}
-                    >
-                      <Text weight="bold" color="black">
-                        {this.state.following ? "Unfollow" : "Follow"}
-                      </Text>
-                    </Box>
+                    {this.state.user && (
+                      <Box
+                        className="follow-button"
+                        background="white"
+                        height="45px"
+                        width="100px"
+                        pad="small"
+                        round="small"
+                        style={{ border: "2px solid black" }}
+                        align="center"
+                        justify="center"
+                        onClick={this.onFollowClicked}
+                        focusIndicator={false}
+                      >
+                        <Text weight="bold" color="black">
+                          {this.state.following ? "Unfollow" : "Follow"}
+                        </Text>
+                      </Box>
+                    )}
                     <Box direction="row" gap="medium">
                       <Text
                         weight="bold"
@@ -254,13 +259,17 @@ export default class ChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
                 <Text
-                  size="36px"
+                  size="28px"
                   weight="bold"
                   color="black"
+                  margin={{ bottom: "10px" }}
                 >{`${this.state.channel?.name}'s upcoming streams`}</Text>
-                <ScheduledStreamList title={false} seeMore={false} />
+                <ChannelPageScheduledStreamList
+                  channelId={this.state.channel!.id}
+                  loggedIn={this.state.user !== null}
+                />
                 <Text
-                  size="36px"
+                  size="28px"
                   weight="bold"
                   color="black"
                   margin={{ top: "40px" }}
@@ -270,7 +279,7 @@ export default class ChannelPage extends Component<Props, State> {
                   width="100%"
                   wrap
                   justify="between"
-                  margin={{ top: "20px" }}
+                  margin={{ top: "10px" }}
                   // gap="5%"
                 >
                   {this.state.videos.map((video: Video) => (
