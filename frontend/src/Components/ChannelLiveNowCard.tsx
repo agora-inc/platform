@@ -6,6 +6,7 @@ import { FormNextLink } from "grommet-icons";
 
 interface Props {
   stream: Stream;
+  colour: string;
 }
 
 export default class ChannelLiveNowCard extends Component<Props> {
@@ -23,7 +24,7 @@ export default class ChannelLiveNowCard extends Component<Props> {
           height="100%"
           background="white"
           round="10px"
-          style={{ border: "4px solid #61EC9F" }}
+          style={{ border: `4px solid ${this.props.colour}` }}
           pad="10px"
           justify="center"
           align="center"

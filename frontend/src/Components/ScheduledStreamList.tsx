@@ -3,11 +3,14 @@ import { Link } from "react-router-dom";
 import { Box, Heading, Text } from "grommet";
 import NewScheduledStreamCard from "./NewScheduledStreamCard";
 import { ScheduledStream } from "../Services/ScheduledStreamService";
+import { FormNextLink } from "grommet-icons";
 import "../Styles/home.css";
+import "../Styles/see-more-button.css";
 
 interface Props {
   gridArea?: string;
   title: boolean;
+  seeMore: boolean;
 }
 
 interface State {
@@ -48,27 +51,41 @@ export default class ScheduledStreamList extends Component<Props, State> {
       description: "",
       date: new Date(),
     };
-    this.setState({
-      scheduledStreams: [dummyStream1, dummyStream2, dummyStream3],
-    });
+    // this.setState({
+    //   scheduledStreams: [dummyStream1, dummyStream2, dummyStream3],
+    // });
   }
 
   render() {
     return (
       <Box height="100%" gridArea={this.props.gridArea}>
-        <Link to="/scheduled" style={{ marginBottom: 25, padding: 0 }}>
+        <Box
+          direction="row"
+          gap="small"
+          align="center"
+          margin={{ bottom: "20px" }}
+        >
           {this.props.title && (
-            <Text
-              size="32px"
-              weight="bold"
-              color="black"
-              className="sliding-underline"
-              margin="none"
-            >
+            <Text size="32px" weight="bold" color="black" margin="none">
               Upcoming streams
             </Text>
           )}
-        </Link>
+          {this.props.seeMore && (
+            <Link to="/scheduled" style={{ textDecoration: "none" }}>
+              <Box
+                className="see-more-button"
+                pad={{ vertical: "xsmall", horizontal: "small" }}
+                round="xsmall"
+                style={{ border: "2px solid black" }}
+                direction="row"
+                align="end"
+              >
+                <Text color="black">See more</Text>
+                <FormNextLink color="black" />
+              </Box>
+            </Link>
+          )}
+        </Box>
         <Box gap="medium" direction="row" justify="between" width="100%">
           {this.state.scheduledStreams.map((stream: ScheduledStream) => (
             <NewScheduledStreamCard stream={stream} />

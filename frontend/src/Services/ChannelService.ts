@@ -22,11 +22,11 @@ const getChannelByName = (name: string, callback: any) => {
     });
 };
 
-const createChannel = (name: string, callback: any) => {
+const createChannel = (name: string, description: string, callback: any) => {
   axios
     .post(
-      baseApiUrl + "/users/authenticate",
-      { name: name },
+      baseApiUrl + "/channels/create",
+      { name: name, description: description },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
@@ -34,20 +34,13 @@ const createChannel = (name: string, callback: any) => {
     });
 };
 
-const getChannelsForUser = (userId: number, callback: any) => {
-  axios
-    .get(baseApiUrl + "/channels/foruser?userId=" + userId, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then(function (response) {
-      callback(response.data);
-    });
-};
-
-const getUsersForChannel = (channelId: number, role: string, callback: any) => {
+const getChannelsForUser = (userId: number, roles: string[], callback: any) => {
   axios
     .get(
-      baseApiUrl + "/channels/users?channelId=" + channelId + "&role=" + role,
+      baseApiUrl +
+        `/channels/foruser?userId=${userId}&role=${roles.reduce(
+          (acc, curr) => acc + `&role=${curr}`
+        )}`,
       {
         headers: { "Access-Control-Allow-Origin": "*" },
       }
@@ -57,10 +50,68 @@ const getUsersForChannel = (channelId: number, role: string, callback: any) => {
     });
 };
 
-const isUserInChannel = (userId: number, channelId: number, callback: any) => {
-  getUsersForChannel(channelId, "member", (users: User[]) => {
+const getUsersForChannel = (
+  channelId: number,
+  roles: string[],
+  callback: any
+) => {
+  axios
+    .get(
+      baseApiUrl +
+        `/channels/users?channelId=${channelId}&role=${roles.reduce(
+          (acc, curr) => acc + `&role=${curr}`
+        )}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const isUserInChannel = (
+  userId: number,
+  channelId: number,
+  roles: string[],
+  callback: any
+) => {
+  getUsersForChannel(channelId, roles, (users: User[]) => {
     callback(users.some((user) => user.id === userId));
   });
+};
+
+const addUserToChannel = (
+  userId: number,
+  channelId: number,
+  role: string,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/users/add",
+      { userId: userId, channelId: channelId, role: role },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const removeUserFromChannel = (
+  userId: number,
+  channelId: number,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/users/remove",
+      { userId: userId, channelId: channelId },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
 };
 
 const getViewsForChannel = (channelId: number, callback: any) => {
@@ -83,9 +134,43 @@ const getFollowerCountForChannel = (channelId: number, callback: any) => {
     });
 };
 
+const updateChannelDescription = (
+  channelId: number,
+  newDescription: string,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/updatedescription",
+      { channelId: channelId, newDescription: newDescription },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const updateChannelColour = (
+  channelId: number,
+  newColour: string,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/updatecolour",
+      { channelId: channelId, newColour: newColour },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 export type Channel = {
   id: number;
   name: string;
+  description: string;
+  colour: string;
 };
 
 export const ChannelService = {
@@ -95,6 +180,10 @@ export const ChannelService = {
   getChannelsForUser,
   getUsersForChannel,
   isUserInChannel,
+  addUserToChannel,
+  removeUserFromChannel,
   getViewsForChannel,
   getFollowerCountForChannel,
+  updateChannelColour,
+  updateChannelDescription,
 };

@@ -28,7 +28,7 @@ export default class Home extends Component {
           <TrendingChannelsBox gridArea="trendingChannels" />
           <Carousel gridArea="carousel" />
           <PopularTagsBox gridArea="popularTags" />
-          <ScheduledStreamList gridArea="scheduledStreams" title={true} />
+          <ScheduledStreamList gridArea="scheduledStreams" title seeMore />
         </Grid>
         <RecommendedGrid />
         <FooterComponent />

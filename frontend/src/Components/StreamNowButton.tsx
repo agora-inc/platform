@@ -1,9 +1,17 @@
 import React, { Component } from "react";
-import { Link, withRouter, Redirect } from "react-router-dom";
-import { Box, Button, Heading, TextInput, TextArea, Layer } from "grommet";
-import { Video } from "grommet-icons";
+import { Redirect } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Heading,
+  TextInput,
+  TextArea,
+  Layer,
+  Text,
+} from "grommet";
 import { Steps } from "antd";
 import "../Styles/antd.css";
+import "../Styles/manage-channel.css";
 import TagSelector from "./TagSelector";
 import { ReactComponent as TitleImage } from "../title.svg";
 import { ReactComponent as DescriptionImage } from "../description.svg";
@@ -30,7 +38,7 @@ interface State {
   stream: any;
 }
 
-export default class GoLiveButton extends Component<Props, State> {
+export default class StreamNowButton extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -252,30 +260,23 @@ export default class GoLiveButton extends Component<Props, State> {
       <Box
         margin={this.props.margin}
         pad="none"
-        style={{
-          backgroundColor: "moz-linear-gradient(to right, #fd6fff, #ffeaa6);",
-          marginTop: -6,
-        }}
+        // style={{
+        //   backgroundColor: "moz-linear-gradient(to right, #fd6fff, #ffeaa6);",
+        //   marginTop: -6,
+        // }}
       >
-        <Button
-          icon={<Video />}
-          style={{
-            width: 125,
-            height: 45,
-            fontSize: 20,
-            fontWeight: "bold",
-            padding: 0,
-            marginTop: 6,
-            border: "none",
-            borderRadius: 15,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          label="Stream"
-          primary
-          color="#61EC9F"
+        <Box
+          className="gradient-border"
+          round="8px"
+          align="center"
+          justify="center"
           onClick={this.toggleModal}
-        />
+          focusIndicator={false}
+        >
+          <Text color="black" size="16.5px" style={{ fontWeight: 500 }}>
+            Stream now
+          </Text>
+        </Box>
         {this.state.showModal && (
           <Layer
             onEsc={this.toggleModal}
