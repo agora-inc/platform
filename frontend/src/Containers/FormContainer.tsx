@@ -123,6 +123,7 @@ export default class FormContainer extends Component< {}, State> {
     return (
       <>
 
+      <button> onClick={this.openNav} </button>
 
   
       <form onSubmit={this.handleFormSubmit}>
