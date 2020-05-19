@@ -51,9 +51,9 @@ export default class ScheduledStreamList extends Component<Props, State> {
       description: "",
       date: new Date(),
     };
-    this.setState({
-      scheduledStreams: [dummyStream1, dummyStream2, dummyStream3],
-    });
+    // this.setState({
+    //   scheduledStreams: [dummyStream1, dummyStream2, dummyStream3],
+    // });
   }
 
   render() {

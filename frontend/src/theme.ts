@@ -23,6 +23,7 @@ export const theme = {
       homeRow3: "212px",
       homeColumn1: "389px",
       homeColumn2: "864px",
+      calendarSize: "192px",
     },
     colors: {
       brand: "#61EC9F",
@@ -61,6 +62,21 @@ export const theme = {
         color: {
           light: "black",
         },
+      },
+    },
+  },
+  calendar: {
+    medium: {
+      // daySize: "27.428571428571427px",
+      daySize: "40px",
+      fontSize: "14px",
+      lineHeight: 1.375,
+      slideDuration: "0.2s",
+    },
+    day: {
+      extend: {
+        "margin-right": "7.5px",
+        "margin-left": "7.5px",
       },
     },
   },

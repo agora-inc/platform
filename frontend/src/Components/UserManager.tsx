@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import { Box, Button, Text } from "grommet";
-import { Deploy } from "grommet-icons";
 import LoginModal from "./LoginModal";
 import { UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
-import GoLiveButton from "./GoLiveButton";
 import DropdownChannelButton from "./DropdownChannelButton";
 import CreateChannelButton from "./CreateChannelButton";
-import { Avatar, Dropdown, Menu } from "antd";
+import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../Styles/header.css";
+import "../Styles/antd.css";
 
 interface State {
   isLoggedIn: boolean;
@@ -35,6 +34,7 @@ export default class UserManager extends Component<{}, State> {
     this.state.user &&
       ChannelService.getChannelsForUser(
         this.state.user.id,
+        ["owner", "member"],
         (channels: Channel[]) => {
           this.setState({ channels });
         }
@@ -123,27 +123,24 @@ export default class UserManager extends Component<{}, State> {
 
   loggedInStuff = (username: string) => {
     return (
-      <Box direction="row" align="center" justify="center">
-        <GoLiveButton margin="none" />
-        <Dropdown
-          overlay={this.menu()}
-          trigger={["click"]}
-          overlayStyle={{ width: 200 }}
+      <Dropdown
+        overlay={this.menu()}
+        trigger={["click"]}
+        overlayStyle={{ width: 200 }}
+      >
+        <Button
+          margin={{ left: "10px" }}
+          style={{
+            height: 45,
+            width: 45,
+            borderRadius: 22.5,
+            overflow: "hidden",
+          }}
+          focusIndicator={false}
         >
-          <Button
-            margin={{ left: "10px" }}
-            style={{
-              height: 45,
-              width: 45,
-              borderRadius: 22.5,
-              overflow: "hidden",
-            }}
-            focusIndicator={false}
-          >
-            <Identicon string={this.state.user?.username} size={45} />
-          </Button>
-        </Dropdown>
-      </Box>
+          <Identicon string={this.state.user?.username} size={45} />
+        </Button>
+      </Dropdown>
     );
   };
 
