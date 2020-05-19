@@ -383,7 +383,7 @@ class ChatWsServer:
                 body = {
                             "action": "sendMsg",
                             "user_name": participant.name,
-                            "user_id": participant.user_id
+                            "user_id": participant.user_id,
                             "chat_participant_group_id": sub_group_id,
                             "msg": msg["msg"]
                             }
