@@ -9,13 +9,13 @@ LOG_FOLDER_PATH = "/home/cloud-user/log"
 class AntMediaRestApi(object):
     """
     Wrapping API methods to locally interact with Ant Media server.
-    e.g. http://worldclassresearch.net:5080/WebRTCAppEE/rest/broadcast/get?id=1
+    e.g. http://agora.stream:5080/WebRTCAppEE/rest/broadcast/get?id=1
     """
     def __init__(self):
         self.api_port = API_PORT
         self.api_app = API_APP
         self.api_version = "v2"
-        self.basepoint = f"http://worldclassresearch.net:{self.api_port}/{self.api_app}/rest/{self.api_version}/"
+        self.basepoint = f"http://agora.stream:{self.api_port}/{self.api_app}/rest/{self.api_version}/"
         self.log_folder_path = LOG_FOLDER_PATH
 
     ##############
@@ -24,8 +24,32 @@ class AntMediaRestApi(object):
     def get_total_number_active_live_streams(self):
         raise NotImplementedError()
 
-    def create_conference_room(self, body):
-        raise NotImplementedError()
+    def create_conference_room(self, room_id, start_date_of_room=0, end_date_of_room=0):
+        """Creates a conference room. By default, duration is 1 hour!
+
+        Args:
+            room_id (int): id of the room
+            start_date_of_room (int, optional): utc time in s of start time. Defaults to 0.
+            end_date_of_room (int, optional): utc time in s of end time. Defaults to 0.
+
+        Returns:
+            response (dict): response of the server
+        """
+        endpoint = "broadcasts/conference-rooms"
+        body = {
+                "roomId":room_id,
+                "startDate":start_date_of_room,
+                "endDate":end_date_of_room
+                }
+
+        headers = {'Content-type': 'application/json'}
+        response = requests.post(self.basepoint + endpoint, json=body, headers=headers)
+
+        try:
+            return response.json()
+        except Exception as e:
+            logging.error(f"create_conference_room: exception raised: {e}")
+            return response.text
 
     def edit_conference_room(self, room_id):
         raise NotImplementedError()
@@ -108,9 +132,13 @@ class AntMediaRestApi(object):
                 
         headers = {'Content-type': 'application/json'}
 
-        response = requests.post(self.basepoint + endpoint, json=body, headers=headers).json()
+        response = requests.post(self.basepoint + endpoint, json=body, headers=headers)
 
-        return response
+        try:
+            return response.json()
+        except Exception as e:
+            logging.error(f"create_broadcast: exception raised: {e}")
+            return response.text
 
     def get_broadcasts(self, offset, size, type):
         """
@@ -409,17 +437,13 @@ class AntMediaRestApi(object):
 if __name__ == "__main__":
 
     # Test
-    
     obj = AntMediaRestApi()
     id = "datasig"
     
-    print(obj.create_broadcast(id=id, name="seminar-08-05-20", description="Compactness of rough paths", max_duration_in_s=10))
-    print(obj.set_stream_recording_settings(id=id, recording_status=True))
-    print(obj.start_streaming(id=id))
-    print(obj.get_broadcast(id=id))
-
-    import time
-    time.sleep(10)
-
-    print(obj.stop_streaming(id=id))
-    print(obj.delete_broadcast(id=id))
+    # print(obj.create_conference_room(123))
+    # print(obj.create_broadcast(id=id, name="seminar-08-05-20", description="Compactness of rough paths", max_duration_in_s=10))
+    # print(obj.set_stream_recording_settings(id=id, recording_status=True))
+    # print(obj.start_streaming(id=id))
+    # print(obj.get_broadcast(id=id))
+    # print(obj.stop_streaming(id=id))
+    # print(obj.delete_broadcast(id=id))
