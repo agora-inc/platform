@@ -7,7 +7,6 @@ import PopularTagsBox from "../Components/PopularTagsBox";
 import ScheduledStreamList from "../Components/ScheduledStreamList";
 import RecommendedGrid from "../Components/RecommendedGrid";
 import FooterComponent from "../Components/FooterComponent";
-import FormContainer from "../Containers/FormContainer";
 import "../Styles/home.css";
 
 export default class Home extends Component {
@@ -32,7 +31,6 @@ export default class Home extends Component {
           <ScheduledStreamList gridArea="scheduledStreams" title seeMore />
         </Grid>
         <RecommendedGrid />
-        <FormContainer />
         <FooterComponent />
       </Box>
       // <Box
