@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Box, Grid, Text, Layer, Button } from "grommet";
+
 
 interface Props {
     pathname: string
@@ -6,6 +8,7 @@ interface Props {
 
 interface State {
     play: boolean
+    overlay: boolean
     audio: any
 }
   
@@ -14,13 +17,14 @@ export default class AudioPlayer extends Component<Props, State> {
         super(props);
         this.state = {
             play: false,
+            overlay: false,
             audio: null
         };
     }
     
     componentDidMount() {
         console.log(this.state.audio);
-        this.setState({ audio: "fff" }); // new Audio(this.props.pathname)});
+        this.setState({ audio: new Audio(this.props.pathname)}); // 
         console.log(this.state.audio);
         this.state.audio.addEventListener('ended', () => this.setState({ play: false }));
     }
@@ -42,9 +46,7 @@ export default class AudioPlayer extends Component<Props, State> {
   
     render() {
       return (
-        <button onClick={this.togglePlay}>
-            {this.state.play}
-        </button>
+        <Button label="close" onClick={() => this.setState({overlay: false})} />
       );
     }
   }

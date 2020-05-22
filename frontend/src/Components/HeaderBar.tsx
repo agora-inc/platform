@@ -4,6 +4,7 @@ import { Search } from "grommet-icons";
 import { ReactComponent as Logo } from "../apollo.svg";
 import { Link } from "react-router-dom";
 import UserManager from "./UserManager";
+import AudioPlayer from "./AudioPlayer"
 
 export default class HeaderBar extends Component {
   constructor(props: any) {
@@ -49,6 +50,7 @@ export default class HeaderBar extends Component {
             style={{ width: "27vw" }}
           />
         </Box>
+        <AudioPlayer pathname="http://www.nihilus.net/soundtracks/Static%20Memories.mp3" />
         <UserManager />
       </Box>
     );

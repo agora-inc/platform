@@ -1,5 +1,5 @@
 import React, { useRef, useReducer, Component } from "react";
-import { Box, Grid, Text } from "grommet";
+import { Box, Grid, Text, Layer, Button } from "grommet";
 import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
 import ChatBox from "../Components/ChatBox";
 import ChannelIdCard from "../Components/ChannelIdCard";
@@ -133,12 +133,6 @@ export default class VideoPage extends Component<Props, State> {
                 overflow: "hidden",
               }}
             ></VideoPlayer>
-
-            {this.state.overlay && 
-              <AudioPlayer
-                pathname="public/auditorium.mp3"
-              ></AudioPlayer>
-            }
 
             <Box direction="row" justify="between" align="start">
               <Box gap="xsmall" width="65%">
