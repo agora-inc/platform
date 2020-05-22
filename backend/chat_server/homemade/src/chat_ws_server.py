@@ -18,7 +18,9 @@ import cchardet
 
 
 """
-TODO: - Check timeouts for connection in code.
+TODO: 
+        - Check timeouts for connection in code.
+        - Add "editMsg", "deleteMsg", "silenceUser", "banUser"
 """
 
 
@@ -67,7 +69,7 @@ class ChatWsServer:
         self.socket.close()
 
     def _reset_memory(self):
-        self.chat_participant = {}
+        self.chat_groups = {}
 
     def _reload_memory(self):
         # Fetch all the data from the DB to restaure connections
@@ -81,6 +83,7 @@ class ChatWsServer:
         am name: str
         :return:
         """
+
         if chat_participant_group_id in self.chat_groups:
             for participant in self.chat_groups[chat_participant_group_id]:
                 client = participant.client
@@ -114,10 +117,16 @@ class ChatWsServer:
         elif action == "sendMsg":
             self.handle_client_sendMsg(msg, participant=participant)
 
-        elif "action" == "blockUser":
+        elif action == "banUser":
             raise NotImplementedError
 
-        elif "action" == "unblockUser":
+        elif action == "unbanUser":
+            raise NotImplementedError
+
+        elif action == "silenceUser":
+            raise NotImplementedError
+
+        elif action == "unsilenceUser":
             raise NotImplementedError
 
         elif action == "editMsg":
@@ -125,7 +134,16 @@ class ChatWsServer:
 
         elif action == "deleteMsg":
             raise NotImplementedError
- 
+
+        elif action == "requestMic":
+            self.handle_client_requestMic(msg, participant=participant)
+
+        elif action == "passMic":
+            self.handle_client_passMic(msg, participant=participant)
+
+        elif action == "removeMic":
+            self.handle_client_removeMic(msg, participant=participant)   
+
     def handle_client_connect(self, msg, ip_address=None, client=None, participant=None):
         # msg in json format
         if "user_id" in msg:
@@ -133,12 +151,17 @@ class ChatWsServer:
         else:
             user_id = None
 
+        if "user_status" in msg:
+            user_status = msg["user_status"]
+        else:
+            user_status = None
+
         if msg["action"] != "connect":
             logging.warning(f"handle_client_connect: an unconnected client sent another request. msg: {msg}")
             if msg["action"] == "disconnect":
                 self._on_message(msg, ip_address=ip_address, client=client)
         else:
-            # A. get user
+            # get user
             chat_id = msg["chat_id"]
 
             # A. check if the chatgroups exist, else return error to client
@@ -184,7 +207,8 @@ class ChatWsServer:
                             self.chat_groups[chat_participant_id_subscribed] = []
                         
                         logging.warning(f"handle_client_connect: updated connection of participant in chat_group_id={chat_participant_id_subscribed} and ip={ip_address}")
-                        participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
+
+                        participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked, user_status=user_status)
                         self.chat_groups[chat_participant_id_subscribed].append(participant)
 
                     # D. If not blocked or already register, register him
@@ -201,7 +225,7 @@ class ChatWsServer:
                         logging.warning(f"handle_client_connect: new user (ip={ip_address}) added in DB")
 
                         # II) add in memory
-                        participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked)
+                        participant = ChatParticipant(ip_address, client, chat_participant_id_subscribed, chat_participant_id_blocked, user_status=user_status)
                         
                         if chat_participant_id_subscribed in self.chat_groups:
                             self.chat_groups[chat_participant_id_subscribed].append(participant)
@@ -315,7 +339,6 @@ class ChatWsServer:
             else:
                 self._remove_participant_from_system(participant=participant)
             
-            
             logging.warning(f"handle_client_disconnect: successfully removed participant ({ip_address}, {sub_group_id}) from the system")
 
         except Exception as e:
@@ -360,13 +383,13 @@ class ChatWsServer:
                 body = {
                             "action": "sendMsg",
                             "user_name": participant.name,
+                            "user_id": participant.user_id,
                             "chat_participant_group_id": sub_group_id,
                             "msg": msg["msg"]
                             }
 
                 if TESTING:
                     body["query_time"] = time.time() - msg["utc_ts_s"]
-
 
                 payload = self.tools._wrapper(200, body)
 
@@ -386,6 +409,117 @@ class ChatWsServer:
 
     def handle_client_unblockUser(self):
         raise NotImplementedError
+
+    def handle_client_requestMic(self, msg, participant):
+        # 2 check that room allows such status to request mic 
+        # IGNORED FOR NOW - EVERYBODY CAN REQUEST
+        # possible values: visitor, verified, admin, moderator, community_member, partner
+
+        # 3 broadcast request message to user in chatroom so see that he requested it
+        try:
+            if participant.user_status != "silenced" or participant.user_status != "banned":
+                chat_participant_group_id = msg["chat_participant_group_id"]
+                body = {
+                    "action": "requestMic",
+                    "user_name": participant.name,
+                    "user_id": participant.user_id,
+                    "chat_participant_group_id": chat_participant_group_id
+                    }
+                
+                payload = self.tools._wrapper(200, body)
+                self.broadcast(payload, chat_participant_group_id)
+                logging.warning("handle_client_requestMic: request successfully broadcasted.") 
+        except Exception as e:
+            logging.warning(f"handle_client_requestMic: exception encountered: {e}.") 
+
+
+    def handle_client_passMic(self, msg, participant):
+        try:
+            # check that user is admin
+            if participant.user_status in ["admin", "moderator"]:
+                chat_participant_group_id = msg["chat_participant_group_id"]
+                user_id_target = msg["user_id_target"]
+                
+                # find requester
+                requester_was_found = False
+                for potential_requester in self.chat_groups[chat_participant_group_id]:
+                    if potential_requester.user_id == user_id_target:
+                        if potential_requester.user_status not in ["banned", "silenced"]:
+                            body = {
+                                "action": "passMic",
+                                "user_id__target": potential_requester.user_id,
+                                "chat_participant_group_id": chat_participant_group_id,
+                                "user_name_target": potential_requester.name
+                                }
+                            payload = self.tools._wrapper(200, body)
+                            self.broadcast(payload, chat_participant_group_id)
+                            logging.warning("handle_client_passMic: request successfully broadcasted.")
+                            requester_was_found = True
+                            break
+                        else:
+                            body = {
+                                "action": "passMic",
+                                "error_msg": "mic requester not found"
+                                "user_id__target": potential_requester.user_id,
+                                "chat_participant_group_id": chat_participant_group_id,
+                                "user_name_target": potential_requester.name
+                                }
+                            payload = self.tools._wrapper(403, body)
+
+                            self.broadcast(payload, chat_participant_group_id)
+                            logging.warning("handle_client_passMic: attempt to give microphone to a banned/silenced user. Contact software dev team to follow that on (not normal that it happened.).")
+                
+                # if Requester not found
+                if requester_was_found is False:
+                    body = {
+                        "action": "passMic",
+                        "error_msg": "mic requester not found"
+                        "user_id__target": potential_requester.user_id,
+                        "chat_participant_group_id": chat_participant_group_id,
+                        "user_name_target": potential_requester.name
+                        }
+                    payload = self.tools._wrapper(404, body)
+
+                    self.broadcast(payload, chat_participant_group_id)
+                    logging.warning("handle_client_passMic: mic requester not found.")
+
+        except Exception as e:
+            logging.warning(f"handle_client_passMic: exception encountered: {e}.") 
+
+    def handle_client_removeMic(self, participant):
+        # 1 check that user is admin
+        if participant.user_status in ["admin", "moderator"]:
+            chat_participant_group_id = msg["chat_participant_group_id"]
+            user_id_current_speaker = msg["user_id_target"]
+
+            # Look for that user that has the mic
+            current_speaker_was_found = False
+            for potential_current_speaker in self.chat_groups[chat_participant_group_id]:
+                if potential_current_speaker.user_id == uuser_id_current_speaker:
+                    body = {
+                        "action": "removeMic",
+                        "user_id__target": potential_requester.user_id,
+                        "chat_participant_group_id": chat_participant_group_id,
+                        "user_name_target": potential_requester.name
+                        }
+                    payload = self.tools._wrapper(200, body)
+                    self.broadcast(payload, chat_participant_group_id)
+                    logging.warning("handle_client_removeMic: request successfully broadcasted.")
+                    current_speaker_was_found = True
+            
+            # if speaker not found
+            if current_speaker_was_found is False:
+                body = {
+                    "action": "removeMic",
+                    "error_msg": "current speaker not found"
+                    "user_id__target": potential_requester.user_id,
+                    "chat_participant_group_id": chat_participant_group_id,
+                    "user_name_target": potential_requester.name
+                    }
+                payload = self.tools._wrapper(404, body)
+
+                self.broadcast(payload, chat_participant_group_id)
+                logging.warning("handle_client_removeMic: current speaker not found.")
 
     def handle_error(self, client, error_dict):
         encoded_msg = self.encode_websocket_string_msg(str(error_dict))
@@ -477,7 +611,6 @@ class ChatWsServer:
         finally:
             logging.warning(f"_listen_connection_thread: thread terminated.")
 
-
     def handle_client_handshake(self, response_key, client):
         handshake_ans = (
             'HTTP/1.1 101 Switching Protocols',
@@ -489,7 +622,6 @@ class ChatWsServer:
         response = '\r\n'.join(handshake_ans).format(key=response_key)
         client.send(response.encode("utf-8"))
         logging.warning(f"handle_handshake: handshake from client in good format. Sending response: {response}.")
-
 
     def _get_handshake_key(self, text_msg):
         """Example of expected Handshake form:
@@ -637,6 +769,16 @@ class ChatWsServer:
 
     @staticmethod
     def encode_websocket_string_msg(string_msg):
+        """Takes a string as input and returns a byte. Required in ws handshake.
+        
+        Stolen from https://stackoverflow.com/questions/8125507/how-can-i-send-and-receive-websocket-messages-on-the-server-side
+        
+        Args:
+            string: real message
+
+        Returns:
+            ws_encoded_byte (bytes): encoded bytes
+        """
         bytesFormatted = []
         bytesFormatted.append(129)
 
