@@ -47,7 +47,7 @@ export default class FormContainer extends Component< {}, State> {
     e.preventDefault();
     let userData = this.state.user;
 
-    // Send it somewhere
+    // Send it via email to revolutionising.research@gmail.com
     console.log(userData);
     const templateId = "feedback_form";
     this.sendFeedback(templateId, 
@@ -55,6 +55,7 @@ export default class FormContainer extends Component< {}, State> {
        from_name: this.state.user.name, 
        reply_to: this.state.user.name}
        )
+      this.setState({showForm: false})
   }
 
   sendFeedback (templateId: string, variables: any) {
@@ -85,7 +86,7 @@ export default class FormContainer extends Component< {}, State> {
     return (
       <Box>
         <Button 
-          label="Report" 
+          label="Send report" 
           onClick={() => this.setState({showForm: true})}
           color="#61EC9F"
           style={{
