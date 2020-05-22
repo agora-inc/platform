@@ -6,6 +6,7 @@ import { Channel } from "../Services/ChannelService";
 
 interface Props {
   channel: Channel;
+  onClick: any;
 }
 
 interface State {
@@ -24,6 +25,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
     return (
       <Link to={`/channel/${this.props.channel.name}/manage`}>
         <Box
+          onClick={this.props.onClick}
           onMouseEnter={() => {
             this.setState({ hover: true });
           }}

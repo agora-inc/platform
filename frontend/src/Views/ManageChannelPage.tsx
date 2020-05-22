@@ -427,6 +427,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               <ChannelPageScheduledStreamList
                 channelId={this.state.channel!.id}
                 loggedIn
+                admin
               />
               <Text
                 size="28px"

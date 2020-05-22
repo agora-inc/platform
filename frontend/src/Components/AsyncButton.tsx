@@ -9,6 +9,7 @@ interface Props {
   height: string;
   width: string;
   fontColor: string;
+  disabled?: boolean;
 }
 
 interface State {
@@ -43,14 +44,18 @@ export default class AsyncButton extends Component<Props, State> {
       <Box
         justify="center"
         align="center"
-        background={this.props.color}
+        background={this.props.disabled ? "grey" : this.props.color}
         round="medium"
-        onClick={this.onClick}
+        onClick={this.props.disabled ? () => {} : this.onClick}
         pad={{ horizontal: "medium", vertical: "small" }}
         height={this.props.height}
         width={this.props.width}
         focusIndicator={false}
-        style={{ color: this.props.fontColor }}
+        style={
+          this.props.disabled
+            ? { color: this.props.fontColor, pointerEvents: "none" }
+            : { color: this.props.fontColor }
+        }
       >
         {this.state.loading ? (
           <Loading size={24} color={this.props.fontColor} />

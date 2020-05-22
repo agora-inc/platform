@@ -11,6 +11,7 @@ import Loading from "./Loading";
 interface Props {
   channelId: number;
   loggedIn: boolean;
+  admin: boolean;
 }
 
 interface State {
@@ -55,6 +56,7 @@ export default class ChannelPageScheduledStreamList extends Component<
             <ChannelPageScheduledStreamCard
               stream={stream}
               loggedIn={this.props.loggedIn}
+              admin={this.props.admin}
             />
           ))}
         </Box>

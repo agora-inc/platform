@@ -5,6 +5,7 @@ import { UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import DropdownChannelButton from "./DropdownChannelButton";
 import CreateChannelButton from "./CreateChannelButton";
+import CreateChannelCard from "./CreateChannelCard";
 import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../Styles/header.css";
@@ -14,6 +15,8 @@ interface State {
   isLoggedIn: boolean;
   user: { id: number; username: string } | null;
   channels: Channel[];
+  showCreateChannelCard: boolean;
+  showDropdown: boolean;
 }
 
 export default class UserManager extends Component<{}, State> {
@@ -23,6 +26,8 @@ export default class UserManager extends Component<{}, State> {
       isLoggedIn: UserService.isLoggedIn(),
       user: UserService.getCurrentUser(),
       channels: [],
+      showCreateChannelCard: false,
+      showDropdown: false,
     };
   }
 
@@ -41,14 +46,47 @@ export default class UserManager extends Component<{}, State> {
       );
   };
 
+  toggleDropdown = () => {
+    this.setState({ showDropdown: !this.state.showDropdown });
+  };
+
+  toggleCreateChannelCard = () => {
+    this.setState({
+      showCreateChannelCard: !this.state.showCreateChannelCard,
+    });
+  };
+
   menu = () => {
-    return (
+    return this.state.showCreateChannelCard ? (
       <Menu
         style={{
           borderRadius: 10,
           marginTop: 5,
           overflow: "hidden",
           paddingBottom: 0,
+          height: 326,
+          width: 250,
+        }}
+      >
+        <CreateChannelCard
+          onBackClicked={this.toggleCreateChannelCard}
+          onComplete={() => {
+            this.toggleCreateChannelCard();
+            this.toggleDropdown();
+          }}
+          user={this.state.user}
+        />
+      </Menu>
+    ) : (
+      <Menu
+        onClick={() => {}}
+        style={{
+          borderRadius: 10,
+          marginTop: 5,
+          overflow: "hidden",
+          paddingBottom: 0,
+          minHeight: 326,
+          width: 250,
         }}
       >
         <Box
@@ -82,15 +120,19 @@ export default class UserManager extends Component<{}, State> {
             My channels
           </Text>
           {this.state.channels.map((channel: Channel) => (
-            <DropdownChannelButton channel={channel} />
+            <DropdownChannelButton
+              channel={channel}
+              onClick={this.toggleDropdown}
+            />
           ))}
-          <CreateChannelButton />
+          <CreateChannelButton onClick={this.toggleCreateChannelCard} />
         </Box>
         <Menu.Divider />
         <Text weight="bold" color="black" margin="small">
           Account
         </Text>
         <Menu.Item
+          onClick={this.toggleDropdown}
           key="1"
           style={{
             display: "flex",
@@ -108,7 +150,10 @@ export default class UserManager extends Component<{}, State> {
           key="2"
           onClick={() => {
             UserService.logout();
-            this.setState({ isLoggedIn: UserService.isLoggedIn() });
+            this.setState({
+              isLoggedIn: UserService.isLoggedIn(),
+              showDropdown: false,
+            });
           }}
           style={{
             paddingBottom: 5,
@@ -126,7 +171,8 @@ export default class UserManager extends Component<{}, State> {
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
-        overlayStyle={{ width: 200 }}
+        overlayStyle={{ width: 250 }}
+        visible={this.state.showDropdown}
       >
         <Button
           margin={{ left: "10px" }}
@@ -137,6 +183,7 @@ export default class UserManager extends Component<{}, State> {
             overflow: "hidden",
           }}
           focusIndicator={false}
+          onClick={this.toggleDropdown}
         >
           <Identicon string={this.state.user?.username} size={45} />
         </Button>

@@ -5,6 +5,7 @@ import { ScheduledStream } from "../Services/ScheduledStreamService";
 interface Props {
   stream: ScheduledStream;
   loggedIn: boolean;
+  admin: boolean;
 }
 
 export default class ChannelPageScheduledStreamCard extends Component<Props> {
@@ -16,6 +17,12 @@ export default class ChannelPageScheduledStreamCard extends Component<Props> {
   };
 
   render() {
+    let label = "Log in to register";
+    if (this.props.admin) {
+      label = "Edit";
+    } else if (this.props.loggedIn) {
+      label = "Register";
+    }
     return (
       <Box
         background="white"
@@ -45,7 +52,7 @@ export default class ChannelPageScheduledStreamCard extends Component<Props> {
             primary
             color="black"
             disabled={!this.props.loggedIn}
-            label={this.props.loggedIn ? "Register" : "Log in to register"}
+            label={label}
             size="large"
           ></Button>
         </Box>

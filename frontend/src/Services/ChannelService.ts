@@ -22,11 +22,16 @@ const getChannelByName = (name: string, callback: any) => {
     });
 };
 
-const createChannel = (name: string, description: string, callback: any) => {
+const createChannel = (
+  name: string,
+  description: string,
+  userId: number,
+  callback: any
+) => {
   axios
     .post(
       baseApiUrl + "/channels/create",
-      { name: name, description: description },
+      { name: name, description: description, userId: userId },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {

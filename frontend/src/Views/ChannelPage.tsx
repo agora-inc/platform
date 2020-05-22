@@ -267,6 +267,7 @@ export default class ChannelPage extends Component<Props, State> {
                 <ChannelPageScheduledStreamList
                   channelId={this.state.channel!.id}
                   loggedIn={this.state.user !== null}
+                  admin={false}
                 />
                 <Text
                   size="28px"
