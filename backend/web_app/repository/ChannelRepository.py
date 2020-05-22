@@ -32,7 +32,7 @@ class ChannelRepository:
         return result
 
 
-    def createChannel(self, channelName, channelDescription):
+    def createChannel(self, channelName, channelDescription, userId):
         colours = [
             "orange",
             "goldenrod",
@@ -50,6 +50,8 @@ class ChannelRepository:
         cursor.execute('INSERT INTO Channels(name, description, colour) VALUES ("%s", "%s", "%s")' % (channelName, channelDescription, colour))
         self.db.con.commit()
         insertId = cursor.lastrowid
+        cursor.execute('INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES (%d, %d, "owner")' % (userId, insertId))
+        self.db.con.commit()
         cursor.close()
         return self.getChannelById(insertId)
 

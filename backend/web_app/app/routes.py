@@ -94,7 +94,8 @@ def createChannel():
     params = request.json
     name = params["name"]
     description = params["description"]
-    return jsonify(channels.createChannel(name, description))
+    userId = params["userId"]
+    return jsonify(channels.createChannel(name, description, userId))
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():
