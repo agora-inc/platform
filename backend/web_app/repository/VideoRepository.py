@@ -43,7 +43,7 @@ class VideoRepository:
 
     def getAllVideosForChannel(self, channelId):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Videos WHERE channel_id = %d' % channelId)
+        cursor.execute('SELECT * FROM Videos WHERE channel_id = %d ORDER BY date DESC' % channelId)
         videos = cursor.fetchall()
         cursor.close()
 
