@@ -23,6 +23,7 @@
     "emoji-mart": "^3.0.0",
     "grommet": "^2.12.0",
     "grommet-icons": "^4.4.0",
+    "howler": "^2.2.0",
     "katex": "^0.11.1",
     "react": "^16.13.1",
     "react-blink-tag": "^0.1.6",
