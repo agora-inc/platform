@@ -10,7 +10,7 @@ import { Video, VideoService } from "../Services/VideoService";
 import VideoPlayer from "../Components/VideoPlayer";
 import AsyncButton from "../Components/AsyncButton";
 import { string } from "prop-types";
-import AudioPlayer from "../Components/AudioPlayer";
+import Clapping from "../Components/Clapping";
 
 
 function sleep(ms: number) {
@@ -23,6 +23,10 @@ async function delayedGreeting() {
   console.log("World!");
 }
 
+const claps = {
+  "clapBase": require("../assets/auditorium.mp3"),
+  "clapUser": require("../assets/applause-7.mp3")
+}
 
 interface Props {
   location: { pathname: string; state: { video: Video } };
@@ -74,31 +78,6 @@ export default class VideoPage extends Component<Props, State> {
     }
   };
 
-  startClapping = () => {
-    if (!this.state.overlay) {
-      this.setState({
-        overlay: true
-      });
-    }
-
-    /*
-    delayedGreeting();
-
-    this.setState({
-      overlay: false
-    });
-    */
-  };
-
-
-  startClappingButton = () => {
-    return (
-      <button onClick={this.startClapping}>
-        Let's thank the speaker
-      </button>
-    );
-  };
-
   render() {
     console.log(this.state.video);
     return (
@@ -133,7 +112,6 @@ export default class VideoPage extends Component<Props, State> {
                 overflow: "hidden",
               }}
             ></VideoPlayer>
-
             <Box direction="row" justify="between" align="start">
               <Box gap="xsmall" width="65%">
                 <Text size="34px" weight="bold">
@@ -141,10 +119,7 @@ export default class VideoPage extends Component<Props, State> {
                 </Text>
               </Box>
 
-              
-            <Box direction="row" gap="small" width="35%" justify="center">
-              {this.startClappingButton()}
-            </Box>
+              <Clapping {...claps} />
 
               <Box direction="row" gap="small" width="35%" justify="end">
                 <ChannelIdCard channelName={this.state.video!.channel_name} />
