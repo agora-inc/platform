@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Box, Grid, Heading, Text } from "grommet";
+import { Box, Text } from "grommet";
 import StreamCard from "./StreamCard";
-import { UserService } from "../Services/UserService";
 import { Stream, StreamService } from "../Services/StreamService";
-import ShadowBox from "./ShadowBox";
-
-const users = UserService;
 
 interface Props {
   gridArea: string;
@@ -25,7 +21,7 @@ export default class Carousel extends Component<Props, State> {
   }
 
   componentWillMount() {
-    StreamService.getAllStreams((streams: Stream[]) => {
+    StreamService.getAllStreams(3, 0, (streams: Stream[]) => {
       this.setState({ streams });
     });
   }

@@ -23,7 +23,7 @@ export default class AllVideosPage extends Component<{}, State> {
   }
 
   componentWillMount() {
-    VideoService.getAllVideos((videos: Video[]) => {
+    VideoService.getAllVideos(6, 0, (videos: Video[]) => {
       this.setState({
         videos: videos,
         loading: false,

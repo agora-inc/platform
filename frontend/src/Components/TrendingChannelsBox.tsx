@@ -27,7 +27,7 @@ export default class TrendingChannelsBox extends Component<Props, State> {
   }
 
   componentWillMount() {
-    ChannelService.getAllChannels((channels: Channel[]) => {
+    ChannelService.getAllChannels(15, 0, (channels: Channel[]) => {
       this.setState({
         channels: channels,
         loading: false,

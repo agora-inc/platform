@@ -37,6 +37,8 @@ export default class ScheduledStreamList extends Component<Props, State> {
 
   fetchScheduledStreams = () => {
     ScheduledStreamService.getAllScheduledStreams(
+      3,
+      0,
       (scheduledStreams: ScheduledStream[]) => {
         this.setState({ scheduledStreams, loading: false });
       }

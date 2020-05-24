@@ -175,6 +175,8 @@ export default class ManageChannelPage extends Component<Props, State> {
   fetchVideos = () => {
     VideoService.getAllVideosForChannel(
       this.state.channel!.id,
+      6,
+      0,
       (videos: Video[]) => {
         this.setState({ videos });
       }

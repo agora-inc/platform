@@ -2,9 +2,9 @@ import { baseApiUrl } from "../config";
 import axios from "axios";
 import { User } from "./UserService";
 
-const getAllChannels = (callback: any) => {
+const getAllChannels = (limit: number, offset: number, callback: any) => {
   axios
-    .get(baseApiUrl + "/channels/all", {
+    .get(`${baseApiUrl}/channels/all?limit=${limit}&offset=${offset}`, {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then(function (response) {

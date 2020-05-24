@@ -29,7 +29,7 @@ export default class ChannelPageScheduledStreamCard extends Component<Props> {
         round="10px"
         // align="center"
         pad="15px"
-        width="32%"
+        width="31.5%"
         height="325px"
         justify="between"
         gap="small"

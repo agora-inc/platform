@@ -50,16 +50,14 @@ export default class ChannelPageScheduledStreamList extends Component<
         <Loading size={50} color="black" />
       </Box>
     ) : (
-      <Box>
-        <Box gap="medium" direction="row" width="100%">
-          {this.state.scheduledStreams.map((stream: ScheduledStream) => (
-            <ChannelPageScheduledStreamCard
-              stream={stream}
-              loggedIn={this.props.loggedIn}
-              admin={this.props.admin}
-            />
-          ))}
-        </Box>
+      <Box gap="medium" direction="row" width="100%">
+        {this.state.scheduledStreams.map((stream: ScheduledStream) => (
+          <ChannelPageScheduledStreamCard
+            stream={stream}
+            loggedIn={this.props.loggedIn}
+            admin={this.props.admin}
+          />
+        ))}
       </Box>
     );
   }

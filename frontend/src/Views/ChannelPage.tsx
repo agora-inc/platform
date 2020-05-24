@@ -98,6 +98,8 @@ export default class ChannelPage extends Component<Props, State> {
 
   fetchVideos = () => {
     VideoService.getAllVideosForChannel(
+      6,
+      0,
       this.state.channel!.id,
       (videos: Video[]) => {
         this.setState({ videos });
