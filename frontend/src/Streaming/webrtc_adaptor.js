@@ -82,6 +82,7 @@ export function WebRTCAdaptor(initialValues) {
     }
   }
 
+  // thiz refers to the context of the whole function WebRTCAdaptor
   var thiz = this;
   thiz.peerconnection_config = null;
   thiz.sdp_constraints = null;
@@ -149,6 +150,7 @@ export function WebRTCAdaptor(initialValues) {
    * Get user media
    */
   this.getUserMedia = function (mediaConstraints, audioConstraint) {
+    // self refers to the context of this function only
     const self = this;
     navigator.mediaDevices
       .getUserMedia(mediaConstraints)
@@ -159,7 +161,7 @@ export function WebRTCAdaptor(initialValues) {
           stream.removeTrack(audioTrack[0]);
         }
 
-        //add callback if desktop is sharing
+        // add callback on closing after desktop finished sharing
         if (
           mediaConstraints.video != "undefined" &&
           typeof mediaConstraints.video.mandatory != "undefined" &&
@@ -172,7 +174,7 @@ export function WebRTCAdaptor(initialValues) {
           };
         }
 
-        //now get only audio to add this stream
+        // now get only audio to add this stream
         if (audioConstraint != "undefined" && audioConstraint != false) {
           var media_audio_constraint = { audio: audioConstraint };
           navigator.mediaDevices
@@ -205,7 +207,7 @@ export function WebRTCAdaptor(initialValues) {
                     var canvasStream = canvas.captureStream(15);
                     canvasStream.addTrack(audioStream.getAudioTracks()[0]);
                     //call gotStream
-                    this.gotStream(canvasStream);
+                    this.gotStream(canvasStream);  // I have no idea what this line does. If you understand, please tell REMY!!
 
                     //update the canvas
                     setInterval(function () {
@@ -261,7 +263,7 @@ export function WebRTCAdaptor(initialValues) {
             });
         } else {
           stream.addTrack(stream.getAudioTracks()[0]);
-          self.gotStream(stream);
+          self.gotStream(stream); // I have no idea what this line does. If you understand, please tell REMY!!
         }
       })
       .catch(function (error) {
@@ -269,6 +271,7 @@ export function WebRTCAdaptor(initialValues) {
       });
   };
 
+  // function creating the stream of the screen-sharing
   this.openScreen = function (audioConstraint, openCamera) {
     var callback = function (message) {
       if (message.data == "rtcmulticonnection-extension-loaded") {
@@ -303,7 +306,7 @@ export function WebRTCAdaptor(initialValues) {
   };
 
   /**
-   * Open media stream, it may be screen, camera or audio
+   * Open media stream (it may be "screen" or "screen+webcam" depending on browser)
    */
   this.openStream = function (mediaConstraints) {
     thiz.mediaConstraints = mediaConstraints;
@@ -370,8 +373,10 @@ export function WebRTCAdaptor(initialValues) {
   thiz.checkExtension();
 
   /*
-   * Below lines are executed as well when this class is created
+   * (Below lines are executed as well when this class is created)
+   * What it does (TLDR):  
    */
+  // A. if it is not playing, create the stream.
   if (
     !this.isPlayMode &&
     typeof thiz.mediaConstraints != "undefined" &&
@@ -394,27 +399,28 @@ export function WebRTCAdaptor(initialValues) {
                 //console.debug("audio stream track count: " + audioStream.getAudioTracks().length);
 
                 var audioContext = new AudioContext();
-                var desktopSoundGainNode = audioContext.createGain();
+                var desktopSoundGainNode = audioContext.createGain(); // creates a gainNode which can be used to control the overall gain (or volume) of the audio graph.
 
                 desktopSoundGainNode.gain.value = 1;
 
-                var audioDestionation = audioContext.createMediaStreamDestination();
+                // Creation of two audio source: the audio from the screen-sharing and the mic
+                var audioDestination = audioContext.createMediaStreamDestination();
                 var audioSource = audioContext.createMediaStreamSource(stream);
 
-                audioSource.connect(desktopSoundGainNode);
+                audioSource.connect(desktopSoundGainNode); // connect source audio to the gainNode button (which will control the output)
 
-                thiz.micGainNode = audioContext.createGain();
+                thiz.micGainNode = audioContext.createGain(); // creates a gainNode which can be used to control the overall gain (or volume) of the audio graph.
                 thiz.micGainNode.gain.value = 1;
                 var audioSource2 = audioContext.createMediaStreamSource(
                   micStream
                 );
                 audioSource2.connect(thiz.micGainNode);
 
-                desktopSoundGainNode.connect(audioDestionation);
-                thiz.micGainNode.connect(audioDestionation);
+                desktopSoundGainNode.connect(audioDestination);
+                thiz.micGainNode.connect(audioDestination);
 
-                stream.removeTrack(stream.getAudioTracks()[0]);
-                audioDestionation.stream
+                stream.removeTrack(stream.getAudioTracks()[0]); // By defintiion of that stream, a little bit above, we take video + audio from getMediaUser and want to remove that audio from the mic.
+                audioDestination.stream
                   .getAudioTracks()
                   .forEach(function (track) {
                     stream.addTrack(track);
@@ -446,6 +452,7 @@ export function WebRTCAdaptor(initialValues) {
           thiz.callbackError(error.name, error.message);
         });
     }
+  // B. If it is already running, only do something if ws is broken.
   } else {
     //just playing, it does not open any stream
     if (
@@ -478,6 +485,7 @@ export function WebRTCAdaptor(initialValues) {
     thiz.webSocketAdaptor.send(JSON.stringify(jsCmd));
   };
 
+  // if you know what the difference is between joinRoom and join, please tell Remy.
   this.joinRoom = function (roomName, streamId) {
     thiz.roomName = roomName;
 
@@ -522,6 +530,7 @@ export function WebRTCAdaptor(initialValues) {
     thiz.webSocketAdaptor.send(JSON.stringify(jsCmd));
   };
 
+  // if you know the difference between leaveFromRoom and leave, please tell Remy.
   this.leaveFromRoom = function (roomName) {
     thiz.roomName = roomName;
     var jsCmd = {
@@ -551,6 +560,7 @@ export function WebRTCAdaptor(initialValues) {
     this.webSocketAdaptor.send(JSON.stringify(jsCmd));
   };
 
+  // function that links stream html element and resets ws if it is not setup
   this.gotStream = function (stream) {
     thiz.localStream = stream;
     console.log(thiz.localVideoId);
@@ -657,6 +667,7 @@ export function WebRTCAdaptor(initialValues) {
       });
   };
 
+  //  Q: what event are we talking about here? If you know, tell Remy.
   this.onTrack = function (event, streamId) {
     console.log("onTrack");
     if (thiz.remoteVideo != null) {
@@ -674,13 +685,27 @@ export function WebRTCAdaptor(initialValues) {
     }
   };
 
+/* "The RTCPeerConnection interface represents a WebRTC connection between the 
+local computer and a remote peer. It provides methods to connect to a remote 
+peer, maintain and monitor the connection, and close the connection once it's 
+no longer needed." 
+
+"An icecandidate event is sent to an RTCPeerConnection  when an RTCIceCandidate 
+has been identified and added to the local peer by a call to 
+RTCPeerConnection.setLocalDescription(). The event handler should transmit 
+the candidate to the remote peer over the signaling channel so the remote peer 
+can add it to its set of remote candidates."
+
+
+TLDR: accepts a candidate in the stream via RTP peer connection
+*/
   this.iceCandidateReceived = function (event, streamId) {
     if (event.candidate) {
       var jsCmd = {
         command: "takeCandidate",
         streamId: streamId,
-        label: event.candidate.sdpMLineIndex,
-        id: event.candidate.sdpMid,
+        label: event.candidate.sdpMLineIndex, //The read-only sdpMLineIndex property on the RTCIceCandidate interface is a zero-based index of the m-line describing the media associated with the candidate
+        id: event.candidate.sdpMid, // The read-only property sdpMid on the RTCIceCandidate interface returns a DOMString specifying the media stream identification tag of the media component with which the candidate is associated. This ID uniquely identifies a given stream for the component with which the candidate is associated.
         candidate: event.candidate.candidate,
       };
 
@@ -693,6 +718,7 @@ export function WebRTCAdaptor(initialValues) {
     }
   };
 
+  // creates RTCPeerConnection; adds the current media (thiz.localStream) to the RTCPeerConnection
   this.initPeerConnection = function (streamId) {
     if (thiz.remotePeerConnection[streamId] == null) {
       var closedStreamId = streamId;
@@ -771,6 +797,7 @@ export function WebRTCAdaptor(initialValues) {
     return null;
   };
 
+  // function that changes the SDP (session description protocole) of the communication with Antmedia server
   this.gotDescription = function (configuration, streamId) {
     thiz.remotePeerConnection[streamId]
       .setLocalDescription(configuration)
@@ -837,6 +864,7 @@ export function WebRTCAdaptor(initialValues) {
     }
   };
 
+  // function for the receiver to take the SDP offer
   this.takeConfiguration = function (
     idOfStream,
     configuration,
