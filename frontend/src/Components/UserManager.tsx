@@ -71,6 +71,7 @@ export default class UserManager extends Component<{}, State> {
         <CreateChannelCard
           onBackClicked={this.toggleCreateChannelCard}
           onComplete={() => {
+            this.fetchChannels();
             this.toggleCreateChannelCard();
             this.toggleDropdown();
           }}
