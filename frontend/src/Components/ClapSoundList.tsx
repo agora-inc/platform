@@ -29,11 +29,10 @@ export default class ClapSoundList extends Component {
       </Heading>
       <List
         primaryKey="name"
-        secondaryKey="percent"
-        alignSelf="start"
+        secondaryKey="play"
         data={[
           { name: 'Auditorium', play: <PlayButton sound={this.toHowl(this.claps.clapUser)}/> },
-          { name: 'Base', percent: <PlayButton sound={this.toHowl(this.claps.clapBase)} />},
+          { name: 'Base', play: <PlayButton sound={this.toHowl(this.claps.clapBase)} />},
         ]}
       />
       </Box>
@@ -49,33 +48,42 @@ interface Props {
 
 interface State {
   play: boolean
+  border: string
 }
 
 class PlayButton extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      play: false
+      play: false,
+      border: "none"
     };
   }
   render() {
     return (
       <Button
         onClick={() => {
-          this.state.play ? this.props.sound.pause() : this.props.sound.play();
+          if (this.state.play) {
+            this.props.sound.pause();
+            this.setState({border: 'none'});
+          } else {
+            this.props.sound.play();
+            this.setState({border: 'inset'});
+          }
           this.setState({play: !this.state.play});
         }}
-        alignSelf="center"
         style={{
-          width: 80,
+          textAlign: "center",
+          width: 90,
           height: 40,
           fontSize: 18,
           fontWeight: "bold",
-          padding: 10,
-          margin: 6,
+          padding: 0,
+          margin: 0,
           backgroundColor: "#61EC9F",
-          border: "none",
+          border: this.state.border,
           borderRadius: 10,
+          borderColor: "#F00"
         }}
       > Play it! </Button>
     );
