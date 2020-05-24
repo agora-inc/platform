@@ -24,7 +24,10 @@ export default class DropdownChannelButton extends Component<Props, State> {
   render() {
     return (
       <Link
-        to={`/channel/${this.props.channel.name}/manage`}
+        to={{
+          pathname: `/channel/${this.props.channel.name}/manage`,
+          state: { channel: this.props.channel },
+        }}
         style={{ height: 40 }}
       >
         <Box

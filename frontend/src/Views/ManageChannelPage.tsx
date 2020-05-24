@@ -15,6 +15,7 @@ import "../Styles/manage-channel.css";
 
 interface Props {
   location: any;
+  match: any;
 }
 
 interface State {
@@ -53,36 +54,61 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.getChannelAndCheckAccess();
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.match.params.name !== prevProps.match.params.name) {
+      this.getChannelAndCheckAccess();
+    }
+  }
+
   getChannelAndCheckAccess = () => {
-    ChannelService.getChannelByName(
-      this.props.location.pathname.split("/")[2],
-      (channel: Channel) => {
-        let user = UserService.getCurrentUser();
-        ChannelService.isUserInChannel(
-          user.id,
-          channel.id,
-          ["owner", "member"],
-          (res: boolean) => {
-            this.setState(
-              {
-                channel: channel,
-                colour: channel.colour,
-                allowed: res,
-                loading: false,
-              },
-              () => {
-                this.fetchFollowerCount();
-                this.fetchViewCount();
-                this.fetchOwners();
-                this.fetchMembers();
-                this.fetchFollowers();
-                this.fetchVideos();
-              }
-            );
-          }
-        );
-      }
-    );
+    if (this.props.location.state) {
+      this.setState(
+        {
+          channel: this.props.location.state.channel,
+          colour: this.props.location.state.channel.colour,
+          allowed: true,
+          loading: false,
+        },
+        () => {
+          this.fetchFollowerCount();
+          this.fetchViewCount();
+          this.fetchOwners();
+          this.fetchMembers();
+          this.fetchFollowers();
+          this.fetchVideos();
+        }
+      );
+    } else {
+      ChannelService.getChannelByName(
+        this.props.location.pathname.split("/")[2],
+        (channel: Channel) => {
+          let user = UserService.getCurrentUser();
+          ChannelService.isUserInChannel(
+            user.id,
+            channel.id,
+            ["owner", "member"],
+            (res: boolean) => {
+              this.setState(
+                {
+                  channel: channel,
+                  colour: channel.colour,
+                  allowed: res,
+                  loading: false,
+                },
+                () => {
+                  this.fetchFollowerCount();
+                  this.fetchViewCount();
+                  this.fetchOwners();
+                  this.fetchMembers();
+                  this.fetchFollowers();
+                  this.fetchVideos();
+                }
+              );
+            }
+          );
+        }
+      );
+    }
     // if (this.props.location.state) {
     //   this.setState(
     //     {
