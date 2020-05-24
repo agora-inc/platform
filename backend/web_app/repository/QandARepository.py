@@ -71,8 +71,11 @@ class QandARepository:
         self.db.con.commit()
         cursor.close()
 
-        streamId = self.getQuestionById(questionId)["stream_id"]
-        return self.getAllQuestionsForStream(streamId)
+        question = self.getQuestionById(questionId)
+        if question["stream_id"]:
+            return self.getAllQuestionsForStream(streamId=question["stream_id"])
+        else:
+            return self.getAllQuestionsForStream(videoId=question["video_id"])
 
     def getAllAnswersForQuestion(self, questionId):
         users = UserRepository.UserRepository(db=self.db)
