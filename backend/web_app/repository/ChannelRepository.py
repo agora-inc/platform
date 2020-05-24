@@ -26,7 +26,7 @@ class ChannelRepository:
     
     def getAllChannels(self, limit, offset):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Channels')
+        cursor.execute(f'SELECT * FROM Channels LIMIT {limit} OFFSET {offset}')
         result = cursor.fetchall()
         cursor.close()
         return result
