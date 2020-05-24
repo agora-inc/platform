@@ -9,6 +9,8 @@ import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../Styles/header.css";
 import "../Styles/antd.css";
+import Preferences from "../Views/Preferences";
+import PreferenceButton from "./PreferenceButton";
 
 interface State {
   isLoggedIn: boolean;
@@ -102,7 +104,7 @@ export default class UserManager extends Component<{}, State> {
             paddingTop: 3,
           }}
         >
-          <Text>Preferences</Text>
+          <PreferenceButton />
         </Menu.Item>
         <Menu.Item
           key="2"

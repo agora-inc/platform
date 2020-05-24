@@ -13,16 +13,6 @@ import { string } from "prop-types";
 import Clapping from "../Components/Clapping";
 
 
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function delayedGreeting() {
-  console.log("Hello");
-  await sleep(10000);
-  console.log("World!");
-}
-
 const claps = {
   "clapBase": require("../assets/auditorium.mp3"),
   "clapUser": require("../assets/applause-7.mp3")
