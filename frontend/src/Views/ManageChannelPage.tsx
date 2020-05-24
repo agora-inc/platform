@@ -4,6 +4,10 @@ import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Video, VideoService } from "../Services/VideoService";
 import { Channel, ChannelService } from "../Services/ChannelService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
 import Loading from "../Components/Loading";
 import StreamNowButton from "../Components/StreamNowButton";
 import ScheduleStreamButton from "../Components/ScheduleStreamButton";
@@ -30,6 +34,7 @@ interface State {
   channelMembers: User[];
   followers: User[];
   videos: Video[];
+  scheduledStreams: ScheduledStream[];
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -47,6 +52,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelMembers: [],
       followers: [],
       videos: [],
+      scheduledStreams: [],
     };
   }
 
@@ -76,6 +82,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           this.fetchMembers();
           this.fetchFollowers();
           this.fetchVideos();
+          this.fetchScheduledStreams();
         }
       );
     } else {
@@ -102,6 +109,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   this.fetchMembers();
                   this.fetchFollowers();
                   this.fetchVideos();
+                  this.fetchScheduledStreams();
                 }
               );
             }
@@ -205,6 +213,15 @@ export default class ManageChannelPage extends Component<Props, State> {
       0,
       (videos: Video[]) => {
         this.setState({ videos });
+      }
+    );
+  };
+
+  fetchScheduledStreams = () => {
+    ScheduledStreamService.getScheduledStreamsForChannel(
+      this.state.channel!.id,
+      (scheduledStreams: ScheduledStream[]) => {
+        this.setState({ scheduledStreams });
       }
     );
   };
@@ -453,6 +470,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 margin={{ top: "40px", bottom: "10px" }}
               >{`Your upcoming streams`}</Text>
               <ChannelPageScheduledStreamList
+                scheduledStreams={this.state.scheduledStreams}
                 channelId={this.state.channel!.id}
                 loggedIn
                 admin

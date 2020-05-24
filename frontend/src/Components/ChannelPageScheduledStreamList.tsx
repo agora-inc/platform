@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { Box, Heading, Text } from "grommet";
+import { Box } from "grommet";
 import ChannelPageScheduledStreamCard from "./ChannelPageScheduledStreamCard";
 import {
   ScheduledStream,
@@ -9,6 +8,7 @@ import {
 import Loading from "./Loading";
 
 interface Props {
+  scheduledStreams: ScheduledStream[];
   channelId: number;
   loggedIn: boolean;
   admin: boolean;
@@ -32,7 +32,7 @@ export default class ChannelPageScheduledStreamList extends Component<
   }
 
   componentWillMount() {
-    this.fetchScheduledStreams();
+    // this.fetchScheduledStreams();
   }
 
   fetchScheduledStreams = () => {
@@ -45,13 +45,9 @@ export default class ChannelPageScheduledStreamList extends Component<
   };
 
   render() {
-    return this.state.loading ? (
-      <Box height="325px" align="center" justify="center" width="100%">
-        <Loading size={50} color="black" />
-      </Box>
-    ) : (
+    return (
       <Box gap="medium" direction="row" width="100%">
-        {this.state.scheduledStreams.map((stream: ScheduledStream) => (
+        {this.props.scheduledStreams.map((stream: ScheduledStream) => (
           <ChannelPageScheduledStreamCard
             stream={stream}
             loggedIn={this.props.loggedIn}
