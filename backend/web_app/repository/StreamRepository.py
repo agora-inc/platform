@@ -8,7 +8,7 @@ class StreamRepository:
 
     def getAllStreams(self, limit, offset):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Streams ORDER BY id DESC LIMIT {limit} OFFSET {offset}')
+        cursor.execute(f'SELECT * FROM Streams ORDER BY id DESC LIMIT {limit} OFFSET {offset}')
         streams = cursor.fetchall()
         cursor.close()
 
