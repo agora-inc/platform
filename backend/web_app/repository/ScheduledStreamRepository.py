@@ -2,30 +2,30 @@ class ScheduledStreamRepository:
     def __init__(self, db):
         self.db = db
 
-    def getAllScheduledStreams(self):
+    def getAllScheduledStreams(self, limit, offset):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM ScheduledStreams')
+        cursor.execute(f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP LIMIT {limit} OFFSET {offset}')
         result = cursor.fetchall()
         cursor.close()
         return result
 
     def getAllScheduledStreamsForChannel(self, channelId):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM ScheduledStreams WHERE channel_id = %d' % channelId)
+        cursor.execute(f'SELECT * FROM ScheduledStreams WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP')
         result = cursor.fetchall()
         cursor.close()
         return result
 
     def getScheduledStreamById(self, streamId):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM ScheduledStreams WHERE id = %d' % streamId)
+        cursor.execute(f'SELECT * FROM ScheduledStreams WHERE id = {streamId}')
         result = cursor.fetchall()
         cursor.close()
         return result
 
     def scheduleStream(self, channelId, channelName, streamName, streamDate, streamDescription):
         cursor = self.db.con.cursor()
-        cursor.execute('INSERT INTO ScheduledStreams(channel_id, channel_name, name, date, description) VALUES (%d, "%s", "%s", "%s", "%s")' % (channelId, channelName, streamName, streamDate, streamDescription))
+        cursor.execute(f'INSERT INTO ScheduledStreams(channel_id, channel_name, name, date, description) VALUES ({channelId}, "{channelName}", "{streamName}", "{streamDate}", "{streamDescription}")')
         self.db.con.commit()
         insertId = cursor.lastrowid
         cursor.close()
@@ -33,6 +33,6 @@ class ScheduledStreamRepository:
 
     def deleteScheduledStream(self, streamId):
         cursor = self.db.con.cursor()
-        cursor.execute('DELETE FROM ScheduledStreams where id = %d' % streamId)
+        cursor.execute(f'DELETE FROM ScheduledStreams where id = {streamId}')
         self.db.con.commit()
         cursor.close()
