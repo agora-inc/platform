@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 
-
 interface State {
   hover: boolean;
 }
@@ -28,11 +27,11 @@ export default class PreferenceButton extends Component<{}, State> {
           direction="row"
           gap="xsmall"
           align="center"
-          background={this.state.hover ? "#f2f2f2" : "white"}
-          pad="xsmall"
+          // background={this.state.hover ? "#f2f2f2" : "white"}
+          pad="none"
           justify="between"
         >
-          <Text> Preferences </Text>
+          <Text margin="none"> Preferences </Text>
           <Box
             height="20px"
             width="20px"
@@ -40,8 +39,7 @@ export default class PreferenceButton extends Component<{}, State> {
             justify="center"
             align="center"
             overflow="hidden"
-          >
-          </Box>
+          ></Box>
         </Box>
       </Link>
     );
