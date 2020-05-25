@@ -7,6 +7,7 @@ import ChannelIdCard from "../Components/ChannelIdCard";
 import VideoPlayer from "../Components/VideoPlayer";
 import { View } from "grommet-icons";
 import { Stream, StreamService } from "../Services/StreamService";
+import Clapping from "../Components/Clapping";
 
 interface Props {
   location: { pathname: string; state: { stream: Stream } };
@@ -16,6 +17,11 @@ interface State {
   stream: Stream;
   viewCount: number;
 }
+
+const claps = {
+  clapBase: require("../assets/auditorium.mp3"),
+  clapUser: require("../assets/applause-7.mp3"),
+};
 
 export default class VideoPage extends Component<Props, State> {
   constructor(props: Props) {
@@ -67,11 +73,6 @@ export default class VideoPage extends Component<Props, State> {
           ]}
         >
           <Box gridArea="player" justify="between" gap="small">
-            {/* <ReactHLS
-              url={this.state.stream.from_url}
-              width="100%"
-              height="86%"
-            /> */}
             <VideoPlayer
               playerOptions={{
                 autoplay: true,
@@ -92,12 +93,13 @@ export default class VideoPage extends Component<Props, State> {
               style={{ width: "100%", height: "86%", borderRadius: 15 }}
             ></VideoPlayer>
             <Box direction="row" justify="between" align="start">
-              <Box gap="xsmall" width="65%">
+              <Box gap="xsmall" width="50%">
                 <Text size="34px" weight="bold">
                   {this.state.stream.name}
                 </Text>
               </Box>
-              <Box direction="row" gap="small" width="35%" justify="end">
+              <Box direction="row" gap="xsmall" justify="end">
+                <Clapping {...claps} />
                 <ChannelIdCard channelName={this.state.stream!.channel_name} />
                 <Box direction="row" align="center" gap="xxsmall">
                   <View color="black" size="40px" />

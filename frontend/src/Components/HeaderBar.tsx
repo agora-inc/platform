@@ -49,6 +49,7 @@ export default class HeaderBar extends Component {
             style={{ width: "27vw" }}
           />
         </Box>
+        
         <UserManager />
       </Box>
     );
