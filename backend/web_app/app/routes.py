@@ -79,7 +79,9 @@ def getChannelByName():
 
 @app.route('/channels/all', methods=["GET"])
 def getAllChannels():
-    return jsonify(channels.getAllChannels())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(channels.getAllChannels(limit, offset))
 
 @app.route('/channels/foruser', methods=["GET"])
 def getChannelsForUser():
@@ -94,7 +96,8 @@ def createChannel():
     params = request.json
     name = params["name"]
     description = params["description"]
-    return jsonify(channels.createChannel(name, description))
+    userId = params["userId"]
+    return jsonify(channels.createChannel(name, description, userId))
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():
@@ -152,7 +155,9 @@ def updateChannelDescription():
 # --------------------------------------------
 @app.route('/streams/all', methods=["GET"])
 def getAllStreams():
-    return jsonify(streams.getAllStreams())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(streams.getAllStreams(limit, offset))
 
 @app.route('/streams/channel', methods=["GET"])
 def getStreamsForChannel():
@@ -191,7 +196,9 @@ def serveThumbnail():
 # -------------------------------------------- 
 @app.route('/streams/scheduled/all', methods=["GET"])
 def getAllScheduledStreams():
-    return jsonify(scheduledStreams.getAllScheduledStreams())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(scheduledStreams.getAllScheduledStreams(limit, offset))
 
 @app.route('/streams/scheduled/channel', methods=["GET"])
 def getAllScheduledStreamsForChannel():
@@ -210,7 +217,9 @@ def scheduleStream():
 # --------------------------------------------
 @app.route('/videos/all', methods=["GET"])
 def getAllVideos():
-    return jsonify(videos.getAllVideos())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(videos.getAllVideos(limit, offset))
 
 @app.route('/videos/recent', methods=["GET"])
 def getRecentVideos():
@@ -219,7 +228,9 @@ def getRecentVideos():
 @app.route('/videos/channel', methods=["GET"])
 def getAllVideosForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(videos.getAllVideosForChannel(channelId))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(videos.getAllVideosForChannel(channelId, limit, offset))
 
 @app.route('/videos/video', methods=["GET"])
 def getVideoById():
@@ -229,7 +240,9 @@ def getVideoById():
 @app.route('/videos/tag', methods=["GET"])
 def getVideosWithTag():
     tagName = request.args.get("tagName")
-    return jsonify(videos.getAllVideosWithTag(tagName))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(videos.getAllVideosWithTag(tagName, limit, offset))
 
 # --------------------------------------------
 # Q+A ROUTES

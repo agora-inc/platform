@@ -1,11 +1,18 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
 
-const getAllScheduledStreams = (callback: any) => {
+const getAllScheduledStreams = (
+  limit: number,
+  offset: number,
+  callback: any
+) => {
   axios
-    .get(baseApiUrl + "/streams/scheduled/all", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
+    .get(
+      `${baseApiUrl}/streams/scheduled/all?limit=${limit}&offset=${offset}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
     .then(function (response) {
       callback(response.data);
     });

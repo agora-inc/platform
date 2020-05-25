@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Box, Grommet, Heading, Text } from "grommet";
 import { Video, VideoService } from "../Services/VideoService";
-import SmallSearchBar from "../Components/SmallSearchBar";
 import SmallSelector from "../Components/SmallSelector";
 import VideoCard from "../Components/VideoCard";
 
@@ -26,9 +25,14 @@ export default class TagPage extends Component<Props, State> {
   }
 
   componentWillMount() {
-    VideoService.getAllVideosWithTag(this.state.tagName, (videos: Video[]) => {
-      this.setState({ videos });
-    });
+    VideoService.getAllVideosWithTag(
+      this.state.tagName,
+      6,
+      0,
+      (videos: Video[]) => {
+        this.setState({ videos });
+      }
+    );
   }
 
   compareVideosByDate = (a: Video, b: Video) => {
@@ -58,43 +62,33 @@ export default class TagPage extends Component<Props, State> {
   };
 
   render() {
+    console.log(this.state.videos);
     return (
       <Box margin={{ top: "10%" }} align="center">
         <Box width="82.5%">
           <Box
             direction="row"
-            align="end"
-            margin={{ bottom: "small" }}
-            gap="small"
-          >
-            <Heading size="3.5rem" margin="none">
-              Videos tagged under
-            </Heading>
-            <Box
-              background="white"
-              round="small"
-              style={{ border: "2.5px solid black" }}
-              justify="center"
-              align="center"
-              pad={{ vertical: "small", horizontal: "medium" }}
-              margin={{ left: "xsmall" }}
-            >
-              <Text color="black" weight="bold" size="24px">
-                {this.state.tagName}
-              </Text>
-            </Box>
-          </Box>
-          <Box
-            direction="row"
-            width="100%"
             justify="between"
-            margin={{ bottom: "small" }}
+            align="center"
+            gap="small"
+            width="100%"
           >
-            <Box direction="row" align="center" gap="xsmall">
-              <Text color="black" weight="bold">
-                Filter by
-              </Text>
-              <SmallSearchBar placeholder="search tags" />
+            <Box direction="row" gap="small" align="center">
+              <Heading size="3rem" margin="none">
+                Videos tagged under
+              </Heading>
+              <Box
+                background="white"
+                round="small"
+                style={{ border: "3px solid black" }}
+                justify="center"
+                align="center"
+                pad={{ vertical: "xsmall", horizontal: "small" }}
+              >
+                <Text color="black" weight="bold" size="22px">
+                  {this.state.tagName}
+                </Text>
+              </Box>
             </Box>
             <Box direction="row" align="center" gap="xsmall">
               <Text color="black" weight="bold">

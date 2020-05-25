@@ -24,32 +24,24 @@ class AntMediaRestApi(object):
     def get_total_number_active_live_streams(self):
         raise NotImplementedError()
 
-    def create_conference_room(self, room_id, start_date_of_room=0, end_date_of_room=0):
-        """Creates a conference room. By default, duration is 1 hour!
-
-        Args:
-            room_id (int): id of the room
-            start_date_of_room (int, optional): utc time in s of start time. Defaults to 0.
-            end_date_of_room (int, optional): utc time in s of end time. Defaults to 0.
-
-        Returns:
-            response (dict): response of the server
-        """
+    def create_conference_room(self, room_id, start_date=0, end_date=0):
         endpoint = "broadcasts/conference-rooms"
-        body = {
-                "roomId":room_id,
-                "startDate":start_date_of_room,
-                "endDate":end_date_of_room
-                }
+        body =  {
+            "roomId":room_id,
+            "startDate":0,
+            "endDate":0
+            }
+
+        if start_date != 0:
+            body["startDate"] = start_date
+        
+        if end_date != 0:
+            body["endDate"] = end_date
 
         headers = {'Content-type': 'application/json'}
-        response = requests.post(self.basepoint + endpoint, json=body, headers=headers)
+        response = requests.post(self.basepoint + endpoint, data=body, headers=headers).text
 
-        try:
-            return response.json()
-        except Exception as e:
-            logging.error(f"create_conference_room: exception raised: {e}")
-            return response.text
+        return response
 
     def edit_conference_room(self, room_id):
         raise NotImplementedError()
@@ -132,13 +124,10 @@ class AntMediaRestApi(object):
                 
         headers = {'Content-type': 'application/json'}
 
-        response = requests.post(self.basepoint + endpoint, json=body, headers=headers)
+        print(self.basepoint + endpoint)
+        response = requests.post(self.basepoint + endpoint, data=body, headers=headers).text
 
-        try:
-            return response.json()
-        except Exception as e:
-            logging.error(f"create_broadcast: exception raised: {e}")
-            return response.text
+        return response
 
     def get_broadcasts(self, offset, size, type):
         """
@@ -437,13 +426,20 @@ class AntMediaRestApi(object):
 if __name__ == "__main__":
 
     # Test
+    
     obj = AntMediaRestApi()
     id = "datasig"
     
-    # print(obj.create_conference_room(123))
     # print(obj.create_broadcast(id=id, name="seminar-08-05-20", description="Compactness of rough paths", max_duration_in_s=10))
     # print(obj.set_stream_recording_settings(id=id, recording_status=True))
     # print(obj.start_streaming(id=id))
     # print(obj.get_broadcast(id=id))
+
+    # import time
+    # time.sleep(10)
+
     # print(obj.stop_streaming(id=id))
     # print(obj.delete_broadcast(id=id))
+
+    res = obj.create_conference_room(2)
+    print(res)

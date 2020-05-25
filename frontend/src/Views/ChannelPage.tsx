@@ -5,6 +5,10 @@ import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Video, VideoService } from "../Services/VideoService";
 import { Stream, StreamService } from "../Services/StreamService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
 import Identicon from "react-identicons";
 import Loading from "../Components/Loading";
 import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
@@ -23,6 +27,7 @@ interface State {
   loading: boolean;
   streams: Stream[];
   videos: Video[];
+  scheduledStreams: ScheduledStream[];
   followerCount: number;
   viewCount: number;
   following: boolean;
@@ -38,6 +43,7 @@ export default class ChannelPage extends Component<Props, State> {
       loading: true,
       streams: [],
       videos: [],
+      scheduledStreams: [],
       followerCount: 0,
       viewCount: 0,
       following: false,
@@ -98,6 +104,8 @@ export default class ChannelPage extends Component<Props, State> {
 
   fetchVideos = () => {
     VideoService.getAllVideosForChannel(
+      6,
+      0,
       this.state.channel!.id,
       (videos: Video[]) => {
         this.setState({ videos });
@@ -119,6 +127,15 @@ export default class ChannelPage extends Component<Props, State> {
       this.state.channel!.id,
       (viewCount: number) => {
         this.setState({ viewCount });
+      }
+    );
+  };
+
+  fetchScheduledStreams = () => {
+    ScheduledStreamService.getScheduledStreamsForChannel(
+      this.state.channel!.id,
+      (scheduledStreams: ScheduledStream[]) => {
+        this.setState({ scheduledStreams });
       }
     );
   };
@@ -265,8 +282,10 @@ export default class ChannelPage extends Component<Props, State> {
                   margin={{ bottom: "10px" }}
                 >{`${this.state.channel?.name}'s upcoming streams`}</Text>
                 <ChannelPageScheduledStreamList
+                  scheduledStreams={this.state.scheduledStreams}
                   channelId={this.state.channel!.id}
                   loggedIn={this.state.user !== null}
+                  admin={false}
                 />
                 <Text
                   size="28px"

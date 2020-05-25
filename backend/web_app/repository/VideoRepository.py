@@ -21,7 +21,7 @@ class VideoRepository:
 
     def getRecentVideos(self):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Videos ORDER BY id DESC LIMIT 6')
+        cursor.execute('SELECT * FROM Videos ORDER BY date DESC LIMIT 6')
         videos = cursor.fetchall()
         cursor.close()
 
@@ -30,9 +30,9 @@ class VideoRepository:
 
         return videos
 
-    def getAllVideos(self):
+    def getAllVideos(self, limit, offset):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Videos ORDER BY date DESC')
+        cursor.execute(f'SELECT * FROM Videos ORDER BY date DESC LIMIT {limit} OFFSET {offset}')
         videos = cursor.fetchall()
         cursor.close()
 
@@ -41,9 +41,9 @@ class VideoRepository:
 
         return videos
 
-    def getAllVideosForChannel(self, channelId):
+    def getAllVideosForChannel(self, channelId, limit, offset):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Videos WHERE channel_id = %d' % channelId)
+        cursor.execute(f'SELECT * FROM Videos WHERE channel_id = {channelId} ORDER BY date DESC LIMIT {limit} OFFSET {offset}')
         videos = cursor.fetchall()
         cursor.close()
 
@@ -52,16 +52,16 @@ class VideoRepository:
         
         return videos
 
-    def getAllVideosWithTag(self, tagName):
+    def getAllVideosWithTag(self, tagName, limit, offset):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT id FROM Tags WHERE name = "%s"' % tagName)
+        cursor.execute(f'SELECT id FROM Tags WHERE name = "{tagName}"')
         result = cursor.fetchall()
 
         if not result:
             return []
          
         tagId = result[0]["id"]
-        cursor.execute('SELECT Videos.id, Videos.channel_id, Videos.name, Videos.description, Videos.date, Videos.views, Videos.url, Videos.chat_id FROM Videos INNER JOIN VideoTags ON Videos.id = VideoTags.video_id WHERE VideoTags.tag_id = %d ORDER BY Videos.date DESC' % tagId)
+        cursor.execute(f'SELECT Videos.id, Videos.channel_id, Videos.name, Videos.channel_name, Videos.description, Videos.date, Videos.views, Videos.url, Videos.chat_id FROM Videos INNER JOIN VideoTags ON Videos.id = VideoTags.video_id WHERE VideoTags.tag_id = {tagId} ORDER BY Videos.date DESC LIMIT {limit} OFFSET {offset}')
         result = cursor.fetchall()
         cursor.close()
         return result

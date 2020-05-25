@@ -4,6 +4,10 @@ import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Video, VideoService } from "../Services/VideoService";
 import { Channel, ChannelService } from "../Services/ChannelService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
 import Loading from "../Components/Loading";
 import StreamNowButton from "../Components/StreamNowButton";
 import ScheduleStreamButton from "../Components/ScheduleStreamButton";
@@ -15,6 +19,7 @@ import "../Styles/manage-channel.css";
 
 interface Props {
   location: any;
+  match: any;
 }
 
 interface State {
@@ -29,6 +34,7 @@ interface State {
   channelMembers: User[];
   followers: User[];
   videos: Video[];
+  scheduledStreams: ScheduledStream[];
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -46,6 +52,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelMembers: [],
       followers: [],
       videos: [],
+      scheduledStreams: [],
     };
   }
 
@@ -53,36 +60,63 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.getChannelAndCheckAccess();
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.match.params.name !== prevProps.match.params.name) {
+      this.getChannelAndCheckAccess();
+    }
+  }
+
   getChannelAndCheckAccess = () => {
-    ChannelService.getChannelByName(
-      this.props.location.pathname.split("/")[2],
-      (channel: Channel) => {
-        let user = UserService.getCurrentUser();
-        ChannelService.isUserInChannel(
-          user.id,
-          channel.id,
-          ["owner", "member"],
-          (res: boolean) => {
-            this.setState(
-              {
-                channel: channel,
-                colour: channel.colour,
-                allowed: res,
-                loading: false,
-              },
-              () => {
-                this.fetchFollowerCount();
-                this.fetchViewCount();
-                this.fetchOwners();
-                this.fetchMembers();
-                this.fetchFollowers();
-                this.fetchVideos();
-              }
-            );
-          }
-        );
-      }
-    );
+    if (this.props.location.state) {
+      this.setState(
+        {
+          channel: this.props.location.state.channel,
+          colour: this.props.location.state.channel.colour,
+          allowed: true,
+          loading: false,
+        },
+        () => {
+          this.fetchFollowerCount();
+          this.fetchViewCount();
+          this.fetchOwners();
+          this.fetchMembers();
+          this.fetchFollowers();
+          this.fetchVideos();
+          this.fetchScheduledStreams();
+        }
+      );
+    } else {
+      ChannelService.getChannelByName(
+        this.props.location.pathname.split("/")[2],
+        (channel: Channel) => {
+          let user = UserService.getCurrentUser();
+          ChannelService.isUserInChannel(
+            user.id,
+            channel.id,
+            ["owner", "member"],
+            (res: boolean) => {
+              this.setState(
+                {
+                  channel: channel,
+                  colour: channel.colour,
+                  allowed: res,
+                  loading: false,
+                },
+                () => {
+                  this.fetchFollowerCount();
+                  this.fetchViewCount();
+                  this.fetchOwners();
+                  this.fetchMembers();
+                  this.fetchFollowers();
+                  this.fetchVideos();
+                  this.fetchScheduledStreams();
+                }
+              );
+            }
+          );
+        }
+      );
+    }
     // if (this.props.location.state) {
     //   this.setState(
     //     {
@@ -175,8 +209,19 @@ export default class ManageChannelPage extends Component<Props, State> {
   fetchVideos = () => {
     VideoService.getAllVideosForChannel(
       this.state.channel!.id,
+      6,
+      0,
       (videos: Video[]) => {
         this.setState({ videos });
+      }
+    );
+  };
+
+  fetchScheduledStreams = () => {
+    ScheduledStreamService.getScheduledStreamsForChannel(
+      this.state.channel!.id,
+      (scheduledStreams: ScheduledStream[]) => {
+        this.setState({ scheduledStreams });
       }
     );
   };
@@ -425,8 +470,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                 margin={{ top: "40px", bottom: "10px" }}
               >{`Your upcoming streams`}</Text>
               <ChannelPageScheduledStreamList
+                scheduledStreams={this.state.scheduledStreams}
                 channelId={this.state.channel!.id}
                 loggedIn
+                admin
               />
               <Text
                 size="28px"
