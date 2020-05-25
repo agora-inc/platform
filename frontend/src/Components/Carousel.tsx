@@ -109,13 +109,14 @@ export default class Carousel extends Component<Props, State> {
           direction="row"
           gap="medium"
           width="100%"
+          height="100%"
           wrap
           margin={{ top: "20px" }}
         >
           {this.state.streams.map((stream: Stream) => (
             <StreamCard
               width="270px"
-              height="192px"
+              height="100%"
               color="#f2f2f2"
               stream={stream}
             />

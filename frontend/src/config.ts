@@ -1,6 +1,6 @@
 export const baseApiUrl = "http://3.11.98.113/api";
 
-// export const baseApiUrl = "http://localhost:5000";
+//export const baseApiUrl = "http://localhost:5000";
 
 export const antmediaWebSocketUrl =
   "ws://3.11.98.113:5080/WebRTCAppEE/websocket";

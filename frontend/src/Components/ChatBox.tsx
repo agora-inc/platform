@@ -332,9 +332,12 @@ export default class ChatBox extends Component<Props, State> {
             height="80%"
             gap="small"
             width="100%"
-            overflow="scroll"
             id="messages"
-            style={{ maxHeight: "80%" }}
+            style={{
+              maxHeight: "80%",
+              overflowX: "hidden",
+              overflowY: "scroll",
+            }}
           >
             {this.state.messages.map((message: Message) =>
               this.renderMessage(message)
