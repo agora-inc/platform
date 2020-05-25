@@ -8,15 +8,6 @@ import Loading from "../Components/Loading";
 import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
 import VideoPlayer from "../Components/VideoPlayer";
-import AsyncButton from "../Components/AsyncButton";
-import { string } from "prop-types";
-import Clapping from "../Components/Clapping";
-
-
-const claps = {
-  "clapBase": require("../assets/auditorium.mp3"),
-  "clapUser": require("../assets/applause-7.mp3")
-}
 
 interface Props {
   location: { pathname: string; state: { video: Video } };
@@ -31,7 +22,14 @@ interface State {
 export default class VideoPage extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const filters = ['none', 'sepia', 'invert', 'grayscale', 'saturate', 'blur'];
+    const filters = [
+      "none",
+      "sepia",
+      "invert",
+      "grayscale",
+      "saturate",
+      "blur",
+    ];
     this.state = {
       video: {
         id: -1,
@@ -108,9 +106,6 @@ export default class VideoPage extends Component<Props, State> {
                   {this.state.video!.name}
                 </Text>
               </Box>
-
-              <Clapping {...claps} />
-
               <Box direction="row" gap="small" width="35%" justify="end">
                 <ChannelIdCard channelName={this.state.video!.channel_name} />
                 <Box direction="row" align="center" gap="xxsmall">
