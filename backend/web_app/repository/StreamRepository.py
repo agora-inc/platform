@@ -6,9 +6,9 @@ class StreamRepository:
         self.db = db
         self.tags = TagRepository.TagRepository(db=self.db)
 
-    def getAllStreams(self):
+    def getAllStreams(self, limit, offset):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Streams')
+        cursor.execute(f'SELECT * FROM Streams ORDER BY id DESC LIMIT {limit} OFFSET {offset}')
         streams = cursor.fetchall()
         cursor.close()
 

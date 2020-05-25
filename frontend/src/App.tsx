@@ -12,6 +12,7 @@ import HeaderBar from "./Components/HeaderBar";
 import { theme } from "./theme";
 import { UserService } from "./Services/UserService";
 import ManageChannelPage from "./Views/ManageChannelPage";
+import Preferences from "./Views/Preferences";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path={`/channel/:name/manage`} component={ManageChannelPage} />
         <Route path="/tag" component={TagPage} />
         <Route path="/streaming" component={Streaming} />
+        <Route path="/preferences" component={Preferences} />
       </Grommet>
     </BrowserRouter>
   );

@@ -24,15 +24,15 @@ class ChannelRepository:
         return result[0]
 
     
-    def getAllChannels(self):
+    def getAllChannels(self, limit, offset):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT * FROM Channels')
+        cursor.execute(f'SELECT * FROM Channels LIMIT {limit} OFFSET {offset}')
         result = cursor.fetchall()
         cursor.close()
         return result
 
 
-    def createChannel(self, channelName, channelDescription):
+    def createChannel(self, channelName, channelDescription, userId):
         colours = [
             "orange",
             "goldenrod",
@@ -50,6 +50,8 @@ class ChannelRepository:
         cursor.execute('INSERT INTO Channels(name, description, colour) VALUES ("%s", "%s", "%s")' % (channelName, channelDescription, colour))
         self.db.con.commit()
         insertId = cursor.lastrowid
+        cursor.execute('INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES (%d, %d, "owner")' % (userId, insertId))
+        self.db.con.commit()
         cursor.close()
         return self.getChannelById(insertId)
 

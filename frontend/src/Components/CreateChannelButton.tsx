@@ -3,12 +3,16 @@ import { Box, Text } from "grommet";
 import Identicon from "react-identicons";
 import { Channel } from "../Services/ChannelService";
 
+interface Props {
+  onClick: any;
+}
+
 interface State {
   hover: boolean;
 }
 
-export default class CreateChannelButton extends Component<{}, State> {
-  constructor(props: any) {
+export default class CreateChannelButton extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       hover: false,
@@ -18,6 +22,7 @@ export default class CreateChannelButton extends Component<{}, State> {
   render() {
     return (
       <Box
+        onClick={this.props.onClick}
         onMouseEnter={() => {
           this.setState({ hover: true });
         }}

@@ -4,7 +4,7 @@ import { Search } from "grommet-icons";
 import { ReactComponent as Logo } from "../apollo.svg";
 import { Link } from "react-router-dom";
 import UserManager from "./UserManager";
-import FormContainer from "./FormContainer"
+import FormContainer from "./FormContainer";
 
 export default class HeaderBar extends Component {
   constructor(props: any) {
@@ -50,8 +50,10 @@ export default class HeaderBar extends Component {
             style={{ width: "27vw" }}
           />
         </Box>
-        <FormContainer />
-        <UserManager />
+        <Box direction="row" gap="xsmall" align="center">
+          <FormContainer />
+          <UserManager />
+        </Box>
       </Box>
     );
   }

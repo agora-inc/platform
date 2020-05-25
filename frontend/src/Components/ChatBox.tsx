@@ -25,7 +25,7 @@ interface Props {
 interface State {
   messages: Message[];
   newMessageContent: string;
-  loggedInUser: User;
+  loggedInUser: User | null;
   showEmojiPicker: boolean;
   pingIntervalId: any;
   loading: boolean;
@@ -56,7 +56,7 @@ export default class ChatBox extends Component<Props, State> {
       onmessage: (e) => this.handleIncomingWebsocketMessage(e),
       onerror: (e) => console.log("error:", e),
     });
-    // this.setState({ pingIntervalId: setInterval(this.pingChat, 3000) });
+    this.setState({ pingIntervalId: setInterval(this.pingChat, 3000) });
   }
 
   componentWillUnmount() {
@@ -131,7 +131,7 @@ export default class ChatBox extends Component<Props, State> {
   };
 
   sendMessage = () => {
-    if (this.state.newMessageContent === "") {
+    if (this.state.newMessageContent === "" || !this.state.loggedInUser) {
       return;
     }
     this.ws &&
@@ -195,6 +195,7 @@ export default class ChatBox extends Component<Props, State> {
   };
 
   renderMessage = (message: Message) => {
+    const selfUserName = this.state.loggedInUser?.username;
     return (
       <Box
         style={{ minHeight: 40 }}
@@ -202,27 +203,15 @@ export default class ChatBox extends Component<Props, State> {
         gap="small"
         width="75%"
         align="start"
-        justify={
-          message.username === this.state.loggedInUser.username
-            ? "end"
-            : "start"
-        }
-        alignSelf={
-          message.username === this.state.loggedInUser.username
-            ? "end"
-            : "start"
-        }
+        justify={message.username === selfUserName ? "end" : "start"}
+        alignSelf={message.username === selfUserName ? "end" : "start"}
       >
-        {message.username !== this.state.loggedInUser.username && (
+        {message.username !== selfUserName && (
           <Identicon string={message.username} size={25} />
         )}
         <Box
           margin={{ top: "-5px" }}
-          align={
-            message.username == this.state.loggedInUser.username
-              ? "end"
-              : "start"
-          }
+          align={message.username == selfUserName ? "end" : "start"}
         >
           <Text size="11px" weight="bold" color="pink">
             {message.username}
@@ -230,18 +219,87 @@ export default class ChatBox extends Component<Props, State> {
           <Text
             size="16px"
             color="black"
-            textAlign={
-              message.username == this.state.loggedInUser.username
-                ? "end"
-                : "start"
-            }
+            textAlign={message.username == selfUserName ? "end" : "start"}
           >
             {this.renderMessageContent(message.content)}
           </Text>
         </Box>
-        {message.username === this.state.loggedInUser.username && (
+        {message.username === selfUserName && (
           <Identicon string={message.username} size={25} />
         )}
+      </Box>
+    );
+  };
+
+  renderInputBox = () => {
+    return (
+      <Keyboard onEnter={this.sendMessage}>
+        <Box
+          margin="25px"
+          direction="row"
+          background="#f2f2f2"
+          align="center"
+          // pad={{ right: "xsmall" }}
+          round="xsmall"
+          overflow="hidden"
+          style={{ minHeight: 42 }}
+        >
+          <TextInput
+            height="36px"
+            placeholder="send a message"
+            value={this.state.newMessageContent}
+            onChange={(event) =>
+              this.setState({ newMessageContent: event.target.value })
+            }
+            plain
+            style={{
+              backgroundColor: "#f2f2f2",
+              border: "none",
+            }}
+            //   focusIndicator={false}
+          />
+          <Box
+            round="xsmall"
+            pad={{ vertical: "xsmall", horizontal: "9px" }}
+            hoverIndicator="background"
+            justify="center"
+            align="center"
+            onClick={() => {
+              this.setState({ showEmojiPicker: !this.state.showEmojiPicker });
+            }}
+            //   margin={{ horizontal: "xsmall" }}
+            focusIndicator={false}
+            background={this.state.showEmojiPicker ? "#e6e6e6" : "none"}
+          >
+            <Emoji color="black" />
+          </Box>
+          <Box
+            round="xsmall"
+            pad={{ vertical: "xsmall", horizontal: "9px" }}
+            hoverIndicator="background"
+            justify="center"
+            align="center"
+            onClick={this.sendMessage}
+            focusIndicator={false}
+          >
+            <Send color="black" />
+          </Box>
+        </Box>
+      </Keyboard>
+    );
+  };
+
+  renderLoginMessage = () => {
+    return (
+      <Box
+        margin="25px"
+        background="#f2f2f2"
+        align="center"
+        justify="center"
+        round="xsmall"
+        style={{ minHeight: 42 }}
+      >
+        <Text color="grey">Log in to join the conversation</Text>
       </Box>
     );
   };
@@ -256,7 +314,7 @@ export default class ChatBox extends Component<Props, State> {
         round="small"
         gridArea={this.props.gridArea}
       >
-        <Box width="100%" pad="25px">
+        <Box width="100%" pad="25px" height="90%" style={{ paddingBottom: 0 }}>
           <Text
             color="black"
             weight="bold"
@@ -266,76 +324,35 @@ export default class ChatBox extends Component<Props, State> {
             Live chat
           </Text>
           {this.state.loading && (
-            <Box height="80%" width="100%" justify="center" align="center">
+            <Box
+              height="80%"
+              width="100%"
+              justify="center"
+              align="center"
+              style={{ minHeight: "80%" }}
+            >
               <Loading color="black" size={50} />
             </Box>
           )}
           <Box
-            height="80%"
+            height="95%"
             gap="small"
             width="100%"
-            overflow="scroll"
             id="messages"
-            style={{ maxHeight: "80%" }}
+            style={{
+              maxHeight: "95%",
+              overflowX: "hidden",
+              overflowY: "scroll",
+            }}
           >
             {this.state.messages.map((message: Message) =>
               this.renderMessage(message)
             )}
           </Box>
         </Box>
-        <Keyboard onEnter={this.sendMessage}>
-          <Box
-            margin="25px"
-            direction="row"
-            background="#f2f2f2"
-            align="center"
-            // pad={{ right: "xsmall" }}
-            round="xsmall"
-            overflow="hidden"
-            style={{ minHeight: 42 }}
-          >
-            <TextInput
-              height="36px"
-              placeholder="send a message"
-              value={this.state.newMessageContent}
-              onChange={(event) =>
-                this.setState({ newMessageContent: event.target.value })
-              }
-              plain
-              style={{
-                backgroundColor: "#f2f2f2",
-                border: "none",
-              }}
-              //   focusIndicator={false}
-            />
-            <Box
-              round="xsmall"
-              pad={{ vertical: "xsmall", horizontal: "9px" }}
-              hoverIndicator="background"
-              justify="center"
-              align="center"
-              onClick={() => {
-                this.setState({ showEmojiPicker: !this.state.showEmojiPicker });
-              }}
-              //   margin={{ horizontal: "xsmall" }}
-              focusIndicator={false}
-              background={this.state.showEmojiPicker ? "#e6e6e6" : "none"}
-            >
-              <Emoji color="black" />
-            </Box>
-            <Box
-              round="xsmall"
-              pad={{ vertical: "xsmall", horizontal: "9px" }}
-              hoverIndicator="background"
-              justify="center"
-              align="center"
-              onClick={this.sendMessage}
-              focusIndicator={false}
-            >
-              <Send color="black" />
-            </Box>
-          </Box>
-        </Keyboard>
+        {this.state.loggedInUser
+          ? this.renderInputBox()
+          : this.renderLoginMessage()}
         {this.state.showEmojiPicker && (
           <Picker
             emoji="clap"

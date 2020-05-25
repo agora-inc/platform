@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Box, Grid, Heading, Text } from "grommet";
+import { Box, Text } from "grommet";
 import StreamCard from "./StreamCard";
-import { UserService } from "../Services/UserService";
 import { Stream, StreamService } from "../Services/StreamService";
-import ShadowBox from "./ShadowBox";
-
-const users = UserService;
 
 interface Props {
   gridArea: string;
@@ -25,7 +21,7 @@ export default class Carousel extends Component<Props, State> {
   }
 
   componentWillMount() {
-    StreamService.getAllStreams((streams: Stream[]) => {
+    StreamService.getAllStreams(3, 0, (streams: Stream[]) => {
       this.setState({ streams });
     });
   }
@@ -105,7 +101,7 @@ export default class Carousel extends Component<Props, State> {
       //       color="accent-4"
       //       channelName="ImperialEEE"
       //     /> */}
-      <Box>
+      <Box height="100%" width="100%">
         <Text color="black" weight="bold" size="32px">
           Live now
         </Text>
@@ -113,13 +109,14 @@ export default class Carousel extends Component<Props, State> {
           direction="row"
           gap="medium"
           width="100%"
+          height="100%"
           wrap
           margin={{ top: "20px" }}
         >
           {this.state.streams.map((stream: Stream) => (
             <StreamCard
               width="270px"
-              height="192px"
+              height="100%"
               color="#f2f2f2"
               stream={stream}
             />

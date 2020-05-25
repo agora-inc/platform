@@ -8,8 +8,19 @@ import ScheduledStreamList from "../Components/ScheduledStreamList";
 import RecommendedGrid from "../Components/RecommendedGrid";
 import FooterComponent from "../Components/FooterComponent";
 import "../Styles/home.css";
+import { User, UserService } from "../Services/UserService";
 
-export default class Home extends Component {
+interface State {
+  user: User | null;
+}
+
+export default class Home extends Component<{}, State> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      user: UserService.getCurrentUser(),
+    };
+  }
   render() {
     return (
       <Box align="center" className="fadein">
@@ -28,7 +39,12 @@ export default class Home extends Component {
           <TrendingChannelsBox gridArea="trendingChannels" />
           <Carousel gridArea="carousel" />
           <PopularTagsBox gridArea="popularTags" />
-          <ScheduledStreamList gridArea="scheduledStreams" title seeMore />
+          <ScheduledStreamList
+            gridArea="scheduledStreams"
+            title
+            seeMore
+            loggedIn={this.state.user !== null}
+          />
         </Grid>
         <RecommendedGrid />
         <FooterComponent />

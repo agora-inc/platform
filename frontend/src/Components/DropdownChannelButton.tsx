@@ -6,6 +6,7 @@ import { Channel } from "../Services/ChannelService";
 
 interface Props {
   channel: Channel;
+  onClick: any;
 }
 
 interface State {
@@ -22,8 +23,16 @@ export default class DropdownChannelButton extends Component<Props, State> {
 
   render() {
     return (
-      <Link to={`/channel/${this.props.channel.name}/manage`}>
+      <Link
+        to={{
+          pathname: `/channel/${this.props.channel.name}/manage`,
+          state: { channel: this.props.channel },
+        }}
+        style={{ height: 40 }}
+      >
         <Box
+          height="40px"
+          onClick={this.props.onClick}
           onMouseEnter={() => {
             this.setState({ hover: true });
           }}
@@ -39,7 +48,15 @@ export default class DropdownChannelButton extends Component<Props, State> {
           style={{ border: "black 2px solid" }}
           justify="between"
         >
-          <Text>{this.props.channel.name}</Text>
+          <Text
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {this.props.channel.name}
+          </Text>
           <Box
             height="20px"
             width="20px"

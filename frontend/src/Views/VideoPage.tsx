@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Box, Grid, Text } from "grommet";
+import React, { useRef, useReducer, Component } from "react";
+import { Box, Grid, Text, Layer, Button } from "grommet";
 import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
 import ChatBox from "../Components/ChatBox";
 import ChannelIdCard from "../Components/ChannelIdCard";
@@ -16,11 +16,20 @@ interface Props {
 interface State {
   video: Video;
   viewCount: number;
+  overlay: boolean;
 }
 
 export default class VideoPage extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    const filters = [
+      "none",
+      "sepia",
+      "invert",
+      "grayscale",
+      "saturate",
+      "blur",
+    ];
     this.state = {
       video: {
         id: -1,
@@ -36,6 +45,7 @@ export default class VideoPage extends Component<Props, State> {
         chat_id: -1,
       },
       viewCount: -1,
+      overlay: false,
     };
   }
 

@@ -4,16 +4,18 @@ class ChatParticipant:
     """
     Represents a person, holds name, socket client and IP address chat_group_id_blocked
     """
-    def __init__(self, addr, client, chat_participant_id_subscribed, chat_participant_id_blocked, user_id=None):
+    def __init__(self, addr, client, chat_participant_id_subscribed, chat_participant_id_blocked, user_id=None, user_status=None):
         self.addr = addr
         self.client = client
         self.user_id = user_id
         self.chat_participant_id_subscribed = chat_participant_id_subscribed
         self.chat_participant_id_blocked = chat_participant_id_blocked
+        self.user_status = user_status  # possible values: visitor, verified, admin, moderator, community_member, partner
 
         self.clap_id = None
 
         self.name = None
+
         self.flag_connection = True
         self.creation_time = time.time()
         self.last_ping = time.time()
