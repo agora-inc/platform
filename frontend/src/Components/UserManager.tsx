@@ -230,7 +230,7 @@ export default class UserManager extends Component<{}, State> {
   render() {
     const username = this.state.user ? this.state.user.username : "?";
     return (
-      <Box style={{ width: 220 }} direction="row" justify="end">
+      <Box direction="row" justify="end">
         {this.state.isLoggedIn
           ? this.loggedInStuff(username)
           : this.loggedOutStuff}
