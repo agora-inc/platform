@@ -43,11 +43,20 @@ export default class ScheduledStreamCard extends Component<Props, State> {
           justify="between"
           gap="small"
         >
-          <Box height="25%">
+          <Box height="35%">
             <Text weight="bold" size="18px" color="pink">
               {this.props.stream.channel_name}
             </Text>
-            <Text weight="bold" size="20px" color="black">
+            <Text
+              weight="bold"
+              size="20px"
+              color="black"
+              style={{
+                // whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
               {this.props.stream.name}
             </Text>
           </Box>
@@ -101,20 +110,21 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               justify="between"
               gap="small"
             >
-              <Box>
+              <Box height="40%">
                 <Text weight="bold" size="22px" color="pink">
                   {this.props.stream.channel_name}
                 </Text>
-                <Text weight="bold" size="24px" color="black">
+                <Text
+                  weight="bold"
+                  size="24px"
+                  color="black"
+                  style={{ overflowY: "scroll" }}
+                >
                   {this.props.stream.name}
                 </Text>
               </Box>
-              <Box gap="small">
-                <Text
-                  size="22px"
-                  color="black"
-                  // style={{ maxHeight: , overflow: "scroll" }}
-                >
+              <Box height="60%" gap="small" justify="end">
+                <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
                   {this.props.stream.description}
                 </Text>
                 <Text size="18px" color="black" weight="bold">

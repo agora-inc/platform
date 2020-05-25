@@ -101,7 +101,7 @@ export default class Carousel extends Component<Props, State> {
       //       color="accent-4"
       //       channelName="ImperialEEE"
       //     /> */}
-      <Box>
+      <Box height="100%" width="100%">
         <Text color="black" weight="bold" size="32px">
           Live now
         </Text>

@@ -24,12 +24,14 @@ import {
   ScheduledStreamService,
 } from "../Services/ScheduledStreamService";
 import { Tag } from "../Services/TagService";
+import { Channel } from "../Services/ChannelService";
 import Loading from "./Loading";
 
 const { Step } = Steps;
 
 interface Props {
   margin: string;
+  channel: Channel | null;
 }
 
 interface State {
@@ -89,8 +91,8 @@ export default class ScheduleStreamButton extends Component<Props, State> {
   onFinish = () => {
     const dateTimeStr = this.combineDateAndTimeStrings();
     ScheduledStreamService.scheduleStream(
-      1,
-      "ImperialBioEng",
+      this.props.channel!.id,
+      this.props.channel!.name,
       this.state.title,
       this.state.description,
       dateTimeStr,

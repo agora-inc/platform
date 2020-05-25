@@ -264,8 +264,11 @@ export default class ManageChannelPage extends Component<Props, State> {
           >
             <Box width="75%" align="start">
               <Box direction="row" gap="small">
-                <StreamNowButton margin="none" />
-                <ScheduleStreamButton margin="none" />
+                <StreamNowButton margin="none" channel={this.state.channel} />
+                <ScheduleStreamButton
+                  margin="none"
+                  channel={this.state.channel}
+                />
               </Box>
               <Box
                 height="225px"

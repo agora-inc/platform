@@ -474,7 +474,7 @@ export default class QandA extends Component<Props, State> {
               </Text>
             </Box>
             <Box height="100%" justify="between">
-              <Identicon string={"remymess"} size={22} />
+              <Identicon string={answer.username} size={22} />
               <Text size="14px" weight="bold">
                 {answer.username}
               </Text>

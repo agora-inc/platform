@@ -56,7 +56,7 @@ export default class ChatBox extends Component<Props, State> {
       onmessage: (e) => this.handleIncomingWebsocketMessage(e),
       onerror: (e) => console.log("error:", e),
     });
-    // this.setState({ pingIntervalId: setInterval(this.pingChat, 3000) });
+    this.setState({ pingIntervalId: setInterval(this.pingChat, 3000) });
   }
 
   componentWillUnmount() {
@@ -314,7 +314,7 @@ export default class ChatBox extends Component<Props, State> {
         round="small"
         gridArea={this.props.gridArea}
       >
-        <Box width="100%" pad="25px">
+        <Box width="100%" pad="25px" height="90%" style={{ paddingBottom: 0 }}>
           <Text
             color="black"
             weight="bold"
@@ -324,17 +324,23 @@ export default class ChatBox extends Component<Props, State> {
             Live chat
           </Text>
           {this.state.loading && (
-            <Box height="80%" width="100%" justify="center" align="center">
+            <Box
+              height="80%"
+              width="100%"
+              justify="center"
+              align="center"
+              style={{ minHeight: "80%" }}
+            >
               <Loading color="black" size={50} />
             </Box>
           )}
           <Box
-            height="80%"
+            height="95%"
             gap="small"
             width="100%"
             id="messages"
             style={{
-              maxHeight: "80%",
+              maxHeight: "95%",
               overflowX: "hidden",
               overflowY: "scroll",
             }}

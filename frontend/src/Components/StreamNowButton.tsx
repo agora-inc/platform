@@ -18,6 +18,7 @@ import { ReactComponent as DescriptionImage } from "../description.svg";
 import { ReactComponent as TagImage } from "../tags.svg";
 import { ReactComponent as DoneImage } from "../finished.svg";
 import { Stream, StreamService } from "../Services/StreamService";
+import { Channel } from "../Services/ChannelService";
 import { Tag } from "../Services/TagService";
 import Loading from "./Loading";
 
@@ -25,6 +26,7 @@ const { Step } = Steps;
 
 interface Props {
   margin: string;
+  channel: Channel | null;
 }
 
 interface State {
@@ -75,8 +77,8 @@ export default class StreamNowButton extends Component<Props, State> {
 
   onFinish = () => {
     StreamService.createStream(
-      1,
-      "ImperialBioEng",
+      this.props.channel!.id,
+      this.props.channel!.name,
       this.state.title,
       this.state.description,
       this.state.tags,
