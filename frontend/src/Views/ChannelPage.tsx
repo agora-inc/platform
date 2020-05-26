@@ -27,6 +27,7 @@ interface State {
   loading: boolean;
   streams: Stream[];
   videos: Video[];
+  totalNumberOfVideos: number;
   scheduledStreams: ScheduledStream[];
   followerCount: number;
   viewCount: number;
@@ -43,6 +44,7 @@ export default class ChannelPage extends Component<Props, State> {
       loading: true,
       streams: [],
       videos: [],
+      totalNumberOfVideos: 0,
       scheduledStreams: [],
       followerCount: 0,
       viewCount: 0,
@@ -52,8 +54,21 @@ export default class ChannelPage extends Component<Props, State> {
   }
 
   componentWillMount() {
+    window.addEventListener("scroll", this.handleScroll, true);
     this.fetchChannel();
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  handleScroll = (e: any) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
+      this.fetchVideos();
+    }
+  };
 
   fetchChannel = () => {
     ChannelService.getChannelByName(
@@ -104,11 +119,14 @@ export default class ChannelPage extends Component<Props, State> {
 
   fetchVideos = () => {
     VideoService.getAllVideosForChannel(
-      6,
-      0,
       this.state.channel!.id,
-      (videos: Video[]) => {
-        this.setState({ videos });
+      6,
+      this.state.videos.length,
+      (data: { count: number; videos: Video[] }) => {
+        this.setState({
+          videos: this.state.videos.concat(data.videos),
+          totalNumberOfVideos: data.count,
+        });
       }
     );
   };

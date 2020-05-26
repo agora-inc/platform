@@ -34,6 +34,7 @@ interface State {
   channelMembers: User[];
   followers: User[];
   videos: Video[];
+  totalNumberOfVideos: number;
   scheduledStreams: ScheduledStream[];
 }
 
@@ -52,12 +53,18 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelMembers: [],
       followers: [],
       videos: [],
+      totalNumberOfVideos: 0,
       scheduledStreams: [],
     };
   }
 
   componentWillMount() {
+    window.addEventListener("scroll", this.handleScroll, true);
     this.getChannelAndCheckAccess();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -65,6 +72,14 @@ export default class ManageChannelPage extends Component<Props, State> {
       this.getChannelAndCheckAccess();
     }
   }
+
+  handleScroll = (e: any) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
+      this.fetchVideos();
+    }
+  };
 
   getChannelAndCheckAccess = () => {
     if (this.props.location.state) {
@@ -117,45 +132,6 @@ export default class ManageChannelPage extends Component<Props, State> {
         }
       );
     }
-    // if (this.props.location.state) {
-    //   this.setState(
-    //     {
-    //       channel: this.props.location.state.channel,
-    //       colour: this.props.location.state.channel.colour,
-    //       allowed: true,
-    //       loading: false,
-    //     },
-    //     () => {
-    //       this.fetchFollowerCount();
-    //       this.fetchViewCount();
-    //     }
-    //   );
-    // } else {
-    //   ChannelService.getChannelByName(
-    //     this.props.location.pathname.split("/")[2],
-    //     (channel: Channel) => {
-    //       let user = UserService.getCurrentUser();
-    //       ChannelService.isUserInChannel(
-    //         user.id,
-    //         channel.id,
-    //         (res: boolean) => {
-    //           this.setState(
-    //             {
-    //               channel: channel,
-    //               colour: channel.colour,
-    //               allowed: res,
-    //               loading: false,
-    //             },
-    //             () => {
-    //               this.fetchFollowerCount();
-    //               this.fetchViewCount();
-    //             }
-    //           );
-    //         }
-    //       );
-    //     }
-    //   );
-    // }
   };
 
   fetchFollowerCount = () => {
@@ -210,9 +186,12 @@ export default class ManageChannelPage extends Component<Props, State> {
     VideoService.getAllVideosForChannel(
       this.state.channel!.id,
       6,
-      0,
-      (videos: Video[]) => {
-        this.setState({ videos });
+      this.state.videos.length,
+      (data: { count: number; videos: Video[] }) => {
+        this.setState({
+          videos: this.state.videos.concat(data.videos),
+          totalNumberOfVideos: data.count,
+        });
       }
     );
   };
