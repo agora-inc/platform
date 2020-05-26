@@ -219,7 +219,9 @@ def scheduleStream():
 def getAllVideos():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(videos.getAllVideos(limit, offset))
+    data = videos.getAllVideos(limit, offset)
+    return jsonify({"videos": data[0],"count": data[1]})
+    # return jsonify({ videos.getAllVideos(limit, offset)})
 
 @app.route('/videos/recent', methods=["GET"])
 def getRecentVideos():
@@ -230,7 +232,8 @@ def getAllVideosForChannel():
     channelId = int(request.args.get("channelId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(videos.getAllVideosForChannel(channelId, limit, offset))
+    data = videos.getAllVideosForChannel(channelId, limit, offset)
+    return jsonify({"videos": data[0],"count": data[1]})
 
 @app.route('/videos/video', methods=["GET"])
 def getVideoById():
@@ -242,7 +245,8 @@ def getVideosWithTag():
     tagName = request.args.get("tagName")
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(videos.getAllVideosWithTag(tagName, limit, offset))
+    data = videos.getAllVideosWithTag(tagName, limit, offset)
+    return jsonify({"videos": data[0],"count": data[1]})
 
 # --------------------------------------------
 # Q+A ROUTES
