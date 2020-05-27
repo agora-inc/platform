@@ -1,4 +1,4 @@
-from repository import ChannelRepository
+from repository.ChannelRepository import ChannelRepository
 
 class ScheduledStreamRepository:
     def __init__(self, db):
