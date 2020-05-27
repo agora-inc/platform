@@ -67,7 +67,6 @@ export default class VideoPage extends Component<Props, State> {
   };
 
   render() {
-    console.log(this.state.video);
     return (
       <Box align="center">
         <Grid
@@ -95,18 +94,30 @@ export default class VideoPage extends Component<Props, State> {
               }}
               style={{
                 width: "100%",
-                height: "86%",
-                borderRadius: 15,
+                height: "90%",
+                borderRadius: 10,
                 overflow: "hidden",
               }}
             ></VideoPlayer>
             <Box direction="row" justify="between" align="start">
-              <Box gap="xsmall" width="65%">
-                <Text size="34px" weight="bold">
-                  {this.state.video!.name}
-                </Text>
-              </Box>
-              <Box direction="row" gap="small" width="35%" justify="end">
+              <p
+                style={{
+                  padding: 0,
+                  margin: 0,
+                  fontSize: "34px",
+                  fontWeight: "bold",
+                  // color: "black",
+                  maxWidth: "65%",
+                }}
+              >
+                {this.state.video!.name}
+              </p>
+              <Box
+                direction="row"
+                gap="small"
+                justify="end"
+                style={{ minWidth: "35%" }}
+              >
                 <ChannelIdCard channelName={this.state.video!.channel_name} />
                 <Box direction="row" align="center" gap="xxsmall">
                   <View color="black" size="40px" />
@@ -137,6 +148,7 @@ export default class VideoPage extends Component<Props, State> {
           description={this.state.video!.description}
           videoId={this.state.video.id}
           streamer={false}
+          margin={{ top: "-20px" }}
         />
       </Box>
     );

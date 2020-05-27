@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { QandAService } from "../Services/QandAService";
 import { UserService, User } from "../Services/UserService";
-import { Add } from "grommet-icons";
+import { Add, Refresh } from "grommet-icons";
 import Loading from "./Loading";
 import LatexInput from "./LatexInput";
 import Identicon from "react-identicons";
@@ -62,6 +62,11 @@ export default class QandA extends Component<Props, State> {
   }
 
   componentWillMount() {
+    this.fetchQuestions();
+  }
+
+  fetchQuestions = () => {
+    this.setState({ loading: true });
     if (this.props.streamId) {
       QandAService.getAllQuestionsForStream({
         callback: (questions: Question[]) => {
@@ -77,7 +82,7 @@ export default class QandA extends Component<Props, State> {
         videoId: this.props.videoId,
       });
     }
-  }
+  };
 
   onNewClicked = () => {
     this.setState(
@@ -518,37 +523,49 @@ export default class QandA extends Component<Props, State> {
               New
             </Text>
           </Box>
-          {!this.props.streamer && this.state.user && (
+          <Box direction="row" align="center" margin="small" gap="xsmall">
+            {!this.props.streamer && this.state.user && (
+              <Box
+                direction="row"
+                width="100px"
+                height="40px"
+                round="small"
+                background="#606EEB"
+                // margin="small"
+                justify="center"
+                align="center"
+                gap="small"
+                onClick={this.onNewClicked}
+                focusIndicator={false}
+              >
+                <Text color="white" weight="bold">
+                  New
+                </Text>
+                <Add color="white" size="16px" fontWeight="bold" />
+              </Box>
+            )}
             <Box
-              direction="row"
-              width="100px"
-              height="40px"
-              round="small"
-              background="#606EEB"
-              margin="small"
-              justify="center"
-              align="center"
-              gap="small"
-              onClick={this.onNewClicked}
+              onClick={this.fetchQuestions}
               focusIndicator={false}
+              margin="none"
+              pad="none"
             >
-              <Text color="white" weight="bold">
-                New
-              </Text>
-              <Add color="white" size="16px" fontWeight="bold" />
+              <Refresh size="40px" />
             </Box>
-          )}
+          </Box>
         </Box>
         {this.state.loading && (
           <Box width="100%" height="100%" align="center" justify="center">
             <Loading size={50} color="black" />
           </Box>
         )}
-        <Box margin="small" gap="medium">
-          {this.sortQuestions().map((question) =>
-            this.renderQuestion(question)
-          )}
-        </Box>
+        {!this.state.loading && (
+          <Box margin="small" gap="medium">
+            {this.sortQuestions().map((question) =>
+              this.renderQuestion(question)
+            )}
+          </Box>
+        )}
         {(this.state.writingQuestion || this.state.answeringQuestion) && (
           <LatexInput
             title={

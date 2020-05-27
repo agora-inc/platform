@@ -129,6 +129,7 @@ export default class VideoPage extends Component<Props, State> {
           description={this.state.stream.description}
           streamId={this.state.stream.id}
           streamer={false}
+          margin={{ top: "-20px" }}
         />
       </Box>
     );
