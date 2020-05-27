@@ -60,7 +60,7 @@ class ChannelRepository:
         cursor.execute('SELECT colour FROM Channels WHERE id = %d' % (channelId))
         result = cursor.fetchall()
         cursor.close()
-        return result[0]
+        return result[0]["colour"]
 
     def updateChannelColour(self, channelId, newColor):
         cursor = self.db.con.cursor()
