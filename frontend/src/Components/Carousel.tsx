@@ -30,7 +30,7 @@ export default class Carousel extends Component<Props, State> {
     return (
       <Box
         width="100%"
-        height="100%"
+        height="200px"
         margin="none"
         pad="25px"
         justify="between"
@@ -101,7 +101,7 @@ export default class Carousel extends Component<Props, State> {
       //       color="accent-4"
       //       channelName="ImperialEEE"
       //     /> */}
-      <Box height="100%" width="100%">
+      <Box width="100%">
         <Text color="black" weight="bold" size="32px">
           Live now
         </Text>
@@ -129,10 +129,10 @@ export default class Carousel extends Component<Props, State> {
   render() {
     return (
       <Box
-        width="100%"
-        height="100%"
-        gridArea={this.props.gridArea}
-        // margin={{ top: "60px" }}
+      // width="100%"
+      // height="100%"
+      // gridArea={this.props.gridArea}
+      // margin={{ top: "60px" }}
       >
         {this.state.streams.length === 0
           ? this.ifNoStreams()

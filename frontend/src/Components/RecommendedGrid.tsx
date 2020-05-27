@@ -33,15 +33,15 @@ export default class RecommendedGrid extends Component<{}, State> {
           direction="row"
           gap="small"
           align="center"
-          margin={{ bottom: "20px" }}
+          margin={{ bottom: "15px" }}
         >
-          <Text size="32px" weight="bold" color="black" margin="none">
+          <Text size="26px" weight="bold" color="black" margin="none">
             Recent streams
           </Text>
           <Link to="/videos" style={{ textDecoration: "none" }}>
             <Box
               className="see-more-button"
-              pad={{ vertical: "xsmall", horizontal: "small" }}
+              pad={{ vertical: "2px", horizontal: "xsmall" }}
               round="xsmall"
               style={{ border: "2px solid black" }}
               direction="row"
@@ -61,8 +61,8 @@ export default class RecommendedGrid extends Component<{}, State> {
         >
           {this.state.videos.map((video: Video) => (
             <VideoCard
-              width="410px"
-              height="240px"
+              width="32%"
+              height="200px"
               color="#f2f2f2"
               video={video}
               // margin="none"

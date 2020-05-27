@@ -1,0 +1,32 @@
+import React, { Component } from "react";
+import { Box, Text, Sidebar } from "grommet";
+import TrendingChannelsList from "./TrendingChannelsList";
+import SubscribedChannelsList from "./SubscribedChannelsList";
+import { User } from "../Services/UserService";
+
+interface Props {
+  user: User | null;
+}
+
+export default class CustomSideBar extends Component<Props> {
+  render() {
+    return (
+      <Sidebar
+        background="#EFEFF1"
+        width="20%"
+        pad="none"
+        style={{ minHeight: "100%" }}
+        margin="none"
+      >
+        <Box
+          margin={{ top: "60px" }}
+          pad={{ top: "small" }}
+          style={{ position: "sticky", top: 72 }}
+        >
+          <TrendingChannelsList />
+          <SubscribedChannelsList user={this.props.user} />
+        </Box>
+      </Sidebar>
+    );
+  }
+}

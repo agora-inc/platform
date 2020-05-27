@@ -47,15 +47,15 @@ export default class ScheduledStreamList extends Component<Props, State> {
 
   render() {
     return (
-      <Box height="100%" gridArea={this.props.gridArea}>
+      <Box>
         <Box
           direction="row"
-          gap="small"
-          align="center"
-          margin={{ bottom: "20px" }}
+          gap="xsmall"
+          align="end"
+          margin={{ bottom: "15px" }}
         >
           {this.props.title && (
-            <Text size="32px" weight="bold" color="black" margin="none">
+            <Text size="26px" weight="bold" color="black" margin="none">
               Upcoming streams
             </Text>
           )}
@@ -63,7 +63,7 @@ export default class ScheduledStreamList extends Component<Props, State> {
             <Link to="/scheduled" style={{ textDecoration: "none" }}>
               <Box
                 className="see-more-button"
-                pad={{ vertical: "xsmall", horizontal: "small" }}
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
                 round="xsmall"
                 style={{ border: "2px solid black" }}
                 direction="row"

@@ -32,7 +32,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="32%" height="100%">
+      <Box width="32%" height="350px">
         <Box
           height="100%"
           width="100%"
@@ -43,7 +43,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
           justify="between"
           gap="small"
         >
-          <Box height="35%">
+          {/* <Box height="35%">
             <Text weight="bold" size="18px" color="pink">
               {this.props.stream.channel_name}
             </Text>
@@ -72,13 +72,13 @@ export default class ScheduledStreamCard extends Component<Props, State> {
             <Identicon string={this.props.stream.channel_name} size={65} />
           </Box>
           <Box gap="small">
-            {/* <Text
+            <Text
             size="18px"
             color="black"
             style={{ maxHeight: 150, overflow: "scroll" }}
           >
             {this.props.stream.description}
-          </Text> */}
+          </Text>
             <Text size="18px" color="black" weight="bold">
               {this.formatDate(this.props.stream.date)}
             </Text>
@@ -91,7 +91,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               size="large"
               onClick={this.toggleModal}
             ></Button>
-          </Box>
+          </Box> */}
         </Box>
         {this.state.showModal && (
           <Layer
