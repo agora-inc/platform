@@ -10,7 +10,7 @@ class ScheduledStreamRepository:
         cursor.execute(f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP LIMIT {limit} OFFSET {offset}')
         streams = cursor.fetchall()
         for stream in streams:
-            stream["channel_colour"] = self.channels.getChannelColour(stream["channelId"])
+            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
         cursor.close()
         return streams
 
