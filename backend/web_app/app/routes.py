@@ -211,7 +211,7 @@ def scheduleStream():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["streamDate"], params["streamDescription"]))
+    return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["channelColour"], params["streamName"], params["streamDate"], params["streamDescription"]))
 
 # --------------------------------------------
 # VOD ROUTES
