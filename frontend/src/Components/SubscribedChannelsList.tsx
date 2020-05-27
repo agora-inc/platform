@@ -45,19 +45,19 @@ export default class SubscribedChannelsList extends Component<Props, State> {
     return (
       <Box>
         <Text
-          size="18px"
+          size="16px"
           weight="bold"
           color="black"
           margin={{ left: "small" }}
         >
-          Following
+          FOLLOWING
         </Text>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
             <Loading color="black" size={50} />
           </Box>
         )}
-        <Box margin={{ top: "5px" }}>
+        <Box margin={{ top: "2px" }}>
           {this.state.channels.map((channel: Channel) => (
             <Link
               className="channel"

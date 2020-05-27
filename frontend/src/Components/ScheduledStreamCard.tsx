@@ -32,21 +32,47 @@ export default class ScheduledStreamCard extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="32%" height="350px">
+      <Box
+        width="32%"
+        height="300px"
+        onClick={this.toggleModal}
+        focusIndicator={false}
+      >
         <Box
           height="100%"
           width="100%"
           background="white"
-          round="10px"
+          round="xsmall"
           // align="center"
           pad="15px"
           justify="between"
           gap="small"
         >
-          {/* <Box height="35%">
-            <Text weight="bold" size="18px" color="pink">
-              {this.props.stream.channel_name}
-            </Text>
+          <Box height="35%">
+            <Box
+              direction="row"
+              gap="xsmall"
+              align="center"
+              style={{ minHeight: "30px" }}
+            >
+              <Box
+                height="25px"
+                width="25px"
+                round="12.5px"
+                justify="center"
+                align="center"
+                background="#efeff1"
+              >
+                <Identicon string={this.props.stream.channel_name} size={15} />
+              </Box>
+              <Text
+                weight="bold"
+                size="18px"
+                color={this.props.stream.channel_colour}
+              >
+                {this.props.stream.channel_name}
+              </Text>
+            </Box>
             <Text
               weight="bold"
               size="20px"
@@ -60,38 +86,18 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               {this.props.stream.name}
             </Text>
           </Box>
-          <Box
-            width="100px"
-            height="100px"
-            round="50px"
-            style={{ border: "5px solid pink" }}
-            justify="center"
-            align="center"
-            alignSelf="end"
-          >
-            <Identicon string={this.props.stream.channel_name} size={65} />
-          </Box>
           <Box gap="small">
             <Text
-            size="18px"
-            color="black"
-            style={{ maxHeight: 150, overflow: "scroll" }}
-          >
-            {this.props.stream.description}
-          </Text>
+              size="18px"
+              color="black"
+              style={{ maxHeight: 150, overflow: "scroll" }}
+            >
+              {this.props.stream.description}
+            </Text>
             <Text size="18px" color="black" weight="bold">
               {this.formatDate(this.props.stream.date)}
             </Text>
-            <Button
-              primary
-              color="black"
-              // disabled={!this.props.loggedIn}
-              // label={this.props.loggedIn ? "Register" : "Log in to register"}
-              label="Details"
-              size="large"
-              onClick={this.toggleModal}
-            ></Button>
-          </Box> */}
+          </Box>
         </Box>
         {this.state.showModal && (
           <Layer

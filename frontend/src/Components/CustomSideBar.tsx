@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Box, Text, Sidebar } from "grommet";
 import TrendingChannelsList from "./TrendingChannelsList";
 import SubscribedChannelsList from "./SubscribedChannelsList";
+import PopularTagsBox from "./PopularTagsBox";
 import { User } from "../Services/UserService";
 
 interface Props {
@@ -20,11 +21,13 @@ export default class CustomSideBar extends Component<Props> {
       >
         <Box
           margin={{ top: "60px" }}
-          pad={{ top: "small" }}
-          style={{ position: "sticky", top: 72 }}
+          pad={{ top: "3px" }}
+          style={{ position: "sticky", top: 63 }}
+          gap="small"
         >
           <TrendingChannelsList />
           <SubscribedChannelsList user={this.props.user} />
+          <PopularTagsBox />
         </Box>
       </Sidebar>
     );

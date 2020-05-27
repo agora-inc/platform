@@ -178,17 +178,16 @@ export default class UserManager extends Component<{}, State> {
         visible={this.state.showDropdown}
       >
         <Button
-          margin={{ left: "10px" }}
           style={{
-            height: 45,
-            width: 45,
-            borderRadius: 22.5,
+            height: 40,
+            width: 40,
+            borderRadius: 20,
             overflow: "hidden",
           }}
           focusIndicator={false}
           onClick={this.toggleDropdown}
         >
-          <Identicon string={this.state.user?.username} size={45} />
+          <Identicon string={this.state.user?.username} size={40} />
         </Button>
       </Dropdown>
     );

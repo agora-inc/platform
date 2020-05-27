@@ -26,7 +26,7 @@ export default class Home extends Component<{}, State> {
       <Box direction="row">
         <CustomSideBar user={this.state.user} />
         <Box
-          width="75%"
+          width="80%"
           height="100%"
           overflow="hidden"
           pad="medium"

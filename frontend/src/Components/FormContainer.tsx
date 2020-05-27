@@ -103,9 +103,9 @@ export default class FormContainer extends Component<{}, State> {
         <Box
           focusIndicator={false}
           background="white"
-          round="small"
+          round="xsmall"
           onClick={() => this.setState({ showForm: true })}
-          pad={{ horizontal: "small", vertical: "xsmall" }}
+          pad={{ horizontal: "small", vertical: "2.5px" }}
           style={{
             alignItems: "center",
             justifyContent: "center",
