@@ -67,6 +67,7 @@ export type ScheduledStream = {
   id: number;
   channel_id: number;
   channel_name: string;
+  channel_colour: string;
   name: string;
   date: string;
   description: string;

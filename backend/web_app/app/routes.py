@@ -87,6 +87,7 @@ def getAllChannels():
 def getChannelsForUser():
     userId = int(request.args.get("userId"))
     roles = request.args.getlist("role")
+    print(roles)
     return jsonify(channels.getChannelsForUser(userId, roles))
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
@@ -210,7 +211,7 @@ def scheduleStream():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["streamDate"], params["streamDescription"]))
+    return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["channelColour"], params["streamName"], params["streamDate"], params["streamDescription"]))
 
 # --------------------------------------------
 # VOD ROUTES

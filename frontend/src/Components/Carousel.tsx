@@ -29,52 +29,41 @@ export default class Carousel extends Component<Props, State> {
   ifNoStreams = () => {
     return (
       <Box
+        direction="row"
         width="100%"
-        height="100%"
         margin="none"
-        pad="25px"
+        pad="small"
         justify="between"
-        // background="black"
-        round="10px"
+        round="xsmall"
+        align="center"
         alignSelf="center"
-        // zIndex={1}
-        style={{ border: "3px solid black" }}
+        background="rgba(96, 110, 235, 0.7)"
       >
-        <Text size="36px" weight="bold" color="black">
+        <Text size="20px" weight="bold" color="black">
           Nobody is streaming right now
         </Text>
-        <Box direction="row" justify="between" align="end">
-          <Text
-            size="23px"
-            weight="bold"
-            // color="#D8D8D8"
-            style={{ width: 357 }}
+        <Box
+          background="white"
+          justify="center"
+          align="center"
+          style={{ border: "solid black 2px" }}
+          round="xsmall"
+          pad="xsmall"
+        >
+          <Link
+            to="/videos"
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            While you’re waiting, why not explore some previous streams?
-          </Text>
-          <Box
-            width="153px"
-            height="57px"
-            background="black"
-            round="40px"
-            justify="center"
-            align="center"
-          >
-            <Link
-              to="/videos"
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text size="24px" weight="bold" color="white">
-                Explore
-              </Text>
-            </Link>
-          </Box>
+            <Text size="16px" weight="bold" color="black">
+              Explore previous streams
+            </Text>
+          </Link>
         </Box>
       </Box>
     );
@@ -101,7 +90,7 @@ export default class Carousel extends Component<Props, State> {
       //       color="accent-4"
       //       channelName="ImperialEEE"
       //     /> */}
-      <Box height="100%" width="100%">
+      <Box width="100%">
         <Text color="black" weight="bold" size="32px">
           Live now
         </Text>
@@ -129,10 +118,10 @@ export default class Carousel extends Component<Props, State> {
   render() {
     return (
       <Box
-        width="100%"
-        height="100%"
-        gridArea={this.props.gridArea}
-        // margin={{ top: "60px" }}
+      // width="100%"
+      // height="100%"
+      // gridArea={this.props.gridArea}
+      // margin={{ top: "60px" }}
       >
         {this.state.streams.length === 0
           ? this.ifNoStreams()

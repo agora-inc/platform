@@ -1,13 +1,18 @@
+from repository import ChannelRepository
+
 class ScheduledStreamRepository:
     def __init__(self, db):
         self.db = db
+        self.channels = ChannelRepository(db=db)
 
     def getAllScheduledStreams(self, limit, offset):
         cursor = self.db.con.cursor()
         cursor.execute(f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP LIMIT {limit} OFFSET {offset}')
-        result = cursor.fetchall()
+        streams = cursor.fetchall()
+        for stream in streams:
+            stream["channel_colour"] = self.channels.getChannelColour(stream["channelId"])
         cursor.close()
-        return result
+        return streams
 
     def getAllScheduledStreamsForChannel(self, channelId):
         cursor = self.db.con.cursor()
@@ -23,9 +28,9 @@ class ScheduledStreamRepository:
         cursor.close()
         return result
 
-    def scheduleStream(self, channelId, channelName, streamName, streamDate, streamDescription):
+    def scheduleStream(self, channelId, channelName, channelColour, streamName, streamDate, streamDescription):
         cursor = self.db.con.cursor()
-        cursor.execute(f'INSERT INTO ScheduledStreams(channel_id, channel_name, name, date, description) VALUES ({channelId}, "{channelName}", "{streamName}", "{streamDate}", "{streamDescription}")')
+        cursor.execute(f'INSERT INTO ScheduledStreams(channel_id, channel_name, channel_colour, name, date, description) VALUES ({channelId}, "{channelName}", "{channelColour}", "{streamName}", "{streamDate}", "{streamDescription}")')
         self.db.con.commit()
         insertId = cursor.lastrowid
         cursor.close()
