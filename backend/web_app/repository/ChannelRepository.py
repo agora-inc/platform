@@ -57,7 +57,7 @@ class ChannelRepository:
 
     def getChannelColour(self, channelId):
         cursor = self.db.con.cursor()
-        cursor.execute('SELECT colour FROM Channels SET  WHERE id = %d' % (channelId))
+        cursor.execute('SELECT colour FROM Channels WHERE id = %d' % (channelId))
         result = cursor.fetchall()
         cursor.close()
         return result[0]
