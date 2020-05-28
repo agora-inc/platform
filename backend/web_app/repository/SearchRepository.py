@@ -1,6 +1,10 @@
+from repository import TagRepository, ChannelRepository
+
 class SearchRepository:
     def __init__(self, db):
         self.db = db
+        self.tags = TagRepository.TagRepository(db=db)
+        self.channels = ChannelRepository.ChannelRepository(db=db)
     
     def searchTable(self, objectType, searchString):
         if objectType == "user":
@@ -42,16 +46,25 @@ class SearchRepository:
     def searchVideos(self, searchString):
         cursor = self.db.con.cursor()
         cursor.execute(f'SELECT * FROM Videos WHERE name LIKE "%{searchString}%" OR description LIKE "%{searchString}%"')
-        result = cursor.fetchall()
+        videos = cursor.fetchall()
         cursor.close()
-        return result
+
+        for video in videos:
+            video["tags"] = self.tags.getTagsOnVideo(video["id"])
+            video["channel_colour"] = self.channels.getChannelColour(video["channel_id"])
+
+        return videos
 
     def searchScheduledStreams(self, searchString):
         cursor = self.db.con.cursor()
         cursor.execute(f'SELECT * FROM ScheduledStreams WHERE name LIKE "%{searchString}%" OR description LIKE "%{searchString}%"')
-        result = cursor.fetchall()
+        scheduledStreams = cursor.fetchall()
         cursor.close()
-        return result
+
+        for stream in scheduledStreams:
+            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+
+        return scheduledStreams
 
     def searchTags(self, searchString):
         cursor = self.db.con.cursor()

@@ -1,9 +1,10 @@
-from repository import TagRepository
+from repository import TagRepository, ChannelRepository
 
 class VideoRepository:
     def __init__(self, db):
         self.db = db
         self.tags = TagRepository.TagRepository(db=self.db)
+        self.channels = ChannelRepository.ChannelRepository(db=db)
 
     def getNumberOfVideos(self):
         cursor = self.db.con.cursor()
@@ -59,7 +60,8 @@ class VideoRepository:
 
         for video in videos:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
-
+            video["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+            
         return (videos, self.getNumberOfVideos())
 
     def getAllVideosForChannel(self, channelId, limit, offset):
