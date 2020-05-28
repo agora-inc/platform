@@ -1,5 +1,5 @@
 from app import app, db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository, SearchRepository
 from flask import jsonify, request, send_file
 from werkzeug import exceptions
 
@@ -10,6 +10,7 @@ streams = StreamRepository.StreamRepository(db=db)
 scheduledStreams = ScheduledStreamRepository.ScheduledStreamRepository(db=db)
 videos = VideoRepository.VideoRepository(db=db)
 channels = ChannelRepository.ChannelRepository(db=db)
+search = SearchRepository.SearchRepository(db=db)
 
 # --------------------------------------------
 # USER ROUTES
@@ -388,3 +389,16 @@ def tagStream():
 def getTagsOnStream():
     streamId = int(request.args.get("streamId"))
     return jsonify(tags.getTagsOnStream(streamId))
+
+# --------------------------------------------
+# SEARCH ROUTES
+# --------------------------------------------
+@app.route('/search', methods=["POST", "OPTION"])
+def fullTextSearch():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    objectTypes = params["objectTypes"]
+    searchString = params["searchString"]
+    results = {objectType: search.searchTable(objectType, searchString) for objectType in objectTypes}
+    return jsonify(results)
