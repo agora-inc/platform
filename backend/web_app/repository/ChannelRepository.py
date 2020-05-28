@@ -85,8 +85,17 @@ class ChannelRepository:
         return result
 
     def addUserToChannel(self, userId, channelId, role):
+        # try updating the user's role in the channel (user may already be associated with channel in a different role)
         cursor = self.db.con.cursor()
-        cursor.execute('INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES (%d, %d, "%s")' % (userId, channelId, role))
+
+        cursor.execute(f'UPDATE ChannelUsers SET role="{role}" WHERE user_id={userId} AND channel_id={channelId}')
+        if cursor.rowcount != 0:
+            self.db.con.commit()
+            cursor.close()
+            return
+
+        # if user has no current role wrt channel, create new link between user and channel    
+        cursor.execute(f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {channelId}, "{role}")')
         self.db.con.commit()
         cursor.close()
 
