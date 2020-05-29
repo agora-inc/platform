@@ -60,7 +60,7 @@ class VideoRepository:
 
         for video in videos:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
-            video["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+            video["channel_colour"] = self.channels.getChannelColour(video["channel_id"])
             
         return (videos, self.getNumberOfVideos())
 
@@ -90,5 +90,6 @@ class VideoRepository:
 
         for video in videos:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
+            video["channel_colour"] = self.channels.getChannelColour(video["channel_id"])
 
         return (videos, self.getNumberOfVideosForTag(tagId))
