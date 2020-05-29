@@ -37,9 +37,10 @@ export default class ScheduledStreamList extends Component<Props, State> {
 
   fetchScheduledStreams = () => {
     ScheduledStreamService.getAllScheduledStreams(
-      3,
+      6,
       0,
       (scheduledStreams: ScheduledStream[]) => {
+        console.log(scheduledStreams);
         this.setState({ scheduledStreams, loading: false });
       }
     );
@@ -75,7 +76,7 @@ export default class ScheduledStreamList extends Component<Props, State> {
             </Link>
           )}
         </Box>
-        <Box gap="medium" direction="row" width="100%" height="100%">
+        <Box gap="small" direction="row" width="100%" height="100%" wrap>
           {this.state.scheduledStreams.map((stream: ScheduledStream) => (
             <ScheduledStreamCard
               stream={stream}

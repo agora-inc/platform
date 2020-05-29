@@ -80,6 +80,7 @@ export type Video = {
   id: number;
   channel_id: number;
   channel_name: string;
+  channel_colour: string;
   name: string;
   description: string;
   tags: Tag[];

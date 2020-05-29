@@ -10,6 +10,7 @@ interface Props {
 
 interface State {
   showModal: boolean;
+  showShadow: boolean;
 }
 
 export default class ScheduledStreamCard extends Component<Props, State> {
@@ -17,6 +18,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
     super(props);
     this.state = {
       showModal: false,
+      showShadow: false,
     };
   }
   formatDate = (d: string) => {
@@ -27,7 +29,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
   };
 
   toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal });
+    this.setState({ showModal: !this.state.showModal, showShadow: true });
   };
 
   render() {
@@ -37,8 +39,16 @@ export default class ScheduledStreamCard extends Component<Props, State> {
         height="300px"
         onClick={this.toggleModal}
         focusIndicator={false}
+        style={{ position: "relative" }}
+        margin={{ bottom: "small" }}
       >
         <Box
+          onMouseEnter={() => this.setState({ showShadow: true })}
+          onMouseLeave={() => {
+            if (!this.state.showModal) {
+              this.setState({ showShadow: false });
+            }
+          }}
           height="100%"
           width="100%"
           background="white"
@@ -99,10 +109,25 @@ export default class ScheduledStreamCard extends Component<Props, State> {
             </Text>
           </Box>
         </Box>
+        {this.state.showShadow && (
+          <Box
+            height="100%"
+            width="100%"
+            round="xsmall"
+            style={{ zIndex: -1, position: "absolute", top: 8, left: 8 }}
+            background={this.props.stream.channel_colour}
+          ></Box>
+        )}
         {this.state.showModal && (
           <Layer
-            onEsc={this.toggleModal}
-            onClickOutside={this.toggleModal}
+            onEsc={() => {
+              this.toggleModal();
+              this.setState({ showShadow: false });
+            }}
+            onClickOutside={() => {
+              this.toggleModal();
+              this.setState({ showShadow: false });
+            }}
             modal
             responsive
             animation="fadeIn"
@@ -117,7 +142,11 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               gap="small"
             >
               <Box height="40%">
-                <Text weight="bold" size="22px" color="pink">
+                <Text
+                  weight="bold"
+                  size="22px"
+                  color={this.props.stream.channel_colour}
+                >
                   {this.props.stream.channel_name}
                 </Text>
                 <Text
@@ -138,7 +167,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 </Text>
                 <Button
                   primary
-                  color="black"
+                  color={this.props.stream.channel_colour}
                   disabled={!this.props.loggedIn}
                   label={
                     this.props.loggedIn ? "Register" : "Log in to register"

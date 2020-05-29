@@ -11,6 +11,8 @@ interface Props {
 interface State {
   tagName: string;
   videos: Video[];
+  loading: boolean;
+  totalNumberOfVideos: number;
   sortBy: string;
 }
 
@@ -20,20 +22,43 @@ export default class TagPage extends Component<Props, State> {
     this.state = {
       tagName: this.props.location.pathname.split("/")[2],
       videos: [],
+      totalNumberOfVideos: 0,
       sortBy: "date",
+      loading: true,
     };
   }
 
   componentWillMount() {
+    window.addEventListener("scroll", this.handleScroll, true);
+    this.fetchVideos();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  handleScroll = (e: any) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
+      this.fetchVideos();
+    }
+  };
+
+  fetchVideos = () => {
     VideoService.getAllVideosWithTag(
       this.state.tagName,
-      6,
-      0,
-      (videos: Video[]) => {
-        this.setState({ videos });
+      12,
+      this.state.videos.length,
+      (data: { count: number; videos: Video[] }) => {
+        this.setState({
+          videos: this.state.videos.concat(data.videos),
+          totalNumberOfVideos: data.count,
+          loading: false,
+        });
       }
     );
-  }
+  };
 
   compareVideosByDate = (a: Video, b: Video) => {
     if (a.date < b.date) {

@@ -5,6 +5,7 @@ import { ReactComponent as Logo } from "../apollo.svg";
 import { Link } from "react-router-dom";
 import UserManager from "./UserManager";
 import FormContainer from "./FormContainer";
+import SiteWideSearch from "./SiteWideSearch";
 
 export default class HeaderBar extends Component {
   constructor(props: any) {
@@ -44,14 +45,15 @@ export default class HeaderBar extends Component {
             </Box>
           </Link>
         </Box>
-        <Box>
+        <SiteWideSearch />
+        {/* <Box>
           <TextInput
             icon={<Search />}
             reverse
             placeholder="search ..."
             style={{ width: "27vw", height: "4.5vh", justifySelf: "center" }}
           />
-        </Box>
+        </Box> */}
         <Box
           direction="row"
           gap="xsmall"

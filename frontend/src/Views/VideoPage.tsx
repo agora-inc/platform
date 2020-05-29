@@ -35,6 +35,7 @@ export default class VideoPage extends Component<Props, State> {
         id: -1,
         channel_id: -1,
         channel_name: "",
+        channel_colour: "",
         name: "",
         description: "",
         tags: [],

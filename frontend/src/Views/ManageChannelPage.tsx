@@ -14,6 +14,7 @@ import ScheduleStreamButton from "../Components/ScheduleStreamButton";
 import Identicon from "react-identicons";
 import ColorPicker from "../Components/ColorPicker";
 import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
+import AddUsersButton from "../Components/AddUsersButton";
 import VideoCard from "../Components/VideoCard";
 import "../Styles/manage-channel.css";
 
@@ -347,20 +348,23 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text weight="bold" size="20px" color="black">
                       Channel owners
                     </Text>
-                    <Box
-                      width="70px"
-                      align="center"
-                      background="white"
-                      pad={{ horizontal: "small", vertical: "3px" }}
-                      round="xsmall"
-                      style={{ border: "2px solid black" }}
-                    >
-                      <Text color="black" style={{ fontWeight: 500 }}>
-                        Add
-                      </Text>
-                    </Box>
+                    <AddUsersButton
+                      role="owner"
+                      existingUsers={this.state.channelOwners}
+                      channelId={this.state.channel!.id}
+                      onUserAddedCallback={() => {
+                        this.fetchMembers();
+                        this.fetchOwners();
+                        this.fetchFollowers();
+                      }}
+                    />
                   </Box>
-                  <Box direction="row" wrap margin={{ top: "5px" }}>
+                  <Box
+                    direction="row"
+                    wrap
+                    margin={{ top: "5px" }}
+                    gap="xsmall"
+                  >
                     {this.state.channelOwners.map((owner: User) => (
                       <Box
                         background="white"
@@ -386,18 +390,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text weight="bold" size="20px" color="black">
                       Channel members
                     </Text>
-                    <Box
-                      width="70px"
-                      align="center"
-                      background="white"
-                      pad={{ horizontal: "small", vertical: "3px" }}
-                      round="xsmall"
-                      style={{ border: "2px solid black" }}
-                    >
-                      <Text color="black" style={{ fontWeight: 500 }}>
-                        Add
-                      </Text>
-                    </Box>
+                    <AddUsersButton
+                      role="member"
+                      existingUsers={this.state.channelMembers}
+                      channelId={this.state.channel!.id}
+                      onUserAddedCallback={() => {
+                        this.fetchMembers();
+                        this.fetchOwners();
+                        this.fetchFollowers();
+                      }}
+                    />
                   </Box>
                   <Box direction="row" wrap margin={{ top: "5px" }}>
                     {this.state.channelMembers.map((member: User) => (
