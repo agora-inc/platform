@@ -28,9 +28,9 @@ class ScheduledStreamRepository:
         cursor.close()
         return result
 
-    def scheduleStream(self, channelId, channelName, channelColour, streamName, streamDate, streamDescription):
+    def scheduleStream(self, channelId, channelName, streamName, streamDate, streamDescription):
         cursor = self.db.con.cursor()
-        cursor.execute(f'INSERT INTO ScheduledStreams(channel_id, channel_name, channel_colour, name, date, description) VALUES ({channelId}, "{channelName}", "{channelColour}", "{streamName}", "{streamDate}", "{streamDescription}")')
+        cursor.execute(f'INSERT INTO ScheduledStreams(channel_id, channel_name, name, date, description) VALUES ({channelId}, "{channelName}", "{streamName}", "{streamDate}", "{streamDescription}")')
         self.db.con.commit()
         insertId = cursor.lastrowid
         cursor.close()
