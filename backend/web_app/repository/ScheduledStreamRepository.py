@@ -41,3 +41,9 @@ class ScheduledStreamRepository:
         cursor.execute(f'DELETE FROM ScheduledStreams where id = {streamId}')
         self.db.con.commit()
         cursor.close()
+
+    def registerForScheduledStream(self, streamId, userId):
+        cursor = self.db.con.cursor()
+        cursor.execute(f'INSERT INTO ScheduledStreamRegistrations(stream_id, user_id) VALUES ({streamId}, {userId})')
+        self.db.con.commit()
+        cursor.close()
