@@ -60,3 +60,15 @@ class ScheduledStreamRepository:
         cursor.execute(f'DELETE FROM ScheduledStreamRegistrations WHERE stream_id={streamId} AND user_id={userId}')
         self.db.con.commit()
         cursor.close()
+
+    def getScheduledStreamsForUser(self, userId):
+        cursor = self.db.con.cursor()
+        query = f'SELECT ScheduledStreams.id, ScheduledStreams.channel_id, ScheduledStreams.channel_name, ScheduledStreams.name, ScheduledStreams.description, ScheduledStreams.date FROM ScheduledStreams INNER JOIN ScheduledStreamRegistrations ON ScheduledStreams.id = ScheduledStreamRegistrations.stream_id WHERE ScheduledStreamRegistrations.user_id = {userId}'
+        cursor.execute(query)
+        streams = cursor.fetchall()
+        cursor.close()
+
+        for stream in streams:
+            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+
+        return streams
