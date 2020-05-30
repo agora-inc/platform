@@ -228,6 +228,14 @@ def registerForScheduledStream():
     scheduledStreams.registerForScheduledStream(params["streamId"], params["userId"])
     return jsonify("success")
 
+@app.route('/streams/scheduled/unregister', methods=["POST", "OPTIONS"])
+def unRegisterForScheduledStream():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    scheduledStreams.unRegisterForScheduledStream(params["streamId"], params["userId"])
+    return jsonify("success")
+
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------
