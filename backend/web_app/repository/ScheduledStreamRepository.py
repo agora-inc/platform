@@ -42,6 +42,13 @@ class ScheduledStreamRepository:
         self.db.con.commit()
         cursor.close()
 
+    def isUserRegisteredForScheduledStream(self, streamId, userId):
+        cursor = self.db.con.cursor()
+        cursor.execute(f'SELECT COUNT(*) FROM ScheduledStreamRegistrations WHERE user_id={userId} AND stream_id={streamId}')
+        result = cursor.fetchall()
+        cursor.close()
+        return result[0]["COUNT(*)"] != 0
+
     def registerForScheduledStream(self, streamId, userId):
         cursor = self.db.con.cursor()
         cursor.execute(f'INSERT INTO ScheduledStreamRegistrations(stream_id, user_id) VALUES ({streamId}, {userId})')

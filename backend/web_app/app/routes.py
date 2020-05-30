@@ -214,6 +214,12 @@ def scheduleStream():
     params = request.json
     return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["streamDate"], params["streamDescription"]))
 
+@app.route('/streams/scheduled/isregistered', methods=["GET"])
+def isRegisteredForScheduledStream():
+    streamId = int(request.args.get("streamId"))
+    userId = int(request.args.get("userId"))
+    return jsonify({"is_registered": scheduledStreams.isUserRegisteredForScheduledStream(streamId, userId)})
+
 @app.route('/streams/scheduled/register', methods=["POST", "OPTIONS"])
 def registerForScheduledStream():
     if request.method == "OPTIONS":
