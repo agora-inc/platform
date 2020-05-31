@@ -1,16 +1,21 @@
 import React, { Component } from "react";
 import { Box, Text, Button, Layer } from "grommet";
-import { ScheduledStream } from "../Services/ScheduledStreamService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
+import { User } from "../Services/UserService";
 import Identicon from "react-identicons";
 
 interface Props {
   stream: ScheduledStream;
-  loggedIn: boolean;
+  user: User | null;
 }
 
 interface State {
   showModal: boolean;
   showShadow: boolean;
+  registered: boolean;
 }
 
 export default class ScheduledStreamCard extends Component<Props, State> {
@@ -19,6 +24,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
     this.state = {
       showModal: false,
       showShadow: false,
+      registered: false,
     };
   }
   formatDate = (d: string) => {
@@ -30,6 +36,51 @@ export default class ScheduledStreamCard extends Component<Props, State> {
 
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, showShadow: true });
+  };
+
+  componentWillMount() {
+    this.checkIfRegistered();
+  }
+
+  checkIfRegistered = () => {
+    this.props.user &&
+      ScheduledStreamService.isRegisteredForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        (registered: boolean) => {
+          this.setState({ registered });
+        }
+      );
+  };
+
+  register = () => {
+    this.props.user &&
+      ScheduledStreamService.registerForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        () => {
+          // this.toggleModal();
+          this.checkIfRegistered();
+          this.setState({
+            showShadow: false,
+          });
+        }
+      );
+  };
+
+  unregister = () => {
+    this.props.user &&
+      ScheduledStreamService.unRegisterForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        () => {
+          // this.toggleModal();
+          this.checkIfRegistered();
+          this.setState({
+            showShadow: false,
+          });
+        }
+      );
   };
 
   render() {
@@ -166,11 +217,18 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                   {this.formatDate(this.props.stream.date)}
                 </Text>
                 <Button
+                  onClick={
+                    this.state.registered ? this.unregister : this.register
+                  }
                   primary
                   color={this.props.stream.channel_colour}
-                  disabled={!this.props.loggedIn}
+                  disabled={this.props.user === null}
                   label={
-                    this.props.loggedIn ? "Register" : "Log in to register"
+                    this.props.user !== null
+                      ? this.state.registered
+                        ? "Unregister"
+                        : "Register"
+                      : "Log in to register"
                   }
                   size="large"
                 ></Button>

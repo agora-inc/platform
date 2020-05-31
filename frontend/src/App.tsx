@@ -10,9 +10,9 @@ import Streaming from "./Views/Streaming";
 import AllVideosPage from "./Views/AllVideosPage";
 import HeaderBar from "./Components/HeaderBar";
 import { theme } from "./theme";
-import { UserService } from "./Services/UserService";
 import ManageChannelPage from "./Views/ManageChannelPage";
 import Preferences from "./Views/Preferences";
+import Schedule from "./Views/Schedule";
 
 function App() {
   return (
@@ -28,6 +28,7 @@ function App() {
         <Route path="/tag" component={TagPage} />
         <Route path="/streaming" component={Streaming} />
         <Route path="/preferences" component={Preferences} />
+        <Route path="/schedule" component={Schedule} />
       </Grommet>
     </BrowserRouter>
   );

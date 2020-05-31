@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Box, Button, Text } from "grommet";
+import { Link } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
@@ -112,6 +113,27 @@ export default class UserManager extends Component<{}, State> {
             {this.state.user?.username}
           </Text>
         </Box>
+        <Menu.Divider />
+        <Link
+          to={{ pathname: "/schedule", state: { user: this.state.user } }}
+          style={{ textDecoration: "none" }}
+        >
+          <Box
+            onClick={this.toggleDropdown}
+            background="#606eeb"
+            round="xsmall"
+            margin="small"
+            pad="xsmall"
+            height="40px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            // hoverIndicator="#2433b5"
+            hoverIndicator="#a1aaff"
+          >
+            <Text>My schedule</Text>
+          </Box>
+        </Link>
         <Menu.Divider />
         <Box
           margin="small"

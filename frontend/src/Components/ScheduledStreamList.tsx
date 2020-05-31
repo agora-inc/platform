@@ -9,47 +9,50 @@ import {
 import { FormNextLink } from "grommet-icons";
 import "../Styles/home.css";
 import "../Styles/see-more-button.css";
+import { User } from "../Services/UserService";
 
 interface Props {
   gridArea?: string;
+  scheduledStreams: ScheduledStream[];
   title: boolean;
   seeMore: boolean;
-  loggedIn: boolean;
+  user: User | null;
 }
 
-interface State {
-  loading: boolean;
-  scheduledStreams: ScheduledStream[];
-}
+// interface State {
+//   loading: boolean;
+//   scheduledStreams: ScheduledStream[];
+// }
 
-export default class ScheduledStreamList extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      loading: true,
-      scheduledStreams: [],
-    };
-  }
+export default class ScheduledStreamList extends Component<Props> {
+  // constructor(props: Props) {
+  //   super(props);
+  //   this.state = {
+  //     loading: true,
+  //     scheduledStreams: [],
+  //   };
+  // }
 
-  componentWillMount() {
-    this.fetchScheduledStreams();
-  }
+  // componentWillMount() {
+  //   this.fetchScheduledStreams();
+  // }
 
-  fetchScheduledStreams = () => {
-    ScheduledStreamService.getAllScheduledStreams(
-      6,
-      0,
-      (scheduledStreams: ScheduledStream[]) => {
-        console.log(scheduledStreams);
-        this.setState({ scheduledStreams, loading: false });
-      }
-    );
-  };
+  // fetchScheduledStreams = () => {
+  //   ScheduledStreamService.getAllScheduledStreams(
+  //     6,
+  //     0,
+  //     (scheduledStreams: ScheduledStream[]) => {
+  //       console.log(scheduledStreams);
+  //       this.setState({ scheduledStreams, loading: false });
+  //     }
+  //   );
+  // };
 
   render() {
     return (
-      <Box>
+      <Box width="100%">
         <Box
+          width="100%"
           direction="row"
           gap="xsmall"
           align="end"
@@ -77,11 +80,8 @@ export default class ScheduledStreamList extends Component<Props, State> {
           )}
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
-          {this.state.scheduledStreams.map((stream: ScheduledStream) => (
-            <ScheduledStreamCard
-              stream={stream}
-              loggedIn={this.props.loggedIn}
-            />
+          {this.props.scheduledStreams.map((stream: ScheduledStream) => (
+            <ScheduledStreamCard stream={stream} user={this.props.user} />
           ))}
         </Box>
       </Box>

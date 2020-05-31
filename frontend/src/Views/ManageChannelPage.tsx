@@ -37,6 +37,7 @@ interface State {
   videos: Video[];
   totalNumberOfVideos: number;
   scheduledStreams: ScheduledStream[];
+  showImageUpload: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -56,6 +57,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       videos: [],
       totalNumberOfVideos: 0,
       scheduledStreams: [],
+      showImageUpload: false,
     };
   }
 
@@ -226,6 +228,14 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
+  toggleImageUpload = () => {
+    this.setState({ showImageUpload: !this.state.showImageUpload });
+  };
+
+  renderImageUpload = () => {
+    return <input type="file"></input>;
+  };
+
   render() {
     if (this.state.loading) {
       return (
@@ -236,6 +246,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     } else {
       return this.state.allowed ? (
         <Box>
+          {this.state.showImageUpload && this.renderImageUpload()}
           <Box
             width="100%"
             height="100%"
@@ -272,6 +283,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   pad="15px"
                 >
                   <Box
+                    onClick={this.toggleImageUpload}
                     width="120px"
                     height="120px"
                     round="60px"

@@ -9,9 +9,14 @@ import RecommendedGrid from "../Components/RecommendedGrid";
 import FooterComponent from "../Components/FooterComponent";
 import "../Styles/home.css";
 import { User, UserService } from "../Services/UserService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
 
 interface State {
   user: User | null;
+  scheduledStreams: ScheduledStream[];
 }
 
 export default class Home extends Component<{}, State> {
@@ -19,8 +24,25 @@ export default class Home extends Component<{}, State> {
     super(props);
     this.state = {
       user: UserService.getCurrentUser(),
+      scheduledStreams: [],
     };
   }
+
+  componentWillMount() {
+    this.fetchScheduledStreams();
+  }
+
+  fetchScheduledStreams = () => {
+    ScheduledStreamService.getAllScheduledStreams(
+      6,
+      0,
+      (scheduledStreams: ScheduledStream[]) => {
+        console.log(scheduledStreams);
+        this.setState({ scheduledStreams });
+      }
+    );
+  };
+
   render() {
     return (
       <Box direction="row">
@@ -36,10 +58,10 @@ export default class Home extends Component<{}, State> {
         >
           <Carousel gridArea="carousel" />
           <ScheduledStreamList
-            // gridArea="scheduledStreams"
+            scheduledStreams={this.state.scheduledStreams}
             title
             seeMore
-            loggedIn={this.state.user !== null}
+            user={this.state.user}
           />
           <RecommendedGrid />
           {/* <FooterComponent /> */}
