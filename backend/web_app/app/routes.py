@@ -2,6 +2,7 @@ from app import app, db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository, SearchRepository
 from flask import jsonify, request, send_file
 from werkzeug import exceptions
+import os
 
 users = UserRepository.UserRepository(db=db)
 tags = TagRepository.TagRepository(db=db)
@@ -151,6 +152,17 @@ def updateChannelDescription():
     channelId = params["channelId"]
     newDescription = params["newDescription"]
     return jsonify(channels.updateChannelDescription(channelId, newDescription))
+
+@app.route('/channels/uploadavatar', methods=["POST", "OPTIONS"])
+def uploadAvatar():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    channelId = request.form["channelId"]
+    file = request.files["image"]
+    fn = f"{channelId}.{file.filename.split('.')[-1]}"
+    # file.save(f"../../frontend/public/images/channel_icons/{fn}")
+    print(os.getcwd())
+    return jsonify({"filename": fn})
 
 # --------------------------------------------
 # STREAM ROUTES
