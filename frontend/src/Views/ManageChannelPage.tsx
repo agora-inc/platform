@@ -296,7 +296,19 @@ export default class ManageChannelPage extends Component<Props, State> {
                       align="center"
                       style={{ minWidth: 120, minHeight: 120 }}
                     >
-                      <Identicon string={this.state.channel?.name} size={60} />
+                      {!this.state.channel!.has_avatar && (
+                        <Identicon
+                          string={this.state.channel?.name}
+                          size={60}
+                        />
+                      )}
+                      {this.state.channel!.has_avatar && (
+                        <img
+                          src={`/images/channel-icons/${
+                            this.state.channel!.id
+                          }.jpg`}
+                        />
+                      )}
                     </Box>
                     <Box
                       style={{ position: "relative" }}

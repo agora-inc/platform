@@ -188,6 +188,7 @@ export type Channel = {
   name: string;
   description: string;
   colour: string;
+  has_avatar: boolean;
 };
 
 export const ChannelService = {
