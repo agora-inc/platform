@@ -34,3 +34,14 @@
   z-index: -1;
   border-radius: 8px;
 }
+
+.input-hidden {
+  width: 100px;
+  height: 30px;
+  overflow: hidden;
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
+  /* pointer-events: none; */
+  /* z-index: -1; */
+}

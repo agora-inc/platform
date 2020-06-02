@@ -171,6 +171,18 @@ const updateChannelColour = (
     });
 };
 
+const uploadAvatar = (channelId: number, image: File, callback: any) => {
+  const data = new FormData();
+  data.append("channelId", channelId.toString());
+  data.append("image", image);
+  console.log(data.get("image"));
+  axios
+    .post(baseApiUrl + "/channels/uploadavatar", data)
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -191,4 +203,5 @@ export const ChannelService = {
   getFollowerCountForChannel,
   updateChannelColour,
   updateChannelDescription,
+  uploadAvatar,
 };

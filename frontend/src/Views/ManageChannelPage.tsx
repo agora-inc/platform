@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ChangeEvent } from "react";
 import { Redirect } from "react-router";
 import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
@@ -37,7 +37,6 @@ interface State {
   videos: Video[];
   totalNumberOfVideos: number;
   scheduledStreams: ScheduledStream[];
-  showImageUpload: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -57,7 +56,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       videos: [],
       totalNumberOfVideos: 0,
       scheduledStreams: [],
-      showImageUpload: false,
     };
   }
 
@@ -228,12 +226,13 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
-  toggleImageUpload = () => {
-    this.setState({ showImageUpload: !this.state.showImageUpload });
-  };
-
-  renderImageUpload = () => {
-    return <input type="file"></input>;
+  onFileChosen = (e: any) => {
+    console.log(e.target.files[0]);
+    ChannelService.uploadAvatar(
+      this.state.channel!.id,
+      e.target.files[0],
+      () => {}
+    );
   };
 
   render() {
@@ -246,7 +245,6 @@ export default class ManageChannelPage extends Component<Props, State> {
     } else {
       return this.state.allowed ? (
         <Box>
-          {this.state.showImageUpload && this.renderImageUpload()}
           <Box
             width="100%"
             height="100%"
@@ -283,16 +281,46 @@ export default class ManageChannelPage extends Component<Props, State> {
                   pad="15px"
                 >
                   <Box
-                    onClick={this.toggleImageUpload}
-                    width="120px"
-                    height="120px"
-                    round="60px"
-                    background="white"
-                    justify="center"
+                    style={{
+                      minWidth: 120,
+                      minHeight: 120,
+                    }}
                     align="center"
-                    style={{ minWidth: 120, minHeight: 120 }}
                   >
-                    <Identicon string={this.state.channel?.name} size={60} />
+                    <Box
+                      width="120px"
+                      height="120px"
+                      round="60px"
+                      background="white"
+                      justify="center"
+                      align="center"
+                      style={{ minWidth: 120, minHeight: 120 }}
+                    >
+                      <Identicon string={this.state.channel?.name} size={60} />
+                    </Box>
+                    <Box
+                      style={{ position: "relative" }}
+                      margin={{ top: "xsmall" }}
+                    >
+                      <input
+                        type="file"
+                        className="input-hidden"
+                        onChange={this.onFileChosen}
+                      ></input>
+                      <Box
+                        width="100px"
+                        height="25px"
+                        background="white"
+                        round="xsmall"
+                        style={{ border: "solid black 2px", cursor: "pointer" }}
+                        align="center"
+                        justify="center"
+                      >
+                        <Text size="13px" weight="bold" color="black">
+                          Upload avatar
+                        </Text>
+                      </Box>
+                    </Box>
                   </Box>
                   <Box gap="small">
                     <Text weight="bold" size="30px">

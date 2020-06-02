@@ -160,8 +160,7 @@ def uploadAvatar():
     channelId = request.form["channelId"]
     file = request.files["image"]
     fn = f"{channelId}.{file.filename.split('.')[-1]}"
-    # file.save(f"../../frontend/public/images/channel_icons/{fn}")
-    print(os.getcwd())
+    file.save(f"../../frontend/public/images/channel-icons/{fn}")
     return jsonify({"filename": fn})
 
 # --------------------------------------------
