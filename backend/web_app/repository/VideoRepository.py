@@ -45,7 +45,10 @@ class VideoRepository:
 
         video = result[0]
         video["tags"] = self.tags.getTagsOnVideo(video["id"])
-        video["channel_colour"] = self.channels.getChannelColour(video["channel_id"])
+        channel = self.channels.getChannelById(video["channel_id"])
+        video["channel_colour"] = channel["colour"]
+        video["has_avatar"] = channel["has_avatar"]
+
         
         return video
 
@@ -58,7 +61,9 @@ class VideoRepository:
         videos = self.db.run_query(query)
         for video in videos:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
-            video["channel_colour"] = self.channels.getChannelColour(video["channel_id"])
+            channel = self.channels.getChannelById(video["channel_id"])
+            video["channel_colour"] = channel["colour"]
+            video["has_avatar"] = channel["has_avatar"]
         return videos
 
     def getAllVideos(self, limit, offset):
@@ -70,7 +75,9 @@ class VideoRepository:
         videos = self.db.run_query(query)
         for video in videos:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
-            video["channel_colour"] = self.channels.getChannelColour(video["channel_id"])  
+            channel = self.channels.getChannelById(video["channel_id"])
+            video["channel_colour"] = channel["colour"]
+            video["has_avatar"] = channel["has_avatar"]
         return (videos, self.getNumberOfVideos())
 
     def getAllVideosForChannel(self, channelId, limit, offset):
@@ -82,7 +89,9 @@ class VideoRepository:
         videos = self.db.run_query(query)
         for video in videos:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
-            video["channel_colour"] = self.channels.getChannelColour(video["channel_id"])
+            channel = self.channels.getChannelById(video["channel_id"])
+            video["channel_colour"] = channel["colour"]
+            video["has_avatar"] = channel["has_avatar"]
         return (videos, self.getNumberOfVideosForChannel(channelId))
 
     def getAllVideosWithTag(self, tagName, limit, offset):
@@ -102,6 +111,8 @@ class VideoRepository:
 
         for video in videos:
             video["tags"] = self.tags.getTagsOnVideo(video["id"])
-            video["channel_colour"] = self.channels.getChannelColour(video["channel_id"])
+            channel = self.channels.getChannelById(video["channel_id"])
+            video["channel_colour"] = channel["colour"]
+            video["has_avatar"] = channel["has_avatar"]
 
         return (videos, self.getNumberOfVideosForTag(tagId))

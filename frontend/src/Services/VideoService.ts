@@ -89,4 +89,5 @@ export type Video = {
   views: number;
   url: string;
   chat_id: number;
+  has_avatar: boolean;
 };

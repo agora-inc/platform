@@ -6,6 +6,7 @@ import {
 } from "../Services/ScheduledStreamService";
 import { User } from "../Services/UserService";
 import Identicon from "react-identicons";
+import AddToCalendarButtons from "./AddToCalendarButtons";
 
 interface Props {
   stream: ScheduledStream;
@@ -123,8 +124,19 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 justify="center"
                 align="center"
                 background="#efeff1"
+                overflow="hidden"
               >
-                <Identicon string={this.props.stream.channel_name} size={15} />
+                {!this.props.stream.has_avatar && (
+                  <Identicon
+                    string={this.props.stream.channel_name}
+                    size={15}
+                  />
+                )}
+                {this.props.stream.has_avatar && (
+                  <img
+                    src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
+                  />
+                )}
               </Box>
               <Text
                 weight="bold"
@@ -216,6 +228,14 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 <Text size="18px" color="black" weight="bold">
                   {this.formatDate(this.props.stream.date)}
                 </Text>
+                {this.state.registered && (
+                  <AddToCalendarButtons
+                    startTime={this.props.stream.date}
+                    endTime={this.props.stream.date}
+                    name={this.props.stream.name}
+                    description={this.props.stream.description}
+                  />
+                )}
                 <Button
                   onClick={
                     this.state.registered ? this.unregister : this.register

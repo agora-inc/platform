@@ -138,7 +138,14 @@ export default class SiteWideSearch extends Component<{}, State> {
                         round="10px"
                         overflow="hidden"
                       >
-                        <Identicon string={channel.name} size={20} />
+                        {!channel.has_avatar && (
+                          <Identicon string={channel.name} size={20} />
+                        )}
+                        {channel.has_avatar && (
+                          <img
+                            src={`/images/channel-icons/${channel.id}.jpg`}
+                          />
+                        )}
                       </Box>
                       <Text color="black">{channel.name}</Text>
                     </Box>
@@ -236,7 +243,14 @@ export default class SiteWideSearch extends Component<{}, State> {
                         round="7.5px"
                         overflow="hidden"
                       >
-                        <Identicon string={video.channel_name} size={15} />
+                        {!video.has_avatar && (
+                          <Identicon string={video.channel_name} size={15} />
+                        )}
+                        {video.has_avatar && (
+                          <img
+                            src={`/images/channel-icons/${video.channel_id}.jpg`}
+                          />
+                        )}
                       </Box>
                       <Text size="14px" color={video.channel_colour}>
                         {video.channel_name}
@@ -291,10 +305,17 @@ export default class SiteWideSearch extends Component<{}, State> {
                           round="7.5px"
                           overflow="hidden"
                         >
-                          <Identicon
-                            string={scheduledStream.channel_name}
-                            size={15}
-                          />
+                          {!scheduledStream.has_avatar && (
+                            <Identicon
+                              string={scheduledStream.channel_name}
+                              size={15}
+                            />
+                          )}
+                          {scheduledStream.has_avatar && (
+                            <img
+                              src={`/images/channel-icons/${scheduledStream.channel_id}.jpg`}
+                            />
+                          )}
                         </Box>
                         <Text
                           size="14px"

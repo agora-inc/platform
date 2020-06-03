@@ -147,4 +147,5 @@ export type ScheduledStream = {
   name: string;
   date: string;
   description: string;
+  has_avatar: boolean;
 };

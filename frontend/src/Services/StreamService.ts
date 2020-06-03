@@ -98,4 +98,5 @@ export type Stream = {
   from_url: string;
   to_url: string;
   tags: Tag[];
+  has_avatar: boolean;
 };

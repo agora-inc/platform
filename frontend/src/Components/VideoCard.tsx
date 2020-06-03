@@ -69,8 +69,16 @@ export default class VideoCard extends Component<Props, State> {
                 align="center"
                 justify="center"
                 background="white"
+                overflow="hidden"
               >
-                <Identicon string={this.props.video.channel_name} size={20} />
+                {!this.props.video.has_avatar && (
+                  <Identicon string={this.props.video.channel_name} size={20} />
+                )}
+                {this.props.video.has_avatar && (
+                  <img
+                    src={`/images/channel-icons/${this.props.video.channel_id}.jpg`}
+                  />
+                )}
               </Box>
               <Text size="24px" weight="bold" color="black">
                 {this.props.video.channel_name}

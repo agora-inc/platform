@@ -27,6 +27,7 @@
     "grommet-icons": "^4.4.0",
     "howler": "^2.2.0",
     "katex": "^0.11.1",
+    "moment": "^2.26.0",
     "react": "^16.13.1",
     "react-blink-tag": "^0.1.6",
     "react-blockies": "^1.4.1",

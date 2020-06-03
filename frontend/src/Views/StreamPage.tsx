@@ -36,6 +36,7 @@ export default class VideoPage extends Component<Props, State> {
         from_url: "",
         to_url: "",
         tags: [],
+        has_avatar: false,
       },
       viewCount: -1,
     };

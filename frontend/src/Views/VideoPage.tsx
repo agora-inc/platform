@@ -44,6 +44,7 @@ export default class VideoPage extends Component<Props, State> {
         views: 0,
         url: "",
         chat_id: -1,
+        has_avatar: false,
       },
       viewCount: -1,
       overlay: false,

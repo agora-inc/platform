@@ -12,7 +12,9 @@ class ScheduledStreamRepository:
         # cursor.execute(f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP LIMIT {limit} OFFSET {offset}')
         # streams = cursor.fetchall()
         for stream in streams:
-            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+            channel = self.channels.getChannelById(stream["channel_id"])
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
         # cursor.close()
         return streams
 
@@ -22,8 +24,12 @@ class ScheduledStreamRepository:
         # cursor.execute(f'SELECT * FROM ScheduledStreams WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP')
         # result = cursor.fetchall()
         # cursor.close()
-        result = self.db.run_query(query)
-        return result
+        streams = self.db.run_query(query)
+        for stream in streams:
+            channel = self.channels.getChannelById(stream["channel_id"])
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
+        return streams
 
     def getScheduledStreamById(self, streamId):
         # cursor = self.db.con.cursor()
@@ -86,6 +92,8 @@ class ScheduledStreamRepository:
         streams = self.db.run_query(query)
 
         for stream in streams:
-            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+            channel = self.channels.getChannelById(stream["channel_id"])
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
 
         return streams

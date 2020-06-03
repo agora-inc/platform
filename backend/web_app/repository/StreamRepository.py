@@ -1,10 +1,11 @@
-from repository import TagRepository
+from repository import TagRepository, ChannelRepository
 from datetime import datetime
 
 class StreamRepository:
     def __init__(self, db):
         self.db = db
         self.tags = TagRepository.TagRepository(db=self.db)
+        self.channels = ChannelRepository.ChannelRepository(db=self.db)
 
     def getAllStreams(self, limit, offset):
         # cursor = self.db.con.cursor()
@@ -14,6 +15,9 @@ class StreamRepository:
         query = f'SELECT * FROM Streams ORDER BY id DESC LIMIT {limit} OFFSET {offset}'
         streams = self.db.run_query(query)
         for stream in streams:
+            channel = self.channels.getChannelById(stream["channel_id"])
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
             stream["tags"] = self.tags.getTagsOnStream(stream["id"])
         return streams
 
@@ -25,6 +29,9 @@ class StreamRepository:
         query = f'SELECT * FROM Streams WHERE channel_id = {channelId}'
         streams = self.db.run_query(query)
         for stream in streams:
+            channel = self.channels.getChannelById(channelId)
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
             stream["tags"] = self.tags.getTagsOnStream(stream["id"])
         return streams
 
@@ -40,6 +47,9 @@ class StreamRepository:
             return None
 
         stream = result[0]
+        channel = self.channels.getChannelById(stream["channel_id"])
+        stream["channel_colour"] = channel["colour"]
+        stream["has_avatar"] = channel["has_avatar"]
         stream["tags"] = self.tags.getTagsOnStream(stream["id"])
         return stream
 

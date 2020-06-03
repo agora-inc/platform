@@ -64,9 +64,14 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   round="20px"
                   justify="center"
                   align="center"
-                  // margin={{ bottom: "20px" }}
+                  overflow="hidden"
                 >
-                  <Identicon string={channel.name} size={25} />
+                  {!channel.has_avatar && (
+                    <Identicon string={channel.name} size={25} />
+                  )}
+                  {channel.has_avatar && (
+                    <img src={`/images/channel-icons/${channel.id}.jpg`} />
+                  )}
                 </Box>
                 <Box justify="between">
                   <Text size="16px" weight="bold" color="black">

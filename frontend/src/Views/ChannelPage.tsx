@@ -251,8 +251,21 @@ export default class ChannelPage extends Component<Props, State> {
                       justify="center"
                       align="center"
                       style={{ minWidth: 120, minHeight: 120 }}
+                      overflow="hidden"
                     >
-                      <Identicon string={this.state.channel?.name} size={60} />
+                      {!this.state.channel!.has_avatar && (
+                        <Identicon
+                          string={this.state.channel!.name}
+                          size={60}
+                        />
+                      )}
+                      {this.state.channel!.has_avatar && (
+                        <img
+                          src={`/images/channel-icons/${
+                            this.state.channel!.id
+                          }.jpg`}
+                        />
+                      )}
                     </Box>
                     <Box gap="small">
                       <Text weight="bold" size="30px">
