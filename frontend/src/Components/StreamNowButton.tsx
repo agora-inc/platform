@@ -197,10 +197,10 @@ export default class StreamNowButton extends Component<Props, State> {
       >
         <TagImage height={150} />
         <Box style={{ marginBottom: 20, marginTop: 0, height: "40%" }}>
-          <TagSelector
+          {/* <TagSelector
             onSelectedCallback={this.selectTag}
             onDeselectedCallback={this.deselectTag}
-          />
+          /> */}
         </Box>
         <Button
           label="Next"

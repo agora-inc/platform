@@ -10,7 +10,7 @@ import {
 } from "../Services/ScheduledStreamService";
 import Loading from "../Components/Loading";
 import StreamNowButton from "../Components/StreamNowButton";
-import ScheduleStreamButton from "../Components/ScheduleStreamButton";
+import NewScheduleStreamButton from "../Components/NewScheduleStreamButton";
 import Identicon from "react-identicons";
 import ColorPicker from "../Components/ColorPicker";
 import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
@@ -254,8 +254,8 @@ export default class ManageChannelPage extends Component<Props, State> {
           >
             <Box width="75%" align="start">
               <Box direction="row" gap="small">
-                <StreamNowButton margin="none" channel={this.state.channel} />
-                <ScheduleStreamButton
+                {/* <StreamNowButton margin="none" channel={this.state.channel} /> */}
+                <NewScheduleStreamButton
                   margin="none"
                   channel={this.state.channel}
                 />

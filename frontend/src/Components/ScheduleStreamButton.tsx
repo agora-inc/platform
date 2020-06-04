@@ -277,12 +277,7 @@ export default class ScheduleStreamButton extends Component<Props, State> {
         align="center"
       >
         <TagImage height={150} />
-        <Box style={{ marginBottom: 20, marginTop: 0, height: "40%" }}>
-          <TagSelector
-            onSelectedCallback={this.selectTag}
-            onDeselectedCallback={this.deselectTag}
-          />
-        </Box>
+        <Box style={{ marginBottom: 20, marginTop: 0, height: "40%" }}></Box>
         <Button
           label="Next"
           primary

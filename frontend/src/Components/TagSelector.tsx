@@ -25,6 +25,8 @@ interface State {
 interface Props {
   onSelectedCallback: any;
   onDeselectedCallback: any;
+  width: string;
+  height: string;
 }
 
 export default class TagSelector extends Component<Props, State> {
@@ -123,11 +125,11 @@ export default class TagSelector extends Component<Props, State> {
           gap="small"
           margin={{ bottom: "small" }}
         >
-          <Heading level={4}>Add some tags</Heading>
+          {/* <Heading level={4}>Add some tags</Heading> */}
           <Search
             placeholder="search..."
             onSearch={(value) => this.filterTags(value)}
-            style={{ width: 200 }}
+            style={{ width: 225 }}
             onChange={(e) => this.filterTags(e.target.value)}
             value={this.state.searchTerm}
           />
@@ -137,12 +139,14 @@ export default class TagSelector extends Component<Props, State> {
           wrap
           overflow="scroll"
           margin="none"
-          pad="none"
+          pad="xsmall"
           justify="start"
+          width="100%"
+          background="rgba(206,254,233,0.2)"
           style={{
             justifySelf: "end",
-            height: "15.7vh",
-            width: "29.75vw",
+            height: this.props.height,
+            width: this.props.width,
           }}
         >
           {this.state.searchTerm !== "" &&
