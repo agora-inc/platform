@@ -3,9 +3,9 @@ import axios from "axios";
 import { Tag } from "./TagService";
 import { ArtService } from "./ArtService";
 
-const getAllStreams = (callback: any) => {
+const getAllStreams = (limit: number, offset: number, callback: any) => {
   axios
-    .get(baseApiUrl + "/streams/all", {
+    .get(`${baseApiUrl}/streams/all?limit=${limit}&offset=${offset}`, {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then(function (response) {
@@ -98,4 +98,5 @@ export type Stream = {
   from_url: string;
   to_url: string;
   tags: Tag[];
+  has_avatar: boolean;
 };

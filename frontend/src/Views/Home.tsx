@@ -1,37 +1,71 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Box, Text, Grid } from "grommet";
+import { Box, Text, Grid, Sidebar } from "grommet";
+import CustomSideBar from "../Components/CustomSideBar";
 import Carousel from "../Components/Carousel";
-import TrendingChannelsBox from "../Components/TrendingChannelsBox";
 import PopularTagsBox from "../Components/PopularTagsBox";
 import ScheduledStreamList from "../Components/ScheduledStreamList";
 import RecommendedGrid from "../Components/RecommendedGrid";
 import FooterComponent from "../Components/FooterComponent";
 import "../Styles/home.css";
+import { User, UserService } from "../Services/UserService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
 
-export default class Home extends Component {
+interface State {
+  user: User | null;
+  scheduledStreams: ScheduledStream[];
+}
+
+export default class Home extends Component<{}, State> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      user: UserService.getCurrentUser(),
+      scheduledStreams: [],
+    };
+  }
+
+  componentWillMount() {
+    this.fetchScheduledStreams();
+  }
+
+  fetchScheduledStreams = () => {
+    ScheduledStreamService.getAllScheduledStreams(
+      6,
+      0,
+      (scheduledStreams: ScheduledStream[]) => {
+        console.log(scheduledStreams);
+        this.setState({ scheduledStreams });
+      }
+    );
+  };
+
   render() {
     return (
-      <Box align="center" className="fadein">
-        <Grid
-          margin={{ top: "xlarge" }}
-          rows={["homeRow1", "homeRow2", "homeRow3"]}
-          columns={["homeColumn1", "homeColumn2"]}
-          gap="40px"
-          areas={[
-            { name: "trendingChannels", start: [0, 0], end: [0, 1] },
-            { name: "carousel", start: [1, 0], end: [1, 0] },
-            { name: "popularTags", start: [0, 2], end: [0, 2] },
-            { name: "scheduledStreams", start: [1, 1], end: [1, 2] },
-          ]}
+      <Box direction="row">
+        <CustomSideBar user={this.state.user} />
+        <Box
+          width="80%"
+          height="100%"
+          overflow="hidden"
+          pad="medium"
+          margin={{ top: "60px" }}
+          style={{ overflowY: "scroll" }}
+          gap="25px"
         >
-          <TrendingChannelsBox gridArea="trendingChannels" />
           <Carousel gridArea="carousel" />
-          <PopularTagsBox gridArea="popularTags" />
-          <ScheduledStreamList gridArea="scheduledStreams" title seeMore />
-        </Grid>
-        <RecommendedGrid />
-        <FooterComponent />
+          <ScheduledStreamList
+            scheduledStreams={this.state.scheduledStreams}
+            title
+            seeMore
+            user={this.state.user}
+          />
+          <RecommendedGrid />
+          {/* <FooterComponent /> */}
+        </Box>
       </Box>
       // <Box
       //   // fill

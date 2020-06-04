@@ -3,11 +3,11 @@ import { Box, Heading, Text, DropButton } from "grommet";
 import { Video, VideoService } from "../Services/VideoService";
 import VideoCard from "../Components/VideoCard";
 import Loading from "../Components/Loading";
-import SmallSearchBar from "../Components/SmallSearchBar";
 import SmallSelector from "../Components/SmallSelector";
 
 interface State {
   videos: Video[];
+  totalNumberOfVideos: number;
   loading: boolean;
   sortBy: string;
 }
@@ -17,25 +17,50 @@ export default class AllVideosPage extends Component<{}, State> {
     super(props);
     this.state = {
       videos: [],
+      totalNumberOfVideos: 0,
       loading: true,
       sortBy: "date",
     };
   }
 
   componentWillMount() {
-    VideoService.getAllVideos((videos: Video[]) => {
-      this.setState({
-        videos: videos,
-        loading: false,
-      });
-    });
+    window.addEventListener("scroll", this.handleScroll, true);
+    this.fetchVideos();
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  handleScroll = (e: any) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
+      this.fetchVideos();
+    }
+  };
+
+  fetchVideos = () => {
+    VideoService.getAllVideos(
+      12,
+      this.state.videos.length,
+      (data: { count: number; videos: Video[] }) => {
+        this.setState({
+          videos: this.state.videos.concat(data.videos),
+          totalNumberOfVideos: data.count,
+          loading: false,
+        });
+      }
+    );
+  };
+
   compareVideosByDate = (a: Video, b: Video) => {
-    if (a.date < b.date) {
+    const aDate = new Date(a.date);
+    const bDate = new Date(b.date);
+    if (aDate < bDate) {
       return 1;
     }
-    if (a.date > b.date) {
+    if (aDate > bDate) {
       return -1;
     }
     return 0;
@@ -59,7 +84,12 @@ export default class AllVideosPage extends Component<{}, State> {
 
   render() {
     return (
-      <Box margin={{ top: "7.5%" }} align="center">
+      <Box
+        pad={{ top: "7.5%", bottom: "100px" }}
+        align="center"
+        style={{ overflowY: "scroll" }}
+        onScroll={this.handleScroll}
+      >
         <Box width="90%" margin={{ left: "2.5%" }}>
           <Box
             direction="row"
@@ -68,7 +98,12 @@ export default class AllVideosPage extends Component<{}, State> {
             align="end"
             // margin={{ bottom: "small" }}
           >
-            <Heading size="3rem" margin="none" style={{ height: "3rem" }}>
+            <Heading
+              color="black"
+              size="3rem"
+              margin="none"
+              style={{ height: "3rem" }}
+            >
               All videos
             </Heading>
             {/* <Box direction="row" align="center" gap="xsmall">
@@ -111,6 +146,20 @@ export default class AllVideosPage extends Component<{}, State> {
             ))}
           </Box>
         </Box>
+        {/* {this.state.videos.length !== this.state.totalNumberOfVideos && (
+          <Box
+            onClick={this.fetchVideos}
+            focusIndicator={false}
+            background="white"
+            pad={{ vertical: "xsmall", horizontal: "medium" }}
+            round="small"
+            style={{ border: "3px solid black" }}
+          >
+            <Text weight="bold" color="black">
+              See more
+            </Text>
+          </Box>
+        )} */}
       </Box>
     );
   }

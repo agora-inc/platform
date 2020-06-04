@@ -4,8 +4,9 @@
 
 .videocard:hover {
   color: #555555;
+  /* background-color: pink; */
 }
 
 .videocard-background:hover {
-  opacity: 0.2;
+  opacity: 0;
 }

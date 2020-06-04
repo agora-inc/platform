@@ -5,17 +5,13 @@ import Loading from "./Loading";
 import { Tag, TagService } from "../Services/TagService";
 import "../Styles/popular-tags-box.css";
 
-interface Props {
-  gridArea: string;
-}
-
 interface State {
   tags: Tag[];
   loading: boolean;
 }
 
-export default class PopularTagsBox extends Component<Props, State> {
-  constructor(props: Props) {
+export default class PopularTagsBox extends Component<{}, State> {
+  constructor(props: any) {
     super(props);
     this.state = {
       tags: [],
@@ -31,23 +27,16 @@ export default class PopularTagsBox extends Component<Props, State> {
 
   render() {
     return (
-      <Box
-        pad={{ horizontal: "20px", top: "20px" }}
-        width="100%"
-        height="100%"
-        round="10px"
-        className="popular-tags-box"
-        gridArea={this.props.gridArea}
-      >
-        <Text size="32px" weight="bold" color="black" margin="none">
-          Popular Tags
+      <Box pad={{ horizontal: "small" }} width="100%">
+        <Text size="16px" weight="bold" color="black" margin="none">
+          POPULAR TAGS
         </Text>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
             <Loading color="black" size={50} />
           </Box>
         )}
-        <Box direction="row" wrap margin={{ top: "20px" }} gap="small">
+        <Box direction="row" wrap margin={{ top: "7px" }} gap="small">
           {this.state.tags.map((tag: Tag) => (
             <Link to={`/tag/${tag.name}`} style={{ textDecoration: "none" }}>
               <Box
@@ -59,7 +48,7 @@ export default class PopularTagsBox extends Component<Props, State> {
                 align="center"
                 margin={{ bottom: "small" }}
               >
-                <Text size="16px" weight="bold" color="black">
+                <Text size="14px" weight="bold">
                   {tag.name}
                 </Text>
               </Box>

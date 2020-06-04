@@ -1,7 +1,3 @@
-.trending-channels-box {
-  background-image: linear-gradient(
-    to bottom right,
-    rgba(111, 255, 201, 0.1),
-    rgba(144, 96, 235, 0.1)
-  );
+.channel:hover {
+  background-color: #e5e5e5;
 }

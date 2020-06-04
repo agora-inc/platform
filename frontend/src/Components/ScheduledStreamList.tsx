@@ -1,72 +1,65 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Heading, Text } from "grommet";
-import NewScheduledStreamCard from "./NewScheduledStreamCard";
-import { ScheduledStream } from "../Services/ScheduledStreamService";
+import ScheduledStreamCard from "./ScheduledStreamCard";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
 import { FormNextLink } from "grommet-icons";
 import "../Styles/home.css";
 import "../Styles/see-more-button.css";
+import { User } from "../Services/UserService";
 
 interface Props {
   gridArea?: string;
+  scheduledStreams: ScheduledStream[];
   title: boolean;
   seeMore: boolean;
+  user: User | null;
 }
 
-interface State {
-  scheduledStreams: ScheduledStream[];
-}
+// interface State {
+//   loading: boolean;
+//   scheduledStreams: ScheduledStream[];
+// }
 
-export default class ScheduledStreamList extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      scheduledStreams: [],
-    };
-  }
+export default class ScheduledStreamList extends Component<Props> {
+  // constructor(props: Props) {
+  //   super(props);
+  //   this.state = {
+  //     loading: true,
+  //     scheduledStreams: [],
+  //   };
+  // }
 
-  componentWillMount() {
-    const dummyStream1 = {
-      id: 1,
-      channel_id: 1,
-      channel_name: "RenTec",
-      name: "Timeseries forecasting for fun and profit",
-      description: "",
-      date: new Date(),
-    };
-    const dummyStream2 = {
-      id: 1,
-      channel_id: 1,
-      channel_name: "PolyAI",
-      name:
-        "An introduction to generative language models and their uses in translation and chatbots",
-      description: "",
-      date: new Date(),
-    };
-    const dummyStream3 = {
-      id: 1,
-      channel_id: 1,
-      channel_name: "DeepMind",
-      name: "A survey of recent advances in reinforcement learning",
-      description: "",
-      date: new Date(),
-    };
-    // this.setState({
-    //   scheduledStreams: [dummyStream1, dummyStream2, dummyStream3],
-    // });
-  }
+  // componentWillMount() {
+  //   this.fetchScheduledStreams();
+  // }
+
+  // fetchScheduledStreams = () => {
+  //   ScheduledStreamService.getAllScheduledStreams(
+  //     6,
+  //     0,
+  //     (scheduledStreams: ScheduledStream[]) => {
+  //       console.log(scheduledStreams);
+  //       this.setState({ scheduledStreams, loading: false });
+  //     }
+  //   );
+  // };
 
   render() {
     return (
-      <Box height="100%" gridArea={this.props.gridArea}>
+      <Box width="100%">
         <Box
+          width="100%"
           direction="row"
-          gap="small"
-          align="center"
-          margin={{ bottom: "20px" }}
+          gap="xsmall"
+          align="end"
+          margin={{ bottom: "15px" }}
         >
           {this.props.title && (
-            <Text size="32px" weight="bold" color="black" margin="none">
+            <Text size="26px" weight="bold" color="black" margin="none">
               Upcoming streams
             </Text>
           )}
@@ -74,7 +67,7 @@ export default class ScheduledStreamList extends Component<Props, State> {
             <Link to="/scheduled" style={{ textDecoration: "none" }}>
               <Box
                 className="see-more-button"
-                pad={{ vertical: "xsmall", horizontal: "small" }}
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
                 round="xsmall"
                 style={{ border: "2px solid black" }}
                 direction="row"
@@ -86,9 +79,9 @@ export default class ScheduledStreamList extends Component<Props, State> {
             </Link>
           )}
         </Box>
-        <Box gap="medium" direction="row" justify="between" width="100%">
-          {this.state.scheduledStreams.map((stream: ScheduledStream) => (
-            <NewScheduledStreamCard stream={stream} />
+        <Box gap="small" direction="row" width="100%" height="100%" wrap>
+          {this.props.scheduledStreams.map((stream: ScheduledStream) => (
+            <ScheduledStreamCard stream={stream} user={this.props.user} />
           ))}
         </Box>
       </Box>

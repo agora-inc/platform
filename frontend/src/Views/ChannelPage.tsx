@@ -5,6 +5,10 @@ import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Video, VideoService } from "../Services/VideoService";
 import { Stream, StreamService } from "../Services/StreamService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
 import Identicon from "react-identicons";
 import Loading from "../Components/Loading";
 import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
@@ -23,6 +27,8 @@ interface State {
   loading: boolean;
   streams: Stream[];
   videos: Video[];
+  totalNumberOfVideos: number;
+  scheduledStreams: ScheduledStream[];
   followerCount: number;
   viewCount: number;
   following: boolean;
@@ -38,6 +44,8 @@ export default class ChannelPage extends Component<Props, State> {
       loading: true,
       streams: [],
       videos: [],
+      totalNumberOfVideos: 0,
+      scheduledStreams: [],
       followerCount: 0,
       viewCount: 0,
       following: false,
@@ -46,8 +54,21 @@ export default class ChannelPage extends Component<Props, State> {
   }
 
   componentWillMount() {
+    window.addEventListener("scroll", this.handleScroll, true);
     this.fetchChannel();
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  handleScroll = (e: any) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
+      this.fetchVideos();
+    }
+  };
 
   fetchChannel = () => {
     ChannelService.getChannelByName(
@@ -99,8 +120,13 @@ export default class ChannelPage extends Component<Props, State> {
   fetchVideos = () => {
     VideoService.getAllVideosForChannel(
       this.state.channel!.id,
-      (videos: Video[]) => {
-        this.setState({ videos });
+      6,
+      this.state.videos.length,
+      (data: { count: number; videos: Video[] }) => {
+        this.setState({
+          videos: this.state.videos.concat(data.videos),
+          totalNumberOfVideos: data.count,
+        });
       }
     );
   };
@@ -119,6 +145,15 @@ export default class ChannelPage extends Component<Props, State> {
       this.state.channel!.id,
       (viewCount: number) => {
         this.setState({ viewCount });
+      }
+    );
+  };
+
+  fetchScheduledStreams = () => {
+    ScheduledStreamService.getScheduledStreamsForChannel(
+      this.state.channel!.id,
+      (scheduledStreams: ScheduledStream[]) => {
+        this.setState({ scheduledStreams });
       }
     );
   };
@@ -216,8 +251,21 @@ export default class ChannelPage extends Component<Props, State> {
                       justify="center"
                       align="center"
                       style={{ minWidth: 120, minHeight: 120 }}
+                      overflow="hidden"
                     >
-                      <Identicon string={this.state.channel?.name} size={60} />
+                      {!this.state.channel!.has_avatar && (
+                        <Identicon
+                          string={this.state.channel!.name}
+                          size={60}
+                        />
+                      )}
+                      {!!this.state.channel!.has_avatar && (
+                        <img
+                          src={`/images/channel-icons/${
+                            this.state.channel!.id
+                          }.jpg`}
+                        />
+                      )}
                     </Box>
                     <Box gap="small">
                       <Text weight="bold" size="30px">
@@ -265,8 +313,10 @@ export default class ChannelPage extends Component<Props, State> {
                   margin={{ bottom: "10px" }}
                 >{`${this.state.channel?.name}'s upcoming streams`}</Text>
                 <ChannelPageScheduledStreamList
+                  scheduledStreams={this.state.scheduledStreams}
                   channelId={this.state.channel!.id}
                   loggedIn={this.state.user !== null}
+                  admin={false}
                 />
                 <Text
                   size="28px"

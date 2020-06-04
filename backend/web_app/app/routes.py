@@ -1,7 +1,8 @@
 from app import app, db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository, SearchRepository
 from flask import jsonify, request, send_file
 from werkzeug import exceptions
+import os
 
 users = UserRepository.UserRepository(db=db)
 tags = TagRepository.TagRepository(db=db)
@@ -10,6 +11,7 @@ streams = StreamRepository.StreamRepository(db=db)
 scheduledStreams = ScheduledStreamRepository.ScheduledStreamRepository(db=db)
 videos = VideoRepository.VideoRepository(db=db)
 channels = ChannelRepository.ChannelRepository(db=db)
+search = SearchRepository.SearchRepository(db=db)
 
 # --------------------------------------------
 # USER ROUTES
@@ -79,12 +81,15 @@ def getChannelByName():
 
 @app.route('/channels/all', methods=["GET"])
 def getAllChannels():
-    return jsonify(channels.getAllChannels())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(channels.getAllChannels(limit, offset))
 
 @app.route('/channels/foruser', methods=["GET"])
 def getChannelsForUser():
     userId = int(request.args.get("userId"))
     roles = request.args.getlist("role")
+    print(roles)
     return jsonify(channels.getChannelsForUser(userId, roles))
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
@@ -94,7 +99,8 @@ def createChannel():
     params = request.json
     name = params["name"]
     description = params["description"]
-    return jsonify(channels.createChannel(name, description))
+    userId = params["userId"]
+    return jsonify(channels.createChannel(name, description, userId))
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():
@@ -147,12 +153,24 @@ def updateChannelDescription():
     newDescription = params["newDescription"]
     return jsonify(channels.updateChannelDescription(channelId, newDescription))
 
+@app.route('/channels/uploadavatar', methods=["POST", "OPTIONS"])
+def uploadAvatar():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    channelId = request.form["channelId"]
+    file = request.files["image"]
+    fn = f"{channelId}.{file.filename.split('.')[-1]}"
+    file.save(f"../../frontend/public/images/channel-icons/{fn}")
+    return jsonify({"filename": fn})
+
 # --------------------------------------------
 # STREAM ROUTES
 # --------------------------------------------
 @app.route('/streams/all', methods=["GET"])
 def getAllStreams():
-    return jsonify(streams.getAllStreams())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(streams.getAllStreams(limit, offset))
 
 @app.route('/streams/channel', methods=["GET"])
 def getStreamsForChannel():
@@ -191,7 +209,9 @@ def serveThumbnail():
 # -------------------------------------------- 
 @app.route('/streams/scheduled/all', methods=["GET"])
 def getAllScheduledStreams():
-    return jsonify(scheduledStreams.getAllScheduledStreams())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(scheduledStreams.getAllScheduledStreams(limit, offset))
 
 @app.route('/streams/scheduled/channel', methods=["GET"])
 def getAllScheduledStreamsForChannel():
@@ -205,12 +225,43 @@ def scheduleStream():
     params = request.json
     return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["streamDate"], params["streamDescription"]))
 
+@app.route('/streams/scheduled/isregistered', methods=["GET"])
+def isRegisteredForScheduledStream():
+    streamId = int(request.args.get("streamId"))
+    userId = int(request.args.get("userId"))
+    return jsonify({"is_registered": scheduledStreams.isUserRegisteredForScheduledStream(streamId, userId)})
+
+@app.route('/streams/scheduled/register', methods=["POST", "OPTIONS"])
+def registerForScheduledStream():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    scheduledStreams.registerForScheduledStream(params["streamId"], params["userId"])
+    return jsonify("success")
+
+@app.route('/streams/scheduled/unregister', methods=["POST", "OPTIONS"])
+def unRegisterForScheduledStream():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    scheduledStreams.unRegisterForScheduledStream(params["streamId"], params["userId"])
+    return jsonify("success")
+
+@app.route('/streams/scheduled/foruser', methods=["GET"])
+def getScheduledStreamsForUser():
+    userId = int(request.args.get("userId"))
+    return jsonify(scheduledStreams.getScheduledStreamsForUser(userId))
+
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------
 @app.route('/videos/all', methods=["GET"])
 def getAllVideos():
-    return jsonify(videos.getAllVideos())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    data = videos.getAllVideos(limit, offset)
+    return jsonify({"videos": data[0],"count": data[1]})
+    # return jsonify({ videos.getAllVideos(limit, offset)})
 
 @app.route('/videos/recent', methods=["GET"])
 def getRecentVideos():
@@ -219,7 +270,10 @@ def getRecentVideos():
 @app.route('/videos/channel', methods=["GET"])
 def getAllVideosForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(videos.getAllVideosForChannel(channelId))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    data = videos.getAllVideosForChannel(channelId, limit, offset)
+    return jsonify({"videos": data[0],"count": data[1]})
 
 @app.route('/videos/video', methods=["GET"])
 def getVideoById():
@@ -229,7 +283,10 @@ def getVideoById():
 @app.route('/videos/tag', methods=["GET"])
 def getVideosWithTag():
     tagName = request.args.get("tagName")
-    return jsonify(videos.getAllVideosWithTag(tagName))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    data = videos.getAllVideosWithTag(tagName, limit, offset)
+    return jsonify({"videos": data[0],"count": data[1]})
 
 # --------------------------------------------
 # Q+A ROUTES
@@ -370,3 +427,16 @@ def tagStream():
 def getTagsOnStream():
     streamId = int(request.args.get("streamId"))
     return jsonify(tags.getTagsOnStream(streamId))
+
+# --------------------------------------------
+# SEARCH ROUTES
+# --------------------------------------------
+@app.route('/search', methods=["POST", "OPTION"])
+def fullTextSearch():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    objectTypes = params["objectTypes"]
+    searchString = params["searchString"]
+    results = {objectType: search.searchTable(objectType, searchString) for objectType in objectTypes}
+    return jsonify(results)

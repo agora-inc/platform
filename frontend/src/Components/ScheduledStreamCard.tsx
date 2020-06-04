@@ -1,190 +1,263 @@
 import React, { Component } from "react";
-import { Box, Text, Button } from "grommet";
-import { Down, Up } from "grommet-icons";
-import { ScheduledStream } from "../Services/ScheduledStreamService";
+import { Box, Text, Button, Layer } from "grommet";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
+import { User } from "../Services/UserService";
 import Identicon from "react-identicons";
-import ShadowBox from "../Components/ShadowBox";
+import AddToCalendarButtons from "./AddToCalendarButtons";
 
 interface Props {
   stream: ScheduledStream;
+  user: User | null;
 }
 
 interface State {
-  expanded: boolean;
+  showModal: boolean;
+  showShadow: boolean;
+  registered: boolean;
 }
 
-export default class ScheduledStreamService extends Component<Props, State> {
+export default class ScheduledStreamCard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      expanded: false,
+      showModal: false,
+      showShadow: false,
+      registered: false,
     };
   }
-
-  renderUnexpandedCard = () => {
-    return (
-      <Box
-        direction="row"
-        background="white"
-        justify="between"
-        align="center"
-        width="864px"
-        height="74px"
-        gap="small"
-        pad={{ horizontal: "small" }}
-        round="10px"
-      >
-        <Box direction="row" gap="small" align="center">
-          <Box
-            width="50px"
-            height="50px"
-            round="25px"
-            background="black"
-            justify="center"
-            align="center"
-          >
-            <Identicon string={this.props.stream.channel_name} size={35} />
-          </Box>
-          <Text
-            color="black"
-            size="24px"
-            weight="bold"
-            style={{
-              width: 450,
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {this.props.stream.name}
-          </Text>
-        </Box>
-        <Box direction="row" gap="small" align="center">
-          <ShadowBox
-            background="brand"
-            width="150px"
-            height="35px"
-            round="small"
-            justify="center"
-            align="center"
-            zIndex={5}
-            offset={3.5}
-          >
-            <Text size="18px" weight="bold" color="white">
-              Fri 24 April
-            </Text>
-          </ShadowBox>
-          <Box
-            direction="row"
-            align="end"
-            gap="xsmall"
-            onClick={() => this.setState({ expanded: true })}
-            focusIndicator={false}
-          >
-            <Text size="20px" weight="bold" color="black">
-              Details
-            </Text>
-            <Down size="22px" color="black" />
-          </Box>
-        </Box>
-      </Box>
-    );
+  formatDate = (d: string) => {
+    const date = new Date(d);
+    const dateStr = date.toDateString().slice(0, -4);
+    const timeStr = date.toTimeString().slice(0, 5);
+    return `${dateStr} ${timeStr}`;
   };
 
-  renderExpandedCard = () => {
-    return (
-      <Box
-        background="white"
-        width="864px"
-        round="small"
-        pad={{ horizontal: "small", bottom: "small" }}
-      >
-        <Box
-          direction="row"
-          justify="between"
-          align="center"
-          height="74px"
-          gap="small"
-        >
-          <Box direction="row" gap="small" align="center">
-            <Box
-              width="50px"
-              height="50px"
-              round="25px"
-              background="black"
-              justify="center"
-              align="center"
-            >
-              <Identicon string={this.props.stream.channel_name} size={35} />
-            </Box>
-            <ShadowBox
-              background="#606EEB"
-              width="180px"
-              height="35px"
-              round="small"
-              justify="center"
-              align="center"
-              zIndex={5}
-              offset={3.5}
-            >
-              <Text size="18px" weight="bold" color="white">
-                {this.props.stream.channel_name}
-              </Text>
-            </ShadowBox>
-            <ShadowBox
-              background="brand"
-              width="240px"
-              height="35px"
-              round="small"
-              justify="center"
-              align="center"
-              zIndex={5}
-              offset={3.5}
-            >
-              <Text size="18px" weight="bold" color="white">
-                Fri 24 April 17:00 BST
-              </Text>
-            </ShadowBox>
-          </Box>
-          <Box
-            direction="row"
-            align="end"
-            gap="xsmall"
-            onClick={() => this.setState({ expanded: false })}
-            focusIndicator={false}
-          >
-            <Text size="20px" weight="bold" color="black">
-              Details
-            </Text>
-            <Up size="22px" color="black" />
-          </Box>
-        </Box>
-        <Box direction="row" justify="between" align="end">
-          <Text style={{ width: 581 }} weight="bold" color="black" size="24px">
-            {this.props.stream.name}
-          </Text>
-          <Box
-            background="black"
-            width="150px"
-            height="50px"
-            round="30px"
-            justify="center"
-            align="center"
-            onClick={() => {}}
-            focusIndicator={false}
-          >
-            <Text weight="bold" color="white" size="24px">
-              Register
-            </Text>
-          </Box>
-        </Box>
-      </Box>
-    );
+  toggleModal = () => {
+    this.setState({ showModal: !this.state.showModal, showShadow: true });
+  };
+
+  componentWillMount() {
+    this.checkIfRegistered();
+  }
+
+  checkIfRegistered = () => {
+    this.props.user &&
+      ScheduledStreamService.isRegisteredForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        (registered: boolean) => {
+          this.setState({ registered });
+        }
+      );
+  };
+
+  register = () => {
+    this.props.user &&
+      ScheduledStreamService.registerForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        () => {
+          // this.toggleModal();
+          this.checkIfRegistered();
+          this.setState({
+            showShadow: false,
+          });
+        }
+      );
+  };
+
+  unregister = () => {
+    this.props.user &&
+      ScheduledStreamService.unRegisterForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        () => {
+          // this.toggleModal();
+          this.checkIfRegistered();
+          this.setState({
+            showShadow: false,
+          });
+        }
+      );
   };
 
   render() {
-    return this.state.expanded
-      ? this.renderExpandedCard()
-      : this.renderUnexpandedCard();
+    console.log(this.props.stream);
+    return (
+      <Box
+        width="32%"
+        height="300px"
+        onClick={this.toggleModal}
+        focusIndicator={false}
+        style={{ position: "relative" }}
+        margin={{ bottom: "small" }}
+      >
+        <Box
+          onMouseEnter={() => this.setState({ showShadow: true })}
+          onMouseLeave={() => {
+            if (!this.state.showModal) {
+              this.setState({ showShadow: false });
+            }
+          }}
+          height="100%"
+          width="100%"
+          background="white"
+          round="xsmall"
+          // align="center"
+          pad="15px"
+          justify="between"
+          gap="small"
+        >
+          <Box height="35%">
+            <Box
+              direction="row"
+              gap="xsmall"
+              align="center"
+              style={{ minHeight: "30px" }}
+            >
+              <Box
+                height="25px"
+                width="25px"
+                round="12.5px"
+                justify="center"
+                align="center"
+                background="#efeff1"
+                overflow="hidden"
+              >
+                {!this.props.stream.has_avatar && (
+                  <Identicon
+                    string={this.props.stream.channel_name}
+                    size={15}
+                  />
+                )}
+                {!!this.props.stream.has_avatar && (
+                  <img
+                    src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
+                  />
+                )}
+              </Box>
+              <Text
+                weight="bold"
+                size="18px"
+                color={this.props.stream.channel_colour}
+              >
+                {this.props.stream.channel_name}
+              </Text>
+            </Box>
+            <Text
+              weight="bold"
+              size="20px"
+              color="black"
+              style={{
+                // whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {this.props.stream.name}
+            </Text>
+          </Box>
+          <Box gap="small">
+            <Text
+              size="18px"
+              color="black"
+              style={{ maxHeight: 150, overflow: "scroll" }}
+            >
+              {this.props.stream.description}
+            </Text>
+            <Text size="18px" color="black" weight="bold">
+              {this.formatDate(this.props.stream.date)}
+            </Text>
+          </Box>
+        </Box>
+        {this.state.showShadow && (
+          <Box
+            height="100%"
+            width="100%"
+            round="xsmall"
+            style={{ zIndex: -1, position: "absolute", top: 8, left: 8 }}
+            background={this.props.stream.channel_colour}
+          ></Box>
+        )}
+        {this.state.showModal && (
+          <Layer
+            onEsc={() => {
+              this.toggleModal();
+              this.setState({ showShadow: false });
+            }}
+            onClickOutside={() => {
+              this.toggleModal();
+              this.setState({ showShadow: false });
+            }}
+            modal
+            responsive
+            animation="fadeIn"
+            style={{ width: 375, height: 450, borderRadius: 15 }}
+          >
+            <Box
+              // align="center"
+              pad="25px"
+              width="100%"
+              height="100%"
+              justify="between"
+              gap="small"
+            >
+              <Box height="40%">
+                <Text
+                  weight="bold"
+                  size="22px"
+                  color={this.props.stream.channel_colour}
+                >
+                  {this.props.stream.channel_name}
+                </Text>
+                <Text
+                  weight="bold"
+                  size="24px"
+                  color="black"
+                  style={{ overflowY: "scroll" }}
+                >
+                  {this.props.stream.name}
+                </Text>
+              </Box>
+              <Box height="60%" gap="small" justify="end">
+                <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
+                  {this.props.stream.description}
+                </Text>
+                <Text size="18px" color="black" weight="bold">
+                  {this.formatDate(this.props.stream.date)}
+                </Text>
+                {this.state.registered && (
+                  <AddToCalendarButtons
+                    startTime={this.props.stream.date}
+                    endTime={this.props.stream.date}
+                    name={this.props.stream.name}
+                    description={this.props.stream.description}
+                  />
+                )}
+                <Button
+                  onClick={
+                    this.state.registered ? this.unregister : this.register
+                  }
+                  primary
+                  color={this.props.stream.channel_colour}
+                  disabled={this.props.user === null}
+                  label={
+                    this.props.user !== null
+                      ? this.state.registered
+                        ? "Unregister"
+                        : "Register"
+                      : "Log in to register"
+                  }
+                  size="large"
+                ></Button>
+              </Box>
+            </Box>
+          </Layer>
+        )}
+      </Box>
+    );
   }
 }

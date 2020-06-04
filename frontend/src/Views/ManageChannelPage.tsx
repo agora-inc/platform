@@ -1,20 +1,26 @@
-import React, { Component } from "react";
+import React, { Component, ChangeEvent } from "react";
 import { Redirect } from "react-router";
 import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Video, VideoService } from "../Services/VideoService";
 import { Channel, ChannelService } from "../Services/ChannelService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
 import Loading from "../Components/Loading";
 import StreamNowButton from "../Components/StreamNowButton";
 import ScheduleStreamButton from "../Components/ScheduleStreamButton";
 import Identicon from "react-identicons";
 import ColorPicker from "../Components/ColorPicker";
 import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
+import AddUsersButton from "../Components/AddUsersButton";
 import VideoCard from "../Components/VideoCard";
 import "../Styles/manage-channel.css";
 
 interface Props {
   location: any;
+  match: any;
 }
 
 interface State {
@@ -29,6 +35,8 @@ interface State {
   channelMembers: User[];
   followers: User[];
   videos: Video[];
+  totalNumberOfVideos: number;
+  scheduledStreams: ScheduledStream[];
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -46,82 +54,85 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelMembers: [],
       followers: [],
       videos: [],
+      totalNumberOfVideos: 0,
+      scheduledStreams: [],
     };
   }
 
   componentWillMount() {
+    window.addEventListener("scroll", this.handleScroll, true);
     this.getChannelAndCheckAccess();
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.match.params.name !== prevProps.match.params.name) {
+      this.getChannelAndCheckAccess();
+    }
+  }
+
+  handleScroll = (e: any) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
+      this.fetchVideos();
+    }
+  };
+
   getChannelAndCheckAccess = () => {
-    ChannelService.getChannelByName(
-      this.props.location.pathname.split("/")[2],
-      (channel: Channel) => {
-        let user = UserService.getCurrentUser();
-        ChannelService.isUserInChannel(
-          user.id,
-          channel.id,
-          ["owner", "member"],
-          (res: boolean) => {
-            this.setState(
-              {
-                channel: channel,
-                colour: channel.colour,
-                allowed: res,
-                loading: false,
-              },
-              () => {
-                this.fetchFollowerCount();
-                this.fetchViewCount();
-                this.fetchOwners();
-                this.fetchMembers();
-                this.fetchFollowers();
-                this.fetchVideos();
-              }
-            );
-          }
-        );
-      }
-    );
-    // if (this.props.location.state) {
-    //   this.setState(
-    //     {
-    //       channel: this.props.location.state.channel,
-    //       colour: this.props.location.state.channel.colour,
-    //       allowed: true,
-    //       loading: false,
-    //     },
-    //     () => {
-    //       this.fetchFollowerCount();
-    //       this.fetchViewCount();
-    //     }
-    //   );
-    // } else {
-    //   ChannelService.getChannelByName(
-    //     this.props.location.pathname.split("/")[2],
-    //     (channel: Channel) => {
-    //       let user = UserService.getCurrentUser();
-    //       ChannelService.isUserInChannel(
-    //         user.id,
-    //         channel.id,
-    //         (res: boolean) => {
-    //           this.setState(
-    //             {
-    //               channel: channel,
-    //               colour: channel.colour,
-    //               allowed: res,
-    //               loading: false,
-    //             },
-    //             () => {
-    //               this.fetchFollowerCount();
-    //               this.fetchViewCount();
-    //             }
-    //           );
-    //         }
-    //       );
-    //     }
-    //   );
-    // }
+    if (this.props.location.state) {
+      this.setState(
+        {
+          channel: this.props.location.state.channel,
+          colour: this.props.location.state.channel.colour,
+          allowed: true,
+          loading: false,
+        },
+        () => {
+          this.fetchFollowerCount();
+          this.fetchViewCount();
+          this.fetchOwners();
+          this.fetchMembers();
+          this.fetchFollowers();
+          this.fetchVideos();
+          this.fetchScheduledStreams();
+        }
+      );
+    } else {
+      ChannelService.getChannelByName(
+        this.props.location.pathname.split("/")[2],
+        (channel: Channel) => {
+          let user = UserService.getCurrentUser();
+          ChannelService.isUserInChannel(
+            user.id,
+            channel.id,
+            ["owner", "member"],
+            (res: boolean) => {
+              this.setState(
+                {
+                  channel: channel,
+                  colour: channel.colour,
+                  allowed: res,
+                  loading: false,
+                },
+                () => {
+                  this.fetchFollowerCount();
+                  this.fetchViewCount();
+                  this.fetchOwners();
+                  this.fetchMembers();
+                  this.fetchFollowers();
+                  this.fetchVideos();
+                  this.fetchScheduledStreams();
+                }
+              );
+            }
+          );
+        }
+      );
+    }
   };
 
   fetchFollowerCount = () => {
@@ -175,8 +186,22 @@ export default class ManageChannelPage extends Component<Props, State> {
   fetchVideos = () => {
     VideoService.getAllVideosForChannel(
       this.state.channel!.id,
-      (videos: Video[]) => {
-        this.setState({ videos });
+      6,
+      this.state.videos.length,
+      (data: { count: number; videos: Video[] }) => {
+        this.setState({
+          videos: this.state.videos.concat(data.videos),
+          totalNumberOfVideos: data.count,
+        });
+      }
+    );
+  };
+
+  fetchScheduledStreams = () => {
+    ScheduledStreamService.getScheduledStreamsForChannel(
+      this.state.channel!.id,
+      (scheduledStreams: ScheduledStream[]) => {
+        this.setState({ scheduledStreams });
       }
     );
   };
@@ -201,7 +226,17 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
+  onFileChosen = (e: any) => {
+    console.log(e.target.files[0]);
+    ChannelService.uploadAvatar(
+      this.state.channel!.id,
+      e.target.files[0],
+      () => {}
+    );
+  };
+
   render() {
+    console.log(this.state.channel);
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -219,8 +254,11 @@ export default class ManageChannelPage extends Component<Props, State> {
           >
             <Box width="75%" align="start">
               <Box direction="row" gap="small">
-                <StreamNowButton margin="none" />
-                <ScheduleStreamButton margin="none" />
+                <StreamNowButton margin="none" channel={this.state.channel} />
+                <ScheduleStreamButton
+                  margin="none"
+                  channel={this.state.channel}
+                />
               </Box>
               <Box
                 height="225px"
@@ -244,15 +282,59 @@ export default class ManageChannelPage extends Component<Props, State> {
                   pad="15px"
                 >
                   <Box
-                    width="120px"
-                    height="120px"
-                    round="60px"
-                    background="white"
-                    justify="center"
+                    style={{
+                      minWidth: 120,
+                      minHeight: 120,
+                    }}
                     align="center"
-                    style={{ minWidth: 120, minHeight: 120 }}
                   >
-                    <Identicon string={this.state.channel?.name} size={60} />
+                    <Box
+                      width="120px"
+                      height="120px"
+                      round="60px"
+                      background="white"
+                      justify="center"
+                      align="center"
+                      style={{ minWidth: 120, minHeight: 120 }}
+                      overflow="hidden"
+                    >
+                      {!this.state.channel!.has_avatar && (
+                        <Identicon
+                          string={this.state.channel?.name}
+                          size={60}
+                        />
+                      )}
+                      {!!this.state.channel!.has_avatar && (
+                        <img
+                          src={`/images/channel-icons/${
+                            this.state.channel!.id
+                          }.jpg`}
+                        />
+                      )}
+                    </Box>
+                    <Box
+                      style={{ position: "relative" }}
+                      margin={{ top: "xsmall" }}
+                    >
+                      <input
+                        type="file"
+                        className="input-hidden"
+                        onChange={this.onFileChosen}
+                      ></input>
+                      <Box
+                        width="100px"
+                        height="25px"
+                        background="white"
+                        round="xsmall"
+                        style={{ border: "solid black 2px", cursor: "pointer" }}
+                        align="center"
+                        justify="center"
+                      >
+                        <Text size="13px" weight="bold" color="black">
+                          Upload avatar
+                        </Text>
+                      </Box>
+                    </Box>
                   </Box>
                   <Box gap="small">
                     <Text weight="bold" size="30px">
@@ -320,20 +402,23 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text weight="bold" size="20px" color="black">
                       Channel owners
                     </Text>
-                    <Box
-                      width="70px"
-                      align="center"
-                      background="white"
-                      pad={{ horizontal: "small", vertical: "3px" }}
-                      round="xsmall"
-                      style={{ border: "2px solid black" }}
-                    >
-                      <Text color="black" style={{ fontWeight: 500 }}>
-                        Add
-                      </Text>
-                    </Box>
+                    <AddUsersButton
+                      role="owner"
+                      existingUsers={this.state.channelOwners}
+                      channelId={this.state.channel!.id}
+                      onUserAddedCallback={() => {
+                        this.fetchMembers();
+                        this.fetchOwners();
+                        this.fetchFollowers();
+                      }}
+                    />
                   </Box>
-                  <Box direction="row" wrap margin={{ top: "5px" }}>
+                  <Box
+                    direction="row"
+                    wrap
+                    margin={{ top: "5px" }}
+                    gap="xsmall"
+                  >
                     {this.state.channelOwners.map((owner: User) => (
                       <Box
                         background="white"
@@ -359,18 +444,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text weight="bold" size="20px" color="black">
                       Channel members
                     </Text>
-                    <Box
-                      width="70px"
-                      align="center"
-                      background="white"
-                      pad={{ horizontal: "small", vertical: "3px" }}
-                      round="xsmall"
-                      style={{ border: "2px solid black" }}
-                    >
-                      <Text color="black" style={{ fontWeight: 500 }}>
-                        Add
-                      </Text>
-                    </Box>
+                    <AddUsersButton
+                      role="member"
+                      existingUsers={this.state.channelMembers}
+                      channelId={this.state.channel!.id}
+                      onUserAddedCallback={() => {
+                        this.fetchMembers();
+                        this.fetchOwners();
+                        this.fetchFollowers();
+                      }}
+                    />
                   </Box>
                   <Box direction="row" wrap margin={{ top: "5px" }}>
                     {this.state.channelMembers.map((member: User) => (
@@ -425,8 +508,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                 margin={{ top: "40px", bottom: "10px" }}
               >{`Your upcoming streams`}</Text>
               <ChannelPageScheduledStreamList
+                scheduledStreams={this.state.scheduledStreams}
                 channelId={this.state.channel!.id}
                 loggedIn
+                admin
               />
               <Text
                 size="28px"

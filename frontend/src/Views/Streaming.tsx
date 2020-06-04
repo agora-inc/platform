@@ -279,6 +279,7 @@ export default class Streaming extends Component<Props, State> {
           streamId={1}
           streamer={true}
           tags={this.state.tags.map((t: any) => t.name)}
+          margin={{ top: "-20px" }}
         />
       </Box>
     );

@@ -2,9 +2,9 @@ import { baseApiUrl } from "../config";
 import axios from "axios";
 import { Tag } from "./TagService";
 
-const getAllVideos = (callback: any) => {
+const getAllVideos = (limit: number, offset: number, callback: any) => {
   axios
-    .get(baseApiUrl + "/videos/all", {
+    .get(`${baseApiUrl}/videos/all?limit=${limit}&offset=${offset}`, {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then(function (response) {
@@ -22,21 +22,37 @@ const getRecentVideos = (callback: any) => {
     });
 };
 
-const getAllVideosForChannel = (channelId: number, callback: any) => {
+const getAllVideosForChannel = (
+  channelId: number,
+  limit: number,
+  offset: number,
+  callback: any
+) => {
   axios
-    .get(baseApiUrl + "/videos/channel?channelId=" + channelId.toString(), {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
+    .get(
+      `${baseApiUrl}/videos/channel?channelId=${channelId}&limit=${limit}&offset=${offset}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
     .then(function (response) {
       callback(response.data);
     });
 };
 
-const getAllVideosWithTag = (tagName: string, callback: any) => {
+const getAllVideosWithTag = (
+  tagName: string,
+  limit: number,
+  offset: number,
+  callback: any
+) => {
   axios
-    .get(baseApiUrl + "/videos/tag?tagName=" + tagName, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
+    .get(
+      `${baseApiUrl}/videos/tag?tagName=${tagName}&limit=${limit}&offset=${offset}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
     .then(function (response) {
       callback(response.data);
     });
@@ -64,6 +80,7 @@ export type Video = {
   id: number;
   channel_id: number;
   channel_name: string;
+  channel_colour: string;
   name: string;
   description: string;
   tags: Tag[];
@@ -72,4 +89,5 @@ export type Video = {
   views: number;
   url: string;
   chat_id: number;
+  has_avatar: boolean;
 };

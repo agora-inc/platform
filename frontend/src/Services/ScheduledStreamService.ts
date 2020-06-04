@@ -1,11 +1,18 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
 
-const getAllScheduledStreams = (callback: any) => {
+const getAllScheduledStreams = (
+  limit: number,
+  offset: number,
+  callback: any
+) => {
   axios
-    .get(baseApiUrl + "/streams/scheduled/all", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
+    .get(
+      `${baseApiUrl}/streams/scheduled/all?limit=${limit}&offset=${offset}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
     .then(function (response) {
       callback(response.data);
     });
@@ -50,17 +57,95 @@ const scheduleStream = (
   // });
 };
 
+const isRegisteredForScheduledStream = (
+  streamId: number,
+  userId: number,
+  callback: any
+) => {
+  axios
+    .get(
+      baseApiUrl +
+        `/streams/scheduled/isregistered?streamId=${streamId}&userId=${userId}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
+    .then(function (response) {
+      callback(response.data.is_registered);
+    });
+};
+
+const registerForScheduledStream = (
+  streamId: number,
+  userId: number,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/streams/scheduled/register",
+      {
+        streamId: streamId,
+        userId: userId,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+  // .catch(function (error) {
+  //   callback(false);
+  // });
+};
+
+const unRegisterForScheduledStream = (
+  streamId: number,
+  userId: number,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/streams/scheduled/unregister",
+      {
+        streamId: streamId,
+        userId: userId,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+  // .catch(function (error) {
+  //   callback(false);
+  // });
+};
+
+const getScheduledStreamsForUser = (userId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + `/streams/scheduled/foruser?userId=${userId}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 export const ScheduledStreamService = {
   getAllScheduledStreams,
   getScheduledStreamsForChannel,
   scheduleStream,
+  isRegisteredForScheduledStream,
+  registerForScheduledStream,
+  unRegisterForScheduledStream,
+  getScheduledStreamsForUser,
 };
 
 export type ScheduledStream = {
   id: number;
   channel_id: number;
   channel_name: string;
+  channel_colour: string;
   name: string;
   date: string;
   description: string;
+  has_avatar: boolean;
 };

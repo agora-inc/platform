@@ -18,6 +18,7 @@ export default class ChannelIdCard extends Component<Props> {
         style={{ textDecoration: "none" }}
       >
         <Box
+          // height="60px"
           direction="row"
           background="#606EEB"
           round="small"

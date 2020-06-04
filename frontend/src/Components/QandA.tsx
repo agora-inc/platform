@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { QandAService } from "../Services/QandAService";
 import { UserService, User } from "../Services/UserService";
-import { Add } from "grommet-icons";
+import { Add, Refresh } from "grommet-icons";
 import Loading from "./Loading";
 import LatexInput from "./LatexInput";
 import Identicon from "react-identicons";
@@ -43,7 +43,7 @@ interface State {
   questions: Question[];
   sortBy: string;
   loading: boolean;
-  user: User;
+  user: User | null;
   writingQuestion: boolean;
   answeringQuestion: Question | null;
 }
@@ -62,6 +62,11 @@ export default class QandA extends Component<Props, State> {
   }
 
   componentWillMount() {
+    this.fetchQuestions();
+  }
+
+  fetchQuestions = () => {
+    this.setState({ loading: true });
     if (this.props.streamId) {
       QandAService.getAllQuestionsForStream({
         callback: (questions: Question[]) => {
@@ -77,7 +82,7 @@ export default class QandA extends Component<Props, State> {
         videoId: this.props.videoId,
       });
     }
-  }
+  };
 
   onNewClicked = () => {
     this.setState(
@@ -130,6 +135,9 @@ export default class QandA extends Component<Props, State> {
   };
 
   onUpvoteQuestionClicked = (question: Question) => {
+    if (!this.state.user) {
+      return;
+    }
     question.downvoters.includes(this.state.user.username)
       ? QandAService.removeQuestionDownvote(
           this.state.user.id,
@@ -159,6 +167,9 @@ export default class QandA extends Component<Props, State> {
   };
 
   onDownVoteQuestionClicked = (question: Question) => {
+    if (!this.state.user) {
+      return;
+    }
     question.upvoters.includes(this.state.user.username)
       ? QandAService.removeQuestionUpvote(
           this.state.user.id,
@@ -185,6 +196,9 @@ export default class QandA extends Component<Props, State> {
   };
 
   onUpvoteAnswerClicked = (answer: Answer) => {
+    if (!this.state.user) {
+      return;
+    }
     answer.downvoters.includes(this.state.user.username)
       ? QandAService.removeAnswerDownvote(
           this.state.user.id,
@@ -211,6 +225,9 @@ export default class QandA extends Component<Props, State> {
   };
 
   onDownVoteAnswerClicked = (answer: Answer) => {
+    if (!this.state.user) {
+      return;
+    }
     answer.upvoters.includes(this.state.user.username)
       ? QandAService.removeAnswerUpvote(
           this.state.user.id,
@@ -237,6 +254,9 @@ export default class QandA extends Component<Props, State> {
   };
 
   onSubmitClicked = (content: string) => {
+    if (!this.state.user) {
+      return;
+    }
     const params = this.props.streamId
       ? {
           userId: this.state.user.id,
@@ -331,27 +351,29 @@ export default class QandA extends Component<Props, State> {
       <Box>
         <Box direction="row" justify="between" align="center" id="question">
           <Box direction="row" gap="small">
-            <Box
-              height="100%"
-              justify="between"
-              align="center"
-              pad="none"
-              margin="none"
-            >
-              <CaretUpOutlined
-                style={{
-                  fontSize: 35,
-                  marginTop: -5,
-                  marginBottom: 5,
-                  color: upvoteColor,
-                }}
-                onClick={() => this.onUpvoteQuestionClicked(question)}
-              />
-              <CaretDownOutlined
-                style={{ fontSize: 35, color: downvoteColor }}
-                onClick={() => this.onDownVoteQuestionClicked(question)}
-              />
-            </Box>
+            {this.state.user && (
+              <Box
+                height="100%"
+                justify="between"
+                align="center"
+                pad="none"
+                margin="none"
+              >
+                <CaretUpOutlined
+                  style={{
+                    fontSize: 35,
+                    marginTop: -5,
+                    marginBottom: 5,
+                    color: upvoteColor,
+                  }}
+                  onClick={() => this.onUpvoteQuestionClicked(question)}
+                />
+                <CaretDownOutlined
+                  style={{ fontSize: 35, color: downvoteColor }}
+                  onClick={() => this.onDownVoteQuestionClicked(question)}
+                />
+              </Box>
+            )}
             <Box>
               <Box direction="row" gap="small">
                 <Box align="center" height="100%" justify="between">
@@ -380,24 +402,26 @@ export default class QandA extends Component<Props, State> {
               <Box>{this.renderQuestionOrAnswerContent(question.content)}</Box>
             </Box>
           </Box>
-          <Box
-            className="hides"
-            direction="row"
-            width="100px"
-            height="40px"
-            round="small"
-            background="#61EC9F"
-            margin="none"
-            justify="center"
-            align="center"
-            gap="small"
-            onClick={() => this.onAnswerClicked(question)}
-            focusIndicator={false}
-          >
-            <Text color="white" weight="bold">
-              Answer
-            </Text>
-          </Box>
+          {this.state.user && (
+            <Box
+              className="hides"
+              direction="row"
+              width="100px"
+              height="40px"
+              round="small"
+              background="#61EC9F"
+              margin="none"
+              justify="center"
+              align="center"
+              gap="small"
+              onClick={() => this.onAnswerClicked(question)}
+              focusIndicator={false}
+            >
+              <Text color="white" weight="bold">
+                Answer
+              </Text>
+            </Box>
+          )}
         </Box>
         <Box
           margin={{ left: "xlarge", top: "small" }}
@@ -421,27 +445,29 @@ export default class QandA extends Component<Props, State> {
         : "black";
     return (
       <Box direction="row" gap="small">
-        <Box
-          height="100%"
-          justify="between"
-          align="center"
-          pad="none"
-          margin="none"
-        >
-          <CaretUpOutlined
-            style={{
-              fontSize: 35,
-              marginTop: -5,
-              marginBottom: 5,
-              color: upvoteColor,
-            }}
-            onClick={() => this.onUpvoteAnswerClicked(answer)}
-          />
-          <CaretDownOutlined
-            style={{ fontSize: 35, color: downvoteColor }}
-            onClick={() => this.onDownVoteAnswerClicked(answer)}
-          />
-        </Box>
+        {this.state.user && (
+          <Box
+            height="100%"
+            justify="between"
+            align="center"
+            pad="none"
+            margin="none"
+          >
+            <CaretUpOutlined
+              style={{
+                fontSize: 35,
+                marginTop: -5,
+                marginBottom: 5,
+                color: upvoteColor,
+              }}
+              onClick={() => this.onUpvoteAnswerClicked(answer)}
+            />
+            <CaretDownOutlined
+              style={{ fontSize: 35, color: downvoteColor }}
+              onClick={() => this.onDownVoteAnswerClicked(answer)}
+            />
+          </Box>
+        )}
         <Box>
           <Box direction="row" gap="small">
             <Box align="center" height="100%" justify="between">
@@ -453,7 +479,7 @@ export default class QandA extends Component<Props, State> {
               </Text>
             </Box>
             <Box height="100%" justify="between">
-              <Identicon string={"remymess"} size={22} />
+              <Identicon string={answer.username} size={22} />
               <Text size="14px" weight="bold">
                 {answer.username}
               </Text>
@@ -497,37 +523,49 @@ export default class QandA extends Component<Props, State> {
               New
             </Text>
           </Box>
-          {!this.props.streamer && (
+          <Box direction="row" align="center" margin="small" gap="xsmall">
+            {!this.props.streamer && this.state.user && (
+              <Box
+                direction="row"
+                width="100px"
+                height="40px"
+                round="small"
+                background="#606EEB"
+                // margin="small"
+                justify="center"
+                align="center"
+                gap="small"
+                onClick={this.onNewClicked}
+                focusIndicator={false}
+              >
+                <Text color="white" weight="bold">
+                  New
+                </Text>
+                <Add color="white" size="16px" fontWeight="bold" />
+              </Box>
+            )}
             <Box
-              direction="row"
-              width="100px"
-              height="40px"
-              round="small"
-              background="#606EEB"
-              margin="small"
-              justify="center"
-              align="center"
-              gap="small"
-              onClick={this.onNewClicked}
+              onClick={this.fetchQuestions}
               focusIndicator={false}
+              margin="none"
+              pad="none"
             >
-              <Text color="white" weight="bold">
-                New
-              </Text>
-              <Add color="white" size="16px" fontWeight="bold" />
+              <Refresh size="40px" />
             </Box>
-          )}
+          </Box>
         </Box>
         {this.state.loading && (
           <Box width="100%" height="100%" align="center" justify="center">
             <Loading size={50} color="black" />
           </Box>
         )}
-        <Box margin="small" gap="medium">
-          {this.sortQuestions().map((question) =>
-            this.renderQuestion(question)
-          )}
-        </Box>
+        {!this.state.loading && (
+          <Box margin="small" gap="medium">
+            {this.sortQuestions().map((question) =>
+              this.renderQuestion(question)
+            )}
+          </Box>
+        )}
         {(this.state.writingQuestion || this.state.answeringQuestion) && (
           <LatexInput
             title={
