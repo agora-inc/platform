@@ -30,7 +30,8 @@ interface State {
   tags: Tag[];
   loading: boolean;
   date: string;
-  time: string;
+  startTime: string;
+  endTime: string;
   link: string;
 }
 
@@ -44,7 +45,8 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
       tags: [],
       loading: false,
       date: new Date().toISOString(),
-      time: "",
+      startTime: "",
+      endTime: "",
       link: "",
     };
   }
@@ -52,7 +54,8 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
   toggleModal = () => {
     this.setState({
       showModal: !this.state.showModal,
-      time: "",
+      startTime: "",
+      endTime: "",
       title: "",
       description: "",
       link: "",
@@ -72,17 +75,22 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
   };
 
   combineDateAndTimeStrings = () => {
-    return `${this.state.date.slice(0, 10)} ${this.state.time}`;
+    return [
+      `${this.state.date.slice(0, 10)} ${this.state.startTime}`,
+      `${this.state.date.slice(0, 10)} ${this.state.endTime}`,
+    ];
   };
 
   onFinish = () => {
-    const dateTimeStr = this.combineDateAndTimeStrings();
+    const dateTimeStrs = this.combineDateAndTimeStrings();
     ScheduledStreamService.scheduleStream(
       this.props.channel!.id,
       this.props.channel!.name,
       this.state.title,
       this.state.description,
-      dateTimeStr,
+      dateTimeStrs[0],
+      dateTimeStrs[1],
+      this.state.link,
       (stream: ScheduledStream) => {
         console.log("SCHEDULED STREAM:", stream);
         this.setState(
@@ -96,7 +104,8 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
               description: "",
               tags: [],
               date: new Date().toISOString(),
-              time: "",
+              startTime: "",
+              endTime: "",
             });
           }
         );
@@ -128,7 +137,8 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
 
   isComplete = () => {
     return (
-      this.state.time !== "" &&
+      this.state.startTime !== "" &&
+      this.state.endTime !== "" &&
       this.state.title !== "" &&
       this.state.description !== "" &&
       this.state.link !== ""
@@ -205,9 +215,9 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
                     placeholder: "mm",
                   },
                 ]}
-                value={this.state.time}
+                value={this.state.startTime}
                 onChange={(event) => {
-                  this.setState({ time: event.target.value });
+                  this.setState({ startTime: event.target.value });
                 }}
               />
             </Box>
@@ -229,9 +239,9 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
                     placeholder: "mm",
                   },
                 ]}
-                value={this.state.time}
+                value={this.state.endTime}
                 onChange={(event) => {
-                  this.setState({ time: event.target.value });
+                  this.setState({ endTime: event.target.value });
                 }}
               />
             </Box>

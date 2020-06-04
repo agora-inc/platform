@@ -90,32 +90,32 @@ export default class ScheduleStreamButton extends Component<Props, State> {
 
   onFinish = () => {
     const dateTimeStr = this.combineDateAndTimeStrings();
-    ScheduledStreamService.scheduleStream(
-      this.props.channel!.id,
-      this.props.channel!.name,
-      this.state.title,
-      this.state.description,
-      dateTimeStr,
-      (stream: ScheduledStream) => {
-        console.log("SCHEDULED STREAM:", stream);
-        this.setState(
-          {
-            loading: false,
-          },
-          () => {
-            this.toggleModal();
-            this.setState({
-              modalStep: 0,
-              title: "",
-              description: "",
-              tags: [],
-              date: new Date().toISOString(),
-              time: "",
-            });
-          }
-        );
-      }
-    );
+    // ScheduledStreamService.scheduleStream(
+    //   this.props.channel!.id,
+    //   this.props.channel!.name,
+    //   this.state.title,
+    //   this.state.description,
+    //   dateTimeStr,
+    //   (stream: ScheduledStream) => {
+    //     console.log("SCHEDULED STREAM:", stream);
+    //     this.setState(
+    //       {
+    //         loading: false,
+    //       },
+    //       () => {
+    //         this.toggleModal();
+    //         this.setState({
+    //           modalStep: 0,
+    //           title: "",
+    //           description: "",
+    //           tags: [],
+    //           date: new Date().toISOString(),
+    //           time: "",
+    //         });
+    //       }
+    //     );
+    //   }
+    // );
   };
 
   selectTag = (tag: Tag) => {

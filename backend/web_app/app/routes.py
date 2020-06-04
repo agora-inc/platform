@@ -49,28 +49,6 @@ def authenticate():
     
     return jsonify({"id": user["id"], "username": user["username"]})
 
-@app.route('/users/live')
-def getLiveUsers():
-    return jsonify(users.getCurrentlyLiveUsers())
-
-@app.route('/users/user/golive', methods=["POST", "OPTIONS"])
-def goLive():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    params = request.json
-    username = params['username']
-    users.goLive(username)
-    return jsonify("Success")
-
-@app.route('/users/user/stoplive', methods=["POST", "OPTIONS"])
-def stopLive():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    params = request.json
-    username = params['username']
-    users.stopLive(username)
-    return jsonify("Success")
-
 # --------------------------------------------
 # CHANNEL ROUTES
 # --------------------------------------------
@@ -223,7 +201,7 @@ def scheduleStream():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["streamDate"], params["streamDescription"]))
+    return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["startDate"], params["endDate"], params["streamDescription"], params["streamLink"]))
 
 @app.route('/streams/scheduled/isregistered', methods=["GET"])
 def isRegisteredForScheduledStream():
