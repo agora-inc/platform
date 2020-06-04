@@ -1,14 +1,14 @@
 import { ScheduledStream } from "../Services/ScheduledStreamService";
 import moment from "moment";
 
-const formatTime = (date: Date) => {
+const formatTime = (date: string) => {
   let formattedDate = moment.utc(date).format("YYYYMMDDTHHmmssZ");
   return formattedDate.replace("+00:00", "Z");
 };
 
 const generateGoogleCalendarLink = (
-  startTime: Date,
-  endTime: Date,
+  startTime: string,
+  endTime: string,
   name: string,
   description: string
 ) => {
@@ -24,8 +24,8 @@ const generateGoogleCalendarLink = (
 };
 
 const generateICSDownloadLink = (
-  startTime: Date,
-  endTime: Date,
+  startTime: string,
+  endTime: string,
   name: string,
   description: string
 ) => {

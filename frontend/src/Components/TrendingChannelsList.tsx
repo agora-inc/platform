@@ -69,7 +69,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   {!channel.has_avatar && (
                     <Identicon string={channel.name} size={25} />
                   )}
-                  {channel.has_avatar && (
+                  {!!channel.has_avatar && (
                     <img src={`/images/channel-icons/${channel.id}.jpg`} />
                   )}
                 </Box>

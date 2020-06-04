@@ -85,6 +85,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
   };
 
   render() {
+    console.log(this.props.stream);
     return (
       <Box
         width="32%"
@@ -132,7 +133,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                     size={15}
                   />
                 )}
-                {this.props.stream.has_avatar && (
+                {!!this.props.stream.has_avatar && (
                   <img
                     src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
                   />

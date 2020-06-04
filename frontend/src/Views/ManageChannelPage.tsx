@@ -236,6 +236,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
+    console.log(this.state.channel);
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -295,6 +296,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       justify="center"
                       align="center"
                       style={{ minWidth: 120, minHeight: 120 }}
+                      overflow="hidden"
                     >
                       {!this.state.channel!.has_avatar && (
                         <Identicon
@@ -302,7 +304,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           size={60}
                         />
                       )}
-                      {this.state.channel!.has_avatar && (
+                      {!!this.state.channel!.has_avatar && (
                         <img
                           src={`/images/channel-icons/${
                             this.state.channel!.id

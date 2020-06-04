@@ -68,7 +68,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
             {!this.props.channel.has_avatar && (
               <Identicon string={this.props.channel.name} size={20} />
             )}
-            {this.props.channel.has_avatar && (
+            {!!this.props.channel.has_avatar && (
               <img src={`/images/channel-icons/${this.props.channel.id}.jpg`} />
             )}
           </Box>

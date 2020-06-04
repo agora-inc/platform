@@ -259,7 +259,7 @@ export default class ChannelPage extends Component<Props, State> {
                           size={60}
                         />
                       )}
-                      {this.state.channel!.has_avatar && (
+                      {!!this.state.channel!.has_avatar && (
                         <img
                           src={`/images/channel-icons/${
                             this.state.channel!.id
