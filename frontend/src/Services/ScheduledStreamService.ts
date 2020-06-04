@@ -33,7 +33,9 @@ const scheduleStream = (
   channelName: string,
   streamName: string,
   streamDescription: string,
-  streamDate: string,
+  startDate: string,
+  endDate: string,
+  streamLink: string,
   // streamTags: Tag[],
   callback: any
 ) => {
@@ -45,7 +47,9 @@ const scheduleStream = (
         channelName: channelName,
         streamName: streamName,
         streamDescription: streamDescription,
-        streamDate: streamDate,
+        startDate: startDate,
+        endDate: endDate,
+        streamLink: streamLink,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -146,6 +150,8 @@ export type ScheduledStream = {
   channel_colour: string;
   name: string;
   date: string;
+  end_date: string;
   description: string;
   has_avatar: boolean;
+  link: string;
 };
