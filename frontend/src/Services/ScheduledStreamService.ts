@@ -28,6 +28,37 @@ const getScheduledStreamsForChannel = (channelId: number, callback: any) => {
     });
 };
 
+const editScheduledStream = (
+  streamId: number,
+  streamName: string,
+  streamDescription: string,
+  startDate: string,
+  endDate: string,
+  streamLink: string,
+  // streamTags: Tag[],
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/streams/scheduled/edit",
+      {
+        streamId: streamId,
+        streamName: streamName,
+        streamDescription: streamDescription,
+        startDate: startDate,
+        endDate: endDate,
+        streamLink: streamLink,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+  // .catch(function (error) {
+  //   callback(false);
+  // });
+};
+
 const scheduleStream = (
   channelId: number,
   channelName: string,
@@ -136,6 +167,7 @@ const getScheduledStreamsForUser = (userId: number, callback: any) => {
 export const ScheduledStreamService = {
   getAllScheduledStreams,
   getScheduledStreamsForChannel,
+  editScheduledStream,
   scheduleStream,
   isRegisteredForScheduledStream,
   registerForScheduledStream,

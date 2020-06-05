@@ -216,7 +216,7 @@ export default class UserManager extends Component<{}, State> {
   };
 
   loggedOutStuff = (
-    <Box direction="row" align="center" justify="center">
+    <Box direction="row" align="center" justify="center" gap="xsmall">
       <LoginModal
         callback={() => {
           this.setState(

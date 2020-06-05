@@ -62,15 +62,16 @@ export default class SignUpButton extends Component<Props, State> {
           label="Sign up"
           onClick={this.toggleModal}
           style={{
-            width: 100,
-            height: 40,
-            fontSize: 20,
+            width: 90,
+            height: 35,
+            fontSize: 17,
             fontWeight: "bold",
+            color: "white",
             padding: 0,
-            margin: 6,
+            // margin: 6,
             backgroundColor: "#61EC9F",
             border: "none",
-            borderRadius: 15,
+            borderRadius: 7,
           }}
         />
         <Overlay

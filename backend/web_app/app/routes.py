@@ -202,6 +202,13 @@ def scheduleStream():
     params = request.json
     return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["startDate"], params["endDate"], params["streamDescription"], params["streamLink"]))
 
+@app.route('/streams/scheduled/edit', methods=["POST", "OPTIONS"])
+def editScheduledStream():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    return jsonify(scheduledStreams.editScheduledStream(params["streamId"], params["streamName"], params["startDate"], params["endDate"], params["streamDescription"], params["streamLink"]))
+
 @app.route('/streams/scheduled/isregistered', methods=["GET"])
 def isRegisteredForScheduledStream():
     streamId = int(request.args.get("streamId"))

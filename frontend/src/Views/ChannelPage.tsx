@@ -81,6 +81,7 @@ export default class ChannelPage extends Component<Props, State> {
             () => {
               this.fetchStreams();
               this.fetchVideos();
+              this.fetchScheduledStreams();
               this.fetchFollowerCount();
               this.fetchViewCount();
             }
@@ -97,6 +98,7 @@ export default class ChannelPage extends Component<Props, State> {
               () => {
                 this.fetchStreams();
                 this.fetchVideos();
+                this.fetchScheduledStreams();
                 this.fetchFollowerCount();
                 this.fetchViewCount();
                 this.checkIfFollowing();
@@ -315,7 +317,7 @@ export default class ChannelPage extends Component<Props, State> {
                 <ChannelPageScheduledStreamList
                   scheduledStreams={this.state.scheduledStreams}
                   channelId={this.state.channel!.id}
-                  loggedIn={this.state.user !== null}
+                  user={this.state.user}
                   admin={false}
                 />
                 <Text
