@@ -30,8 +30,7 @@ def addUser():
     params = request.json
     username = params['username']
     password = params['password']
-    users.addUser(username, password)
-    return jsonify("Success")
+    return jsonify(users.addUser(username, password))
 
 @app.route('/users/authenticate', methods=["POST", "OPTIONS"])
 def authenticate():

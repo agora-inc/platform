@@ -13,9 +13,10 @@ interface State {
   failed: boolean;
   username: string;
   password: string;
+  confirmPassword: string;
 }
 
-export default class LoginModal extends Component<Props, State> {
+export default class SignUpButton extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -23,11 +24,12 @@ export default class LoginModal extends Component<Props, State> {
       failed: false,
       username: "",
       password: "",
+      confirmPassword: "",
     };
   }
 
   onSubmit = () => {
-    UserService.login(
+    UserService.register(
       this.state.username,
       this.state.password,
       (result: boolean) => {
@@ -45,11 +47,19 @@ export default class LoginModal extends Component<Props, State> {
     this.setState({ showModal: !this.state.showModal, failed: false });
   };
 
+  isComplete = () => {
+    return (
+      this.state.username !== "" &&
+      this.state.password !== "" &&
+      this.state.confirmPassword === this.state.password
+    );
+  };
+
   render() {
     return (
       <Box>
         <Button
-          label="Log in"
+          label="Sign up"
           onClick={this.toggleModal}
           style={{
             width: 100,
@@ -58,23 +68,23 @@ export default class LoginModal extends Component<Props, State> {
             fontWeight: "bold",
             padding: 0,
             margin: 6,
-            backgroundColor: "#F2F2F2",
+            backgroundColor: "#61EC9F",
             border: "none",
             borderRadius: 15,
           }}
         />
         <Overlay
           width={400}
-          height={400}
+          height={500}
           visible={this.state.showModal}
-          title="Log in"
+          title="Sign up"
           onEsc={this.toggleModal}
           onClickOutside={this.toggleModal}
           onCancelClick={this.toggleModal}
-          submitButtonText="Log in"
+          submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
-          canProceed={true}
-          contentHeight="300px"
+          canProceed={this.isComplete()}
+          contentHeight="400px"
         >
           {this.state.failed && (
             <Box
@@ -87,7 +97,7 @@ export default class LoginModal extends Component<Props, State> {
             >
               <StatusCritical />
               <Heading level={5} margin="none" color="white">
-                Incorrect username or password
+                Error
               </Heading>
             </Box>
           )}
@@ -116,6 +126,18 @@ export default class LoginModal extends Component<Props, State> {
                 type="password"
                 placeholder="type something"
                 onChange={(e) => this.setState({ password: e.target.value })}
+              />
+            </Box>
+            <Box width="100%" gap="2px">
+              <Text size="14px" weight="bold" color="black">
+                Confirm password
+              </Text>
+              <TextInput
+                type="password"
+                placeholder="type something"
+                onChange={(e) =>
+                  this.setState({ confirmPassword: e.target.value })
+                }
               />
             </Box>
           </Box>

@@ -383,10 +383,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                       weight="bold"
                       size="22px"
                     >{`${this.state.followerCount} followers`}</Text>
-                    <Text
+                    {/* <Text
                       weight="bold"
                       size="22px"
-                    >{`${this.state.viewCount} views`}</Text>
+                    >{`${this.state.viewCount} views`}</Text> */}
                   </Box>
                 </Box>
               </Box>
@@ -501,24 +501,28 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
               </Box>
-              <Text
-                size="28px"
-                weight="bold"
-                color="black"
-                margin={{ top: "40px", bottom: "10px" }}
-              >{`Your upcoming streams`}</Text>
+              {this.state.scheduledStreams.length !== 0 && (
+                <Text
+                  size="28px"
+                  weight="bold"
+                  color="black"
+                  margin={{ top: "40px", bottom: "10px" }}
+                >{`Your upcoming talks`}</Text>
+              )}
               <ChannelPageScheduledStreamList
                 scheduledStreams={this.state.scheduledStreams}
                 channelId={this.state.channel!.id}
                 loggedIn
                 admin
               />
-              <Text
-                size="28px"
-                weight="bold"
-                color="black"
-                margin={{ top: "40px" }}
-              >{`Your past streams`}</Text>
+              {this.state.videos.length !== 0 && (
+                <Text
+                  size="28px"
+                  weight="bold"
+                  color="black"
+                  margin={{ top: "40px" }}
+                >{`Your past talks`}</Text>
+              )}
               <Box
                 direction="row"
                 width="100%"

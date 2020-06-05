@@ -47,7 +47,8 @@ class UserRepository:
         # self.db.con.commit()
         # cursor.close()
         query = f'INSERT INTO Users(username, password_hash, is_live) VALUES ("{username}", "{passwordHash}", 0)'
-        self.db.run_query(query)
+        insertId = self.db.run_query(query)[0]
+        return self.getUserById(insertId)
     
     def authenticate(self, username, password):
         user = self.getUser(username)

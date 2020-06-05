@@ -10,6 +10,7 @@ import {
   Form,
   CheckBox,
 } from "grommet";
+import { Overlay } from "./Core/Overlay";
 import emailjs from "emailjs-com";
 
 interface State {
@@ -29,31 +30,25 @@ export default class FormContainer extends Component<{}, State> {
       },
       showForm: false,
     };
-
-    // this.handleInput = this.handleInput.bind(this);
-    this.handleCheckBox = this.handleCheckBox.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    this.sendFeedback = this.sendFeedback.bind(this);
-    this.handleClearForm = this.handleClearForm.bind(this);
   }
 
-  handleCheckBox(name: string) {
+  handleCheckBox = (name: string) => {
     this.setState((prevState: any) => ({
       user: {
         ...prevState.user,
         about: { ...prevState.user.about, [name]: !prevState.user.about[name] },
       },
     }));
-  }
+  };
 
-  handleInput(e: any, key: string) {
+  handleInput = (e: any, key: string) => {
     let value = e.target.value;
     this.setState((prevState: any) => ({
       user: { ...prevState.user, [key]: value },
     }));
-  }
+  };
 
-  handleFormSubmit(e: any) {
+  handleFormSubmit = (e: any) => {
     // prevents the page from being refreshed on form submission
     e.preventDefault();
     let userData = this.state.user;
@@ -67,9 +62,9 @@ export default class FormContainer extends Component<{}, State> {
       reply_to: this.state.user.name,
     });
     this.setState({ showForm: false });
-  }
+  };
 
-  sendFeedback(templateId: string, variables: any) {
+  sendFeedback = (templateId: string, variables: any) => {
     emailjs
       .send("gmail", templateId, variables, "user_ERRg2QIuCtD8bEjlX1qRw")
       .then(() => {
@@ -82,9 +77,9 @@ export default class FormContainer extends Component<{}, State> {
           err
         )
       );
-  }
+  };
 
-  handleClearForm(e: any) {
+  handleClearForm = (e: any) => {
     // prevents the page from being refreshed on form submission
     e.preventDefault();
     this.setState({
@@ -95,7 +90,11 @@ export default class FormContainer extends Component<{}, State> {
         description: "",
       },
     });
-  }
+  };
+
+  toggleModal = () => {
+    this.setState({ showForm: !this.state.showForm });
+  };
 
   render() {
     return (
@@ -116,7 +115,64 @@ export default class FormContainer extends Component<{}, State> {
             Give feedback
           </Text>
         </Box>
-        {this.state.showForm && (
+        <Overlay
+          visible={this.state.showForm}
+          onEsc={this.toggleModal}
+          onCancelClick={this.toggleModal}
+          onClickOutside={this.toggleModal}
+          onSubmitClick={this.handleFormSubmit}
+          submitButtonText="Submit"
+          canProceed={true}
+          width={500}
+          height={625}
+          contentHeight="500px"
+          title="Submit feedback"
+        >
+          <Box width="100%" gap="2px">
+            <Text size="14px" weight="bold" color="black">
+              Your name
+            </Text>
+            <TextInput
+              placeholder="type something"
+              value={this.state.user.name}
+              onChange={(e: any) => this.handleInput(e, "name")}
+            />
+          </Box>
+          <Box width="100%" gap="2px">
+            <Text size="14px" weight="bold" color="black">
+              Your email
+            </Text>
+            <TextInput
+              placeholder="type something"
+              value={this.state.user.email}
+              onChange={(e: any) => this.handleInput(e, "email")}
+            />
+          </Box>
+          <Box direction="row" justify="between" width="100%">
+            <CheckBox
+              name="feature"
+              label="Suggest a feature"
+              onChange={() => this.handleCheckBox("feature")}
+            />
+            <CheckBox
+              name="bug"
+              label="Report a bug"
+              onChange={() => this.handleCheckBox("bug")}
+            />
+          </Box>
+          <Box width="100%" gap="2px">
+            <Text size="14px" weight="bold" color="black">
+              Description
+            </Text>
+            <TextArea
+              placeholder="We are looking forward to hearing your feedback!"
+              value={this.state.user.description}
+              onChange={(e: any) => this.handleInput(e, "description")}
+              rows={8}
+            />
+          </Box>
+        </Overlay>
+        {/* {this.state.showForm && (
           <Layer
             onEsc={() => this.setState({ showForm: false })}
             onClickOutside={() => this.setState({ showForm: false })}
@@ -206,7 +262,7 @@ export default class FormContainer extends Component<{}, State> {
               </Box>
             </Form>
           </Layer>
-        )}
+        )} */}
       </Box>
     );
   }
