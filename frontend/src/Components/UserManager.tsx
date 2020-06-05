@@ -11,8 +11,8 @@ import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../Styles/header.css";
 import "../Styles/antd.css";
-import Preferences from "../Views/Preferences";
 import PreferenceButton from "./PreferenceButton";
+import SignUpButton from "./SignUpButton";
 
 interface State {
   isLoggedIn: boolean;
@@ -230,19 +230,17 @@ export default class UserManager extends Component<{}, State> {
           );
         }}
       />
-      <Button
-        label="Sign up"
-        onClick={() => {}}
-        style={{
-          width: 100,
-          height: 45,
-          fontSize: 20,
-          fontWeight: "bold",
-          padding: 0,
-          margin: 6,
-          backgroundColor: "#61EC9F",
-          border: "none",
-          borderRadius: 15,
+      <SignUpButton
+        callback={() => {
+          this.setState(
+            {
+              isLoggedIn: UserService.isLoggedIn(),
+              user: UserService.getCurrentUser(),
+            },
+            () => {
+              this.fetchChannels();
+            }
+          );
         }}
       />
     </Box>

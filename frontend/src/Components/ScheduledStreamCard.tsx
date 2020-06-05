@@ -232,9 +232,10 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 {this.state.registered && (
                   <AddToCalendarButtons
                     startTime={this.props.stream.date}
-                    endTime={this.props.stream.date}
+                    endTime={this.props.stream.end_date}
                     name={this.props.stream.name}
                     description={this.props.stream.description}
+                    link={this.props.stream.link}
                   />
                 )}
                 <Button

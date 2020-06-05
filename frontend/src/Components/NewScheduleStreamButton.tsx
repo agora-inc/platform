@@ -17,6 +17,7 @@ import {
 import { Tag } from "../Services/TagService";
 import { Channel } from "../Services/ChannelService";
 import Loading from "./Loading";
+import { Overlay, OverlaySection } from "./Core/Overlay";
 
 interface Props {
   margin: string;
@@ -145,48 +146,35 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
     );
   };
 
-  renderModalContent = () => {
+  render() {
     return (
-      <Box align="center" width="100%" overflow="scroll">
+      <Box margin={this.props.margin} pad="none">
         <Box
+          className="gradient-border"
+          round="8px"
+          align="center"
           justify="center"
-          width="100%"
-          background="#F5F5F5"
-          pad={{ left: "24px" }}
-          style={{
-            borderTopLeftRadius: "15px",
-            borderTopRightRadius: "15px",
-            position: "sticky",
-            top: 0,
-            minHeight: "60px",
-            zIndex: 10,
-          }}
+          onClick={this.toggleModal}
+          focusIndicator={false}
         >
-          <Text size="24px" color="black" weight="bold">
-            New talk
+          <Text color="black" size="16.5px" style={{ fontWeight: 500 }}>
+            Schedule talk
           </Text>
         </Box>
-        <Box
-          width="100%"
-          align="center"
-          pad={{ horizontal: "30px" }}
-          gap="30px"
-          margin={{ top: "20px" }}
-          overflow="scroll"
-          style={{ minHeight: "147vh" }}
+        <Overlay
+          width={500}
+          height={650}
+          visible={this.state.showModal}
+          title="New talk"
+          submitButtonText="Save"
+          onSubmitClick={this.onFinishClicked}
+          contentHeight="147vh"
+          canProceed={this.isComplete()}
+          onCancelClick={this.toggleModal}
+          onClickOutside={this.toggleModal}
+          onEsc={this.toggleModal}
         >
-          <Box width="100%" align="center" gap="xsmall">
-            <Box
-              height="30px"
-              width="100%"
-              background="#FFD1C7"
-              pad="small"
-              justify="center"
-            >
-              <Text size="16px" weight="bold" color="black">
-                When is your talk going to be held?
-              </Text>
-            </Box>
+          <OverlaySection heading="When is your talk going to be held?">
             <Calendar
               date={this.state.date}
               bounds={this.getDateBounds()}
@@ -197,7 +185,7 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
               daysOfWeek
               style={{ width: "100%" }}
             />
-            <Box width="100%">
+            <Box width="100%" gap="2px">
               <Text size="14px" weight="bold" color="black">
                 Starts
               </Text>
@@ -221,7 +209,7 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
                 }}
               />
             </Box>
-            <Box width="100%">
+            <Box width="100%" gap="2px">
               <Text size="14px" weight="bold" color="black">
                 Finishes
               </Text>
@@ -245,20 +233,9 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
                 }}
               />
             </Box>
-          </Box>
-          <Box width="100%" align="center" gap="xsmall">
-            <Box
-              height="30px"
-              width="100%"
-              background="#FFD1C7"
-              pad="small"
-              justify="center"
-            >
-              <Text size="16px" weight="bold" color="black">
-                Add a title and a short description
-              </Text>
-            </Box>
-            <Box width="100%">
+          </OverlaySection>
+          <OverlaySection heading="Add a title and a short description">
+            <Box width="100%" gap="2px">
               <Text size="14px" weight="bold" color="black">
                 Title
               </Text>
@@ -267,7 +244,7 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
                 onChange={(e) => this.setState({ title: e.target.value })}
               />
             </Box>
-            <Box width="100%">
+            <Box width="100%" gap="2px">
               <Text size="14px" weight="bold" color="black">
                 Description
               </Text>
@@ -276,139 +253,22 @@ export default class NewScheduleStreamButton extends Component<Props, State> {
                 onChange={(e) => this.setState({ description: e.target.value })}
               />
             </Box>
-          </Box>
-          <Box width="100%" align="center" gap="xsmall">
-            <Box
-              height="30px"
-              width="100%"
-              background="#FFD1C7"
-              pad="small"
-              justify="center"
-            >
-              <Text size="16px" weight="bold" color="black">
-                Add a few relevant tags
-              </Text>
-            </Box>
+          </OverlaySection>
+          <OverlaySection heading="Add a few relevant tags">
             <TagSelector
               onSelectedCallback={this.selectTag}
               onDeselectedCallback={this.deselectTag}
               width="100%"
               height="200px"
             />
-          </Box>
-          <Box width="100%" align="center" gap="xsmall">
-            <Box
-              height="30px"
-              width="100%"
-              background="#FFD1C7"
-              pad="small"
-              justify="center"
-            >
-              <Text size="16px" weight="bold" color="black">
-                Finally, add a link so people can watch your talk
-              </Text>
-            </Box>
+          </OverlaySection>
+          <OverlaySection heading="Finally, add a link so people can watch your talk">
             <TextInput
               placeholder="type something"
               onChange={(e) => this.setState({ link: e.target.value })}
             />
-          </Box>
-        </Box>
-        <Box
-          direction="row"
-          justify="end"
-          align="center"
-          gap="xsmall"
-          width="100%"
-          background="#F5F5F5"
-          pad={{ right: "24px" }}
-          style={{
-            borderBottomLeftRadius: "15px",
-            borderBottomRightRadius: "15px",
-            position: "sticky",
-            bottom: 0,
-            minHeight: "45px",
-            zIndex: 10,
-          }}
-        >
-          <Box
-            background="white"
-            round="xsmall"
-            height="35px"
-            style={{ border: "2px solid black" }}
-            align="center"
-            justify="center"
-            width="90px"
-            onClick={this.toggleModal}
-            focusIndicator={false}
-            hoverIndicator={true}
-          >
-            <Text weight="bold" color="black" size="16px">
-              Cancel
-            </Text>
-          </Box>
-          <Box
-            height="35px"
-            background="white"
-            round="xsmall"
-            style={
-              this.isComplete()
-                ? { border: "2px solid black" }
-                : {
-                    border: "2px solid black",
-                    opacity: 0.4,
-                    pointerEvents: "none",
-                  }
-            }
-            align="center"
-            justify="center"
-            width="90px"
-            onClick={this.onFinishClicked}
-            focusIndicator={false}
-            hoverIndicator={true}
-          >
-            <Text weight="bold" color="black" size="16px">
-              Save
-            </Text>
-          </Box>
-        </Box>
-      </Box>
-    );
-  };
-
-  render() {
-    return (
-      <Box margin={this.props.margin} pad="none">
-        <Box
-          className="gradient-border"
-          round="8px"
-          align="center"
-          justify="center"
-          onClick={this.toggleModal}
-          focusIndicator={false}
-        >
-          <Text color="black" size="16.5px" style={{ fontWeight: 500 }}>
-            Schedule stream
-          </Text>
-        </Box>
-        {this.state.showModal && (
-          <Layer
-            onEsc={this.toggleModal}
-            onClickOutside={this.toggleModal}
-            modal
-            responsive
-            animation="fadeIn"
-            style={{
-              width: 500,
-              height: 650,
-              borderRadius: 15,
-              border: "3.5px solid black",
-              padding: 0,
-            }}
-          >
-            {this.renderModalContent()}
-          </Layer>
-        )}
+          </OverlaySection>
+        </Overlay>
       </Box>
     );
   }

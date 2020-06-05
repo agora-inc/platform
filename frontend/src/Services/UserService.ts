@@ -1,10 +1,10 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
 
-const login = (username: string, password: string, callback: any) => {
+const register = (username: string, password: string, callback: any) => {
   axios
     .post(
-      baseApiUrl + "/users/authenticate",
+      baseApiUrl + "/users/add",
       { username: username, password: password },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -17,8 +17,26 @@ const login = (username: string, password: string, callback: any) => {
     });
 };
 
+const login = (username: string, password: string, callback: any) => {
+  axios
+    .post(
+      baseApiUrl + "/users/authenticate",
+      { username: username, password: password },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+      callback(true);
+      window.location.reload(false);
+    })
+    .catch(function (error) {
+      callback(false);
+    });
+};
+
 const logout = () => {
   localStorage.removeItem("user");
+  window.location.reload(false);
 };
 
 const isLoggedIn = () => {
@@ -71,6 +89,7 @@ export type User = {
 };
 
 export const UserService = {
+  register,
   login,
   logout,
   isLoggedIn,

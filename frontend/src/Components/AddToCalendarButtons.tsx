@@ -9,6 +9,7 @@ interface Props {
   endTime: string;
   name: string;
   description: string;
+  link: string;
 }
 
 export default class AddToCalendarButtons extends Component<Props> {
@@ -17,7 +18,8 @@ export default class AddToCalendarButtons extends Component<Props> {
       this.props.startTime,
       this.props.endTime,
       this.props.name,
-      this.props.description
+      this.props.description,
+      this.props.link
     );
     const blob = new Blob([url], { type: "text/calendar;charset=utf-8" });
     return window.URL.createObjectURL(blob);
@@ -32,7 +34,8 @@ export default class AddToCalendarButtons extends Component<Props> {
             this.props.startTime,
             this.props.endTime,
             this.props.name,
-            this.props.description
+            this.props.description,
+            this.props.link
           )}
           target="_blank"
         >
