@@ -208,13 +208,41 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               gap="xsmall"
             >
               <Box style={{ minHeight: "40%", maxHeight: "60%" }}>
-                <Text
-                  weight="bold"
-                  size="22px"
-                  color={this.props.stream.channel_colour}
+                <Box
+                  direction="row"
+                  gap="xsmall"
+                  align="center"
+                  style={{ minHeight: "30px" }}
                 >
-                  {this.props.stream.channel_name}
-                </Text>
+                  <Box
+                    height="25px"
+                    width="25px"
+                    round="12.5px"
+                    justify="center"
+                    align="center"
+                    background="#efeff1"
+                    overflow="hidden"
+                  >
+                    {!this.props.stream.has_avatar && (
+                      <Identicon
+                        string={this.props.stream.channel_name}
+                        size={15}
+                      />
+                    )}
+                    {!!this.props.stream.has_avatar && (
+                      <img
+                        src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
+                      />
+                    )}
+                  </Box>
+                  <Text
+                    weight="bold"
+                    size="22px"
+                    color={this.props.stream.channel_colour}
+                  >
+                    {this.props.stream.channel_name}
+                  </Text>
+                </Box>
                 <Text
                   weight="bold"
                   size="24px"

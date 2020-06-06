@@ -95,6 +95,20 @@ const scheduleStream = (
   // });
 };
 
+const deleteScheduledStream = (id: number, callback: any) => {
+  axios
+    .post(
+      baseApiUrl + "/streams/scheduled/delete",
+      {
+        id: id,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const isRegisteredForScheduledStream = (
   streamId: number,
   userId: number,
@@ -172,6 +186,7 @@ export const ScheduledStreamService = {
   getScheduledStreamsForChannel,
   editScheduledStream,
   scheduleStream,
+  deleteScheduledStream,
   isRegisteredForScheduledStream,
   registerForScheduledStream,
   unRegisterForScheduledStream,

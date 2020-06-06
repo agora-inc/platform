@@ -40,7 +40,7 @@ export default class Carousel extends Component<Props, State> {
         background="rgba(96, 110, 235, 0.7)"
       >
         <Text size="20px" weight="bold" color="black">
-          Nobody is streaming right now
+          No talks happening right now
         </Text>
         <Box
           background="white"
@@ -61,7 +61,7 @@ export default class Carousel extends Component<Props, State> {
             }}
           >
             <Text size="16px" weight="bold" color="black">
-              Explore previous streams
+              Explore previous talks
             </Text>
           </Link>
         </Box>

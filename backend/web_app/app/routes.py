@@ -209,6 +209,13 @@ def editScheduledStream():
     params = request.json
     return jsonify(scheduledStreams.editScheduledStream(params["streamId"], params["streamName"], params["startDate"], params["endDate"], params["streamDescription"], params["streamLink"], params["streamTags"]))
 
+@app.route('/streams/scheduled/delete', methods=["OPTIONS", "POST"])
+def deleteScheduledStream():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    return jsonify(scheduledStreams.deleteScheduledStream(params["id"]))
+
 @app.route('/streams/scheduled/isregistered', methods=["GET"])
 def isRegisteredForScheduledStream():
     streamId = int(request.args.get("streamId"))

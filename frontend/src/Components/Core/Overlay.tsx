@@ -15,6 +15,7 @@ interface OverlayProps {
   canProceed: boolean;
   width: number;
   height: number;
+  extraButton?: any;
 }
 
 interface OverlaySectionProps {
@@ -87,6 +88,7 @@ export class Overlay extends Component<OverlayProps> {
                 zIndex: 10,
               }}
             >
+              {this.props.extraButton}
               <Button
                 height="35px"
                 width="90px"

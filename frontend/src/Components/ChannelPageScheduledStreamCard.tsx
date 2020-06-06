@@ -160,6 +160,10 @@ export default class ChannelPageScheduledStreamCard extends Component<
             this.toggleModal();
             this.props.onEditCallback();
           }}
+          onDeletedCallback={() => {
+            this.toggleModal();
+            this.props.onEditCallback();
+          }}
           onCanceledCallback={this.toggleModal}
         />
       </Box>
