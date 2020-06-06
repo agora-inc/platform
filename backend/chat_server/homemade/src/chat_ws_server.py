@@ -459,8 +459,8 @@ class ChatWsServer:
                         else:
                             body = {
                                 "action": "passMic",
-                                "error_msg": "mic requester not found"
-                                "user_id__target": potential_requester.user_id,
+                                "error_msg": "mic requester not found",
+                                "user_id_target": potential_requester.user_id,
                                 "chat_participant_group_id": chat_participant_group_id,
                                 "user_name_target": potential_requester.name
                                 }
@@ -473,7 +473,7 @@ class ChatWsServer:
                 if requester_was_found is False:
                     body = {
                         "action": "passMic",
-                        "error_msg": "mic requester not found"
+                        "error_msg": "mic requester not found",
                         "user_id__target": potential_requester.user_id,
                         "chat_participant_group_id": chat_participant_group_id,
                         "user_name_target": potential_requester.name
@@ -511,7 +511,7 @@ class ChatWsServer:
             if current_speaker_was_found is False:
                 body = {
                     "action": "removeMic",
-                    "error_msg": "current speaker not found"
+                    "error_msg": "current speaker not found",
                     "user_id__target": potential_requester.user_id,
                     "chat_participant_group_id": chat_participant_group_id,
                     "user_name_target": potential_requester.name

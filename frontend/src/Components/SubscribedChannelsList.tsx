@@ -44,81 +44,105 @@ export default class SubscribedChannelsList extends Component<Props, State> {
 
   render() {
     return this.props.user ? (
-      <Box>
-        <Text
-          size="16px"
-          weight="bold"
-          color="black"
-          margin={{ left: "small" }}
-        >
-          FOLLOWING
-        </Text>
-        {this.state.loading && (
-          <Box width="100%" height="80%" justify="center" align="center">
-            <Loading color="black" size={50} />
-          </Box>
-        )}
-        <Box margin={{ top: "2px" }}>
-          {this.state.channels.map((channel: Channel) => (
-            <Link
-              className="channel"
-              to={`/channel/${channel.name}`}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                direction="row"
-                gap="xsmall"
-                align="center"
-                pad={{ vertical: "3.5px", horizontal: "small" }}
+      this.state.channels.length !== 0 ? (
+        <Box>
+          <Text
+            size="16px"
+            weight="bold"
+            color="black"
+            margin={{ left: "small" }}
+          >
+            FOLLOWING
+          </Text>
+          {this.state.loading && (
+            <Box width="100%" height="80%" justify="center" align="center">
+              <Loading color="black" size={50} />
+            </Box>
+          )}
+          <Box margin={{ top: "2px" }}>
+            {this.state.channels.map((channel: Channel) => (
+              <Link
+                className="channel"
+                to={`/channel/${channel.name}`}
+                style={{ textDecoration: "none" }}
               >
                 <Box
-                  background="white"
-                  height="40px"
-                  width="40px"
-                  round="20px"
-                  justify="center"
+                  direction="row"
+                  gap="xsmall"
                   align="center"
-                  overflow="hidden"
+                  pad={{ vertical: "3.5px", horizontal: "small" }}
                 >
-                  {!channel.has_avatar && (
-                    <Identicon string={channel.name} size={25} />
-                  )}
-                  {!!channel.has_avatar && (
-                    <img src={`/images/channel-icons/${channel.id}.jpg`} />
-                  )}
+                  <Box
+                    background="white"
+                    height="40px"
+                    width="40px"
+                    round="20px"
+                    justify="center"
+                    align="center"
+                    overflow="hidden"
+                  >
+                    {!channel.has_avatar && (
+                      <Identicon string={channel.name} size={25} />
+                    )}
+                    {!!channel.has_avatar && (
+                      <img src={`/images/channel-icons/${channel.id}.jpg`} />
+                    )}
+                  </Box>
+                  <Box justify="between">
+                    <Text size="16px" weight="bold" color="black">
+                      {channel.name}
+                    </Text>
+                    <Text size="12px" weight="bold" color="#6B6A6A">
+                      Last live 3 days ago
+                    </Text>
+                  </Box>
                 </Box>
-                <Box justify="between">
-                  <Text size="16px" weight="bold" color="black">
-                    {channel.name}
-                  </Text>
-                  <Text size="12px" weight="bold" color="#6B6A6A">
-                    Last live 3 days ago
-                  </Text>
-                </Box>
-              </Box>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </Box>
         </Box>
-      </Box>
+      ) : (
+        <Box
+          background="white"
+          round="xsmall"
+          height="180px"
+          margin={{ horizontal: "small", bottom: "10px" }}
+          pad="medium"
+          gap="small"
+          justify="between"
+        >
+          <Text size="1.4rem" weight="bold">
+            Channels you've followed will appear here
+          </Text>
+          <Text size="16px" color="grey">
+            You can use the search bar to find channels that interest you
+          </Text>
+        </Box>
+      )
     ) : (
       <Box
         background="white"
         round="xsmall"
-        height="200px"
+        height="215px"
         margin={{ horizontal: "small", bottom: "10px" }}
         pad="medium"
         gap="small"
         justify="between"
       >
-        <Text size="1.7rem" weight="bold" margin="none">
-          Join the{" "}
-          {
-            <Text size="1.7rem" weight="bold" margin="none" color="brand">
-              Agora
-            </Text>
-          }{" "}
-          Community
-        </Text>
+        <Box gap="xsmall">
+          <Text size="1.7rem" weight="bold">
+            Join the{" "}
+            {
+              <Text size="1.7rem" weight="bold" color="brand">
+                Agora
+              </Text>
+            }{" "}
+            Community
+          </Text>
+          <Text size="16px" color="grey">
+            Discover the best talks on every topic
+          </Text>
+        </Box>
         <SignUpButton callback={() => {}} />
       </Box>
     );

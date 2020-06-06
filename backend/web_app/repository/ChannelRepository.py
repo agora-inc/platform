@@ -18,7 +18,7 @@ class ChannelRepository:
 
     def getChannelByName(self, name):
         # cursor = self.db.con.cursor()
-        query = f"SELECT * FROM Channels WHERE name = {name}"
+        query = f'SELECT * FROM Channels WHERE name = "{name}"'
         result = self.db.run_query(query)
         # cursor.execute('SELECT * FROM Channels WHERE id = "%d"' % id)
         # result = cursor.fetchall()

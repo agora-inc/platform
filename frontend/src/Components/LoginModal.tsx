@@ -52,15 +52,15 @@ export default class LoginModal extends Component<Props, State> {
           label="Log in"
           onClick={this.toggleModal}
           style={{
-            width: 100,
-            height: 40,
-            fontSize: 20,
+            width: 90,
+            height: 35,
+            fontSize: 17,
             fontWeight: "bold",
             padding: 0,
-            margin: 6,
+            // margin: 6,
             backgroundColor: "#F2F2F2",
             border: "none",
-            borderRadius: 15,
+            borderRadius: 7,
           }}
         />
         <Overlay

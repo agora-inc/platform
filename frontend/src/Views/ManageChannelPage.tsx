@@ -198,6 +198,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   fetchScheduledStreams = () => {
+    console.log("fetchin scheduled streams");
     ScheduledStreamService.getScheduledStreamsForChannel(
       this.state.channel!.id,
       (scheduledStreams: ScheduledStream[]) => {
@@ -258,6 +259,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <NewScheduleStreamButton
                   margin="none"
                   channel={this.state.channel}
+                  onCreatedCallback={this.fetchScheduledStreams}
                 />
               </Box>
               <Box
@@ -512,8 +514,9 @@ export default class ManageChannelPage extends Component<Props, State> {
               <ChannelPageScheduledStreamList
                 scheduledStreams={this.state.scheduledStreams}
                 channelId={this.state.channel!.id}
-                loggedIn
+                user={null}
                 admin
+                onEditCallback={this.fetchScheduledStreams}
               />
               {this.state.videos.length !== 0 && (
                 <Text

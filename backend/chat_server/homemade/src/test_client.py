@@ -8,7 +8,7 @@ import ast
 from tools import Tools
 import sys
 
-HOST = "localhost"
+HOST = "35.177.126.194"
 PORT = 5500
 ADDR = (HOST, PORT)
 BUFFER_SIZE = 1024
@@ -114,7 +114,6 @@ class Client:
             self.client_socket.connect(self.addr)
             raise Exception(f"send_server: Exception. {e}")
 
-
     def send_msg(self, txt_msg, chat_type="channel", chat_group_id=17):
         logging.warning(f"send_msg: {txt_msg}")
         payload = {
@@ -127,7 +126,6 @@ class Client:
                     }
         
         self.send_server(payload)
-        
 
     def edit_msg(self):
         pass

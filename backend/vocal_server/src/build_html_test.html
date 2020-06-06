@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+        <script src="webrtc_vocal_adaptor.js"></script>
+    </head>
+
+
+
+    <body>
+        <h1>TEST PAGE FOR MIC</h1>
+    </body>
+
+    <audio id="MicAudioController" autoplay></audio>
+
+    <script>
+	    var pc_config = null;
+
+
+        var webRTCVocalAdaptor = WebRTCVocalAdaptor({
+            peerconnection_config : pc_config,
+        });
+        webRTCVocalAdaptor.getMicStream();
+    </script>
+
+</html>
