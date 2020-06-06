@@ -14,7 +14,7 @@ export default class ChannelIdCard extends Component<Props> {
   render() {
     return (
       <Link
-        to={`/channel/${this.props.channelName}`}
+        to={`/${this.props.channelName}`}
         style={{ textDecoration: "none" }}
       >
         <Box

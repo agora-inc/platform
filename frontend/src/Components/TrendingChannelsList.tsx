@@ -48,7 +48,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
           {this.state.channels.map((channel: Channel) => (
             <Link
               className="channel"
-              to={`/channel/${channel.name}`}
+              to={`/${channel.name}`}
               style={{ textDecoration: "none" }}
             >
               <Box

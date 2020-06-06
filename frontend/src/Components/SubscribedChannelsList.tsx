@@ -63,7 +63,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
             {this.state.channels.map((channel: Channel) => (
               <Link
                 className="channel"
-                to={`/channel/${channel.name}`}
+                to={`/${channel.name}`}
                 style={{ textDecoration: "none" }}
               >
                 <Box
