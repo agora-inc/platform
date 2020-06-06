@@ -1,4 +1,4 @@
-export const baseApiUrl = "https://3.11.98.113/api";
+export const baseApiUrl = "https://agora.stream/api";
 //export const baseApiUrl = "http://localhost:8000";
 
 export const antmediaWebSocketUrl =
