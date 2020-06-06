@@ -10,13 +10,14 @@ const generateGoogleCalendarLink = (
   startTime: string,
   endTime: string,
   name: string,
-  description: string
+  description: string,
+  streamLink: string
 ) => {
   let link = "https://calendar.google.com/calendar/render";
   link += "?action=TEMPLATE";
   link += "&dates=" + formatTime(startTime);
   link += "/" + formatTime(endTime);
-  // link += "&location=" + encodeURIComponent(event.location);
+  link += "&location=" + encodeURIComponent(streamLink);
   link += "&text=" + encodeURIComponent(name);
   link += "&details=" + encodeURIComponent(description);
 
@@ -27,13 +28,14 @@ const generateICSDownloadLink = (
   startTime: string,
   endTime: string,
   name: string,
-  description: string
+  description: string,
+  link: string
 ) => {
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "BEGIN:VEVENT",
-    "URL:" + document.URL,
+    "URL:" + link,
     "DTSTART:" + formatTime(startTime),
     "DTEND:" + formatTime(endTime),
     "SUMMARY:" + name,

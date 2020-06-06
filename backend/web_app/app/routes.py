@@ -30,8 +30,7 @@ def addUser():
     params = request.json
     username = params['username']
     password = params['password']
-    users.addUser(username, password)
-    return jsonify("Success")
+    return jsonify(users.addUser(username, password))
 
 @app.route('/users/authenticate', methods=["POST", "OPTIONS"])
 def authenticate():
@@ -202,6 +201,13 @@ def scheduleStream():
         return jsonify("ok")
     params = request.json
     return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["startDate"], params["endDate"], params["streamDescription"], params["streamLink"]))
+
+@app.route('/streams/scheduled/edit', methods=["POST", "OPTIONS"])
+def editScheduledStream():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    return jsonify(scheduledStreams.editScheduledStream(params["streamId"], params["streamName"], params["startDate"], params["endDate"], params["streamDescription"], params["streamLink"]))
 
 @app.route('/streams/scheduled/isregistered', methods=["GET"])
 def isRegisteredForScheduledStream():

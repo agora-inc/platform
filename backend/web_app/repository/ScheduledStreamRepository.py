@@ -33,6 +33,11 @@ class ScheduledStreamRepository:
         insertId = self.db.run_query(query)[0]
         return self.getScheduledStreamById(insertId)
 
+    def editScheduledStream(self, streamId, streamName, startDate, endDate, streamDescription, streamLink):
+        query = f'UPDATE ScheduledStreams SET name="{streamName}", description="{streamDescription}", date="{startDate}", end_date="{endDate}", link="{streamLink}" WHERE id = {streamId}'
+        insertId = self.db.run_query(query)[0]
+        return self.getScheduledStreamById(insertId)
+
     def deleteScheduledStream(self, streamId):
         query = f'DELETE FROM ScheduledStreams where id = {streamId}'
         self.db.run_query(query)

@@ -1,14 +1,81 @@
 import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
-import { ScheduledStream } from "../Services/ScheduledStreamService";
+import { User } from "../Services/UserService";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
+import EditTalkModal from "./EditTalkModal";
+import AddToCalendarButtons from "./AddToCalendarButtons";
 
 interface Props {
   stream: ScheduledStream;
-  loggedIn: boolean;
+  user: User | null;
   admin: boolean;
+  onEditCallback?: any;
 }
 
-export default class ChannelPageScheduledStreamCard extends Component<Props> {
+interface State {
+  showModal: boolean;
+  registered: boolean;
+}
+
+export default class ChannelPageScheduledStreamCard extends Component<
+  Props,
+  State
+> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      showModal: false,
+      registered: false,
+    };
+  }
+
+  checkIfRegistered = () => {
+    this.props.user &&
+      !this.props.admin &&
+      ScheduledStreamService.isRegisteredForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        (registered: boolean) => {
+          this.setState({ registered });
+        }
+      );
+  };
+
+  register = () => {
+    this.props.user &&
+      ScheduledStreamService.registerForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        () => {
+          this.checkIfRegistered();
+        }
+      );
+  };
+
+  unregister = () => {
+    this.props.user &&
+      ScheduledStreamService.unRegisterForScheduledStream(
+        this.props.stream.id,
+        this.props.user.id,
+        () => {
+          this.checkIfRegistered();
+        }
+      );
+  };
+
+  onClick = () => {
+    if (this.props.admin) {
+      this.toggleModal();
+    } else if (this.state.registered) {
+      this.unregister();
+    } else {
+      this.register();
+    }
+  };
+
   formatDate = (d: string) => {
     const date = new Date(d);
     const dateStr = date.toDateString().slice(0, -4);
@@ -16,46 +83,74 @@ export default class ChannelPageScheduledStreamCard extends Component<Props> {
     return `${dateStr} ${timeStr}`;
   };
 
+  toggleModal = () => {
+    this.setState({ showModal: !this.state.showModal });
+  };
+
   render() {
     let label = "Log in to register";
     if (this.props.admin) {
       label = "Edit";
-    } else if (this.props.loggedIn) {
+    } else if (this.props.user && !this.state.registered) {
       label = "Register";
+    } else if (this.props.user && this.state.registered) {
+      label = "Unregister";
     }
     return (
-      <Box
-        background="white"
-        round="10px"
-        // align="center"
-        pad="15px"
-        width="31.5%"
-        height="325px"
-        justify="between"
-        gap="small"
-      >
-        <Text weight="bold" size="20px" color="black">
-          {this.props.stream.name}
-        </Text>
-        <Box gap="small">
-          <Text
-            size="18px"
-            color="black"
-            style={{ maxHeight: 150, overflow: "scroll" }}
-          >
-            {this.props.stream.description}
+      <Box width="31.5%">
+        <Box
+          background="white"
+          round="10px"
+          // align="center"
+          pad="15px"
+          width="100%"
+          height="325px"
+          justify="between"
+          gap="small"
+        >
+          <Text weight="bold" size="20px" color="black">
+            {this.props.stream.name}
           </Text>
-          <Text size="18px" color="black" weight="bold">
-            {this.formatDate(this.props.stream.date)}
-          </Text>
-          <Button
-            primary
-            color="black"
-            disabled={!this.props.loggedIn}
-            label={label}
-            size="large"
-          ></Button>
+          <Box gap="small">
+            <Text
+              size="18px"
+              color="black"
+              style={{ maxHeight: 150, overflow: "scroll" }}
+            >
+              {this.props.stream.description}
+            </Text>
+            <Text size="18px" color="black" weight="bold">
+              {this.formatDate(this.props.stream.date)}
+            </Text>
+            {this.state.registered && (
+              <AddToCalendarButtons
+                startTime={this.props.stream.date}
+                endTime={this.props.stream.end_date}
+                name={this.props.stream.name}
+                description={this.props.stream.description}
+                link={this.props.stream.link}
+              />
+            )}
+            <Button
+              onClick={this.onClick}
+              primary
+              color="black"
+              disabled={!this.props.admin && this.props.user === null}
+              label={label}
+              size="large"
+            ></Button>
+          </Box>
         </Box>
+        <EditTalkModal
+          visible={this.state.showModal}
+          channel={null}
+          stream={this.props.stream}
+          onFinishedCallback={() => {
+            this.toggleModal();
+            this.props.onEditCallback();
+          }}
+          onCanceledCallback={this.toggleModal}
+        />
       </Box>
     );
   }

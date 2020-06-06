@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box } from "grommet";
 import ChannelPageScheduledStreamCard from "./ChannelPageScheduledStreamCard";
+import { User } from "../Services/UserService";
 import {
   ScheduledStream,
   ScheduledStreamService,
@@ -10,8 +11,9 @@ import Loading from "./Loading";
 interface Props {
   scheduledStreams: ScheduledStream[];
   channelId: number;
-  loggedIn: boolean;
+  user: User | null;
   admin: boolean;
+  onEditCallback?: any;
 }
 
 interface State {
@@ -50,8 +52,9 @@ export default class ChannelPageScheduledStreamList extends Component<
         {this.props.scheduledStreams.map((stream: ScheduledStream) => (
           <ChannelPageScheduledStreamCard
             stream={stream}
-            loggedIn={this.props.loggedIn}
+            user={this.props.user}
             admin={this.props.admin}
+            onEditCallback={this.props.onEditCallback}
           />
         ))}
       </Box>
