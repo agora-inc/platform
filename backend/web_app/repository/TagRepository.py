@@ -61,6 +61,17 @@ class TagRepository:
         # self.db.con.commit()
         # cursor.close()
 
+    def tagScheduledStream(self, streamId, tagIds):
+        existingTagIds = [t["id"] for t in self.getTagsOnScheduledStream(streamId)]
+        newTagIds = [i for i in tagIds if i not in existingTagIds]
+
+        valueStr = ''
+        for tagId in newTagIds:
+            valueStr += f' ({streamId}, {tagId}),'
+
+        query = 'INSERT INTO ScheduledStreamTags(stream_id, tag_id) VALUES'+valueStr[:-1]
+        self.db.run_query(query)
+
     def tagVideo(self, videoId, tagIds):
         valueStr = ''
         for tagId in tagIds:
@@ -79,6 +90,11 @@ class TagRepository:
         # result = cursor.fetchall()
         # cursor.close()
         query = f'SELECT Tags.id, Tags.name FROM Tags INNER JOIN StreamTags ON Tags.id = StreamTags.tag_id WHERE StreamTags.stream_id = {streamId}'
+        result = self.db.run_query(query)
+        return result
+
+    def getTagsOnScheduledStream(self, streamId):
+        query = f'SELECT Tags.id, Tags.name FROM Tags INNER JOIN ScheduledStreamTags ON Tags.id = ScheduledStreamTags.tag_id WHERE ScheduledStreamTags.stream_id = {streamId}'
         result = self.db.run_query(query)
         return result
 

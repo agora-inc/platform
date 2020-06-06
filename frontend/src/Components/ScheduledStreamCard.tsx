@@ -5,6 +5,8 @@ import {
   ScheduledStreamService,
 } from "../Services/ScheduledStreamService";
 import { User } from "../Services/UserService";
+import { Tag } from "../Services/TagService";
+import { default as TagComponent } from "./Tag";
 import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
 
@@ -160,7 +162,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               {this.props.stream.name}
             </Text>
           </Box>
-          <Box gap="small">
+          <Box gap="xsmall">
             <Text
               size="18px"
               color="black"
@@ -195,15 +197,15 @@ export default class ScheduledStreamCard extends Component<Props, State> {
             modal
             responsive
             animation="fadeIn"
-            style={{ width: 375, height: 450, borderRadius: 15 }}
+            style={{ width: 400, height: 500, borderRadius: 15 }}
           >
             <Box
               // align="center"
               pad="25px"
-              width="100%"
+              // width="100%"
               height="100%"
               justify="between"
-              gap="small"
+              gap="xsmall"
             >
               <Box style={{ minHeight: "40%", maxHeight: "60%" }}>
                 <Text
@@ -223,13 +225,24 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 </Text>
               </Box>
               <Box
-                gap="small"
+                gap="xsmall"
                 justify="end"
                 style={{ minHeight: "40%", maxHeight: "60%" }}
               >
                 <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
                   {this.props.stream.description}
                 </Text>
+                {this.props.stream.tags.length !== 0 && (
+                  <Box direction="row" gap="xsmall" wrap>
+                    {this.props.stream.tags.map((tag: Tag) => (
+                      <TagComponent
+                        tagName={tag.name}
+                        width="80px"
+                        colour="#f3f3f3"
+                      />
+                    ))}
+                  </Box>
+                )}
                 <Text size="18px" color="black" weight="bold">
                   {this.formatDate(this.props.stream.date)}
                 </Text>

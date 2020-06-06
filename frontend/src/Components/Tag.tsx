@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 
 interface Props {
   tagName: string;
+  width?: string;
+  colour?: string;
 }
 
 export default class Tag extends Component<Props> {
@@ -15,16 +17,28 @@ export default class Tag extends Component<Props> {
     return (
       <Link
         to={`/tag/${this.props.tagName}`}
-        style={{ textDecoration: "none" }}
+        style={{
+          textDecoration: "none",
+          padding: 0,
+          margin: 0,
+          maxWidth: "50%",
+        }}
       >
         <Box
-          background="#61EC9F"
+          background={this.props.colour}
           align="center"
           justify="center"
-          pad={{ vertical: "small", horizontal: "medium" }}
+          pad={{ vertical: "xsmall", horizontal: "medium" }}
+          margin="none"
           round="medium"
+          overflow="hidden"
+          style={{
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            display: "inline-block",
+          }}
         >
-          <Text size="16px" weight="bold">
+          <Text size="16px" weight="bold" color="black">
             {this.props.tagName}
           </Text>
         </Box>
