@@ -8,7 +8,7 @@
   <body>
     <h1> Hello World </h1>
     <script> 
-    let socket = new WebSocket("ws://localhost:5500");
+    let socket = new WebSocket("ws://35.177.126.194:5500");
 
 socket.onopen = function(e) {
   alert("[open] Connection established");
@@ -20,7 +20,7 @@ socket.onopen = function(e) {
 socket.onmessage = function(event) {
   alert(`[message] Data received from server: ${event.data}`);
   alert(`[message] sending msg`);
-  socket.send("{'action': 'sendMsg', 'msg': 'hi mate', 'chat_participant_group_id': 74, 'user_name': 'abraham lincoln', 'utc_ts_s': 1589030964.7268157}")
+  socket.send("{'action': 'sendMsg', 'msg': 'BONNE NUIT ALAIN!!!!!!!', 'chat_participant_group_id': 74, 'user_name': 'abraham lincoln', 'utc_ts_s': 1589030964.7268157}")
 };
 
 socket.onclose = function(event) {
