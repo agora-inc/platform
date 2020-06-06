@@ -115,7 +115,7 @@ export default class SiteWideSearch extends Component<{}, State> {
               {this.state.results.channel.map((channel: Channel) => (
                 <Link
                   to={{
-                    pathname: `/channel/${channel.name}`,
+                    pathname: `/${channel.name}`,
                     state: { channel },
                   }}
                   style={{ textDecoration: "none" }}

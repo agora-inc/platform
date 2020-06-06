@@ -111,7 +111,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
           justify="between"
           gap="small"
         >
-          <Box height="35%">
+          <Box style={{ minHeight: "35%", maxHeight: "50%" }}>
             <Box
               direction="row"
               gap="xsmall"
@@ -205,7 +205,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               justify="between"
               gap="small"
             >
-              <Box height="40%">
+              <Box style={{ minHeight: "40%", maxHeight: "60%" }}>
                 <Text
                   weight="bold"
                   size="22px"
@@ -222,7 +222,11 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                   {this.props.stream.name}
                 </Text>
               </Box>
-              <Box height="60%" gap="small" justify="end">
+              <Box
+                gap="small"
+                justify="end"
+                style={{ minHeight: "40%", maxHeight: "60%" }}
+              >
                 <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
                   {this.props.stream.description}
                 </Text>

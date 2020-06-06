@@ -71,8 +71,9 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   fetchChannel = () => {
+    console.log(this.props.location.pathname.split("/"));
     ChannelService.getChannelByName(
-      this.props.location.pathname.split("/")[2],
+      this.props.location.pathname.split("/")[1],
       (channel: Channel) => {
         let user = UserService.getCurrentUser();
         if (user === null) {

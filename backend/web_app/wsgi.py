@@ -6,4 +6,7 @@ if __name__ == "__main__":
     cert_loc = '/etc/nginx/conf.d/ssl-files/www_agora_stream.crt'
     context = (cert_loc, key_loc)
 
-    app.run(ssl_context=context)
+    try:
+        app.run(ssl_context=context)
+    except:
+        app.run()
