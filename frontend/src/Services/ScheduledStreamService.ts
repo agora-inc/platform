@@ -1,4 +1,5 @@
 import { baseApiUrl } from "../config";
+import { Tag } from "./TagService";
 import axios from "axios";
 
 const getAllScheduledStreams = (
@@ -35,7 +36,7 @@ const editScheduledStream = (
   startDate: string,
   endDate: string,
   streamLink: string,
-  // streamTags: Tag[],
+  streamTags: Tag[],
   callback: any
 ) => {
   axios
@@ -48,6 +49,7 @@ const editScheduledStream = (
         startDate: startDate,
         endDate: endDate,
         streamLink: streamLink,
+        streamTags: streamTags,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -67,7 +69,7 @@ const scheduleStream = (
   startDate: string,
   endDate: string,
   streamLink: string,
-  // streamTags: Tag[],
+  streamTags: Tag[],
   callback: any
 ) => {
   axios
@@ -81,6 +83,7 @@ const scheduleStream = (
         startDate: startDate,
         endDate: endDate,
         streamLink: streamLink,
+        streamTags: streamTags,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -90,6 +93,20 @@ const scheduleStream = (
   // .catch(function (error) {
   //   callback(false);
   // });
+};
+
+const deleteScheduledStream = (id: number, callback: any) => {
+  axios
+    .post(
+      baseApiUrl + "/streams/scheduled/delete",
+      {
+        id: id,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
 };
 
 const isRegisteredForScheduledStream = (
@@ -169,6 +186,7 @@ export const ScheduledStreamService = {
   getScheduledStreamsForChannel,
   editScheduledStream,
   scheduleStream,
+  deleteScheduledStream,
   isRegisteredForScheduledStream,
   registerForScheduledStream,
   unRegisterForScheduledStream,
@@ -186,4 +204,5 @@ export type ScheduledStream = {
   description: string;
   has_avatar: boolean;
   link: string;
+  tags: Tag[];
 };

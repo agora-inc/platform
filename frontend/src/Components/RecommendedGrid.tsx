@@ -36,7 +36,7 @@ export default class RecommendedGrid extends Component<{}, State> {
           margin={{ bottom: "15px" }}
         >
           <Text size="26px" weight="bold" color="black" margin="none">
-            Recent streams
+            Recent talks
           </Text>
           <Link to="/videos" style={{ textDecoration: "none" }}>
             <Box

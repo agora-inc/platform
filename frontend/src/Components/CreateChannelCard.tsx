@@ -44,7 +44,7 @@ export default class CreateChannelCard extends Component<Props, State> {
 
   render() {
     return this.state.redirect ? (
-      <Redirect to={`/channel/${this.state.newChannelName}`} />
+      <Redirect to={`/${this.state.newChannelName}`} />
     ) : (
       <Box
         width="100%"

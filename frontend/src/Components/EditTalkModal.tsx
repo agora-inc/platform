@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, TextInput, TextArea, Calendar, MaskedInput } from "grommet";
 import { Overlay, OverlaySection } from "./Core/Overlay";
+import Button from "./Core/Button";
 import { Channel } from "../Services/ChannelService";
 import { Tag } from "../Services/TagService";
 import {
@@ -14,6 +15,7 @@ interface Props {
   visible: boolean;
   onFinishedCallback: any;
   onCanceledCallback: any;
+  onDeletedCallback?: any;
   stream?: ScheduledStream;
 }
 
@@ -34,7 +36,7 @@ export default class EditTalkModal extends Component<Props, State> {
     this.state = {
       title: this.props.stream ? this.props.stream.name : "",
       description: this.props.stream ? this.props.stream.description : "",
-      tags: [],
+      tags: this.props.stream ? this.props.stream.tags : [],
       loading: false,
       date: this.props.stream
         ? new Date(this.props.stream.date).toISOString()
@@ -84,6 +86,7 @@ export default class EditTalkModal extends Component<Props, State> {
         dateTimeStrs[0],
         dateTimeStrs[1],
         this.state.link,
+        this.state.tags,
         (stream: ScheduledStream) => {
           this.setState(
             {
@@ -104,6 +107,7 @@ export default class EditTalkModal extends Component<Props, State> {
         dateTimeStrs[0],
         dateTimeStrs[1],
         this.state.link,
+        this.state.tags,
         (stream: ScheduledStream) => {
           console.log("SCHEDULED STREAM:", stream);
           this.setState(
@@ -125,6 +129,15 @@ export default class EditTalkModal extends Component<Props, State> {
         }
       );
     }
+  };
+
+  onDeleteClicked = () => {
+    if (!this.props.stream) {
+      return;
+    }
+    ScheduledStreamService.deleteScheduledStream(this.props.stream.id, () => {
+      this.props.onDeletedCallback();
+    });
   };
 
   selectTag = (tag: Tag) => {
@@ -160,7 +173,7 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   render() {
-    this.parseDate();
+    console.log(this.props.stream);
     return (
       <Overlay
         width={500}
@@ -174,6 +187,17 @@ export default class EditTalkModal extends Component<Props, State> {
         onCancelClick={this.props.onCanceledCallback}
         onClickOutside={this.props.onCanceledCallback}
         onEsc={this.props.onCanceledCallback}
+        extraButton={
+          this.props.stream ? (
+            <Button
+              fill="#FF4040"
+              width="90px"
+              height="35px"
+              text="delete"
+              onClick={this.onDeleteClicked}
+            />
+          ) : null
+        }
       >
         <OverlaySection heading="When is your talk going to be held?">
           <Calendar
@@ -259,6 +283,7 @@ export default class EditTalkModal extends Component<Props, State> {
         </OverlaySection>
         <OverlaySection heading="Add a few relevant tags">
           <TagSelector
+            selected={this.props.stream?.tags}
             onSelectedCallback={this.selectTag}
             onDeselectedCallback={this.deselectTag}
             width="100%"

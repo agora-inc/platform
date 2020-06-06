@@ -92,47 +92,58 @@ export default class ManageChannelPage extends Component<Props, State> {
           loading: false,
         },
         () => {
-          this.fetchFollowerCount();
-          this.fetchViewCount();
-          this.fetchOwners();
-          this.fetchMembers();
-          this.fetchFollowers();
-          this.fetchVideos();
-          this.fetchScheduledStreams();
+          this.fetchData();
         }
       );
     } else {
       ChannelService.getChannelByName(
-        this.props.location.pathname.split("/")[2],
+        this.props.location.pathname.split("/")[1],
         (channel: Channel) => {
           let user = UserService.getCurrentUser();
-          ChannelService.isUserInChannel(
-            user.id,
-            channel.id,
-            ["owner", "member"],
-            (res: boolean) => {
-              this.setState(
-                {
-                  channel: channel,
-                  colour: channel.colour,
-                  allowed: res,
-                  loading: false,
-                },
-                () => {
-                  this.fetchFollowerCount();
-                  this.fetchViewCount();
-                  this.fetchOwners();
-                  this.fetchMembers();
-                  this.fetchFollowers();
-                  this.fetchVideos();
-                  this.fetchScheduledStreams();
-                }
-              );
-            }
-          );
+          if (user === null) {
+            this.setState(
+              {
+                channel: channel,
+                colour: channel.colour,
+                loading: false,
+              },
+              () => {
+                this.fetchData();
+              }
+            );
+          } else {
+            ChannelService.isUserInChannel(
+              user.id,
+              channel.id,
+              ["owner", "member"],
+              (res: boolean) => {
+                this.setState(
+                  {
+                    channel: channel,
+                    colour: channel.colour,
+                    allowed: res,
+                    loading: false,
+                  },
+                  () => {
+                    this.fetchData();
+                  }
+                );
+              }
+            );
+          }
         }
       );
     }
+  };
+
+  fetchData = () => {
+    this.fetchFollowerCount();
+    this.fetchViewCount();
+    this.fetchOwners();
+    this.fetchMembers();
+    this.fetchFollowers();
+    this.fetchVideos();
+    this.fetchScheduledStreams();
   };
 
   fetchFollowerCount = () => {
@@ -550,7 +561,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       ) : (
         <Redirect
           to={{
-            pathname: "/",
+            pathname: `/${this.state.channel!.name}`,
           }}
         />
       );
