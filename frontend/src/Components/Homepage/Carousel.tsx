@@ -51,7 +51,7 @@ export default class Carousel extends Component<Props, State> {
           pad="xsmall"
         >
           <Link
-            to="/videos"
+            to="/past"
             style={{
               width: "100%",
               height: "100%",

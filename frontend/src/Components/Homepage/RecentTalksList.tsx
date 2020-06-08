@@ -31,8 +31,8 @@ export default class RecentTalksList extends Component<{}, State> {
     ScheduledStreamService.getAllPastScheduledStreams(
       6,
       0,
-      (talks: ScheduledStream[]) => {
-        this.setState({ talks, loading: false });
+      (data: { count: number; streams: ScheduledStream[] }) => {
+        this.setState({ talks: data.streams, loading: false });
       }
     );
   };
@@ -66,7 +66,7 @@ export default class RecentTalksList extends Component<{}, State> {
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
           {this.state.talks.map((talk: ScheduledStream) => (
-            <PastScheduledStreamCard stream={talk} user={null} />
+            <PastScheduledStreamCard stream={talk} />
           ))}
         </Box>
       </Box>

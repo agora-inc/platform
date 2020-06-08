@@ -13,7 +13,8 @@ import "../../Styles/past-talk-card.css";
 
 interface Props {
   stream: ScheduledStream;
-  user: User | null;
+  height?: any;
+  width?: any;
 }
 
 interface State {
@@ -42,57 +43,12 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
     this.setState({ showModal: !this.state.showModal, showShadow: true });
   };
 
-  componentWillMount() {
-    this.checkIfRegistered();
-  }
-
-  checkIfRegistered = () => {
-    this.props.user &&
-      ScheduledStreamService.isRegisteredForScheduledStream(
-        this.props.stream.id,
-        this.props.user.id,
-        (registered: boolean) => {
-          this.setState({ registered });
-        }
-      );
-  };
-
-  register = () => {
-    this.props.user &&
-      ScheduledStreamService.registerForScheduledStream(
-        this.props.stream.id,
-        this.props.user.id,
-        () => {
-          // this.toggleModal();
-          this.checkIfRegistered();
-          this.setState({
-            showShadow: false,
-          });
-        }
-      );
-  };
-
-  unregister = () => {
-    this.props.user &&
-      ScheduledStreamService.unRegisterForScheduledStream(
-        this.props.stream.id,
-        this.props.user.id,
-        () => {
-          // this.toggleModal();
-          this.checkIfRegistered();
-          this.setState({
-            showShadow: false,
-          });
-        }
-      );
-  };
-
   render() {
     let [dateStr, timeStr] = this.formatDate(this.props.stream.date);
     return (
       <Box
-        width="32%"
-        height="300px"
+        width={this.props.width ? this.props.width : "32%"}
+        height={this.props.height ? this.props.height : "300px"}
         onClick={this.toggleModal}
         focusIndicator={false}
         style={{ position: "relative" }}
@@ -300,9 +256,6 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
                     style={{ width: "100%" }}
                   >
                     <Button
-                      onClick={
-                        this.state.registered ? this.unregister : this.register
-                      }
                       primary
                       color={this.props.stream.channel_colour}
                       label="Watch talk"
