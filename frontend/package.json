@@ -41,6 +41,7 @@
     "react-overlays": "^3.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
+    "react-tooltip": "^4.2.6",
     "sockette": "^2.0.6",
     "styled-components": "^5.1.0",
     "video.js": "^7.7.6",
