@@ -51,13 +51,6 @@ export default class EditTalkModal extends Component<Props, State> {
     };
   }
 
-  parseDate = () => {
-    if (this.props.stream) {
-      let d = new Date(this.props.stream.date);
-      console.log(d.toTimeString().slice(0, 5));
-    }
-  };
-
   onFinishClicked = () => {
     this.setState(
       {
@@ -70,10 +63,19 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   combineDateAndTimeStrings = () => {
-    return [
-      `${this.state.date.slice(0, 10)} ${this.state.startTime}`,
-      `${this.state.date.slice(0, 10)} ${this.state.endTime}`,
-    ];
+    const startDate = new Date(
+      `${this.state.date.slice(0, 10)} ${this.state.startTime}`
+    )
+      .toISOString()
+      .slice(0, 16)
+      .replace("T", " ");
+    const endDate = new Date(
+      `${this.state.date.slice(0, 10)} ${this.state.endTime}`
+    )
+      .toISOString()
+      .slice(0, 16)
+      .replace("T", " ");
+    return [startDate, endDate];
   };
 
   onFinish = () => {
@@ -109,7 +111,6 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.link,
         this.state.tags,
         (stream: ScheduledStream) => {
-          console.log("SCHEDULED STREAM:", stream);
           this.setState(
             {
               loading: false,
@@ -173,7 +174,6 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   render() {
-    console.log(this.props.stream);
     return (
       <Overlay
         width={500}
