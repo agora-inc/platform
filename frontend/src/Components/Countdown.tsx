@@ -39,10 +39,9 @@ export default class UserManager extends Component<Props, State> {
   }
 
   render() {
-    console.log(new Date(2017, 2, 11, 11, 30))
     return (
       <div className="App">
-        <div>Countdown: {this.formatTime(this.state.currentTime)}</div>
+        <div>Link shown in: {this.formatTime(this.state.currentTime)}</div>
       </div>
     );
   }

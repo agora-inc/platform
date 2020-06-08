@@ -7,6 +7,8 @@ import {
 import { User } from "../Services/UserService";
 import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
+// import Countdown from "antd/lib/statistic/Countdown";
+import Countdown from "../Components/Countdown";
 
 interface Props {
   stream: ScheduledStream;
@@ -160,6 +162,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               {this.props.stream.name}
             </Text>
           </Box>
+          <Countdown targetTime={new Date(this.props.stream.date).getUTCSeconds()} />
           <Box gap="small">
             <Text
               size="18px"

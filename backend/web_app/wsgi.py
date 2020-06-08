@@ -1,5 +1,5 @@
 from app import app, db
-from OpenSSL import SSL
+# from OpenSSL import SSL
 
 if __name__ == "__main__":
     key_loc = '/etc/nginx/conf.d/ssl-files/ssl_csr.key'

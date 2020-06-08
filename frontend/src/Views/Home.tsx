@@ -7,7 +7,6 @@ import PopularTagsBox from "../Components/PopularTagsBox";
 import ScheduledStreamList from "../Components/ScheduledStreamList";
 import RecommendedGrid from "../Components/RecommendedGrid";
 import FooterComponent from "../Components/FooterComponent";
-import Countdown from "../Components/Countdown";
 import "../Styles/home.css";
 import { User, UserService } from "../Services/UserService";
 import {
@@ -45,6 +44,7 @@ export default class Home extends Component<{}, State> {
   };
 
   render() {
+    console.log(new Date().toUTCString());
     return (
       <Box direction="row">
         <CustomSideBar user={this.state.user} />
@@ -64,7 +64,6 @@ export default class Home extends Component<{}, State> {
             seeMore
             user={this.state.user}
           />
-          <Countdown targetTime={new Date().getUTCSeconds() + 100000} />
           <RecommendedGrid />
           {/* <FooterComponent /> */}
         </Box>
