@@ -1,15 +1,16 @@
 import { baseApiUrl } from "../config";
 import { Tag } from "./TagService";
+import { ArtService } from "./ArtService";
 import axios from "axios";
 
-const getAllScheduledStreams = (
+const getAllFutureScheduledStreams = (
   limit: number,
   offset: number,
   callback: any
 ) => {
   axios
     .get(
-      `${baseApiUrl}/streams/scheduled/all?limit=${limit}&offset=${offset}`,
+      `${baseApiUrl}/streams/scheduled/all/future?limit=${limit}&offset=${offset}`,
       {
         headers: { "Access-Control-Allow-Origin": "*" },
       }
@@ -19,11 +20,50 @@ const getAllScheduledStreams = (
     });
 };
 
-const getScheduledStreamsForChannel = (channelId: number, callback: any) => {
+const getAllPastScheduledStreams = (
+  limit: number,
+  offset: number,
+  callback: any
+) => {
   axios
-    .get(baseApiUrl + "/streams/scheduled/channel?channelId=" + channelId, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
+    .get(
+      `${baseApiUrl}/streams/scheduled/all/past?limit=${limit}&offset=${offset}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const getFutureScheduledStreamsForChannel = (
+  channelId: number,
+  callback: any
+) => {
+  axios
+    .get(
+      baseApiUrl + "/streams/scheduled/channel/future?channelId=" + channelId,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const getPastScheduledStreamsForChannel = (
+  channelId: number,
+  callback: any
+) => {
+  axios
+    .get(
+      baseApiUrl + "/streams/scheduled/channel/past?channelId=" + channelId,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
     .then(function (response) {
       callback(response.data);
     });
@@ -181,9 +221,20 @@ const getScheduledStreamsForUser = (userId: number, callback: any) => {
     });
 };
 
+const getYoutubeThumbnail = (url: string | null, id: number) => {
+  if (!url || !url.includes("youtube")) {
+    // return ArtService.generateRandomArt(150, 350, id);
+    return "";
+  }
+  const ytId = url.split("&")[0].split("=")[1];
+  return `https://img.youtube.com/vi/${ytId}/0.jpg`;
+};
+
 export const ScheduledStreamService = {
-  getAllScheduledStreams,
-  getScheduledStreamsForChannel,
+  getAllFutureScheduledStreams,
+  getAllPastScheduledStreams,
+  getFutureScheduledStreamsForChannel,
+  getPastScheduledStreamsForChannel,
   editScheduledStream,
   scheduleStream,
   deleteScheduledStream,
@@ -191,6 +242,7 @@ export const ScheduledStreamService = {
   registerForScheduledStream,
   unRegisterForScheduledStream,
   getScheduledStreamsForUser,
+  getYoutubeThumbnail,
 };
 
 export type ScheduledStream = {
@@ -204,5 +256,6 @@ export type ScheduledStream = {
   description: string;
   has_avatar: boolean;
   link: string;
+  recording_link: string;
   tags: Tag[];
 };

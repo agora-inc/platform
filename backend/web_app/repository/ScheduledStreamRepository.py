@@ -7,8 +7,8 @@ class ScheduledStreamRepository:
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)
 
-    def getAllScheduledStreams(self, limit, offset):
-        query = f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP LIMIT {limit} OFFSET {offset}'
+    def getAllFutureScheduledStreams(self, limit, offset):
+        query = f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}'
         streams = self.db.run_query(query)
         for stream in streams:
             channel = self.channels.getChannelById(stream["channel_id"])
@@ -17,8 +17,28 @@ class ScheduledStreamRepository:
             stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
         return streams
 
-    def getAllScheduledStreamsForChannel(self, channelId):
+    def getAllPastScheduledStreams(self, limit, offset):
+        query = f'SELECT * FROM ScheduledStreams WHERE end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
+        streams = self.db.run_query(query)
+        for stream in streams:
+            channel = self.channels.getChannelById(stream["channel_id"])
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
+            stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
+        return streams
+
+    def getAllFutureScheduledStreamsForChannel(self, channelId):
         query = f'SELECT * FROM ScheduledStreams WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP'
+        streams = self.db.run_query(query)
+        for stream in streams:
+            channel = self.channels.getChannelById(stream["channel_id"])
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
+            stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
+        return streams
+
+    def getAllPastScheduledStreamsForChannel(self, channelId):
+        query = f'SELECT * FROM ScheduledStreams WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP'
         streams = self.db.run_query(query)
         for stream in streams:
             channel = self.channels.getChannelById(stream["channel_id"])
@@ -73,8 +93,19 @@ class ScheduledStreamRepository:
         query = f'DELETE FROM ScheduledStreamRegistrations WHERE stream_id={streamId} AND user_id={userId}'
         self.db.run_query(query)
 
-    def getScheduledStreamsForUser(self, userId):
-        query = f'SELECT ScheduledStreams.id, ScheduledStreams.channel_id, ScheduledStreams.channel_name, ScheduledStreams.name, ScheduledStreams.description, ScheduledStreams.date, ScheduledStreams.end_date, ScheduledStreams.link FROM ScheduledStreams INNER JOIN ScheduledStreamRegistrations ON ScheduledStreams.id = ScheduledStreamRegistrations.stream_id WHERE ScheduledStreamRegistrations.user_id = {userId}'
+    def getFutureScheduledStreamsForUser(self, userId):
+        query = f'SELECT ScheduledStreams.id, ScheduledStreams.channel_id, ScheduledStreams.channel_name, ScheduledStreams.name, ScheduledStreams.description, ScheduledStreams.date, ScheduledStreams.end_date, ScheduledStreams.link FROM ScheduledStreams INNER JOIN ScheduledStreamRegistrations ON ScheduledStreams.id = ScheduledStreamRegistrations.stream_id WHERE ScheduledStreamRegistrations.user_id = {userId} AND ScheduledStreams.date > CURRENT_TIMESTAMP'
+        streams = self.db.run_query(query)
+
+        for stream in streams:
+            channel = self.channels.getChannelById(stream["channel_id"])
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
+            stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
+        return streams
+
+    def getPastScheduledStreamsForUser(self, userId):
+        query = f'SELECT ScheduledStreams.id, ScheduledStreams.channel_id, ScheduledStreams.channel_name, ScheduledStreams.name, ScheduledStreams.description, ScheduledStreams.date, ScheduledStreams.end_date, ScheduledStreams.link FROM ScheduledStreams INNER JOIN ScheduledStreamRegistrations ON ScheduledStreams.id = ScheduledStreamRegistrations.stream_id WHERE ScheduledStreamRegistrations.user_id = {userId}AND ScheduledStreams.end_date < CURRENT_TIMESTAMP'
         streams = self.db.run_query(query)
 
         for stream in streams:

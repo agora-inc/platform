@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Box, Grommet, Heading, Text } from "grommet";
 import { Video, VideoService } from "../Services/VideoService";
-import SmallSelector from "../Components/SmallSelector";
-import VideoCard from "../Components/VideoCard";
+import SmallSelector from "../Components/Core/SmallSelector";
+import VideoCard from "../Components/Streaming/VideoCard";
 
 interface Props {
   location: { pathname: string };

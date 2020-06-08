@@ -10,10 +10,10 @@ import {
   ScheduledStreamService,
 } from "../Services/ScheduledStreamService";
 import Identicon from "react-identicons";
-import Loading from "../Components/Loading";
-import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
-import VideoCard from "../Components/VideoCard";
-import ChannelLiveNowCard from "../Components/ChannelLiveNowCard";
+import Loading from "../Components/Core/Loading";
+import ChannelPageScheduledStreamList from "../Components/Channel/ChannelPageScheduledStreamList";
+import VideoCard from "../Components/Streaming/VideoCard";
+import ChannelLiveNowCard from "../Components/Channel/ChannelLiveNowCard";
 import "../Styles/channel-page.css";
 
 interface Props {
@@ -153,7 +153,7 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   fetchScheduledStreams = () => {
-    ScheduledStreamService.getScheduledStreamsForChannel(
+    ScheduledStreamService.getFutureScheduledStreamsForChannel(
       this.state.channel!.id,
       (scheduledStreams: ScheduledStream[]) => {
         this.setState({ scheduledStreams });
@@ -314,7 +314,7 @@ export default class ChannelPage extends Component<Props, State> {
                   weight="bold"
                   color="black"
                   margin={{ bottom: "10px" }}
-                >{`${this.state.channel?.name}'s upcoming streams`}</Text>
+                >{`${this.state.channel?.name}'s upcoming talks`}</Text>
                 <ChannelPageScheduledStreamList
                   scheduledStreams={this.state.scheduledStreams}
                   channelId={this.state.channel!.id}
@@ -326,7 +326,7 @@ export default class ChannelPage extends Component<Props, State> {
                   weight="bold"
                   color="black"
                   margin={{ top: "40px" }}
-                >{`${this.state.channel?.name}'s past streams`}</Text>
+                >{`${this.state.channel?.name}'s past talks`}</Text>
                 <Box
                   direction="row"
                   width="100%"

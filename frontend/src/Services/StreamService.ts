@@ -41,7 +41,7 @@ const createStream = (
   streamTags: Tag[],
   callback: any
 ) => {
-  const imageUrl = ArtService.generateRandomArt(200, 278);
+  // const imageUrl = ArtService.generateRandomArt(200, 278);
   axios
     .post(
       baseApiUrl + "/streams/create",
@@ -51,7 +51,7 @@ const createStream = (
         streamName: streamName,
         streamDescription: streamDescription,
         streamTags: streamTags,
-        imageUrl: imageUrl,
+        imageUrl: "",
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )

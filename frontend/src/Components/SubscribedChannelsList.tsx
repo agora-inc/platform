@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
-import Loading from "./Loading";
+import Loading from "./Core/Loading";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../Styles/trending-channels-box.css";
 import { User } from "../Services/UserService";
-import SignUpButton from "./SignUpButton";
+import SignUpButton from "./Account/SignUpButton";
 
 interface Props {
   user: User | null;

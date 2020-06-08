@@ -5,8 +5,8 @@ import {
   ScheduledStreamService,
 } from "../Services/ScheduledStreamService";
 import { User } from "../Services/UserService";
-import ScheduledStreamList from "../Components/ScheduledStreamList";
-import Loading from "../Components/Loading";
+import ScheduledStreamList from "../Components/ScheduledStreams/ScheduledStreamList";
+import Loading from "../Components/Core/Loading";
 
 interface Props {
   location: { state: { user: User } };

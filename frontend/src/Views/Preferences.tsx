@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
 import { User, UserService } from "../Services/UserService";
-import LoginModal from "../Components/LoginModal";
-import ClapSoundList from "../Components/ClapSoundList"
-
+import LoginModal from "../Components/Account/LoginModal";
+import ClapSoundList from "../Components/Streaming/ClapSoundList";
 
 interface Props {
   location: { pathname: string };
@@ -11,7 +10,7 @@ interface Props {
 
 interface State {
   user: User | null;
-  isLoggedIn: boolean
+  isLoggedIn: boolean;
 }
 
 export default class Preferences extends Component<Props, State> {
@@ -24,13 +23,10 @@ export default class Preferences extends Component<Props, State> {
   }
 
   componentDidMount() {
-    console.log("Preferences logged")
+    console.log("Preferences logged");
   }
 
   render() {
-    return (
-      <ClapSoundList />
-    );
+    return <ClapSoundList />;
   }
 }
-

@@ -3,8 +3,8 @@ import { Box, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 import { ReactComponent as Logo } from "../apollo.svg";
 import { Link } from "react-router-dom";
-import UserManager from "./UserManager";
-import FormContainer from "./FormContainer";
+import UserManager from "./Account/UserManager";
+import FormContainer from "./Homepage/FormContainer";
 import SiteWideSearch from "./SiteWideSearch";
 
 export default class HeaderBar extends Component {

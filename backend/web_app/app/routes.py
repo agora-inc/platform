@@ -184,16 +184,27 @@ def serveThumbnail():
 # --------------------------------------------
 # SCHEDULED STREAM ROUTES
 # -------------------------------------------- 
-@app.route('/streams/scheduled/all', methods=["GET"])
-def getAllScheduledStreams():
+@app.route('/streams/scheduled/all/future', methods=["GET"])
+def getAllFutureScheduledStreams():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(scheduledStreams.getAllScheduledStreams(limit, offset))
+    return jsonify(scheduledStreams.getAllFutureScheduledStreams(limit, offset))
 
-@app.route('/streams/scheduled/channel', methods=["GET"])
-def getAllScheduledStreamsForChannel():
+@app.route('/streams/scheduled/all/past', methods=["GET"])
+def getAllPastScheduledStreams():
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(scheduledStreams.getAllPastScheduledStreams(limit, offset))
+
+@app.route('/streams/scheduled/channel/future', methods=["GET"])
+def getAllFutureScheduledStreamsForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(scheduledStreams.getAllScheduledStreamsForChannel(channelId))
+    return jsonify(scheduledStreams.getAllFutureScheduledStreamsForChannel(channelId))
+
+@app.route('/streams/scheduled/channel/past', methods=["GET"])
+def getAllPastScheduledStreamsForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(scheduledStreams.getAllPastScheduledStreamsForChannel(channelId))
 
 @app.route('/streams/scheduled/create', methods=["POST", "OPTIONS"])
 def scheduleStream():
@@ -241,7 +252,7 @@ def unRegisterForScheduledStream():
 @app.route('/streams/scheduled/foruser', methods=["GET"])
 def getScheduledStreamsForUser():
     userId = int(request.args.get("userId"))
-    return jsonify(scheduledStreams.getScheduledStreamsForUser(userId))
+    return jsonify(scheduledStreams.getFutureScheduledStreamsForUser(userId))
 
 # --------------------------------------------
 # VOD ROUTES

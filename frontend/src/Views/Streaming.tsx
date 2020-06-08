@@ -4,15 +4,15 @@ import { Box, Heading, Button, Grid, Text } from "grommet";
 import { View } from "grommet-icons";
 import { UserService } from "../Services/UserService";
 import { StreamService } from "../Services/StreamService";
-import StreamerVideoPlayer from "../Components/StreamerVideoPlayer";
-import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
-import ChatBox from "../Components/ChatBox";
-import AsyncButton from "../Components/AsyncButton";
+import StreamerVideoPlayer from "../Components/Streaming/StreamerVideoPlayer";
+import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
+import ChatBox from "../Components/Streaming/ChatBox";
+import AsyncButton from "../Components/Core/AsyncButton";
 import "../Styles/streaming.css";
 import adapter from "webrtc-adapter";
 import { WebRTCAdaptor } from "../Streaming/webrtc_adaptor";
 import { antmediaWebSocketUrl } from "../config";
-import Loading from "../Components/Loading";
+import Loading from "../Components/Core/Loading";
 
 const users = UserService;
 

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Box, Heading, Text, DropButton } from "grommet";
 import { Video, VideoService } from "../Services/VideoService";
-import VideoCard from "../Components/VideoCard";
-import Loading from "../Components/Loading";
-import SmallSelector from "../Components/SmallSelector";
+import VideoCard from "../Components/Streaming/VideoCard";
+import Loading from "../Components/Core/Loading";
+import SmallSelector from "../Components/Core/SmallSelector";
 
 interface State {
   videos: Video[];

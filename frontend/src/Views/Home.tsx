@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text, Grid, Sidebar } from "grommet";
-import CustomSideBar from "../Components/CustomSideBar";
-import Carousel from "../Components/Carousel";
-import PopularTagsBox from "../Components/PopularTagsBox";
-import ScheduledStreamList from "../Components/ScheduledStreamList";
-import RecommendedGrid from "../Components/RecommendedGrid";
-import FooterComponent from "../Components/FooterComponent";
+import CustomSideBar from "../Components/Homepage/CustomSideBar";
+import Carousel from "../Components/Homepage/Carousel";
+import PopularTagsBox from "../Components/Homepage/PopularTagsBox";
+import ScheduledStreamList from "../Components/ScheduledStreams/ScheduledStreamList";
+import RecommendedGrid from "../Components/Homepage/RecommendedGrid";
+import RecentTalksList from "../Components/Homepage/RecentTalksList";
+import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/home.css";
 import { User, UserService } from "../Services/UserService";
 import {
@@ -33,7 +34,7 @@ export default class Home extends Component<{}, State> {
   }
 
   fetchScheduledStreams = () => {
-    ScheduledStreamService.getAllScheduledStreams(
+    ScheduledStreamService.getAllFutureScheduledStreams(
       6,
       0,
       (scheduledStreams: ScheduledStream[]) => {
@@ -63,43 +64,10 @@ export default class Home extends Component<{}, State> {
             seeMore
             user={this.state.user}
           />
-          <RecommendedGrid />
-          {/* <FooterComponent /> */}
+          <RecentTalksList />
+          {/* <RecommendedGrid /> */}
         </Box>
       </Box>
-      // <Box
-      //   // fill
-      //   align="center"
-      //   justify="end"
-      //   pad="none"
-      //   margin={{ top: "large", bottom: "none" }}
-      //   // style={{ height: "150vh" }}
-      // >
-      //   <Link to="/streams" style={{ marginTop: 60, marginBottom: 25 }}>
-      //     <Heading
-      //       style={{ fontSize: 48 }}
-      //       margin="none"
-      //       className="sliding-underline"
-      //     >
-      //       Currently live
-      //     </Heading>
-      //   </Link>
-      //   <Carousel />
-      //   <ScheduledStreamList />
-      //   <Link to="/videos" style={{ marginTop: 60, marginBottom: 25 }}>
-      //     <Heading
-      //       style={{ fontSize: 48 }}
-      //       margin="none"
-      //       className="sliding-underline"
-      //     >
-      //       Recent videos
-      //     </Heading>
-      //   </Link>
-      //   <RecommendedGrid />
-      //   <TrendingChannelsBox />
-      //   <PopularTagsBox />
-      //   <FooterComponent />
-      // </Box>
     );
   }
 }

@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Box, Grid, Text } from "grommet";
-import DescriptionAndQuestions from "../Components/DescriptionAndQuestions";
-import ChatBox from "../Components/ChatBox";
-import Loading from "../Components/Loading";
-import ChannelIdCard from "../Components/ChannelIdCard";
-import VideoPlayer from "../Components/VideoPlayer";
+import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
+import ChatBox from "../Components/Streaming/ChatBox";
+import Loading from "../Components/Core/Loading";
+import ChannelIdCard from "../Components/Channel/ChannelIdCard";
+import VideoPlayer from "../Components/Streaming/VideoPlayer";
 import { View } from "grommet-icons";
 import { Stream, StreamService } from "../Services/StreamService";
-import Clapping from "../Components/Clapping";
+import Clapping from "../Components/Streaming/Clapping";
 
 interface Props {
   location: { pathname: string; state: { stream: Stream } };

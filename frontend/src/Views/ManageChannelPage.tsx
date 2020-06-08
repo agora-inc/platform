@@ -8,17 +8,17 @@ import {
   ScheduledStream,
   ScheduledStreamService,
 } from "../Services/ScheduledStreamService";
-import Loading from "../Components/Loading";
-import StreamNowButton from "../Components/StreamNowButton";
-import NewScheduleStreamButton from "../Components/NewScheduleStreamButton";
+import Loading from "../Components/Core/Loading";
+import StreamNowButton from "../Components/Streaming/StreamNowButton";
+import NewScheduleStreamButton from "../Components/ScheduledStreams/NewScheduleStreamButton";
 import Identicon from "react-identicons";
-import ColorPicker from "../Components/ColorPicker";
-import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledStreamList";
-import AddUsersButton from "../Components/AddUsersButton";
-import VideoCard from "../Components/VideoCard";
+import ColorPicker from "../Components/Channel/ColorPicker";
+import ChannelPageScheduledStreamList from "../Components/Channel/ChannelPageScheduledStreamList";
+import AddUsersButton from "../Components/Channel/AddUsersButton";
+import VideoCard from "../Components/Streaming/VideoCard";
 import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
-import ChannelPageUserCircle from "../Components/ChannelPageUserCircle";
+import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 
 interface Props {
   location: any;
@@ -212,7 +212,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   fetchScheduledStreams = () => {
     console.log("fetchin scheduled streams");
-    ScheduledStreamService.getScheduledStreamsForChannel(
+    ScheduledStreamService.getFutureScheduledStreamsForChannel(
       this.state.channel!.id,
       (scheduledStreams: ScheduledStream[]) => {
         this.setState({ scheduledStreams });
