@@ -13,14 +13,14 @@ class ScheduledStreamRepository:
         return result[0]["COUNT(*)"]
 
     def getNumberOfPastScheduledStreamsForChannel(self, channelId):
-        query = f'SELECT COUNT(*) FROM Videos WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP'
+        query = f'SELECT COUNT(*) FROM ScheduledStreams WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP'
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"]
 
-    def getNumberOfPastScheduledStreamsForTag(self, tagId):
-        query = f'SELECT COUNT(*) FROM VideoTags WHERE tag_id = {tagId} AND end_date < CURRENT_TIMESTAMP'
-        result = self.db.run_query(query)
-        return result[0]["COUNT(*)"]
+    # def getNumberOfPastScheduledStreamsForTag(self, tagId):
+    #     query = f'SELECT COUNT(*) FROM VideoTags WHERE tag_id = {tagId} AND end_date < CURRENT_TIMESTAMP'
+    #     result = self.db.run_query(query)
+    #     return result[0]["COUNT(*)"]
 
     def getAllFutureScheduledStreams(self, limit, offset):
         query = f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}'

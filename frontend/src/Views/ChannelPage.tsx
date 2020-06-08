@@ -15,6 +15,7 @@ import ChannelPageScheduledStreamList from "../Components/Channel/ChannelPageSch
 import VideoCard from "../Components/Streaming/VideoCard";
 import ChannelLiveNowCard from "../Components/Channel/ChannelLiveNowCard";
 import "../Styles/channel-page.css";
+import PastScheduledStreamCard from "../Components/ScheduledStreams/PastScheduledStreamCard";
 
 interface Props {
   location: { pathname: string };
@@ -26,11 +27,13 @@ interface State {
   admin: boolean;
   loading: boolean;
   streams: Stream[];
-  videos: Video[];
-  totalNumberOfVideos: number;
+  // videos: Video[];
+  // totalNumberOfVideos: number;
   scheduledStreams: ScheduledStream[];
+  pastStreams: ScheduledStream[];
+  totalNumberOfPastStreams: number;
   followerCount: number;
-  viewCount: number;
+  // viewCount: number;
   following: boolean;
   user: User | null;
 }
@@ -43,11 +46,13 @@ export default class ChannelPage extends Component<Props, State> {
       admin: false,
       loading: true,
       streams: [],
-      videos: [],
-      totalNumberOfVideos: 0,
+      // videos: [],
+      // totalNumberOfVideos: 0,
       scheduledStreams: [],
+      pastStreams: [],
+      totalNumberOfPastStreams: 0,
       followerCount: 0,
-      viewCount: 0,
+      // viewCount: 0,
       following: false,
       user: UserService.getCurrentUser(),
     };
@@ -65,8 +70,11 @@ export default class ChannelPage extends Component<Props, State> {
   handleScroll = (e: any) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
-      this.fetchVideos();
+    if (
+      bottom &&
+      this.state.pastStreams.length !== this.state.totalNumberOfPastStreams
+    ) {
+      this.fetchPastStreams();
     }
   };
 
@@ -81,10 +89,11 @@ export default class ChannelPage extends Component<Props, State> {
             { channel: channel, admin: false, loading: false },
             () => {
               this.fetchStreams();
-              this.fetchVideos();
+              this.fetchPastStreams();
+              // this.fetchVideos();
               this.fetchScheduledStreams();
               this.fetchFollowerCount();
-              this.fetchViewCount();
+              // this.fetchViewCount();
             }
           );
           return;
@@ -98,10 +107,11 @@ export default class ChannelPage extends Component<Props, State> {
               { channel: channel, admin: res, loading: false },
               () => {
                 this.fetchStreams();
-                this.fetchVideos();
+                this.fetchPastStreams();
+                // this.fetchVideos();
                 this.fetchScheduledStreams();
                 this.fetchFollowerCount();
-                this.fetchViewCount();
+                // this.fetchViewCount();
                 this.checkIfFollowing();
               }
             );
@@ -120,19 +130,19 @@ export default class ChannelPage extends Component<Props, State> {
     );
   };
 
-  fetchVideos = () => {
-    VideoService.getAllVideosForChannel(
-      this.state.channel!.id,
-      6,
-      this.state.videos.length,
-      (data: { count: number; videos: Video[] }) => {
-        this.setState({
-          videos: this.state.videos.concat(data.videos),
-          totalNumberOfVideos: data.count,
-        });
-      }
-    );
-  };
+  // fetchVideos = () => {
+  //   VideoService.getAllVideosForChannel(
+  //     this.state.channel!.id,
+  //     6,
+  //     this.state.videos.length,
+  //     (data: { count: number; videos: Video[] }) => {
+  //       this.setState({
+  //         videos: this.state.videos.concat(data.videos),
+  //         totalNumberOfVideos: data.count,
+  //       });
+  //     }
+  //   );
+  // };
 
   fetchFollowerCount = () => {
     ChannelService.getFollowerCountForChannel(
@@ -143,20 +153,32 @@ export default class ChannelPage extends Component<Props, State> {
     );
   };
 
-  fetchViewCount = () => {
-    ChannelService.getViewsForChannel(
-      this.state.channel!.id,
-      (viewCount: number) => {
-        this.setState({ viewCount });
-      }
-    );
-  };
+  // fetchViewCount = () => {
+  //   ChannelService.getViewsForChannel(
+  //     this.state.channel!.id,
+  //     (viewCount: number) => {
+  //       this.setState({ viewCount });
+  //     }
+  //   );
+  // };
 
   fetchScheduledStreams = () => {
     ScheduledStreamService.getFutureScheduledStreamsForChannel(
       this.state.channel!.id,
       (scheduledStreams: ScheduledStream[]) => {
         this.setState({ scheduledStreams });
+      }
+    );
+  };
+
+  fetchPastStreams = () => {
+    ScheduledStreamService.getPastScheduledStreamsForChannel(
+      this.state.channel!.id,
+      (data: { streams: ScheduledStream[]; count: number }) => {
+        this.setState({
+          pastStreams: data.streams,
+          totalNumberOfPastStreams: data.count,
+        });
       }
     );
   };
@@ -302,10 +324,10 @@ export default class ChannelPage extends Component<Props, State> {
                         weight="bold"
                         size="22px"
                       >{`${this.state.followerCount} followers`}</Text>
-                      <Text
+                      {/* <Text
                         weight="bold"
                         size="22px"
-                      >{`${this.state.viewCount} views`}</Text>
+                      >{`${this.state.viewCount} views`}</Text> */}
                     </Box>
                   </Box>
                 </Box>
@@ -335,12 +357,12 @@ export default class ChannelPage extends Component<Props, State> {
                   margin={{ top: "10px" }}
                   // gap="5%"
                 >
-                  {this.state.videos.map((video: Video) => (
-                    <VideoCard
+                  {this.state.pastStreams.map((stream: ScheduledStream) => (
+                    <PastScheduledStreamCard
                       width="31.5%"
-                      height="192px"
-                      color="#f2f2f2"
-                      video={video}
+                      // height="192px"
+                      // color="#f2f2f2"
+                      stream={stream}
                       // margin="none"
                     />
                   ))}
