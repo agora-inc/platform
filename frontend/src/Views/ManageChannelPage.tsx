@@ -17,6 +17,8 @@ import ChannelPageScheduledStreamList from "../Components/ChannelPageScheduledSt
 import AddUsersButton from "../Components/AddUsersButton";
 import VideoCard from "../Components/VideoCard";
 import "../Styles/manage-channel.css";
+import ReactTooltip from "react-tooltip";
+import ChannelPageUserCircle from "../Components/ChannelPageUserCircle";
 
 interface Props {
   location: any;
@@ -433,16 +435,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="xsmall"
                   >
                     {this.state.channelOwners.map((owner: User) => (
-                      <Box
-                        background="white"
-                        height="50px"
-                        width="50px"
-                        round="25px"
-                        justify="center"
-                        align="center"
-                      >
-                        <Identicon string={owner.username} size={30} />
-                      </Box>
+                      <ChannelPageUserCircle user={owner} />
                     ))}
                   </Box>
                 </Box>
@@ -468,18 +461,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       }}
                     />
                   </Box>
-                  <Box direction="row" wrap margin={{ top: "5px" }}>
+                  <Box
+                    direction="row"
+                    wrap
+                    margin={{ top: "5px" }}
+                    gap="xsmall"
+                  >
                     {this.state.channelMembers.map((member: User) => (
-                      <Box
-                        background="white"
-                        height="50px"
-                        width="50px"
-                        round="25px"
-                        justify="center"
-                        align="center"
-                      >
-                        <Identicon string={member.username} size={30} />
-                      </Box>
+                      <ChannelPageUserCircle user={member} />
                     ))}
                   </Box>
                 </Box>
@@ -498,18 +487,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                   >
                     Followers
                   </Text>
-                  <Box direction="row" wrap margin={{ top: "5px" }}>
+                  <Box
+                    direction="row"
+                    wrap
+                    margin={{ top: "5px" }}
+                    gap="xsmall"
+                  >
                     {this.state.followers.map((follower: User) => (
-                      <Box
-                        background="white"
-                        height="50px"
-                        width="50px"
-                        round="25px"
-                        justify="center"
-                        align="center"
-                      >
-                        <Identicon string={follower.username} size={30} />
-                      </Box>
+                      <ChannelPageUserCircle user={follower} />
                     ))}
                   </Box>
                 </Box>
@@ -557,6 +542,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               </Box>
             </Box>
           </Box>
+          <ReactTooltip />
         </Box>
       ) : (
         <Redirect

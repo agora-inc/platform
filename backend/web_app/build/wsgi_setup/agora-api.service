@@ -1,7 +1,6 @@
 [Unit]
 Description=agora rest api
 After=network.target
-PrivateTmp=false
 
 [Service]
 User=cloud-user

@@ -7,6 +7,6 @@ if __name__ == "__main__":
     context = (cert_loc, key_loc)
 
     try:
-        app.run(ssl_context=context)
+        app.run(port=8000)
     except:
         app.run()

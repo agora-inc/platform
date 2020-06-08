@@ -7,20 +7,22 @@ interface Props {
   disabled?: boolean;
   onClick: any;
   text: string;
+  fill?: string;
 }
 
 export default class Button extends Component<Props> {
   render() {
+    const borderStyle = this.props.fill ? "none" : "2px solid black";
     return (
       <Box
         height={this.props.height}
-        background="white"
+        background={this.props.fill || "white"}
         round="xsmall"
         style={
           !this.props.disabled
-            ? { border: "2px solid black" }
+            ? { border: borderStyle }
             : {
-                border: "2px solid black",
+                border: borderStyle,
                 opacity: 0.4,
                 pointerEvents: "none",
               }
@@ -32,7 +34,11 @@ export default class Button extends Component<Props> {
         focusIndicator={false}
         hoverIndicator={true}
       >
-        <Text weight="bold" color="black" size="16px">
+        <Text
+          weight="bold"
+          color={this.props.fill ? "white" : "black"}
+          size="16px"
+        >
           {this.props.text}
         </Text>
       </Box>

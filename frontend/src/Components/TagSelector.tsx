@@ -1,13 +1,5 @@
 import React, { Component } from "react";
-import {
-  Box,
-  Button,
-  Heading,
-  TextInput,
-  TextArea,
-  Layer,
-  Grid,
-} from "grommet";
+import { Box } from "grommet";
 import { Tag, TagService } from "../Services/TagService";
 import { Input } from "antd";
 import Loading from "./Loading";
@@ -25,6 +17,7 @@ interface State {
 interface Props {
   onSelectedCallback: any;
   onDeselectedCallback: any;
+  selected?: Tag[];
   width: string;
   height: string;
 }
@@ -35,7 +28,7 @@ export default class TagSelector extends Component<Props, State> {
     this.state = {
       all: [],
       filtered: [],
-      selected: [],
+      selected: this.props.selected ? this.props.selected : [],
       searchTerm: "",
       tagBeingCreated: false,
     };
@@ -115,10 +108,11 @@ export default class TagSelector extends Component<Props, State> {
   };
 
   render() {
+    console.log("selected:", this.state.selected);
     const tagsToShow =
       this.state.searchTerm === "" ? this.state.all : this.state.filtered;
     return (
-      <Box>
+      <Box width="100%">
         <Box
           direction="row"
           align="center"
@@ -140,9 +134,10 @@ export default class TagSelector extends Component<Props, State> {
           overflow="scroll"
           margin="none"
           pad="xsmall"
+          round="xsmall"
           justify="start"
           width="100%"
-          background="rgba(206,254,233,0.2)"
+          background="rgba(206,254,233,0.3)"
           style={{
             justifySelf: "end",
             height: this.props.height,
@@ -155,7 +150,9 @@ export default class TagSelector extends Component<Props, State> {
             <Box
               onClick={() => this.onTagClicked(tag)}
               background={
-                this.state.selected.includes(tag) ? "#606EEB" : "#f3f3f3"
+                this.state.selected.some((t) => t["name"] === tag["name"])
+                  ? "#606EEB"
+                  : "#f3f3f3"
               }
               align="center"
               justify="center"

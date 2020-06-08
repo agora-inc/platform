@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
 import { User } from "../Services/UserService";
+import { Tag } from "../Services/TagService";
 import {
   ScheduledStream,
   ScheduledStreamService,
 } from "../Services/ScheduledStreamService";
 import EditTalkModal from "./EditTalkModal";
 import AddToCalendarButtons from "./AddToCalendarButtons";
+import { default as TagComponent } from "./Tag";
 
 interface Props {
   stream: ScheduledStream;
@@ -119,6 +121,15 @@ export default class ChannelPageScheduledStreamCard extends Component<
             >
               {this.props.stream.description}
             </Text>
+            <Box direction="row" gap="xsmall" wrap>
+              {this.props.stream.tags.map((tag: Tag) => (
+                <TagComponent
+                  tagName={tag.name}
+                  width="80px"
+                  colour="#f3f3f3"
+                />
+              ))}
+            </Box>
             <Text size="18px" color="black" weight="bold">
               {this.formatDate(this.props.stream.date)}
             </Text>
@@ -146,6 +157,10 @@ export default class ChannelPageScheduledStreamCard extends Component<
           channel={null}
           stream={this.props.stream}
           onFinishedCallback={() => {
+            this.toggleModal();
+            this.props.onEditCallback();
+          }}
+          onDeletedCallback={() => {
             this.toggleModal();
             this.props.onEditCallback();
           }}

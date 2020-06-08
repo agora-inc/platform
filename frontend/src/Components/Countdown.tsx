@@ -1,30 +1,43 @@
 import React, { Component } from "react";
+import { Box, Text } from "grommet";
 
 interface Props {
-  targetTime: number
+  targetTime: string
+  link: string
 }
 
 interface State {
-  currentTime: number
+  currentTime: string
+  offset: number // Number of seconds before the talk the link is released
+  countdown: number // number of seconds until link is released
+  showLink: boolean
 }
 
-export default class UserManager extends Component<Props, State> {
+export default class Countdown extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      currentTime: new Date().getUTCSeconds()
+      currentTime: new Date().toString(),
+      offset: 900,
+      countdown: (new Date(this.props.targetTime).getTime() - new Date().getTime()) / 1000 >> 0,
+      showLink: false
     };
   }
 
   componentWillMount() {
-    setInterval(() => {
-      this.setState({currentTime: this.props.targetTime - new Date().getUTCSeconds()});
+    setInterval(() => { 
+      let now =  new Date()
+      this.setState({
+        currentTime: now.toString(),
+        countdown: (new Date(this.props.targetTime).getTime() - now.getTime()) / 1000 - this.state.offset >> 0,
+        showLink: this.state.countdown <= 0
+      });
     }, 1000);
   }
 
-  formatTime(time: number) {
-    let days = (time / 86400) >> 0; 
-    let temp = time % 86400;
+  formatTime() {
+    let days = (this.state.countdown / 86400) >> 0; 
+    let temp = this.state.countdown % 86400;
     let hours = (temp / 3600) >> 0;
     temp = temp % 3600;
     let minutes = (temp / 60) >> 0;
@@ -40,9 +53,18 @@ export default class UserManager extends Component<Props, State> {
 
   render() {
     return (
-      <div className="App">
-        <div>Link shown in: {this.formatTime(this.state.currentTime)}</div>
-      </div>
+      <Box>
+      {this.state.showLink && (
+        <Box>
+          Link to talk: {this.props.link}
+        </Box>
+      )}
+      {!this.state.showLink && (
+        <Box>
+          Link shown in: {this.formatTime()}
+        </Box>
+      )}
+      </Box>
     );
   }
 }

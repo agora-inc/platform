@@ -60,7 +60,7 @@ export default class ScheduledStreamList extends Component<Props> {
         >
           {this.props.title && (
             <Text size="26px" weight="bold" color="black" margin="none">
-              Upcoming streams
+              Upcoming talks
             </Text>
           )}
           {this.props.seeMore && (

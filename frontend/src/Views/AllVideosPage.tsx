@@ -104,7 +104,7 @@ export default class AllVideosPage extends Component<{}, State> {
               margin="none"
               style={{ height: "3rem" }}
             >
-              All videos
+              All previous talks
             </Heading>
             {/* <Box direction="row" align="center" gap="xsmall">
               <Text color="black" weight="bold">

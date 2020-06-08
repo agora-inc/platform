@@ -5,6 +5,8 @@ import {
   ScheduledStreamService,
 } from "../Services/ScheduledStreamService";
 import { User } from "../Services/UserService";
+import { Tag } from "../Services/TagService";
+import { default as TagComponent } from "./Tag";
 import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
 // import Countdown from "antd/lib/statistic/Countdown";
@@ -162,7 +164,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               {this.props.stream.name}
             </Text>
           </Box>
-          <Countdown targetTime={new Date(this.props.stream.date).getUTCSeconds()} />
+          <Countdown targetTime={this.props.stream.date} link={"https://duckduckgo.com"} />
           <Box gap="small">
             <Text
               size="18px"
@@ -198,24 +200,52 @@ export default class ScheduledStreamCard extends Component<Props, State> {
             modal
             responsive
             animation="fadeIn"
-            style={{ width: 375, height: 450, borderRadius: 15 }}
+            style={{ width: 400, height: 500, borderRadius: 15 }}
           >
             <Box
               // align="center"
               pad="25px"
-              width="100%"
+              // width="100%"
               height="100%"
               justify="between"
-              gap="small"
+              gap="xsmall"
             >
               <Box style={{ minHeight: "40%", maxHeight: "60%" }}>
-                <Text
-                  weight="bold"
-                  size="22px"
-                  color={this.props.stream.channel_colour}
+                <Box
+                  direction="row"
+                  gap="xsmall"
+                  align="center"
+                  style={{ minHeight: "30px" }}
                 >
-                  {this.props.stream.channel_name}
-                </Text>
+                  <Box
+                    height="25px"
+                    width="25px"
+                    round="12.5px"
+                    justify="center"
+                    align="center"
+                    background="#efeff1"
+                    overflow="hidden"
+                  >
+                    {!this.props.stream.has_avatar && (
+                      <Identicon
+                        string={this.props.stream.channel_name}
+                        size={15}
+                      />
+                    )}
+                    {!!this.props.stream.has_avatar && (
+                      <img
+                        src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
+                      />
+                    )}
+                  </Box>
+                  <Text
+                    weight="bold"
+                    size="22px"
+                    color={this.props.stream.channel_colour}
+                  >
+                    {this.props.stream.channel_name}
+                  </Text>
+                </Box>
                 <Text
                   weight="bold"
                   size="24px"
@@ -226,13 +256,24 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 </Text>
               </Box>
               <Box
-                gap="small"
+                gap="xsmall"
                 justify="end"
                 style={{ minHeight: "40%", maxHeight: "60%" }}
               >
                 <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
                   {this.props.stream.description}
                 </Text>
+                {this.props.stream.tags.length !== 0 && (
+                  <Box direction="row" gap="xsmall" wrap>
+                    {this.props.stream.tags.map((tag: Tag) => (
+                      <TagComponent
+                        tagName={tag.name}
+                        width="80px"
+                        colour="#f3f3f3"
+                      />
+                    ))}
+                  </Box>
+                )}
                 <Text size="18px" color="black" weight="bold">
                   {this.formatDate(this.props.stream.date)}
                 </Text>

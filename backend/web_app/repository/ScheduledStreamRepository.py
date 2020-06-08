@@ -1,9 +1,11 @@
 from repository.ChannelRepository import ChannelRepository
+from repository.TagRepository import TagRepository
 
 class ScheduledStreamRepository:
     def __init__(self, db):
         self.db = db
         self.channels = ChannelRepository(db=db)
+        self.tags = TagRepository(db=self.db)
 
     def getAllScheduledStreams(self, limit, offset):
         query = f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP LIMIT {limit} OFFSET {offset}'
@@ -12,6 +14,7 @@ class ScheduledStreamRepository:
             channel = self.channels.getChannelById(stream["channel_id"])
             stream["channel_colour"] = channel["colour"]
             stream["has_avatar"] = channel["has_avatar"]
+            stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
         return streams
 
     def getAllScheduledStreamsForChannel(self, channelId):
@@ -21,22 +24,37 @@ class ScheduledStreamRepository:
             channel = self.channels.getChannelById(stream["channel_id"])
             stream["channel_colour"] = channel["colour"]
             stream["has_avatar"] = channel["has_avatar"]
+            stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
         return streams
 
     def getScheduledStreamById(self, streamId):
         query = f'SELECT * FROM ScheduledStreams WHERE id = {streamId}'
-        result = self.db.run_query(query)
-        return result
+        stream = self.db.run_query(query)[0]
+        stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
+        return stream
 
-    def scheduleStream(self, channelId, channelName, streamName, startDate, endDate, streamDescription, streamLink):
+    def scheduleStream(self, channelId, channelName, streamName, startDate, endDate, streamDescription, streamLink, streamTags):
+        print("start date: ", startDate)
+        print("end date: ", endDate)
         query = f'INSERT INTO ScheduledStreams(channel_id, channel_name, name, date, end_date, description, link) VALUES ({channelId}, "{channelName}", "{streamName}", "{startDate}", "{endDate}", "{streamDescription}", "{streamLink}")'
         insertId = self.db.run_query(query)[0]
+
+        tagIds = [t["id"] for t in streamTags]
+        self.tags.tagScheduledStream(insertId, tagIds)
+
         return self.getScheduledStreamById(insertId)
 
-    def editScheduledStream(self, streamId, streamName, startDate, endDate, streamDescription, streamLink):
+    def editScheduledStream(self, streamId, streamName, startDate, endDate, streamDescription, streamLink, streamTags):
+        print(startDate)
+        print(endDate)
         query = f'UPDATE ScheduledStreams SET name="{streamName}", description="{streamDescription}", date="{startDate}", end_date="{endDate}", link="{streamLink}" WHERE id = {streamId}'
-        insertId = self.db.run_query(query)[0]
-        return self.getScheduledStreamById(insertId)
+        print(query)
+        self.db.run_query(query)
+
+        tagIds = [t["id"] for t in streamTags]
+        self.tags.tagScheduledStream(streamId, tagIds)
+
+        return self.getScheduledStreamById(streamId)
 
     def deleteScheduledStream(self, streamId):
         query = f'DELETE FROM ScheduledStreams where id = {streamId}'
@@ -63,5 +81,5 @@ class ScheduledStreamRepository:
             channel = self.channels.getChannelById(stream["channel_id"])
             stream["channel_colour"] = channel["colour"]
             stream["has_avatar"] = channel["has_avatar"]
-
+            stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
         return streams
