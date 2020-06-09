@@ -13,6 +13,7 @@ import { theme } from "./theme";
 import ManageChannelPage from "./Views/ManageChannelPage";
 import Preferences from "./Views/Preferences";
 import Schedule from "./Views/Schedule";
+import AllUpcomingTalksPage from "./Views/AllUpcomingTalksPage";
 import AllPastTalksPage from "./Views/AllPastTalksPage";
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <Route path="/streaming" component={Streaming} />
           <Route path="/preferences" component={Preferences} />
           <Route path="/schedule" component={Schedule} />
+          <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
           <Route path="*" component={ChannelPage} />
         </Switch>

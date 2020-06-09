@@ -64,7 +64,7 @@ export default class ScheduledStreamList extends Component<Props> {
             </Text>
           )}
           {this.props.seeMore && (
-            <Link to="/scheduled" style={{ textDecoration: "none" }}>
+            <Link to="/upcoming" style={{ textDecoration: "none" }}>
               <Box
                 className="see-more-button"
                 pad={{ vertical: "2px", horizontal: "xsmall" }}

@@ -13,6 +13,7 @@ import AddToCalendarButtons from "./AddToCalendarButtons";
 interface Props {
   stream: ScheduledStream;
   user: User | null;
+  width?: string;
 }
 
 interface State {
@@ -90,7 +91,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
     console.log(this.props.stream);
     return (
       <Box
-        width="32%"
+        width={this.props.width ? this.props.width : "32%"}
         height="300px"
         onClick={this.toggleModal}
         focusIndicator={false}
