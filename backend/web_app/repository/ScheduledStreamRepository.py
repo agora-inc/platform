@@ -15,12 +15,16 @@ class ScheduledStreamRepository:
     def getNumberOfPastScheduledStreamsForChannel(self, channelId):
         query = f'SELECT COUNT(*) FROM ScheduledStreams WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP'
         result = self.db.run_query(query)
+        if not result:
+            return 0
         return result[0]["COUNT(*)"]
 
-    # def getNumberOfPastScheduledStreamsForTag(self, tagId):
-    #     query = f'SELECT COUNT(*) FROM VideoTags WHERE tag_id = {tagId} AND end_date < CURRENT_TIMESTAMP'
-    #     result = self.db.run_query(query)
-    #     return result[0]["COUNT(*)"]
+    def getNumberOfPastScheduledStreamsForTag(self, tagId):
+        query = f'SELECT COUNT(*) FROM ScheduledStreams INNER JOIN ScheduledStreamTags ON ScheduledStreams.id = ScheduledStreamTags.stream_id WHERE ScheduledStreamTags.tag_id = {tagId} AND ScheduledStreams.end_date < CURRENT_TIMESTAMP'
+        result = self.db.run_query(query)
+        if not result:
+            return 0
+        return result[0]["COUNT(*)"]
 
     def getAllFutureScheduledStreams(self, limit, offset):
         query = f'SELECT * FROM ScheduledStreams WHERE date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}'
@@ -120,7 +124,7 @@ class ScheduledStreamRepository:
         return streams
 
     def getPastScheduledStreamsForUser(self, userId):
-        query = f'SELECT ScheduledStreams.id, ScheduledStreams.channel_id, ScheduledStreams.channel_name, ScheduledStreams.name, ScheduledStreams.description, ScheduledStreams.date, ScheduledStreams.end_date, ScheduledStreams.link FROM ScheduledStreams INNER JOIN ScheduledStreamRegistrations ON ScheduledStreams.id = ScheduledStreamRegistrations.stream_id WHERE ScheduledStreamRegistrations.user_id = {userId}AND ScheduledStreams.end_date < CURRENT_TIMESTAMP'
+        query = f'SELECT ScheduledStreams.id, ScheduledStreams.channel_id, ScheduledStreams.channel_name, ScheduledStreams.name, ScheduledStreams.description, ScheduledStreams.date, ScheduledStreams.end_date, ScheduledStreams.recording_link FROM ScheduledStreams INNER JOIN ScheduledStreamRegistrations ON ScheduledStreams.id = ScheduledStreamRegistrations.stream_id WHERE ScheduledStreamRegistrations.user_id = {userId} AND ScheduledStreams.end_date < CURRENT_TIMESTAMP'
         streams = self.db.run_query(query)
 
         for stream in streams:
@@ -129,3 +133,14 @@ class ScheduledStreamRepository:
             stream["has_avatar"] = channel["has_avatar"]
             stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
         return streams
+
+    def getPastScheduledStreamsForTag(self, tagId):
+        query = f'SELECT ScheduledStreams.id, ScheduledStreams.channel_id, ScheduledStreams.channel_name, ScheduledStreams.name, ScheduledStreams.description, ScheduledStreams.date, ScheduledStreams.end_date, ScheduledStreams.recording_link FROM ScheduledStreams INNER JOIN ScheduledStreamTags ON ScheduledStreams.id = ScheduledStreamTags.stream_id WHERE ScheduledStreamTags.tag_id = {tagId} AND ScheduledStreams.end_date < CURRENT_TIMESTAMP'
+        streams = self.db.run_query(query)
+
+        for stream in streams:
+            channel = self.channels.getChannelById(stream["channel_id"])
+            stream["channel_colour"] = channel["colour"]
+            stream["has_avatar"] = channel["has_avatar"]
+            stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
+        return (streams, self.getNumberOfPastScheduledStreamsForTag(tagId))

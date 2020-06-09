@@ -206,7 +206,13 @@ def getAllFutureScheduledStreamsForChannel():
 def getAllPastScheduledStreamsForChannel():
     channelId = int(request.args.get("channelId"))
     data = scheduledStreams.getAllPastScheduledStreamsForChannel(channelId)
-    return jsonify({"streams": data[0],"count": data[1]})
+    return jsonify({"streams": data[0], "count": data[1]})
+
+@app.route('/streams/scheduled/tag/past', methods=["GET"])
+def getAllPastScheduledStreamsForTag():
+    tagId = int(request.args.get("tagId"))
+    data = scheduledStreams.getPastScheduledStreamsForTag(tagId)
+    return jsonify({"streams": data[0], "count": data[1]})
 
 @app.route('/streams/scheduled/create', methods=["POST", "OPTIONS"])
 def scheduleStream():
