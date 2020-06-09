@@ -368,27 +368,29 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text weight="bold" size="30px">
                       {this.state.channel?.name}
                     </Text>
-                    <Text
-                      id="description"
-                      className="channel-description"
-                      size="22px"
-                      margin="none"
-                      contentEditable={this.state.editingDescription}
-                      style={
-                        this.state.editingDescription
-                          ? {
-                              border: `2px solid ${this.state.colour}`,
-                              borderRadius: 7,
-                              padding: 5,
-                              overflow: "scroll",
-                              height: 90,
-                              maxHeight: 90,
-                            }
-                          : {}
-                      }
-                    >
-                      {this.state.channel?.description}
-                    </Text>
+                    <Box style={{ maxHeight: "80%", overflowY: "scroll" }}>
+                      <Text
+                        id="description"
+                        className="channel-description"
+                        size="22px"
+                        margin="none"
+                        contentEditable={this.state.editingDescription}
+                        style={
+                          this.state.editingDescription
+                            ? {
+                                border: `2px solid ${this.state.colour}`,
+                                borderRadius: 7,
+                                padding: 5,
+                                overflow: "scroll",
+                                height: 90,
+                                maxHeight: 90,
+                              }
+                            : {}
+                        }
+                      >
+                        {this.state.channel?.description}
+                      </Text>
+                    </Box>
                     <Box
                       focusIndicator={false}
                       margin={{ top: "-10px" }}
