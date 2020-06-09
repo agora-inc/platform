@@ -134,7 +134,13 @@ class ScheduledStreamRepository:
             stream["tags"] = self.tags.getTagsOnScheduledStream(stream["id"])
         return streams
 
-    def getPastScheduledStreamsForTag(self, tagId):
+    def getPastScheduledStreamsForTag(self, tagName):
+        query = f'SELECT id FROM Tags WHERE name = "{tagName}"'
+        result = self.db.run_query(query)
+        if not result:
+            return []
+        tagId = result[0]["id"]
+
         query = f'SELECT ScheduledStreams.id, ScheduledStreams.channel_id, ScheduledStreams.channel_name, ScheduledStreams.name, ScheduledStreams.description, ScheduledStreams.date, ScheduledStreams.end_date, ScheduledStreams.recording_link FROM ScheduledStreams INNER JOIN ScheduledStreamTags ON ScheduledStreams.id = ScheduledStreamTags.stream_id WHERE ScheduledStreamTags.tag_id = {tagId} AND ScheduledStreams.end_date < CURRENT_TIMESTAMP'
         streams = self.db.run_query(query)
 

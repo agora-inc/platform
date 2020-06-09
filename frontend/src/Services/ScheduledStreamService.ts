@@ -69,6 +69,16 @@ const getPastScheduledStreamsForChannel = (
     });
 };
 
+const getPastScheduledStreamsForTag = (tagName: string, callback: any) => {
+  axios
+    .get(baseApiUrl + "/streams/scheduled/tag/past?tagName=" + tagName, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const editScheduledStream = (
   streamId: number,
   streamName: string,
@@ -235,6 +245,7 @@ export const ScheduledStreamService = {
   getAllPastScheduledStreams,
   getFutureScheduledStreamsForChannel,
   getPastScheduledStreamsForChannel,
+  getPastScheduledStreamsForTag,
   editScheduledStream,
   scheduleStream,
   deleteScheduledStream,

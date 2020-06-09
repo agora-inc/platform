@@ -19,6 +19,8 @@ import VideoCard from "../Components/Streaming/VideoCard";
 import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
+import { StreamService } from "../Services/StreamService";
+import PastScheduledStreamCard from "../Components/ScheduledStreams/PastScheduledStreamCard";
 
 interface Props {
   location: any;
@@ -30,15 +32,17 @@ interface State {
   loading: boolean;
   allowed: boolean;
   followerCount: number;
-  viewCount: number;
+  // viewCount: number;
   colour: string;
   editingDescription: boolean;
   channelOwners: User[];
   channelMembers: User[];
   followers: User[];
-  videos: Video[];
-  totalNumberOfVideos: number;
+  // videos: Video[];
+  // totalNumberOfVideos: number;
   scheduledStreams: ScheduledStream[];
+  pastStreams: ScheduledStream[];
+  totalNumberOfPastStreams: number;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -49,25 +53,29 @@ export default class ManageChannelPage extends Component<Props, State> {
       loading: true,
       allowed: false,
       followerCount: 0,
-      viewCount: 0,
+      // viewCount: 0,
       colour: "pink",
       editingDescription: false,
       channelOwners: [],
       channelMembers: [],
       followers: [],
-      videos: [],
-      totalNumberOfVideos: 0,
+      // videos: [],
+      // totalNumberOfVideos: 0,
       scheduledStreams: [],
+      pastStreams: [],
+      totalNumberOfPastStreams: 0,
     };
   }
 
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
+    // window.addEventListener("beforeunload", this.getChannelAndCheckAccess);
     this.getChannelAndCheckAccess();
   }
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
+    // window.removeEventListener("beforeunload", this.getChannelAndCheckAccess);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -79,72 +87,66 @@ export default class ManageChannelPage extends Component<Props, State> {
   handleScroll = (e: any) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
-      this.fetchVideos();
+    if (
+      bottom &&
+      this.state.pastStreams.length !== this.state.totalNumberOfPastStreams
+    ) {
+      this.fetchPastStreams();
     }
   };
 
   getChannelAndCheckAccess = () => {
-    if (this.props.location.state) {
-      this.setState(
-        {
-          channel: this.props.location.state.channel,
-          colour: this.props.location.state.channel.colour,
-          allowed: true,
-          loading: false,
-        },
-        () => {
-          this.fetchData();
+    // if (this.props.location.state) {
+
+    // } else {
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+        let user = UserService.getCurrentUser();
+        if (user === null) {
+          this.setState(
+            {
+              channel: channel,
+              colour: channel.colour,
+              loading: false,
+              allowed: false,
+            },
+            () => {
+              this.fetchData();
+            }
+          );
+        } else {
+          ChannelService.isUserInChannel(
+            user.id,
+            channel.id,
+            ["owner", "member"],
+            (res: boolean) => {
+              this.setState(
+                {
+                  channel: channel,
+                  colour: channel.colour,
+                  allowed: res,
+                  loading: false,
+                },
+                () => {
+                  this.fetchData();
+                }
+              );
+            }
+          );
         }
-      );
-    } else {
-      ChannelService.getChannelByName(
-        this.props.location.pathname.split("/")[1],
-        (channel: Channel) => {
-          let user = UserService.getCurrentUser();
-          if (user === null) {
-            this.setState(
-              {
-                channel: channel,
-                colour: channel.colour,
-                loading: false,
-              },
-              () => {
-                this.fetchData();
-              }
-            );
-          } else {
-            ChannelService.isUserInChannel(
-              user.id,
-              channel.id,
-              ["owner", "member"],
-              (res: boolean) => {
-                this.setState(
-                  {
-                    channel: channel,
-                    colour: channel.colour,
-                    allowed: res,
-                    loading: false,
-                  },
-                  () => {
-                    this.fetchData();
-                  }
-                );
-              }
-            );
-          }
-        }
-      );
-    }
+      }
+    );
   };
 
   fetchData = () => {
     this.fetchFollowerCount();
-    this.fetchViewCount();
+    // this.fetchViewCount();
     this.fetchOwners();
     this.fetchMembers();
     this.fetchFollowers();
-    this.fetchVideos();
+    // this.fetchVideos();
+    this.fetchPastStreams();
     this.fetchScheduledStreams();
   };
 
@@ -157,14 +159,14 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
-  fetchViewCount = () => {
-    ChannelService.getViewsForChannel(
-      this.state.channel!.id,
-      (viewCount: number) => {
-        this.setState({ viewCount });
-      }
-    );
-  };
+  // fetchViewCount = () => {
+  //   ChannelService.getViewsForChannel(
+  //     this.state.channel!.id,
+  //     (viewCount: number) => {
+  //       this.setState({ viewCount });
+  //     }
+  //   );
+  // };
 
   fetchOwners = () => {
     ChannelService.getUsersForChannel(
@@ -196,26 +198,37 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
-  fetchVideos = () => {
-    VideoService.getAllVideosForChannel(
-      this.state.channel!.id,
-      6,
-      this.state.videos.length,
-      (data: { count: number; videos: Video[] }) => {
-        this.setState({
-          videos: this.state.videos.concat(data.videos),
-          totalNumberOfVideos: data.count,
-        });
-      }
-    );
-  };
+  // fetchVideos = () => {
+  //   VideoService.getAllVideosForChannel(
+  //     this.state.channel!.id,
+  //     6,
+  //     this.state.videos.length,
+  //     (data: { count: number; videos: Video[] }) => {
+  //       this.setState({
+  //         videos: this.state.videos.concat(data.videos),
+  //         totalNumberOfVideos: data.count,
+  //       });
+  //     }
+  //   );
+  // };
 
   fetchScheduledStreams = () => {
-    console.log("fetchin scheduled streams");
     ScheduledStreamService.getFutureScheduledStreamsForChannel(
       this.state.channel!.id,
       (scheduledStreams: ScheduledStream[]) => {
         this.setState({ scheduledStreams });
+      }
+    );
+  };
+
+  fetchPastStreams = () => {
+    ScheduledStreamService.getPastScheduledStreamsForChannel(
+      this.state.channel!.id,
+      (data: { streams: ScheduledStream[]; count: number }) => {
+        this.setState({
+          pastStreams: data.streams,
+          totalNumberOfPastStreams: data.count,
+        });
       }
     );
   };
@@ -514,7 +527,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 admin
                 onEditCallback={this.fetchScheduledStreams}
               />
-              {this.state.videos.length !== 0 && (
+              {this.state.pastStreams.length !== 0 && (
                 <Text
                   size="28px"
                   weight="bold"
@@ -526,17 +539,17 @@ export default class ManageChannelPage extends Component<Props, State> {
                 direction="row"
                 width="100%"
                 wrap
-                justify="between"
+                // justify="between"
+                gap="1.5%"
                 margin={{ top: "10px" }}
-                // gap="5%"
               >
-                {this.state.videos.map((video: Video) => (
-                  <VideoCard
+                {this.state.pastStreams.map((stream: ScheduledStream) => (
+                  <PastScheduledStreamCard
                     width="31.5%"
-                    height="192px"
-                    color="#f2f2f2"
-                    video={video}
-                    // margin="none"
+                    stream={stream}
+                    admin
+                    margin={{ bottom: "medium" }}
+                    onDelete={() => this.fetchPastStreams()}
                   />
                 ))}
               </Box>

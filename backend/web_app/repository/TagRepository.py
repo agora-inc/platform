@@ -24,20 +24,31 @@ class TagRepository:
         return result
 
     def getPopularTags(self, n):
-        # get all tag ids associated with video objects
-        # cursor = self.db.con.cursor()
-        query = "SELECT tag_id FROM VideoTags"
+        query = "SELECT tag_id FROM ScheduledStreamTags"
         result = self.db.run_query(query)
-        # cursor.execute("SELECT tag_id FROM VideoTags")
-        # result = cursor.fetchall()
-        # cursor.close()
 
-        # sort the tag ids according to how many videos each is associated with
-        videoTagIds = [x["tag_id"] for x in result]
-        sortedTagIds = sorted(list(set(videoTagIds)), key=lambda x: -videoTagIds.count(x))
+        # sort the tag ids according to how many talks each is associated with
+        tagIds = [x["tag_id"] for x in result]
+        sortedTagIds = sorted(list(set(tagIds)), key=lambda x: -tagIds.count(x))
 
         # return the 5 most popular tag ids
         return [self.getTagById(id) for id in sortedTagIds] if len(sortedTagIds) <= n else [self.getTagById(id) for id in sortedTagIds[:n]]
+
+    # def getPopularTags(self, n):
+    #     # get all tag ids associated with video objects
+    #     # cursor = self.db.con.cursor()
+    #     query = "SELECT tag_id FROM VideoTags"
+    #     result = self.db.run_query(query)
+    #     # cursor.execute("SELECT tag_id FROM VideoTags")
+    #     # result = cursor.fetchall()
+    #     # cursor.close()
+
+    #     # sort the tag ids according to how many videos each is associated with
+    #     videoTagIds = [x["tag_id"] for x in result]
+    #     sortedTagIds = sorted(list(set(videoTagIds)), key=lambda x: -videoTagIds.count(x))
+
+    #     # return the 5 most popular tag ids
+    #     return [self.getTagById(id) for id in sortedTagIds] if len(sortedTagIds) <= n else [self.getTagById(id) for id in sortedTagIds[:n]]
 
 
     def addTag(self, name):

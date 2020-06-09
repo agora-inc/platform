@@ -1,26 +1,29 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer } from "grommet";
+import { Box, Text, Button, Layer, TextInput } from "grommet";
 import {
   ScheduledStream,
   ScheduledStreamService,
 } from "../../Services/ScheduledStreamService";
-import { User } from "../../Services/UserService";
 import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
+import { default as CoreButton } from "../Core/Button";
 import Identicon from "react-identicons";
-import AddToCalendarButtons from "./AddToCalendarButtons";
 import "../../Styles/past-talk-card.css";
 
 interface Props {
   stream: ScheduledStream;
+  admin?: boolean;
   height?: any;
   width?: any;
+  margin?: any;
+  onDelete?: any;
 }
 
 interface State {
   showModal: boolean;
   showShadow: boolean;
   registered: boolean;
+  showLinkInput: boolean;
 }
 
 export default class PastScheduledStreamCard extends Component<Props, State> {
@@ -30,6 +33,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
       showModal: false,
       showShadow: false,
       registered: false,
+      showLinkInput: false,
     };
   }
   formatDate = (d: string) => {
@@ -40,7 +44,66 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
   };
 
   toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal, showShadow: true });
+    this.setState({
+      showModal: this.state.showLinkInput ? true : !this.state.showModal,
+      showShadow: true,
+    });
+  };
+
+  onDeleteClicked = () => {
+    ScheduledStreamService.deleteScheduledStream(this.props.stream.id, () => {
+      this.props.onDelete();
+    });
+  };
+
+  onSaveRecordingUrlClicked = () => {
+    this.setState({ showLinkInput: false });
+  };
+
+  getButtons = () => {
+    if (this.props.admin) {
+      return (
+        <Box gap="xsmall">
+          <Button
+            size="large"
+            label="Link recording"
+            color={this.props.stream.channel_colour}
+            primary
+            onClick={() =>
+              this.setState({
+                showLinkInput: !this.state.showLinkInput,
+                showModal: true,
+              })
+            }
+          />
+          <Button
+            size="large"
+            label="Delete"
+            primary
+            color="#FF4040"
+            onClick={this.onDeleteClicked}
+          />
+        </Box>
+      );
+    } else if (this.props.stream.recording_link) {
+      return (
+        <a
+          href={this.props.stream.recording_link}
+          target="_blank"
+          style={{ width: "100%" }}
+        >
+          <Button
+            primary
+            color={this.props.stream.channel_colour}
+            label="Watch talk"
+            size="large"
+            style={{ width: "100%" }}
+          ></Button>
+        </a>
+      );
+    } else {
+      return;
+    }
   };
 
   render() {
@@ -52,7 +115,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
         onClick={this.toggleModal}
         focusIndicator={false}
         style={{ position: "relative" }}
-        margin={{ bottom: "small" }}
+        margin={this.props.margin ? this.props.margin : { bottom: "small" }}
       >
         <Box
           onMouseEnter={() => this.setState({ showShadow: true })}
@@ -157,6 +220,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
               this.toggleModal();
               this.setState({ showShadow: false });
             }}
+            onClick={(e) => e.stopPropagation()}
             modal
             responsive
             animation="fadeIn"
@@ -223,7 +287,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
               <Box
                 gap="xsmall"
                 justify="end"
-                style={{ minHeight: "40%", maxHeight: "60%" }}
+                style={{ height: "40%", position: "relative" }}
               >
                 <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
                   {this.props.stream.description}
@@ -249,24 +313,35 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
                     {timeStr}
                   </Text>
                 </Text>
-                {this.props.stream.recording_link && (
-                  <a
-                    href={this.props.stream.recording_link}
-                    target="_blank"
-                    style={{ width: "100%" }}
+                {this.state.showLinkInput && (
+                  <Box
+                    direction="row"
+                    width="100%"
+                    height="45px"
+                    background="#f5f5f5"
+                    round="xsmall"
+                    pad="xsmall"
+                    justify="center"
+                    align="center"
+                    gap="xsmall"
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                    }}
                   >
-                    <Button
-                      primary
-                      color={this.props.stream.channel_colour}
-                      label="Watch talk"
-                      size="large"
-                      style={{ width: "100%" }}
-                    ></Button>
-                  </a>
+                    <TextInput style={{ height: 32 }} />
+                    <CoreButton
+                      width="25%"
+                      height="32px"
+                      text="save"
+                      onClick={this.onSaveRecordingUrlClicked}
+                    />
+                  </Box>
                 )}
               </Box>
+              {this.getButtons()}
             </Box>
-            {!this.props.stream.recording_link && (
+            {!this.props.stream.recording_link && !this.props.admin && (
               <Box
                 background="#d5d5d5"
                 pad="small"

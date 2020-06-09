@@ -360,10 +360,8 @@ export default class ChannelPage extends Component<Props, State> {
                   {this.state.pastStreams.map((stream: ScheduledStream) => (
                     <PastScheduledStreamCard
                       width="31.5%"
-                      // height="192px"
-                      // color="#f2f2f2"
                       stream={stream}
-                      // margin="none"
+                      margin={{ bottom: "medium" }}
                     />
                   ))}
                 </Box>

@@ -3,34 +3,43 @@ import { Box, Grommet, Heading, Text } from "grommet";
 import { Video, VideoService } from "../Services/VideoService";
 import SmallSelector from "../Components/Core/SmallSelector";
 import VideoCard from "../Components/Streaming/VideoCard";
+import {
+  ScheduledStream,
+  ScheduledStreamService,
+} from "../Services/ScheduledStreamService";
+import PastScheduledStreamCard from "../Components/ScheduledStreams/PastScheduledStreamCard";
 
 interface Props {
   location: { pathname: string };
 }
 
 interface State {
+  talks: ScheduledStream[];
+  totalNumberOfTalks: number;
   tagName: string;
-  videos: Video[];
+  // videos: Video[];
   loading: boolean;
-  totalNumberOfVideos: number;
-  sortBy: string;
+  // totalNumberOfVideos: number;
+  // sortBy: string;
 }
 
 export default class TagPage extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      talks: [],
+      totalNumberOfTalks: 0,
       tagName: this.props.location.pathname.split("/")[2],
-      videos: [],
-      totalNumberOfVideos: 0,
-      sortBy: "date",
+      // videos: [],
+      // totalNumberOfVideos: 0,
+      // sortBy: "date",
       loading: true,
     };
   }
 
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
-    this.fetchVideos();
+    this.fetchTalks();
   }
 
   componentWillUnmount() {
@@ -40,54 +49,62 @@ export default class TagPage extends Component<Props, State> {
   handleScroll = (e: any) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (bottom && this.state.videos.length !== this.state.totalNumberOfVideos) {
-      this.fetchVideos();
+    if (bottom && this.state.talks.length !== this.state.totalNumberOfTalks) {
+      this.fetchTalks();
     }
   };
 
-  fetchVideos = () => {
-    VideoService.getAllVideosWithTag(
+  fetchTalks = () => {
+    ScheduledStreamService.getPastScheduledStreamsForTag(
       this.state.tagName,
-      12,
-      this.state.videos.length,
-      (data: { count: number; videos: Video[] }) => {
-        this.setState({
-          videos: this.state.videos.concat(data.videos),
-          totalNumberOfVideos: data.count,
-          loading: false,
-        });
+      (data: { streams: ScheduledStream[]; count: number }) => {
+        this.setState({ talks: data.streams, totalNumberOfTalks: data.count });
       }
     );
   };
 
-  compareVideosByDate = (a: Video, b: Video) => {
-    if (a.date < b.date) {
-      return 1;
-    }
-    if (a.date > b.date) {
-      return -1;
-    }
-    return 0;
-  };
+  // fetchVideos = () => {
+  //   VideoService.getAllVideosWithTag(
+  //     this.state.tagName,
+  //     12,
+  //     this.state.videos.length,
+  //     (data: { count: number; videos: Video[] }) => {
+  //       this.setState({
+  //         videos: this.state.videos.concat(data.videos),
+  //         totalNumberOfVideos: data.count,
+  //         loading: false,
+  //       });
+  //     }
+  //   );
+  // };
 
-  compareVideosByViews = (a: Video, b: Video) => {
-    if (a.views < b.views) {
-      return 1;
-    }
-    if (a.views > b.views) {
-      return -1;
-    }
-    return 0;
-  };
+  // compareVideosByDate = (a: Video, b: Video) => {
+  //   if (a.date < b.date) {
+  //     return 1;
+  //   }
+  //   if (a.date > b.date) {
+  //     return -1;
+  //   }
+  //   return 0;
+  // };
 
-  sortVideos = () => {
-    return this.state.sortBy === "date"
-      ? this.state.videos.sort(this.compareVideosByDate)
-      : this.state.videos.sort(this.compareVideosByViews);
-  };
+  // compareVideosByViews = (a: Video, b: Video) => {
+  //   if (a.views < b.views) {
+  //     return 1;
+  //   }
+  //   if (a.views > b.views) {
+  //     return -1;
+  //   }
+  //   return 0;
+  // };
+
+  // sortVideos = () => {
+  //   return this.state.sortBy === "date"
+  //     ? this.state.videos.sort(this.compareVideosByDate)
+  //     : this.state.videos.sort(this.compareVideosByViews);
+  // };
 
   render() {
-    console.log(this.state.videos);
     return (
       <Box margin={{ top: "10%" }} align="center">
         <Box width="82.5%">
@@ -100,7 +117,7 @@ export default class TagPage extends Component<Props, State> {
           >
             <Box direction="row" gap="small" align="center">
               <Heading size="3rem" margin="none">
-                Videos tagged under
+                Past talks tagged under
               </Heading>
               <Box
                 background="white"
@@ -115,7 +132,7 @@ export default class TagPage extends Component<Props, State> {
                 </Text>
               </Box>
             </Box>
-            <Box direction="row" align="center" gap="xsmall">
+            {/* <Box direction="row" align="center" gap="xsmall">
               <Text color="black" weight="bold">
                 Sort by
               </Text>
@@ -124,22 +141,17 @@ export default class TagPage extends Component<Props, State> {
                   this.setState({ sortBy: sortBy.toLowerCase() })
                 }
               />
-            </Box>
+            </Box> */}
           </Box>
           <Box
             direction="row"
-            gap="medium"
+            gap="1.5%"
             wrap
             // justify="center"
             margin={{ top: "10px" }}
           >
-            {this.sortVideos().map((video: Video, index: number) => (
-              <VideoCard
-                width="278px"
-                height="192px"
-                color="accent-2"
-                video={video}
-              />
+            {this.state.talks.map((talk: ScheduledStream) => (
+              <PastScheduledStreamCard width="31.5%" stream={talk} />
             ))}
           </Box>
         </Box>
