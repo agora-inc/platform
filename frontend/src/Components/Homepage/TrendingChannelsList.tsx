@@ -21,7 +21,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
   }
 
   componentWillMount() {
-    ChannelService.getAllChannels(6, 10, (channels: Channel[]) => {
+    ChannelService.getAllChannels(6, 0, (channels: Channel[]) => {
       this.setState({
         channels: channels,
         loading: false,
