@@ -156,7 +156,7 @@ export default class UserManager extends Component<{}, State> {
         <Text weight="bold" color="black" margin="small">
           Account
         </Text>
-        <Menu.Item
+        {/* <Menu.Item
           onClick={this.toggleDropdown}
           key="1"
           style={{
@@ -170,7 +170,7 @@ export default class UserManager extends Component<{}, State> {
           }}
         >
           <PreferenceButton />
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item
           key="2"
           onClick={() => {

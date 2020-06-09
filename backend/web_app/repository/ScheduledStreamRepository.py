@@ -95,6 +95,11 @@ class ScheduledStreamRepository:
 
         return self.getScheduledStreamById(streamId)
 
+    def addRecordingLink(self, streamId, link):
+        query = f'UPDATE ScheduledStreams SET recording_link="{link}" WHERE id = {streamId}'
+        self.db.run_query(query)
+        return self.getScheduledStreamById(streamId)
+
     def deleteScheduledStream(self, streamId):
         query = f'DELETE FROM ScheduledStreams where id = {streamId}'
         self.db.run_query(query)

@@ -24,6 +24,7 @@ interface State {
   showShadow: boolean;
   registered: boolean;
   showLinkInput: boolean;
+  recordingLink: string;
 }
 
 export default class PastScheduledStreamCard extends Component<Props, State> {
@@ -34,6 +35,9 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
       showShadow: false,
       registered: false,
       showLinkInput: false,
+      recordingLink: this.props.stream.recording_link
+        ? this.props.stream.recording_link
+        : "",
     };
   }
   formatDate = (d: string) => {
@@ -57,7 +61,13 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
   };
 
   onSaveRecordingUrlClicked = () => {
-    this.setState({ showLinkInput: false });
+    ScheduledStreamService.addRecordingLink(
+      this.props.stream.id,
+      this.state.recordingLink,
+      () => {
+        this.setState({ showLinkInput: false });
+      }
+    );
   };
 
   getButtons = () => {
@@ -329,7 +339,13 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
                       bottom: 0,
                     }}
                   >
-                    <TextInput style={{ height: 32 }} />
+                    <TextInput
+                      style={{ height: 32 }}
+                      value={this.state.recordingLink}
+                      onChange={(e) => {
+                        this.setState({ recordingLink: e.target.value });
+                      }}
+                    />
                     <CoreButton
                       width="25%"
                       height="32px"

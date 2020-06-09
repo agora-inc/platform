@@ -238,6 +238,13 @@ def deleteScheduledStream():
     params = request.json
     return jsonify(scheduledStreams.deleteScheduledStream(params["id"]))
 
+@app.route('/streams/scheduled/add-recording', methods=["OPTIONS", "POST"])
+def addRecordingLink():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    return jsonify(scheduledStreams.addRecordingLink(params["streamId"], params["link"]))
+
 @app.route('/streams/scheduled/isregistered', methods=["GET"])
 def isRegisteredForScheduledStream():
     streamId = int(request.args.get("streamId"))

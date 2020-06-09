@@ -13,10 +13,14 @@ class SearchRepository:
             return self.searchChannels(searchString)
         elif objectType == "stream":
             return self.searchStreams(searchString)
-        elif objectType == "video":
-            return self.searchVideos(searchString)
-        elif objectType == "scheduledStream":
-            return self.searchScheduledStreams(searchString)
+        elif objectType == "upcoming":
+            return self.searchUpcoming(searchString)
+        elif objectType == "past":
+            return self.searchPast(searchString)
+        # elif objectType == "video":
+        #     return self.searchVideos(searchString)
+        # elif objectType == "scheduledStream":
+        #     return self.searchScheduledStreams(searchString)
         elif objectType == "tag":
             return self.searchTags(searchString)
         else:
@@ -76,11 +80,25 @@ class SearchRepository:
 
         return scheduledStreams
 
+    def searchUpcoming(self, searchString):
+        query = f'SELECT * FROM ScheduledStreams WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND date > CURRENT_TIMESTAMP'
+        scheduledStreams = self.db.run_query(query)
+
+        for stream in scheduledStreams:
+            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+
+        return scheduledStreams
+
+    def searchPast(self, searchString):
+        query = f'SELECT * FROM ScheduledStreams WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND end_date < CURRENT_TIMESTAMP'
+        scheduledStreams = self.db.run_query(query)
+
+        for stream in scheduledStreams:
+            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+
+        return scheduledStreams
+
     def searchTags(self, searchString):
-        # cursor = self.db.con.cursor()
-        # cursor.execute(f'SELECT * FROM Tags WHERE name LIKE "%{searchString}%"')
-        # result = cursor.fetchall()
-        # cursor.close()
         query = f'SELECT * FROM Tags WHERE name LIKE "%{searchString}%"'
         result = self.db.run_query(query)
         return result

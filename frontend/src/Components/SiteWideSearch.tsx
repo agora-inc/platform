@@ -17,8 +17,8 @@ interface State {
   results: {
     channel: Channel[];
     stream: Stream[];
-    video: Video[];
-    scheduledStream: ScheduledStream[];
+    past: ScheduledStream[];
+    upcoming: ScheduledStream[];
     tag: Tag[];
   };
 }
@@ -44,8 +44,8 @@ export default class SiteWideSearch extends Component<{}, State> {
     return {
       channel: [],
       stream: [],
-      video: [],
-      scheduledStream: [],
+      past: [],
+      upcoming: [],
       tag: [],
     };
   };
@@ -71,13 +71,13 @@ export default class SiteWideSearch extends Component<{}, State> {
 
     this.setState({ searchString, loading: true }, () => {
       SearchService.search(
-        ["channel", "stream", "video", "scheduledStream", "tag"],
+        ["channel", "stream", "upcoming", "past", "tag"],
         this.state.searchString,
         (results: {
           channel: Channel[];
           stream: Stream[];
-          video: Video[];
-          scheduledStream: ScheduledStream[];
+          upcoming: ScheduledStream[];
+          past: ScheduledStream[];
           tag: Tag[];
         }) => {
           this.setState({ results, loading: false });
@@ -202,7 +202,7 @@ export default class SiteWideSearch extends Component<{}, State> {
             </Box>
           </Box>
         )}
-        {this.state.results.video.length !== 0 && (
+        {this.state.results.past.length !== 0 && (
           <Box>
             <Box
               background="#f5f5f5"
@@ -214,15 +214,15 @@ export default class SiteWideSearch extends Component<{}, State> {
               }}
             >
               <Text weight="bold" size="14px">
-                Previous streams
+                Previous talks
               </Text>
             </Box>
             <Box style={{ maxHeight: 125, overflowY: "scroll" }}>
-              {this.state.results.video.map((video: Video) => (
+              {this.state.results.past.map((talk: ScheduledStream) => (
                 <Link
                   to={{
-                    pathname: `/video/${video.id}`,
-                    state: { video },
+                    pathname: "/",
+                    // state: {  },
                   }}
                   style={{ textDecoration: "none" }}
                 >
@@ -243,27 +243,27 @@ export default class SiteWideSearch extends Component<{}, State> {
                         round="7.5px"
                         overflow="hidden"
                       >
-                        {!video.has_avatar && (
-                          <Identicon string={video.channel_name} size={15} />
+                        {!talk.has_avatar && (
+                          <Identicon string={talk.channel_name} size={15} />
                         )}
-                        {!!video.has_avatar && (
+                        {!!talk.has_avatar && (
                           <img
-                            src={`/images/channel-icons/${video.channel_id}.jpg`}
+                            src={`/images/channel-icons/${talk.channel_id}.jpg`}
                           />
                         )}
                       </Box>
-                      <Text size="14px" color={video.channel_colour}>
-                        {video.channel_name}
+                      <Text size="14px" color={talk.channel_colour}>
+                        {talk.channel_name}
                       </Text>
                     </Box>
-                    <Text color="#656565">{video.name}</Text>
+                    <Text color="#656565">{talk.name}</Text>
                   </Box>
                 </Link>
               ))}
             </Box>
           </Box>
         )}
-        {this.state.results.scheduledStream.length !== 0 && (
+        {this.state.results.upcoming.length !== 0 && (
           <Box>
             <Box
               background="#f5f5f5"
@@ -275,11 +275,11 @@ export default class SiteWideSearch extends Component<{}, State> {
               }}
             >
               <Text weight="bold" size="14px">
-                Upcoming streams
+                Upcoming talks
               </Text>
             </Box>
             <Box style={{ maxHeight: 125, overflowY: "scroll" }}>
-              {this.state.results.scheduledStream.map(
+              {this.state.results.upcoming.map(
                 (scheduledStream: ScheduledStream) => (
                   <Link
                     to={{

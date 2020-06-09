@@ -159,6 +159,21 @@ const deleteScheduledStream = (id: number, callback: any) => {
     });
 };
 
+const addRecordingLink = (id: number, link: string, callback: any) => {
+  axios
+    .post(
+      baseApiUrl + "/streams/scheduled/add-recording",
+      {
+        streamId: id,
+        link: link,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const isRegisteredForScheduledStream = (
   streamId: number,
   userId: number,
@@ -249,6 +264,7 @@ export const ScheduledStreamService = {
   editScheduledStream,
   scheduleStream,
   deleteScheduledStream,
+  addRecordingLink,
   isRegisteredForScheduledStream,
   registerForScheduledStream,
   unRegisterForScheduledStream,
