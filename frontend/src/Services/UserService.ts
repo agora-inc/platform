@@ -11,6 +11,7 @@ const register = (username: string, password: string, callback: any) => {
     .then(function (response) {
       localStorage.setItem("user", JSON.stringify(response.data));
       callback(true);
+      window.location.reload(false);
     })
     .catch(function (error) {
       callback(false);
