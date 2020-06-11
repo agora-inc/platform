@@ -427,7 +427,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 >
                   <Box direction="row" justify="between">
                     <Text weight="bold" size="20px" color="black">
-                      Channel owners
+                      Agora administrators
                     </Text>
                     <AddUsersButton
                       role="owner"
@@ -460,7 +460,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 >
                   <Box direction="row" justify="between">
                     <Text weight="bold" size="20px" color="black">
-                      Channel members
+                      Agora members
                     </Text>
                     <AddUsersButton
                       role="member"
