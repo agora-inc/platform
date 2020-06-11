@@ -194,9 +194,55 @@ const unRegisterForTalk = (talkId: number, userId: number, callback: any) => {
   // });
 };
 
-const getTalksForUser = (userId: number, callback: any) => {
+const getRegisteredTalksForUser = (userId: number, callback: any) => {
   axios
     .get(baseApiUrl + `/talks/registered?userId=${userId}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const saveTalk = (userId: number, talkId: number, callback: any) => {
+  axios
+    .post(
+      baseApiUrl + "/talks/save",
+      {
+        talkId: talkId,
+        userId: userId,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+  // .catch(function (error) {
+  //   callback(false);
+  // });
+};
+
+const unsaveTalk = (userId: number, talkId: number, callback: any) => {
+  axios
+    .post(
+      baseApiUrl + "/talks/unsave",
+      {
+        talkId: talkId,
+        userId: userId,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+  // .catch(function (error) {
+  //   callback(false);
+  // });
+};
+
+const getSavedTalksForUser = (userId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + `/talks/saved?userId=${userId}`, {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then(function (response) {
@@ -226,7 +272,10 @@ export const TalkService = {
   isRegisteredForTalk,
   registerForTalk,
   unRegisterForTalk,
-  getTalksForUser,
+  getRegisteredTalksForUser,
+  saveTalk,
+  unsaveTalk,
+  getSavedTalksForUser,
   getYoutubeThumbnail,
 };
 

@@ -30,9 +30,12 @@ export default class Schedule extends Component<Props, State> {
   }
 
   fetchTalks = () => {
-    TalkService.getTalksForUser(this.state.user.id, (talks: Talk[]) => {
-      this.setState({ talks: talks, loading: false });
-    });
+    TalkService.getRegisteredTalksForUser(
+      this.state.user.id,
+      (talks: Talk[]) => {
+        this.setState({ talks: talks, loading: false });
+      }
+    );
   };
 
   render() {
