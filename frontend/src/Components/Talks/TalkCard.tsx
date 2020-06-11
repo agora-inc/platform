@@ -6,6 +6,7 @@ import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
 import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
+import Countdown from "./Countdown";
 
 interface Props {
   talk: Talk;
@@ -269,6 +270,10 @@ export default class TalkCard extends Component<Props, State> {
                 <Text size="18px" color="black" weight="bold">
                   {this.formatDate(this.props.talk.date)}
                 </Text>
+                <Countdown
+                  targetTime={this.props.talk.date}
+                  link={"https://duckduckgo.com"}
+                />
                 {this.state.registered && (
                   <AddToCalendarButtons
                     startTime={this.props.talk.date}
