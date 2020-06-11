@@ -363,6 +363,7 @@ export default class ChannelPage extends Component<Props, State> {
                       width="31.5%"
                       talk={talk}
                       margin={{ bottom: "medium" }}
+                      user={this.state.user}
                     />
                   ))}
                 </Box>

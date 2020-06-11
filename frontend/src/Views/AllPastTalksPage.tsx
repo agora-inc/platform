@@ -4,11 +4,13 @@ import Loading from "../Components/Core/Loading";
 import SmallSelector from "../Components/Core/SmallSelector";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import { Talk, TalkService } from "../Services/TalkService";
+import { User, UserService } from "../Services/UserService";
 
 interface State {
   talks: Talk[];
   totalNumberOfTalks: number;
   loading: boolean;
+  user: User | null;
   //   sortBy: string;
 }
 
@@ -19,6 +21,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
       talks: [],
       totalNumberOfTalks: 0,
       loading: true,
+      user: UserService.getCurrentUser(),
       //   sortBy: "date",
     };
   }
@@ -126,7 +129,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
             margin={{ top: "20px" }}
           >
             {this.state.talks.map((talk: Talk, index: number) => (
-              <PastTalkCard talk={talk} width="24%" />
+              <PastTalkCard talk={talk} width="24%" user={this.state.user} />
             ))}
           </Box>
         </Box>

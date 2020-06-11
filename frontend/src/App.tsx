@@ -15,6 +15,7 @@ import Preferences from "./Views/Preferences";
 import Schedule from "./Views/Schedule";
 import AllUpcomingTalksPage from "./Views/AllUpcomingTalksPage";
 import AllPastTalksPage from "./Views/AllPastTalksPage";
+import SavedTalksPage from "./Views/SavedTalksPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/streaming" component={Streaming} />
           <Route path="/preferences" component={Preferences} />
           <Route path="/schedule" component={Schedule} />
+          <Route path="/saved" component={SavedTalksPage} />
           <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
           <Route path="*" component={ChannelPage} />

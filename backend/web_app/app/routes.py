@@ -293,6 +293,12 @@ def unsaveTalk():
     talks.unsaveTalk(params["talkId"], params["userId"])
     return jsonify("ok")
 
+@app.route('/talks/issaved', methods=["GET"])
+def isSaved():
+    userId = int(request.args.get("userId"))
+    talkId = int(request.args.get("talkId"))
+    return jsonify({"is_saved": talks.hasUserSavedTalk(talkId, userId)})
+
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------

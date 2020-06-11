@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Heading, Text } from "grommet";
 import TalkCard from "./TalkCard";
+import PastTalkCard from "./PastTalkCard";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { FormNextLink } from "grommet-icons";
 import "../../Styles/home.css";
@@ -10,6 +11,9 @@ import { User } from "../../Services/UserService";
 
 interface Props {
   gridArea?: string;
+  past?: boolean;
+  onSave?: any;
+  onUnsave?: any;
   talks: Talk[];
   title: boolean;
   seeMore: boolean;
@@ -77,9 +81,19 @@ export default class TalkList extends Component<Props> {
           )}
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
-          {this.props.talks.map((talk: Talk) => (
-            <TalkCard talk={talk} user={this.props.user} />
-          ))}
+          {this.props.past &&
+            this.props.talks.map((talk: Talk) => (
+              <PastTalkCard
+                talk={talk}
+                user={this.props.user}
+                onSave={this.props.onSave}
+                onUnsave={this.props.onUnsave}
+              />
+            ))}
+          {!this.props.past &&
+            this.props.talks.map((talk: Talk) => (
+              <TalkCard talk={talk} user={this.props.user} />
+            ))}
         </Box>
       </Box>
     );

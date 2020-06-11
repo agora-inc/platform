@@ -5,14 +5,19 @@ import PastTalkCard from "../Talks/PastTalkCard";
 import Loading from "../Core/Loading";
 import { FormNextLink } from "grommet-icons";
 import { Talk, TalkService } from "../../Services/TalkService";
+import { User } from "../../Services/UserService";
 
 interface State {
   talks: Talk[];
   loading: boolean;
 }
 
-export default class RecentTalksList extends Component<{}, State> {
-  constructor(props: any) {
+interface Props {
+  user: User | null;
+}
+
+export default class RecentTalksList extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       talks: [],
@@ -63,7 +68,7 @@ export default class RecentTalksList extends Component<{}, State> {
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
           {this.state.talks.map((talk: Talk) => (
-            <PastTalkCard talk={talk} />
+            <PastTalkCard talk={talk} user={this.props.user} />
           ))}
         </Box>
       </Box>

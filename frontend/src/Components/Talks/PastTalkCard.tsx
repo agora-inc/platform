@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Button, Layer, TextInput } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
+import { User } from "../../Services/UserService";
 import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
 import { default as CoreButton } from "../Core/Button";
@@ -14,12 +15,15 @@ interface Props {
   width?: any;
   margin?: any;
   onDelete?: any;
+  onSave?: any;
+  onUnsave?: any;
+  user: User | null;
 }
 
 interface State {
   showModal: boolean;
   showShadow: boolean;
-  registered: boolean;
+  saved: boolean;
   showLinkInput: boolean;
   recordingLink: string;
 }
@@ -30,13 +34,29 @@ export default class PastTalkCard extends Component<Props, State> {
     this.state = {
       showModal: false,
       showShadow: false,
-      registered: false,
+      saved: false,
       showLinkInput: false,
       recordingLink: this.props.talk.recording_link
         ? this.props.talk.recording_link
         : "",
     };
   }
+
+  componentWillMount() {
+    this.checkIfSaved();
+  }
+
+  checkIfSaved = () => {
+    this.props.user &&
+      TalkService.isSaved(
+        this.props.user.id,
+        this.props.talk.id,
+        (saved: boolean) => {
+          this.setState({ saved });
+        }
+      );
+  };
+
   formatDate = (d: string) => {
     const date = new Date(d);
     const dateStr = date.toDateString().slice(0, -4);
@@ -67,6 +87,25 @@ export default class PastTalkCard extends Component<Props, State> {
     );
   };
 
+  onSaveTalkClicked = () => {
+    if (!this.props.user) {
+      return;
+    }
+    if (this.state.saved) {
+      TalkService.unsaveTalk(this.props.user.id, this.props.talk.id, () => {
+        this.toggleModal();
+        this.setState({ saved: false });
+        this.props.onUnsave && this.props.onUnsave();
+      });
+    } else {
+      TalkService.saveTalk(this.props.user.id, this.props.talk.id, () => {
+        this.toggleModal();
+        this.setState({ saved: true });
+        this.props.onSave && this.props.onSave();
+      });
+    }
+  };
+
   getButtons = () => {
     if (this.props.admin) {
       return (
@@ -94,19 +133,31 @@ export default class PastTalkCard extends Component<Props, State> {
       );
     } else if (this.props.talk.recording_link) {
       return (
-        <a
-          href={this.props.talk.recording_link}
-          target="_blank"
-          style={{ width: "100%" }}
-        >
-          <Button
-            primary
-            color={this.props.talk.channel_colour}
-            label="Watch talk"
-            size="large"
+        <Box gap="xsmall">
+          <a
+            href={this.props.talk.recording_link}
+            target="_blank"
             style={{ width: "100%" }}
-          ></Button>
-        </a>
+          >
+            <Button
+              primary
+              color={this.props.talk.channel_colour}
+              label="Watch talk"
+              size="large"
+              style={{ width: "100%" }}
+            ></Button>
+          </a>
+          {this.props.user && (
+            <Button
+              onClick={this.onSaveTalkClicked}
+              primary
+              color={this.props.talk.channel_colour}
+              label={this.state.saved ? "Remove from saved" : "Save talk"}
+              size="large"
+              style={{ width: "100%" }}
+            ></Button>
+          )}
+        </Box>
       );
     } else {
       return;

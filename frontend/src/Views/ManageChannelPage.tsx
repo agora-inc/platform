@@ -549,6 +549,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     admin
                     margin={{ bottom: "medium" }}
                     onDelete={() => this.fetchPastTalks()}
+                    user={null}
                   />
                 ))}
               </Box>

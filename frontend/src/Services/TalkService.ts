@@ -250,6 +250,16 @@ const getSavedTalksForUser = (userId: number, callback: any) => {
     });
 };
 
+const isSaved = (userId: number, talkId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + `/talks/issaved?talkId=${talkId}&userId=${userId}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data.is_saved);
+    });
+};
+
 const getYoutubeThumbnail = (url: string | null, id: number) => {
   if (!url || !url.includes("youtube")) {
     // return ArtService.generateRandomArt(150, 350, id);
@@ -276,6 +286,7 @@ export const TalkService = {
   saveTalk,
   unsaveTalk,
   getSavedTalksForUser,
+  isSaved,
   getYoutubeThumbnail,
 };
 

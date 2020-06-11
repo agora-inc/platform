@@ -114,26 +114,48 @@ export default class UserManager extends Component<{}, State> {
           </Text>
         </Box>
         <Menu.Divider />
-        <Link
-          to={{ pathname: "/schedule", state: { user: this.state.user } }}
-          style={{ textDecoration: "none" }}
-        >
-          <Box
-            onClick={this.toggleDropdown}
-            background="#606eeb"
-            round="xsmall"
-            margin="small"
-            pad="xsmall"
-            height="40px"
-            justify="center"
-            align="center"
-            focusIndicator={false}
-            // hoverIndicator="#2433b5"
-            hoverIndicator="#a1aaff"
+        <Box gap="xsmall" pad={{ vertical: "xsmall" }}>
+          <Link
+            to={{ pathname: "/schedule", state: { user: this.state.user } }}
+            style={{ textDecoration: "none" }}
           >
-            <Text>My schedule</Text>
-          </Box>
-        </Link>
+            <Box
+              onClick={this.toggleDropdown}
+              background="#606eeb"
+              round="xsmall"
+              margin={{ horizontal: "small" }}
+              pad="xsmall"
+              height="40px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              // hoverIndicator="#2433b5"
+              hoverIndicator="#a1aaff"
+            >
+              <Text>My schedule</Text>
+            </Box>
+          </Link>
+          <Link
+            to={{ pathname: "/saved", state: { user: this.state.user } }}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              onClick={this.toggleDropdown}
+              background="#606eeb"
+              round="xsmall"
+              margin={{ horizontal: "small" }}
+              pad="xsmall"
+              height="40px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              // hoverIndicator="#2433b5"
+              hoverIndicator="#a1aaff"
+            >
+              <Text>Saved talks</Text>
+            </Box>
+          </Link>
+        </Box>
         <Menu.Divider />
         <Box
           margin="small"
