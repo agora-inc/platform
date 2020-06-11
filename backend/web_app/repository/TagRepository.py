@@ -24,7 +24,7 @@ class TagRepository:
         return result
 
     def getPopularTags(self, n):
-        query = "SELECT tag_id FROM ScheduledStreamTags"
+        query = "SELECT tag_id FROM TalkTags"
         result = self.db.run_query(query)
 
         # sort the tag ids according to how many talks each is associated with
@@ -72,15 +72,15 @@ class TagRepository:
         # self.db.con.commit()
         # cursor.close()
 
-    def tagScheduledStream(self, streamId, tagIds):
-        existingTagIds = [t["id"] for t in self.getTagsOnScheduledStream(streamId)]
+    def tagTalk(self, streamId, tagIds):
+        existingTagIds = [t["id"] for t in self.getTagsOnTalk(streamId)]
         newTagIds = [i for i in tagIds if i not in existingTagIds]
 
         valueStr = ''
         for tagId in newTagIds:
             valueStr += f' ({streamId}, {tagId}),'
 
-        query = 'INSERT INTO ScheduledStreamTags(stream_id, tag_id) VALUES'+valueStr[:-1]
+        query = 'INSERT INTO TalkTags(stream_id, tag_id) VALUES'+valueStr[:-1]
         self.db.run_query(query)
 
     def tagVideo(self, videoId, tagIds):
@@ -104,8 +104,8 @@ class TagRepository:
         result = self.db.run_query(query)
         return result
 
-    def getTagsOnScheduledStream(self, streamId):
-        query = f'SELECT Tags.id, Tags.name FROM Tags INNER JOIN ScheduledStreamTags ON Tags.id = ScheduledStreamTags.tag_id WHERE ScheduledStreamTags.stream_id = {streamId}'
+    def getTagsOnTalk(self, talkId):
+        query = f'SELECT Tags.id, Tags.name FROM Tags INNER JOIN TalkTags ON Tags.id = TalkTags.tag_id WHERE TalkTags.stream_id = {talkId}'
         result = self.db.run_query(query)
         return result
 

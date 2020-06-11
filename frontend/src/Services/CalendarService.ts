@@ -1,4 +1,4 @@
-import { ScheduledStream } from "../Services/ScheduledStreamService";
+import { Talk } from "./TalkService";
 import moment from "moment";
 
 const formatTime = (date: string) => {
@@ -11,13 +11,13 @@ const generateGoogleCalendarLink = (
   endTime: string,
   name: string,
   description: string,
-  streamLink: string
+  talkLink: string
 ) => {
   let link = "https://calendar.google.com/calendar/render";
   link += "?action=TEMPLATE";
   link += "&dates=" + formatTime(startTime);
   link += "/" + formatTime(endTime);
-  link += "&location=" + encodeURIComponent(streamLink);
+  link += "&location=" + encodeURIComponent(talkLink);
   link += "&text=" + encodeURIComponent(name);
   link += "&details=" + encodeURIComponent(description);
 

@@ -6,7 +6,7 @@ import { Dropdown, Menu } from "antd";
 import { Channel } from "../Services/ChannelService";
 import { Stream } from "../Services/StreamService";
 import { Video } from "../Services/VideoService";
-import { ScheduledStream } from "../Services/ScheduledStreamService";
+import { Talk } from "../Services/TalkService";
 import { Tag } from "../Services/TagService";
 import { SearchService } from "../Services/SearchService";
 import Identicon from "react-identicons";
@@ -17,8 +17,8 @@ interface State {
   results: {
     channel: Channel[];
     stream: Stream[];
-    past: ScheduledStream[];
-    upcoming: ScheduledStream[];
+    past: Talk[];
+    upcoming: Talk[];
     tag: Tag[];
   };
 }
@@ -76,8 +76,8 @@ export default class SiteWideSearch extends Component<{}, State> {
         (results: {
           channel: Channel[];
           stream: Stream[];
-          upcoming: ScheduledStream[];
-          past: ScheduledStream[];
+          upcoming: Talk[];
+          past: Talk[];
           tag: Tag[];
         }) => {
           this.setState({ results, loading: false });
@@ -218,7 +218,7 @@ export default class SiteWideSearch extends Component<{}, State> {
               </Text>
             </Box>
             <Box style={{ maxHeight: 125, overflowY: "scroll" }}>
-              {this.state.results.past.map((talk: ScheduledStream) => (
+              {this.state.results.past.map((talk: Talk) => (
                 <Link
                   to={{
                     pathname: "/",
@@ -279,56 +279,48 @@ export default class SiteWideSearch extends Component<{}, State> {
               </Text>
             </Box>
             <Box style={{ maxHeight: 125, overflowY: "scroll" }}>
-              {this.state.results.upcoming.map(
-                (scheduledStream: ScheduledStream) => (
-                  <Link
-                    to={{
-                      pathname: `/`,
-                      //   state: { video },
+              {this.state.results.upcoming.map((talk: Talk) => (
+                <Link
+                  to={{
+                    pathname: `/`,
+                    //   state: { video },
+                  }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    onClick={this.onSelect}
+                    width="100%"
+                    pad="xsmall"
+                    focusIndicator={false}
+                    hoverIndicator={true}
+                    style={{
+                      borderTop: "1px solid #d2d2d2",
                     }}
-                    style={{ textDecoration: "none" }}
                   >
-                    <Box
-                      onClick={this.onSelect}
-                      width="100%"
-                      pad="xsmall"
-                      focusIndicator={false}
-                      hoverIndicator={true}
-                      style={{
-                        borderTop: "1px solid #d2d2d2",
-                      }}
-                    >
-                      <Box direction="row" gap="xsmall" align="center">
-                        <Box
-                          height="15px"
-                          width="15px"
-                          round="7.5px"
-                          overflow="hidden"
-                        >
-                          {!scheduledStream.has_avatar && (
-                            <Identicon
-                              string={scheduledStream.channel_name}
-                              size={15}
-                            />
-                          )}
-                          {!!scheduledStream.has_avatar && (
-                            <img
-                              src={`/images/channel-icons/${scheduledStream.channel_id}.jpg`}
-                            />
-                          )}
-                        </Box>
-                        <Text
-                          size="14px"
-                          color={scheduledStream.channel_colour}
-                        >
-                          {scheduledStream.channel_name}
-                        </Text>
+                    <Box direction="row" gap="xsmall" align="center">
+                      <Box
+                        height="15px"
+                        width="15px"
+                        round="7.5px"
+                        overflow="hidden"
+                      >
+                        {!talk.has_avatar && (
+                          <Identicon string={talk.channel_name} size={15} />
+                        )}
+                        {!!talk.has_avatar && (
+                          <img
+                            src={`/images/channel-icons/${talk.channel_id}.jpg`}
+                          />
+                        )}
                       </Box>
-                      <Text color="#656565">{scheduledStream.name}</Text>
+                      <Text size="14px" color={talk.channel_colour}>
+                        {talk.channel_name}
+                      </Text>
                     </Box>
-                  </Link>
-                )
-              )}
+                    <Text color="#656565">{talk.name}</Text>
+                  </Box>
+                </Link>
+              ))}
             </Box>
           </Box>
         )}

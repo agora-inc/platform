@@ -4,23 +4,20 @@ import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Video, VideoService } from "../Services/VideoService";
 import { Channel, ChannelService } from "../Services/ChannelService";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../Services/TalkService";
 import Loading from "../Components/Core/Loading";
 import StreamNowButton from "../Components/Streaming/StreamNowButton";
-import NewScheduleStreamButton from "../Components/ScheduledStreams/NewScheduleStreamButton";
+import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
 import Identicon from "react-identicons";
 import ColorPicker from "../Components/Channel/ColorPicker";
-import ChannelPageScheduledStreamList from "../Components/Channel/ChannelPageScheduledStreamList";
+import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
 import AddUsersButton from "../Components/Channel/AddUsersButton";
 import VideoCard from "../Components/Streaming/VideoCard";
 import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import { StreamService } from "../Services/StreamService";
-import PastScheduledStreamCard from "../Components/ScheduledStreams/PastScheduledStreamCard";
+import PastTalkCard from "../Components/Talks/PastTalkCard";
 
 interface Props {
   location: any;
@@ -40,9 +37,9 @@ interface State {
   followers: User[];
   // videos: Video[];
   // totalNumberOfVideos: number;
-  scheduledStreams: ScheduledStream[];
-  pastStreams: ScheduledStream[];
-  totalNumberOfPastStreams: number;
+  talks: Talk[];
+  pastStreams: Talk[];
+  totalNumberOfTalks: number;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -61,9 +58,9 @@ export default class ManageChannelPage extends Component<Props, State> {
       followers: [],
       // videos: [],
       // totalNumberOfVideos: 0,
-      scheduledStreams: [],
+      talks: [],
       pastStreams: [],
-      totalNumberOfPastStreams: 0,
+      totalNumberOfTalks: 0,
     };
   }
 
@@ -89,9 +86,9 @@ export default class ManageChannelPage extends Component<Props, State> {
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
     if (
       bottom &&
-      this.state.pastStreams.length !== this.state.totalNumberOfPastStreams
+      this.state.pastStreams.length !== this.state.totalNumberOfTalks
     ) {
-      this.fetchPastStreams();
+      this.fetchPastTalks();
     }
   };
 
@@ -146,8 +143,8 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchMembers();
     this.fetchFollowers();
     // this.fetchVideos();
-    this.fetchPastStreams();
-    this.fetchScheduledStreams();
+    this.fetchPastTalks();
+    this.fetchTalks();
   };
 
   fetchFollowerCount = () => {
@@ -212,22 +209,22 @@ export default class ManageChannelPage extends Component<Props, State> {
   //   );
   // };
 
-  fetchScheduledStreams = () => {
-    ScheduledStreamService.getFutureScheduledStreamsForChannel(
+  fetchTalks = () => {
+    TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
-      (scheduledStreams: ScheduledStream[]) => {
-        this.setState({ scheduledStreams });
+      (talks: Talk[]) => {
+        this.setState({ talks });
       }
     );
   };
 
-  fetchPastStreams = () => {
-    ScheduledStreamService.getPastScheduledStreamsForChannel(
+  fetchPastTalks = () => {
+    TalkService.getPastTalksForChannel(
       this.state.channel!.id,
-      (data: { streams: ScheduledStream[]; count: number }) => {
+      (data: { talks: Talk[]; count: number }) => {
         this.setState({
-          pastStreams: data.streams,
-          totalNumberOfPastStreams: data.count,
+          pastStreams: data.talks,
+          totalNumberOfTalks: data.count,
         });
       }
     );
@@ -282,10 +279,10 @@ export default class ManageChannelPage extends Component<Props, State> {
             <Box width="75%" align="start">
               <Box direction="row" gap="small">
                 {/* <StreamNowButton margin="none" channel={this.state.channel} /> */}
-                <NewScheduleStreamButton
+                <ScheduleTalkButton
                   margin="none"
                   channel={this.state.channel}
-                  onCreatedCallback={this.fetchScheduledStreams}
+                  onCreatedCallback={this.fetchTalks}
                 />
               </Box>
               <Box
@@ -514,7 +511,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
               </Box>
-              {this.state.scheduledStreams.length !== 0 && (
+              {this.state.talks.length !== 0 && (
                 <Text
                   size="28px"
                   weight="bold"
@@ -522,12 +519,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                   margin={{ top: "40px", bottom: "10px" }}
                 >{`Your upcoming talks`}</Text>
               )}
-              <ChannelPageScheduledStreamList
-                scheduledStreams={this.state.scheduledStreams}
+              <ChannelPageTalkList
+                talks={this.state.talks}
                 channelId={this.state.channel!.id}
                 user={null}
                 admin
-                onEditCallback={this.fetchScheduledStreams}
+                onEditCallback={this.fetchTalks}
               />
               {this.state.pastStreams.length !== 0 && (
                 <Text
@@ -545,13 +542,13 @@ export default class ManageChannelPage extends Component<Props, State> {
                 gap="1.5%"
                 margin={{ top: "10px" }}
               >
-                {this.state.pastStreams.map((stream: ScheduledStream) => (
-                  <PastScheduledStreamCard
+                {this.state.pastStreams.map((talk: Talk) => (
+                  <PastTalkCard
                     width="31.5%"
-                    stream={stream}
+                    talk={talk}
                     admin
                     margin={{ bottom: "medium" }}
-                    onDelete={() => this.fetchPastStreams()}
+                    onDelete={() => this.fetchPastTalks()}
                   />
                 ))}
               </Box>

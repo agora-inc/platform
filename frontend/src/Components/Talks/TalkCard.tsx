@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { Box, Text, Button, Layer } from "grommet";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../../Services/TalkService";
 import { User } from "../../Services/UserService";
 import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
@@ -11,7 +8,7 @@ import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
 
 interface Props {
-  stream: ScheduledStream;
+  talk: Talk;
   user: User | null;
   width?: string;
 }
@@ -22,7 +19,7 @@ interface State {
   registered: boolean;
 }
 
-export default class ScheduledStreamCard extends Component<Props, State> {
+export default class TalkCard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -48,8 +45,8 @@ export default class ScheduledStreamCard extends Component<Props, State> {
 
   checkIfRegistered = () => {
     this.props.user &&
-      ScheduledStreamService.isRegisteredForScheduledStream(
-        this.props.stream.id,
+      TalkService.isRegisteredForTalk(
+        this.props.talk.id,
         this.props.user.id,
         (registered: boolean) => {
           this.setState({ registered });
@@ -59,8 +56,8 @@ export default class ScheduledStreamCard extends Component<Props, State> {
 
   register = () => {
     this.props.user &&
-      ScheduledStreamService.registerForScheduledStream(
-        this.props.stream.id,
+      TalkService.registerForTalk(
+        this.props.talk.id,
         this.props.user.id,
         () => {
           // this.toggleModal();
@@ -74,8 +71,8 @@ export default class ScheduledStreamCard extends Component<Props, State> {
 
   unregister = () => {
     this.props.user &&
-      ScheduledStreamService.unRegisterForScheduledStream(
-        this.props.stream.id,
+      TalkService.unRegisterForTalk(
+        this.props.talk.id,
         this.props.user.id,
         () => {
           // this.toggleModal();
@@ -88,7 +85,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
   };
 
   render() {
-    console.log(this.props.stream);
+    console.log(this.props.talk);
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
@@ -130,24 +127,21 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 background="#efeff1"
                 overflow="hidden"
               >
-                {!this.props.stream.has_avatar && (
-                  <Identicon
-                    string={this.props.stream.channel_name}
-                    size={15}
-                  />
+                {!this.props.talk.has_avatar && (
+                  <Identicon string={this.props.talk.channel_name} size={15} />
                 )}
-                {!!this.props.stream.has_avatar && (
+                {!!this.props.talk.has_avatar && (
                   <img
-                    src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
+                    src={`/images/channel-icons/${this.props.talk.channel_id}.jpg`}
                   />
                 )}
               </Box>
               <Text
                 weight="bold"
                 size="18px"
-                color={this.props.stream.channel_colour}
+                color={this.props.talk.channel_colour}
               >
-                {this.props.stream.channel_name}
+                {this.props.talk.channel_name}
               </Text>
             </Box>
             <Text
@@ -160,7 +154,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 textOverflow: "ellipsis",
               }}
             >
-              {this.props.stream.name}
+              {this.props.talk.name}
             </Text>
           </Box>
           <Box gap="xsmall">
@@ -169,10 +163,10 @@ export default class ScheduledStreamCard extends Component<Props, State> {
               color="black"
               style={{ maxHeight: 150, overflow: "scroll" }}
             >
-              {this.props.stream.description}
+              {this.props.talk.description}
             </Text>
             <Text size="18px" color="black" weight="bold">
-              {this.formatDate(this.props.stream.date)}
+              {this.formatDate(this.props.talk.date)}
             </Text>
           </Box>
         </Box>
@@ -182,7 +176,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
             width="100%"
             round="xsmall"
             style={{ zIndex: -1, position: "absolute", top: 8, left: 8 }}
-            background={this.props.stream.channel_colour}
+            background={this.props.talk.channel_colour}
           ></Box>
         )}
         {this.state.showModal && (
@@ -224,24 +218,24 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                     background="#efeff1"
                     overflow="hidden"
                   >
-                    {!this.props.stream.has_avatar && (
+                    {!this.props.talk.has_avatar && (
                       <Identicon
-                        string={this.props.stream.channel_name}
+                        string={this.props.talk.channel_name}
                         size={15}
                       />
                     )}
-                    {!!this.props.stream.has_avatar && (
+                    {!!this.props.talk.has_avatar && (
                       <img
-                        src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
+                        src={`/images/channel-icons/${this.props.talk.channel_id}.jpg`}
                       />
                     )}
                   </Box>
                   <Text
                     weight="bold"
                     size="22px"
-                    color={this.props.stream.channel_colour}
+                    color={this.props.talk.channel_colour}
                   >
-                    {this.props.stream.channel_name}
+                    {this.props.talk.channel_name}
                   </Text>
                 </Box>
                 <Text
@@ -250,7 +244,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                   color="black"
                   style={{ overflowY: "scroll" }}
                 >
-                  {this.props.stream.name}
+                  {this.props.talk.name}
                 </Text>
               </Box>
               <Box
@@ -259,11 +253,11 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                 style={{ minHeight: "40%", maxHeight: "60%" }}
               >
                 <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
-                  {this.props.stream.description}
+                  {this.props.talk.description}
                 </Text>
-                {this.props.stream.tags.length !== 0 && (
+                {this.props.talk.tags.length !== 0 && (
                   <Box direction="row" gap="xsmall" wrap>
-                    {this.props.stream.tags.map((tag: Tag) => (
+                    {this.props.talk.tags.map((tag: Tag) => (
                       <TagComponent
                         tagName={tag.name}
                         width="80px"
@@ -273,15 +267,15 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                   </Box>
                 )}
                 <Text size="18px" color="black" weight="bold">
-                  {this.formatDate(this.props.stream.date)}
+                  {this.formatDate(this.props.talk.date)}
                 </Text>
                 {this.state.registered && (
                   <AddToCalendarButtons
-                    startTime={this.props.stream.date}
-                    endTime={this.props.stream.end_date}
-                    name={this.props.stream.name}
-                    description={this.props.stream.description}
-                    link={this.props.stream.link}
+                    startTime={this.props.talk.date}
+                    endTime={this.props.talk.end_date}
+                    name={this.props.talk.name}
+                    description={this.props.talk.description}
+                    link={this.props.talk.link}
                   />
                 )}
                 <Button
@@ -289,7 +283,7 @@ export default class ScheduledStreamCard extends Component<Props, State> {
                     this.state.registered ? this.unregister : this.register
                   }
                   primary
-                  color={this.props.stream.channel_colour}
+                  color={this.props.talk.channel_colour}
                   disabled={this.props.user === null}
                   label={
                     this.props.user !== null

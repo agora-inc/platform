@@ -2,14 +2,11 @@ import React, { Component } from "react";
 import { Box, Heading, Text, DropButton } from "grommet";
 import Loading from "../Components/Core/Loading";
 import SmallSelector from "../Components/Core/SmallSelector";
-import PastScheduledStreamCard from "../Components/ScheduledStreams/PastScheduledStreamCard";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../Services/ScheduledStreamService";
+import PastTalkCard from "../Components/Talks/PastTalkCard";
+import { Talk, TalkService } from "../Services/TalkService";
 
 interface State {
-  talks: ScheduledStream[];
+  talks: Talk[];
   totalNumberOfTalks: number;
   loading: boolean;
   //   sortBy: string;
@@ -44,12 +41,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
   };
 
   fetchTalks = () => {
-    ScheduledStreamService.getAllPastScheduledStreams(
+    TalkService.getAllPastTalks(
       12,
       this.state.talks.length,
-      (data: { count: number; streams: ScheduledStream[] }) => {
+      (data: { count: number; talks: Talk[] }) => {
         this.setState({
-          talks: this.state.talks.concat(data.streams),
+          talks: this.state.talks.concat(data.talks),
           totalNumberOfTalks: data.count,
           loading: false,
         });
@@ -57,7 +54,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
     );
   };
 
-  compareTalksByDate = (a: ScheduledStream, b: ScheduledStream) => {
+  compareTalksByDate = (a: Talk, b: Talk) => {
     const aDate = new Date(a.date);
     const bDate = new Date(b.date);
     if (aDate < bDate) {
@@ -128,8 +125,8 @@ export default class AllPastTalksPage extends Component<{}, State> {
             // justify="center"
             margin={{ top: "20px" }}
           >
-            {this.state.talks.map((talk: ScheduledStream, index: number) => (
-              <PastScheduledStreamCard stream={talk} width="24%" />
+            {this.state.talks.map((talk: Talk, index: number) => (
+              <PastTalkCard talk={talk} width="24%" />
             ))}
           </Box>
         </Box>

@@ -3,18 +3,15 @@ import { Box, Grommet, Heading, Text } from "grommet";
 import { Video, VideoService } from "../Services/VideoService";
 import SmallSelector from "../Components/Core/SmallSelector";
 import VideoCard from "../Components/Streaming/VideoCard";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../Services/ScheduledStreamService";
-import PastScheduledStreamCard from "../Components/ScheduledStreams/PastScheduledStreamCard";
+import { Talk, TalkService } from "../Services/TalkService";
+import PastTalkCard from "../Components/Talks/PastTalkCard";
 
 interface Props {
   location: { pathname: string };
 }
 
 interface State {
-  talks: ScheduledStream[];
+  talks: Talk[];
   totalNumberOfTalks: number;
   tagName: string;
   // videos: Video[];
@@ -55,10 +52,10 @@ export default class TagPage extends Component<Props, State> {
   };
 
   fetchTalks = () => {
-    ScheduledStreamService.getPastScheduledStreamsForTag(
+    TalkService.getPastTalksForTag(
       this.state.tagName,
-      (data: { streams: ScheduledStream[]; count: number }) => {
-        this.setState({ talks: data.streams, totalNumberOfTalks: data.count });
+      (data: { talks: Talk[]; count: number }) => {
+        this.setState({ talks: data.talks, totalNumberOfTalks: data.count });
       }
     );
   };
@@ -150,8 +147,8 @@ export default class TagPage extends Component<Props, State> {
             // justify="center"
             margin={{ top: "10px" }}
           >
-            {this.state.talks.map((talk: ScheduledStream) => (
-              <PastScheduledStreamCard width="31.5%" stream={talk} />
+            {this.state.talks.map((talk: Talk) => (
+              <PastTalkCard width="31.5%" talk={talk} />
             ))}
           </Box>
         </Box>

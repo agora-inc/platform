@@ -4,10 +4,7 @@ import { Overlay, OverlaySection } from "../Core/Overlay";
 import Button from "../Core/Button";
 import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../../Services/TalkService";
 import TagSelector from "../Core/TagSelector";
 
 interface Props {
@@ -16,7 +13,7 @@ interface Props {
   onFinishedCallback: any;
   onCanceledCallback: any;
   onDeletedCallback?: any;
-  stream?: ScheduledStream;
+  talk?: Talk;
 }
 
 interface State {
@@ -34,20 +31,20 @@ export default class EditTalkModal extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      title: this.props.stream ? this.props.stream.name : "",
-      description: this.props.stream ? this.props.stream.description : "",
-      tags: this.props.stream ? this.props.stream.tags : [],
+      title: this.props.talk ? this.props.talk.name : "",
+      description: this.props.talk ? this.props.talk.description : "",
+      tags: this.props.talk ? this.props.talk.tags : [],
       loading: false,
-      date: this.props.stream
-        ? new Date(this.props.stream.date).toISOString()
+      date: this.props.talk
+        ? new Date(this.props.talk.date).toISOString()
         : new Date().toISOString(),
-      startTime: this.props.stream
-        ? new Date(this.props.stream.date).toTimeString().slice(0, 5)
+      startTime: this.props.talk
+        ? new Date(this.props.talk.date).toTimeString().slice(0, 5)
         : "",
-      endTime: this.props.stream
-        ? new Date(this.props.stream.end_date).toTimeString().slice(0, 5)
+      endTime: this.props.talk
+        ? new Date(this.props.talk.end_date).toTimeString().slice(0, 5)
         : "",
-      link: this.props.stream ? this.props.stream.link : "",
+      link: this.props.talk ? this.props.talk.link : "",
     };
   }
 
@@ -80,16 +77,16 @@ export default class EditTalkModal extends Component<Props, State> {
 
   onFinish = () => {
     const dateTimeStrs = this.combineDateAndTimeStrings();
-    if (this.props.stream) {
-      ScheduledStreamService.editScheduledStream(
-        this.props.stream.id,
+    if (this.props.talk) {
+      TalkService.editTalk(
+        this.props.talk.id,
         this.state.title,
         this.state.description,
         dateTimeStrs[0],
         dateTimeStrs[1],
         this.state.link,
         this.state.tags,
-        (stream: ScheduledStream) => {
+        (talk: Talk) => {
           this.setState(
             {
               loading: false,
@@ -101,7 +98,7 @@ export default class EditTalkModal extends Component<Props, State> {
         }
       );
     } else {
-      ScheduledStreamService.scheduleStream(
+      TalkService.scheduleTalk(
         this.props.channel!.id,
         this.props.channel!.name,
         this.state.title,
@@ -110,7 +107,7 @@ export default class EditTalkModal extends Component<Props, State> {
         dateTimeStrs[1],
         this.state.link,
         this.state.tags,
-        (stream: ScheduledStream) => {
+        (talk: Talk) => {
           this.setState(
             {
               loading: false,
@@ -133,10 +130,10 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   onDeleteClicked = () => {
-    if (!this.props.stream) {
+    if (!this.props.talk) {
       return;
     }
-    ScheduledStreamService.deleteScheduledStream(this.props.stream.id, () => {
+    TalkService.deleteTalk(this.props.talk.id, () => {
       this.props.onDeletedCallback();
     });
   };
@@ -179,7 +176,7 @@ export default class EditTalkModal extends Component<Props, State> {
         width={500}
         height={650}
         visible={this.props.visible}
-        title={this.props.stream ? "Edit talk" : "New talk"}
+        title={this.props.talk ? "Edit talk" : "New talk"}
         submitButtonText="Save"
         onSubmitClick={this.onFinishClicked}
         contentHeight="147vh"
@@ -188,7 +185,7 @@ export default class EditTalkModal extends Component<Props, State> {
         onClickOutside={this.props.onCanceledCallback}
         onEsc={this.props.onCanceledCallback}
         extraButton={
-          this.props.stream ? (
+          this.props.talk ? (
             <Button
               fill="#FF4040"
               width="90px"
@@ -283,7 +280,7 @@ export default class EditTalkModal extends Component<Props, State> {
         </OverlaySection>
         <OverlaySection heading="Add a few relevant tags">
           <TagSelector
-            selected={this.props.stream?.tags}
+            selected={this.props.talk?.tags}
             onSelectedCallback={this.selectTag}
             onDeselectedCallback={this.deselectTag}
             width="100%"

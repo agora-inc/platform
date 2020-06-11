@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../Services/TalkService";
 import { User } from "../Services/UserService";
-import ScheduledStreamList from "../Components/ScheduledStreams/ScheduledStreamList";
+import TalkList from "../Components/Talks/TalkList";
 import Loading from "../Components/Core/Loading";
 
 interface Props {
@@ -15,7 +12,7 @@ interface Props {
 interface State {
   user: User;
   loading: boolean;
-  scheduledStreams: ScheduledStream[];
+  talks: Talk[];
 }
 
 export default class Schedule extends Component<Props, State> {
@@ -24,21 +21,18 @@ export default class Schedule extends Component<Props, State> {
     this.state = {
       user: this.props.location.state.user,
       loading: true,
-      scheduledStreams: [],
+      talks: [],
     };
   }
 
   componentWillMount() {
-    this.fetchScheduledStreams();
+    this.fetchTalks();
   }
 
-  fetchScheduledStreams = () => {
-    ScheduledStreamService.getScheduledStreamsForUser(
-      this.state.user.id,
-      (scheduledStreams: ScheduledStream[]) => {
-        this.setState({ scheduledStreams: scheduledStreams, loading: false });
-      }
-    );
+  fetchTalks = () => {
+    TalkService.getTalksForUser(this.state.user.id, (talks: Talk[]) => {
+      this.setState({ talks: talks, loading: false });
+    });
   };
 
   render() {
@@ -71,7 +65,7 @@ export default class Schedule extends Component<Props, State> {
                 align="center"
                 background="lightgray"
               >
-                <Text weight="bold">{this.state.scheduledStreams.length}</Text>
+                <Text weight="bold">{this.state.talks.length}</Text>
               </Box>
               <Text>Upcoming talks</Text>
             </Box>
@@ -81,10 +75,10 @@ export default class Schedule extends Component<Props, State> {
               <Loading size={50} color="black" />
             </Box>
           )}
-          <ScheduledStreamList
+          <TalkList
             title={false}
             seeMore={false}
-            scheduledStreams={this.state.scheduledStreams}
+            talks={this.state.talks}
             user={this.state.user}
           />
         </Box>

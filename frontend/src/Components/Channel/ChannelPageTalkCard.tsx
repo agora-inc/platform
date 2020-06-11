@@ -2,16 +2,13 @@ import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
 import { User } from "../../Services/UserService";
 import { Tag } from "../../Services/TagService";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../../Services/ScheduledStreamService";
-import EditTalkModal from "../ScheduledStreams/EditTalkModal";
-import AddToCalendarButtons from "../ScheduledStreams/AddToCalendarButtons";
+import { Talk, TalkService } from "../../Services/TalkService";
+import EditTalkModal from "../Talks/EditTalkModal";
+import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
 import { default as TagComponent } from "../Core/Tag";
 
 interface Props {
-  stream: ScheduledStream;
+  talk: Talk;
   user: User | null;
   admin: boolean;
   onEditCallback?: any;
@@ -22,10 +19,7 @@ interface State {
   registered: boolean;
 }
 
-export default class ChannelPageScheduledStreamCard extends Component<
-  Props,
-  State
-> {
+export default class ChannelPageTalkCard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -37,8 +31,8 @@ export default class ChannelPageScheduledStreamCard extends Component<
   checkIfRegistered = () => {
     this.props.user &&
       !this.props.admin &&
-      ScheduledStreamService.isRegisteredForScheduledStream(
-        this.props.stream.id,
+      TalkService.isRegisteredForTalk(
+        this.props.talk.id,
         this.props.user.id,
         (registered: boolean) => {
           this.setState({ registered });
@@ -48,8 +42,8 @@ export default class ChannelPageScheduledStreamCard extends Component<
 
   register = () => {
     this.props.user &&
-      ScheduledStreamService.registerForScheduledStream(
-        this.props.stream.id,
+      TalkService.registerForTalk(
+        this.props.talk.id,
         this.props.user.id,
         () => {
           this.checkIfRegistered();
@@ -59,8 +53,8 @@ export default class ChannelPageScheduledStreamCard extends Component<
 
   unregister = () => {
     this.props.user &&
-      ScheduledStreamService.unRegisterForScheduledStream(
-        this.props.stream.id,
+      TalkService.unRegisterForTalk(
+        this.props.talk.id,
         this.props.user.id,
         () => {
           this.checkIfRegistered();
@@ -111,7 +105,7 @@ export default class ChannelPageScheduledStreamCard extends Component<
           gap="small"
         >
           <Text weight="bold" size="20px" color="black">
-            {this.props.stream.name}
+            {this.props.talk.name}
           </Text>
           <Box gap="small">
             <Text
@@ -119,10 +113,10 @@ export default class ChannelPageScheduledStreamCard extends Component<
               color="black"
               style={{ maxHeight: 150, overflow: "scroll" }}
             >
-              {this.props.stream.description}
+              {this.props.talk.description}
             </Text>
             <Box direction="row" gap="xsmall" wrap>
-              {this.props.stream.tags.map((tag: Tag) => (
+              {this.props.talk.tags.map((tag: Tag) => (
                 <TagComponent
                   tagName={tag.name}
                   width="80px"
@@ -131,15 +125,15 @@ export default class ChannelPageScheduledStreamCard extends Component<
               ))}
             </Box>
             <Text size="18px" color="black" weight="bold">
-              {this.formatDate(this.props.stream.date)}
+              {this.formatDate(this.props.talk.date)}
             </Text>
             {this.state.registered && (
               <AddToCalendarButtons
-                startTime={this.props.stream.date}
-                endTime={this.props.stream.end_date}
-                name={this.props.stream.name}
-                description={this.props.stream.description}
-                link={this.props.stream.link}
+                startTime={this.props.talk.date}
+                endTime={this.props.talk.end_date}
+                name={this.props.talk.name}
+                description={this.props.talk.description}
+                link={this.props.talk.link}
               />
             )}
             <Button
@@ -155,7 +149,7 @@ export default class ChannelPageScheduledStreamCard extends Component<
         <EditTalkModal
           visible={this.state.showModal}
           channel={null}
-          stream={this.props.stream}
+          talk={this.props.talk}
           onFinishedCallback={() => {
             this.toggleModal();
             this.props.onEditCallback();

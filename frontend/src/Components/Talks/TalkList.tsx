@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Heading, Text } from "grommet";
-import ScheduledStreamCard from "./ScheduledStreamCard";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../../Services/ScheduledStreamService";
+import TalkCard from "./TalkCard";
+import { Talk, TalkService } from "../../Services/TalkService";
 import { FormNextLink } from "grommet-icons";
 import "../../Styles/home.css";
 import "../../Styles/see-more-button.css";
@@ -13,7 +10,7 @@ import { User } from "../../Services/UserService";
 
 interface Props {
   gridArea?: string;
-  scheduledStreams: ScheduledStream[];
+  talks: Talk[];
   title: boolean;
   seeMore: boolean;
   user: User | null;
@@ -21,29 +18,29 @@ interface Props {
 
 // interface State {
 //   loading: boolean;
-//   scheduledStreams: ScheduledStream[];
+//   talks: Talk[];
 // }
 
-export default class ScheduledStreamList extends Component<Props> {
+export default class TalkList extends Component<Props> {
   // constructor(props: Props) {
   //   super(props);
   //   this.state = {
   //     loading: true,
-  //     scheduledStreams: [],
+  //     talks: [],
   //   };
   // }
 
   // componentWillMount() {
-  //   this.fetchScheduledStreams();
+  //   this.fetchTalks();
   // }
 
-  // fetchScheduledStreams = () => {
-  //   ScheduledStreamService.getAllScheduledStreams(
+  // fetchTalks = () => {
+  //   TalkService.getAllTalks(
   //     6,
   //     0,
-  //     (scheduledStreams: ScheduledStream[]) => {
-  //       console.log(scheduledStreams);
-  //       this.setState({ scheduledStreams, loading: false });
+  //     (talks: Talk[]) => {
+  //       console.log(talks);
+  //       this.setState({ talks, loading: false });
   //     }
   //   );
   // };
@@ -80,8 +77,8 @@ export default class ScheduledStreamList extends Component<Props> {
           )}
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
-          {this.props.scheduledStreams.map((stream: ScheduledStream) => (
-            <ScheduledStreamCard stream={stream} user={this.props.user} />
+          {this.props.talks.map((talk: Talk) => (
+            <TalkCard talk={talk} user={this.props.user} />
           ))}
         </Box>
       </Box>

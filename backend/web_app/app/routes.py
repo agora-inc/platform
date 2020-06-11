@@ -1,5 +1,5 @@
 from app import app, db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, ScheduledStreamRepository, ChannelRepository, SearchRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository
 from flask import jsonify, request, send_file
 from werkzeug import exceptions
 import os
@@ -8,7 +8,7 @@ users = UserRepository.UserRepository(db=db)
 tags = TagRepository.TagRepository(db=db)
 questions = QandARepository.QandARepository(db=db)
 streams = StreamRepository.StreamRepository(db=db)
-scheduledStreams = ScheduledStreamRepository.ScheduledStreamRepository(db=db)
+talks = TalkRepository.TalkRepository(db=db)
 videos = VideoRepository.VideoRepository(db=db)
 channels = ChannelRepository.ChannelRepository(db=db)
 search = SearchRepository.SearchRepository(db=db)
@@ -185,92 +185,92 @@ def serveThumbnail():
     return send_file(fn, mimetype="image/png")
 
 # --------------------------------------------
-# SCHEDULED STREAM ROUTES
+# TALK ROUTES
 # -------------------------------------------- 
-@app.route('/streams/scheduled/all/future', methods=["GET"])
-def getAllFutureScheduledStreams():
+@app.route('/talks/all/future', methods=["GET"])
+def getAllFutureTalks():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(scheduledStreams.getAllFutureScheduledStreams(limit, offset))
+    return jsonify(talks.getAllFutureTalks(limit, offset))
 
-@app.route('/streams/scheduled/all/past', methods=["GET"])
-def getAllPastScheduledStreams():
+@app.route('/talks/all/past', methods=["GET"])
+def getAllPastTalks():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    data = scheduledStreams.getAllPastScheduledStreams(limit, offset)
-    return jsonify({"streams": data[0],"count": data[1]})
+    data = talks.getAllPastTalks(limit, offset)
+    return jsonify({"talks": data[0],"count": data[1]})
 
-@app.route('/streams/scheduled/channel/future', methods=["GET"])
-def getAllFutureScheduledStreamsForChannel():
+@app.route('/talks/channel/future', methods=["GET"])
+def getAllFutureTalksForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(scheduledStreams.getAllFutureScheduledStreamsForChannel(channelId))
+    return jsonify(talks.getAllFutureTalksForChannel(channelId))
 
-@app.route('/streams/scheduled/channel/past', methods=["GET"])
-def getAllPastScheduledStreamsForChannel():
+@app.route('/talks/channel/past', methods=["GET"])
+def getAllPastTalksForChannel():
     channelId = int(request.args.get("channelId"))
-    data = scheduledStreams.getAllPastScheduledStreamsForChannel(channelId)
-    return jsonify({"streams": data[0], "count": data[1]})
+    data = talks.getAllPastTalksForChannel(channelId)
+    return jsonify({"talks": data[0], "count": data[1]})
 
-@app.route('/streams/scheduled/tag/past', methods=["GET"])
-def getAllPastScheduledStreamsForTag():
+@app.route('/talks/tag/past', methods=["GET"])
+def getAllPastTalksForTag():
     tagName = request.args.get("tagName")
-    data = scheduledStreams.getPastScheduledStreamsForTag(tagName)
-    return jsonify({"streams": data[0], "count": data[1]})
+    data = talks.getPastTalksForTag(tagName)
+    return jsonify({"talks": data[0], "count": data[1]})
 
-@app.route('/streams/scheduled/create', methods=["POST", "OPTIONS"])
-def scheduleStream():
+@app.route('/talks/create', methods=["POST", "OPTIONS"])
+def scheduleTalk():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(scheduledStreams.scheduleStream(params["channelId"], params["channelName"], params["streamName"], params["startDate"], params["endDate"], params["streamDescription"], params["streamLink"], params["streamTags"]))
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"]))
 
-@app.route('/streams/scheduled/edit', methods=["POST", "OPTIONS"])
-def editScheduledStream():
+@app.route('/talks/edit', methods=["POST", "OPTIONS"])
+def editTalk():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(scheduledStreams.editScheduledStream(params["streamId"], params["streamName"], params["startDate"], params["endDate"], params["streamDescription"], params["streamLink"], params["streamTags"]))
+    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"]))
 
-@app.route('/streams/scheduled/delete', methods=["OPTIONS", "POST"])
-def deleteScheduledStream():
+@app.route('/talks/delete', methods=["OPTIONS", "POST"])
+def deleteTalk():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(scheduledStreams.deleteScheduledStream(params["id"]))
+    return jsonify(talks.deleteTalk(params["id"]))
 
-@app.route('/streams/scheduled/add-recording', methods=["OPTIONS", "POST"])
+@app.route('/talks/add-recording', methods=["OPTIONS", "POST"])
 def addRecordingLink():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(scheduledStreams.addRecordingLink(params["streamId"], params["link"]))
+    return jsonify(talks.addRecordingLink(params["talkId"], params["link"]))
 
-@app.route('/streams/scheduled/isregistered', methods=["GET"])
-def isRegisteredForScheduledStream():
-    streamId = int(request.args.get("streamId"))
+@app.route('/talks/isregistered', methods=["GET"])
+def isRegisteredForTalk():
+    talkId = int(request.args.get("talkId"))
     userId = int(request.args.get("userId"))
-    return jsonify({"is_registered": scheduledStreams.isUserRegisteredForScheduledStream(streamId, userId)})
+    return jsonify({"is_registered": talks.isUserRegisteredForTalk(talkId, userId)})
 
-@app.route('/streams/scheduled/register', methods=["POST", "OPTIONS"])
-def registerForScheduledStream():
+@app.route('/talks/register', methods=["POST", "OPTIONS"])
+def registerForTalk():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    scheduledStreams.registerForScheduledStream(params["streamId"], params["userId"])
+    talks.registerForTalk(params["talkId"], params["userId"])
     return jsonify("success")
 
-@app.route('/streams/scheduled/unregister', methods=["POST", "OPTIONS"])
-def unRegisterForScheduledStream():
+@app.route('/talks/unregister', methods=["POST", "OPTIONS"])
+def unRegisterForTalk():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    scheduledStreams.unRegisterForScheduledStream(params["streamId"], params["userId"])
+    talks.unRegisterForTalk(params["talkId"], params["userId"])
     return jsonify("success")
 
-@app.route('/streams/scheduled/foruser', methods=["GET"])
-def getScheduledStreamsForUser():
+@app.route('/talks/foruser', methods=["GET"])
+def getTalksForUser():
     userId = int(request.args.get("userId"))
-    return jsonify(scheduledStreams.getFutureScheduledStreamsForUser(userId))
+    return jsonify(talks.getFutureTalksForUser(userId))
 
 # --------------------------------------------
 # VOD ROUTES

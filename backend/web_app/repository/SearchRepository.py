@@ -19,8 +19,8 @@ class SearchRepository:
             return self.searchPast(searchString)
         # elif objectType == "video":
         #     return self.searchVideos(searchString)
-        # elif objectType == "scheduledStream":
-        #     return self.searchScheduledStreams(searchString)
+        # elif objectType == "talk":
+        #     return self.searchTalks(searchString)
         elif objectType == "tag":
             return self.searchTags(searchString)
         else:
@@ -67,36 +67,36 @@ class SearchRepository:
 
         return videos
 
-    def searchScheduledStreams(self, searchString):
-        # cursor = self.db.con.cursor()
-        # cursor.execute(f'SELECT * FROM ScheduledStreams WHERE name LIKE "%{searchString}%" OR description LIKE "%{searchString}%"')
-        # scheduledStreams = cursor.fetchall()
-        # cursor.close()
-        query = f'SELECT * FROM ScheduledStreams WHERE name LIKE "%{searchString}%" OR description LIKE "%{searchString}%"'
-        scheduledStreams = self.db.run_query(query)
+    # def searchTalks(self, searchString):
+    #     # cursor = self.db.con.cursor()
+    #     # cursor.execute(f'SELECT * FROM Talks WHERE name LIKE "%{searchString}%" OR description LIKE "%{searchString}%"')
+    #     # talks = cursor.fetchall()
+    #     # cursor.close()
+    #     query = f'SELECT * FROM Talks WHERE name LIKE "%{searchString}%" OR description LIKE "%{searchString}%"'
+    #     talks = self.db.run_query(query)
 
-        for stream in scheduledStreams:
-            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+    #     for talk in talks:
+    #         stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
 
-        return scheduledStreams
+    #     return talks
 
     def searchUpcoming(self, searchString):
-        query = f'SELECT * FROM ScheduledStreams WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND date > CURRENT_TIMESTAMP'
-        scheduledStreams = self.db.run_query(query)
+        query = f'SELECT * FROM Talks WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND date > CURRENT_TIMESTAMP'
+        talks = self.db.run_query(query)
 
-        for stream in scheduledStreams:
+        for talk in talks:
             stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
 
-        return scheduledStreams
+        return talks
 
     def searchPast(self, searchString):
-        query = f'SELECT * FROM ScheduledStreams WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND end_date < CURRENT_TIMESTAMP'
-        scheduledStreams = self.db.run_query(query)
+        query = f'SELECT * FROM Talks WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND end_date < CURRENT_TIMESTAMP'
+        talks = self.db.run_query(query)
 
-        for stream in scheduledStreams:
+        for talk in talks:
             stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
 
-        return scheduledStreams
+        return talks
 
     def searchTags(self, searchString):
         query = f'SELECT * FROM Tags WHERE name LIKE "%{searchString}%"'

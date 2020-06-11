@@ -4,20 +4,17 @@ import { Box, Text, Grid, Sidebar } from "grommet";
 import CustomSideBar from "../Components/Homepage/CustomSideBar";
 import Carousel from "../Components/Homepage/Carousel";
 import PopularTagsBox from "../Components/Homepage/PopularTagsBox";
-import ScheduledStreamList from "../Components/ScheduledStreams/ScheduledStreamList";
+import TalkList from "../Components/Talks/TalkList";
 import RecommendedGrid from "../Components/Homepage/RecommendedGrid";
 import RecentTalksList from "../Components/Homepage/RecentTalksList";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/home.css";
 import { User, UserService } from "../Services/UserService";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../Services/TalkService";
 
 interface State {
   user: User | null;
-  scheduledStreams: ScheduledStream[];
+  talks: Talk[];
 }
 
 export default class Home extends Component<{}, State> {
@@ -25,23 +22,19 @@ export default class Home extends Component<{}, State> {
     super(props);
     this.state = {
       user: UserService.getCurrentUser(),
-      scheduledStreams: [],
+      talks: [],
     };
   }
 
   componentWillMount() {
-    this.fetchScheduledStreams();
+    this.fetchTalks();
   }
 
-  fetchScheduledStreams = () => {
-    ScheduledStreamService.getAllFutureScheduledStreams(
-      6,
-      0,
-      (scheduledStreams: ScheduledStream[]) => {
-        console.log(scheduledStreams);
-        this.setState({ scheduledStreams });
-      }
-    );
+  fetchTalks = () => {
+    TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
+      console.log(talks);
+      this.setState({ talks });
+    });
   };
 
   render() {
@@ -58,8 +51,8 @@ export default class Home extends Component<{}, State> {
           gap="25px"
         >
           <Carousel gridArea="carousel" />
-          <ScheduledStreamList
-            scheduledStreams={this.state.scheduledStreams}
+          <TalkList
+            talks={this.state.talks}
             title
             seeMore
             user={this.state.user}

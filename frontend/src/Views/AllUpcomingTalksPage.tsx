@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import { Box, Heading } from "grommet";
-import ScheduledStreamCard from "../Components/ScheduledStreams/ScheduledStreamCard";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../Services/ScheduledStreamService";
+import TalkCard from "../Components/Talks/TalkCard";
+import { Talk, TalkService } from "../Services/TalkService";
 import { User, UserService } from "../Services/UserService";
 
 interface State {
-  talks: ScheduledStream[];
+  talks: Talk[];
   //   totalNumberOfTalks: number;
   loading: boolean;
   user: User | null;
@@ -45,12 +42,12 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
   //   };
 
   fetchTalks = () => {
-    ScheduledStreamService.getAllFutureScheduledStreams(
+    TalkService.getAllFutureTalks(
       12,
       this.state.talks.length,
-      (streams: ScheduledStream[]) => {
+      (talks: Talk[]) => {
         this.setState({
-          talks: this.state.talks.concat(streams),
+          talks: this.state.talks.concat(talks),
           //   totalNumberOfTalks: data.count,
           loading: false,
         });
@@ -58,7 +55,7 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
     );
   };
 
-  //   compareTalksByDate = (a: ScheduledStream, b: ScheduledStream) => {
+  //   compareTalksByDate = (a: Talk, b: Talk) => {
   //     const aDate = new Date(a.date);
   //     const bDate = new Date(b.date);
   //     if (aDate < bDate) {
@@ -130,12 +127,8 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
             // justify="center"
             margin={{ top: "20px" }}
           >
-            {this.state.talks.map((talk: ScheduledStream) => (
-              <ScheduledStreamCard
-                stream={talk}
-                user={this.state.user}
-                width="24%"
-              />
+            {this.state.talks.map((talk: Talk) => (
+              <TalkCard talk={talk} user={this.state.user} width="24%" />
             ))}
           </Box>
         </Box>

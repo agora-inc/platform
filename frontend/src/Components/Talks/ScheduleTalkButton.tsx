@@ -10,10 +10,7 @@ import {
 } from "grommet";
 import "../../Styles/manage-channel.css";
 import TagSelector from "../Core/TagSelector";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../../Services/TalkService";
 import { Tag } from "../../Services/TagService";
 import { Channel } from "../../Services/ChannelService";
 import Loading from "../Core/Loading";
@@ -30,7 +27,7 @@ interface State {
   showModal: boolean;
 }
 
-export default class NewScheduleStreamButton extends Component<Props, State> {
+export default class ScheduleTalkButton extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {

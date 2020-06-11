@@ -5,17 +5,14 @@ import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Video, VideoService } from "../Services/VideoService";
 import { Stream, StreamService } from "../Services/StreamService";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../Services/TalkService";
 import Identicon from "react-identicons";
 import Loading from "../Components/Core/Loading";
-import ChannelPageScheduledStreamList from "../Components/Channel/ChannelPageScheduledStreamList";
+import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
 import VideoCard from "../Components/Streaming/VideoCard";
 import ChannelLiveNowCard from "../Components/Channel/ChannelLiveNowCard";
 import "../Styles/channel-page.css";
-import PastScheduledStreamCard from "../Components/ScheduledStreams/PastScheduledStreamCard";
+import PastTalkCard from "../Components/Talks/PastTalkCard";
 
 interface Props {
   location: { pathname: string };
@@ -29,8 +26,8 @@ interface State {
   streams: Stream[];
   // videos: Video[];
   // totalNumberOfVideos: number;
-  scheduledStreams: ScheduledStream[];
-  pastStreams: ScheduledStream[];
+  talks: Talk[];
+  pastStreams: Talk[];
   totalNumberOfPastStreams: number;
   followerCount: number;
   // viewCount: number;
@@ -48,7 +45,7 @@ export default class ChannelPage extends Component<Props, State> {
       streams: [],
       // videos: [],
       // totalNumberOfVideos: 0,
-      scheduledStreams: [],
+      talks: [],
       pastStreams: [],
       totalNumberOfPastStreams: 0,
       followerCount: 0,
@@ -74,7 +71,7 @@ export default class ChannelPage extends Component<Props, State> {
       bottom &&
       this.state.pastStreams.length !== this.state.totalNumberOfPastStreams
     ) {
-      this.fetchPastStreams();
+      this.fetchPastTalks();
     }
   };
 
@@ -89,9 +86,9 @@ export default class ChannelPage extends Component<Props, State> {
             { channel: channel, admin: false, loading: false },
             () => {
               this.fetchStreams();
-              this.fetchPastStreams();
+              this.fetchPastTalks();
               // this.fetchVideos();
-              this.fetchScheduledStreams();
+              this.fetchTalks();
               this.fetchFollowerCount();
               // this.fetchViewCount();
             }
@@ -107,9 +104,9 @@ export default class ChannelPage extends Component<Props, State> {
               { channel: channel, admin: res, loading: false },
               () => {
                 this.fetchStreams();
-                this.fetchPastStreams();
+                this.fetchPastTalks();
                 // this.fetchVideos();
-                this.fetchScheduledStreams();
+                this.fetchTalks();
                 this.fetchFollowerCount();
                 // this.fetchViewCount();
                 this.checkIfFollowing();
@@ -162,21 +159,21 @@ export default class ChannelPage extends Component<Props, State> {
   //   );
   // };
 
-  fetchScheduledStreams = () => {
-    ScheduledStreamService.getFutureScheduledStreamsForChannel(
+  fetchTalks = () => {
+    TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
-      (scheduledStreams: ScheduledStream[]) => {
-        this.setState({ scheduledStreams });
+      (talks: Talk[]) => {
+        this.setState({ talks });
       }
     );
   };
 
-  fetchPastStreams = () => {
-    ScheduledStreamService.getPastScheduledStreamsForChannel(
+  fetchPastTalks = () => {
+    TalkService.getPastTalksForChannel(
       this.state.channel!.id,
-      (data: { streams: ScheduledStream[]; count: number }) => {
+      (data: { talks: Talk[]; count: number }) => {
         this.setState({
-          pastStreams: data.streams,
+          pastStreams: data.talks,
           totalNumberOfPastStreams: data.count,
         });
       }
@@ -341,8 +338,8 @@ export default class ChannelPage extends Component<Props, State> {
                   color="black"
                   margin={{ bottom: "10px" }}
                 >{`${this.state.channel?.name}'s upcoming talks`}</Text>
-                <ChannelPageScheduledStreamList
-                  scheduledStreams={this.state.scheduledStreams}
+                <ChannelPageTalkList
+                  talks={this.state.talks}
                   channelId={this.state.channel!.id}
                   user={this.state.user}
                   admin={false}
@@ -361,10 +358,10 @@ export default class ChannelPage extends Component<Props, State> {
                   margin={{ top: "10px" }}
                   // gap="5%"
                 >
-                  {this.state.pastStreams.map((stream: ScheduledStream) => (
-                    <PastScheduledStreamCard
+                  {this.state.pastStreams.map((talk: Talk) => (
+                    <PastTalkCard
                       width="31.5%"
-                      stream={stream}
+                      talk={talk}
                       margin={{ bottom: "medium" }}
                     />
                   ))}

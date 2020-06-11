@@ -1,16 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
-import PastScheduledStreamCard from "../ScheduledStreams/PastScheduledStreamCard";
+import PastTalkCard from "../Talks/PastTalkCard";
 import Loading from "../Core/Loading";
 import { FormNextLink } from "grommet-icons";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../../Services/TalkService";
 
 interface State {
-  talks: ScheduledStream[];
+  talks: Talk[];
   loading: boolean;
 }
 
@@ -28,11 +25,11 @@ export default class RecentTalksList extends Component<{}, State> {
   }
 
   fetchPastTalks = () => {
-    ScheduledStreamService.getAllPastScheduledStreams(
+    TalkService.getAllPastTalks(
       6,
       0,
-      (data: { count: number; streams: ScheduledStream[] }) => {
-        this.setState({ talks: data.streams, loading: false });
+      (data: { count: number; talks: Talk[] }) => {
+        this.setState({ talks: data.talks, loading: false });
       }
     );
   };
@@ -65,8 +62,8 @@ export default class RecentTalksList extends Component<{}, State> {
           </Link>
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
-          {this.state.talks.map((talk: ScheduledStream) => (
-            <PastScheduledStreamCard stream={talk} />
+          {this.state.talks.map((talk: Talk) => (
+            <PastTalkCard talk={talk} />
           ))}
         </Box>
       </Box>

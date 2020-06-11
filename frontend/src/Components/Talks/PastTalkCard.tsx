@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { Box, Text, Button, Layer, TextInput } from "grommet";
-import {
-  ScheduledStream,
-  ScheduledStreamService,
-} from "../../Services/ScheduledStreamService";
+import { Talk, TalkService } from "../../Services/TalkService";
 import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
 import { default as CoreButton } from "../Core/Button";
@@ -11,7 +8,7 @@ import Identicon from "react-identicons";
 import "../../Styles/past-talk-card.css";
 
 interface Props {
-  stream: ScheduledStream;
+  talk: Talk;
   admin?: boolean;
   height?: any;
   width?: any;
@@ -27,7 +24,7 @@ interface State {
   recordingLink: string;
 }
 
-export default class PastScheduledStreamCard extends Component<Props, State> {
+export default class PastTalkCard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -35,8 +32,8 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
       showShadow: false,
       registered: false,
       showLinkInput: false,
-      recordingLink: this.props.stream.recording_link
-        ? this.props.stream.recording_link
+      recordingLink: this.props.talk.recording_link
+        ? this.props.talk.recording_link
         : "",
     };
   }
@@ -55,14 +52,14 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
   };
 
   onDeleteClicked = () => {
-    ScheduledStreamService.deleteScheduledStream(this.props.stream.id, () => {
+    TalkService.deleteTalk(this.props.talk.id, () => {
       this.props.onDelete();
     });
   };
 
   onSaveRecordingUrlClicked = () => {
-    ScheduledStreamService.addRecordingLink(
-      this.props.stream.id,
+    TalkService.addRecordingLink(
+      this.props.talk.id,
       this.state.recordingLink,
       () => {
         this.setState({ showLinkInput: false });
@@ -77,7 +74,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
           <Button
             size="large"
             label="Link recording"
-            color={this.props.stream.channel_colour}
+            color={this.props.talk.channel_colour}
             primary
             onClick={() =>
               this.setState({
@@ -95,16 +92,16 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
           />
         </Box>
       );
-    } else if (this.props.stream.recording_link) {
+    } else if (this.props.talk.recording_link) {
       return (
         <a
-          href={this.props.stream.recording_link}
+          href={this.props.talk.recording_link}
           target="_blank"
           style={{ width: "100%" }}
         >
           <Button
             primary
-            color={this.props.stream.channel_colour}
+            color={this.props.talk.channel_colour}
             label="Watch talk"
             size="large"
             style={{ width: "100%" }}
@@ -117,7 +114,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
   };
 
   render() {
-    let [dateStr, timeStr] = this.formatDate(this.props.stream.date);
+    let [dateStr, timeStr] = this.formatDate(this.props.talk.date);
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
@@ -143,19 +140,20 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
           gap="small"
           style={{ position: "relative" }}
         >
-          {this.props.stream.recording_link && (
+          {this.props.talk.recording_link && (
             <img
-              src={ScheduledStreamService.getYoutubeThumbnail(
-                this.props.stream.recording_link,
-                this.props.stream.id
+              src={TalkService.getYoutubeThumbnail(
+                this.props.talk.recording_link,
+                this.props.talk.id
               )}
               style={{ height: "50%" }}
             />
           )}
-          {!this.props.stream.recording_link && (
+          {!this.props.talk.recording_link && (
             <Box
               height="50%"
-              background={this.props.stream.channel_colour}
+              background={this.props.talk.channel_colour}
+              style={{ opacity: 0.75 }}
             ></Box>
           )}
           <Box height="50%" pad="15px" justify="end">
@@ -174,28 +172,25 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
                 background="#efeff1"
                 overflow="hidden"
               >
-                {!this.props.stream.has_avatar && (
-                  <Identicon
-                    string={this.props.stream.channel_name}
-                    size={15}
-                  />
+                {!this.props.talk.has_avatar && (
+                  <Identicon string={this.props.talk.channel_name} size={15} />
                 )}
-                {!!this.props.stream.has_avatar && (
+                {!!this.props.talk.has_avatar && (
                   <img
-                    src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
+                    src={`/images/channel-icons/${this.props.talk.channel_id}.jpg`}
                   />
                 )}
               </Box>
               <Text
                 weight="bold"
                 size="18px"
-                color={this.props.stream.channel_colour}
+                color={this.props.talk.channel_colour}
               >
-                {this.props.stream.channel_name}
+                {this.props.talk.channel_name}
               </Text>
             </Box>
             <Text
-              className={this.props.stream.name.length > 40 ? "fade" : "nvm"}
+              className={this.props.talk.name.length > 40 ? "fade" : "nvm"}
               weight="bold"
               size="20px"
               color="black"
@@ -207,7 +202,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
                 // maxHeight: "63px",
               }}
             >
-              {this.props.stream.name}
+              {this.props.talk.name}
             </Text>
           </Box>
         </Box>
@@ -217,7 +212,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
             width="100%"
             round="xsmall"
             style={{ zIndex: -1, position: "absolute", top: 8, left: 8 }}
-            background={this.props.stream.channel_colour}
+            background={this.props.talk.channel_colour}
           ></Box>
         )}
         {this.state.showModal && (
@@ -265,24 +260,24 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
                     background="#efeff1"
                     overflow="hidden"
                   >
-                    {!this.props.stream.has_avatar && (
+                    {!this.props.talk.has_avatar && (
                       <Identicon
-                        string={this.props.stream.channel_name}
+                        string={this.props.talk.channel_name}
                         size={15}
                       />
                     )}
-                    {!!this.props.stream.has_avatar && (
+                    {!!this.props.talk.has_avatar && (
                       <img
-                        src={`/images/channel-icons/${this.props.stream.channel_id}.jpg`}
+                        src={`/images/channel-icons/${this.props.talk.channel_id}.jpg`}
                       />
                     )}
                   </Box>
                   <Text
                     weight="bold"
                     size="22px"
-                    color={this.props.stream.channel_colour}
+                    color={this.props.talk.channel_colour}
                   >
-                    {this.props.stream.channel_name}
+                    {this.props.talk.channel_name}
                   </Text>
                 </Box>
                 <Text
@@ -291,7 +286,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
                   color="black"
                   style={{ overflowY: "scroll" }}
                 >
-                  {this.props.stream.name}
+                  {this.props.talk.name}
                 </Text>
               </Box>
               <Box
@@ -300,11 +295,11 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
                 style={{ height: "40%", position: "relative" }}
               >
                 <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
-                  {this.props.stream.description}
+                  {this.props.talk.description}
                 </Text>
-                {this.props.stream.tags.length !== 0 && (
+                {this.props.talk.tags.length !== 0 && (
                   <Box direction="row" gap="xsmall" wrap>
-                    {this.props.stream.tags.map((tag: Tag) => (
+                    {this.props.talk.tags.map((tag: Tag) => (
                       <TagComponent
                         tagName={tag.name}
                         width="80px"
@@ -357,7 +352,7 @@ export default class PastScheduledStreamCard extends Component<Props, State> {
               </Box>
               {this.getButtons()}
             </Box>
-            {!this.props.stream.recording_link && !this.props.admin && (
+            {!this.props.talk.recording_link && !this.props.admin && (
               <Box
                 background="#d5d5d5"
                 pad="small"
