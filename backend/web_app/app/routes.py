@@ -267,10 +267,31 @@ def unRegisterForTalk():
     talks.unRegisterForTalk(params["talkId"], params["userId"])
     return jsonify("success")
 
-@app.route('/talks/foruser', methods=["GET"])
+@app.route('/talks/registered', methods=["GET"])
 def getTalksForUser():
     userId = int(request.args.get("userId"))
     return jsonify(talks.getFutureTalksForUser(userId))
+
+@app.route('/talks/saved', methods=["GET"])
+def getSavedTalks():
+    userId = int(request.args.get("userId"))
+    return jsonify(talks.getSavedTalksForUser(userId))
+
+@app.route('/talks/save', methods=["POST", "OPTIONS"])
+def saveTalk():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    talks.saveTalk(params["talkId"], params["userId"])
+    return jsonify("ok")
+
+@app.route('/talks/unsave', methods=["POST", "OPTIONS"])
+def unsaveTalk():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    talks.unsaveTalk(params["talkId"], params["userId"])
+    return jsonify("ok")
 
 # --------------------------------------------
 # VOD ROUTES

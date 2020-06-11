@@ -196,7 +196,7 @@ const unRegisterForTalk = (talkId: number, userId: number, callback: any) => {
 
 const getTalksForUser = (userId: number, callback: any) => {
   axios
-    .get(baseApiUrl + `/talks/foruser?userId=${userId}`, {
+    .get(baseApiUrl + `/talks/registered?userId=${userId}`, {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then(function (response) {

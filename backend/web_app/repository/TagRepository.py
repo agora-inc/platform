@@ -80,7 +80,7 @@ class TagRepository:
         for tagId in newTagIds:
             valueStr += f' ({streamId}, {tagId}),'
 
-        query = 'INSERT INTO TalkTags(stream_id, tag_id) VALUES'+valueStr[:-1]
+        query = 'INSERT INTO TalkTags(talk_id, tag_id) VALUES'+valueStr[:-1]
         self.db.run_query(query)
 
     def tagVideo(self, videoId, tagIds):
@@ -105,7 +105,7 @@ class TagRepository:
         return result
 
     def getTagsOnTalk(self, talkId):
-        query = f'SELECT Tags.id, Tags.name FROM Tags INNER JOIN TalkTags ON Tags.id = TalkTags.tag_id WHERE TalkTags.stream_id = {talkId}'
+        query = f'SELECT Tags.id, Tags.name FROM Tags INNER JOIN TalkTags ON Tags.id = TalkTags.tag_id WHERE TalkTags.talk_id = {talkId}'
         result = self.db.run_query(query)
         return result
 

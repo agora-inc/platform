@@ -105,20 +105,20 @@ class TalkRepository:
         self.db.run_query(query)
 
     def isUserRegisteredForTalk(self, talkId, userId):
-        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND stream_id={talkId}'
+        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"] != 0
 
     def registerForTalk(self, talkId, userId):
-        query = f'INSERT INTO TalkRegistrations(stream_id, user_id) VALUES ({talkId}, {userId})'
+        query = f'INSERT INTO TalkRegistrations(talk_id, user_id) VALUES ({talkId}, {userId})'
         self.db.run_query(query)
 
     def unRegisterForTalk(self, talkId, userId):
-        query = f'DELETE FROM TalkRegistrations WHERE stream_id={talkId} AND user_id={userId}'
+        query = f'DELETE FROM TalkRegistrations WHERE talk_id={talkId} AND user_id={userId}'
         self.db.run_query(query)
 
     def getFutureTalksForUser(self, userId):
-        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.stream_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP'
+        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP'
         talks = self.db.run_query(query)
 
         for talk in talks:
@@ -129,7 +129,7 @@ class TalkRepository:
         return talks
 
     def getPastTalksForUser(self, userId):
-        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.recording_link FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.stream_id WHERE TalkRegistrations.user_id = {userId} AND Talks.end_date < CURRENT_TIMESTAMP'
+        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.recording_link FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.end_date < CURRENT_TIMESTAMP'
         talks = self.db.run_query(query)
 
         for talk in talks:
@@ -146,7 +146,7 @@ class TalkRepository:
             return []
         tagId = result[0]["id"]
 
-        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.recording_link FROM Talks INNER JOIN TalkTags ON Talks.id = TalkTags.stream_id WHERE TalkTags.tag_id = {tagId} AND Talks.end_date < CURRENT_TIMESTAMP'
+        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.recording_link FROM Talks INNER JOIN TalkTags ON Talks.id = TalkTags.talk_id WHERE TalkTags.tag_id = {tagId} AND Talks.end_date < CURRENT_TIMESTAMP'
         talks = self.db.run_query(query)
 
         for talk in talks:
@@ -155,3 +155,16 @@ class TalkRepository:
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalksForTag(tagId))
+
+    def saveTalk(self, talkId, userId):
+        query = f'INSERT INTO TalkSaves(talk_id, user_id) VALUES ({talkId}, {userId})'
+        self.db.run_query(query)
+
+    def unsaveTalk(self, talkId, userId):
+        query = f'DELETE FROM TalkSaves WHERE talk_id = {talkId} AND user_id = {userId}'
+        self.db.run_query(query)
+
+    def getSavedTalksForUser(self, userId):
+        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.recording_link FROM Talks INNER JOIN TalkSaves ON Talks.id = TalkSaves.talk_id WHERE TalkSaves.user_id = {userId}'
+        talks = self.db.run_query(query)
+        return talks
