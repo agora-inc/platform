@@ -32,6 +32,7 @@
     "react": "^16.13.1",
     "react-blink-tag": "^0.1.6",
     "react-blockies": "^1.4.1",
+    "react-d3-tree": "^1.16.1",
     "react-dom": "^16.13.1",
     "react-hls": "0.0.8",
     "react-identicon-variety-pack": "^0.2.1",
