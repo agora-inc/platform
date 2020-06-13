@@ -85,7 +85,7 @@ class SearchRepository:
         talks = self.db.run_query(query)
 
         for talk in talks:
-            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+            talk["channel_colour"] = self.channels.getChannelColour(talk["channel_id"])
 
         return talks
 
@@ -94,7 +94,7 @@ class SearchRepository:
         talks = self.db.run_query(query)
 
         for talk in talks:
-            stream["channel_colour"] = self.channels.getChannelColour(stream["channel_id"])
+            talk["channel_colour"] = self.channels.getChannelColour(talk["channel_id"])
 
         return talks
 
