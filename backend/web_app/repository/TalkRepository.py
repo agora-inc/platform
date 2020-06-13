@@ -72,10 +72,8 @@ class TalkRepository:
         talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
         return talk
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags):
-        print("start date: ", startDate)
-        print("end date: ", endDate)
-        query = f'INSERT INTO Talks(channel_id, channel_name, name, date, end_date, description, link) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}")'
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkAt, visibility):
+        query = f'INSERT INTO Talks(channel_id, channel_name, name, date, end_date, description, link, show_link_at, visibility) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", "{showLinkAt}", "{visibility}")'
         insertId = self.db.run_query(query)[0]
 
         tagIds = [t["id"] for t in talkTags]
@@ -83,10 +81,10 @@ class TalkRepository:
 
         return self.getTalkById(insertId)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags):
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkAt, visibility):
         print(startDate)
         print(endDate)
-        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}" WHERE id = {talkId}'
+        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_at="{showLinkAt}", visibility="{visibility}" WHERE id = {talkId}'
         print(query)
         self.db.run_query(query)
 
