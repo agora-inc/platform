@@ -61,6 +61,8 @@ const editTalk = (
   endDate: string,
   talkLink: string,
   talkTags: Tag[],
+  showLinkOffset: number,
+  visibility: string,
   callback: any
 ) => {
   axios
@@ -74,6 +76,8 @@ const editTalk = (
         endDate: endDate,
         talkLink: talkLink,
         talkTags: talkTags,
+        showLinkOffset: showLinkOffset,
+        visibility: visibility,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -94,6 +98,8 @@ const scheduleTalk = (
   endDate: string,
   talkLink: string,
   talkTags: Tag[],
+  showLinkOffset: number,
+  visibility: string,
   callback: any
 ) => {
   axios
@@ -108,6 +114,8 @@ const scheduleTalk = (
         endDate: endDate,
         talkLink: talkLink,
         talkTags: talkTags,
+        showLinkOffset: showLinkOffset,
+        visibility: visibility,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -303,4 +311,6 @@ export type Talk = {
   link: string;
   recording_link: string;
   tags: Tag[];
+  show_link_offset: number;
+  visibility: string;
 };

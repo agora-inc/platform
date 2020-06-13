@@ -29,7 +29,7 @@ export const theme = {
       brand: "#61EC9F",
     },
     drop: {
-      background: "transparent",
+      //background: "transparent",
       shadowSize: "none",
       border: {
         radius: "10px",
@@ -78,6 +78,12 @@ export const theme = {
         "margin-right": "7.5px",
         "margin-left": "7.5px",
       },
+    },
+  },
+  select: {
+    width: "",
+    container: {
+      extend: "",
     },
   },
 };

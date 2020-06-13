@@ -72,8 +72,8 @@ class TalkRepository:
         talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
         return talk
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkAt, visibility):
-        query = f'INSERT INTO Talks(channel_id, channel_name, name, date, end_date, description, link, show_link_at, visibility) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", "{showLinkAt}", "{visibility}")'
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility):
+        query = f'INSERT INTO Talks(channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", "{showLinkOffset}", "{visibility}")'
         insertId = self.db.run_query(query)[0]
 
         tagIds = [t["id"] for t in talkTags]
@@ -81,10 +81,10 @@ class TalkRepository:
 
         return self.getTalkById(insertId)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkAt, visibility):
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility):
         print(startDate)
         print(endDate)
-        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_at="{showLinkAt}", visibility="{visibility}" WHERE id = {talkId}'
+        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset="{showLinkOffset}", visibility="{visibility}" WHERE id = {talkId}'
         print(query)
         self.db.run_query(query)
 
@@ -116,7 +116,7 @@ class TalkRepository:
         self.db.run_query(query)
 
     def getFutureTalksForUser(self, userId):
-        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP'
+        query = f'SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link, Talks.show_link_offset, Talks.visibility FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP'
         talks = self.db.run_query(query)
 
         for talk in talks:
