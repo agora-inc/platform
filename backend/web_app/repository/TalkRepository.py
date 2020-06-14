@@ -1,11 +1,13 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
+from repository.TopicRepository import TopicRepository
 
 class TalkRepository:
     def __init__(self, db):
         self.db = db
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)
+        self.topics = TopicRepository(db=self.db) 
 
     def getNumberOfPastTalks(self):
         query = 'SELECT COUNT(*) FROM Talks WHERE end_date < CURRENT_TIMESTAMP'
@@ -26,6 +28,35 @@ class TalkRepository:
             return 0
         return result[0]["COUNT(*)"]
 
+    def getNumberOfPastTalksForTopic(self, TopicId):
+        query = f'SELECT COUNT(*) FROM Talks WHERE (topic_1_id = {TopicId} OR topic_2_id = {TopicId} OR topic_3_id = {TopicId}) AND end_date < CURRENT_TIMESTAMP'
+        result = self.db.run_query(query)
+        if not result:
+            return 0
+        return result[0]["COUNT(*)"]
+
+    def getAllPastTalksForTopic(self, TopicId, limit, offset):
+        query = f'SELECT * FROM Talks WHERE (topic_1_id = {TopicId} OR topic_2_id = {TopicId} OR topic_3_id = {TopicId}) AND end_date < CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}'
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return (talks, self.getNumberOfPastTalks())
+    
+    def getAllFutureTalksForTopic(self, TopicId, limit, offset):
+        query = f'SELECT * FROM Talks WHERE (topic_1_id = {TopicId} OR topic_2_id = {TopicId} OR topic_3_id = {TopicId}) AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return (talks, self.getNumberOfPastTalks())
+
     def getAllFutureTalks(self, limit, offset):
         query = f'SELECT * FROM Talks WHERE date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}'
         talks = self.db.run_query(query)
@@ -34,6 +65,7 @@ class TalkRepository:
             talk["channel_colour"] = channel["colour"]
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talks
 
     def getAllPastTalks(self, limit, offset):
@@ -81,10 +113,10 @@ class TalkRepository:
 
         return self.getTalkById(insertId)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility):
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id):
         print(startDate)
         print(endDate)
-        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset="{showLinkOffset}", visibility="{visibility}" WHERE id = {talkId}'
+        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset="{showLinkOffset}", visibility="{visibility}", topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id} WHERE id = {talkId}'
         print(query)
         self.db.run_query(query)
 

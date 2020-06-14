@@ -35,6 +35,8 @@ class StreamRepository:
             stream["tags"] = self.tags.getTagsOnStream(stream["id"])
         return streams
 
+    def getStreamsByTopics(self, streamId):
+        raise NotImplementedError
 
     def getStreamById(self, streamId):
         # cursor = self.db.con.cursor()
