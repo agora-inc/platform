@@ -280,7 +280,7 @@ class TopicRepository:
             logging.warning(f"getParents: exception: {e}")
 
     def getTopicsOnTalk(self, talk_id):
-        query = f"SELECT topic_1_id, topic_2_id, topic_3_id FROM Talks where id=talk_id"
+        query = f"SELECT topic_1_id, topic_2_id, topic_3_id FROM Talks where id={talk_id}"
         try:
             return self.db.run_query(query)
         except Exception as e:

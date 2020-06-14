@@ -76,6 +76,7 @@ class TalkRepository:
             talk["channel_colour"] = channel["colour"]
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalks())
 
     def getAllFutureTalksForChannel(self, channelId):
@@ -86,6 +87,7 @@ class TalkRepository:
             talk["channel_colour"] = channel["colour"]
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talks
 
     def getAllPastTalksForChannel(self, channelId):
@@ -96,6 +98,7 @@ class TalkRepository:
             talk["channel_colour"] = channel["colour"]
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalksForChannel(channelId))
 
     def getTalkById(self, talkId):
@@ -104,8 +107,8 @@ class TalkRepository:
         talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
         return talk
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility):
-        query = f'INSERT INTO Talks(channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", "{showLinkOffset}", "{visibility}")'
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id):
+        query = f'INSERT INTO Talks(channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", "{showLinkOffset}", "{visibility}, {topic_1_id}, {topic_2_id}, {topic_3_id}")'
         insertId = self.db.run_query(query)[0]
 
         tagIds = [t["id"] for t in talkTags]
@@ -114,8 +117,6 @@ class TalkRepository:
         return self.getTalkById(insertId)
 
     def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id):
-        print(startDate)
-        print(endDate)
         query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset="{showLinkOffset}", visibility="{visibility}", topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id} WHERE id = {talkId}'
         print(query)
         self.db.run_query(query)
