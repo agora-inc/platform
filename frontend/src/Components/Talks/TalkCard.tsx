@@ -29,6 +29,7 @@ export default class TalkCard extends Component<Props, State> {
       registered: false,
     };
   }
+
   formatDate = (d: string) => {
     const date = new Date(d);
     const dateStr = date.toDateString().slice(0, -4);
@@ -271,8 +272,9 @@ export default class TalkCard extends Component<Props, State> {
                   {this.formatDate(this.props.talk.date)}
                 </Text>
                 <Countdown
-                  targetTime={this.props.talk.date}
-                  link={"https://duckduckgo.com"}
+                  talkStart={this.props.talk.date}
+                  showLinkOffset={this.props.talk.show_link_offset}
+                  link={this.props.talk.link}
                 />
                 {this.state.registered && (
                   <AddToCalendarButtons

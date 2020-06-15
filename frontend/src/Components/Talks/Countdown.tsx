@@ -1,74 +1,74 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
+var moment = require("moment");
 
 interface Props {
-  targetTime: string;
+  talkStart: string;
+  showLinkOffset: number;
   link: string;
 }
 
 interface State {
-  currentTime: string;
-  offset: number; // Number of seconds before the talk the link is released
-  countdown: number; // number of seconds until link is released
-  showLink: boolean;
+  showLinkAt: Date;
+  now: Date;
+  // offset: number; // Number of seconds before the talk the link is released
+  // countdown: number; // number of seconds until link is released
+  // showLink: boolean;
 }
 
 export default class Countdown extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      currentTime: new Date().toString(),
-      offset: 900,
-      countdown:
-        ((new Date(this.props.targetTime).getTime() - new Date().getTime()) /
-          1000) >>
-        0,
-      showLink: false,
+      showLinkAt: this.computeShowLinkTime(),
+      now: new Date(),
     };
   }
 
+  computeShowLinkTime = () => {
+    let d = new Date(this.props.talkStart);
+    return moment(d).subtract(this.props.showLinkOffset, "minutes").toDate();
+  };
+
   componentWillMount() {
     setInterval(() => {
-      let now = new Date();
-      this.setState({
-        currentTime: now.toString(),
-        countdown:
-          ((new Date(this.props.targetTime).getTime() - now.getTime()) / 1000 -
-            this.state.offset) >>
-          0,
-        showLink: this.state.countdown <= 0,
-      });
+      this.setState({ now: new Date() });
     }, 1000);
   }
 
-  formatTime() {
-    let days = (this.state.countdown / 86400) >> 0;
-    let temp = this.state.countdown % 86400;
-    let hours = (temp / 3600) >> 0;
-    temp = temp % 3600;
-    let minutes = (temp / 60) >> 0;
-    let dayString = "";
-    if (days == 1) {
-      dayString = days + " day ";
-    } else if (days > 1) {
-      dayString = days + " days ";
+  shouldShowLink = () => {
+    return this.state.now > this.state.showLinkAt;
+  };
+
+  showTimeUntil = () => {
+    let message = "Link available in ";
+    let minutesUntil =
+      (this.state.showLinkAt.getTime() - this.state.now.getTime()) /
+      (1000 * 60);
+
+    if (minutesUntil < 60) {
+      message += `${minutesUntil} minutes`;
+    } else if (minutesUntil < 1440) {
+      let hoursUntil = Math.floor(minutesUntil / 60);
+      let minutesRemainder = Math.floor(minutesUntil % 60);
+      message += `${hoursUntil} hours ${minutesRemainder} minutes`;
+    } else {
+      let daysUntil = Math.floor(minutesUntil / 1440);
+      let hoursRemainder = Math.floor((minutesUntil % 1440) / 60);
+      let minutesRemainder = Math.floor((minutesUntil % 1440) % 60);
+      message += `${daysUntil} days ${hoursRemainder} hours ${minutesRemainder} minutes`;
     }
 
-    return (
-      dayString +
-      ("0" + hours).slice(-2) +
-      "h " +
-      ("0" + minutes).slice(-2) +
-      "m"
-    );
-  }
+    return message;
+  };
 
   render() {
-    return (
-      <Box>
-        {this.state.showLink && <Box>Link to talk: {this.props.link}</Box>}
-        {!this.state.showLink && <Box>Link shown in: {this.formatTime()}</Box>}
-      </Box>
+    return this.shouldShowLink() ? (
+      <a href={this.props.link} target="_blank">
+        Go to talk
+      </a>
+    ) : (
+      <Text size="17px">{this.showTimeUntil()}</Text>
     );
   }
 }
