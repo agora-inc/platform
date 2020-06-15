@@ -277,6 +277,16 @@ const getYoutubeThumbnail = (url: string | null, id: number) => {
   return `https://img.youtube.com/vi/${ytId}/0.jpg`;
 };
 
+const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + `/talks/isavailable?talkId=${talkId}&userId=${userId}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 export const TalkService = {
   getAllFutureTalks,
   getAllPastTalks,
@@ -296,6 +306,7 @@ export const TalkService = {
   getSavedTalksForUser,
   isSaved,
   getYoutubeThumbnail,
+  isAvailableToUser,
 };
 
 export type Talk = {

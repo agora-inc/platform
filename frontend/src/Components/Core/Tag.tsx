@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 interface Props {
   tagName: string;
   width?: string;
+  height?: string;
   colour?: string;
 }
 
@@ -22,9 +23,11 @@ export default class Tag extends Component<Props> {
           padding: 0,
           margin: 0,
           maxWidth: "50%",
+          height: this.props.height,
         }}
       >
         <Box
+          height="100%"
           background={this.props.colour}
           align="center"
           justify="center"
