@@ -1,11 +1,20 @@
 import React, { Component } from "react";
-import { Box, Text, TextInput, TextArea, Calendar, MaskedInput } from "grommet";
+import {
+  Box,
+  Text,
+  TextInput,
+  TextArea,
+  Calendar,
+  MaskedInput,
+  Select,
+} from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import Button from "../Core/Button";
 import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
 import { Talk, TalkService } from "../../Services/TalkService";
 import TagSelector from "../Core/TagSelector";
+import "../../Styles/edit-talk-modal.css";
 
 interface Props {
   channel: Channel | null;
@@ -25,6 +34,8 @@ interface State {
   startTime: string;
   endTime: string;
   link: string;
+  releaseLinkOffset: number;
+  linkVisibility: string;
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -45,6 +56,10 @@ export default class EditTalkModal extends Component<Props, State> {
         ? new Date(this.props.talk.end_date).toTimeString().slice(0, 5)
         : "",
       link: this.props.talk ? this.props.talk.link : "",
+      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 0,
+      linkVisibility: this.props.talk
+        ? this.props.talk.visibility
+        : "Everybody",
     };
   }
 
@@ -75,6 +90,34 @@ export default class EditTalkModal extends Component<Props, State> {
     return [startDate, endDate];
   };
 
+  makeLinkDateOption = (offset: number) => {
+    let label;
+    switch (offset) {
+      case 0:
+        label = "Now";
+        break;
+      case 15:
+        label = "15 minutes before";
+        break;
+      case 60:
+        label = "1 hour before";
+        break;
+      case 1440:
+        label = "24 hours before";
+        break;
+    }
+    console.log(label);
+    return {
+      label: label,
+      value: offset,
+    };
+  };
+
+  makeLinkDateOptions = () => {
+    const offsets = [0, 15, 60, 1440];
+    return offsets.map(this.makeLinkDateOption);
+  };
+
   onFinish = () => {
     const dateTimeStrs = this.combineDateAndTimeStrings();
     if (this.props.talk) {
@@ -86,6 +129,8 @@ export default class EditTalkModal extends Component<Props, State> {
         dateTimeStrs[1],
         this.state.link,
         this.state.tags,
+        this.state.releaseLinkOffset,
+        this.state.linkVisibility,
         (talk: Talk) => {
           this.setState(
             {
@@ -107,6 +152,8 @@ export default class EditTalkModal extends Component<Props, State> {
         dateTimeStrs[1],
         this.state.link,
         this.state.tags,
+        this.state.releaseLinkOffset,
+        this.state.linkVisibility,
         (talk: Talk) => {
           this.setState(
             {
@@ -179,7 +226,7 @@ export default class EditTalkModal extends Component<Props, State> {
         title={this.props.talk ? "Edit talk" : "New talk"}
         submitButtonText="Save"
         onSubmitClick={this.onFinishClicked}
-        contentHeight="147vh"
+        contentHeight="1360px"
         canProceed={this.isComplete()}
         onCancelClick={this.props.onCanceledCallback}
         onClickOutside={this.props.onCanceledCallback}
@@ -293,6 +340,46 @@ export default class EditTalkModal extends Component<Props, State> {
             placeholder="type something"
             onChange={(e) => this.setState({ link: e.target.value })}
           />
+          <Box width="100%" gap="2px">
+            <Text size="14px" weight="bold" color="black">
+              When should this link become visible?
+            </Text>
+            <Select
+              dropAlign={{ bottom: "top" }}
+              focusIndicator={false}
+              id="link-release-select"
+              options={this.makeLinkDateOptions()}
+              labelKey="label"
+              value={this.makeLinkDateOption(this.state.releaseLinkOffset)}
+              valueLabel={
+                <Text
+                  weight="bold"
+                  margin={{ horizontal: "small", vertical: "10px" }}
+                >
+                  {this.makeLinkDateOption(this.state.releaseLinkOffset).label}
+                </Text>
+              }
+              onChange={({ option }) => {
+                console.log("OPTION: ", option);
+                this.setState({ releaseLinkOffset: option.value });
+              }}
+            />
+          </Box>
+          <Box width="100%" gap="2px">
+            <Text size="14px" weight="bold" color="black">
+              Who should this link be visible to?
+            </Text>
+            <Select
+              dropAlign={{ bottom: "top" }}
+              focusIndicator={false}
+              id="link-visibility-select"
+              options={["Everybody", "Followers and members", "Members only"]}
+              value={this.state.linkVisibility}
+              onChange={({ option }) =>
+                this.setState({ linkVisibility: option })
+              }
+            />
+          </Box>
         </OverlaySection>
       </Overlay>
     );

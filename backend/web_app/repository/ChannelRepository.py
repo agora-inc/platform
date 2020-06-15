@@ -4,7 +4,6 @@ class ChannelRepository:
     def __init__(self, db):
         self.db = db
 
-
     def getChannelById(self, id):
         # cursor = self.db.con.cursor()
         query = f"SELECT * FROM Channels WHERE id = {id}"
@@ -27,7 +26,9 @@ class ChannelRepository:
             return None
         return result[0]
 
-    
+    def getChannelsByTopic(self, name):
+        raise NotImplementedError
+
     def getAllChannels(self, limit, offset):
         # cursor = self.db.con.cursor()
         query = f'SELECT * FROM Channels LIMIT {limit} OFFSET {offset}'
@@ -36,7 +37,6 @@ class ChannelRepository:
         # cursor.close()
         result = self.db.run_query(query)
         return result
-
 
     def createChannel(self, channelName, channelDescription, userId):
         colours = [

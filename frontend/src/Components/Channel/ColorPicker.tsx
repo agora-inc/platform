@@ -99,6 +99,7 @@ export default class ColorPicker extends Component<Props, State> {
           height="30px"
           round="xsmall"
           background={this.state.selected}
+          style={{ zIndex: 100 }}
         ></Box>
         <DropButton
           reverse
