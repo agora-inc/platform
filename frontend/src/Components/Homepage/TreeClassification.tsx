@@ -123,7 +123,7 @@ export default class TreeClassification extends React.Component {
 
   nodeOnClick = (nodeData: any, e: any) => {
     if (nodeData.name == "Stochastic calculus") {
-      nodeData.nodeSvgShape.shapeProps.fill = "red"
+      nodeData.nodeSvgShape.shapeProps.fill = 'red'
     }
   }
 
