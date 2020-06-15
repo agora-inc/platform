@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Tree } from 'react-d3-tree';
+import treeData from "../../assets/tree.json"
 
+
+/*
 const myTreeData = [
   {
     name: 'Mathematics',
@@ -57,12 +60,13 @@ const myTreeData = [
         children : [
           {name: 'Stochastic calculus',
            attribute: {leaf: true},
-           shape: 'circle',
-           shapeProps: {
-            width: 20,
-            height: 20,
-            fill: 'black',
+           nodeSvgShape: {
+            shape: 'circle',
+            shapeProps: {
+              r: 10,
+              fill: 'red'
             },
+           },
           },
           {name: "Random graphs",
            attribute: {leaf: true}},
@@ -81,8 +85,9 @@ const myTreeData = [
     ],
   },
 ];
+*/
 
-
+/*
 interface Props {
   className: string
   nodeData: any
@@ -98,6 +103,7 @@ class NodeLabel extends React.PureComponent<Props> {
     )
   }
 }
+*/
 
 let configStyles = {
   links: {
@@ -106,15 +112,26 @@ let configStyles = {
     strokeWidth: "2px",
     strokeDasharray:"2,2"
   },
-  nodes: {
-    node: {
-      fontsize: 1
-    },
-  }
 }
 
 
-export default class TreeClassification extends React.Component {
+interface Props {
+  data: string
+}
+
+interface State {
+  data: any
+}
+
+
+export default class TreeClassification extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      data: treeData
+    }
+    this.nodeOnClick = this.nodeOnClick.bind(this);
+  }
 
   pathFunc = (linkData: any, orientation: string) => {
     const { source, target } = linkData;
@@ -122,20 +139,23 @@ export default class TreeClassification extends React.Component {
   }
 
   nodeOnClick = (nodeData: any, e: any) => {
+    let temp = this.state.data;
     if (nodeData.name == "Stochastic calculus") {
-      nodeData.nodeSvgShape.shapeProps.fill = 'red'
+      temp[0].nodeSvgShape.shapeProps.fill = 'green'
+      this.setState({data: temp})
     }
+    
   }
 
   render() {
     return (
       <div id="treeWrapper" style={{width: '200em', height: '50em'}}>
         <Tree 
-          data={myTreeData} 
+          data={this.state.data} 
           translate={{y: 100, x:400}} 
           orientation={"horizontal"}
           separation={{siblings: 0.3, nonSiblings: 0.2}}
-          styles={configStyles}
+          
           allowForeignObjects
           onClick={this.nodeOnClick}
           useCollapseData={true}
@@ -148,6 +168,5 @@ export default class TreeClassification extends React.Component {
 }
 
 /*
-          pathFunc={this.pathFunc}
-
+styles={configStyles}
 */

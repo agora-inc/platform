@@ -293,78 +293,109 @@ class TopicRepository:
         except Exception as e:
             logging.error(f"get_whole_graph_in_dict: exception raised: {e}")
 
+    def getNestedDescendence(self, data, id_root):
+        res = []
+        for idx, e in enumerate(data):
+            if e['parent_1_id'] == id_root or e['parent_2_id'] == id_root or e['parent_3_id'] == id_root:
+                res.append(({'name': e['field'], 'attribute': {'id': e['id']}, 'children': []}))
+                del data[idx]
+        
+        for e in res:
+            e['children'] = self.getNestedDescendence(data=data, id_root=e['attribute']['id'])
+
+        return res
+
+    def getDataTreeStructure(self):
+        raw_data = self.getAllTopics()
+        res = []
+        for idx, e in enumerate(raw_data):
+            if e['is_primitive_node']:
+                res.append({'name': e['field'], 'attribute': {'id': e['id']}, 'children': []})
+                del raw_data[idx]
+
+        for e in res:
+            e['children'] = self.getNestedDescendence(data=raw_data, id_root=e['attribute']['id'])
+
+        return res
+
     def getPopularTopics(self, n):
         raise NotImplementedError
 
 # UNIT TEST
 if __name__ == "__main__":
     import pymysql
-    # class Database:
+    class Database:
 
-    #     def __init__(self):
-    #         self.host = "apollo-2.c91ghtqneybi.eu-west-2.rds.amazonaws.com"
-    #         self.user = "admin"
-    #         self.password = "123.qwe.asd"
-    #         self.db = "apollo"
-    #         self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.
-    #                                 DictCursor)
-    #     def open_connection(self):
-    #         """Connect to MySQL Database."""
-    #         try:
-    #             if self.con is None:
-    #                 self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.DictCursor)
-    #         except pymysql.MySQLError as e:
-    #             logging.error(e)
-    #             sys.exit()
-    #         finally:
-    #             logging.info('Connection opened successfully.')
+        def __init__(self):
+            self.host = "apollo-2.c91ghtqneybi.eu-west-2.rds.amazonaws.com"
+            self.user = "admin"
+            self.password = "123.qwe.asd"
+            self.db = "apollo"
+            self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.
+                                    DictCursor)
+        def open_connection(self):
+            """Connect to MySQL Database."""
+            try:
+                if self.con is None:
+                    self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.DictCursor)
+            except pymysql.MySQLError as e:
+                logging.error(e)
+                sys.exit()
+            finally:
+                logging.info('Connection opened successfully.')
 
-    #     def run_query(self, query):
-    #         """Execute SQL query."""
-    #         def _single_query(query):
-    #             try:
-    #                 self.open_connection()
-    #                 with self.con.cursor() as cur:
-    #                     if 'SELECT' in query:
-    #                         records = []
-    #                         cur.execute(query)
-    #                         result = cur.fetchall()
-    #                         for row in result:
-    #                             records.append(row)
-    #                         cur.close()
-    #                         return records
-    #                     else:
-    #                         result = cur.execute(query)
-    #                         self.con.commit()
-    #                         insertId = cur.lastrowid
-    #                         rowCount = cur.rowcount
-    #                         cur.close()
-    #                         return [insertId, rowCount]
-    #             except pymysql.MySQLError as e:
-    #                 logging.warning(f"(Database):run_query: exception: {e}")
-    #             finally:
-    #                 if self.con:
-    #                     self.con.close()
-    #                     self.con = None
-    #                     logging.info('Database connection closed.')
+        def run_query(self, query):
+            """Execute SQL query."""
+            def _single_query(query):
+                try:
+                    self.open_connection()
+                    with self.con.cursor() as cur:
+                        if 'SELECT' in query:
+                            records = []
+                            cur.execute(query)
+                            result = cur.fetchall()
+                            for row in result:
+                                records.append(row)
+                            cur.close()
+                            return records
+                        else:
+                            result = cur.execute(query)
+                            self.con.commit()
+                            insertId = cur.lastrowid
+                            rowCount = cur.rowcount
+                            cur.close()
+                            return [insertId, rowCount]
+                except pymysql.MySQLError as e:
+                    logging.warning(f"(Database):run_query: exception: {e}")
+                finally:
+                    if self.con:
+                        self.con.close()
+                        self.con = None
+                        logging.info('Database connection closed.')
 
-    #         if isinstance(query, str):
-    #             return _single_query(query)
-    #         elif isinstance(query, list):
-    #             responses = []
-    #             for q in query:
-    #                 if isinstance(q, str):
-    #                     responses.append(_single_query(q))
-    #                 else:
-    #                     raise TypeError("run_query: each element of the list must be a string.")
-    #             return responses
-    #         elif isinstance(query, None):
-    #             pass
-    #         else:
-    #             raise TypeError("run_query: query must be a SQL request string or a list of SQL request strings.")
+            if isinstance(query, str):
+                return _single_query(query)
+            elif isinstance(query, list):
+                responses = []
+                for q in query:
+                    if isinstance(q, str):
+                        responses.append(_single_query(q))
+                    else:
+                        raise TypeError("run_query: each element of the list must be a string.")
+                return responses
+            elif isinstance(query, None):
+                pass
+            else:
+                raise TypeError("run_query: query must be a SQL request string or a list of SQL request strings.")
     
-    # db = Database()
-    # obj = TopicRepository(db)
+    db = Database()
+    obj = TopicRepository(db)
+
+    import json
+
+    with open('/home/cloud-user/plateform/agora/frontend/src/assets/tree.json', 'w') as outfile:
+        json.dump(obj.getDataTreeStructure(), outfile)
+
     # obj._addChildNode(name_child="TESTEST", parent_name_1="Biology", parent_name_2="Chemistry")
     # obj._renameNode(old_field_name="BIOLOGY", new_field_name="Biology")
     # obj._addPrimitiveNode("TEST_MAIN_BRANCH_2")

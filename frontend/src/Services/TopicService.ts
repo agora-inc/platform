@@ -11,6 +11,16 @@ const getAll = (callback: any) => {
     });
 };
 
+const getTreeStructure = (callback: any) => {
+  axios
+    .get(baseApiUrl + "/topics/treestructure", {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then((response) => {
+      callback(response.data);
+    });
+};
+
 // const getPopular = (callback: any) => {
 //   axios
 //     .get(baseApiUrl + "/topics/popular?n=5", {
