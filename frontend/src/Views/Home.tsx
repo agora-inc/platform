@@ -12,6 +12,7 @@ import "../Styles/home.css";
 import { User, UserService } from "../Services/UserService";
 import { Talk, TalkService } from "../Services/TalkService";
 import TreeClassification from "../Components/Homepage/TreeClassification";
+import GraphClassification from "../Components/Homepage/GraphClassification";
 
 interface State {
   user: User | null;
@@ -59,6 +60,7 @@ export default class Home extends Component<{}, State> {
             seeMore
             user={this.state.user}
           />
+          <GraphClassification />
           <RecentTalksList user={this.state.user} />
           {/* <RecommendedGrid /> */}
         </Box>
