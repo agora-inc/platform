@@ -307,10 +307,10 @@ class TopicRepository:
 
     def getDataTreeStructure(self):
         raw_data = self.getAllTopics()
-        res = {"name": "master node", "id": -1, "children": []}
+        res = []
         for idx, e in enumerate(raw_data):
             if e['is_primitive_node']:
-                res["children"].append({'name': e['field'], 'attributes': {'id': e['id']}, 'children': []})
+                res.append({'name': e['field'], 'attributes': {'id': e['id']}, 'children': []})
                 del raw_data[idx]
 
         for e in res["children"]:

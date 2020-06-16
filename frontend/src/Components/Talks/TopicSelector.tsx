@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Box, Select } from "grommet";
-import { Topic, TreeTopics, TopicService } from "../../Services/TopicService"
+import { Topic, TopicService } from "../../Services/TopicService"
 import allTopics from "../../assets/allTopics.json"
 import Button from "../Core/Button";
 
@@ -28,12 +28,10 @@ export default class TopicSelector extends Component<Props, State> {
   }
 
   componentWillMount() {
-    /*
     TopicService.getAll((allTopics: Topic[]) => {
       this.setState({ all: allTopics });
     });
-    */
-    this.setState({all: allTopics})
+    // this.setState({all: allTopics})
   }
 
   onClickAddTopic = () => {

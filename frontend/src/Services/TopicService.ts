@@ -57,8 +57,8 @@ export type Topic = {
   parent_3_id: number | null,
 }
 
-export type TreeTopics = {
+export type TreeTopic = {
   name: string;
   attribute: any
-  children: TreeTopics
+  children: any
 };

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Tree } from 'react-d3-tree';
 import treeData from "../../assets/tree.json"
+import { TopicService, TreeTopic } from "../../Services/TopicService"
 
 
 /*
@@ -115,26 +116,17 @@ let configStyles = {
 }
 
 
-interface Props {
-  data: string
-}
-
 interface State {
-  data: any
+  data: TreeTopic
 }
 
-
-export default class TreeClassification extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      data: []
-    }
-    this.nodeOnClick = this.nodeOnClick.bind(this);
-  }
+export default class TreeClassification extends React.Component<{}, State> {
 
   componentWillMount() {
-    this.setState({data: treeData})
+    TopicService.getTreeStructure((treeData: TreeTopic) => {
+      this.setState({ data: treeData });
+    });
+   // this.setState({data: treeData})
   }
 
   pathFunc = (linkData: any, orientation: string) => {
@@ -143,12 +135,7 @@ export default class TreeClassification extends React.Component<Props, State> {
   }
 
   nodeOnClick = (nodeData: any, e: any) => {
-    let temp = this.state.data;
-    if (nodeData.name == "Stochastic calculus") {
-      temp[0].nodeSvgShape.shapeProps.fill = 'green'
-      this.setState({data: temp})
-    }
-    
+    let temp = this.state.data;    
   }
 
   render() {

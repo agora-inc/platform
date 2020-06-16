@@ -53,7 +53,7 @@ export default class Home extends Component<{}, State> {
           gap="25px"
         >
           <Carousel gridArea="carousel" />
-          <TreeClassification data={"3dfgd"} />
+          <TreeClassification />
           <TalkList
             talks={this.state.talks}
             title
