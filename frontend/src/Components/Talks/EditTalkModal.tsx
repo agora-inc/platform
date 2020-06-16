@@ -348,7 +348,7 @@ export default class EditTalkModal extends Component<Props, State> {
           />
         </OverlaySection>
         <OverlaySection heading="Add relevant topics">
-          <TopicSelector />
+          <TopicSelector maxDepth={5} />
         </OverlaySection>
         <OverlaySection heading="Finally, add a link so people can watch your talk">
           <TextInput

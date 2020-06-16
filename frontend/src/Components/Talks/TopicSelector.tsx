@@ -2,16 +2,18 @@ import React, { Component } from "react";
 import { Box, Select } from "grommet";
 import { Topic, TreeTopics, TopicService } from "../../Services/TopicService"
 import allTopics from "../../assets/allTopics.json"
+import Button from "../Core/Button";
 
 
 interface State {
   all: any, // Topic[],
   topics: number[][],
-  topicsBeingShown: boolean[][],
+  topicsBeingShown: number[],
+  numberTopicsChosen: number
 }
 
 interface Props {
-
+  maxDepth: number
 }
 
 export default class TopicSelector extends Component<Props, State> {
@@ -20,7 +22,8 @@ export default class TopicSelector extends Component<Props, State> {
     this.state = {
       all: [],
       topics: [[], [], []],
-      topicsBeingShown: [[true], [true], [true]],
+      topicsBeingShown: [0, 0, 0],
+      numberTopicsChosen: -1,
     };
   }
 
@@ -33,36 +36,36 @@ export default class TopicSelector extends Component<Props, State> {
     this.setState({all: allTopics})
   }
 
-  onFieldChoose = (choiceNumber: number, id: number, fieldDepth: number) => {
-    let tempBools = this.state.topicsBeingShown;
+  onClickAddTopic = () => {
+    this.setState((state) => ({
+      numberTopicsChosen: state.numberTopicsChosen + 1 
+    }));
+  }
 
+  onFieldChoose = (choiceNumber: number, id: number, fieldDepth: number) => {
     if (id >= 0) {
-      tempBools[choiceNumber].push(true);
-      // tempBools[topicNumber].slice(fieldDepth+2) = false;
-    } else {
-      tempBools[choiceNumber].push(true);
-      // tempBools[topicNumber].slice(fieldDepth+1) = false;
+      let tempBools = this.state.topicsBeingShown;
+      tempBools[choiceNumber] = fieldDepth+1;    
+      let tempTopics = this.state.topics;
+      tempTopics[choiceNumber] = tempTopics[choiceNumber].slice(0, fieldDepth)
+      tempTopics[choiceNumber].push(id);
+      this.setState({
+        topics: tempTopics,
+        topicsBeingShown: tempBools
+      })
     }
-    
-    let tempTopics = this.state.topics;
-    tempTopics[choiceNumber].push(id);
-    this.setState({
-      topics: tempTopics,
-      topicsBeingShown: tempBools
-    })
-    console.log(this.state)
   }
   
   nameToId = (name: string) => {
-    console.log("name", name)
-    console.log(this.state.all.filter(function(topic: any) {
-      return topic.field === name;
-    }))
-    return(
-      this.state.all.filter(function(topic: any) {
-        return topic.field === name;
-      }).map((topic: any) => topic.id)
-    );
+    if (name == "-") {
+      return -1
+    } else {
+      return(
+        this.state.all.filter(function(topic: any) {
+          return topic.field === name;
+        }).map((topic: any) => topic.id)[0]
+      )
+    }
   }
 
   getPrimitiveNodes = () => {
@@ -73,11 +76,7 @@ export default class TopicSelector extends Component<Props, State> {
     );
   }
 
-  getChildren = (id: number)  => {
-    console.log("id", id)
-    console.log(this.state.all.filter(function(topic: any) {
-      return topic.parent_1_id == id || topic.parent_2_id == id || topic.parent_3_id == id ;
-    }))
+  getChildren = (id: number) => {
     return(
       this.state.all.filter(function(topic: any) {
         return topic.parent_1_id == id || topic.parent_2_id == id || topic.parent_3_id == id ;
@@ -85,32 +84,55 @@ export default class TopicSelector extends Component<Props, State> {
     );
   }
 
+  renderTopicChoice = (choiceNumber: number) => {
+    if (choiceNumber <= this.state.numberTopicsChosen) {
+      return (
+        <Box
+            width="100%"
+            direction="row"
+            gap="xsmall"
+            align="end"
+            margin={{ bottom: "15px" }}
+          >
+            {this.state.topicsBeingShown[choiceNumber] >= 0 && (
+              <Select
+                options={this.getPrimitiveNodes().concat("-")}
+                onChange={({option}) => this.onFieldChoose(choiceNumber, this.nameToId(option), 0)}
+              />
+            )}
+            {this.state.topicsBeingShown[choiceNumber] >= 1 && (
+              <Select
+                options={this.getChildren(this.state.topics[choiceNumber][0]).concat("-")}
+                onChange={({option}) => this.onFieldChoose(choiceNumber, this.nameToId(option), 1)}
+              />
+            )}
+            {this.state.topicsBeingShown[choiceNumber] >= 2 && (
+              <Select
+                options={this.getChildren(this.state.topics[choiceNumber][1]).concat("-")}
+                onChange={({option}) => this.onFieldChoose(choiceNumber, this.nameToId(option), 2)}
+              />
+            )}
+        </Box>
+      )
+    } else if (choiceNumber == this.state.numberTopicsChosen+1) {
+      return (
+        <Button
+          width={"10"}
+          height={"10"}
+          onClick={this.onClickAddTopic}
+          text={"Add topic"}
+        />
+      )
+    }
+  }
+
   render() {
     return (
-      <Box
-        width="100%"
-        direction="row"
-        gap="xsmall"
-        align="end"
-        margin={{ bottom: "15px" }}
-      >
-        <Select
-          options={this.getPrimitiveNodes()}
-          onChange={({option}) => this.onFieldChoose(0, this.nameToId(option)[0], 0)}
-        />
-        {this.state.topicsBeingShown[0][1] && (
-          <Select
-            options={this.getChildren(this.state.topics[0][0])}
-            onChange={({option}) => this.onFieldChoose(0, this.nameToId(option)[0], 1)}
-          />
-        )}
-        {this.state.topicsBeingShown[0][2] && (
-          <Select
-            options={this.getChildren(this.state.topics[0][1])}
-            onChange={({option}) => this.onFieldChoose(0, this.nameToId(option)[0], 2)}
-          />
-        )}
-      </Box>
+      <Box width="100%" direction="column">
+        {this.renderTopicChoice(0)}
+        {this.renderTopicChoice(1)}
+        {this.renderTopicChoice(2)} 
+      </Box>  
     );
   }
 }
