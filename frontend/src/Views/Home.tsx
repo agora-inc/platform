@@ -60,7 +60,6 @@ export default class Home extends Component<{}, State> {
             seeMore
             user={this.state.user}
           />
-          <GraphClassification />
           <RecentTalksList user={this.state.user} />
           {/* <RecommendedGrid /> */}
         </Box>

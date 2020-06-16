@@ -128,9 +128,13 @@ export default class TreeClassification extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      data: treeData
+      data: []
     }
     this.nodeOnClick = this.nodeOnClick.bind(this);
+  }
+
+  componentWillMount() {
+    this.setState({data: treeData})
   }
 
   pathFunc = (linkData: any, orientation: string) => {

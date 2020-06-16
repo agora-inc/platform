@@ -14,6 +14,7 @@ import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
 import { Talk, TalkService } from "../../Services/TalkService";
 import TagSelector from "../Core/TagSelector";
+import TopicSelector from "../Talks/TopicSelector";
 import "../../Styles/edit-talk-modal.css";
 
 interface Props {
@@ -345,6 +346,9 @@ export default class EditTalkModal extends Component<Props, State> {
             width="100%"
             height="200px"
           />
+        </OverlaySection>
+        <OverlaySection heading="Add relevant topics">
+          <TopicSelector />
         </OverlaySection>
         <OverlaySection heading="Finally, add a link so people can watch your talk">
           <TextInput

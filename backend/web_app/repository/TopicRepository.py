@@ -307,14 +307,14 @@ class TopicRepository:
 
     def getDataTreeStructure(self):
         raw_data = self.getAllTopics()
-        res = []
+        res = {"name": "master node", "id": -1, "children": []}
         for idx, e in enumerate(raw_data):
             if e['is_primitive_node']:
-                res.append({'name': e['field'], 'attribute': {'id': e['id']}, 'children': []})
+                res["children"].append({'name': e['field'], 'attributes': {'id': e['id']}, 'children': []})
                 del raw_data[idx]
 
-        for e in res:
-            e['children'] = self.getNestedDescendence(data=raw_data, id_root=e['attribute']['id'])
+        for e in res["children"]:
+            e['children'] = self.getNestedDescendence(data=raw_data, id_root=e['attributes']['id'])
 
         return res
 
@@ -395,6 +395,9 @@ if __name__ == "__main__":
 
     with open('/home/cloud-user/plateform/agora/frontend/src/assets/tree.json', 'w') as outfile:
         json.dump(obj.getDataTreeStructure(), outfile)
+
+    with open('/home/cloud-user/plateform/agora/frontend/src/assets/allTopics.json', 'w') as outfile:
+        json.dump(obj.getAllTopics(), outfile)
 
     # obj._addChildNode(name_child="TESTEST", parent_name_1="Biology", parent_name_2="Chemistry")
     # obj._renameNode(old_field_name="BIOLOGY", new_field_name="Biology")

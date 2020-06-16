@@ -43,11 +43,22 @@ const getTreeStructure = (callback: any) => {
 //     });
 // };
 
-export const TagService = {
-  getAll
+export const TopicService = {
+  getAll,
+  getTreeStructure
 };
 
-export type Tag = {
-  id: number;
+export type Topic = {
+  field: string,
+  is_primitive_node: boolean, 
+  id: number,
+  parent_1_id: number | null, 
+  parent_2_id: number | null,
+  parent_3_id: number | null,
+}
+
+export type TreeTopics = {
   name: string;
+  attribute: any
+  children: TreeTopics
 };
