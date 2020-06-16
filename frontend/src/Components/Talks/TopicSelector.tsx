@@ -33,29 +33,34 @@ export default class TopicSelector extends Component<Props, State> {
     this.setState({all: allTopics})
   }
 
-  onFieldChoose = (topicNumber: number, field: string, fieldDepth: number) => {
+  onFieldChoose = (choiceNumber: number, id: number, fieldDepth: number) => {
     let tempBools = this.state.topicsBeingShown;
 
-    if (field != "none") {
-      tempBools[topicNumber].push(true);
+    if (id >= 0) {
+      tempBools[choiceNumber].push(true);
       // tempBools[topicNumber].slice(fieldDepth+2) = false;
     } else {
-      tempBools[topicNumber].push(true);
+      tempBools[choiceNumber].push(true);
       // tempBools[topicNumber].slice(fieldDepth+1) = false;
     }
     
     let tempTopics = this.state.topics;
-    tempTopics[topicNumber].push(this.nameToId(field));
+    tempTopics[choiceNumber].push(id);
     this.setState({
       topics: tempTopics,
       topicsBeingShown: tempBools
     })
+    console.log(this.state)
   }
   
   nameToId = (name: string) => {
+    console.log("name", name)
+    console.log(this.state.all.filter(function(topic: any) {
+      return topic.field === name;
+    }))
     return(
       this.state.all.filter(function(topic: any) {
-        return topic.field == name;
+        return topic.field === name;
       }).map((topic: any) => topic.id)
     );
   }
@@ -68,19 +73,11 @@ export default class TopicSelector extends Component<Props, State> {
     );
   }
 
-  /*
-
-    let primitiveNodes = [];
-    for (let e of this.state.all) {
-      if (e.is_primitive_node) {
-        primitiveNodes.push(e.field)
-      }
-    }
-    return primitiveNodes
-  }
-  */
-
   getChildren = (id: number)  => {
+    console.log("id", id)
+    console.log(this.state.all.filter(function(topic: any) {
+      return topic.parent_1_id == id || topic.parent_2_id == id || topic.parent_3_id == id ;
+    }))
     return(
       this.state.all.filter(function(topic: any) {
         return topic.parent_1_id == id || topic.parent_2_id == id || topic.parent_3_id == id ;
@@ -99,12 +96,18 @@ export default class TopicSelector extends Component<Props, State> {
       >
         <Select
           options={this.getPrimitiveNodes()}
-          onChange={(option: string) => this.onFieldChoose(0, this.nameToId(option), 0)}
+          onChange={({option}) => this.onFieldChoose(0, this.nameToId(option)[0], 0)}
         />
         {this.state.topicsBeingShown[0][1] && (
           <Select
             options={this.getChildren(this.state.topics[0][0])}
-            onChange={(option: string) => this.onFieldChoose(0, option, 0)}
+            onChange={({option}) => this.onFieldChoose(0, this.nameToId(option)[0], 1)}
+          />
+        )}
+        {this.state.topicsBeingShown[0][2] && (
+          <Select
+            options={this.getChildren(this.state.topics[0][1])}
+            onChange={({option}) => this.onFieldChoose(0, this.nameToId(option)[0], 2)}
           />
         )}
       </Box>
