@@ -176,3 +176,21 @@ class TalkRepository:
         query = f'SELECT COUNT(*) FROM TalkSaves WHERE user_id={userId} AND talk_id={talkId}'
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"] != 0
+
+    def isTalkAvailableToUser(self, talkId, userId):
+        query = f'SELECT visibility, channel_id FROM Talks WHERE id={talkId}'
+        result = self.db.run_query(query)
+
+        if len(result) == 0:
+            return False
+
+        visibility  = result[0]["visibility"]
+        if visibility == "Everybody":
+            return True
+        
+        if visibility == "Followers and members":
+            return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["follower", "member", "owner"])
+        if visibility == "Members only":
+            return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
+        
+        return True

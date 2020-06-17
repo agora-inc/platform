@@ -299,6 +299,12 @@ def isSaved():
     talkId = int(request.args.get("talkId"))
     return jsonify({"is_saved": talks.hasUserSavedTalk(talkId, userId)})
 
+@app.route('/talks/isavailable', methods=["GET"])
+def isAvailable():
+    userId = int(request.args.get("userId"))
+    talkId = int(request.args.get("talkId"))
+    return jsonify(talks.isTalkAvailableToUser(talkId, userId))
+
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------

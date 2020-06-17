@@ -27,7 +27,12 @@ export default class AddToCalendarButtons extends Component<Props> {
 
   render() {
     return (
-      <Box direction="row" width="100%" justify="between">
+      <Box
+        direction="row"
+        width="100%"
+        justify="between"
+        style={{ minHeight: "35px" }}
+      >
         <a
           style={{ width: "48%", textDecoration: "none" }}
           href={CalendarService.generateGoogleCalendarLink(
