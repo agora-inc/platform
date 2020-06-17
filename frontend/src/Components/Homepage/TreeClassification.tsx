@@ -117,16 +117,20 @@ let configStyles = {
 
 
 interface State {
-  data: TreeTopic
+  data: any
 }
 
 export default class TreeClassification extends React.Component<{}, State> {
-
+  
   componentWillMount() {
-    TopicService.getTreeStructure((treeData: TreeTopic) => {
+    /*
+    TopicService.getDataTreeStructure((treeData: any) => {
+      console.log("Tch bon")
+      console.log(treeData)
       this.setState({ data: treeData });
     });
-   // this.setState({data: treeData})
+    */
+   this.setState({data: treeData})
   }
 
   pathFunc = (linkData: any, orientation: string) => {

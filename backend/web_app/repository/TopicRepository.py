@@ -293,18 +293,6 @@ class TopicRepository:
         except Exception as e:
             logging.error(f"get_whole_graph_in_dict: exception raised: {e}")
 
-    def getNestedDescendence(self, data, id_root):
-        res = []
-        for idx, e in enumerate(data):
-            if e['parent_1_id'] == id_root or e['parent_2_id'] == id_root or e['parent_3_id'] == id_root:
-                res.append(({'name': e['field'], 'attribute': {'id': e['id']}, 'children': []}))
-                del data[idx]
-        
-        for e in res:
-            e['children'] = self.getNestedDescendence(data=data, id_root=e['attribute']['id'])
-
-        return res
-
     def getDataTreeStructure(self):
         raw_data = self.getAllTopics()
         res = []
@@ -313,8 +301,20 @@ class TopicRepository:
                 res.append({'name': e['field'], 'attributes': {'id': e['id']}, 'children': []})
                 del raw_data[idx]
 
-        for e in res["children"]:
-            e['children'] = self.getNestedDescendence(data=raw_data, id_root=e['attributes']['id'])
+        def getNestedDescendence(data, id_root):
+            temp = []
+            for idx, e in enumerate(data):
+                if e['parent_1_id'] == id_root or e['parent_2_id'] == id_root or e['parent_3_id'] == id_root:
+                    temp.append(({'name': e['field'], 'attribute': {'id': e['id']}, 'children': []}))
+                    del data[idx]
+            
+            for e in temp:
+                e['children'] = getNestedDescendence(data=data, id_root=e['attribute']['id'])
+
+            return temp
+
+        for e in res:
+            e['children'] = getNestedDescendence(data=raw_data, id_root=e['attributes']['id'])
 
         return res
 
@@ -393,11 +393,13 @@ if __name__ == "__main__":
 
     import json
 
-    with open('/home/cloud-user/plateform/agora/frontend/src/assets/tree.json', 'w') as outfile:
-        json.dump(obj.getDataTreeStructure(), outfile)
+    print(obj.getDataTreeStructure())
 
-    with open('/home/cloud-user/plateform/agora/frontend/src/assets/allTopics.json', 'w') as outfile:
-        json.dump(obj.getAllTopics(), outfile)
+    # with open('/home/cloud-user/plateform/agora/frontend/src/assets/tree.json', 'w') as outfile:
+    #    json.dump(obj.getDataTreeStructure(), outfile)
+
+    # with open('/home/cloud-user/plateform/agora/frontend/src/assets/allTopics.json', 'w') as outfile:
+    #    json.dump(obj.getAllTopics(), outfile)
 
     # obj._addChildNode(name_child="TESTEST", parent_name_1="Biology", parent_name_2="Chemistry")
     # obj._renameNode(old_field_name="BIOLOGY", new_field_name="Biology")

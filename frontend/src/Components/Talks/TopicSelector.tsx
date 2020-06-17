@@ -28,10 +28,12 @@ export default class TopicSelector extends Component<Props, State> {
   }
 
   componentWillMount() {
+    /*
     TopicService.getAll((allTopics: Topic[]) => {
       this.setState({ all: allTopics });
     });
-    // this.setState({all: allTopics})
+    */
+    this.setState({all: allTopics})
   }
 
   onClickAddTopic = () => {
@@ -41,17 +43,21 @@ export default class TopicSelector extends Component<Props, State> {
   }
 
   onFieldChoose = (choiceNumber: number, id: number, fieldDepth: number) => {
+    let tempBools = this.state.topicsBeingShown;
+
     if (id >= 0) {
-      let tempBools = this.state.topicsBeingShown;
       tempBools[choiceNumber] = fieldDepth+1;    
-      let tempTopics = this.state.topics;
-      tempTopics[choiceNumber] = tempTopics[choiceNumber].slice(0, fieldDepth)
-      tempTopics[choiceNumber].push(id);
-      this.setState({
-        topics: tempTopics,
-        topicsBeingShown: tempBools
-      })
-    }
+    } else {
+      tempBools[choiceNumber] = fieldDepth;
+    }   
+    
+    let tempTopics = this.state.topics;
+    tempTopics[choiceNumber] = tempTopics[choiceNumber].slice(0, fieldDepth)
+    tempTopics[choiceNumber].push(id);
+    this.setState({
+      topics: tempTopics,
+      topicsBeingShown: tempBools
+    })
   }
   
   nameToId = (name: string) => {

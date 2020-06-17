@@ -501,8 +501,9 @@ def getAllTopics():
     return jsonify(topics.getAllTopics())
 
 @app.route('/topics/treestructure', methods=["GET", "OPTIONS"])
-def getAllTopics():
-    return jsonify(topics.getDataTreeStructure())
+def getDataTreeStructure():
+    return jsonify(tags.getAllTags())
+    # return jsonify(topics.getDataTreeStructure())
 
 @app.route('/topics/popular', methods=["GET"])
 def getPopularTopics():

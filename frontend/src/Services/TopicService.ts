@@ -11,13 +11,18 @@ const getAll = (callback: any) => {
     });
 };
 
-const getTreeStructure = (callback: any) => {
+const getDataTreeStructure = (callback: any) => {
   axios
     .get(baseApiUrl + "/topics/treestructure", {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then((response) => {
+      console.log("Great success")
       callback(response.data);
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
     });
 };
 
@@ -45,7 +50,7 @@ const getTreeStructure = (callback: any) => {
 
 export const TopicService = {
   getAll,
-  getTreeStructure
+  getDataTreeStructure
 };
 
 export type Topic = {
@@ -58,7 +63,7 @@ export type Topic = {
 }
 
 export type TreeTopic = {
-  name: string;
-  attribute: any
-  children: any
+  name: string,
+  attribute: any,
+  children: any,
 };
