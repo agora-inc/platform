@@ -350,7 +350,12 @@ export default class TalkCard extends Component<Props, State> {
                 justify="center"
               >
                 <Text textAlign="center" weight="bold">
-                  Sorry, this talk is not available to you :(
+                  {`Sorry, this talk is only available to ${
+                    this.props.talk.visibility === "Followers and members"
+                      ? "followers and members"
+                      : "members"
+                  }
+                  of ${this.props.talk.channel_name}`}
                 </Text>
               </Box>
             )}
