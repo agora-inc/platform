@@ -36,6 +36,16 @@ class TalkRepository:
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
         return talks
 
+    def getAllCurrentTalks(self, limit, offset):
+        query = f'SELECT * FROM Talks WHERE date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+        return (talks, self.getNumberOfPastTalks())
+
     def getAllPastTalks(self, limit, offset):
         query = f'SELECT * FROM Talks WHERE end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
         talks = self.db.run_query(query)
