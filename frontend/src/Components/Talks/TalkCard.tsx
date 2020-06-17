@@ -49,9 +49,9 @@ export default class TalkCard extends Component<Props, State> {
 
   checkIfAvailableAndRegistered = () => {
     if (this.props.user) {
-      TalkService.isRegisteredForTalk(
-        this.props.talk.id,
+      TalkService.isAvailableToUser(
         this.props.user.id,
+        this.props.talk.id,
         (available: boolean) => {
           this.setState({ available }, () => {
             if (available) {
