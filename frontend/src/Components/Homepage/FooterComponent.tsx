@@ -25,14 +25,13 @@ export default class FooterComponent extends Component {
         />
         <Box direction="row" justify="between">
           <Box>
-            <Heading level={3}>Agora</Heading>
-            <Anchor href="/about" label="About" color="grey" />
-            <Anchor href="/pricing" label="Pricing" color="grey" />
-            <Anchor href="/company" label="Company" color="grey" />
+            <Anchor href="/info/welcome" label="About us" color="grey" />
+            <Anchor href="/info/tos" label="Terms of service" color="grey" />
+            <Anchor href="/info/privacy" label="Data privacy" color="grey" />
           </Box>
           <Box>
-            <Text>Made with ❤️ in England + Switzerland</Text>
-            <Text style={{ fontSize: 14 }}>© Copyright 2020 Agora</Text>
+            <Text>Made by Researchers for Researchers.</Text>
+            <Text style={{ fontSize: 14 }}>agora.stream © 2020</Text>
           </Box>
         </Box>
       </Box>

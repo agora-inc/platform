@@ -35,14 +35,14 @@ export default class PrivacyPage extends Component<Props, State> {
         margin={{ top: "140px" }}
       >
         <Box width="75%">
-          <Box
+          {/* <Box
             width="98.25%"
             height="1500px"
             background="#C8EDEC"
             round="xsmall"
             pad="small"
             // gap="xsmall"
-          >
+          > */}
             <Text color="black" size="20px">
                 <h1><b>Data privacy </b></h1>
                 <p>As with any other website, when using agora.stream, your internet browser and our servers exchange data. We are going to tell you exactly what transacts and how it is used.
@@ -108,12 +108,10 @@ export default class PrivacyPage extends Component<Props, State> {
                 </p>
 
                 <h2> <b>4. Contacts</b> </h2>
-                ADD ADDRESS
-                
-                <br/>
+                <p>Contact information: <em>agora.stream.inquiries(.at.)gmail.com</em></p>
                 <p><em>Last revision: 16 June 2020 </em></p>
             </Text>
-          </Box>
+          {/* </Box> */}
 
 
         </Box>

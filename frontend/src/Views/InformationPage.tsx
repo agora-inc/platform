@@ -35,14 +35,14 @@ export default class InformationPage extends Component<Props, State> {
         margin={{ top: "140px" }}
       >
         <Box width="75%">
-          <Box
+          {/* <Box
             width="98.25%"
             height="950px"
             background="#C8EDEC"
             round="xsmall"
             pad="small"
             // gap="xsmall"
-          >
+          > */}
             <Text color="black" size="20px">
             <h1> <b>Welcome to Agora!</b> </h1> 
             <h2> <b>A. What does Agora believe in?</b></h2>
@@ -89,8 +89,8 @@ export default class InformationPage extends Component<Props, State> {
 
 
             <h2> <b>D. Any questions? </b></h2>
-            <p>Do you have any questions, inqueries, or suggestions? If yes, please reach out to us using the top right-hand side button, or drop us a message at agora.stream.support[at]gmail.com!</p>
-
+            <p>Do you have any questions, inqueries, or suggestions? If yes, please reach out to us using the top right-hand side button, or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our <a href="https://www.agora.stream/info/tos"> Term of services</a> and <a href="https://www.agora.stream/info/privacy"> data privacy policies</a>.
+            </p>
 
 
 
@@ -98,7 +98,7 @@ export default class InformationPage extends Component<Props, State> {
 
             </Text>
 
-          </Box>
+          {/* </Box> */}
 
 
         </Box>

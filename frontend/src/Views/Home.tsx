@@ -59,6 +59,7 @@ export default class Home extends Component<{}, State> {
           />
           <RecentTalksList user={this.state.user} />
           {/* <RecommendedGrid /> */}
+          <FooterComponent />
         </Box>
       </Box>
     );

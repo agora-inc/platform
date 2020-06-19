@@ -35,14 +35,14 @@ export default class TermsOfService extends Component<Props, State> {
         margin={{ top: "140px" }}
       >
         <Box width="75%">
-          <Box
+          {/* <Box
             width="98.25%"
             height="3000px"
             background="#C8EDEC"
             round="xsmall"
             pad="small"
             // gap="xsmall"
-          >
+          > */}
             <Text color="black" size="20px">
             <h1><b>Terms of service</b></h1>
             <p>Simply put, we thrive to maintain a high scientific standard of conduct on this plateform. The following paragraphs are here to set the ground guidelines of usage for you, the user, and state the rights we have to sanction any misconduct. </p>
@@ -89,11 +89,10 @@ export default class TermsOfService extends Component<Props, State> {
                 <li> These terms are subject to change. </li>
               </ol>
             <h2><b>6. Contacts</b></h2>
-            - Contact information: *************CREATE EMAIL ADDRESS FOR THA
-                <br/>
+                <p>Contact information: <em>agora.stream.inquiries(.at.)gmail.com</em></p>
                 <p><em>Last revision: 16 June 2020 </em></p>
             </Text>
-          </Box>
+          {/* </Box> */}
 
         </Box>
       </Box>
