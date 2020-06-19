@@ -16,6 +16,10 @@ import Schedule from "./Views/Schedule";
 import AllUpcomingTalksPage from "./Views/AllUpcomingTalksPage";
 import AllPastTalksPage from "./Views/AllPastTalksPage";
 import SavedTalksPage from "./Views/SavedTalksPage";
+import InformationPage from "./Views/InformationPage";
+import TermsOfServicePage from "./Views/TermsOfServicePage";
+import PrivacyPage from "./Views/PrivacyPage";
+
 
 function App() {
   return (
@@ -36,6 +40,9 @@ function App() {
           <Route path="/saved" component={SavedTalksPage} />
           <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
+          <Route path="/info/welcome" component={InformationPage} />
+          <Route path="/info/tos" component={TermsOfServicePage} />
+          <Route path="/info/privacy" component={PrivacyPage} />
           <Route path="*" component={ChannelPage} />
         </Switch>
       </Grommet>
