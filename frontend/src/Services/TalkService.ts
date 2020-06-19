@@ -13,6 +13,16 @@ const getAllFutureTalks = (limit: number, offset: number, callback: any) => {
     });
 };
 
+const getAllCurrentTalks = (limit: number, offset: number, callback: any) => {
+  axios
+    .get(`${baseApiUrl}/talks/all/current?limit=${limit}&offset=${offset}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const getAllPastTalks = (limit: number, offset: number, callback: any) => {
   axios
     .get(`${baseApiUrl}/talks/all/past?limit=${limit}&offset=${offset}`, {
@@ -289,6 +299,7 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
 
 export const TalkService = {
   getAllFutureTalks,
+  getAllCurrentTalks,
   getAllPastTalks,
   getFutureTalksForChannel,
   getPastTalksForChannel,
