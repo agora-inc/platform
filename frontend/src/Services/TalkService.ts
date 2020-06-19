@@ -2,6 +2,7 @@ import { baseApiUrl } from "../config";
 import { Tag } from "./TagService";
 import { ArtService } from "./ArtService";
 import axios from "axios";
+import { Topic } from "../Services/TopicService";
 
 const getAllFutureTalks = (limit: number, offset: number, callback: any) => {
   axios
@@ -83,9 +84,7 @@ const editTalk = (
   talkTags: Tag[],
   showLinkOffset: number,
   visibility: string,
-  topic1Id: number,
-  topic2Id: number,
-  topic3Id: number,
+  topics: Topic[],
   callback: any
 ) => {
   axios
@@ -101,9 +100,7 @@ const editTalk = (
         talkTags: talkTags,
         showLinkOffset: showLinkOffset,
         visibility: visibility,
-        topic1Id: topic1Id,
-        topic2Id: topic2Id,
-        topic3Id: topic3Id,
+        topics: topics,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -126,9 +123,7 @@ const scheduleTalk = (
   talkTags: Tag[],
   showLinkOffset: number,
   visibility: string,
-  topic1Id: number,
-  topic2Id: number,
-  topic3Id: number,
+  topics: Topic[],
   callback: any
 ) => {
   axios
@@ -145,9 +140,7 @@ const scheduleTalk = (
         talkTags: talkTags,
         showLinkOffset: showLinkOffset,
         visibility: visibility,
-        topic1Id: topic1Id,
-        topic2Id: topic2Id,
-        topic3Id: topic3Id
+        topics: topics,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -347,7 +340,5 @@ export type Talk = {
   tags: Tag[];
   show_link_offset: number;
   visibility: string;
-  topic1Id: number,
-  topic2Id: number,
-  topic3Id: number
+  topics: Topic[];
 };

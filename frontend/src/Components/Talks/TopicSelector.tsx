@@ -13,7 +13,7 @@ interface State {
 }
 
 interface Props {
-  maxDepth: number
+  onSelectedTopicCallback: any
 }
 
 export default class TopicSelector extends Component<Props, State> {
