@@ -142,18 +142,19 @@ const scheduleTalk = (
         talkTags: talkTags,
         showLinkOffset: showLinkOffset,
         visibility: visibility,
-        topic1Id: topics[0].id,
-        topic2Id: topics[1].id,
-        topic3Id: topics[2].id,
+        topic1Id: topics.length > 0 ? topics[0].id : null,
+        topic2Id: topics.length > 1 ? topics[1].id : null,
+        topic3Id: topics.length > 2 ? topics[2].id : null,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
       callback(response.data);
+    })
+    .catch(function (error) {
+      console.log("Schedule talk go brrrr")
+      callback(false);
     });
-  // .catch(function (error) {
-  //   callback(false);
-  // });
 };
 
 const deleteTalk = (id: number, callback: any) => {

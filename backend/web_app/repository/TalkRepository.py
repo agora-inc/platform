@@ -1,6 +1,10 @@
-from repository.ChannelRepository import ChannelRepository
-from repository.TagRepository import TagRepository
-from repository.TopicRepository import TopicRepository
+# from repository.ChannelRepository import ChannelRepository
+# from repository.TagRepository import TagRepository
+# from repository.TopicRepository import TopicRepository
+
+from ChannelRepository import ChannelRepository
+from TagRepository import TagRepository
+from TopicRepository import TopicRepository
 
 
 class TalkRepository:
@@ -109,15 +113,9 @@ class TalkRepository:
         return talk
 
     def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id):
-        data = {'id1': topic_1_id, 'id2': topic_2_id, 'id3': topic_3_id}
-        with open('/home/cloud-user/err.log', 'w') as outfile:
-            json.dump(data, outfile)
-        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', {topic_1_id}, {topic_2_id}, {topic_3_id});"
-        idQuery = "SELECT LAST_INSERT_ID();"        
-        
-        insertId = self.db.run_query([query, idQuery])[1][0]["LAST_INSERT_ID()"]
+        query = f'INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", "{showLinkOffset}", "{visibility}", {topic_1_id}, {topic_2_id}, {topic_3_id});'        
+        insertId = self.db.run_query(query)[0]
 
-        exit()
         tagIds = [t["id"] for t in talkTags]
         self.tags.tagTalk(insertId, tagIds)
 
@@ -175,18 +173,7 @@ class TalkRepository:
             talk["channel_colour"] = channel["colour"]
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
-        return talks    channelId = 1
-    channelName = "ImperialBioEng"
-    talkName = "TEST_TEST_T"
-    startDate = time.time()
-    endDate = time.time()
-    talkDescription = "basfd"
-    talkLink = "sdafsd"
-    showLinkOffset = ""
-    visibility = "Everybody"
-    topic_1_id = 2
-    topic_2_id = 3
-    topic_3_id = 4
+        return talks
 
     def getPastTalksForTag(self, tagName):
         query = f'SELECT id FROM Tags WHERE name = "{tagName}"'
@@ -304,18 +291,18 @@ if __name__ == "__main__":
 
     channelId = 1
     channelName = "ImperialBioEng"
-    talkName = "TEST_TEST_T"
-    startDate = time.time()
-    endDate = time.time()
-    talkDescription = "basfd"
-    talkLink = "sdafsd"
-    showLinkOffset = ""
+    talkName = "TEST_TEST_TEST"
+    startDate = "2020-06-09 14:00:00.0"
+    endDate = "2020-06-09 16:00:00.0"
+    talkDescription = "DOOOOPE"
+    talkLink = "zoom zoom"
+    showLinkOffset = "1212"
     visibility = "Everybody"
     topic_1_id = 2
     topic_2_id = 3
     topic_3_id = 4
 
-    talkTags = [1,2]
+    talkTags = [{"id": "496", "name": "Deep"}, {"id": "28", "name": "Rough"}]
 
 
     res = obj.scheduleTalk(channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id)
