@@ -2,6 +2,7 @@ from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
 
+
 class TalkRepository:
     def __init__(self, db):
         self.db = db
@@ -111,9 +112,12 @@ class TalkRepository:
         data = {'id1': topic_1_id, 'id2': topic_2_id, 'id3': topic_3_id}
         with open('/home/cloud-user/err.log', 'w') as outfile:
             json.dump(data, outfile)
-        query = f'INSERT INTO Talks(channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", "{showLinkOffset}", "{visibility}, {topic_1_id}, {topic_2_id}, {topic_3_id}")'
-        insertId = self.db.run_query(query)[0]
+        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', {topic_1_id}, {topic_2_id}, {topic_3_id});"
+        idQuery = "SELECT LAST_INSERT_ID();"        
+        
+        insertId = self.db.run_query([query, idQuery])[1][0]["LAST_INSERT_ID()"]
 
+        exit()
         tagIds = [t["id"] for t in talkTags]
         self.tags.tagTalk(insertId, tagIds)
 
@@ -171,7 +175,18 @@ class TalkRepository:
             talk["channel_colour"] = channel["colour"]
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
-        return talks
+        return talks    channelId = 1
+    channelName = "ImperialBioEng"
+    talkName = "TEST_TEST_T"
+    startDate = time.time()
+    endDate = time.time()
+    talkDescription = "basfd"
+    talkLink = "sdafsd"
+    showLinkOffset = ""
+    visibility = "Everybody"
+    topic_1_id = 2
+    topic_2_id = 3
+    topic_3_id = 4
 
     def getPastTalksForTag(self, tagName):
         query = f'SELECT id FROM Tags WHERE name = "{tagName}"'
@@ -212,3 +227,96 @@ class TalkRepository:
         query = f'SELECT COUNT(*) FROM TalkSaves WHERE user_id={userId} AND talk_id={talkId}'
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"] != 0
+
+
+if __name__ == "__main__":
+
+    import pymysql
+    class Database:
+        def __init__(self):
+            self.host = "apollo-2.c91ghtqneybi.eu-west-2.rds.amazonaws.com"
+            self.user = "admin"
+            self.password = "123.qwe.asd"
+            self.db = "apollo"
+            self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.
+                                    DictCursor)
+        def open_connection(self):
+            """Connect to MySQL Database."""
+            try:
+                if self.con is None:
+                    self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.DictCursor)
+            except pymysql.MySQLError as e:
+                logging.error(e)
+                sys.exit()
+            finally:
+                logging.info('Connection opened successfully.')
+
+        def run_query(self, query):
+            """Execute SQL query."""
+            def _single_query(query):
+                try:
+                    self.open_connection()
+                    with self.con.cursor() as cur:
+                        if 'SELECT' in query:
+                            records = []
+                            cur.execute(query)
+                            result = cur.fetchall()
+                            for row in result:
+                                records.append(row)
+                            cur.close()
+                            return records
+                        else:
+                            result = cur.execute(query)
+                            self.con.commit()
+                            insertId = cur.lastrowid
+                            rowCount = cur.rowcount
+                            cur.close()
+                            return [insertId, rowCount]
+                except pymysql.MySQLError as e:
+                    logging.warning(f"(Database):run_query: exception: {e}")
+                finally:
+                    if self.con:
+                        self.con.close()
+                        self.con = None
+                        logging.info('Database connection closed.')
+
+            if isinstance(query, str):
+                return _single_query(query)
+            elif isinstance(query, list):
+                responses = []
+                for q in query:
+                    if isinstance(q, str):
+                        responses.append(_single_query(q))
+                    else:
+                        raise TypeError("run_query: each element of the list must be a string.")
+                return responses
+            elif isinstance(query, None):
+                pass
+            else:
+                raise TypeError("run_query: query must be a SQL request string or a list of SQL request strings.")
+
+    import time
+    import json
+    import logging
+    
+    db = Database()
+    obj = TalkRepository(db)
+
+    channelId = 1
+    channelName = "ImperialBioEng"
+    talkName = "TEST_TEST_T"
+    startDate = time.time()
+    endDate = time.time()
+    talkDescription = "basfd"
+    talkLink = "sdafsd"
+    showLinkOffset = ""
+    visibility = "Everybody"
+    topic_1_id = 2
+    topic_2_id = 3
+    topic_3_id = 4
+
+    talkTags = [1,2]
+
+
+    res = obj.scheduleTalk(channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id)
+    print(res)
