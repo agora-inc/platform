@@ -2,9 +2,11 @@
 # from repository.TagRepository import TagRepository
 # from repository.TopicRepository import TopicRepository
 
+
 from ChannelRepository import ChannelRepository
 from TagRepository import TagRepository
 from TopicRepository import TopicRepository
+
 
 
 class TalkRepository:
@@ -113,7 +115,7 @@ class TalkRepository:
         return talk
 
     def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id):
-        query = f'INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", "{showLinkOffset}", "{visibility}", {topic_1_id}, {topic_2_id}, {topic_3_id});'        
+        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', {topic_1_id}, {topic_2_id}, {topic_3_id})"        
         insertId = self.db.run_query(query)[0]
 
         tagIds = [t["id"] for t in talkTags]
@@ -289,20 +291,36 @@ if __name__ == "__main__":
     db = Database()
     obj = TalkRepository(db)
 
+    list_tags = db.run_query("SELECT * FROM Tags")
+    print(list_tags)
+
     channelId = 1
     channelName = "ImperialBioEng"
+<<<<<<< HEAD
     talkName = "TEST_TEST_TEST"
     startDate = "2020-06-09 14:00:00.0"
     endDate = "2020-06-09 16:00:00.0"
     talkDescription = "DOOOOPE"
     talkLink = "zoom zoom"
     showLinkOffset = "1212"
+=======
+    talkName = "TEST_TEST_T"
+    startDate = '2020-06-09 14:00:00.0'
+    endDate = '2020-06-09 14:00:00.0'
+    talkDescription = "basfd"
+    talkLink = "sdafsd"
+    showLinkOffset = 1
+>>>>>>> ee0b7aade4bcf1eab3918fab534fcca03c7d62d7
     visibility = "Everybody"
     topic_1_id = 2
     topic_2_id = 3
     topic_3_id = 4
 
+<<<<<<< HEAD
     talkTags = [{"id": "496", "name": "Deep"}, {"id": "28", "name": "Rough"}]
+=======
+    talkTags = list_tags
+>>>>>>> ee0b7aade4bcf1eab3918fab534fcca03c7d62d7
 
 
     res = obj.scheduleTalk(channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id)
