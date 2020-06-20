@@ -34,10 +34,6 @@ export default class TalkList extends Component<Props> {
   //   };
   // }
 
-  // componentWillMount() {
-  //   this.fetchTalks();
-  // }
-
   // fetchTalks = () => {
   //   TalkService.getAllTalks(
   //     6,

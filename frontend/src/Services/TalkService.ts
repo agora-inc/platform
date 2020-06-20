@@ -100,7 +100,9 @@ const editTalk = (
         talkTags: talkTags,
         showLinkOffset: showLinkOffset,
         visibility: visibility,
-        topics: topics,
+        topic1Id: topics[0].id,
+        topic2Id: topics[1].id,
+        topic3Id: topics[2].id,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -140,7 +142,9 @@ const scheduleTalk = (
         talkTags: talkTags,
         showLinkOffset: showLinkOffset,
         visibility: visibility,
-        topics: topics,
+        topic1Id: topics[0].id,
+        topic2Id: topics[1].id,
+        topic3Id: topics[2].id,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )

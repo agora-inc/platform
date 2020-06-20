@@ -498,10 +498,14 @@ def getTagsOnStream():
 # --------------------------------------------
 @app.route('/topics/all', methods=["GET", "OPTIONS"])
 def getAllTopics():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
     return jsonify(topics.getAllTopics())
 
 @app.route('/topics/treestructure', methods=["GET", "OPTIONS"])
 def getDataTreeStructure():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
     return jsonify(tags.getAllTags())
     # return jsonify(topics.getDataTreeStructure())
 

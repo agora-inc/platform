@@ -68,6 +68,7 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   onFinishClicked = () => {
+    console.log(this.state)
     this.setState(
       {
         loading: true,
@@ -110,7 +111,7 @@ export default class EditTalkModal extends Component<Props, State> {
         label = "24 hours before";
         break;
     }
-    console.log(label);
+    // console.log(label);
     return {
       label: label,
       value: offset,
@@ -204,9 +205,12 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   selectTopic = (topic: Topic, num: number) => {
+    console.log(num, topic)
+    let tempTopics = this.state.topics;
+    tempTopics[num] = topic;
     this.setState({
-      
-    })
+      topics: tempTopics
+    });
   }
 
   getDateBounds = () => {
@@ -347,7 +351,7 @@ export default class EditTalkModal extends Component<Props, State> {
           />
         </OverlaySection>
         <OverlaySection heading="Add relevant topics">
-          <TopicSelector onSelectedTopicCallback={this.selectTopic} />
+          <TopicSelector onSelectedCallback={this.selectTopic} />
         </OverlaySection>
         <OverlaySection heading="Finally, add a link so people can watch your talk">
           <TextInput

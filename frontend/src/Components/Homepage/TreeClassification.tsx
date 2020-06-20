@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Tree } from 'react-d3-tree';
-import treeData from "../../assets/tree.json"
-import { TopicService, TreeTopic } from "../../Services/TopicService"
-
+import { Tree } from "react-d3-tree";
+import treeData from "../../assets/tree.json";
+import { TopicService, TreeTopic } from "../../Services/TopicService";
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 /*
 const myTreeData = [
@@ -108,49 +108,54 @@ class NodeLabel extends React.PureComponent<Props> {
 
 let configStyles = {
   links: {
-    fill:"none",
+    fill: "none",
     stroke: "#222",
     strokeWidth: "2px",
-    strokeDasharray:"2,2"
+    strokeDasharray: "2,2",
   },
-}
+};
 
 
 interface State {
-  data: any
+  data: any;
 }
 
 export default class TreeClassification extends React.Component<{}, State> {
-  
+  constructor(props: any) {
+    super(props)
+    this.state = {
+      data: []
+    }
+  }
+
   componentWillMount() {
-    
     TopicService.getDataTreeStructure((treeData: any) => {
-      console.log("Tch bon")
-      console.log(treeData)
+      // console.log("Tch bon");
+      // console.log(treeData);
       this.setState({ data: treeData });
     });
-    
-   // this.setState({data: treeData})
+    console.log(treeData);
+    // this.setState({ data: treeData });
   }
 
   pathFunc = (linkData: any, orientation: string) => {
     const { source, target } = linkData;
     return 0;
-  }
+  };
 
   nodeOnClick = (nodeData: any, e: any) => {
-    let temp = this.state.data;    
-  }
+    let temp = this.state.data;
+  };
 
   render() {
+    console.log(this.state.data)
     return (
-      <div id="treeWrapper" style={{width: '200em', height: '50em'}}>
-        <Tree 
-          data={this.state.data} 
-          translate={{y: 100, x:400}} 
+      <div id="treeWrapper" style={{ width: "200em", height: "50em" }}>
+        <Tree
+          data={this.state.data}
+          translate={{ y: 100, x: 400 }}
           orientation={"horizontal"}
-          separation={{siblings: 0.3, nonSiblings: 0.2}}
-          
+          separation={{ siblings: 0.3, nonSiblings: 0.2 }}
           allowForeignObjects
           onClick={this.nodeOnClick}
           useCollapseData={true}
