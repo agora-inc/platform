@@ -220,21 +220,51 @@ class TopicRepository:
     def _changeNodeParents(self):
         raise NotImplementedError
 
-    def getChilds(self, parent_field=None, parent_id=None):
+    def getChildren(self, parent_field=None, parent_id=None, queried_field="*"):
         if parent_field == None and parent_id == None:
             logging.warning("getChildIds: 'parent_field' and 'parent_id' cannot be both None at the same time.")
 
         if parent_field != None:
-            query_id_parent = f"SELECT * FROM ClassificationGraphNodes WHERE field={parent_field}"
-            parent_id = self.db.run_query(query_id_parent)["id"] 
+            query_id_parent = f"SELECT id FROM ClassificationGraphNodes WHERE field={parent_field}"
+            parent_id = self.db.run_query(query_id_parent)[0]["id"] 
 
         elif parent_id != None:
-            query_childs = f"SELECT * FROM ClassificationGraphNodes WHERE parent_1_id = '{parent_id}' OR parent_1_id = '{parent_id}' OR parent_1_id = '{parent_id}'"
+            query_childs = f"SELECT {queried_field} FROM ClassificationGraphNodes WHERE parent_1_id = '{parent_id}' OR parent_1_id = '{parent_id}' OR parent_1_id = '{parent_id}'"
 
         try:
             return self.db.run_query(query_childs)
         except Exception as e:
             logging.error(f"getChildIds: exception raised: {e}")
+
+    def getAllChildrenIdRecursive(self, parent_field=None, parent_id=None):
+        if parent_field == None and parent_id == None:
+            logging.warning("getAllChildsRecursive: 'parent_field' and 'parent_id' cannot be both None at the same time.")
+
+        if parent_field != None:
+            child_ids = [i["id"] for i in self.getChildren(parent_field=parent_field, queried_field="id")]
+
+        elif parent_id != None:
+            child_ids = [i["id"] for i in self.getChildren(parent_id=parent_id, queried_field="id")]
+            
+        still_ids_to_query = True
+        all_ids = child_ids.copy()
+        all_grand_children_ids = []
+        while still_ids_to_query:
+            for id in child_ids:
+                id_query = f"SELECT id FROM ClassificationGraphNodes WHERE parent_1_id = '{id}' OR parent_1_id = '{id}' OR parent_1_id = '{id}'"
+                id_query_res = self.db.run_query(id_query)
+                if isinstance(id_query_res, list):
+                    if len(id_query_res) != 0:
+                        grand_children_ids = [i["id"] for i in id_query_res]
+                        all_grand_children_ids = all_grand_children_ids + grand_children_ids
+            if len(all_grand_children_ids) != 0:
+                all_ids = all_ids + all_grand_children_ids
+                child_ids = all_grand_children_ids.copy()
+                all_grand_children_ids = []
+            else:
+                still_ids_to_query = False
+
+        return all_ids
 
     def getParents(self, field_name=None, node_id=None):
         """Method to get the information regarding the parents for a node 
@@ -393,7 +423,9 @@ if __name__ == "__main__":
 
     import json
 
-    print(obj.getDataTreeStructure())
+    print(obj.getAllChildrenIdRecursive(parent_id=15))
+    # print(obj.getChildren(parent_id=15))
+
 
     # with open('/home/cloud-user/plateform/agora/frontend/src/assets/tree.json', 'w') as outfile:
     #    json.dump(obj.getDataTreeStructure(), outfile)
