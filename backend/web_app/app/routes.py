@@ -236,16 +236,14 @@ def getAllPastTalksForTopic():
 def scheduleTalk():
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
 
-    param_keys = ["channelId", "channelName", "talkName", "startDate", "endDate", "talkDescription", "talkLink", "talkTags", "showLinkOffset", "visibility", "topic1Id", "topic2Id", "topic3Id"]
-    if isinstance(params, dict):
-        if param_keys in params:
-            return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
-        else:
-            raise Exception("scheduleTalk: one of the param key is missing.")
-    else:
-        raise TypeError("scheduleTalk: received params is not a dictionary")
+    for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
+        if params[topic_key] == None:
+            params[topic_key] = "NULL" 
+
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 def editTalk():

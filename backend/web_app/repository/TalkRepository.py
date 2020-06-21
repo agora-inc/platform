@@ -1,12 +1,11 @@
-# from repository.ChannelRepository import ChannelRepository
-# from repository.TagRepository import TagRepository
-# from repository.TopicRepository import TopicRepository
+from repository.ChannelRepository import ChannelRepository
+from repository.TagRepository import TagRepository
+from repository.TopicRepository import TopicRepository
 
 
-from ChannelRepository import ChannelRepository
-from TagRepository import TagRepository
-from TopicRepository import TopicRepository
-
+# from ChannelRepository import ChannelRepository
+# from TagRepository import TagRepository
+# from TopicRepository import TopicRepository
 
 
 class TalkRepository:
@@ -111,12 +110,18 @@ class TalkRepository:
     def getTalkById(self, talkId):
         query = f'SELECT * FROM Talks WHERE id = {talkId}'
         talk = self.db.run_query(query)[0]
+
         talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+        talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talk
 
     def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id):
-        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', {topic_1_id}, {topic_2_id}, {topic_3_id})"        
+        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', {topic_1_id}, {topic_2_id}, {topic_3_id});"
+        
         insertId = self.db.run_query(query)[0]
+
+        if not isinstance(insertId, int):
+            raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
 
         tagIds = [t["id"] for t in talkTags]
         self.tags.tagTalk(insertId, tagIds)
@@ -220,7 +225,7 @@ class TalkRepository:
 
 if __name__ == "__main__":
 
-    import pymysql
+    import pymysql, sys
     class Database:
         def __init__(self):
             self.host = "apollo-2.c91ghtqneybi.eu-west-2.rds.amazonaws.com"
@@ -296,32 +301,18 @@ if __name__ == "__main__":
 
     channelId = 1
     channelName = "ImperialBioEng"
-<<<<<<< HEAD
-    talkName = "TEST_TEST_TEST"
-    startDate = "2020-06-09 14:00:00.0"
-    endDate = "2020-06-09 16:00:00.0"
-    talkDescription = "DOOOOPE"
-    talkLink = "zoom zoom"
-    showLinkOffset = "1212"
-=======
     talkName = "TEST_TEST_T"
     startDate = '2020-06-09 14:00:00.0'
     endDate = '2020-06-09 14:00:00.0'
     talkDescription = "basfd"
     talkLink = "sdafsd"
     showLinkOffset = 1
->>>>>>> ee0b7aade4bcf1eab3918fab534fcca03c7d62d7
     visibility = "Everybody"
-    topic_1_id = 2
-    topic_2_id = 3
-    topic_3_id = 4
+    topic_1_id = 17
+    topic_2_id = 30
+    topic_3_id = "NULL"
 
-<<<<<<< HEAD
-    talkTags = [{"id": "496", "name": "Deep"}, {"id": "28", "name": "Rough"}]
-=======
     talkTags = list_tags
->>>>>>> ee0b7aade4bcf1eab3918fab534fcca03c7d62d7
-
 
     res = obj.scheduleTalk(channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id)
     print(res)
