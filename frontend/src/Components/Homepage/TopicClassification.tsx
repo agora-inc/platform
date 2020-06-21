@@ -86,10 +86,6 @@ export default class TopicSelector extends Component<Props, State> {
       .map((temp: Topic) => temp.field);
   };
 
-  getAllChildren = (topic: Topic) => { 
-
-  }
-
   render() {
     return (
       <Box width="100%">
