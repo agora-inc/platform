@@ -1,12 +1,11 @@
-# from repository.ChannelRepository import ChannelRepository
-# from repository.TagRepository import TagRepository
-# from repository.TopicRepository import TopicRepository
+from repository.ChannelRepository import ChannelRepository
+from repository.TagRepository import TagRepository
+from repository.TopicRepository import TopicRepository
 
 
-from ChannelRepository import ChannelRepository
-from TagRepository import TagRepository
-from TopicRepository import TopicRepository
-
+# from ChannelRepository import ChannelRepository
+# from TagRepository import TagRepository
+# from TopicRepository import TopicRepository
 
 
 class TalkRepository:
@@ -111,35 +110,17 @@ class TalkRepository:
     def getTalkById(self, talkId):
         query = f'SELECT * FROM Talks WHERE id = {talkId}'
         talk = self.db.run_query(query)[0]
+
         talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
         return talk
 
     def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id):
-        data = {'id1': topic_1_id, 'id2': topic_2_id, 'id3': topic_3_id}
-        with open('/home/cloud-user/err.log', 'w') as outfile:
-            json.dump(data, outfile)
-        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', {topic_1_id}, {topic_2_id}, {topic_3_id})"
-        
-        # channel_id, 
-        # channel_name, 
-        # name, 
-        # date, 
-        # end_date, 
-        # description, 
-        # link, 
-        # show_link_offset, 
-        # visibility, 
-        # topic_1_id, 
-        # topic_2_id, 
-        # topic_3_id
-
-        # id
-        # recording_link
-        # placeholder_art_url
-        
-
+        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', {topic_1_id}, {topic_2_id}, {topic_3_id});"
         
         insertId = self.db.run_query(query)[0]
+
+        if not isinstance(insertId, int):
+            raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
 
         tagIds = [t["id"] for t in talkTags]
         self.tags.tagTalk(insertId, tagIds)
@@ -243,7 +224,7 @@ class TalkRepository:
 
 if __name__ == "__main__":
 
-    import pymysql
+    import pymysql, sys
     class Database:
         def __init__(self):
             self.host = "apollo-2.c91ghtqneybi.eu-west-2.rds.amazonaws.com"
@@ -329,8 +310,6 @@ if __name__ == "__main__":
     topic_1_id = 2
     topic_2_id = 3
     topic_3_id = 4
-
-    talkTags = list_tags
 
 
     res = obj.scheduleTalk(channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id)
