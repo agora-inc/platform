@@ -20,35 +20,7 @@ interface Props {
   user: User | null;
 }
 
-// interface State {
-//   loading: boolean;
-//   talks: Talk[];
-// }
-
 export default class TalkList extends Component<Props> {
-  // constructor(props: Props) {
-  //   super(props);
-  //   this.state = {
-  //     loading: true,
-  //     talks: [],
-  //   };
-  // }
-
-  // componentWillMount() {
-  //   this.fetchTalks();
-  // }
-
-  // fetchTalks = () => {
-  //   TalkService.getAllTalks(
-  //     6,
-  //     0,
-  //     (talks: Talk[]) => {
-  //       console.log(talks);
-  //       this.setState({ talks, loading: false });
-  //     }
-  //   );
-  // };
-
   render() {
     return (
       <Box width="100%">

@@ -6,11 +6,11 @@ export default class FooterComponent extends Component {
     return (
       <Box
         pad="none"
-        margin={{ top: "xlarge", bottom: "large" }}
+        margin={{ top: "xlarge", bottom: "small" }}
         style={{
           position: "relative",
           bottom: 0,
-          width: "82%",
+          width: "100%",
         }}
       >
         <hr
@@ -20,7 +20,7 @@ export default class FooterComponent extends Component {
             color: "#dadada",
             borderColor: "#dadada",
             backgroundColor: "#dadada",
-            marginBottom: 50,
+            marginBottom: 20,
           }}
         />
         <Box direction="row" justify="between">

@@ -141,17 +141,21 @@ export default class TalkCard extends Component<Props, State> {
             <Box
               direction="row"
               gap="xsmall"
-              align="center"
+              // align="center"
               style={{ minHeight: "30px" }}
             >
               <Box
-                height="25px"
-                width="25px"
-                round="12.5px"
                 justify="center"
                 align="center"
                 background="#efeff1"
                 overflow="hidden"
+                style={{
+                  minHeight: 25,
+                  minWidth: 25,
+                  maxHeight: 25,
+                  maxWidth: 25,
+                  borderRadius: 12.5,
+                }}
               >
                 {!this.props.talk.has_avatar && (
                   <Identicon string={this.props.talk.channel_name} size={15} />
@@ -234,20 +238,19 @@ export default class TalkCard extends Component<Props, State> {
               gap="xsmall"
             >
               <Box style={{ minHeight: "25%", maxHeight: "60%" }}>
-                <Box
-                  direction="row"
-                  gap="xsmall"
-                  align="center"
-                  style={{ minHeight: "30px" }}
-                >
+                <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
                   <Box
-                    height="25px"
-                    width="25px"
-                    round="12.5px"
                     justify="center"
                     align="center"
                     background="#efeff1"
                     overflow="hidden"
+                    style={{
+                      minHeight: 25,
+                      minWidth: 25,
+                      maxHeight: 25,
+                      maxWidth: 25,
+                      borderRadius: 12.5,
+                    }}
                   >
                     {!this.props.talk.has_avatar && (
                       <Identicon
@@ -299,6 +302,7 @@ export default class TalkCard extends Component<Props, State> {
                         width="80px"
                         height="35px"
                         colour="#f3f3f3"
+                        marginTop={8}
                       />
                     ))}
                   </Box>

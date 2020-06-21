@@ -7,6 +7,7 @@ interface Props {
   width?: string;
   height?: string;
   colour?: string;
+  marginTop?: any;
 }
 
 export default class Tag extends Component<Props> {
@@ -21,7 +22,7 @@ export default class Tag extends Component<Props> {
         style={{
           textDecoration: "none",
           padding: 0,
-          margin: 0,
+          marginTop: this.props.marginTop || 0,
           maxWidth: "50%",
           height: this.props.height,
         }}

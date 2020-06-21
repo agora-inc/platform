@@ -54,17 +54,21 @@ export default class TrendingChannelsList extends Component<{}, State> {
               <Box
                 direction="row"
                 gap="xsmall"
-                align="center"
+                // align="center"
                 pad={{ vertical: "3.5px", horizontal: "small" }}
               >
                 <Box
                   background="white"
-                  height="40px"
-                  width="40px"
-                  round="20px"
                   justify="center"
                   align="center"
                   overflow="hidden"
+                  style={{
+                    minHeight: 40,
+                    minWidth: 40,
+                    maxHeight: 40,
+                    maxWidth: 40,
+                    borderRadius: 20,
+                  }}
                 >
                   {!channel.has_avatar && (
                     <Identicon string={channel.name} size={25} />
