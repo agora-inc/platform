@@ -1,11 +1,11 @@
-from repository.ChannelRepository import ChannelRepository
-from repository.TagRepository import TagRepository
-from repository.TopicRepository import TopicRepository
+# from repository.ChannelRepository import ChannelRepository
+# from repository.TagRepository import TagRepository
+# from repository.TopicRepository import TopicRepository
 
 
-# from ChannelRepository import ChannelRepository
-# from TagRepository import TagRepository
-# from TopicRepository import TopicRepository
+from ChannelRepository import ChannelRepository
+from TagRepository import TagRepository
+from TopicRepository import TopicRepository
 
 
 class TalkRepository:
@@ -62,6 +62,27 @@ class TalkRepository:
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalks())
+
+    def getAllFutureTalksForTopicWithChildren(self, limit, offset, topic_id):
+
+        # get id of all childs
+        children_ids = self.topics.getAllChildrenIdRecursive(parent_id=topic_id)
+
+        mysql_cond_string = str(children_ids).replace("[", "(").replace("]", ")")
+        talk_query = f'SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
+        talks = self.db.run_query(talk_query)
+
+        if isinstance(talks, list):
+            if len(talks) != 0:
+                for talk in talks:
+                    channel = self.channels.getChannelById(talk["channel_id"])
+                    talk["channel_colour"] = channel["colour"]
+                    talk["has_avatar"] = channel["has_avatar"]
+                    talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+                    talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+            return talks
+        else:
+            return []
 
     def getAllFutureTalks(self, limit, offset):
         query = f'SELECT * FROM Talks WHERE date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}'
@@ -296,23 +317,21 @@ if __name__ == "__main__":
     db = Database()
     obj = TalkRepository(db)
 
-    list_tags = db.run_query("SELECT * FROM Tags")
-    print(list_tags)
+    # list_tags = db.run_query("SELECT * FROM Tags")
+    # print(list_tags)
 
-    channelId = 1
-    channelName = "ImperialBioEng"
-    talkName = "TEST_TEST_T"
-    startDate = '2020-06-09 14:00:00.0'
-    endDate = '2020-06-09 14:00:00.0'
-    talkDescription = "basfd"
-    talkLink = "sdafsd"
-    showLinkOffset = 1
-    visibility = "Everybody"
-    topic_1_id = 17
-    topic_2_id = 30
-    topic_3_id = "NULL"
+    # channelId = 1
+    # channelName = "ImperialBioEng"
+    # talkName = "TEST_TEST_T"
+    # startDate = '2020-06-09 14:00:00.0'
+    # endDate = '2020-06-09 14:00:00.0'
+    # talkDescription = "basfd"
+    # talkLink = "sdafsd"
+    # showLinkOffset = 1
+    # visibility = "Everybody"
+    # topic_1_id = 2
+    # topic_2_id = 3
+    # topic_3_id = 4
 
-    talkTags = list_tags
 
-    res = obj.scheduleTalk(channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id)
-    print(res)
+    print(obj.getAllFutureTalksForTopicWithChildren(limit=1, offset=0,topic_id=15))
