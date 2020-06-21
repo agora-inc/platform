@@ -48,12 +48,8 @@ export default class Home extends Component<{}, State> {
   fetchTalks = () => {
     TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
       let temp = this.state.topic
-      console.log("Before", talks);
+      console.log("Talks", talks);
       console.log("Topic", temp)
-      talks = talks.filter(function (talk: Talk) {
-        return talk.topics[0].id === temp.id;
-      })
-      console.log("After", talks);
       this.setState({ 
         talks: talks
       });

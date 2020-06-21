@@ -279,7 +279,6 @@ class TopicRepository:
         except Exception as e:
             logging.warning(f"getParents: exception: {e}")
 
-    
     # def getTopicsOnTalk(self, talk_id):
     #     query = f"SELECT topic_1_id, topic_2_id, topic_3_id FROM Talks where id={talk_id}"
     #     try:
@@ -291,9 +290,7 @@ class TopicRepository:
         result = []
         for i in range(1, 4):
             query = f'SELECT ClassificationGraphNodes.field, ClassificationGraphNodes.is_primitive_node, ClassificationGraphNodes.id, ClassificationGraphNodes.parent_1_id, ClassificationGraphNodes.parent_2_id, ClassificationGraphNodes.parent_3_id FROM ClassificationGraphNodes INNER JOIN Talks ON ClassificationGraphNodes.id = Talks.topic_{i}_id WHERE Talks.id = {talkId}'
-            temp = self.db.run_query(query)
-            if temp is not None:
-                result.append(temp[0])
+            result = result + self.db.run_query(query)
         return result
 
     def getAllTopics(self):
