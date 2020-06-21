@@ -133,6 +133,7 @@ class TalkRepository:
         talk = self.db.run_query(query)[0]
 
         talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+        talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talk
 
     def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id):

@@ -150,10 +150,11 @@ const scheduleTalk = (
     )
     .then(function (response) {
       callback(response.data);
+    })
+    .catch(function (error) {
+      console.log("Schedule talk go brrrr")
+      callback(false);
     });
-  // .catch(function (error) {
-  //   callback(false);
-  // });
 };
 
 const deleteTalk = (id: number, callback: any) => {

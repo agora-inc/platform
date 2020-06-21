@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Select } from "grommet";
+import { Box, Select, Text } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
 // import allTopics from "../../assets/allTopics.json"
 import Button from "../Core/Button";
@@ -88,16 +88,31 @@ export default class TopicSelector extends Component<Props, State> {
 
   render() {
     return (
-      <Box
-        width="100%"
-        direction="row"
-        gap="xsmall"
-        align="end"
-        margin={{ bottom: "15px" }}
-      >
+      <Box width="100%">
+        <Box
+          width="100%"
+          direction="row"
+          gap="xsmall"
+          align="end"
+          margin={{ bottom: "15px" }}
+        >
+          <Text size="26px" weight="bold" color="black" margin="none">
+            Filter by topic
+          </Text>
+        </Box>
+
+        <Box
+          width="100%"
+          direction="row"
+          gap="xsmall"
+          align="end"
+          margin={{ bottom: "15px" }}
+        >
+
         {this.state.topicBeingShown >= 0 && (
           <Select
             options={this.getPrimitiveNodes().concat("-")}
+            placeholder={"Field"}
             onChange={({ option }) =>
               this.onFieldChoose(this.nameToTopic(option), 0)
             }
@@ -108,6 +123,7 @@ export default class TopicSelector extends Component<Props, State> {
             options={this.getChildren(
               this.state.topics[0]
             ).concat("-")}
+            placeholder={"Topic"}
             onChange={({ option }) =>
               this.onFieldChoose(this.nameToTopic(option), 1)
             }
@@ -118,11 +134,13 @@ export default class TopicSelector extends Component<Props, State> {
             options={this.getChildren(
               this.state.topics[1]
             ).concat("-")}
+            placeholder={"Subject"}
             onChange={({ option }) =>
               this.onFieldChoose(this.nameToTopic(option), 2)
             }
           />
         )}
+        </Box>  
       </Box>
     );
   };

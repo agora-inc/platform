@@ -49,8 +49,9 @@ export default class Home extends Component<{}, State> {
     TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
       let temp = this.state.topic
       console.log("Before", talks);
+      console.log("Topic", temp)
       talks = talks.filter(function (talk: Talk) {
-        return talk.topics.includes(temp);
+        return talk.topics[0].id === temp.id;
       })
       console.log("After", talks);
       this.setState({ 
@@ -66,7 +67,6 @@ export default class Home extends Component<{}, State> {
   }
 
   render() {
-    console.log(this.state.topic)
     return (
       <Box direction="row">
         <CustomSideBar user={this.state.user} />
