@@ -76,7 +76,7 @@ export default class SignUpButton extends Component<Props, State> {
         />
         <Overlay
           width={400}
-          height={500}
+          height={550}
           visible={this.state.showModal}
           title="Sign up"
           onEsc={this.toggleModal}
@@ -85,7 +85,7 @@ export default class SignUpButton extends Component<Props, State> {
           submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
-          contentHeight="400px"
+          contentHeight="450px"
         >
           {this.state.failed && (
             <Box
@@ -111,6 +111,15 @@ export default class SignUpButton extends Component<Props, State> {
             gap="xsmall"
           >
             <Box width="100%" gap="2px">
+              <Text size="17px" color="black" margin={{ bottom: "xsmall" }}>
+                This account will be associated with you as an individual - so
+                you can choose any username you like. After you've signed up
+                you'll be able to create one or more{" "}
+                <Text color="brand" weight="bold">
+                  Agoras
+                </Text>{" "}
+                - these are what you'll use to organise talks.
+              </Text>
               <Text size="14px" weight="bold" color="black">
                 Username
               </Text>
