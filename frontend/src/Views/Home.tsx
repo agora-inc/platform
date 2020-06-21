@@ -46,14 +46,19 @@ export default class Home extends Component<{}, State> {
   }
 
   fetchTalks = () => {
-    TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
-      let temp = this.state.topic
-      console.log("Talks", talks);
-      console.log("Topic", temp)
-      this.setState({ 
-        talks: talks
+    if (this.state.topic.id == -1) {
+      TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
+        this.setState({ 
+          talks: talks
+        });
       });
-    });
+    } else {
+      TalkService.getAllFutureTalksForTopicWithChildren(6, 0, this.state.topic.id, (talks: Talk[]) => {
+        this.setState({ 
+          talks: talks
+        });
+      });
+    }
   };
 
   selectTopic = (temp: Topic) => {

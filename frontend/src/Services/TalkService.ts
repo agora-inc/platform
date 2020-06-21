@@ -24,9 +24,19 @@ const getAllPastTalks = (limit: number, offset: number, callback: any) => {
     });
 };
 
-const getFutureTalksForTopic = (topicId: number, callback: any) => {
+const getFutureTalksForTopic = (topicId: number, limit: number, offset: number, callback: any) => {
   axios
-    .get(baseApiUrl + "/talks/topic/future?topicId=" + topicId, {
+    .get(`${baseApiUrl}/talks/topic/future?topicId=${topicId}&limit=${limit}&offset=${offset}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const getAllFutureTalksForTopicWithChildren = (limit: number, offset: number, topicId: number, callback: any) => {
+  axios
+    .get(`${baseApiUrl}/talks/topic/children/future?topicId=${topicId}&limit=${limit}&offset=${offset}`, {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then(function (response) {
@@ -313,6 +323,7 @@ export const TalkService = {
   getFutureTalksForChannel,
   getPastTalksForChannel,
   getFutureTalksForTopic,
+  getAllFutureTalksForTopicWithChildren,
   getPastTalksForTopic,
   getPastTalksForTag,
   editTalk,

@@ -225,6 +225,13 @@ def getAllFutureTalksForTopic():
     offset = int(request.args.get("offset"))
     return jsonify(talks.getAllFutureTalksForTopic(topicId, limit, offset))
 
+@app.route('/talks/topic/children/future', methods=["GET"])
+def getAllFutureTalksForTopicWithChildren():
+    topicId = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(talks.getAllFutureTalksForTopicWithChildren(topicId, limit, offset))
+
 @app.route('/talks/topic/past', methods=["GET"])
 def getAllPastTalksForTopic():
     topicId = int(request.args.get("topicId"))
