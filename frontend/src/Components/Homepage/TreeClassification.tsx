@@ -134,7 +134,7 @@ export default class TreeClassification extends React.Component<{}, State> {
       // console.log(treeData);
       this.setState({ data: treeData });
     });
-    console.log(treeData);
+    // console.log(treeData);
     // this.setState({ data: treeData });
   }
 

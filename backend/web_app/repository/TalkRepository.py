@@ -72,9 +72,6 @@ class TalkRepository:
         talk_query = f'SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}'
         talks = self.db.run_query(talk_query)
 
-        import time
-        start_time_1 = time.time()
-
         # setup local data for topics
         query_all_topics = "SELECT * FROM ClassificationGraphNodes"
         all_topics_info = self.db.run_query(query_all_topics)
@@ -101,11 +98,9 @@ class TalkRepository:
                     # talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
                     talk["topics"] = _get_topic_info_for_talk(talk)
             
-            print("WESH 1", time.time() - start_time_1)
             return talks
+            
         else:
-            print("WESH 1", time.time() - start_time_1)
-
             return []
 
     def getAllFutureTalks(self, limit, offset):

@@ -87,7 +87,7 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   render() {
-    console.log(this.props.talk);
+    // console.log(this.props.talk);
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
