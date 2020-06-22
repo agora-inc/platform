@@ -164,7 +164,7 @@ export default class UserManager extends Component<{}, State> {
           gap="xsmall"
         >
           <Text weight="bold" color="black">
-            My channels
+            Manage your Agoras
           </Text>
           {this.state.channels.map((channel: Channel) => (
             <DropdownChannelButton
