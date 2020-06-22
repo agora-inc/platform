@@ -26,13 +26,15 @@ const getDataTreeStructure = (callback: any) => {
     });
 };
 
-const getDescendence = (node: Topic, topics: Topic[]) => {
+const getDescendenceId = (node: Topic, topics: Topic[]): number[] => {
+  let res: number[] = []
   for (let topic of topics) {
     if (topic.parent_1_id === node.id || topic.parent_1_id === node.id || topic.parent_1_id === node.id) {
-      
+      res.push(topic.id)
+      res = res.concat(getDescendenceId(topic, topics))
     }
   }
-  return [node]
+  return res
 }
 
 // const getPopular = (callback: any) => {
@@ -59,7 +61,8 @@ const getDescendence = (node: Topic, topics: Topic[]) => {
 
 export const TopicService = {
   getAll,
-  getDataTreeStructure
+  getDataTreeStructure,
+  getDescendenceId,
 };
 
 export type Topic = {

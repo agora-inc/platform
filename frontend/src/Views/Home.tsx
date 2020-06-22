@@ -18,8 +18,9 @@ import GraphClassification from "../Components/Homepage/GraphClassification";
 
 interface State {
   user: User | null;
-  talks: Talk[];
-  topics: Topic[];
+  allTalks: Talk[];
+  chosenTalks: Talk[]
+  allTopics: Topic[];
   chosenTopic: Topic;
 }
 
@@ -28,8 +29,9 @@ export default class Home extends Component<{}, State> {
     super(props);
     this.state = {
       user: UserService.getCurrentUser(),
-      talks: [],
-      topics: [],
+      allTalks: [],
+      chosenTalks: [],
+      allTopics: [],
       chosenTopic: {
         field: "-",
         id: -1,
@@ -42,52 +44,73 @@ export default class Home extends Component<{}, State> {
   } 
 
   componentWillMount() {
-    this.fetchTalks();
-  }
-
-  componentWillUpdate() {
-    this.fetchTalks();
-  }
-
-  fetchTalksByTopicWithChildren = () => {
-    let listTalks: Talk[] = []
-    TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
-      listTalks = talks
-    });
-    if (this.state.chosenTopic.id == -1) {
+    // Limit to 1000 talks
+    TalkService.getAllFutureTalks(1000, 0, (allTalks: Talk[]) => {
       this.setState({ 
-        talks: listTalks
+        allTalks: allTalks,
+        chosenTalks: allTalks
       });
-    } else {
-      TopicService.getAll((allTopics: Topic[]) => {
-        this.setState({ topics: allTopics });
-      });
+    });
+    TopicService.getAll((allTopics: Topic[]) => {
+      this.setState({ allTopics: allTopics });
+    });
 
-
-    }
-
+    // this.fetchTalks();
   }
 
-  fetchTalks = () => {
-    if (this.state.chosenTopic.id == -1) {
-      TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
-        this.setState({ 
-          talks: talks
-        });
-      });
-    } else {
-      TalkService.getAllFutureTalksForTopicWithChildren(6, 0, this.state.chosenTopic.id, (talks: Talk[]) => {
-        this.setState({ 
-          talks: talks
-        });
-      });
+  // componentWillUpdate() {
+  //   this.fetchTalks();
+  // }
+
+  getTalksByTopics = (talks: Talk[], topicsId: number[]): Talk[] => {
+    let res: Talk[] = []
+    for (let talk of talks) {
+      let isIn: boolean = false;
+      for (let topic of talk.topics) {
+        if (!isIn && topicsId.includes(topic.id)) {
+          isIn = true
+          res.push(talk)
+        }
+      }
     }
-  };
+    return res
+  }
+
+  fetchTalksByTopicWithChildren = (topic: Topic) => {
+    if (topic.id >= 0) {
+      let childrenId = TopicService.getDescendenceId(topic, this.state.allTopics)
+      childrenId.push(topic.id)
+      this.setState({
+        chosenTalks: this.getTalksByTopics(this.state.allTalks, childrenId)
+      })
+    } else {
+      this.setState({
+        chosenTalks: this.state.allTalks
+      })
+    }
+  }
+
+  // fetchTalks = () => {
+  //   if (this.state.chosenTopic.id == -1) {
+  //     TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
+  //       this.setState({ 
+  //         allTalks: talks
+  //       });
+  //     });
+  //   } else {
+  //     TalkService.getAllFutureTalksForTopicWithChildren(6, 0, this.state.chosenTopic.id, (talks: Talk[]) => {
+  //       this.setState({ 
+  //         allTalks: talks
+  //       });
+  //     });
+  //   }
+  // };
 
   selectTopic = (temp: Topic) => {
     this.setState({
       chosenTopic: temp
     });
+    this.fetchTalksByTopicWithChildren(temp)
   }
 
   render() {
@@ -106,7 +129,7 @@ export default class Home extends Component<{}, State> {
           <Carousel gridArea="carousel" />
           <TopicClassification topicCallback={this.selectTopic} />
           <TalkList
-            talks={this.state.talks}
+            talks={this.state.chosenTalks}
             title
             seeMore
             user={this.state.user}
