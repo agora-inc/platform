@@ -26,6 +26,15 @@ const getDataTreeStructure = (callback: any) => {
     });
 };
 
+const getDescendence = (node: Topic, topics: Topic[]) => {
+  for (let topic of topics) {
+    if (topic.parent_1_id === node.id || topic.parent_1_id === node.id || topic.parent_1_id === node.id) {
+      
+    }
+  }
+  return [node]
+}
+
 // const getPopular = (callback: any) => {
 //   axios
 //     .get(baseApiUrl + "/topics/popular?n=5", {

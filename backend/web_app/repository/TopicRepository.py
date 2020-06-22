@@ -302,12 +302,14 @@ class TopicRepository:
 
         if topic_id in children_topics_dict:
             child_ids = children_topics_dict[topic_id]
-        still_ids_to_check = True
-        if len(child_ids) != 0:
-            all_ids = child_ids.copy()
+            if len(child_ids) != 0:
+                all_ids = child_ids.copy() 
         else:
             all_ids = []
+            child_ids = []
+        
         all_grand_children_ids = []
+        still_ids_to_check = True
         while still_ids_to_check:
             for id in child_ids:
                 if id in children_topics_dict:

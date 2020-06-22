@@ -15,7 +15,7 @@ interface State {
   topicBeingShown: number;
 }
 
-export default class TopicSelector extends Component<Props, State> {
+export default class TopicClassification extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -32,21 +32,21 @@ export default class TopicSelector extends Component<Props, State> {
   }
 
   onFieldChoose = (topic: Topic, fieldDepth: number) => {
-    let temp = 0
-    if (topic.id >= 0) {
-      temp = fieldDepth + 1
-      this.props.topicCallback(topic);
-    } else {
-      temp = fieldDepth
-    }
-
+    let temp = fieldDepth + (topic.id >= 0 ? 1 : 0)
     let tempTopics = this.state.topics;
     tempTopics = tempTopics.slice(0, fieldDepth);
     tempTopics.push(topic);
+    if (topic.id === -1 && tempTopics.length >= 2) {
+      this.props.topicCallback(tempTopics[tempTopics.length - 2])
+    } else {
+      this.props.topicCallback(topic);
+    }
     this.setState({
       topics: tempTopics,
       topicBeingShown: temp,
     });
+
+    
   };
 
   nameToTopic = (name: string): Topic => {

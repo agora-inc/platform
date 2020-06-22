@@ -11,15 +11,16 @@ import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/home.css";
 import { User, UserService } from "../Services/UserService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { Topic, TopicService } from "../Services/TopicService";
 import TreeClassification from "../Components/Homepage/TreeClassification";
 import TopicClassification from "../Components/Homepage/TopicClassification";
 import GraphClassification from "../Components/Homepage/GraphClassification";
-import { Topic } from "../Services/TopicService";
 
 interface State {
   user: User | null;
   talks: Talk[];
-  topic: Topic;
+  topics: Topic[];
+  chosenTopic: Topic;
 }
 
 export default class Home extends Component<{}, State> {
@@ -28,12 +29,15 @@ export default class Home extends Component<{}, State> {
     this.state = {
       user: UserService.getCurrentUser(),
       talks: [],
-      topic: {field: "-",
-              id: -1,
-              is_primitive_node: false,
-              parent_1_id: -1,
-              parent_2_id: -1, 
-              parent_3_id: -1}
+      topics: [],
+      chosenTopic: {
+        field: "-",
+        id: -1,
+        is_primitive_node: false,
+        parent_1_id: -1,
+        parent_2_id: -1, 
+        parent_3_id: -1
+      }
     };
   } 
 
@@ -45,15 +49,34 @@ export default class Home extends Component<{}, State> {
     this.fetchTalks();
   }
 
+  fetchTalksByTopicWithChildren = () => {
+    let listTalks: Talk[] = []
+    TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
+      listTalks = talks
+    });
+    if (this.state.chosenTopic.id == -1) {
+      this.setState({ 
+        talks: listTalks
+      });
+    } else {
+      TopicService.getAll((allTopics: Topic[]) => {
+        this.setState({ topics: allTopics });
+      });
+
+
+    }
+
+  }
+
   fetchTalks = () => {
-    if (this.state.topic.id == -1) {
+    if (this.state.chosenTopic.id == -1) {
       TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
         this.setState({ 
           talks: talks
         });
       });
     } else {
-      TalkService.getAllFutureTalksForTopicWithChildren(6, 0, this.state.topic.id, (talks: Talk[]) => {
+      TalkService.getAllFutureTalksForTopicWithChildren(6, 0, this.state.chosenTopic.id, (talks: Talk[]) => {
         this.setState({ 
           talks: talks
         });
@@ -63,7 +86,7 @@ export default class Home extends Component<{}, State> {
 
   selectTopic = (temp: Topic) => {
     this.setState({
-      topic: temp
+      chosenTopic: temp
     });
   }
 
