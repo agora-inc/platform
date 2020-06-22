@@ -8,6 +8,7 @@ import { FormNextLink } from "grommet-icons";
 import "../../Styles/home.css";
 import "../../Styles/see-more-button.css";
 import { User } from "../../Services/UserService";
+import SignUpButton from "../Account/SignUpButton";
 
 interface Props {
   gridArea?: string;
@@ -45,7 +46,7 @@ export default class TalkList extends Component<Props> {
   //   );
   // };
 
-  render() {
+  ifTalks() {
     return (
       <Box width="100%">
         <Box
@@ -91,6 +92,68 @@ export default class TalkList extends Component<Props> {
               <TalkCard talk={talk} user={this.props.user} />
             ))}
         </Box>
+      </Box>
+    );
+  }
+
+  ifNoTalks = () => {
+    return (
+      <Box
+        direction="row"
+        width="100%"
+        margin="none"
+        pad="small"
+        justify="between"
+        round="xsmall"
+        align="center"
+        alignSelf="center"
+        background="rgba(96, 110, 235, 0.7)"
+      >
+        <Text size="20px" weight="bold" color="black">
+          No talk of that category exist.
+        </Text>
+        <Box
+          background="white"
+          justify="center"
+          align="center"
+          style={{ border: "solid black 2px" }}
+          round="xsmall"
+          pad="xsmall"
+        >
+          {!this.props.user && (
+            <Text>
+              tttt
+            </Text>
+            
+          )}
+
+          {this.props.user && (
+            <Link
+              to="/past"
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text size="16px" weight="bold" color="black">
+                Create the first Agora
+              </Text>
+            </Link>
+          )}
+        </Box>
+      </Box>
+    );
+  };
+
+  render() {
+    return (
+      <Box>
+      {this.props.talks.length === 0
+        ? this.ifNoTalks()
+        : this.ifTalks()}
       </Box>
     );
   }
