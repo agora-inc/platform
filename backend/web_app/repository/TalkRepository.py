@@ -1,11 +1,11 @@
-# from repository.ChannelRepository import ChannelRepository
-# from repository.TagRepository import TagRepository
-# from repository.TopicRepository import TopicRepository
+from repository.ChannelRepository import ChannelRepository
+from repository.TagRepository import TagRepository
+from repository.TopicRepository import TopicRepository
 
 
-from ChannelRepository import ChannelRepository
-from TagRepository import TagRepository
-from TopicRepository import TopicRepository
+# from ChannelRepository import ChannelRepository
+# from TagRepository import TagRepository
+# from TopicRepository import TopicRepository
 
 
 class TalkRepository:
@@ -63,7 +63,7 @@ class TalkRepository:
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalks())
 
-    def getAllFutureTalksForTopicWithChildren(self, limit, offset, topic_id):
+    def getAllFutureTalksForTopicWithChildren(self, topic_id, limit, offset):
 
         # get id of all childs
         children_ids = self.topics.getAllChildrenIdRecursive(parent_id=topic_id)
