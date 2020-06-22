@@ -38,7 +38,7 @@ export default class CreateChannelButton extends Component<Props, State> {
         style={{ border: "black 2px solid" }}
         justify="between"
       >
-        <Text>Create channel</Text>
+        <Text>Create an agora</Text>
         <Text size="20px">🚀</Text>
       </Box>
     );

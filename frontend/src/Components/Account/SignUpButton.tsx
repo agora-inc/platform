@@ -116,7 +116,7 @@ export default class SignUpButton extends Component<Props, State> {
                 you can choose any username you like. After you've signed up
                 you'll be able to create one or more{" "}
                 <Text color="brand" weight="bold">
-                  Agoras
+                  <a href="https://www.agora.stream/info/welcome">Agoras</a>.
                 </Text>{" "}
                 - these are what you'll use to organise talks.
               </Text>
