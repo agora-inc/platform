@@ -236,33 +236,86 @@ class TopicRepository:
         except Exception as e:
             logging.error(f"getChildIds: exception raised: {e}")
 
-    def getAllChildrenIdRecursive(self, parent_field=None, parent_id=None):
-        if parent_field == None and parent_id == None:
-            logging.warning("getAllChildsRecursive: 'parent_field' and 'parent_id' cannot be both None at the same time.")
+    # def getAllChildrenIdRecursive2(self, parent_field=None, parent_id=None):
+    #     import time
+    #     start_time = time.time()
 
-        if parent_field != None:
-            child_ids = [i["id"] for i in self.getChildren(parent_field=parent_field, queried_field="id")]
 
-        elif parent_id != None:
-            child_ids = [i["id"] for i in self.getChildren(parent_id=parent_id, queried_field="id")]
+    #     if parent_field == None and parent_id == None:
+    #         logging.warning("getAllChildsRecursive: 'parent_field' and 'parent_id' cannot be both None at the same time.")
+
+    #     if parent_field != None:
+    #         child_ids = [i["id"] for i in self.getChildren(parent_field=parent_field, queried_field="id")]
+
+    #     elif parent_id != None:
+    #         child_ids = [i["id"] for i in self.getChildren(parent_id=parent_id, queried_field="id")]
             
-        still_ids_to_query = True
+    #     still_ids_to_query = True
+    #     all_ids = child_ids.copy()
+    #     all_grand_children_ids = []
+    #     while still_ids_to_query:
+    #         for id in child_ids:
+    #             id_query = f"SELECT id FROM ClassificationGraphNodes WHERE parent_1_id = '{id}' OR parent_1_id = '{id}' OR parent_1_id = '{id}'"
+    #             id_query_res = self.db.run_query(id_query)
+    #             if isinstance(id_query_res, list):
+    #                 if len(id_query_res) != 0:
+    #                     grand_children_ids = [i["id"] for i in id_query_res]
+    #                     all_grand_children_ids = all_grand_children_ids + grand_children_ids
+    #         if len(all_grand_children_ids) != 0:
+    #             all_ids = all_ids + all_grand_children_ids
+    #             child_ids = all_grand_children_ids.copy()
+    #             all_grand_children_ids = []
+    #         else:
+    #             still_ids_to_query = False
+
+    #     end_time = time.time()
+    #     print("recursive time", end_time - start_time)
+    #     return all_ids
+
+    def getAllChildrenIdRecursive(self, topic_id):
+        # setup local data
+        all_topics_query = "SELECT * FROM ClassificationGraphNodes"
+        all_topics_sql_data = self.db.run_query(all_topics_query)
+        
+        # NOTE: 
+        #   - parents_topics_dict is a dict indexed by child id with field being the list of parents
+        #   - children_topics_dict is a dict indexed by parent id with fields being a list of children
+        parents_topics_dict = {}
+        children_topics_dict = {}
+        for topic_dic in all_topics_sql_data:
+            i_topic_id = topic_dic["id"]
+
+            # track parents of nodes
+            parents_ids = []
+            for parent_key in ["parent_1_id", "parent_2_id", "parent_3_id"]:
+                parent_id = topic_dic[parent_key]
+                if parent_id != None:
+                    parents_ids.append(parent_id)
+                    # track childs
+                    if parent_id in children_topics_dict:
+                        children_topics_dict[parent_id].append(i_topic_id)
+                    else:
+                        children_topics_dict[parent_id] = [i_topic_id]
+                        
+
+            parents_topics_dict[i_topic_id] = parents_ids
+
+        child_ids = children_topics_dict[topic_id]
+        still_ids_to_check = True
         all_ids = child_ids.copy()
         all_grand_children_ids = []
-        while still_ids_to_query:
+        while still_ids_to_check:
             for id in child_ids:
-                id_query = f"SELECT id FROM ClassificationGraphNodes WHERE parent_1_id = '{id}' OR parent_1_id = '{id}' OR parent_1_id = '{id}'"
-                id_query_res = self.db.run_query(id_query)
-                if isinstance(id_query_res, list):
-                    if len(id_query_res) != 0:
-                        grand_children_ids = [i["id"] for i in id_query_res]
-                        all_grand_children_ids = all_grand_children_ids + grand_children_ids
+                if id in children_topics_dict:
+                    grand_children_ids = children_topics_dict[id]
+                    all_grand_children_ids = all_grand_children_ids + grand_children_ids
+
             if len(all_grand_children_ids) != 0:
                 all_ids = all_ids + all_grand_children_ids
                 child_ids = all_grand_children_ids.copy()
                 all_grand_children_ids = []
             else:
-                still_ids_to_query = False
+                still_ids_to_check = False
 
         return all_ids
 
@@ -309,21 +362,14 @@ class TopicRepository:
         except Exception as e:
             logging.warning(f"getParents: exception: {e}")
 
-    
-    # def getTopicsOnTalk(self, talk_id):
-    #     query = f"SELECT topic_1_id, topic_2_id, topic_3_id FROM Talks where id={talk_id}"
-    #     try:
-    #         return self.db.run_query(query)
-    #     except Exception as e:
-    #         logging.error(f"getTopicsOnTalk: exception raised: {e}")
-
     def getTopicsOnTalk(self, talkId):
         result = []
         for i in range(1, 4):
             query = f'SELECT ClassificationGraphNodes.field, ClassificationGraphNodes.is_primitive_node, ClassificationGraphNodes.id, ClassificationGraphNodes.parent_1_id, ClassificationGraphNodes.parent_2_id, ClassificationGraphNodes.parent_3_id FROM ClassificationGraphNodes INNER JOIN Talks ON ClassificationGraphNodes.id = Talks.topic_{i}_id WHERE Talks.id = {talkId}'
             temp = self.db.run_query(query)
-            if temp is not None:
-                result.append(temp[0])
+            if isinstance(temp, list):
+                if len(temp) != 0:
+                    result.append(temp[0])
         return result
 
     def getAllTopics(self):
@@ -433,7 +479,7 @@ if __name__ == "__main__":
 
     import json
 
-    print(obj.getAllChildrenIdRecursive(parent_id=15))
+    print(obj.getAllChildrenIdRecursive(topic_id=20))
     # print(obj.getChildren(parent_id=15))
 
 

@@ -64,13 +64,32 @@ class TalkRepository:
         return (talks, self.getNumberOfPastTalks())
 
     def getAllFutureTalksForTopicWithChildren(self, limit, offset, topic_id):
-
         # get id of all childs
-        children_ids = self.topics.getAllChildrenIdRecursive(parent_id=topic_id)
+        children_ids = self.topics.getAllChildrenIdRecursive(topic_id=topic_id)
 
         mysql_cond_string = str(children_ids).replace("[", "(").replace("]", ")")
-        talk_query = f'SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
+        talk_query = f'SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}'
         talks = self.db.run_query(talk_query)
+
+        import time
+        start_time_1 = time.time()
+
+        # setup local data for topics
+        query_all_topics = "SELECT * FROM ClassificationGraphNodes"
+        all_topics_info = self.db.run_query(query_all_topics)
+
+        topics_dic = {}
+        for topic_dic in all_topics_info:
+            topics_dic[topic_dic["id"]] = topic_dic 
+
+        def _get_topic_info_for_talk(talk_sql_dic):
+            talk_topics_info = []
+            for topic_key in ["topic_1_id", "topic_2_id", "topic_3_id"]:
+                topic_id = talk_sql_dic[topic_key]
+                if topic_id != None:
+                    talk_topics_info.append(topics_dic[topic_id]) 
+
+            return talk_topics_info
 
         if isinstance(talks, list):
             if len(talks) != 0:
@@ -78,10 +97,14 @@ class TalkRepository:
                     channel = self.channels.getChannelById(talk["channel_id"])
                     talk["channel_colour"] = channel["colour"]
                     talk["has_avatar"] = channel["has_avatar"]
-                    talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
-                    talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+                    # talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+                    talk["topics"] = _get_topic_info_for_talk(talk)
+            
+            print("WESH 1", time.time() - start_time_1)
             return talks
         else:
+            print("WESH 1", time.time() - start_time_1)
+
             return []
 
     def getAllFutureTalks(self, limit, offset):
@@ -334,4 +357,6 @@ if __name__ == "__main__":
     # topic_3_id = 4
 
 
-    print(obj.getAllFutureTalksForTopicWithChildren(limit=1, offset=0,topic_id=15))
+    talks = obj.getAllFutureTalksForTopicWithChildren(limit=10, offset=0,topic_id=15)
+    # for talk in talks:
+    #     print(talk)
