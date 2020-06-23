@@ -47,7 +47,7 @@ export default class Countdown extends Component<Props, State> {
       (1000 * 60);
 
     if (minutesUntil < 60) {
-      message += `${minutesUntil} minutes`;
+      message += `${Math.floor(minutesUntil)} minutes`;
     } else if (minutesUntil < 1440) {
       let hoursUntil = Math.floor(minutesUntil / 60);
       let minutesRemainder = Math.floor(minutesUntil % 60);
