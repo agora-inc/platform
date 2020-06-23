@@ -37,6 +37,7 @@ export default class SiteWideSearch extends Component<{}, State> {
     this.setState({
       searchString: "",
       results: this.clearResults(),
+
     });
   };
 
@@ -53,7 +54,7 @@ export default class SiteWideSearch extends Component<{}, State> {
   areResultsEmpty = () => {
     const arrs = Object.values(this.state.results);
     for (let i in arrs) {
-      if (arrs[i].length !== 0) {
+      if (arrs[i] && arrs[i].length !== 0) {
         return false;
       }
     }
@@ -71,7 +72,7 @@ export default class SiteWideSearch extends Component<{}, State> {
 
     this.setState({ searchString, loading: true }, () => {
       SearchService.search(
-        ["channel", "stream", "upcoming", "past", "tag"],
+        ["channel", "upcoming", "past", "tag", "stream"],
         this.state.searchString,
         (results: {
           channel: Channel[];
@@ -158,7 +159,7 @@ export default class SiteWideSearch extends Component<{}, State> {
             </Box>
           </Box>
         )}
-        {this.state.results.stream.length !== 0 && (
+        {this.state.results.stream && this.state.results.stream.length !== 0 && (
           <Box>
             <Box
               background="#f5f5f5"
