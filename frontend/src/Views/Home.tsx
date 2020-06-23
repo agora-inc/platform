@@ -101,13 +101,6 @@ export default class Home extends Component<{}, State> {
             topicSearch={true}
             user={this.state.user}
           />
-          <DropButton
-            label="Fancy Selector"
-            dropAlign={{ top: 'bottom', right: 'right' }}
-            dropContent={
-              <Box pad="large" background="light-2" />
-            }
-          />
           <RecentTalksList user={this.state.user} />
           {/* <RecommendedGrid /> */}
           <FooterComponent />
