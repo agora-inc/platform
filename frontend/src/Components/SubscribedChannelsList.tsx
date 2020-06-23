@@ -92,9 +92,9 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                     <Text size="16px" weight="bold" color="black">
                       {channel.name}
                     </Text>
-                    <Text size="12px" weight="bold" color="#6B6A6A">
+                    {/* <Text size="12px" weight="bold" color="#6B6A6A">
                       Last live 3 days ago
-                    </Text>
+                    </Text> */}
                   </Box>
                 </Box>
               </Link>
