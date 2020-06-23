@@ -1,11 +1,12 @@
 from app import app, db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository
 from flask import jsonify, request, send_file
 from werkzeug import exceptions
 import os
 
 users = UserRepository.UserRepository(db=db)
 tags = TagRepository.TagRepository(db=db)
+topics = TopicRepository.TopicRepository(db=db)
 questions = QandARepository.QandARepository(db=db)
 streams = StreamRepository.StreamRepository(db=db)
 talks = TalkRepository.TalkRepository(db=db)
@@ -235,19 +236,46 @@ def getAllPastTalksForTag():
     data = talks.getPastTalksForTag(tagName)
     return jsonify({"talks": data[0], "count": data[1]})
 
+@app.route('/talks/topic/future', methods=["GET"])
+def getAllFutureTalksForTopic():
+    topicId = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(talks.getAllFutureTalksForTopic(topicId, limit, offset))
+
+@app.route('/talks/topic/children/future', methods=["GET"])
+def getAllFutureTalksForTopicWithChildren():
+    topicId = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(talks.getAllFutureTalksForTopicWithChildren(topicId, limit, offset))
+
+@app.route('/talks/topic/past', methods=["GET"])
+def getAllPastTalksForTopic():
+    topicId = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(talks.getAllPastTalksForTopic(topicId, limit, offset))
+
 @app.route('/talks/create', methods=["POST", "OPTIONS"])
 def scheduleTalk():
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
-    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"]))
+
+    for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
+        if params[topic_key] == None:
+            params[topic_key] = "NULL" 
+
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 def editTalk():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"]))
+    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():
@@ -359,6 +387,10 @@ def getVideosWithTag():
     data = videos.getAllVideosWithTag(tagName, limit, offset)
     return jsonify({"videos": data[0],"count": data[1]})
 
+@app.route('/videos/topic', methods=["GET"])
+def getVideosByTag():
+    raise NotImplementedError
+
 # --------------------------------------------
 # Q+A ROUTES
 # --------------------------------------------
@@ -383,7 +415,6 @@ def askQuestion():
     if "streamId" in params:
         return jsonify(questions.createQuestion(userId, content, streamId=params["streamId"]))
     return jsonify(questions.createQuestion(userId, content, videoId=params["videoId"]))
-
 
 @app.route('/questions/answer', methods=["POST", "OPTIONS"])
 def answerQuestion():
@@ -498,6 +529,42 @@ def tagStream():
 def getTagsOnStream():
     streamId = int(request.args.get("streamId"))
     return jsonify(tags.getTagsOnStream(streamId))
+
+# --------------------------------------------
+# TOPICS ROUTES
+# --------------------------------------------
+@app.route('/topics/all', methods=["GET", "OPTIONS"])
+def getAllTopics():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    return jsonify(topics.getAllTopics())
+
+@app.route('/topics/treestructure', methods=["GET", "OPTIONS"])
+def getDataTreeStructure():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    return jsonify(tags.getAllTags())
+    # return jsonify(topics.getDataTreeStructure())
+
+@app.route('/topics/popular', methods=["GET"])
+def getPopularTopics():
+    # n = int(request.args.get("n"))
+    # return jsonify(topics.getPopularTopics(n))
+    raise NotImplementedError("not implemented yet")
+
+@app.route('/topics/addtopicstream', methods=["POST", "OPTIONS"])
+def addTopicOnStream():
+    # if request.method == "OPTIONS":
+    #     return jsonify("ok")
+    # params = request.json
+    # return jsonify(tags.tagStream(params["streamId"], params["tagIds"]))
+    raise NotImplementedError
+
+@app.route('/topics/stream', methods=["GET"])
+def getTopicsOnStream():
+    # streamId = int(request.args.get("streamId"))
+    # return jsonify(tags.getTagsOnStream(streamId))
+    raise NotImplementedError
 
 # --------------------------------------------
 # SEARCH ROUTES

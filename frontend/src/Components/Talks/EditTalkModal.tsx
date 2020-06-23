@@ -14,6 +14,8 @@ import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
 import { Talk, TalkService } from "../../Services/TalkService";
 import TagSelector from "../Core/TagSelector";
+import TopicSelector from "../Talks/TopicSelector";
+import { Topic } from "../../Services/TopicService";
 import "../../Styles/edit-talk-modal.css";
 
 interface Props {
@@ -36,6 +38,7 @@ interface State {
   link: string;
   releaseLinkOffset: number;
   linkVisibility: string;
+  topics: Topic[];
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -60,10 +63,12 @@ export default class EditTalkModal extends Component<Props, State> {
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
         : "Everybody",
+      topics: []
     };
   }
 
   onFinishClicked = () => {
+    console.log(this.state)
     this.setState(
       {
         loading: true,
@@ -106,7 +111,7 @@ export default class EditTalkModal extends Component<Props, State> {
         label = "24 hours before";
         break;
     }
-    console.log(label);
+    // console.log(label);
     return {
       label: label,
       value: offset,
@@ -131,6 +136,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.tags,
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
+        this.state.topics,
         (talk: Talk) => {
           this.setState(
             {
@@ -154,6 +160,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.tags,
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
+        this.state.topics,
         (talk: Talk) => {
           this.setState(
             {
@@ -196,6 +203,15 @@ export default class EditTalkModal extends Component<Props, State> {
       }),
     });
   };
+
+  selectTopic = (topic: Topic, num: number) => {
+    console.log(num, topic)
+    let tempTopics = this.state.topics;
+    tempTopics[num] = topic;
+    this.setState({
+      topics: tempTopics
+    });
+  }
 
   getDateBounds = () => {
     const today = new Date();
@@ -333,6 +349,9 @@ export default class EditTalkModal extends Component<Props, State> {
             width="100%"
             height="200px"
           />
+        </OverlaySection>
+        <OverlaySection heading="Add relevant topics">
+          <TopicSelector onSelectedCallback={this.selectTopic} />
         </OverlaySection>
         <OverlaySection heading="Finally, add a link so people can watch your talk">
           <TextInput
