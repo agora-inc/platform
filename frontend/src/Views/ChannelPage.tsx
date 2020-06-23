@@ -332,6 +332,22 @@ export default class ChannelPage extends Component<Props, State> {
                     </Box>
                   </Box>
                 </Box>
+
+                <Text
+                  size="28px"
+                  weight="bold"
+                  color="black"
+                  margin={{ bottom: "10px" }}
+                >{`About us`}</Text>
+                <Box 
+                  style={{ maxHeight: "80%", overflowY: "scroll"}}
+                  margin={{bottom: "20px"}}
+                  >
+                  <Text size="22px" color="black">
+                    {this.state.channel?.long_description}
+                  </Text>
+                </Box>
+
                 <Text
                   size="28px"
                   weight="bold"

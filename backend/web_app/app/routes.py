@@ -124,12 +124,23 @@ def updateChannelColour():
 
 @app.route('/channels/updatedescription', methods=["POST", "OPTIONS"])
 def updateChannelDescription():
+    """TODO: refact this into updateshortdescription and propagate
+    """
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json 
     channelId = params["channelId"]
     newDescription = params["newDescription"]
     return jsonify(channels.updateChannelDescription(channelId, newDescription))
+
+@app.route('/channels/updatelongdescription', methods=["POST", "OPTIONS"])
+def updateLongChannelDescription():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json 
+    channelId = params["channelId"]
+    newDescription = params["newDescription"]
+    return jsonify(channels.updateLongChannelDescription(channelId, newDescription))
 
 @app.route('/channels/uploadavatar', methods=["POST", "OPTIONS"])
 def uploadAvatar():

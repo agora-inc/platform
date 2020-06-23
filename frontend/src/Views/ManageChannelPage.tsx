@@ -32,6 +32,7 @@ interface State {
   // viewCount: number;
   colour: string;
   editingDescription: boolean;
+  editingLongDescription: boolean;
   channelOwners: User[];
   channelMembers: User[];
   followers: User[];
@@ -53,6 +54,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       // viewCount: 0,
       colour: "pink",
       editingDescription: false,
+      editingLongDescription: false,
       channelOwners: [],
       channelMembers: [],
       followers: [],
@@ -250,6 +252,17 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
+  onEditLongDescriptionClicked = () => {
+    if (this.state.editingLongDescription) {
+      ChannelService.updateLongChannelDescription(
+        this.state.channel!.id,
+        document.getElementById("long-description")!.textContent as string,
+        () => {}
+      );
+    }
+    this.setState({ editingLongDescription: !this.state.editingLongDescription });
+  };
+
   onFileChosen = (e: any) => {
     console.log(e.target.files[0]);
     ChannelService.uploadAvatar(
@@ -416,7 +429,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     >{`${this.state.viewCount} views`}</Text> */}
                   </Box>
                 </Box>
-              </Box>
+              </Box>            
               <Box direction="row" width="100%" justify="between">
                 <Box
                   width="31.5%"
@@ -511,6 +524,57 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
               </Box>
+
+
+              <Box gap="small">
+                    <Text
+                      size="28px"
+                      weight="bold"
+                      color="black"
+                      margin={{ top: "40px", bottom: "10px" }}
+                      >{`About us`}</Text>
+                    <Box style={{ maxHeight: "100%", overflowY: "scroll" }}>
+                      <Text
+                        id="long-description"
+                        className="channel-description"
+                        size="22px"
+                        margin="10px"
+                        color="black"
+                        contentEditable={this.state.editingLongDescription}
+                        style={
+                          this.state.editingLongDescription
+                            ? {
+                                border: `2px solid ${this.state.colour}`,
+                                borderRadius: 7,
+                                padding: 5,
+                                overflow: "scroll",
+                                height: 900,
+                                maxHeight: 50,
+                              }
+                            : {}
+                        }
+                      >
+                        {this.state.channel?.long_description}
+                      </Text>
+                    </Box>
+                    <Box
+                      focusIndicator={false}
+                      margin={{ top: "-10px" }}
+                      pad="none"
+                      onClick={this.onEditLongDescriptionClicked}
+                    >
+                      <Text style={{ textDecoration: "underline" }} size="16px">
+                        {this.state.editingLongDescription ? "save" : "edit"}
+                      </Text>
+                    </Box>
+                </Box>
+
+
+
+
+
+
+
               {this.state.talks.length !== 0 && (
                 <Text
                   size="28px"
