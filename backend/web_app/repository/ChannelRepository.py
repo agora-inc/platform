@@ -1,5 +1,6 @@
 import random
 
+
 class ChannelRepository:
     def __init__(self, db):
         self.db = db
@@ -59,7 +60,14 @@ class ChannelRepository:
         return "ok"
 
     def updateChannelDescription(self, channelId, newDescription):
+        """TODO: Refactor this into updateShortChannelDescription with DB field as well into short_description
+        """
         query = f'UPDATE Channels SET description = "{newDescription}" WHERE id = {channelId}'
+        self.db.run_query(query)
+        return "ok"
+
+    def updateLongChannelDescription(self, channelId, newDescription):
+        query = f'UPDATE Channels SET long_description = "{newDescription}" WHERE id = {channelId}'
         self.db.run_query(query)
         return "ok"
 
