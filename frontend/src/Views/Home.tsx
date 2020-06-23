@@ -12,9 +12,6 @@ import "../Styles/home.css";
 import { User, UserService } from "../Services/UserService";
 import { Talk, TalkService } from "../Services/TalkService";
 import { Topic, TopicService } from "../Services/TopicService";
-import TreeClassification from "../Components/Homepage/TreeClassification";
-import TopicClassification from "../Components/Homepage/TopicClassification";
-import GraphClassification from "../Components/Homepage/GraphClassification";
 
 interface State {
   user: User | null;
