@@ -10,46 +10,148 @@ import "../../Styles/see-more-button.css";
 import { User } from "../../Services/UserService";
 import SignUpButton from "../Account/SignUpButton";
 import CreateChannelCard from "../Channel/CreateChannelCard";
+import { Topic, TopicService } from "../../Services/TopicService";
+import TopicClassification from "../../Components/Homepage/TopicClassification";
 
 interface Props {
   gridArea?: string;
   past?: boolean;
   onSave?: any;
   onUnsave?: any;
+  seeMore: boolean;
   talks: Talk[];
   title: boolean;
-  seeMore: boolean;
+  topicSearch: boolean;
   user: User | null;
 }
 
-// interface State {
-//   loading: boolean;
-//   talks: Talk[];
-// }
+interface State {
+  allTalks: Talk[];
+  chosenTalks: Talk[]
+  allTopics: Topic[];
+  chosenTopic: Topic;
+}
 
-export default class TalkList extends Component<Props> {
-  // constructor(props: Props) {
-  //   super(props);
-  //   this.state = {
-  //     loading: true,
-  //     talks: [],
-  //   };
-  // }
+export default class TalkList extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      allTalks: [],
+      chosenTalks: [],
+      allTopics: [],
+      chosenTopic: {
+        field: "-",
+        id: -1,
+        is_primitive_node: false,
+        parent_1_id: -1,
+        parent_2_id: -1, 
+        parent_3_id: -1
+      }
+    };
+  }
 
-  // fetchTalks = () => {
-  //   TalkService.getAllTalks(
-  //     6,
-  //     0,
-  //     (talks: Talk[]) => {
-  //       console.log(talks);
-  //       this.setState({ talks, loading: false });
-  //     }
-  //   );
-  // };
+  componentWillMount() {
+    if (this.props.topicSearch) {
+      TopicService.getAll((allTopics: Topic[]) => {
+        this.setState({ allTopics: allTopics });
+      });
+
+      if (this.props.talks.length === 0) {
+        // Limit to 1000 talks
+        TalkService.getAllFutureTalks(1000, 0, (allTalks: Talk[]) => {
+          this.setState({ 
+            allTalks: allTalks,
+            chosenTalks: allTalks
+          });
+        });
+        
+      } else {
+        this.setState({
+          allTalks: this.props.talks,
+          chosenTalks: this.props.talks,
+        })
+      }
+    }
+  }
+
+  getTalksByTopics = (talks: Talk[], topicsId: number[]): Talk[] => {
+    let res: Talk[] = []
+    for (let talk of talks) {
+      let isIn: boolean = false;
+      for (let topic of talk.topics) {
+        if (!isIn && topicsId.includes(topic.id)) {
+          isIn = true
+          res.push(talk)
+        }
+      }
+    }
+    return res
+  }
+
+  fetchTalksByTopicWithChildren = (topic: Topic) => {
+    if (topic.id >= 0) {
+      let childrenId = TopicService.getDescendenceId(topic, this.state.allTopics)
+      childrenId.push(topic.id)
+      this.setState({
+        chosenTalks: this.getTalksByTopics(this.state.allTalks, childrenId)
+      })
+    } else {
+      this.setState({
+        chosenTalks: this.state.allTalks
+      })
+    }
+  }
+
+  selectTopic = (temp: Topic) => {
+    this.setState({
+      chosenTopic: temp
+    });
+    this.fetchTalksByTopicWithChildren(temp)
+  }
 
   ifTalks() {
     return (
-      <Box width="100%">
+      <Box width="100%" gap="small" direction="row" height="100%" wrap>
+        {this.props.past &&
+          this.state.chosenTalks.map((talk: Talk) => (
+            <PastTalkCard
+              talk={talk}
+              user={this.props.user}
+              onSave={this.props.onSave}
+              onUnsave={this.props.onUnsave}
+            />
+          ))}
+        {!this.props.past &&
+          this.state.chosenTalks.map((talk: Talk) => (
+            <TalkCard talk={talk} user={this.props.user} />
+          ))}
+      </Box>
+    );
+  }
+
+  ifNoTalks() {
+    return (
+      <Box
+        direction="row"
+        width="100%"
+        margin="none"
+        pad="small"
+        justify="between"
+        round="xsmall"
+        align="center"
+        alignSelf="center"
+        background="rgba(96, 110, 235, 0.7)"
+      >
+        <Text size="20px" weight="bold" color="black">
+          No talk of that category exist
+        </Text>
+      </Box>
+    );
+  };
+
+  render() {
+    return (
+      <Box width="100%" margin={{bottom: "60px"}}>
         <Box
           width="100%"
           direction="row"
@@ -78,51 +180,15 @@ export default class TalkList extends Component<Props> {
             </Link>
           )}
         </Box>
-        <Box gap="small" direction="row" width="100%" height="100%" wrap>
-          {this.props.past &&
-            this.props.talks.map((talk: Talk) => (
-              <PastTalkCard
-                talk={talk}
-                user={this.props.user}
-                onSave={this.props.onSave}
-                onUnsave={this.props.onUnsave}
-              />
-            ))}
-          {!this.props.past &&
-            this.props.talks.map((talk: Talk) => (
-              <TalkCard talk={talk} user={this.props.user} />
-            ))}
-        </Box>
-      </Box>
-    );
-  }
 
-  ifNoTalks = () => {
-    return (
-      <Box
-        direction="row"
-        width="100%"
-        margin="none"
-        pad="small"
-        justify="between"
-        round="xsmall"
-        align="center"
-        alignSelf="center"
-        background="rgba(96, 110, 235, 0.7)"
-      >
-        <Text size="20px" weight="bold" color="black">
-          No talk of that category exist
-        </Text>
-      </Box>
-    );
-  };
+        {this.props.topicSearch && (
+          <TopicClassification topicCallback={this.selectTopic} />
+        )}
 
-  render() {
-    return (
-      <Box>
-        {this.props.talks.length === 0
+        {this.state.chosenTalks.length === 0
           ? this.ifNoTalks()
-          : this.ifTalks()}
+          : this.ifTalks()
+        } 
       </Box>
     );
   }

@@ -43,52 +43,24 @@ export default class Home extends Component<{}, State> {
     };
   } 
 
-  componentWillMount() {
-    // Limit to 1000 talks
-    TalkService.getAllFutureTalks(1000, 0, (allTalks: Talk[]) => {
-      this.setState({ 
-        allTalks: allTalks,
-        chosenTalks: allTalks
-      });
-    });
-    TopicService.getAll((allTopics: Topic[]) => {
-      this.setState({ allTopics: allTopics });
-    });
+  // componentWillMount() {
+  //   // Limit to 1000 talks
+  //   TalkService.getAllFutureTalks(1000, 0, (allTalks: Talk[]) => {
+  //     this.setState({ 
+  //       allTalks: allTalks,
+  //       chosenTalks: allTalks
+  //     });
+  //   });
+  //   TopicService.getAll((allTopics: Topic[]) => {
+  //     this.setState({ allTopics: allTopics });
+  //   });
 
-    // this.fetchTalks();
-  }
+  //   // this.fetchTalks();
+  // }
 
   // componentWillUpdate() {
   //   this.fetchTalks();
   // }
-
-  getTalksByTopics = (talks: Talk[], topicsId: number[]): Talk[] => {
-    let res: Talk[] = []
-    for (let talk of talks) {
-      let isIn: boolean = false;
-      for (let topic of talk.topics) {
-        if (!isIn && topicsId.includes(topic.id)) {
-          isIn = true
-          res.push(talk)
-        }
-      }
-    }
-    return res
-  }
-
-  fetchTalksByTopicWithChildren = (topic: Topic) => {
-    if (topic.id >= 0) {
-      let childrenId = TopicService.getDescendenceId(topic, this.state.allTopics)
-      childrenId.push(topic.id)
-      this.setState({
-        chosenTalks: this.getTalksByTopics(this.state.allTalks, childrenId)
-      })
-    } else {
-      this.setState({
-        chosenTalks: this.state.allTalks
-      })
-    }
-  }
 
   // fetchTalks = () => {
   //   if (this.state.chosenTopic.id == -1) {
@@ -106,12 +78,7 @@ export default class Home extends Component<{}, State> {
   //   }
   // };
 
-  selectTopic = (temp: Topic) => {
-    this.setState({
-      chosenTopic: temp
-    });
-    this.fetchTalksByTopicWithChildren(temp)
-  }
+
 
   render() {
     return (
@@ -127,19 +94,18 @@ export default class Home extends Component<{}, State> {
           gap="25px"
         >
           <Carousel gridArea="carousel" />
-          <TopicClassification topicCallback={this.selectTopic} />
           <TalkList
-            talks={this.state.chosenTalks}
-            title
-            seeMore
+            seeMore={true}
+            talks={[]}
+            title={true}
+            topicSearch={true}
             user={this.state.user}
           />
           <RecentTalksList user={this.state.user} />
           {/* <RecommendedGrid /> */}
+          <FooterComponent />
         </Box>
       </Box>
     );
   }
 }
-
-// <TreeClassification />

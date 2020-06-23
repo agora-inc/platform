@@ -96,7 +96,7 @@ export default class TopicClassification extends Component<Props, State> {
           align="end"
           margin={{ bottom: "15px" }}
         >
-          <Text size="26px" weight="bold" color="black" margin="none">
+          <Text size="20px" weight="bold" color="black" margin="none">
             Filter by topic
           </Text>
         </Box>

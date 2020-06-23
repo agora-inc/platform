@@ -83,9 +83,10 @@ export default class SavedTalksPage extends Component<Props, State> {
           )}
           <TalkList
             past
-            title={false}
             seeMore={false}
             talks={this.state.talks}
+            title={false}
+            topicSearch={true}
             user={this.state.user}
             onUnsave={this.fetchTalks}
           />

@@ -2,28 +2,36 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import StreamCard from "../StreamCard";
-import { Stream, StreamService } from "../../Services/StreamService";
+import { Talk, TalkService } from "../../Services/TalkService";
+import TalkCard from "../Talks/TalkCard";
+import { User, UserService } from "../../Services/UserService";
 
 interface Props {
   gridArea: string;
 }
 
 interface State {
-  streams: Stream[];
+  talks: Talk[];
+  user: User;
 }
 
 export default class Carousel extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      streams: [],
+      talks: [],
+      user: UserService.getCurrentUser(),
     };
   }
 
   componentWillMount() {
-    StreamService.getAllStreams(3, 0, (streams: Stream[]) => {
-      this.setState({ streams });
-    });
+    TalkService.getAllCurrentTalks(
+      3,
+      0,
+      (data: { talks: Talk[]; count: number }) => {
+        this.setState({ talks: data.talks });
+      }
+    );
   }
 
   ifNoStreams = () => {
@@ -92,7 +100,7 @@ export default class Carousel extends Component<Props, State> {
       //     /> */}
       <Box width="100%">
         <Text color="black" weight="bold" size="32px">
-          Live now
+          Happening now
         </Text>
         <Box
           direction="row"
@@ -102,13 +110,8 @@ export default class Carousel extends Component<Props, State> {
           wrap
           margin={{ top: "20px" }}
         >
-          {this.state.streams.map((stream: Stream) => (
-            <StreamCard
-              width="270px"
-              height="100%"
-              color="#f2f2f2"
-              stream={stream}
-            />
+          {this.state.talks.map((talk: Talk) => (
+            <TalkCard talk={talk} user={this.state.user} />
           ))}
         </Box>
       </Box>
@@ -123,9 +126,7 @@ export default class Carousel extends Component<Props, State> {
       // gridArea={this.props.gridArea}
       // margin={{ top: "60px" }}
       >
-        {this.state.streams.length === 0
-          ? this.ifNoStreams()
-          : this.ifStreams()}
+        {this.state.talks.length === 0 ? this.ifNoStreams() : this.ifStreams()}
       </Box>
     );
   }

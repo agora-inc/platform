@@ -20,6 +20,7 @@ class TalkRepository:
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"]
 
+
     def getNumberOfPastTalksForChannel(self, channelId):
         query = f'SELECT COUNT(*) FROM Talks WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP'
         result = self.db.run_query(query)
@@ -113,6 +114,16 @@ class TalkRepository:
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talks
+
+    def getAllCurrentTalks(self, limit, offset):
+        query = f'SELECT * FROM Talks WHERE date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+        return (talks, self.getNumberOfCurrentTalks())
 
     def getAllPastTalks(self, limit, offset):
         query = f'SELECT * FROM Talks WHERE end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
@@ -262,6 +273,7 @@ class TalkRepository:
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"] != 0
 
+<<<<<<< HEAD
 
 if __name__ == "__main__":
 
@@ -356,3 +368,22 @@ if __name__ == "__main__":
     talks = obj.getAllFutureTalksForTopicWithChildren(limit=10, offset=0,topic_id=15)
     # for talk in talks:
     #     print(talk)
+=======
+    def isTalkAvailableToUser(self, talkId, userId):
+        query = f'SELECT visibility, channel_id FROM Talks WHERE id={talkId}'
+        result = self.db.run_query(query)
+
+        if len(result) == 0:
+            return False
+
+        visibility  = result[0]["visibility"]
+        if visibility == "Everybody":
+            return True
+        
+        if visibility == "Followers and members":
+            return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["follower", "member", "owner"])
+        if visibility == "Members only":
+            return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
+        
+        return True
+>>>>>>> cc23156915abf4b0893915857ebf2e5233874f45

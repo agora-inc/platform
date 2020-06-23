@@ -18,6 +18,7 @@ interface State {
   showModal: boolean;
   showShadow: boolean;
   registered: boolean;
+  available: boolean;
 }
 
 export default class TalkCard extends Component<Props, State> {
@@ -27,6 +28,7 @@ export default class TalkCard extends Component<Props, State> {
       showModal: false,
       showShadow: false,
       registered: false,
+      available: true,
     };
   }
 
@@ -42,8 +44,30 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   componentWillMount() {
-    this.checkIfRegistered();
+    this.checkIfAvailableAndRegistered();
   }
+
+  checkIfAvailableAndRegistered = () => {
+    if (this.props.user) {
+      TalkService.isAvailableToUser(
+        this.props.user.id,
+        this.props.talk.id,
+        (available: boolean) => {
+          this.setState({ available }, () => {
+            if (available) {
+              this.checkIfRegistered();
+            }
+          });
+        }
+      );
+    } else {
+      this.setState({
+        available:
+          this.props.talk.visibility === "Everybody" ||
+          this.props.talk.visibility === null,
+      });
+    }
+  };
 
   checkIfRegistered = () => {
     this.props.user &&
@@ -117,17 +141,21 @@ export default class TalkCard extends Component<Props, State> {
             <Box
               direction="row"
               gap="xsmall"
-              align="center"
+              // align="center"
               style={{ minHeight: "30px" }}
             >
               <Box
-                height="25px"
-                width="25px"
-                round="12.5px"
                 justify="center"
                 align="center"
                 background="#efeff1"
                 overflow="hidden"
+                style={{
+                  minHeight: 25,
+                  minWidth: 25,
+                  maxHeight: 25,
+                  maxWidth: 25,
+                  borderRadius: 12.5,
+                }}
               >
                 {!this.props.talk.has_avatar && (
                   <Identicon string={this.props.talk.channel_name} size={15} />
@@ -194,7 +222,12 @@ export default class TalkCard extends Component<Props, State> {
             modal
             responsive
             animation="fadeIn"
-            style={{ width: 400, height: 500, borderRadius: 15 }}
+            style={{
+              width: 400,
+              height: this.state.registered ? 540 : 500,
+              borderRadius: 15,
+              overflow: "hidden",
+            }}
           >
             <Box
               // align="center"
@@ -204,21 +237,20 @@ export default class TalkCard extends Component<Props, State> {
               justify="between"
               gap="xsmall"
             >
-              <Box style={{ minHeight: "40%", maxHeight: "60%" }}>
-                <Box
-                  direction="row"
-                  gap="xsmall"
-                  align="center"
-                  style={{ minHeight: "30px" }}
-                >
+              <Box style={{ minHeight: "25%", maxHeight: "60%" }}>
+                <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
                   <Box
-                    height="25px"
-                    width="25px"
-                    round="12.5px"
                     justify="center"
                     align="center"
                     background="#efeff1"
                     overflow="hidden"
+                    style={{
+                      minHeight: 25,
+                      minWidth: 25,
+                      maxHeight: 25,
+                      maxWidth: 25,
+                      borderRadius: 12.5,
+                    }}
                   >
                     {!this.props.talk.has_avatar && (
                       <Identicon
@@ -252,18 +284,25 @@ export default class TalkCard extends Component<Props, State> {
               <Box
                 gap="xsmall"
                 justify="end"
-                style={{ minHeight: "40%", maxHeight: "60%" }}
+                style={{ minHeight: "40%", maxHeight: "75%" }}
               >
                 <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
                   {this.props.talk.description}
                 </Text>
                 {this.props.talk.tags.length !== 0 && (
-                  <Box direction="row" gap="xsmall" wrap>
+                  <Box
+                    direction="row"
+                    gap="xsmall"
+                    wrap
+                    style={{ minHeight: "35px", marginTop: "5px" }}
+                  >
                     {this.props.talk.tags.map((tag: Tag) => (
                       <TagComponent
                         tagName={tag.name}
                         width="80px"
+                        height="35px"
                         colour="#f3f3f3"
+                        marginTop={8}
                       />
                     ))}
                   </Box>
@@ -271,11 +310,13 @@ export default class TalkCard extends Component<Props, State> {
                 <Text size="18px" color="black" weight="bold">
                   {this.formatDate(this.props.talk.date)}
                 </Text>
-                <Countdown
-                  talkStart={this.props.talk.date}
-                  showLinkOffset={this.props.talk.show_link_offset}
-                  link={this.props.talk.link}
-                />
+                {this.state.available && (
+                  <Countdown
+                    talkStart={this.props.talk.date}
+                    showLinkOffset={this.props.talk.show_link_offset}
+                    link={this.props.talk.link}
+                  />
+                )}
                 {this.state.registered && (
                   <AddToCalendarButtons
                     startTime={this.props.talk.date}
@@ -285,24 +326,43 @@ export default class TalkCard extends Component<Props, State> {
                     link={this.props.talk.link}
                   />
                 )}
-                <Button
-                  onClick={
-                    this.state.registered ? this.unregister : this.register
-                  }
-                  primary
-                  color={this.props.talk.channel_colour}
-                  disabled={this.props.user === null}
-                  label={
-                    this.props.user !== null
-                      ? this.state.registered
-                        ? "Unregister"
-                        : "Register"
-                      : "Log in to register"
-                  }
-                  size="large"
-                ></Button>
+                {this.state.available && (
+                  <Button
+                    onClick={
+                      this.state.registered ? this.unregister : this.register
+                    }
+                    primary
+                    color={this.props.talk.channel_colour}
+                    disabled={this.props.user === null}
+                    label={
+                      this.props.user !== null
+                        ? this.state.registered
+                          ? "Unregister"
+                          : "Register"
+                        : "Log in to register"
+                    }
+                    size="large"
+                  ></Button>
+                )}
               </Box>
             </Box>
+            {!this.state.available && (
+              <Box
+                background="#d5d5d5"
+                pad="small"
+                align="center"
+                justify="center"
+              >
+                <Text textAlign="center" weight="bold">
+                  {`Sorry, this talk is only available to ${
+                    this.props.talk.visibility === "Followers and members"
+                      ? "followers and members"
+                      : "members"
+                  }
+                  of ${this.props.talk.channel_name}`}
+                </Text>
+              </Box>
+            )}
           </Layer>
         )}
       </Box>

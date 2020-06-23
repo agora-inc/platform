@@ -349,7 +349,12 @@ export default class PastTalkCard extends Component<Props, State> {
                   {this.props.talk.description}
                 </Text>
                 {this.props.talk.tags.length !== 0 && (
-                  <Box direction="row" gap="xsmall" wrap>
+                  <Box
+                    direction="row"
+                    gap="xsmall"
+                    wrap
+                    style={{ minHeight: "35px", marginTop: "5px" }}
+                  >
                     {this.props.talk.tags.map((tag: Tag) => (
                       <TagComponent
                         tagName={tag.name}
