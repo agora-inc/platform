@@ -81,9 +81,10 @@ export default class Schedule extends Component<Props, State> {
             </Box>
           )}
           <TalkList
-            title={false}
             seeMore={false}
             talks={this.state.talks}
+            title={false}
+            topicSearch={false}
             user={this.state.user}
           />
         </Box>
