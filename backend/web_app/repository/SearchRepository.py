@@ -1,6 +1,5 @@
-# from repository import TagRepository, ChannelRepository
+from repository import TagRepository, ChannelRepository
 
-import TagRepository, ChannelRepository
 
 class SearchRepository:
     def __init__(self, db):
