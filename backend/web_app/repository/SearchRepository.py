@@ -1,4 +1,6 @@
-from repository import TagRepository, ChannelRepository
+# from repository import TagRepository, ChannelRepository
+
+import TagRepository, ChannelRepository
 
 class SearchRepository:
     def __init__(self, db):
@@ -12,7 +14,8 @@ class SearchRepository:
         elif objectType == "channel":
             return self.searchChannels(searchString)
         elif objectType == "stream":
-            return self.searchStreams(searchString)
+            # return self.searchStreams(searchString)
+            pass
         elif objectType == "upcoming":
             return self.searchUpcoming(searchString)
         elif objectType == "past":
@@ -81,7 +84,7 @@ class SearchRepository:
     #     return talks
 
     def searchUpcoming(self, searchString):
-        query = f'SELECT * FROM Talks WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND date > CURRENT_TIMESTAMP'
+        query = f'SELECT * FROM Talks WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND date > CURRENT_TIMESTAMP;'
         talks = self.db.run_query(query)
 
         for talk in talks:
@@ -90,7 +93,7 @@ class SearchRepository:
         return talks
 
     def searchPast(self, searchString):
-        query = f'SELECT * FROM Talks WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND end_date < CURRENT_TIMESTAMP'
+        query = f'SELECT * FROM Talks WHERE (name LIKE "%{searchString}%" OR description LIKE "%{searchString}%") AND end_date < CURRENT_TIMESTAMP;'
         talks = self.db.run_query(query)
 
         for talk in talks:
