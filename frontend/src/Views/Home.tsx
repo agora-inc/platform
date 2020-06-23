@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Box, Text, Grid, Sidebar } from "grommet";
+import { Box, Text, Grid, Sidebar, DropButton } from "grommet";
 import CustomSideBar from "../Components/Homepage/CustomSideBar";
 import Carousel from "../Components/Homepage/Carousel";
 import PopularTagsBox from "../Components/Homepage/PopularTagsBox";
@@ -100,6 +100,13 @@ export default class Home extends Component<{}, State> {
             title={true}
             topicSearch={true}
             user={this.state.user}
+          />
+          <DropButton
+            label="Fancy Selector"
+            dropAlign={{ top: 'bottom', right: 'right' }}
+            dropContent={
+              <Box pad="large" background="light-2" />
+            }
           />
           <RecentTalksList user={this.state.user} />
           {/* <RecommendedGrid /> */}
