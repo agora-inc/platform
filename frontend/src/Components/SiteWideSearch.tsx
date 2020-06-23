@@ -391,7 +391,7 @@ export default class SiteWideSearch extends Component<{}, State> {
             onChange={(e) => this.search(e.target.value)}
             icon={<Search />}
             reverse
-            placeholder="search ..."
+            placeholder="Search..."
             style={{ width: "27vw", height: "4.5vh", justifySelf: "center" }}
           />
         </Box>

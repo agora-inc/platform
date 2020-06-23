@@ -25,9 +25,9 @@ export default class CustomSideBar extends Component<Props> {
           style={{ position: "sticky", top: 63 }}
           gap="small"
         >
-          <TrendingChannelsList />
+          {/* <TrendingChannelsList /> */}
           <SubscribedChannelsList user={this.props.user} />
-          <PopularTagsBox />
+          {/* <PopularTagsBox /> */}
         </Box>
       </Sidebar>
     );
