@@ -2,6 +2,7 @@ import { baseApiUrl } from "../config";
 import { Tag } from "./TagService";
 import { ArtService } from "./ArtService";
 import axios from "axios";
+import { Topic } from "../Services/TopicService";
 
 const getAllFutureTalks = (limit: number, offset: number, callback: any) => {
   axios
@@ -26,6 +27,36 @@ const getAllCurrentTalks = (limit: number, offset: number, callback: any) => {
 const getAllPastTalks = (limit: number, offset: number, callback: any) => {
   axios
     .get(`${baseApiUrl}/talks/all/past?limit=${limit}&offset=${offset}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const getFutureTalksForTopic = (topicId: number, limit: number, offset: number, callback: any) => {
+  axios
+    .get(`${baseApiUrl}/talks/topic/future?topicId=${topicId}&limit=${limit}&offset=${offset}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const getAllFutureTalksForTopicWithChildren = (limit: number, offset: number, topicId: number, callback: any) => {
+  axios
+    .get(`${baseApiUrl}/talks/topic/children/future?topicId=${topicId}&limit=${limit}&offset=${offset}`, {
+      headers: { "Access-Control-Allow-Origin": "*" },
+    })
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
+const getPastTalksForTopic = (topicId: number, callback: any) => {
+  axios
+    .get(baseApiUrl + "/talks/topic/past?topicId=" + topicId, {
       headers: { "Access-Control-Allow-Origin": "*" },
     })
     .then(function (response) {
@@ -73,6 +104,7 @@ const editTalk = (
   talkTags: Tag[],
   showLinkOffset: number,
   visibility: string,
+  topics: Topic[],
   callback: any
 ) => {
   axios
@@ -88,6 +120,9 @@ const editTalk = (
         talkTags: talkTags,
         showLinkOffset: showLinkOffset,
         visibility: visibility,
+        topic1Id: topics[0].id,
+        topic2Id: topics[1].id,
+        topic3Id: topics[2].id,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -110,6 +145,7 @@ const scheduleTalk = (
   talkTags: Tag[],
   showLinkOffset: number,
   visibility: string,
+  topics: Topic[],
   callback: any
 ) => {
   axios
@@ -126,15 +162,19 @@ const scheduleTalk = (
         talkTags: talkTags,
         showLinkOffset: showLinkOffset,
         visibility: visibility,
+        topic1Id: topics.length > 0 ? topics[0].id : null,
+        topic2Id: topics.length > 1 ? topics[1].id : null,
+        topic3Id: topics.length > 2 ? topics[2].id : null,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
       callback(response.data);
+    })
+    .catch(function (error) {
+      console.log("Schedule talk go brrrr")
+      callback(false);
     });
-  // .catch(function (error) {
-  //   callback(false);
-  // });
 };
 
 const deleteTalk = (id: number, callback: any) => {
@@ -303,6 +343,9 @@ export const TalkService = {
   getAllPastTalks,
   getFutureTalksForChannel,
   getPastTalksForChannel,
+  getFutureTalksForTopic,
+  getAllFutureTalksForTopicWithChildren,
+  getPastTalksForTopic,
   getPastTalksForTag,
   editTalk,
   scheduleTalk,
@@ -335,4 +378,5 @@ export type Talk = {
   tags: Tag[];
   show_link_offset: number;
   visibility: string;
+  topics: Topic[];
 };

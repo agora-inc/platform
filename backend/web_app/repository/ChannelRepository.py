@@ -1,9 +1,9 @@
 import random
 
+
 class ChannelRepository:
     def __init__(self, db):
         self.db = db
-
 
     def getChannelById(self, id):
         query = f"SELECT * FROM Channels WHERE id = {id}"
@@ -19,12 +19,13 @@ class ChannelRepository:
             return None
         return result[0]
 
-    
+    def getChannelsByTopic(self, name):
+        raise NotImplementedError
+
     def getAllChannels(self, limit, offset):
         query = f'SELECT * FROM Channels LIMIT {limit} OFFSET {offset}'
         result = self.db.run_query(query)
         return result
-
 
     def createChannel(self, channelName, channelDescription, userId):
         colours = [
@@ -59,7 +60,14 @@ class ChannelRepository:
         return "ok"
 
     def updateChannelDescription(self, channelId, newDescription):
+        """TODO: Refactor this into updateShortChannelDescription with DB field as well into short_description
+        """
         query = f'UPDATE Channels SET description = "{newDescription}" WHERE id = {channelId}'
+        self.db.run_query(query)
+        return "ok"
+
+    def updateLongChannelDescription(self, channelId, newDescription):
+        query = f'UPDATE Channels SET long_description = "{newDescription}" WHERE id = {channelId}'
         self.db.run_query(query)
         return "ok"
 

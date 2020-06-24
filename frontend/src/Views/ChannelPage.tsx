@@ -13,6 +13,9 @@ import VideoCard from "../Components/Streaming/VideoCard";
 import ChannelLiveNowCard from "../Components/Channel/ChannelLiveNowCard";
 import "../Styles/channel-page.css";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
+import AboutUs from "../Components/Channel/AboutUs";
+
+
 
 interface Props {
   location: { pathname: string };
@@ -332,6 +335,7 @@ export default class ChannelPage extends Component<Props, State> {
                     </Box>
                   </Box>
                 </Box>
+                <AboutUs text={this.state.channel?.long_description} />
                 <Text
                   size="28px"
                   weight="bold"

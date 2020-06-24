@@ -108,7 +108,7 @@ export default class TagSelector extends Component<Props, State> {
   };
 
   render() {
-    console.log("selected:", this.state.selected);
+    // console.log("selected:", this.state.selected);
     const tagsToShow =
       this.state.searchTerm === "" ? this.state.all : this.state.filtered;
     return (

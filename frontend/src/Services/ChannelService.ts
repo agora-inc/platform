@@ -155,6 +155,22 @@ const updateChannelDescription = (
     });
 };
 
+const updateLongChannelDescription = (
+  channelId: number,
+  newDescription: string,
+  callback: any
+) => {
+  axios
+    .post(
+      baseApiUrl + "/channels/updatelongdescription",
+      { channelId: channelId, newDescription: newDescription },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
+};
+
 const updateChannelColour = (
   channelId: number,
   newColour: string,
@@ -187,6 +203,7 @@ export type Channel = {
   id: number;
   name: string;
   description: string;
+  long_description: string;
   colour: string;
   has_avatar: boolean;
 };
@@ -204,5 +221,6 @@ export const ChannelService = {
   getFollowerCountForChannel,
   updateChannelColour,
   updateChannelDescription,
+  updateLongChannelDescription,
   uploadAvatar,
 };
