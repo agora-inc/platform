@@ -37,7 +37,6 @@ export default class SiteWideSearch extends Component<{}, State> {
     this.setState({
       searchString: "",
       results: this.clearResults(),
-
     });
   };
 
@@ -145,6 +144,8 @@ export default class SiteWideSearch extends Component<{}, State> {
                         {!!channel.has_avatar && (
                           <img
                             src={`/images/channel-icons/${channel.id}.jpg`}
+                            height={20}
+                            width={20}
                           />
                         )}
                       </Box>
@@ -250,6 +251,8 @@ export default class SiteWideSearch extends Component<{}, State> {
                         {!!talk.has_avatar && (
                           <img
                             src={`/images/channel-icons/${talk.channel_id}.jpg`}
+                            height={15}
+                            width={15}
                           />
                         )}
                       </Box>
@@ -311,6 +314,8 @@ export default class SiteWideSearch extends Component<{}, State> {
                         {!!talk.has_avatar && (
                           <img
                             src={`/images/channel-icons/${talk.channel_id}.jpg`}
+                            height={15}
+                            width={15}
                           />
                         )}
                       </Box>

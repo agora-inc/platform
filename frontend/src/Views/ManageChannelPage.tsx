@@ -349,6 +349,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                           src={`/images/channel-icons/${
                             this.state.channel!.id
                           }.jpg`}
+                          height={120}
+                          width={120}
                         />
                       )}
                     </Box>

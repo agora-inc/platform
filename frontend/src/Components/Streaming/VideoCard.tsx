@@ -77,6 +77,8 @@ export default class VideoCard extends Component<Props, State> {
                 {!!this.props.video.has_avatar && (
                   <img
                     src={`/images/channel-icons/${this.props.video.channel_id}.jpg`}
+                    height={30}
+                    width={30}
                   />
                 )}
               </Box>

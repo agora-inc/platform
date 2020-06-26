@@ -15,8 +15,6 @@ import "../Styles/channel-page.css";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import AboutUs from "../Components/Channel/AboutUs";
 
-
-
 interface Props {
   location: { pathname: string };
   streamId: number;
@@ -289,6 +287,8 @@ export default class ChannelPage extends Component<Props, State> {
                           src={`/images/channel-icons/${
                             this.state.channel!.id
                           }.jpg`}
+                          height={120}
+                          width={120}
                         />
                       )}
                     </Box>

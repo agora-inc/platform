@@ -85,7 +85,11 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                       <Identicon string={channel.name} size={25} />
                     )}
                     {!!channel.has_avatar && (
-                      <img src={`/images/channel-icons/${channel.id}.jpg`} />
+                      <img
+                        src={`/images/channel-icons/${channel.id}.jpg`}
+                        height={40}
+                        width={40}
+                      />
                     )}
                   </Box>
                   <Box justify="between">

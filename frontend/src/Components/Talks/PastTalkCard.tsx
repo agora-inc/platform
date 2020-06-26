@@ -229,6 +229,8 @@ export default class PastTalkCard extends Component<Props, State> {
                 {!!this.props.talk.has_avatar && (
                   <img
                     src={`/images/channel-icons/${this.props.talk.channel_id}.jpg`}
+                    height={25}
+                    width={25}
                   />
                 )}
               </Box>
@@ -320,6 +322,8 @@ export default class PastTalkCard extends Component<Props, State> {
                     {!!this.props.talk.has_avatar && (
                       <img
                         src={`/images/channel-icons/${this.props.talk.channel_id}.jpg`}
+                        height={25}
+                        width={25}
                       />
                     )}
                   </Box>
