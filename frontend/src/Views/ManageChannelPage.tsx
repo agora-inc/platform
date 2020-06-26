@@ -2,21 +2,17 @@ import React, { Component, ChangeEvent } from "react";
 import { Redirect } from "react-router";
 import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
-import { Video, VideoService } from "../Services/VideoService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
 import Loading from "../Components/Core/Loading";
-import StreamNowButton from "../Components/Streaming/StreamNowButton";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
 import Identicon from "react-identicons";
 import ColorPicker from "../Components/Channel/ColorPicker";
 import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
 import AddUsersButton from "../Components/Channel/AddUsersButton";
-import VideoCard from "../Components/Streaming/VideoCard";
 import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
-import { StreamService } from "../Services/StreamService";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 
 interface Props {
