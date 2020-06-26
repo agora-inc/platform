@@ -314,7 +314,7 @@ export default class TalkCard extends Component<Props, State> {
                 <Text size="18px" color="black" weight="bold">
                   {this.formatDate(this.props.talk.date)}
                 </Text>
-                {this.state.available && (
+                {this.state.registered && (
                   <Countdown
                     talkStart={this.props.talk.date}
                     showLinkOffset={this.props.talk.show_link_offset}

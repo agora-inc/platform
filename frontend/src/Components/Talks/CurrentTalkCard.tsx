@@ -330,7 +330,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
                 <Text size="18px" color="black" weight="bold">
                   {this.getTimeRemaining()}
                 </Text>
-                {this.state.available && (
+                {this.state.registered && (
                   <Countdown
                     talkStart={this.props.talk.date}
                     showLinkOffset={this.props.talk.show_link_offset}
