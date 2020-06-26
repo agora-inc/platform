@@ -265,7 +265,7 @@ def scheduleTalk():
     params = request.json
 
     for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
-        if params[topic_key] == None:
+        if topic_key not in params:
             params[topic_key] = "NULL" 
 
     return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
