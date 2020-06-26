@@ -28,7 +28,7 @@ export default class HeaderBar extends Component {
           width: "100vw",
           color: "black",
           position: "absolute",
-          zIndex: 100,
+          zIndex: 1000,
         }}
         {...this.props}
       >

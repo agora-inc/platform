@@ -86,7 +86,6 @@ export default class SavedTalksPage extends Component<Props, State> {
             seeMore={false}
             talks={this.state.talks}
             title={false}
-            topicSearch={true}
             user={this.state.user}
             onUnsave={this.fetchTalks}
           />

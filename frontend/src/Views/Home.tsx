@@ -12,11 +12,12 @@ import "../Styles/home.css";
 import { User, UserService } from "../Services/UserService";
 import { Talk, TalkService } from "../Services/TalkService";
 import { Topic, TopicService } from "../Services/TopicService";
+import TopicTalkList from "../Components/Talks/TopicTalksList";
 
 interface State {
   user: User | null;
   allTalks: Talk[];
-  chosenTalks: Talk[]
+  chosenTalks: Talk[];
   allTopics: Topic[];
   chosenTopic: Topic;
 }
@@ -34,16 +35,16 @@ export default class Home extends Component<{}, State> {
         id: -1,
         is_primitive_node: false,
         parent_1_id: -1,
-        parent_2_id: -1, 
-        parent_3_id: -1
-      }
+        parent_2_id: -1,
+        parent_3_id: -1,
+      },
     };
-  } 
+  }
 
   // componentWillMount() {
   //   // Limit to 1000 talks
   //   TalkService.getAllFutureTalks(1000, 0, (allTalks: Talk[]) => {
-  //     this.setState({ 
+  //     this.setState({
   //       allTalks: allTalks,
   //       chosenTalks: allTalks
   //     });
@@ -62,20 +63,18 @@ export default class Home extends Component<{}, State> {
   // fetchTalks = () => {
   //   if (this.state.chosenTopic.id == -1) {
   //     TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
-  //       this.setState({ 
+  //       this.setState({
   //         allTalks: talks
   //       });
   //     });
   //   } else {
   //     TalkService.getAllFutureTalksForTopicWithChildren(6, 0, this.state.chosenTopic.id, (talks: Talk[]) => {
-  //       this.setState({ 
+  //       this.setState({
   //         allTalks: talks
   //       });
   //     });
   //   }
   // };
-
-
 
   render() {
     return (
@@ -91,9 +90,8 @@ export default class Home extends Component<{}, State> {
           gap="25px"
         >
           <Carousel gridArea="carousel" />
-          <TalkList
+          <TopicTalkList
             seeMore={true}
-            talks={[]}
             title={true}
             topicSearch={true}
             user={this.state.user}
