@@ -48,13 +48,6 @@ export default class CurrentTalkCard extends Component<Props, State> {
     return `Finishing in ${deltaHour} hours and ${remainderMin} minutes`;
   };
 
-  formatDate = (d: string) => {
-    const date = new Date(d);
-    const dateStr = date.toDateString().slice(0, -4);
-    const timeStr = date.toTimeString().slice(0, 5);
-    return `${dateStr} ${timeStr}`;
-  };
-
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, showShadow: true });
   };
@@ -148,30 +141,30 @@ export default class CurrentTalkCard extends Component<Props, State> {
           width="100%"
           background="white"
           round="xsmall"
-          // align="center"
-          pad="15px"
           justify="between"
           gap="small"
+          overflow="hidden"
         >
-          <Box style={{ minHeight: "35%", maxHeight: "50%" }}>
+          <Box
+            height="50%"
+            background={this.props.talk.channel_colour}
+            style={{ opacity: 0.75 }}
+          ></Box>
+          <Box height="50%" pad="15px" justify="end">
             <Box
               direction="row"
               gap="xsmall"
-              // align="center"
+              align="center"
               style={{ minHeight: "30px" }}
             >
               <Box
+                height="25px"
+                width="25px"
+                round="12.5px"
                 justify="center"
                 align="center"
                 background="#efeff1"
                 overflow="hidden"
-                style={{
-                  minHeight: 25,
-                  minWidth: 25,
-                  maxHeight: 25,
-                  maxWidth: 25,
-                  borderRadius: 12.5,
-                }}
               >
                 {!this.props.talk.has_avatar && (
                   <Identicon string={this.props.talk.channel_name} size={15} />
@@ -193,25 +186,11 @@ export default class CurrentTalkCard extends Component<Props, State> {
               </Text>
             </Box>
             <Text
-              weight="bold"
-              size="20px"
-              color="black"
-              style={{
-                // whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {this.props.talk.name}
-            </Text>
-          </Box>
-          <Box gap="xsmall">
-            <Text
               size="18px"
               color="black"
               style={{ maxHeight: 150, overflow: "scroll" }}
             >
-              {this.props.talk.description}
+              {this.props.talk.name}
             </Text>
             <Text size="18px" color="black" weight="bold">
               {this.getTimeRemaining()}
@@ -223,7 +202,13 @@ export default class CurrentTalkCard extends Component<Props, State> {
             height="100%"
             width="100%"
             round="xsmall"
-            style={{ zIndex: -1, position: "absolute", top: 8, left: 8 }}
+            style={{
+              zIndex: -1,
+              position: "absolute",
+              top: 8,
+              left: 8,
+              opacity: 0.5,
+            }}
             background={this.props.talk.channel_colour}
           ></Box>
         )}
