@@ -209,7 +209,7 @@ def getAllFutureTalks():
 def getAllCurrentTalks():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    data = jsonify(talks.getAllCurrentTalks(limit, offset))
+    data = talks.getAllCurrentTalks(limit, offset)
     return jsonify({"talks": data[0],"count": data[1]})
 
 @app.route('/talks/all/past', methods=["GET"])
