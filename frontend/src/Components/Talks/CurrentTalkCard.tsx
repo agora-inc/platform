@@ -6,7 +6,7 @@ import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
 import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
-import Countdown from "./Countdown";
+import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
 
 interface Props {
   talk: Talk;
@@ -316,19 +316,15 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   {this.getTimeRemaining()}
                 </Text>
                 {this.state.registered && (
-                  <Countdown
+                  <CountdownAndCalendarButtons
                     talkStart={this.props.talk.date}
                     showLinkOffset={this.props.talk.show_link_offset}
                     link={this.props.talk.link}
-                  />
-                )}
-                {this.state.registered && (
-                  <AddToCalendarButtons
+                    color={this.props.talk.channel_colour}
                     startTime={this.props.talk.date}
                     endTime={this.props.talk.end_date}
                     name={this.props.talk.name}
                     description={this.props.talk.description}
-                    link={this.props.talk.link}
                   />
                 )}
                 {this.state.available && (
