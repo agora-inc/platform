@@ -264,7 +264,13 @@ export default class PastTalkCard extends Component<Props, State> {
             height="100%"
             width="100%"
             round="xsmall"
-            style={{ zIndex: -1, position: "absolute", top: 8, left: 8 }}
+            style={{
+              zIndex: -1,
+              position: "absolute",
+              top: 8,
+              left: 8,
+              opacity: 0.5,
+            }}
             background={this.props.talk.channel_colour}
           ></Box>
         )}
