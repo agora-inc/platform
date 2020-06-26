@@ -47,7 +47,7 @@ export default class RecentTalksList extends Component<Props, State> {
           direction="row"
           gap="xsmall"
           align="end"
-          margin={{ bottom: "15px" }}
+          margin={{ bottom: "10px" }}
         >
           <Text size="26px" weight="bold" color="black" margin="none">
             Recent talks

@@ -103,7 +103,14 @@ export default class TopicTalkList extends Component<Props, State> {
 
   ifTalks = () => {
     return (
-      <Box width="100%" gap="small" direction="row" height="100%" wrap>
+      <Box
+        width="100%"
+        gap="small"
+        direction="row"
+        height="100%"
+        wrap
+        margin="none"
+      >
         {this.props.past &&
           this.state.chosenTalks.map((talk: Talk) => (
             <PastTalkCard
@@ -149,7 +156,7 @@ export default class TopicTalkList extends Component<Props, State> {
           direction="row"
           gap="xsmall"
           align="end"
-          margin={{ bottom: "15px" }}
+          margin={{ bottom: "10px" }}
         >
           {this.props.title && (
             <Text size="26px" weight="bold" color="black" margin="none">
