@@ -15,6 +15,11 @@ class TalkRepository:
         self.tags = TagRepository(db=self.db)
         self.topics = TopicRepository(db=self.db) 
 
+    def getNumberOfCurrentTalks(self):
+        query = 'SELECT COUNT(*) FROM Talks WHERE date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP'
+        result = self.db.run_query(query)
+        return result[0]["COUNT(*)"]
+
     def getNumberOfPastTalks(self):
         query = 'SELECT COUNT(*) FROM Talks WHERE end_date < CURRENT_TIMESTAMP'
         result = self.db.run_query(query)

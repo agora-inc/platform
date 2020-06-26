@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
-import StreamCard from "../StreamCard";
 import { Talk, TalkService } from "../../Services/TalkService";
-import TalkCard from "../Talks/TalkCard";
+import CurrentTalkCard from "../Talks/CurrentTalkCard";
 import { User, UserService } from "../../Services/UserService";
 
 interface Props {
@@ -79,39 +78,19 @@ export default class Carousel extends Component<Props, State> {
 
   ifStreams = () => {
     return (
-      // <Box align="center">
-      //   <Heading style={{ fontSize: 64 }}>Currently live</Heading>
-      //   <Grid
-      //     rows={["small"]}
-      //     columns={["medium", "medium", "medium"]}
-      //     gap="small"
-      //     areas={[
-      //       { name: "one", start: [0, 0], end: [0, 0] },
-      //       { name: "two", start: [1, 0], end: [1, 0] },
-      //       { name: "three", start: [2, 0], end: [2, 0] },
-      //     ]}
-      //   >
-      //     {/* <VideoCard gridArea="one" color="#606EEB" channelName="ImperialEEE" />
-      //     <VideoCard gridArea="two" color="#61EC9F" channelName="ImperialEEE" />
-      //     <VideoCard
-      //       gridArea="three"
-      //       color="accent-4"
-      //       channelName="ImperialEEE"
-      //     /> */}
       <Box width="100%">
-        <Text color="black" weight="bold" size="32px">
+        <Text size="26px" weight="bold" color="black" margin="none">
           Happening now
         </Text>
         <Box
           direction="row"
-          gap="medium"
+          gap="1.5%"
           width="100%"
           height="100%"
-          wrap
-          margin={{ top: "20px" }}
+          margin={{ top: "10px" }}
         >
           {this.state.talks.map((talk: Talk) => (
-            <TalkCard talk={talk} user={this.state.user} />
+            <CurrentTalkCard talk={talk} user={this.state.user} width="31.5%" />
           ))}
         </Box>
       </Box>
