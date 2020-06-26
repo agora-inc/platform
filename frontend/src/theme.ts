@@ -86,4 +86,7 @@ export const theme = {
       extend: "",
     },
   },
+  anchor: {
+    color: "pink",
+  },
 };

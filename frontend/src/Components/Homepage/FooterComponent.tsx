@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Box, Text, Anchor, Heading } from "grommet";
+import "../../Styles/footer.css";
 
 export default class FooterComponent extends Component {
   render() {
@@ -25,9 +26,15 @@ export default class FooterComponent extends Component {
         />
         <Box direction="row" justify="between">
           <Box>
-            <Anchor href="/info/welcome" label="About us" color="grey" />
-            <Anchor href="/info/tos" label="Terms of service" color="grey" />
-            <Anchor href="/info/privacy" label="Data privacy" color="grey" />
+            <a href="/info/welcome" style={{ color: "grey" }}>
+              About us
+            </a>
+            <a href="/info/tos" style={{ color: "grey" }}>
+              Terms of service
+            </a>
+            <a href="/info/privacy" style={{ color: "grey" }}>
+              Data privacy
+            </a>
           </Box>
           <Box>
             <Text>Made by Researchers for Researchers.</Text>

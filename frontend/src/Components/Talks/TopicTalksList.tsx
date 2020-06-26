@@ -150,7 +150,7 @@ export default class TopicTalkList extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="100%" margin={{ bottom: "60px" }}>
+      <Box width="100%">
         <Box
           width="100%"
           direction="row"
