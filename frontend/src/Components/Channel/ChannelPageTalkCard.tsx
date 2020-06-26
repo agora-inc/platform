@@ -12,6 +12,8 @@ interface Props {
   user: User | null;
   admin: boolean;
   onEditCallback?: any;
+  width?: any;
+  margin?: any;
 }
 
 interface State {
@@ -93,7 +95,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       label = "Unregister";
     }
     return (
-      <Box width="31.5%">
+      <Box
+        width={this.props.width ? this.props.width : "32%"}
+        margin={this.props.margin}
+      >
         <Box
           background="white"
           round="10px"

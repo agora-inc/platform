@@ -42,13 +42,15 @@ export default class ChannelPageTalkList extends Component<Props, State> {
 
   render() {
     return (
-      <Box gap="medium" direction="row" width="100%">
+      <Box gap="1.5%" direction="row" width="100%" wrap>
         {this.props.talks.map((talk: Talk) => (
           <ChannelPageTalkCard
+            width="31.5%"
             talk={talk}
             user={this.props.user}
             admin={this.props.admin}
             onEditCallback={this.props.onEditCallback}
+            margin={{ bottom: "medium" }}
           />
         ))}
       </Box>

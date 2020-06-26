@@ -260,7 +260,9 @@ export default class ManageChannelPage extends Component<Props, State> {
         () => {}
       );
     }
-    this.setState({ editingLongDescription: !this.state.editingLongDescription });
+    this.setState({
+      editingLongDescription: !this.state.editingLongDescription,
+    });
   };
 
   onFileChosen = (e: any) => {
@@ -429,7 +431,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     >{`${this.state.viewCount} views`}</Text> */}
                   </Box>
                 </Box>
-              </Box>            
+              </Box>
               <Box direction="row" width="100%" justify="between">
                 <Box
                   width="31.5%"
@@ -525,55 +527,48 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </Box>
               </Box>
 
-
               <Box gap="small">
-                    <Text
-                      size="28px"
-                      weight="bold"
-                      color="black"
-                      margin={{ top: "40px", bottom: "10px" }}
-                      >{`About us`}</Text>
-                    <Box style={{ maxHeight: "100%", overflowY: "scroll" }}>
-                      <Text
-                        id="long-description"
-                        className="channel-description"
-                        size="22px"
-                        margin="10px"
-                        color="black"
-                        contentEditable={this.state.editingLongDescription}
-                        style={
-                          this.state.editingLongDescription
-                            ? {
-                                border: `2px solid ${this.state.colour}`,
-                                borderRadius: 7,
-                                padding: 5,
-                                overflow: "scroll",
-                                height: 900,
-                                maxHeight: 50,
-                              }
-                            : {}
-                        }
-                      >
-                        {this.state.channel?.long_description}
-                      </Text>
-                    </Box>
-                    <Box
-                      focusIndicator={false}
-                      margin={{ top: "-10px" }}
-                      pad="none"
-                      onClick={this.onEditLongDescriptionClicked}
-                    >
-                      <Text style={{ textDecoration: "underline" }} size="16px">
-                        {this.state.editingLongDescription ? "save" : "edit"}
-                      </Text>
-                    </Box>
+                <Text
+                  size="28px"
+                  weight="bold"
+                  color="black"
+                  margin={{ top: "40px", bottom: "10px" }}
+                >{`About us`}</Text>
+                <Box style={{ maxHeight: "100%", overflowY: "scroll" }}>
+                  <Text
+                    id="long-description"
+                    className="channel-description"
+                    size="22px"
+                    margin="10px"
+                    color="black"
+                    contentEditable={this.state.editingLongDescription}
+                    style={
+                      this.state.editingLongDescription
+                        ? {
+                            border: `2px solid ${this.state.colour}`,
+                            borderRadius: 7,
+                            padding: 5,
+                            overflow: "scroll",
+                            height: 900,
+                            maxHeight: 50,
+                          }
+                        : {}
+                    }
+                  >
+                    {this.state.channel?.long_description}
+                  </Text>
                 </Box>
-
-
-
-
-
-
+                <Box
+                  focusIndicator={false}
+                  margin={{ top: "-10px" }}
+                  pad="none"
+                  onClick={this.onEditLongDescriptionClicked}
+                >
+                  <Text style={{ textDecoration: "underline" }} size="16px">
+                    {this.state.editingLongDescription ? "save" : "edit"}
+                  </Text>
+                </Box>
+              </Box>
 
               {this.state.talks.length !== 0 && (
                 <Text
