@@ -297,7 +297,7 @@ export default class ChannelPage extends Component<Props, State> {
                       <Text weight="bold" size="30px">
                         {this.state.channel?.name}
                       </Text>
-                      <Box style={{ maxHeight: "80%", overflowY: "scroll" }}>
+                      <Box style={{ maxHeight: "80%" }}>
                         <Text size="22px">
                           {this.state.channel?.description}
                         </Text>
