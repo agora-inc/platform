@@ -1,6 +1,7 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
 import { User } from "./UserService";
+import { base } from "grommet";
 
 const getAllChannels = (limit: number, offset: number, callback: any) => {
   axios
@@ -192,16 +193,13 @@ const uploadAvatar = (channelId: number, image: File, callback: any) => {
   data.append("channelId", channelId.toString());
   data.append("image", image);
   console.log(data.get("image"));
-  axios
-    .post(baseApiUrl + "/channels/uploadavatar", data)
-    .then(function (response) {
-      callback(response.data);
-    });
+  axios.post(baseApiUrl + "/channels/avatar", data).then(function (response) {
+    callback(response.data);
+  });
 };
 
 const getAvatar = (channelId: number) => {
-  const ts = new Date().valueOf();
-  return `/images/channel-icons/${channelId}.jpg?ts=${ts}`;
+  return baseApiUrl + `/channels/avatar?channelId=${channelId}`;
 };
 
 export type Channel = {

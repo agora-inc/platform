@@ -343,9 +343,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       )}
                       {!!this.state.channel!.has_avatar && (
                         <img
-                          src={`/images/channel-icons/${
-                            this.state.channel!.id
-                          }.jpg`}
+                          src={ChannelService.getAvatar(this.state.channel!.id)}
                           height={120}
                           width={120}
                         />

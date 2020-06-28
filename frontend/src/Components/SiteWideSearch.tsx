@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Box, Text, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 import { Dropdown, Menu } from "antd";
-import { Channel } from "../Services/ChannelService";
+import { Channel, ChannelService } from "../Services/ChannelService";
 import { Stream } from "../Services/StreamService";
 import { Video } from "../Services/VideoService";
 import { Talk } from "../Services/TalkService";
@@ -143,7 +143,7 @@ export default class SiteWideSearch extends Component<{}, State> {
                         )}
                         {!!channel.has_avatar && (
                           <img
-                            src={`/images/channel-icons/${channel.id}.jpg`}
+                            src={ChannelService.getAvatar(channel.id)}
                             height={20}
                             width={20}
                           />
@@ -250,7 +250,7 @@ export default class SiteWideSearch extends Component<{}, State> {
                         )}
                         {!!talk.has_avatar && (
                           <img
-                            src={`/images/channel-icons/${talk.channel_id}.jpg`}
+                            src={ChannelService.getAvatar(talk.channel_id)}
                             height={15}
                             width={15}
                           />
@@ -313,7 +313,7 @@ export default class SiteWideSearch extends Component<{}, State> {
                         )}
                         {!!talk.has_avatar && (
                           <img
-                            src={`/images/channel-icons/${talk.channel_id}.jpg`}
+                            src={ChannelService.getAvatar(talk.channel_id)}
                             height={15}
                             width={15}
                           />

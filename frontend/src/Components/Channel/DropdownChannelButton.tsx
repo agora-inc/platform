@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import Identicon from "react-identicons";
-import { Channel } from "../../Services/ChannelService";
+import { Channel, ChannelService } from "../../Services/ChannelService";
 
 interface Props {
   channel: Channel;
@@ -70,7 +70,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
             )}
             {!!this.props.channel.has_avatar && (
               <img
-                src={`/images/channel-icons/${this.props.channel.id}.jpg`}
+                src={ChannelService.getAvatar(this.props.channel.id)}
                 width={20}
                 height={20}
               />

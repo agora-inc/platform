@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Button, Layer, TextInput } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
+import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
@@ -228,7 +229,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 )}
                 {!!this.props.talk.has_avatar && (
                   <img
-                    src={`/images/channel-icons/${this.props.talk.channel_id}.jpg`}
+                    src={ChannelService.getAvatar(this.props.talk.channel_id)}
                     height={25}
                     width={25}
                   />
@@ -327,7 +328,9 @@ export default class PastTalkCard extends Component<Props, State> {
                     )}
                     {!!this.props.talk.has_avatar && (
                       <img
-                        src={`/images/channel-icons/${this.props.talk.channel_id}.jpg`}
+                        src={ChannelService.getAvatar(
+                          this.props.talk.channel_id
+                        )}
                         height={25}
                         width={25}
                       />

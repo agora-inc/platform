@@ -86,7 +86,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                     )}
                     {!!channel.has_avatar && (
                       <img
-                        src={`/images/channel-icons/${channel.id}.jpg`}
+                        src={ChannelService.getAvatar(channel.id)}
                         height={40}
                         width={40}
                       />

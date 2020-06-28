@@ -75,7 +75,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   )}
                   {!!channel.has_avatar && (
                     <img
-                      src={`/images/channel-icons/${channel.id}.jpg`}
+                      src={ChannelService.getAvatar(channel.id)}
                       height={40}
                       width={40}
                     />
