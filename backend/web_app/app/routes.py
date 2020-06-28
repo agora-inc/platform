@@ -142,19 +142,22 @@ def updateLongChannelDescription():
     newDescription = params["newDescription"]
     return jsonify(channels.updateLongChannelDescription(channelId, newDescription))
 
-@app.route('/channels/uploadavatar', methods=["POST", "OPTIONS"])
+@app.route('/channels/avatar', methods=["POST", "GET"])
 def uploadAvatar():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    channelId = request.form["channelId"]
-    file = request.files["image"]
-    print(file)
-    # fn = f"{channelId}.{file.filename.split('.')[-1]}"
-    fn = f"{channelId}.jpg"
-    file.save(f"../../frontend/public/images/channel-icons/{fn}")
+    if request.method == "POST":
+        channelId = request.form["channelId"]
+        file = request.files["image"]
+        print(file)
+        # fn = f"{channelId}.{file.filename.split('.')[-1]}"
+        fn = f"{channelId}.jpg"
+        file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
 
-    channels.addAvatar(channelId)
-    return jsonify({"filename": fn})
+        channels.addAvatar(channelId)
+        return jsonify({"filename": fn})
+    if request.method == "GET":
+        channelId = int(request.args.get("channelId"))
+        fn = f"/home/cloud-user/plateform/agora/images/avatars/${channelId}.jpg"
+        return send_file(fn, mimetype="image/jpg")
 
 @app.route('/channels/uploadcover', methods=["POST", "OPTIONS"])
 def uploadCover():
