@@ -108,5 +108,9 @@ class ChannelRepository:
         return sum([x["views"] for x in result])
 
     def addAvatar(self, channelId):
-        query = f'UPDATE Channels SET has_avatar=1 WHERE ID = {channelId}'
+        query = f'UPDATE Channels SET has_avatar=1 WHERE id = {channelId}'
+        self.db.run_query(query)
+
+    def addCover(self, channelId):
+        query = f'UPDATE Channels SET has_cover=1 WHERE id = {channelId}'
         self.db.run_query(query)

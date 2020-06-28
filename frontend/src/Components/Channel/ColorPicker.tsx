@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Box, DropButton, Text } from "grommet";
 import { FormDown, FormUp } from "grommet-icons";
+import ImageUploader from "../Core/ImageUploader";
+import { ChannelService } from "../../Services/ChannelService";
 
 interface Props {
   callback: any;
@@ -44,32 +46,39 @@ export default class ColorPicker extends Component<Props, State> {
     this.setState({ open: !this.state.open });
   };
 
+  onCoverUpload = (e: any) => {
+    // ChannelService.uploadAvatar(
+    //   this.state.channel!.id,
+    //   e.target.files[0],
+    //   () => {}
+    // );
+  };
+
   renderDropContent = () => {
     return (
-      <Box
-        width="139px"
-        margin={{ top: "5px" }}
-        pad="small"
-        background="white"
-        // round="10px"
-        direction="row"
-        wrap
-      >
-        {this.state.options.map((option: string, index: number) => (
-          <Box
-            onClick={() => this.select(option)}
-            width="30px"
-            height="30px"
-            round="xsmall"
-            background={option}
-            margin={{
-              right: index + (1 % 3) === 0 ? "none" : "5px",
-              left: index % 3 === 0 ? "none" : "5px",
-              top: "5px",
-              bottom: "5px",
-            }}
-          ></Box>
-        ))}
+      <Box width="139px" margin={{ top: "5px" }} pad="small" background="white">
+        <Box direction="row" wrap>
+          {this.state.options.map((option: string, index: number) => (
+            <Box
+              onClick={() => this.select(option)}
+              width="30px"
+              height="30px"
+              round="xsmall"
+              background={option}
+              margin={{
+                right: index + (1 % 3) === 0 ? "none" : "5px",
+                left: index % 3 === 0 ? "none" : "5px",
+                top: "5px",
+                bottom: "5px",
+              }}
+            ></Box>
+          ))}
+        </Box>
+        <ImageUploader
+          text="upload cover"
+          onUpload={this.onCoverUpload}
+          width="100%"
+        />
       </Box>
     );
   };

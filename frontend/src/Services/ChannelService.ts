@@ -199,6 +199,11 @@ const uploadAvatar = (channelId: number, image: File, callback: any) => {
     });
 };
 
+const getAvatar = (channelId: number) => {
+  const ts = new Date().valueOf();
+  return `/images/channel-icons/${channelId}.jpg?ts=${ts}`;
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -223,4 +228,5 @@ export const ChannelService = {
   updateChannelDescription,
   updateLongChannelDescription,
   uploadAvatar,
+  getAvatar,
 };

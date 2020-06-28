@@ -14,6 +14,7 @@ import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
+import ImageUploader from "../Components/Core/ImageUploader";
 
 interface Props {
   location: any;
@@ -350,29 +351,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                         />
                       )}
                     </Box>
-                    <Box
-                      style={{ position: "relative" }}
-                      margin={{ top: "xsmall" }}
-                    >
-                      <input
-                        type="file"
-                        className="input-hidden"
-                        onChange={this.onFileChosen}
-                      ></input>
-                      <Box
-                        width="100px"
-                        height="25px"
-                        background="white"
-                        round="xsmall"
-                        style={{ border: "solid black 2px", cursor: "pointer" }}
-                        align="center"
-                        justify="center"
-                      >
-                        <Text size="13px" weight="bold" color="black">
-                          Upload avatar
-                        </Text>
-                      </Box>
-                    </Box>
+                    <ImageUploader
+                      text="upload avatar"
+                      onUpload={this.onFileChosen}
+                    />
                   </Box>
                   <Box gap="small">
                     <Text weight="bold" size="30px">
