@@ -156,7 +156,7 @@ def uploadAvatar():
         return jsonify({"filename": fn})
     if request.method == "GET":
         channelId = int(request.args.get("channelId"))
-        fn = f"/home/cloud-user/plateform/agora/images/avatars/${channelId}.jpg"
+        fn = f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
         return send_file(fn, mimetype="image/jpg")
 
 @app.route('/channels/uploadcover', methods=["POST", "OPTIONS"])
