@@ -267,7 +267,9 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.uploadAvatar(
       this.state.channel!.id,
       e.target.files[0],
-      () => {}
+      () => {
+        window.location.reload();
+      }
     );
   };
 
