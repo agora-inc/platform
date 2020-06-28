@@ -30,16 +30,22 @@ export default class CreateChannelButton extends Component<Props, State> {
           this.setState({ hover: false });
         }}
         direction="row"
-        gap="xsmall"
+        gap="small"
         align="center"
-        background={this.state.hover ? "#f2f2f2" : "white"}
         round="xsmall"
         pad="xsmall"
-        style={{ border: "black 2px solid" }}
-        justify="between"
+        style={{
+          border: "2px solid #C2C2C2",
+        }}
+        hoverIndicator={true}
+        focusIndicator={false}
+        justify="start"
+        margin={{top: "small"}}
       >
-        <Text>Create an agora</Text>
-        <Text size="20px">🚀</Text>
+        {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
+        <Text size="22.5px">🚀</Text>
+        <Text color="grey"> Create Agora </Text>
+        
       </Box>
     );
   }

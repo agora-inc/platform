@@ -45,7 +45,7 @@ export default class RecentTalksList extends Component<Props, State> {
         <Box
           width="100%"
           direction="row"
-          gap="xsmall"
+          gap="medium"
           align="end"
           margin={{ bottom: "10px" }}
         >
@@ -57,12 +57,14 @@ export default class RecentTalksList extends Component<Props, State> {
               className="see-more-button"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
               round="xsmall"
-              style={{ border: "2px solid black" }}
+              style={{
+                border: "2px solid #C2C2C2",
+              }}
               direction="row"
               align="end"
             >
-              <Text color="black">See more</Text>
-              <FormNextLink color="black" />
+              <Text color="grey">See all</Text>
+              <FormNextLink color="grey" />
             </Box>
           </Link>
         </Box>

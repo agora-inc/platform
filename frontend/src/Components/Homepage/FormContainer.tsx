@@ -103,10 +103,15 @@ export default class FormContainer extends Component<{}, State> {
           focusIndicator={false}
           background="white"
           round="xsmall"
+          pad={{ vertical: "2px", horizontal: "xsmall" }}
           onClick={() => this.setState({ showForm: true })}
           margin={{ horizontal: "xsmall" }}
+          style={{
+            border: "2px solid #C2C2C2",
+          }}
+          hoverIndicator={true}   
         >
-          <u style={{ color: "black", fontSize: 16 }}>Give feedback</u>
+          <Text color="grey"> Give feedback</Text>
         </Box>
         <Overlay
           visible={this.state.showForm}

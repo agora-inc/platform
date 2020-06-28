@@ -68,7 +68,7 @@ export default class UserManager extends Component<{}, State> {
           overflow: "hidden",
           paddingBottom: 0,
           height: 326,
-          width: 250,
+          width: 350,
         }}
       >
         <CreateChannelCard
@@ -90,7 +90,7 @@ export default class UserManager extends Component<{}, State> {
           overflow: "hidden",
           paddingBottom: 0,
           minHeight: 326,
-          width: 250,
+          width: 350,
         }}
       >
         <Box
@@ -98,30 +98,33 @@ export default class UserManager extends Component<{}, State> {
           gap="xsmall"
           focusIndicator={false}
           style={{ pointerEvents: "none" }}
+          direction="row"
         >
-          <Box
+          <Identicon string={this.state.user?.username} size={25} />
+          {/*<Box
             height="25px"
             width="25px"
             round="12.5px"
             justify="center"
             align="center"
             overflow="hidden"
+            direction="row"
           >
             <Identicon string={this.state.user?.username} size={25} />
-          </Box>
+          </Box> */}
           <Text weight="bold" size="20px">
             {this.state.user?.username}
           </Text>
         </Box>
         <Menu.Divider />
-        <Box gap="xsmall" pad={{ vertical: "xsmall" }}>
+        <Box gap="xsmall" pad={{ vertical: "medium" }} focusIndicator={false}>
           <Link
             to={{ pathname: "/schedule", state: { user: this.state.user } }}
             style={{ textDecoration: "none" }}
           >
             <Box
               onClick={this.toggleDropdown}
-              background="#606eeb"
+              background="#7E1115"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -130,40 +133,21 @@ export default class UserManager extends Component<{}, State> {
               align="center"
               focusIndicator={false}
               // hoverIndicator="#2433b5"
-              hoverIndicator="#a1aaff"
+              hoverIndicator="#5A0C0F"
             >
               <Text>My schedule</Text>
             </Box>
           </Link>
-          <Link
-            to={{ pathname: "/saved", state: { user: this.state.user } }}
-            style={{ textDecoration: "none" }}
-          >
-            <Box
-              onClick={this.toggleDropdown}
-              background="#606eeb"
-              round="xsmall"
-              margin={{ horizontal: "small" }}
-              pad="xsmall"
-              height="40px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              // hoverIndicator="#2433b5"
-              hoverIndicator="#a1aaff"
-            >
-              <Text>Saved talks</Text>
-            </Box>
-          </Link>
+          
         </Box>
         <Menu.Divider />
         <Box
-          margin="small"
+          margin={{bottom: "medium", top: "small", left: "small", right: "small"}}
           focusIndicator={false}
           // style={{ pointerEvents: "none" }}
           gap="xsmall"
         >
-          <Text weight="bold" color="black">
+          <Text size="13px" color="grey">
             Manage your Agoras
           </Text>
           {this.state.channels.map((channel: Channel) => (
@@ -175,9 +159,9 @@ export default class UserManager extends Component<{}, State> {
           <CreateChannelButton onClick={this.toggleCreateChannelCard} />
         </Box>
         <Menu.Divider />
-        <Text weight="bold" color="black" margin="small">
+        {/*<Text weight="bold" color="black" margin="small">
           Account
-        </Text>
+          </Text>*/}
         {/* <Menu.Item
           onClick={this.toggleDropdown}
           key="1"
@@ -193,6 +177,17 @@ export default class UserManager extends Component<{}, State> {
         >
           <PreferenceButton />
         </Menu.Item> */}
+        <Menu.Item>
+          <Link
+              to={{ pathname: "/saved", state: { user: this.state.user } }}
+              style={{ textDecoration: "none" }}
+              onClick={this.toggleDropdown}
+            >
+            
+                <Text> Bookmarks </Text>
+            
+            </Link>
+          </Menu.Item>
         <Menu.Item
           key="2"
           onClick={() => {
@@ -218,7 +213,7 @@ export default class UserManager extends Component<{}, State> {
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
-        overlayStyle={{ width: 250 }}
+        overlayStyle={{ width: 350 }}
         visible={this.state.showDropdown}
       >
         <Button

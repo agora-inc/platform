@@ -105,8 +105,11 @@ export default class Carousel extends Component<Props, State> {
       // gridArea={this.props.gridArea}
       // margin={{ top: "60px" }}
       >
-        {this.state.talks.length === 0 ? this.ifNoStreams() : this.ifStreams()}
+        {this.state.talks.length != 0 && this.ifStreams()}
+        
       </Box>
     );
   }
 }
+
+// {this.state.talks.length === 0 ? this.ifNoStreams() : this.ifStreams()}

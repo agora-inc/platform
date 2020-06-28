@@ -40,15 +40,37 @@ export default class DropdownChannelButton extends Component<Props, State> {
             this.setState({ hover: false });
           }}
           direction="row"
-          gap="xsmall"
-          align="center"
+          gap="small"
+          align="start"
           background={this.state.hover ? "#f2f2f2" : "white"}
           round="xsmall"
           pad="xsmall"
-          style={{ border: "black 2px solid" }}
-          justify="between"
+          justify="start"
+          focusIndicator={false}
         >
+          {/*style={{ border: "black 2px solid" }}*/}
+          <Box
+            height="30px"
+            width="30px"
+            round="15px"
+            justify="center"
+            align="center"
+            overflow="hidden"
+          >
+            {!this.props.channel.has_avatar && (
+              <Identicon string={this.props.channel.name} size={30} />
+            )}
+            {!!this.props.channel.has_avatar && (
+              <img
+                src={`/images/channel-icons/${this.props.channel.id}.jpg`}
+                width={30}
+                height={30}
+              />
+            )}
+          </Box>
           <Text
+            alignSelf="center"
+            size="17px"
             style={{
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -57,25 +79,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
           >
             {this.props.channel.name}
           </Text>
-          <Box
-            height="20px"
-            width="20px"
-            round="10px"
-            justify="center"
-            align="center"
-            overflow="hidden"
-          >
-            {!this.props.channel.has_avatar && (
-              <Identicon string={this.props.channel.name} size={20} />
-            )}
-            {!!this.props.channel.has_avatar && (
-              <img
-                src={`/images/channel-icons/${this.props.channel.id}.jpg`}
-                width={20}
-                height={20}
-              />
-            )}
-          </Box>
+
         </Box>
       </Link>
     );

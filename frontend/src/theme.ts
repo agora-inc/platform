@@ -27,6 +27,7 @@ export const theme = {
     },
     colors: {
       brand: "#61EC9F",
+      selected: "F5F5F5",
     },
     drop: {
       //background: "transparent",
@@ -35,9 +36,14 @@ export const theme = {
         radius: "10px",
       },
     },
+    focus: {
+      border: {
+        color: "#5454A0",
+      }
+    }
   },
   tab: {
-    color: "grey",
+    color: "#F5F5F5",
     active: { color: "black" },
     margin: {
       vertical: "none",
@@ -51,7 +57,7 @@ export const theme = {
       side: "bottom",
       size: "medium",
       color: {
-        light: "grey",
+        light: "#F5F5F5",
       },
       active: {
         color: {
@@ -59,9 +65,7 @@ export const theme = {
         },
       },
       hover: {
-        color: {
-          light: "black",
-        },
+        color: "#F5F5F5"
       },
     },
   },
@@ -85,8 +89,22 @@ export const theme = {
     container: {
       extend: "",
     },
+    icons: {color: "grey"},
+    options: {
+      text: {
+        margin: 'none',
+        size: 'medium',
+        color: "black"
+      },
+    }
   },
   anchor: {
     color: "pink",
+  },
+  hover: {
+    background: {
+      color: "#F5F5F5"
+    },
+    color: {"dark": "white"}
   },
 };
