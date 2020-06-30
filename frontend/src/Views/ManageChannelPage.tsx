@@ -15,6 +15,7 @@ import ReactTooltip from "react-tooltip";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
+import { baseApiUrl } from "../config";
 
 interface Props {
   location: any;
@@ -273,6 +274,12 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
+  coverBoxBackground = () => {
+    return this.state.channel?.has_cover
+      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id})`
+      : this.state.colour;
+  };
+
   render() {
     console.log(this.state.channel);
     if (this.state.loading) {
@@ -303,7 +310,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 height="225px"
                 width="100%"
                 round="10px"
-                background={this.state.colour}
+                background={this.coverBoxBackground()}
                 pad="20px"
                 margin={{ top: "10px", bottom: "30px" }}
                 direction="row"

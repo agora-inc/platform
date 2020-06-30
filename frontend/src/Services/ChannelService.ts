@@ -202,6 +202,20 @@ const getAvatar = (channelId: number) => {
   return baseApiUrl + `/channels/avatar?channelId=${channelId}`;
 };
 
+const uploadCover = (channelId: number, image: File, callback: any) => {
+  const data = new FormData();
+  data.append("channelId", channelId.toString());
+  data.append("image", image);
+  console.log(data.get("image"));
+  axios.post(baseApiUrl + "/channels/cover", data).then(function (response) {
+    callback(response.data);
+  });
+};
+
+const getCover = (channelId: number) => {
+  return baseApiUrl + `/channels/cover?channelId=${channelId}`;
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -209,6 +223,7 @@ export type Channel = {
   long_description: string;
   colour: string;
   has_avatar: boolean;
+  has_cover: boolean;
 };
 
 export const ChannelService = {
