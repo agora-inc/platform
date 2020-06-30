@@ -16,6 +16,7 @@ import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
+import { CSSProperties } from "styled-components";
 
 interface Props {
   location: any;
@@ -274,10 +275,25 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
-  coverBoxBackground = () => {
-    return this.state.channel?.has_cover
+  getCoverBoxStyle = (): CSSProperties => {
+    let background = this.state.channel?.has_cover
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id})`
       : this.state.colour;
+
+    let border = this.state.channel?.has_cover
+      ? `8px solid ${this.state.colour}`
+      : "none";
+
+    return {
+      height: 235,
+      width: "100%",
+      borderRadius: 10,
+      background: background,
+      padding: 20,
+      marginBottom: 30,
+      marginTop: 10,
+      border: border,
+    };
   };
 
   render() {
@@ -307,14 +323,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                 />
               </Box>
               <Box
-                height="225px"
-                width="100%"
-                round="10px"
-                background={this.coverBoxBackground()}
-                pad="20px"
-                margin={{ top: "10px", bottom: "30px" }}
                 direction="row"
                 justify="between"
+                style={this.getCoverBoxStyle()}
               >
                 <Box
                   width="50%"
@@ -515,22 +526,21 @@ export default class ManageChannelPage extends Component<Props, State> {
               </Box>
 
               <Box
-                              height="100%"
-                              width="100%"
-                              style={{ maxHeight: "100%", minHeight: "50%"}}
-                              >
+                height="100%"
+                width="100%"
+                style={{ maxHeight: "100%", minHeight: "50%" }}
+              >
                 <Text
                   size="28px"
                   weight="bold"
                   color="black"
                   margin={{ top: "40px", bottom: "10px" }}
                 >{`About us`}</Text>
-                <Box 
-                style={{ minHeight: "50%"}}
-                
-                height="50%"
-                width="100%"
-                pad="20px"
+                <Box
+                  style={{ minHeight: "50%" }}
+                  height="50%"
+                  width="100%"
+                  pad="20px"
                 >
                   <Text
                     id="long-description"

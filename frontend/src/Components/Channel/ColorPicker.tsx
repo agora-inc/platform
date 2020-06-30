@@ -56,7 +56,12 @@ export default class ColorPicker extends Component<Props, State> {
 
   renderDropContent = () => {
     return (
-      <Box width="139px" margin={{ top: "5px" }} pad="small" background="white">
+      <Box
+        width="139px"
+        // margin={{ top: "5px" }}
+        pad="small"
+        background="#e5e5e5"
+      >
         <Box direction="row" wrap>
           {this.state.options.map((option: string, index: number) => (
             <Box
@@ -86,8 +91,8 @@ export default class ColorPicker extends Component<Props, State> {
   render() {
     return (
       <Box
-        width={this.state.open ? "139px" : "86px"}
-        background="white"
+        width={this.state.open ? "139px" : "90px"}
+        background="#e5e5e5"
         direction="row"
         justify="between"
         align="center"
@@ -99,7 +104,9 @@ export default class ColorPicker extends Component<Props, State> {
                 borderBottomLeftRadius: 0,
                 transition: "width 75ms ease-in-out",
               }
-            : { transition: "width 75ms ease-in-out" }
+            : {
+                transition: "width 75ms ease-in-out",
+              }
         }
         pad={{ left: "10px", vertical: "10px" }}
       >
@@ -113,11 +120,12 @@ export default class ColorPicker extends Component<Props, State> {
         <DropButton
           reverse
           // label={this.state.selected}
-          color="white"
+          color="#e5e5e5"
           style={{
             paddingTop: 0,
             paddingBottom: 0,
             paddingRight: 10,
+            background: "#e5e5e5",
           }}
           primary
           dropAlign={{ top: "bottom", right: "right" }}

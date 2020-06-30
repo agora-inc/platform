@@ -14,6 +14,8 @@ import ChannelLiveNowCard from "../Components/Channel/ChannelLiveNowCard";
 import "../Styles/channel-page.css";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import AboutUs from "../Components/Channel/AboutUs";
+import { baseApiUrl } from "../config";
+import { CSSProperties } from "styled-components";
 
 interface Props {
   location: { pathname: string };
@@ -214,6 +216,27 @@ export default class ChannelPage extends Component<Props, State> {
     this.setState({ following: !this.state.following });
   };
 
+  getCoverBoxStyle = (): CSSProperties => {
+    let background = this.state.channel?.has_cover
+      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id})`
+      : this.state.channel?.colour;
+
+    let border = this.state.channel?.has_cover
+      ? `8px solid ${this.state.channel.colour}`
+      : "none";
+
+    return {
+      height: 235,
+      width: "100%",
+      borderRadius: 10,
+      background: background,
+      padding: 20,
+      marginBottom: 30,
+      marginTop: 10,
+      border: border,
+    };
+  };
+
   render() {
     if (this.state.loading) {
       return (
@@ -246,14 +269,9 @@ export default class ChannelPage extends Component<Props, State> {
               )}
               <Box width="75%" align="start">
                 <Box
-                  height="225px"
-                  width="100%"
-                  round="10px"
-                  background={this.state.channel?.colour}
-                  pad="20px"
-                  margin={{ vertical: "40px" }}
                   direction="row"
                   justify="between"
+                  style={this.getCoverBoxStyle()}
                 >
                   <Box
                     width="50%"
@@ -324,15 +342,11 @@ export default class ChannelPage extends Component<Props, State> {
                         </Text>
                       </Box>
                     )}
-                    <Box direction="row" gap="medium">
+                    <Box pad="small" background="#e5e5e5" round="xsmall">
                       <Text
                         weight="bold"
                         size="22px"
                       >{`${this.state.followerCount} followers`}</Text>
-                      {/* <Text
-                        weight="bold"
-                        size="22px"
-                      >{`${this.state.viewCount} views`}</Text> */}
                     </Box>
                   </Box>
                 </Box>

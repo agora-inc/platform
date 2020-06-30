@@ -1,20 +1,7 @@
 import React, { Component } from "react";
-import {
-  Box,
-  TextInput,
-  TextArea,
-  Layer,
-  Text,
-  Calendar,
-  MaskedInput,
-} from "grommet";
+import { Box, Text } from "grommet";
 import "../../Styles/manage-channel.css";
-import TagSelector from "../Core/TagSelector";
-import { Talk, TalkService } from "../../Services/TalkService";
-import { Tag } from "../../Services/TagService";
 import { Channel } from "../../Services/ChannelService";
-import Loading from "../Core/Loading";
-import { Overlay, OverlaySection } from "../Core/Overlay";
 import EditTalkModal from "./EditTalkModal";
 
 interface Props {
@@ -43,14 +30,17 @@ export default class ScheduleTalkButton extends Component<Props, State> {
     return (
       <Box margin={this.props.margin} pad="none">
         <Box
-          className="gradient-border"
+          // className="gradient-border"
           round="8px"
           align="center"
           justify="center"
           onClick={this.toggleModal}
           focusIndicator={false}
+          background="#606eeb"
+          height="42px"
+          pad={{ horizontal: "small" }}
         >
-          <Text color="black" size="16.5px" style={{ fontWeight: 500 }}>
+          <Text color="white" size="16.5px" style={{ fontWeight: 500 }}>
             Schedule talk
           </Text>
         </Box>
