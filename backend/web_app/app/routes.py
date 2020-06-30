@@ -143,34 +143,36 @@ def updateLongChannelDescription():
     return jsonify(channels.updateLongChannelDescription(channelId, newDescription))
 
 @app.route('/channels/avatar', methods=["POST", "GET"])
-def uploadAvatar():
+def avatar():
     if request.method == "POST":
         channelId = request.form["channelId"]
         file = request.files["image"]
         print(file)
-        # fn = f"{channelId}.{file.filename.split('.')[-1]}"
         fn = f"{channelId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
-
         channels.addAvatar(channelId)
         return jsonify({"filename": fn})
+
     if request.method == "GET":
         channelId = int(request.args.get("channelId"))
         fn = f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
         return send_file(fn, mimetype="image/jpg")
 
-@app.route('/channels/uploadcover', methods=["POST", "OPTIONS"])
-def uploadCover():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    channelId = request.form["channelId"]
-    file = request.files["image"]
-    # fn = f"{channelId}.{file.filename.split('.')[-1]}"
-    fn = f"{channelId}.jpg"
-    file.save(f"../../frontend/public/images/channel-covers/{fn}")
+@app.route('/channels/cover', methods=["POST", "GET"])
+def cover():
+    if request.method == "POST":
+        channelId = request.form["channelId"]
+        file = request.files["image"]
+        print(file)
+        fn = f"{channelId}.jpg"
+        file.save(f"/home/cloud-user/plateform/agora/images/covers/{fn}")
+        channels.addCover(channelId)
+        return jsonify({"filename": fn})
 
-    channels.addCover(channelId)
-    return jsonify({"filename": fn})
+    if request.method == "GET":
+        channelId = int(request.args.get("channelId"))
+        fn = f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
+        return send_file(fn, mimetype="image/jpg")
 
 # --------------------------------------------
 # STREAM ROUTES
