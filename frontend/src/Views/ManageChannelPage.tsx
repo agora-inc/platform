@@ -514,14 +514,24 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </Box>
               </Box>
 
-              <Box gap="small">
+              <Box
+                              height="100%"
+                              width="100%"
+                              style={{ maxHeight: "100%", minHeight: "50%"}}
+                              >
                 <Text
                   size="28px"
                   weight="bold"
                   color="black"
                   margin={{ top: "40px", bottom: "10px" }}
                 >{`About us`}</Text>
-                <Box style={{ maxHeight: "100%", overflowY: "scroll" }}>
+                <Box 
+                style={{ minHeight: "50%"}}
+                
+                height="50%"
+                width="100%"
+                pad="20px"
+                >
                   <Text
                     id="long-description"
                     className="channel-description"
@@ -537,7 +547,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                             padding: 5,
                             overflow: "scroll",
                             height: 900,
-                            maxHeight: 50,
+                            maxHeight: 500,
                           }
                         : {}
                     }
