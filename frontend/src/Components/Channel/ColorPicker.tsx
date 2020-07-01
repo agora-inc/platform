@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Box, DropButton, Text } from "grommet";
 import { FormDown, FormUp } from "grommet-icons";
+import ImageUploader from "../Core/ImageUploader";
+import { ChannelService } from "../../Services/ChannelService";
 
 interface Props {
   callback: any;
@@ -44,32 +46,44 @@ export default class ColorPicker extends Component<Props, State> {
     this.setState({ open: !this.state.open });
   };
 
+  onCoverUpload = (e: any) => {
+    // ChannelService.uploadAvatar(
+    //   this.state.channel!.id,
+    //   e.target.files[0],
+    //   () => {}
+    // );
+  };
+
   renderDropContent = () => {
     return (
       <Box
         width="139px"
-        margin={{ top: "5px" }}
+        // margin={{ top: "5px" }}
         pad="small"
-        background="white"
-        // round="10px"
-        direction="row"
-        wrap
+        background="#e5e5e5"
       >
-        {this.state.options.map((option: string, index: number) => (
-          <Box
-            onClick={() => this.select(option)}
-            width="30px"
-            height="30px"
-            round="xsmall"
-            background={option}
-            margin={{
-              right: index + (1 % 3) === 0 ? "none" : "5px",
-              left: index % 3 === 0 ? "none" : "5px",
-              top: "5px",
-              bottom: "5px",
-            }}
-          ></Box>
-        ))}
+        <Box direction="row" wrap>
+          {this.state.options.map((option: string, index: number) => (
+            <Box
+              onClick={() => this.select(option)}
+              width="30px"
+              height="30px"
+              round="xsmall"
+              background={option}
+              margin={{
+                right: index + (1 % 3) === 0 ? "none" : "5px",
+                left: index % 3 === 0 ? "none" : "5px",
+                top: "5px",
+                bottom: "5px",
+              }}
+            ></Box>
+          ))}
+        </Box>
+        <ImageUploader
+          text="upload cover"
+          onUpload={this.onCoverUpload}
+          width="100%"
+        />
       </Box>
     );
   };
@@ -77,8 +91,8 @@ export default class ColorPicker extends Component<Props, State> {
   render() {
     return (
       <Box
-        width={this.state.open ? "139px" : "86px"}
-        background="white"
+        width={this.state.open ? "139px" : "90px"}
+        background="#e5e5e5"
         direction="row"
         justify="between"
         align="center"
@@ -90,7 +104,9 @@ export default class ColorPicker extends Component<Props, State> {
                 borderBottomLeftRadius: 0,
                 transition: "width 75ms ease-in-out",
               }
-            : { transition: "width 75ms ease-in-out" }
+            : {
+                transition: "width 75ms ease-in-out",
+              }
         }
         pad={{ left: "10px", vertical: "10px" }}
       >
@@ -104,11 +120,12 @@ export default class ColorPicker extends Component<Props, State> {
         <DropButton
           reverse
           // label={this.state.selected}
-          color="white"
+          color="#e5e5e5"
           style={{
             paddingTop: 0,
             paddingBottom: 0,
             paddingRight: 10,
+            background: "#e5e5e5",
           }}
           primary
           dropAlign={{ top: "bottom", right: "right" }}

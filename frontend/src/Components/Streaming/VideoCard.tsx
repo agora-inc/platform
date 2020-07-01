@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { Link } from "react-router-dom";
 import { Video } from "../../Services/VideoService";
-import { ArtService } from "../../Services/ArtService";
+import { ChannelService } from "../../Services/ChannelService";
 import "../../Styles/videocard.css";
 import { baseApiUrl } from "../../config";
 import Identicon from "react-identicons";
@@ -76,7 +76,7 @@ export default class VideoCard extends Component<Props, State> {
                 )}
                 {!!this.props.video.has_avatar && (
                   <img
-                    src={`/images/channel-icons/${this.props.video.channel_id}.jpg`}
+                    src={ChannelService.getAvatar(this.props.video.channel_id)}
                     height={30}
                     width={30}
                   />

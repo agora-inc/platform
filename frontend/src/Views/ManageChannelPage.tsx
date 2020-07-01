@@ -14,6 +14,9 @@ import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
+import ImageUploader from "../Components/Core/ImageUploader";
+import { baseApiUrl } from "../config";
+import { CSSProperties } from "styled-components";
 
 interface Props {
   location: any;
@@ -266,8 +269,31 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.uploadAvatar(
       this.state.channel!.id,
       e.target.files[0],
-      () => {}
+      () => {
+        window.location.reload();
+      }
     );
+  };
+
+  getCoverBoxStyle = (): CSSProperties => {
+    let background = this.state.channel?.has_cover
+      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id})`
+      : this.state.colour;
+
+    let border = this.state.channel?.has_cover
+      ? `8px solid ${this.state.colour}`
+      : "none";
+
+    return {
+      height: 235,
+      width: "100%",
+      borderRadius: 10,
+      background: background,
+      padding: 20,
+      marginBottom: 30,
+      marginTop: 10,
+      border: border,
+    };
   };
 
   render() {
@@ -297,14 +323,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                 />
               </Box>
               <Box
-                height="225px"
-                width="100%"
-                round="10px"
-                background={this.state.colour}
-                pad="20px"
-                margin={{ top: "10px", bottom: "30px" }}
                 direction="row"
                 justify="between"
+                style={this.getCoverBoxStyle()}
               >
                 <Box
                   width="50%"
@@ -342,37 +363,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                       )}
                       {!!this.state.channel!.has_avatar && (
                         <img
-                          src={`/images/channel-icons/${
-                            this.state.channel!.id
-                          }.jpg`}
+                          src={ChannelService.getAvatar(this.state.channel!.id)}
                           height={120}
                           width={120}
                         />
                       )}
                     </Box>
-                    <Box
-                      style={{ position: "relative" }}
-                      margin={{ top: "xsmall" }}
-                    >
-                      <input
-                        type="file"
-                        className="input-hidden"
-                        onChange={this.onFileChosen}
-                      ></input>
-                      <Box
-                        width="100px"
-                        height="25px"
-                        background="white"
-                        round="xsmall"
-                        style={{ border: "solid black 2px", cursor: "pointer" }}
-                        align="center"
-                        justify="center"
-                      >
-                        <Text size="13px" weight="bold" color="black">
-                          Upload avatar
-                        </Text>
-                      </Box>
-                    </Box>
+                    <ImageUploader
+                      text="upload avatar"
+                      onUpload={this.onFileChosen}
+                    />
                   </Box>
                   <Box gap="small">
                     <Text weight="bold" size="30px">
@@ -525,14 +525,23 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </Box>
               </Box>
 
-              <Box gap="small">
+              <Box
+                height="100%"
+                width="100%"
+                style={{ maxHeight: "100%", minHeight: "50%" }}
+              >
                 <Text
                   size="28px"
                   weight="bold"
                   color="black"
                   margin={{ top: "40px", bottom: "10px" }}
                 >{`About us`}</Text>
-                <Box style={{ maxHeight: "100%", overflowY: "scroll" }}>
+                <Box
+                  style={{ minHeight: "50%" }}
+                  height="50%"
+                  width="100%"
+                  pad="20px"
+                >
                   <Text
                     id="long-description"
                     className="channel-description"
@@ -548,7 +557,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                             padding: 5,
                             overflow: "scroll",
                             height: 900,
-                            maxHeight: 50,
+                            maxHeight: 500,
                           }
                         : {}
                     }
