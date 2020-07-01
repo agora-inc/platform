@@ -86,8 +86,9 @@ export default class CreateChannelCard extends Component<Props, State> {
               this.setState({ newChannelDescription: e.target.value })
             }
           />
+
           <AsyncButton
-            color="black"
+            color="#7E1115"
             fontColor="white"
             label="Create"
             disabled={
@@ -95,8 +96,9 @@ export default class CreateChannelCard extends Component<Props, State> {
               this.state.newChannelDescription === ""
             }
             onClick={this.onCreateClicked}
-            width="100%"
+            width="300px"
             height="40px"
+            round="xsmall"
           />
         </Box>
       </Box>

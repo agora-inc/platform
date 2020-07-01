@@ -100,18 +100,17 @@ export default class UserManager extends Component<{}, State> {
           style={{ pointerEvents: "none" }}
           direction="row"
         >
-          <Identicon string={this.state.user?.username} size={25} />
-          {/*<Box
+          <Box
             height="25px"
             width="25px"
             round="12.5px"
-            justify="center"
-            align="center"
+            justify="start"
+            align="start"
             overflow="hidden"
             direction="row"
           >
             <Identicon string={this.state.user?.username} size={25} />
-          </Box> */}
+          </Box>
           <Text weight="bold" size="20px">
             {this.state.user?.username}
           </Text>

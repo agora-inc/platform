@@ -139,7 +139,7 @@ export default class TopicTalkList extends Component<Props, State> {
         round="xsmall"
         align="center"
         alignSelf="center"
-        background="#f3eace"
+        background="#F3EACE"
       >
         <Text size="20px" weight="bold" color="grey">
           There are no talks in that category

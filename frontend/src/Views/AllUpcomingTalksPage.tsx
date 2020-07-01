@@ -88,13 +88,13 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
             width="100%"
             justify="between"
             align="end"
-            // margin={{ bottom: "small" }}
+            margin={{ bottom: "medium" }}
           >
             <Heading
               color="black"
-              size="3rem"
+              size="24px"
               margin="none"
-              style={{ height: "3rem" }}
+              style={{ height: "20px" }}
             >
               All upcoming talks
             </Heading>
