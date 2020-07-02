@@ -342,7 +342,8 @@ export default class ChannelPage extends Component<Props, State> {
                   weight="bold"
                   color="black"
                   margin={{ bottom: "10px" }}
-                >{`${this.state.channel?.name}'s upcoming talks`}</Text>
+                >               
+                  {`${this.state.channel?.name}'s upcoming talks`}</Text>
                 <ChannelPageTalkList
                   talks={this.state.talks}
                   channelId={this.state.channel!.id}

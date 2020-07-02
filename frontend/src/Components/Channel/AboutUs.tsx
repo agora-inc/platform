@@ -55,11 +55,11 @@ export default class AboutUs extends Component<Props, State> {
 
         {this.state.showText && (
           <Box 
-            style={{ maxHeight: "80%", overflowY: "scroll"}}
+            style={{ maxHeight: "80%"}}
             margin={{bottom: "20px"}}
           >
-            <Text size="22px" color="black">
-              {this.props.text}
+            <Text size="22px" color="black" margin="10px">
+            <div dangerouslySetInnerHTML={{__html: this.props.text}} />
             </Text>
           </Box>
         )}

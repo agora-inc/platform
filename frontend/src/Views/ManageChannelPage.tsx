@@ -15,6 +15,9 @@ import ReactTooltip from "react-tooltip";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
+import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
+import parse from 'html-react-parser';
+
 
 interface Props {
   location: any;
@@ -274,7 +277,16 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
-    console.log(this.state.channel);
+    console.log(typeof this.state.channel?.long_description);
+    // if (typeof this.state.channel?.long_description != String)
+    
+    
+    // this.state.channel?.long_description
+
+
+
+
+
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -545,7 +557,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                         : {}
                     }
                   >
-                    {this.state.channel?.long_description}
+                    <EnrichedTextEditor
+                    />
+
+                    {/* parse({this.state.channel?.long_description}); */}
+                    <div dangerouslySetInnerHTML={{__html: this.state.channel?.long_description ? this.state.channel?.long_description : "" }} />
+                    {/* {this.state.channel?.long_description} */}
                   </Text>
                 </Box>
                 <Box

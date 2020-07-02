@@ -1101,6 +1101,7 @@ export function WebRTCAdaptor(initialValues) {
     thiz.webSocketAdaptor.close();
   };
 
+  
   function WebSocketAdaptor() {
     var wsConn = new WebSocket(thiz.websocket_url);
 
