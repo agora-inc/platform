@@ -242,4 +242,6 @@ export const ChannelService = {
   updateLongChannelDescription,
   uploadAvatar,
   getAvatar,
+  uploadCover,
+  getCover,
 };

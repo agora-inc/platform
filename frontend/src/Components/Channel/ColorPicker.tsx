@@ -7,6 +7,7 @@ import { ChannelService } from "../../Services/ChannelService";
 interface Props {
   callback: any;
   selected: string;
+  channelId?: number;
 }
 
 interface State {
@@ -47,11 +48,14 @@ export default class ColorPicker extends Component<Props, State> {
   };
 
   onCoverUpload = (e: any) => {
-    // ChannelService.uploadAvatar(
-    //   this.state.channel!.id,
-    //   e.target.files[0],
-    //   () => {}
-    // );
+    this.props.channelId &&
+      ChannelService.uploadCover(
+        this.props.channelId,
+        e.target.files[0],
+        () => {
+          window.location.reload();
+        }
+      );
   };
 
   renderDropContent = () => {
@@ -60,7 +64,7 @@ export default class ColorPicker extends Component<Props, State> {
         width="139px"
         // margin={{ top: "5px" }}
         pad="small"
-        background="#e5e5e5"
+        background="#f2f2f2"
       >
         <Box direction="row" wrap>
           {this.state.options.map((option: string, index: number) => (
@@ -92,7 +96,7 @@ export default class ColorPicker extends Component<Props, State> {
     return (
       <Box
         width={this.state.open ? "139px" : "90px"}
-        background="#e5e5e5"
+        background="#f2f2f2"
         direction="row"
         justify="between"
         align="center"
@@ -120,12 +124,12 @@ export default class ColorPicker extends Component<Props, State> {
         <DropButton
           reverse
           // label={this.state.selected}
-          color="#e5e5e5"
+          color="#f2f2f2"
           style={{
             paddingTop: 0,
             paddingBottom: 0,
             paddingRight: 10,
-            background: "#e5e5e5",
+            background: "#f2f2f2",
           }}
           primary
           dropAlign={{ top: "bottom", right: "right" }}

@@ -5,7 +5,7 @@ import { Channel } from "../../Services/ChannelService";
 import EditTalkModal from "./EditTalkModal";
 
 interface Props {
-  margin: string;
+  margin: any;
   channel: Channel | null;
   onCreatedCallback: any;
 }
