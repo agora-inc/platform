@@ -7,6 +7,8 @@ import { ChannelService } from "../../Services/ChannelService";
 interface Props {
   callback: any;
   selected: string;
+  channelId?: number;
+  hasCover: boolean;
 }
 
 interface State {
@@ -47,11 +49,21 @@ export default class ColorPicker extends Component<Props, State> {
   };
 
   onCoverUpload = (e: any) => {
-    // ChannelService.uploadAvatar(
-    //   this.state.channel!.id,
-    //   e.target.files[0],
-    //   () => {}
-    // );
+    this.props.channelId &&
+      ChannelService.uploadCover(
+        this.props.channelId,
+        e.target.files[0],
+        () => {
+          window.location.reload();
+        }
+      );
+  };
+
+  onDeleteCoverClicked = () => {
+    this.props.channelId &&
+      ChannelService.removeCover(this.props.channelId, () => {
+        window.location.reload();
+      });
   };
 
   renderDropContent = () => {
@@ -60,7 +72,7 @@ export default class ColorPicker extends Component<Props, State> {
         width="139px"
         // margin={{ top: "5px" }}
         pad="small"
-        background="#e5e5e5"
+        background="#f2f2f2"
       >
         <Box direction="row" wrap>
           {this.state.options.map((option: string, index: number) => (
@@ -79,11 +91,29 @@ export default class ColorPicker extends Component<Props, State> {
             ></Box>
           ))}
         </Box>
-        <ImageUploader
-          text="upload cover"
-          onUpload={this.onCoverUpload}
-          width="100%"
-        />
+        <Box gap="4px">
+          <ImageUploader
+            text="upload cover"
+            onUpload={this.onCoverUpload}
+            width="100%"
+          />
+          {this.props.hasCover && (
+            <Box
+              width="100%"
+              height="25px"
+              background="#FF4040"
+              round="xsmall"
+              style={{ cursor: "pointer" }}
+              align="center"
+              justify="center"
+              onClick={this.onDeleteCoverClicked}
+            >
+              <Text size="13px" weight="bold" color="white">
+                delete cover
+              </Text>
+            </Box>
+          )}
+        </Box>
       </Box>
     );
   };
@@ -92,7 +122,7 @@ export default class ColorPicker extends Component<Props, State> {
     return (
       <Box
         width={this.state.open ? "139px" : "90px"}
-        background="#e5e5e5"
+        background="#f2f2f2"
         direction="row"
         justify="between"
         align="center"
@@ -120,12 +150,12 @@ export default class ColorPicker extends Component<Props, State> {
         <DropButton
           reverse
           // label={this.state.selected}
-          color="#e5e5e5"
+          color="#f2f2f2"
           style={{
             paddingTop: 0,
             paddingBottom: 0,
             paddingRight: 10,
-            background: "#e5e5e5",
+            background: "#f2f2f2",
           }}
           primary
           dropAlign={{ top: "bottom", right: "right" }}

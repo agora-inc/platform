@@ -17,6 +17,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
+import { FormDown, FormUp } from "grommet-icons";
 
 interface Props {
   location: any;
@@ -28,18 +29,16 @@ interface State {
   loading: boolean;
   allowed: boolean;
   followerCount: number;
-  // viewCount: number;
   colour: string;
   editingDescription: boolean;
   editingLongDescription: boolean;
   channelOwners: User[];
   channelMembers: User[];
   followers: User[];
-  // videos: Video[];
-  // totalNumberOfVideos: number;
   talks: Talk[];
   pastStreams: Talk[];
   totalNumberOfTalks: number;
+  bannerExtended: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -50,30 +49,26 @@ export default class ManageChannelPage extends Component<Props, State> {
       loading: true,
       allowed: false,
       followerCount: 0,
-      // viewCount: 0,
       colour: "pink",
       editingDescription: false,
       editingLongDescription: false,
       channelOwners: [],
       channelMembers: [],
       followers: [],
-      // videos: [],
-      // totalNumberOfVideos: 0,
       talks: [],
       pastStreams: [],
       totalNumberOfTalks: 0,
+      bannerExtended: true,
     };
   }
 
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
-    // window.addEventListener("beforeunload", this.getChannelAndCheckAccess);
     this.getChannelAndCheckAccess();
   }
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
-    // window.removeEventListener("beforeunload", this.getChannelAndCheckAccess);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -94,9 +89,6 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   getChannelAndCheckAccess = () => {
-    // if (this.props.location.state) {
-
-    // } else {
     ChannelService.getChannelByName(
       this.props.location.pathname.split("/")[1],
       (channel: Channel) => {
@@ -139,11 +131,9 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   fetchData = () => {
     this.fetchFollowerCount();
-    // this.fetchViewCount();
     this.fetchOwners();
     this.fetchMembers();
     this.fetchFollowers();
-    // this.fetchVideos();
     this.fetchPastTalks();
     this.fetchTalks();
   };
@@ -156,15 +146,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       }
     );
   };
-
-  // fetchViewCount = () => {
-  //   ChannelService.getViewsForChannel(
-  //     this.state.channel!.id,
-  //     (viewCount: number) => {
-  //       this.setState({ viewCount });
-  //     }
-  //   );
-  // };
 
   fetchOwners = () => {
     ChannelService.getUsersForChannel(
@@ -195,20 +176,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       }
     );
   };
-
-  // fetchVideos = () => {
-  //   VideoService.getAllVideosForChannel(
-  //     this.state.channel!.id,
-  //     6,
-  //     this.state.videos.length,
-  //     (data: { count: number; videos: Video[] }) => {
-  //       this.setState({
-  //         videos: this.state.videos.concat(data.videos),
-  //         totalNumberOfVideos: data.count,
-  //       });
-  //     }
-  //   );
-  // };
 
   fetchTalks = () => {
     TalkService.getFutureTalksForChannel(
@@ -252,10 +219,12 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   onEditLongDescriptionClicked = () => {
+    let desc = document.getElementById("long-description")!
+      .textContent as string;
     if (this.state.editingLongDescription) {
       ChannelService.updateLongChannelDescription(
         this.state.channel!.id,
-        document.getElementById("long-description")!.textContent as string,
+        desc.slice(0, desc.length - 4),
         () => {}
       );
     }
@@ -281,19 +250,134 @@ export default class ManageChannelPage extends Component<Props, State> {
       : this.state.colour;
 
     let border = this.state.channel?.has_cover
-      ? `8px solid ${this.state.colour}`
+      ? `8px solid ${this.state.channel.colour}`
       : "none";
 
     return {
-      height: 235,
       width: "100%",
-      borderRadius: 10,
+      borderTopRightRadius: 10,
+      borderTopLeftRadius: 10,
       background: background,
       padding: 20,
-      marginBottom: 30,
-      marginTop: 10,
       border: border,
     };
+  };
+
+  toggleBanner = () => {
+    this.setState({ bannerExtended: !this.state.bannerExtended });
+  };
+
+  banner = () => {
+    return (
+      <Box
+        width="100%"
+        background="white"
+        round="10px"
+        margin={{ bottom: "30px" }}
+      >
+        <Box
+          direction="row"
+          justify="between"
+          style={this.getCoverBoxStyle()}
+          height="312px"
+        >
+          <Box width="100%" direction="row" justify="end" height="50px">
+            <ColorPicker
+              selected={this.state.colour}
+              callback={this.updateColour}
+              channelId={this.state.channel?.id}
+              hasCover={
+                this.state.channel ? this.state.channel.has_cover : false
+              }
+            />
+          </Box>
+        </Box>
+        <Box
+          direction="row"
+          height="133px"
+          align="center"
+          justify="between"
+          pad="16px"
+        >
+          <Box direction="row" align="center" gap="small">
+            <Box>
+              <Box
+                width="100px"
+                height="100px"
+                round="50px"
+                background="white"
+                justify="center"
+                align="center"
+                style={{ minWidth: 100, minHeight: 100 }}
+                overflow="hidden"
+              >
+                {!this.state.channel!.has_avatar && (
+                  <Identicon string={this.state.channel!.name} size={50} />
+                )}
+                {!!this.state.channel!.has_avatar && (
+                  <img
+                    src={ChannelService.getAvatar(this.state.channel!.id)}
+                    height={100}
+                    width={100}
+                  />
+                )}
+              </Box>
+            </Box>
+            <Box>
+              <Text size="30px" color="black" weight="bold">
+                {this.state.channel?.name}
+              </Text>
+              <Text size="24px" color="#999999" weight="bold">
+                {this.state.followerCount} followers
+              </Text>
+              <ImageUploader
+                text="upload avatar"
+                onUpload={this.onFileChosen}
+              />
+            </Box>
+          </Box>
+          {this.state.bannerExtended ? (
+            <FormUp
+              onClick={this.toggleBanner}
+              size="50px"
+              color="black"
+              style={{ cursor: "pointer" }}
+            />
+          ) : (
+            <FormDown
+              onClick={this.toggleBanner}
+              size="50px"
+              color="black"
+              style={{ cursor: "pointer" }}
+            />
+          )}
+        </Box>
+        {this.state.bannerExtended && (
+          <Text
+            id="long-description"
+            size="20px"
+            style={{ textAlign: "justify", fontWeight: 450 }}
+            margin={{ horizontal: "16px", bottom: "16px" }}
+            contentEditable={this.state.editingLongDescription}
+          >
+            {this.state.channel?.long_description}
+            <Text
+              style={{
+                textDecoration: "underline",
+                marginLeft: 5,
+                cursor: "pointer",
+                color: "blue",
+              }}
+              size="20px"
+              onClick={this.onEditLongDescriptionClicked}
+              contentEditable={false}
+            >
+              {this.state.editingLongDescription ? "save" : "edit"}
+            </Text>
+          </Text>
+        )}
+      </Box>
+    );
   };
 
   render() {
@@ -311,125 +395,15 @@ export default class ManageChannelPage extends Component<Props, State> {
             width="100%"
             height="100%"
             align="center"
-            margin={{ top: "140px" }}
+            margin={{ top: "100px" }}
           >
             <Box width="75%" align="start">
-              <Box direction="row" gap="small">
-                {/* <StreamNowButton margin="none" channel={this.state.channel} /> */}
-                <ScheduleTalkButton
-                  margin="none"
-                  channel={this.state.channel}
-                  onCreatedCallback={this.fetchTalks}
-                />
-              </Box>
-              <Box
-                direction="row"
-                justify="between"
-                style={this.getCoverBoxStyle()}
-              >
-                <Box
-                  width="50%"
-                  height="100%"
-                  round="10px"
-                  background="#e5e5e5"
-                  direction="row"
-                  // align="center"
-                  // justify="between"
-                  gap="small"
-                  pad="15px"
-                >
-                  <Box
-                    style={{
-                      minWidth: 120,
-                      minHeight: 120,
-                    }}
-                    align="center"
-                  >
-                    <Box
-                      width="120px"
-                      height="120px"
-                      round="60px"
-                      background="white"
-                      justify="center"
-                      align="center"
-                      style={{ minWidth: 120, minHeight: 120 }}
-                      overflow="hidden"
-                    >
-                      {!this.state.channel!.has_avatar && (
-                        <Identicon
-                          string={this.state.channel?.name}
-                          size={60}
-                        />
-                      )}
-                      {!!this.state.channel!.has_avatar && (
-                        <img
-                          src={ChannelService.getAvatar(this.state.channel!.id)}
-                          height={120}
-                          width={120}
-                        />
-                      )}
-                    </Box>
-                    <ImageUploader
-                      text="upload avatar"
-                      onUpload={this.onFileChosen}
-                    />
-                  </Box>
-                  <Box gap="small">
-                    <Text weight="bold" size="30px">
-                      {this.state.channel?.name}
-                    </Text>
-                    <Box style={{ maxHeight: "80%", overflowY: "scroll" }}>
-                      <Text
-                        id="description"
-                        className="channel-description"
-                        size="22px"
-                        margin="none"
-                        contentEditable={this.state.editingDescription}
-                        style={
-                          this.state.editingDescription
-                            ? {
-                                border: `2px solid ${this.state.colour}`,
-                                borderRadius: 7,
-                                padding: 5,
-                                overflow: "scroll",
-                                height: 90,
-                                maxHeight: 90,
-                              }
-                            : {}
-                        }
-                      >
-                        {this.state.channel?.description}
-                      </Text>
-                    </Box>
-                    <Box
-                      focusIndicator={false}
-                      margin={{ top: "-10px" }}
-                      pad="none"
-                      onClick={this.onEditDescriptionClicked}
-                    >
-                      <Text style={{ textDecoration: "underline" }} size="16px">
-                        {this.state.editingDescription ? "save" : "edit"}
-                      </Text>
-                    </Box>
-                  </Box>
-                </Box>
-                <Box justify="between" align="end">
-                  <ColorPicker
-                    selected={this.state.colour}
-                    callback={this.updateColour}
-                  />
-                  <Box direction="row" gap="medium">
-                    <Text
-                      weight="bold"
-                      size="22px"
-                    >{`${this.state.followerCount} followers`}</Text>
-                    {/* <Text
-                      weight="bold"
-                      size="22px"
-                    >{`${this.state.viewCount} views`}</Text> */}
-                  </Box>
-                </Box>
-              </Box>
+              <ScheduleTalkButton
+                margin={{ bottom: "10px" }}
+                channel={this.state.channel}
+                onCreatedCallback={this.fetchTalks}
+              />
+              {this.banner()}
               <Box direction="row" width="100%" justify="between">
                 <Box
                   width="31.5%"
@@ -460,7 +434,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="xsmall"
                   >
                     {this.state.channelOwners.map((owner: User) => (
-                      <ChannelPageUserCircle user={owner} />
+                      <ChannelPageUserCircle
+                        user={owner}
+                        channelId={this.state.channel?.id}
+                        onRemovedCallback={this.fetchOwners}
+                      />
                     ))}
                   </Box>
                 </Box>
@@ -493,7 +471,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="xsmall"
                   >
                     {this.state.channelMembers.map((member: User) => (
-                      <ChannelPageUserCircle user={member} />
+                      <ChannelPageUserCircle
+                        user={member}
+                        channelId={this.state.channel?.id}
+                        onRemovedCallback={this.fetchMembers}
+                      />
                     ))}
                   </Box>
                 </Box>
@@ -525,7 +507,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </Box>
               </Box>
 
-              <Box
+              {/* <Box
                 height="100%"
                 width="100%"
                 style={{ maxHeight: "100%", minHeight: "50%" }}
@@ -575,7 +557,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     {this.state.editingLongDescription ? "save" : "edit"}
                   </Text>
                 </Box>
-              </Box>
+              </Box> */}
 
               {this.state.talks.length !== 0 && (
                 <Text

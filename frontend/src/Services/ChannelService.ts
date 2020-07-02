@@ -216,6 +216,17 @@ const getCover = (channelId: number) => {
   return baseApiUrl + `/channels/cover?channelId=${channelId}`;
 };
 
+const removeCover = (channelId: number, callback: any) => {
+  axios
+    .delete(baseApiUrl + "/channels/cover", {
+      headers: { "Access-Control-Allow-Origin": "*" },
+      data: {
+        channelId: channelId,
+      },
+    })
+    .then(() => callback());
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -242,4 +253,7 @@ export const ChannelService = {
   updateLongChannelDescription,
   uploadAvatar,
   getAvatar,
+  uploadCover,
+  getCover,
+  removeCover,
 };
