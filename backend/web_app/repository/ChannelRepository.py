@@ -68,8 +68,8 @@ class ChannelRepository:
 
     def updateLongChannelDescription(self, channelId, newDescription):
         query = f'UPDATE Channels SET long_description = "{newDescription}" WHERE id = {channelId}'
-        self.db.run_query(query)
-        return "ok"
+        [insertId, rowCount] = self.db.run_query(query)
+        return [insertId, rowCount]
 
     def getChannelsForUser(self, userId, roles):
         query = f'SELECT Channels.id, Channels.name, Channels.description, Channels.colour, Channels.has_avatar FROM Channels INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id WHERE ChannelUsers.user_id = {userId} AND ChannelUsers.role IN {tuple(roles)}'.replace(",)", ")")
@@ -113,4 +113,8 @@ class ChannelRepository:
 
     def addCover(self, channelId):
         query = f'UPDATE Channels SET has_cover=1 WHERE id = {channelId}'
+        self.db.run_query(query)
+
+    def removeCover(self, channelId):
+        query = f'UPDATE Channels SET has_cover=NULL WHERE id = {channelId}'
         self.db.run_query(query)

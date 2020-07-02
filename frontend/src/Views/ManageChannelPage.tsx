@@ -219,10 +219,12 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   onEditLongDescriptionClicked = () => {
+    let desc = document.getElementById("long-description")!
+      .textContent as string;
     if (this.state.editingLongDescription) {
       ChannelService.updateLongChannelDescription(
         this.state.channel!.id,
-        document.getElementById("long-description")!.textContent as string,
+        desc.slice(0, desc.length - 4),
         () => {}
       );
     }
@@ -284,6 +286,9 @@ export default class ManageChannelPage extends Component<Props, State> {
               selected={this.state.colour}
               callback={this.updateColour}
               channelId={this.state.channel?.id}
+              hasCover={
+                this.state.channel ? this.state.channel.has_cover : false
+              }
             />
           </Box>
         </Box>
@@ -349,11 +354,26 @@ export default class ManageChannelPage extends Component<Props, State> {
         </Box>
         {this.state.bannerExtended && (
           <Text
+            id="long-description"
             size="20px"
             style={{ textAlign: "justify", fontWeight: 450 }}
             margin={{ horizontal: "16px", bottom: "16px" }}
+            contentEditable={this.state.editingLongDescription}
           >
             {this.state.channel?.long_description}
+            <Text
+              style={{
+                textDecoration: "underline",
+                marginLeft: 5,
+                cursor: "pointer",
+                color: "blue",
+              }}
+              size="20px"
+              onClick={this.onEditLongDescriptionClicked}
+              contentEditable={false}
+            >
+              {this.state.editingLongDescription ? "save" : "edit"}
+            </Text>
           </Text>
         )}
       </Box>

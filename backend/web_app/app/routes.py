@@ -158,7 +158,7 @@ def avatar():
         fn = f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
         return send_file(fn, mimetype="image/jpg")
 
-@app.route('/channels/cover', methods=["POST", "GET"])
+@app.route('/channels/cover', methods=["POST", "GET", "DELETE"])
 def cover():
     if request.method == "POST":
         channelId = request.form["channelId"]
@@ -173,6 +173,13 @@ def cover():
         channelId = int(request.args.get("channelId"))
         fn = f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
         return send_file(fn, mimetype="image/jpg")
+    
+    if request.method == "DELETE":
+        params = request.json 
+        print(params)
+        channelId = params["channelId"]
+        channels.removeCover(channelId)
+        return jsonify("ok")
 
 # --------------------------------------------
 # STREAM ROUTES

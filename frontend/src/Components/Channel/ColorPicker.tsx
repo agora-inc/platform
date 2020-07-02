@@ -8,6 +8,7 @@ interface Props {
   callback: any;
   selected: string;
   channelId?: number;
+  hasCover: boolean;
 }
 
 interface State {
@@ -58,6 +59,13 @@ export default class ColorPicker extends Component<Props, State> {
       );
   };
 
+  onDeleteCoverClicked = () => {
+    this.props.channelId &&
+      ChannelService.removeCover(this.props.channelId, () => {
+        window.location.reload();
+      });
+  };
+
   renderDropContent = () => {
     return (
       <Box
@@ -83,11 +91,29 @@ export default class ColorPicker extends Component<Props, State> {
             ></Box>
           ))}
         </Box>
-        <ImageUploader
-          text="upload cover"
-          onUpload={this.onCoverUpload}
-          width="100%"
-        />
+        <Box gap="4px">
+          <ImageUploader
+            text="upload cover"
+            onUpload={this.onCoverUpload}
+            width="100%"
+          />
+          {this.props.hasCover && (
+            <Box
+              width="100%"
+              height="25px"
+              background="#FF4040"
+              round="xsmall"
+              style={{ cursor: "pointer" }}
+              align="center"
+              justify="center"
+              onClick={this.onDeleteCoverClicked}
+            >
+              <Text size="13px" weight="bold" color="white">
+                delete cover
+              </Text>
+            </Box>
+          )}
+        </Box>
       </Box>
     );
   };
