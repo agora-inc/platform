@@ -134,7 +134,7 @@ export default class UserManager extends Component<{}, State> {
               // hoverIndicator="#2433b5"
               hoverIndicator="#5A0C0F"
             >
-              <Text size="20px"> My schedule </Text>
+              <Text size="18px"> My schedule </Text>
             </Box>
           </Link>
           
@@ -146,7 +146,7 @@ export default class UserManager extends Component<{}, State> {
           // style={{ pointerEvents: "none" }}
           gap="xsmall"
         >
-          <Text size="13px" color="grey">
+          <Text size="14px" color="grey">
             Manage your Agoras
           </Text>
           {this.state.channels.map((channel: Channel) => (
@@ -183,7 +183,7 @@ export default class UserManager extends Component<{}, State> {
               onClick={this.toggleDropdown}
             >
             
-                <Text> Bookmarks </Text>
+                <Text size="18px"> Bookmarks </Text>
             
             </Link>
           </Menu.Item>
@@ -201,7 +201,7 @@ export default class UserManager extends Component<{}, State> {
             paddingTop: 3,
           }}
         >
-          <Text>Log out</Text>
+          <Text size="18px"> Log out </Text>
         </Menu.Item>
       </Menu>
     );

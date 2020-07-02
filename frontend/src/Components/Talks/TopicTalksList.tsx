@@ -141,7 +141,7 @@ export default class TopicTalkList extends Component<Props, State> {
         alignSelf="center"
         background="#F3EACE"
       >
-        <Text size="20px" weight="bold" color="grey">
+        <Text size="18px" weight="bold" color="grey">
           There are no talks in that category
         </Text>
       </Box>
