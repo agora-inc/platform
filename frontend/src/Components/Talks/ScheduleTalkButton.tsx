@@ -30,19 +30,19 @@ export default class ScheduleTalkButton extends Component<Props, State> {
     return (
       <Box margin={this.props.margin} pad="none">
         <Box
-          // className="gradient-border"
-          round="8px"
-          align="center"
-          justify="center"
           onClick={this.toggleModal}
+          background="#7E1115"
+          round="xsmall"
+          margin={{bottom: "medium"}}
+          pad={{bottom: "small", top: "small", left: "medium", right: "medium"}}
+          height="40px"
+          justify="center"
+          align="center"
           focusIndicator={false}
-          background="#606eeb"
-          height="42px"
-          pad={{ horizontal: "small" }}
+          // hoverIndicator="#2433b5"
+          hoverIndicator="#5A0C0F"
         >
-          <Text color="white" size="16.5px" style={{ fontWeight: 500 }}>
-            Schedule talk
-          </Text>
+          <Text size="20px"> Schedule talk </Text>
         </Box>
         <EditTalkModal
           visible={this.state.showModal}

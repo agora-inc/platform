@@ -57,7 +57,7 @@ export default class HeaderBar extends Component {
         </Box> */}
         <Box
           direction="row"
-          gap="xsmall"
+          gap="medium"
           align="center"
           style={{ minWidth: "30%" }}
           justify="end"

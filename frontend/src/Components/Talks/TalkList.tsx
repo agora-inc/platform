@@ -27,7 +27,7 @@ export default class TalkList extends Component<Props> {
         <Box
           width="100%"
           direction="row"
-          gap="xsmall"
+          gap="medium"
           align="end"
           margin={{ bottom: "15px" }}
         >
@@ -42,12 +42,14 @@ export default class TalkList extends Component<Props> {
                 className="see-more-button"
                 pad={{ vertical: "2px", horizontal: "xsmall" }}
                 round="xsmall"
-                style={{ border: "2px solid black" }}
+                style={{
+                  border: "2px solid #C2C2C2",
+                }}
                 direction="row"
                 align="end"
               >
-                <Text color="black">See more</Text>
-                <FormNextLink color="black" />
+                <Text color="grey">See all </Text>
+                <FormNextLink color="grey" />
               </Box>
             </Link>
           )}

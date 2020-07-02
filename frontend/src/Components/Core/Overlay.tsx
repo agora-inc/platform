@@ -19,7 +19,7 @@ interface OverlayProps {
 }
 
 interface OverlaySectionProps {
-  heading: string;
+  heading?: string;
   description?: string;
 }
 
@@ -114,17 +114,21 @@ export class OverlaySection extends Component<OverlaySectionProps> {
   render() {
     return (
       <Box width="100%" align="center" gap="xsmall">
-        <Box
-          height="30px"
-          width="100%"
-          background="#FFD1C7"
-          pad="small"
-          justify="center"
-        >
-          <Text size="16px" weight="bold" color="black">
-            {this.props.heading}
-          </Text>
-        </Box>
+        {this.props.heading && (
+          <Box
+            height="30px"
+            width="100%"
+            background="#F3EACE"
+            round="xsmall"
+            pad="small"
+            justify="center"
+          >
+            <Text size="16px" weight="bold" color="black">
+              {this.props.heading}
+            </Text>
+
+          </Box>
+        )}
         {this.props.children}
       </Box>
     );

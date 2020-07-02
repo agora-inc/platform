@@ -47,12 +47,12 @@ export default class SubscribedChannelsList extends Component<Props, State> {
       this.state.channels.length !== 0 ? (
         <Box>
           <Text
-            size="16px"
+            size="14px"
             weight="bold"
-            color="black"
-            margin={{ left: "small" }}
+            color="grey"
+            margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
           >
-            FOLLOWING
+            Following
           </Text>
           {this.state.loading && (
             <Box width="100%" height="80%" justify="center" align="center">
