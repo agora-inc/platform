@@ -41,6 +41,7 @@ interface State {
   talks: Talk[];
   pastStreams: Talk[];
   totalNumberOfTalks: number;
+  longDescription: string
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -63,6 +64,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       talks: [],
       pastStreams: [],
       totalNumberOfTalks: 0,
+      longDescription: "",
     };
   }
 
@@ -108,7 +110,8 @@ export default class ManageChannelPage extends Component<Props, State> {
               channel: channel,
               colour: channel.colour,
               loading: false,
-              allowed: false,
+              allowed: false, 
+              // longDescription: channel?.long_description ? channel?.long_description : ""
             },
             () => {
               this.fetchData();
@@ -126,6 +129,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   colour: channel.colour,
                   allowed: res,
                   loading: false,
+                  longDescription: channel?.long_description ? channel?.long_description : ""
                 },
                 () => {
                   this.fetchData();
@@ -256,7 +260,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     if (this.state.editingLongDescription) {
       ChannelService.updateLongChannelDescription(
         this.state.channel!.id,
-        document.getElementById("long-description")!.textContent as string,
+        this.state.longDescription,
         () => {}
       );
     }
@@ -264,6 +268,12 @@ export default class ManageChannelPage extends Component<Props, State> {
       editingLongDescription: !this.state.editingLongDescription,
     });
   };
+
+  onModifyLongDescription = (value: string) => {
+    this.setState({longDescription: value});
+    console.log("wesh");
+    console.log(value);
+  }
 
   onFileChosen = (e: any) => {
     console.log(e.target.files[0]);
@@ -537,7 +547,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                 width="100%"
                 pad="20px"
                 >
-                  <Text
+
+                  
+                  {/* <Text
                     id="long-description"
                     className="channel-description"
                     size="22px"
@@ -556,14 +568,17 @@ export default class ManageChannelPage extends Component<Props, State> {
                           }
                         : {}
                     }
-                  >
+                  > */}
+                    
                     <EnrichedTextEditor
+                    text={this.state.longDescription}
+                    onModify={this.onModifyLongDescription}
                     />
 
                     {/* parse({this.state.channel?.long_description}); */}
-                    <div dangerouslySetInnerHTML={{__html: this.state.channel?.long_description ? this.state.channel?.long_description : "" }} />
+                    {/* <div dangerouslySetInnerHTML={{__html: this.state.channel?.long_description ? this.state.channel?.long_description : "" }} /> */}
                     {/* {this.state.channel?.long_description} */}
-                  </Text>
+                  {/* </Text> */}
                 </Box>
                 <Box
                   focusIndicator={false}
