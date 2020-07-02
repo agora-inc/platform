@@ -434,7 +434,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="xsmall"
                   >
                     {this.state.channelOwners.map((owner: User) => (
-                      <ChannelPageUserCircle user={owner} />
+                      <ChannelPageUserCircle
+                        user={owner}
+                        channelId={this.state.channel?.id}
+                        onRemovedCallback={this.fetchOwners}
+                      />
                     ))}
                   </Box>
                 </Box>
@@ -467,7 +471,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="xsmall"
                   >
                     {this.state.channelMembers.map((member: User) => (
-                      <ChannelPageUserCircle user={member} />
+                      <ChannelPageUserCircle
+                        user={member}
+                        channelId={this.state.channel?.id}
+                        onRemovedCallback={this.fetchMembers}
+                      />
                     ))}
                   </Box>
                 </Box>
