@@ -116,7 +116,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             <Text
               size="18px"
               color="black"
-              style={{ maxHeight: 150, overflow: "scroll" }}
+              style={{ maxHeight: 150, overflow: "hidden" }}
             >
               {this.props.talk.description}
             </Text>

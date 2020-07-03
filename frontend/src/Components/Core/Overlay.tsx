@@ -41,7 +41,7 @@ export class Overlay extends Component<OverlayProps> {
             padding: 0,
           }}
         >
-          <Box align="center" width="100%" overflow="scroll">
+          <Box align="center" width="100%" style={{overflowY: "auto" }}>
             <Box
               justify="center"
               width="100%"
@@ -66,7 +66,7 @@ export class Overlay extends Component<OverlayProps> {
               pad={{ horizontal: "30px" }}
               gap="30px"
               margin={{ top: "20px" }}
-              overflow="scroll"
+              overflow="auto"
               style={{ minHeight: this.props.contentHeight }}
             >
               {this.props.children}
