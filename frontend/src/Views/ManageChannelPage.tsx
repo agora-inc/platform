@@ -353,28 +353,30 @@ export default class ManageChannelPage extends Component<Props, State> {
           )}
         </Box>
         {this.state.bannerExtended && (
-          <Text
-            id="long-description"
-            size="20px"
-            style={{ textAlign: "justify", fontWeight: 450 }}
-            margin={{ horizontal: "16px", bottom: "16px" }}
-            contentEditable={this.state.editingLongDescription}
-          >
-            {this.state.channel?.long_description}
+          <>
             <Text
-              style={{
-                textDecoration: "underline",
-                marginLeft: 5,
-                cursor: "pointer",
-                color: "blue",
-              }}
+              id="long-description"
               size="20px"
-              onClick={this.onEditLongDescriptionClicked}
-              contentEditable={false}
+              style={{ textAlign: "justify", fontWeight: 450 }}
+              margin={{ horizontal: "16px", bottom: "16px" }}
+              contentEditable={this.state.editingLongDescription}
             >
-              {this.state.editingLongDescription ? "save" : "edit"}
+              <div dangerouslySetInnerHTML={{__html: this.state.channel?.long_description ? this.state.channel?.long_description : "" }} />
             </Text>
+            <Text
+            style={{
+              textDecoration: "underline",
+              marginLeft: 5,
+              cursor: "pointer",
+              color: "blue",
+            }}
+            size="20px"
+            onClick={this.onEditLongDescriptionClicked}
+            contentEditable={false}
+          >
+            {this.state.editingLongDescription ? "save" : "edit"}
           </Text>
+        </>
         )}
       </Box>
     );

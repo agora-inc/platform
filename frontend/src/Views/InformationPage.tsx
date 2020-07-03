@@ -43,7 +43,7 @@ export default class InformationPage extends Component<Props, State> {
             pad="small"
             // gap="xsmall"
           > */}
-            <Text color="black" size="20px">
+            <Text color="black" size="18px">
             <h1> <b>Welcome to Agora!</b> </h1> 
             <h2> <b>A. What does Agora believe in?</b></h2>
 

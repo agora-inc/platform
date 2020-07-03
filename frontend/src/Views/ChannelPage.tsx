@@ -303,7 +303,7 @@ export default class ChannelPage extends Component<Props, State> {
             style={{ textAlign: "justify", fontWeight: 450 }}
             margin={{ horizontal: "16px", bottom: "16px" }}
           >
-            {this.state.channel?.long_description}
+            <div dangerouslySetInnerHTML={{__html: this.state.channel?.long_description ? this.state.channel?.long_description : "" }} />
           </Text>
         )}
       </Box>

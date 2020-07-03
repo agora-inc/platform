@@ -150,6 +150,9 @@ export default class SignUpButton extends Component<Props, State> {
                 }
               />
             </Box>
+            <Text size="14px" color="grey" margin="none" weight="bold">
+                By clicking Sign Up, you agree to our <a href="https://www.agora.stream/info/welcome"> terms</a>.
+            </Text>
           </Box>
         </Overlay>
       </Box>
