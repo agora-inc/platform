@@ -434,12 +434,11 @@ export default class TalkCard extends Component<Props, State> {
             <Text
               size="18px"
               color="black"
-              weight="bold"
-              style={{ maxHeight: 150, overflow: "scroll" }}
+              style={{ maxHeight: 150, overflow: "hidden" }}
             >
               {this.props.talk.name}
             </Text>
-            <Text size="18px" color="black">
+            <Text size="18px" color="black" weight="bold">
               {this.formatDate(this.props.talk.date)}
             </Text>
           </Box>
