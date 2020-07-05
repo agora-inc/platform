@@ -22,6 +22,8 @@ interface State {
   toolbarButtonsToDisplay: GroupName[]
 }
 
+
+// To understand why creating this, check "index.d.ts" in the react-rte library l.123
 type GroupName =
     "INLINE_STYLE_BUTTONS"
     | "BLOCK_TYPE_BUTTONS"
@@ -32,6 +34,7 @@ type GroupName =
 let GroupNameButton1 : GroupName = "INLINE_STYLE_BUTTONS"
 let GroupNameButton2 : GroupName = "BLOCK_TYPE_BUTTONS"
 let GroupNameButton3 : GroupName = "HISTORY_BUTTONS"
+let GroupNameButton4 : GroupName = "LINK_BUTTONS"
 
 
 export default class EnrichedTextEditor extends Component<Props, State> {
