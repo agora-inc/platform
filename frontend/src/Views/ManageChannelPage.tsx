@@ -18,6 +18,7 @@ import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
+import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 
 interface Props {
   location: any;
@@ -39,6 +40,7 @@ interface State {
   pastStreams: Talk[];
   totalNumberOfTalks: number;
   bannerExtended: boolean;
+  longDescription: string
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -59,6 +61,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       pastStreams: [],
       totalNumberOfTalks: 0,
       bannerExtended: true,
+      longDescription: ""
     };
   }
 
@@ -99,7 +102,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               channel: channel,
               colour: channel.colour,
               loading: false,
-              allowed: false,
+              allowed: false
             },
             () => {
               this.fetchData();
@@ -218,20 +221,23 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
-  onEditLongDescriptionClicked = () => {
-    let desc = document.getElementById("long-description")!
-      .textContent as string;
-    if (this.state.editingLongDescription) {
-      ChannelService.updateLongChannelDescription(
-        this.state.channel!.id,
-        desc.slice(0, desc.length - 4),
-        () => {}
-      );
-    }
+
+  onSaveLongDescriptionClicked = (newDescription: string) => {
+    ChannelService.updateLongChannelDescription(
+      this.state.channel!.id,
+      newDescription,
+      () => {}
+    );
     this.setState({
       editingLongDescription: !this.state.editingLongDescription,
     });
   };
+
+  onModifyLongDescription = (value: any) => {
+    this.setState({longDescription: value});
+    console.log("wesh");
+    console.log(value);
+  }
 
   onFileChosen = (e: any) => {
     console.log(e.target.files[0]);
@@ -354,28 +360,11 @@ export default class ManageChannelPage extends Component<Props, State> {
         </Box>
         {this.state.bannerExtended && (
           <>
-            <Text
-              id="long-description"
-              size="20px"
-              style={{ textAlign: "justify", fontWeight: 450 }}
-              margin={{ horizontal: "16px", bottom: "16px" }}
-              contentEditable={this.state.editingLongDescription}
-            >
-              <div dangerouslySetInnerHTML={{__html: this.state.channel?.long_description ? this.state.channel?.long_description : "" }} />
-            </Text>
-            <Text
-            style={{
-              textDecoration: "underline",
-              marginLeft: 5,
-              cursor: "pointer",
-              color: "blue",
-            }}
-            size="20px"
-            onClick={this.onEditLongDescriptionClicked}
-            contentEditable={false}
-          >
-            {this.state.editingLongDescription ? "save" : "edit"}
-          </Text>
+            <EnrichedTextEditor
+              text = {this.state.channel?.long_description ? this.state.channel?.long_description : "" }
+              onModify={this.onModifyLongDescription}
+              onSave={this.onSaveLongDescriptionClicked}
+            />
         </>
         )}
       </Box>
@@ -546,7 +535,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         : {}
                     }
                   >
-                    {this.state.channel?.long_description}
+                    {this.state.channel?.longDescription}
                   </Text>
                 </Box>
                 <Box

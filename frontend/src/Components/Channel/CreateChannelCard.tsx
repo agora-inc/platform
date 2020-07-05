@@ -6,6 +6,15 @@ import { User } from "../../Services/UserService";
 import { Previous } from "grommet-icons";
 import { ChannelService } from "../../Services/ChannelService";
 
+
+import RichTextEditor from 'react-rte';
+
+
+
+
+
+
+
 interface Props {
   user: User | null;
   onBackClicked: any;
