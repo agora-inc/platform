@@ -1,24 +1,11 @@
 import React, { Component } from "react";
-import {
-  Box,
-  TextInput,
-  TextArea,
-  Layer,
-  Text,
-  Calendar,
-  MaskedInput,
-} from "grommet";
+import { Box, Text } from "grommet";
 import "../../Styles/manage-channel.css";
-import TagSelector from "../Core/TagSelector";
-import { Talk, TalkService } from "../../Services/TalkService";
-import { Tag } from "../../Services/TagService";
 import { Channel } from "../../Services/ChannelService";
-import Loading from "../Core/Loading";
-import { Overlay, OverlaySection } from "../Core/Overlay";
 import EditTalkModal from "./EditTalkModal";
 
 interface Props {
-  margin: string;
+  margin: any;
   channel: Channel | null;
   onCreatedCallback: any;
 }
@@ -43,16 +30,19 @@ export default class ScheduleTalkButton extends Component<Props, State> {
     return (
       <Box margin={this.props.margin} pad="none">
         <Box
-          className="gradient-border"
-          round="8px"
-          align="center"
-          justify="center"
           onClick={this.toggleModal}
+          background="#7E1115"
+          round="xsmall"
+          margin={{bottom: "medium"}}
+          pad={{bottom: "small", top: "small", left: "medium", right: "medium"}}
+          height="40px"
+          justify="center"
+          align="center"
           focusIndicator={false}
+          // hoverIndicator="#2433b5"
+          hoverIndicator="#5A0C0F"
         >
-          <Text color="black" size="16.5px" style={{ fontWeight: 500 }}>
-            Schedule talk
-          </Text>
+          <Text size="20px"> Schedule talk </Text>
         </Box>
         <EditTalkModal
           visible={this.state.showModal}

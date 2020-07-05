@@ -108,10 +108,10 @@ export default class SiteWideSearch extends Component<{}, State> {
               }}
             >
               <Text weight="bold" size="14px">
-                Channels
+                Agoras
               </Text>
             </Box>
-            <Box style={{ maxHeight: 125, overflowY: "scroll" }}>
+            <Box style={{ maxHeight: 125, overflowY: "auto" }}>
               {this.state.results.channel.map((channel: Channel) => (
                 <Link
                   to={{
@@ -330,7 +330,7 @@ export default class SiteWideSearch extends Component<{}, State> {
             </Box>
           </Box>
         )}
-        {this.state.results.tag.length !== 0 && (
+        {/* {this.state.results.tag.length !== 0 && (
           <Box>
             <Box
               background="#f5f5f5"
@@ -370,7 +370,7 @@ export default class SiteWideSearch extends Component<{}, State> {
               ))}
             </Box>
           </Box>
-        )}
+        )} */}
         {this.areResultsEmpty() &&
           !this.state.loading &&
           this.state.searchString !== "" && (

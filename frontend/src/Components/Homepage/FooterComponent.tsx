@@ -25,7 +25,7 @@ export default class FooterComponent extends Component {
           }}
         />
         <Box direction="row" justify="between">
-          <Box>
+          <Box gap="xsmall">
             <a href="/info/welcome" style={{ color: "grey" }}>
               About us
             </a>
@@ -36,9 +36,9 @@ export default class FooterComponent extends Component {
               Data privacy
             </a>
           </Box>
-          <Box>
-            <Text>Made by Researchers for Researchers.</Text>
-            <Text style={{ fontSize: 14 }}>agora.stream © 2020</Text>
+          <Box gap="medium">
+            <Text size="18px"> Made by Researchers for Researchers.</Text>
+            <Text style={{ fontSize: 14 }} alignSelf="end">agora.stream © 2020</Text>
           </Box>
         </Box>
       </Box>

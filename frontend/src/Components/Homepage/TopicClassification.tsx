@@ -50,8 +50,8 @@ export default class TopicClassification extends Component<Props, State> {
   };
 
   nameToTopic = (name: string): Topic => {
-    if (name == "-") {
-      return {field: "-",
+    if (name == "All") {
+      return {field: "All",
               id: -1,
               is_primitive_node: false,
               parent_1_id: -1,
@@ -96,7 +96,7 @@ export default class TopicClassification extends Component<Props, State> {
           align="end"
           margin={{ bottom: "15px" }}
         >
-          <Text size="20px" weight="bold" color="black" margin="none">
+          <Text size="14px" color="grey" margin="none" weight="bold">
             Filter by topic
           </Text>
         </Box>
@@ -111,7 +111,7 @@ export default class TopicClassification extends Component<Props, State> {
 
         {this.state.topicBeingShown >= 0 && (
           <Select
-            options={this.getPrimitiveNodes().concat("-")}
+            options={this.getPrimitiveNodes().concat("All")}
             placeholder={"Field"}
             onChange={({ option }) =>
               this.onFieldChoose(this.nameToTopic(option), 0)
@@ -122,7 +122,7 @@ export default class TopicClassification extends Component<Props, State> {
           <Select
             options={this.getChildren(
               this.state.topics[0]
-            ).concat("-")}
+            ).concat("All")}
             placeholder={"Topic"}
             onChange={({ option }) =>
               this.onFieldChoose(this.nameToTopic(option), 1)
@@ -133,7 +133,7 @@ export default class TopicClassification extends Component<Props, State> {
           <Select
             options={this.getChildren(
               this.state.topics[1]
-            ).concat("-")}
+            ).concat("All")}
             placeholder={"Subject"}
             onChange={({ option }) =>
               this.onFieldChoose(this.nameToTopic(option), 2)

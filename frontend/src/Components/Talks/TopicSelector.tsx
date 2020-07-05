@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Box, Select } from "grommet";
+import { Box, Text, Select } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
 // import allTopics from "../../assets/allTopics.json"
 import Button from "../Core/Button";
+import Icon from "@ant-design/icons";
 
 interface State {
   all: Topic[],
@@ -59,8 +60,8 @@ export default class TopicSelector extends Component<Props, State> {
   };
 
   nameToTopic = (name: string): Topic => {
-    if (name == "-") {
-      return {field: "-",
+    if (name == "All") {
+      return {field: "All",
               id: -1,
               is_primitive_node: false,
               parent_1_id: -1,
@@ -77,7 +78,7 @@ export default class TopicSelector extends Component<Props, State> {
 
   /*
   nameToId = (name: string) => {
-    if (name == "-") {
+    if (name == "All") {
       return -1;
     } else {
       return this.state.all
@@ -121,7 +122,7 @@ export default class TopicSelector extends Component<Props, State> {
         >
           {this.state.topicsBeingShown[choiceNumber] >= 0 && (
             <Select
-              options={this.getPrimitiveNodes().concat("-")}
+              options={this.getPrimitiveNodes().concat("All")}
               onChange={({ option }) =>
                 this.onFieldChoose(choiceNumber, this.nameToTopic(option), 0)
               }
@@ -131,7 +132,7 @@ export default class TopicSelector extends Component<Props, State> {
             <Select
               options={this.getChildren(
                 this.state.topics[choiceNumber][0]
-              ).concat("-")}
+              ).concat("All")}
               onChange={({ option }) =>
                 this.onFieldChoose(choiceNumber, this.nameToTopic(option), 1)
               }
@@ -141,7 +142,7 @@ export default class TopicSelector extends Component<Props, State> {
             <Select
               options={this.getChildren(
                 this.state.topics[choiceNumber][1]
-              ).concat("-")}
+              ).concat("All")}
               onChange={({ option }) =>
                 this.onFieldChoose(choiceNumber, this.nameToTopic(option), 2)
               }
@@ -151,12 +152,26 @@ export default class TopicSelector extends Component<Props, State> {
       );
     } else if (choiceNumber == this.state.numberTopicsChosen + 1) {
       return (
-        <Button
-          width={"10"}
-          height={"10"}
+        <Box
+          focusIndicator={false}
+          background="white"
+          round="xsmall"
+          pad={{ vertical: "2px", horizontal: "xsmall" }}
           onClick={this.onClickAddTopic}
-          text={"Add topic"}
-        />
+          style={{
+            width: "8%",
+            border: "2px solid #C2C2C2",
+          }}
+          hoverIndicator={true}
+          align="center"   
+        >
+         
+          <Text color="grey"> 
+            + Add 
+          </Text>
+
+          
+        </Box>
       );
     }
   };

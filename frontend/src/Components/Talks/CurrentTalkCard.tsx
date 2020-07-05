@@ -189,7 +189,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
             <Text
               size="18px"
               color="black"
-              style={{ maxHeight: 150, overflow: "scroll" }}
+              style={{ maxHeight: 150, overflow: "auto" }}
             >
               {this.props.talk.name}
             </Text>
@@ -294,7 +294,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
                 justify="end"
                 style={{ minHeight: "40%", maxHeight: "75%" }}
               >
-                <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
+                <Text size="22px" color="black" style={{ overflowY: "auto" }}>
                   {this.props.talk.description}
                 </Text>
                 {this.props.talk.tags.length !== 0 && (

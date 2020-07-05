@@ -10,6 +10,7 @@ interface Props {
   width: string;
   fontColor: string;
   disabled?: boolean;
+  round?: string
 }
 
 interface State {
@@ -45,7 +46,7 @@ export default class AsyncButton extends Component<Props, State> {
         justify="center"
         align="center"
         background={this.props.disabled ? "grey" : this.props.color}
-        round="medium"
+        round={this.props.round ? this.props.round : "medium"}
         onClick={this.props.disabled ? () => {} : this.onClick}
         pad={{ horizontal: "medium", vertical: "small" }}
         height={this.props.height}

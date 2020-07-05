@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { User } from "../../Services/UserService";
+import { ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
 
 interface Props {
   user: User;
+  channelId?: number;
+  onRemovedCallback?: any;
 }
 
 interface State {
@@ -19,26 +22,52 @@ export default class ChannelPageUserCircle extends Component<Props, State> {
     };
   }
 
+  onRemoveClicked = () => {
+    this.props.channelId &&
+      ChannelService.removeUserFromChannel(
+        this.props.user.id,
+        this.props.channelId,
+        () => {
+          this.props.onRemovedCallback();
+        }
+      );
+  };
+
   render() {
     return (
       <Box style={{ position: "relative" }}>
         {this.state.hover && (
           <Box
+            direction="row"
             style={{
               zIndex: 10,
               border: "2px solid black",
               width: "fit-content",
             }}
-            height="23px"
+            height="35px"
             background="white"
             round="xsmall"
             pad={{ horizontal: "3px" }}
             onMouseEnter={() => this.setState({ hover: true })}
             onMouseLeave={() => this.setState({ hover: false })}
+            align="center"
+            gap="xsmall"
           >
             <Text size="14px" weight="bold" color="black">
               {this.props.user.username}
             </Text>
+            <Box
+              background="#FF4040"
+              round="4px"
+              pad="2.5px"
+              align="center"
+              justify="center"
+              onClick={this.onRemoveClicked}
+            >
+              <Text color="white" size="14px" style={{ fontWeight: 500 }}>
+                remove
+              </Text>
+            </Box>
           </Box>
         )}
         <Box

@@ -358,7 +358,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 justify="end"
                 style={{ height: "40%", position: "relative" }}
               >
-                <Text size="22px" color="black" style={{ overflowY: "scroll" }}>
+                <Text size="22px" color="black" style={{ overflowY: "auto" }}>
                   {this.props.talk.description}
                 </Text>
                 {this.props.talk.tags.length !== 0 && (
