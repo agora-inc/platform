@@ -44,7 +44,7 @@ export default class EnrichedTextEditor extends Component<Props, State> {
       currentText: this.props.text,
       editorValue: RichTextEditor.createValueFromString(this.props.text, 'html'),
       editing_mode: false,
-      toolbarButtonsToDisplay: [GroupNameButton1, GroupNameButton2, GroupNameButton3]
+      toolbarButtonsToDisplay: [GroupNameButton1, GroupNameButton2, GroupNameButton3, GroupNameButton4]
     };
   }
 
