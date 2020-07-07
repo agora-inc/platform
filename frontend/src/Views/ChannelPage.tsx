@@ -220,7 +220,7 @@ export default class ChannelPage extends Component<Props, State> {
           direction="row"
           justify="between"
           style={this.getCoverBoxStyle()}
-          height="312px"
+          height="364px"
         />
         <Box
           direction="row"
