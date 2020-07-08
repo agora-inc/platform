@@ -200,10 +200,11 @@ export default class ChannelPage extends Component<Props, State> {
       : "none";
 
     return {
-      width: "100%",
+      width: "75vw",
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
+      backgroundSize: "75vw 25vw",
       padding: 20,
       border: border,
     };
@@ -215,12 +216,12 @@ export default class ChannelPage extends Component<Props, State> {
 
   banner = () => {
     return (
-      <Box width="100%" background="white" round="10px">
+      <Box width="75vw" background="white" round="10px">
         <Box
           direction="row"
           justify="between"
           style={this.getCoverBoxStyle()}
-          height="364px"
+          height="25vw"
         />
         <Box
           direction="row"

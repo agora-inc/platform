@@ -260,7 +260,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       : "none";
 
     return {
-      width: "100%",
+      width: "75vw",
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
@@ -285,7 +285,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           direction="row"
           justify="between"
           style={this.getCoverBoxStyle()}
-          height="364px"
+          height="25vw"
         >
           <Box width="100%" direction="row" justify="end" height="50px">
             <ColorPicker
