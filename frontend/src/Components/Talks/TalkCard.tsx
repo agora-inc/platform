@@ -96,6 +96,7 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   register = () => {
+    console.log("Is there?")
     this.props.user &&
       TalkService.registerForTalk(
         this.props.talk.id,
@@ -111,6 +112,7 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   unregister = () => {
+    console.log("Is there not?")
     this.props.user &&
       TalkService.unRegisterForTalk(
         this.props.talk.id,
@@ -501,8 +503,8 @@ export default class TalkCard extends Component<Props, State> {
             responsive
             animation="fadeIn"
             style={{
-              width: 450,
-              height: this.state.registered ? 540 : 500,
+              width: 500,
+              height: this.state.registered ? 640 : 540,
               borderRadius: 15,
               overflow: "hidden",
             }}
@@ -515,7 +517,7 @@ export default class TalkCard extends Component<Props, State> {
               justify="between"
               gap="xsmall"
             >
-              <Box style={{ minHeight: "100px", maxHeight: "460px" }} direction="column">
+              <Box style={{ minHeight: "200px", maxHeight: "540px" }} direction="column">
                 <Box 
                   direction="row" 
                   gap="xsmall" 
@@ -595,7 +597,7 @@ export default class TalkCard extends Component<Props, State> {
                 <Text 
                   size="16px" 
                   color="black" 
-                  style={{ minHeight: "50px", maxHeight: "180px", overflowY: "auto" }}
+                  style={{ minHeight: "50px", maxHeight: "200px", overflowY: "auto" }}
                   margin={{bottom: "10px"}}
                 >
                   {this.props.talk.description}
@@ -613,21 +615,21 @@ export default class TalkCard extends Component<Props, State> {
                   </Text>
                 </Box>
                 {this.state.registered && (
-                  <CountdownAndCalendarButtons
-                    talkStart={this.props.talk.date}
-                    showLinkOffset={this.props.talk.show_link_offset}
-                    link={this.props.talk.link}
-                    color={this.props.talk.channel_colour}
-                    startTime={this.props.talk.date}
-                    endTime={this.props.talk.end_date}
-                    name={this.props.talk.name}
-                    description={this.props.talk.description}
-                  />
+                  <Box margin={{top: "10px", bottom: "20px"}}>
+                    <CountdownAndCalendarButtons
+                      talkStart={this.props.talk.date}
+                      showLinkOffset={this.props.talk.show_link_offset}
+                      link={this.props.talk.link}
+                      color={this.props.talk.channel_colour}
+                      startTime={this.props.talk.date}
+                      endTime={this.props.talk.end_date}
+                      name={this.props.talk.name}
+                      description={this.props.talk.description}
+                    />
+                  </Box>
                 )}
                 {this.state.available && (
-                  <AsyncButton
-                    color="#7E1115"
-                    fontColor="white"
+                  <Button
                     label={
                       this.props.user !== null
                         ? this.state.registered
@@ -639,9 +641,13 @@ export default class TalkCard extends Component<Props, State> {
                     onClick={
                       this.state.registered ? this.unregister : this.register
                     }
-                    width="420px"
-                    height="40px"
-                    round="xsmall"
+                    style={{
+                      width: "",
+                      height: "40px",
+                      borderRadius: 7,
+                      backgroundColor: "#7E1115",
+                      color: "white",
+                    }}
                   />
                 )}
               </Box>
