@@ -44,6 +44,16 @@ export default class TalkCard extends Component<Props, State> {
     return `${dateStr} ${timeStr}`;
   };
 
+  formatDateFull = (s: string, e: string) => {
+    const start = new Date(s);
+    const dateStartStr = start.toDateString().slice(0, -4);
+    const timeStartStr = start.toTimeString().slice(0, 5);
+    const end = new Date(e);
+    const dateEndStr = end.toDateString().slice(0, -4);
+    const timeEndStr = end.toTimeString().slice(0, 5);
+    return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
+  };
+
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, showShadow: true });
   };
@@ -435,7 +445,7 @@ export default class TalkCard extends Component<Props, State> {
               size="18px"
               color="black"
               weight="bold"
-              style={{ minHeight: "70px", overflow: "auto" }}
+              style={{ minHeight: "75px", overflow: "auto" }}
             >
               {this.props.talk.name}
             </Text>
@@ -505,56 +515,69 @@ export default class TalkCard extends Component<Props, State> {
               justify="between"
               gap="xsmall"
             >
-              <Box style={{ minHeight: "25%", maxHeight: "60%" }} direction="column">
-                <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
-                  <Box
-                    justify="center"
-                    align="center"
-                    background="#efeff1"
-                    overflow="hidden"
-                    style={{
-                      minHeight: 30,
-                      minWidth: 30,
-                      borderRadius: 15,
-                    }}
-                    margin={{bottom: "15px"}}
-                  >
-                    {!this.props.talk.has_avatar && (
-                      <Identicon
-                        string={this.props.talk.channel_name}
-                        size={30}
-                      />
-                    )}
-                    {!!this.props.talk.has_avatar && (
-                      <img
-                        src={ChannelService.getAvatar(
-                          this.props.talk.channel_id
-                        )}
-                        height={30}
-                        width={30}
-                      />
-                    )}
-                  </Box>
+              <Box style={{ minHeight: "100px", maxHeight: "460px" }} direction="column">
+                <Box 
+                  direction="row" 
+                  gap="xsmall" 
+                  style={{ minHeight: "30px" }} 
+                >
                   <Link
+                    className="channel"
                     to={`/${this.props.talk.channel_name}`}
                     style={{ textDecoration: "none" }}
                   >
-                    <Text
-                      weight="bold"
-                      size="18px"
-                      color="grey"
-                      margin={{top: "6px"}}
+                    <Box
+                      direction="row"
+                      gap="xsmall"
+                      align="center"
+                      round="xsmall" 
+                      pad={{ vertical: "6px", horizontal: "6px" }}
                     >
-                      {this.props.talk.channel_name}
-                    </Text>
+                      <Box
+                        justify="center"
+                        align="center"
+                        background="#efeff1"
+                        overflow="hidden"
+                        style={{
+                          minHeight: 30,
+                          minWidth: 30,
+                          borderRadius: 15,
+                        }}
+                      >
+                        {!this.props.talk.has_avatar && (
+                          <Identicon
+                            string={this.props.talk.channel_name}
+                            size={30}
+                          />
+                        )}
+                        {!!this.props.talk.has_avatar && (
+                          <img
+                            src={ChannelService.getAvatar(
+                              this.props.talk.channel_id
+                            )}
+                            height={30}
+                            width={30}
+                          />
+                        )}
+                      </Box>
+                      <Box justify="between">
+                        <Text
+                          weight="bold"
+                          size="18px"
+                          color="grey"
+                        >
+                          {this.props.talk.channel_name}
+                        </Text>
+                      </Box>
+                    </Box>
                   </Link>
                 </Box>
                 <Text
                   weight="bold"
                   size="21px"
                   color="black"
-                  style={{ minHeight: "30px", maxHeight: "120px", overflowY: "auto" }}
-                  margin={{bottom: "20px"}}
+                  style={{ minHeight: "50px", maxHeight: "120px", overflowY: "auto" }}
+                  margin={{bottom: "20px", top: "10px"}}
                 >
                   {this.props.talk.name}
                 </Text>
@@ -570,23 +593,23 @@ export default class TalkCard extends Component<Props, State> {
                   </Text>
                 </Box>
                 <Text 
-                  size="14px" 
+                  size="16px" 
                   color="black" 
-                  style={{ minHeight: "50px", maxHeight: "100px", overflowY: "auto" }}
-                  margin={{bottom: "20px"}}
+                  style={{ minHeight: "50px", maxHeight: "180px", overflowY: "auto" }}
+                  margin={{bottom: "10px"}}
                 >
                   {this.props.talk.description}
                 </Text>
               </Box>
-              <Box>
+              <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
                   <Calendar size="18px" />
                   <Text 
                     size="18px" 
                     color="black"
-                    style={{ height: "30px", fontStyle: "normal" }}
+                    style={{ height: "20px", fontStyle: "normal" }}
                   >
-                    {this.formatDate(this.props.talk.date)}
+                    {this.formatDateFull(this.props.talk.date, this.props.talk.end_date)}
                   </Text>
                 </Box>
                 {this.state.registered && (
