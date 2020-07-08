@@ -264,6 +264,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
+      backgroundSize: "75vw 25vw",
       padding: 20,
       border: border,
     };
@@ -276,7 +277,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   banner = () => {
     return (
       <Box
-        width="100%"
+        width="75vw"
         background="white"
         round="10px"
         margin={{ bottom: "30px" }}
