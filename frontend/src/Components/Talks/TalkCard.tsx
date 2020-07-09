@@ -503,7 +503,7 @@ export default class TalkCard extends Component<Props, State> {
             responsive
             animation="fadeIn"
             style={{
-              width: 500,
+              width: 640,
               height: this.state.registered ? 640 : 540,
               borderRadius: 15,
               overflow: "hidden",
