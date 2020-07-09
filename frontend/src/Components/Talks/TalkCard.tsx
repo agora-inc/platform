@@ -492,12 +492,14 @@ export default class TalkCard extends Component<Props, State> {
         {this.state.showModal && (
           <Layer
             onEsc={() => {
+              console.log("ESC")
               this.toggleModal();
               this.setState({ showShadow: false });
             }}
             onClickOutside={() => {
-              this.toggleModal();
-              this.setState({ showShadow: false });
+              console.log("outside")
+              //this.toggleModal();
+              //this.setState({ showShadow: false });
             }}
             modal
             responsive
@@ -510,7 +512,7 @@ export default class TalkCard extends Component<Props, State> {
             }}
           >
             <Box
-              // align="center"
+              //align="center"
               pad="25px"
               // width="100%"
               height="100%"
@@ -628,27 +630,41 @@ export default class TalkCard extends Component<Props, State> {
                     />
                   </Box>
                 )}
-                {this.state.available && (
-                  <Button
-                    label={
-                      this.props.user !== null
-                        ? this.state.registered
-                          ? "Unregister"
-                          : "Register"
-                        : "Log in to register"
-                    }
-                    disabled={this.props.user === null}
+                {this.state.available && this.props.user !== null && (
+                  <Box
                     onClick={
                       this.state.registered ? this.unregister : this.register
                     }
-                    style={{
-                      width: "",
-                      height: "40px",
-                      borderRadius: 7,
-                      backgroundColor: "#7E1115",
-                      color: "white",
-                    }}
-                  />
+                    background="#7E1115"
+                    round="xsmall"
+                    pad="xsmall"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator="#5A0C0F"
+                  >
+                    <Text size="18px"> 
+                      {this.state.registered ? "Unregister" : "Register"}
+                    </Text>
+                  </Box>
+                )}
+                {this.state.available && this.props.user === null && (
+                  <Box
+                    direction="row"
+                    width="100%"
+                    margin="none"
+                    pad="small"
+                    justify="center"
+                    round="xsmall"
+                    align="center"
+                    alignSelf="center"
+                    background="#F3EACE"
+                >
+                  <Text size="18px" weight="bold" color="grey">
+                    Log in to register
+                  </Text>
+                </Box>
                 )}
               </Box>
             </Box>

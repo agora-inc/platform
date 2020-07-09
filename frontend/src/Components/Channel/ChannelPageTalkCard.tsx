@@ -105,84 +105,86 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     } else if (this.props.user && this.state.registered) {
       label = "Unregister";
     }
-    // return (
-    //   <Box
-    //     width={this.props.width ? this.props.width : "32%"}
-    //     margin={this.props.margin}
-    //   >
-    //     <Box
-    //       background="white"
-    //       round="10px"
-    //       // align="center"
-    //       pad="15px"
-    //       width="100%"
-    //       height="325px"
-    //       justify="between"
-    //       gap="small"
-    //     >
-    //       <Text weight="bold" size="20px" color="black">
-    //         {this.props.talk.name}
-    //       </Text>
-    //       <Box gap="small">
-    //         <Text
-    //           size="18px"
-    //           color="black"
-    //           style={{ maxHeight: 150, overflow: "hidden" }}
-    //         >
-    //           {this.props.talk.description}
-    //         </Text>
-    //         <Box direction="row" gap="xsmall" wrap>
-    //           {this.props.talk.tags.map((tag: Tag) => (
-    //             <TagComponent
-    //               tagName={tag.name}
-    //               width="80px"
-    //               colour="#f3f3f3"
-    //             />
-    //           ))}
-    //         </Box>
-    //         <Text size="18px" color="black" weight="bold">
-    //           {this.formatDate(this.props.talk.date)}
-    //         </Text>
-    //         {this.state.registered && (
-    //           <AddToCalendarButtons
-    //             startTime={this.props.talk.date}
-    //             endTime={this.props.talk.end_date}
-    //             name={this.props.talk.name}
-    //             description={this.props.talk.description}
-    //             link={this.props.talk.link}
-    //           />
-    //         )}
-    //         <Button
-    //           onClick={this.onClick}
-    //           primary
-    //           color="black"
-    //           disabled={!this.props.admin && this.props.user === null}
-    //           label={label}
-    //           size="large"
-    //         ></Button>
-    //       </Box>
-    //     </Box>
-    //     <EditTalkModal
-    //       visible={this.state.showModal}
-    //       channel={null}
-    //       talk={this.props.talk}
-    //       onFinishedCallback={() => {
-    //         this.toggleModal();
-    //         this.props.onEditCallback();
-    //       }}
-    //       onDeletedCallback={() => {
-    //         this.toggleModal();
-    //         this.props.onEditCallback();
-    //       }}
-    //       onCanceledCallback={this.toggleModal}
-    //     />
-    //   </Box>
-    // );
+    console.log("Channel", this.props.user)
     return (
-      <TalkCard
-        talk={this.props.talk}
-        user={this.props.user}
-      />
+      <Box
+        width={this.props.width ? this.props.width : "32%"}
+        margin={this.props.margin}
+      >
+        <Box
+          background="white"
+          round="10px"
+          // align="center"
+          pad="15px"
+          width="100%"
+          height="325px"
+          justify="between"
+          gap="small"
+        >
+          <Text weight="bold" size="20px" color="black">
+            {this.props.talk.name}
+          </Text>
+          <Box gap="small">
+            <Text
+              size="18px"
+              color="black"
+              style={{ maxHeight: 150, overflow: "hidden" }}
+            >
+              {this.props.talk.description}
+            </Text>
+            <Box direction="row" gap="xsmall" wrap>
+              {this.props.talk.tags.map((tag: Tag) => (
+                <TagComponent
+                  tagName={tag.name}
+                  width="80px"
+                  colour="#f3f3f3"
+                />
+              ))}
+            </Box>
+            <Text size="18px" color="black" weight="bold">
+              {this.formatDate(this.props.talk.date)}
+            </Text>
+            {this.state.registered && (
+              <AddToCalendarButtons
+                startTime={this.props.talk.date}
+                endTime={this.props.talk.end_date}
+                name={this.props.talk.name}
+                description={this.props.talk.description}
+                link={this.props.talk.link}
+              />
+            )}
+            <Button
+              onClick={this.onClick}
+              primary
+              color="black"
+              disabled={!this.props.admin && this.props.user === null}
+              label={label}
+              size="large"
+            ></Button>
+          </Box>
+        </Box>
+        <EditTalkModal
+          visible={this.state.showModal}
+          channel={null}
+          talk={this.props.talk}
+          onFinishedCallback={() => {
+            this.toggleModal();
+            this.props.onEditCallback();
+          }}
+          onDeletedCallback={() => {
+            this.toggleModal();
+            this.props.onEditCallback();
+          }}
+          onCanceledCallback={this.toggleModal}
+        />
+      </Box>
     );
+    // console.log("Channel", this.props.user)
+    // return (
+    //   <TalkCard
+    //     talk={this.props.talk}
+    //     user={this.props.user}
+    //   />
+    // );
   }
 }
