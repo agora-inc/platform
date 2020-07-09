@@ -492,14 +492,12 @@ export default class TalkCard extends Component<Props, State> {
         {this.state.showModal && (
           <Layer
             onEsc={() => {
-              console.log("ESC")
               this.toggleModal();
               this.setState({ showShadow: false });
             }}
             onClickOutside={() => {
-              console.log("outside")
-              //this.toggleModal();
-              //this.setState({ showShadow: false });
+              this.toggleModal();
+              this.setState({ showShadow: false });
             }}
             modal
             responsive

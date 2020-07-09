@@ -4,6 +4,7 @@ import Identicon from "react-identicons";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { User } from "../../Services/UserService";
 import { Tag } from "../../Services/TagService";
+import { Link } from "react-router-dom";
 import { Talk, TalkService } from "../../Services/TalkService";
 import EditTalkModal from "../Talks/EditTalkModal";
 import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
@@ -25,6 +26,7 @@ interface Props {
 
 interface State {
   showModal: boolean;
+  showEdit: boolean;
   registered: boolean;
   showShadow: boolean;
   available: boolean;
@@ -35,6 +37,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     super(props);
     this.state = {
       showModal: false,
+      showEdit: false,
       registered: false,
       showShadow: false,
       available: true,
@@ -76,9 +79,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   onClick = () => {
-    if (this.props.admin) {
-      this.toggleModal();
-    } else if (this.state.registered) {
+    if (this.state.registered) {
       this.unregister();
     } else {
       this.register();
@@ -92,99 +93,375 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     return `${dateStr} ${timeStr}`;
   };
 
+  formatDateFull = (s: string, e: string) => {
+    const start = new Date(s);
+    const dateStartStr = start.toDateString().slice(0, -4);
+    const timeStartStr = start.toTimeString().slice(0, 5);
+    const end = new Date(e);
+    const dateEndStr = end.toDateString().slice(0, -4);
+    const timeEndStr = end.toTimeString().slice(0, 5);
+    return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
+  };
+
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
   };
 
+  toggleEdit = () => { 
+    this.setState({ showEdit: !this.state.showEdit})
+  };
+
   render() {
-    let label = "Log in to register";
-    if (this.props.admin) {
-      label = "Edit";
-    } else if (this.props.user && !this.state.registered) {
+    let label = ""
+    if ((this.props.admin || this.props.user) && !this.state.registered) {
       label = "Register";
-    } else if (this.props.user && this.state.registered) {
+    } else if ((this.props.admin || this.props.user) && this.state.registered) {
       label = "Unregister";
     }
-    console.log("Channel", this.props.user)
+
+    console.log("Edit", this.state.showEdit)
+    console.log("Modal", this.state.showModal)
+
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
-        margin={this.props.margin}
+        height={this.props.admin ? "240px" : "180px"}
+        focusIndicator={false}
+        style={{ position: "relative" }}
+        margin={{ bottom: "small" }}
       >
         <Box
-          background="white"
-          round="10px"
-          // align="center"
-          pad="15px"
+          onMouseEnter={() => this.setState({ showShadow: true })}
+          onMouseLeave={() => {
+            if (!this.state.showModal) {
+              this.setState({ showShadow: false });
+            }
+          }}
+          onClick={this.toggleModal}
+          height="180px"
           width="100%"
-          height="325px"
+          background="white"
+          round="xsmall"
           justify="between"
           gap="small"
+          overflow="hidden"
         >
-          <Text weight="bold" size="20px" color="black">
-            {this.props.talk.name}
-          </Text>
-          <Box gap="small">
+          <Box height="100%" pad="10px">
+            <Box
+              direction="row"
+              gap="xsmall"
+              align="center"
+              style={{ height: "40px" }}
+              margin={{bottom: "10px"}}
+            >
+              <Box
+                height="30px"
+                width="30px"
+                round="15px"
+                justify="center"
+                align="center"
+                background="#efeff1"
+                overflow="hidden"
+              >
+                {!this.props.talk.has_avatar && (
+                  <Identicon string={this.props.talk.channel_name} size={15} />
+                )}
+                {!!this.props.talk.has_avatar && (
+                  <img
+                    src={ChannelService.getAvatar(this.props.talk.channel_id)}
+                    height={30}
+                    width={30}
+                  />
+                )}
+              </Box>
+              <Text
+                weight="bold"
+                size="16px"
+                color="grey"
+              >
+                {this.props.talk.channel_name}
+              </Text>
+            </Box>
             <Text
               size="18px"
               color="black"
-              style={{ maxHeight: 150, overflow: "hidden" }}
+              weight="bold"
+              style={{ minHeight: "75px", overflow: "auto" }}
             >
-              {this.props.talk.description}
+              {this.props.talk.name}
             </Text>
-            <Box direction="row" gap="xsmall" wrap>
-              {this.props.talk.tags.map((tag: Tag) => (
-                <TagComponent
-                  tagName={tag.name}
-                  width="80px"
-                  colour="#f3f3f3"
-                />
-              ))}
+            <Box direction="row" gap="small">
+              <UserExpert size="18px" />
+              <Text
+                size="18px"
+                color="black"
+                style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
+                margin={{bottom: "10px"}}
+              >
+                {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+              </Text>
             </Box>
-            <Text size="18px" color="black" weight="bold">
-              {this.formatDate(this.props.talk.date)}
-            </Text>
-            {this.state.registered && (
-              <AddToCalendarButtons
-                startTime={this.props.talk.date}
-                endTime={this.props.talk.end_date}
-                name={this.props.talk.name}
-                description={this.props.talk.description}
-                link={this.props.talk.link}
-              />
-            )}
-            <Button
-              onClick={this.onClick}
-              primary
-              color="black"
-              disabled={!this.props.admin && this.props.user === null}
-              label={label}
-              size="large"
-            ></Button>
+            <Box direction="row" gap="small">
+              <Calendar size="18px" />
+              <Text 
+                size="18px" 
+                color="black"
+                style={{ height: "30px", fontStyle: "normal" }}
+              >
+                {this.formatDate(this.props.talk.date)}
+              </Text>
+            </Box>
+
+          
+
+
+          {this.state.showShadow && (
+            <Box
+              height="100%"
+              width="100%"
+              round="xsmall"
+              style={{
+                zIndex: -1,
+                position: "absolute",
+                top: 8,
+                left: 8,
+                opacity: 0.5,
+              }}
+              background={this.props.talk.channel_colour}
+            ></Box>
+          )}
           </Box>
-        </Box>
-        <EditTalkModal
-          visible={this.state.showModal}
-          channel={null}
-          talk={this.props.talk}
-          onFinishedCallback={() => {
-            this.toggleModal();
-            this.props.onEditCallback();
-          }}
-          onDeletedCallback={() => {
-            this.toggleModal();
-            this.props.onEditCallback();
-          }}
-          onCanceledCallback={this.toggleModal}
-        />
+                </Box>
+        {this.props.admin && (
+          <Box
+            onClick={() => {this.toggleEdit()}}
+            background="#7E1115"
+            round="xsmall"
+            pad="xsmall"
+            height="40px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator="#5A0C0F"
+            margin="10px"
+          >
+            <Text size="18px"> 
+              Edit
+            </Text>
+          </Box>
+        )}
+        {this.state.showModal && (
+          <Layer
+            onEsc={() => {
+              this.toggleModal();
+              this.setState({ showShadow: false });
+            }}
+            onClickOutside={() => {
+              this.toggleModal();
+              this.setState({ showShadow: false });
+            }}
+            modal
+            responsive
+            animation="fadeIn"
+            style={{
+              width: 640,
+              height: this.state.registered ? 640 : 540,
+              borderRadius: 15,
+              overflow: "hidden",
+            }}
+          >
+            <Box
+              //align="center"
+              pad="25px"
+              // width="100%"
+              height="100%"
+              justify="between"
+              gap="xsmall"
+            >
+              <Box style={{ minHeight: "200px", maxHeight: "540px" }} direction="column">
+                <Box 
+                  direction="row" 
+                  gap="xsmall" 
+                  style={{ minHeight: "30px" }} 
+                >
+                  <Link
+                    className="channel"
+                    to={`/${this.props.talk.channel_name}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Box
+                      direction="row"
+                      gap="xsmall"
+                      align="center"
+                      round="xsmall" 
+                      pad={{ vertical: "6px", horizontal: "6px" }}
+                    >
+                      <Box
+                        justify="center"
+                        align="center"
+                        background="#efeff1"
+                        overflow="hidden"
+                        style={{
+                          minHeight: 30,
+                          minWidth: 30,
+                          borderRadius: 15,
+                        }}
+                      >
+                        {!this.props.talk.has_avatar && (
+                          <Identicon
+                            string={this.props.talk.channel_name}
+                            size={30}
+                          />
+                        )}
+                        {!!this.props.talk.has_avatar && (
+                          <img
+                            src={ChannelService.getAvatar(
+                              this.props.talk.channel_id
+                            )}
+                            height={30}
+                            width={30}
+                          />
+                        )}
+                      </Box>
+                      <Box justify="between">
+                        <Text
+                          weight="bold"
+                          size="18px"
+                          color="grey"
+                        >
+                          {this.props.talk.channel_name}
+                        </Text>
+                      </Box>
+                    </Box>
+                  </Link>
+                </Box>
+                <Text
+                  weight="bold"
+                  size="21px"
+                  color="black"
+                  style={{ minHeight: "50px", maxHeight: "120px", overflowY: "auto" }}
+                  margin={{bottom: "20px", top: "10px"}}
+                >
+                  {this.props.talk.name}
+                </Text>
+                <Box direction="row" gap="small">
+                  <UserExpert size="18px" />
+                  <Text
+                    size="18px"
+                    color="black"
+                    style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
+                    margin={{bottom: "10px"}}
+                  >
+                    {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+                  </Text>
+                </Box>
+                <Text 
+                  size="16px" 
+                  color="black" 
+                  style={{ minHeight: "50px", maxHeight: "200px", overflowY: "auto" }}
+                  margin={{bottom: "10px"}}
+                >
+                  {this.props.talk.description}
+                </Text>
+              </Box>
+              <Box direction="column" gap="small">
+                <Box direction="row" gap="small">
+                  <Calendar size="18px" />
+                  <Text 
+                    size="18px" 
+                    color="black"
+                    style={{ height: "20px", fontStyle: "normal" }}
+                  >
+                    {this.formatDateFull(this.props.talk.date, this.props.talk.end_date)}
+                  </Text>
+                </Box>
+                {this.state.registered && (
+                  <Box margin={{top: "10px", bottom: "20px"}}>
+                    <CountdownAndCalendarButtons
+                      talkStart={this.props.talk.date}
+                      showLinkOffset={this.props.talk.show_link_offset}
+                      link={this.props.talk.link}
+                      color={this.props.talk.channel_colour}
+                      startTime={this.props.talk.date}
+                      endTime={this.props.talk.end_date}
+                      name={this.props.talk.name}
+                      description={this.props.talk.description}
+                    />
+                  </Box>
+                )}
+                {this.state.available && (this.props.user !== null || this.props.admin) && (
+                  <Box
+                    onClick={this.onClick}
+                    background="#7E1115"
+                    round="xsmall"
+                    pad="xsmall"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator="#5A0C0F"
+                  >
+                    <Text size="18px"> 
+                      {label}
+                    </Text>
+                  </Box>
+                )}
+                {this.state.available && this.props.user === null && !this.props.admin && (
+                  <Box
+                    direction="row"
+                    width="100%"
+                    height="40px"
+                    margin="none"
+                    pad="small"
+                    justify="center"
+                    round="xsmall"
+                    align="center"
+                    alignSelf="center"
+                    background="#F3EACE"
+                >
+                  <Text size="18px" weight="bold" color="grey">
+                    Log in to register
+                  </Text>
+                </Box>
+                )}
+              </Box>
+            </Box>
+            {!this.state.available && (
+              <Box
+                background="#d5d5d5"
+                pad="small"
+                align="center"
+                justify="center"
+              >
+                <Text textAlign="center" weight="bold">
+                  {`Sorry, this talk is only available to ${
+                    this.props.talk.visibility === "Followers and members"
+                      ? "followers and members"
+                      : "members"
+                  }
+                  of ${this.props.talk.channel_name}`}
+                </Text>
+              </Box>
+            )}
+          </Layer>
+        )}
+        {this.props.admin && this.state.showEdit && (
+          <EditTalkModal
+            visible={this.state.showEdit}
+            channel={null}
+            talk={this.props.talk}
+            onFinishedCallback={() => {
+              this.toggleEdit();
+              this.props.onEditCallback();
+            }}
+            onDeletedCallback={() => {
+              this.toggleEdit();
+              this.props.onEditCallback();
+            }}
+            onCanceledCallback={this.toggleEdit}
+          />
+        )}
       </Box>
     );
-    // console.log("Channel", this.props.user)
-    // return (
-    //   <TalkCard
-    //     talk={this.props.talk}
-    //     user={this.props.user}
-    //   />
-    // );
   }
 }
