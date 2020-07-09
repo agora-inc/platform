@@ -556,7 +556,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   weight="bold"
                   color="black"
                   margin={{ top: "40px", bottom: "10px" }}
-                >{`Your upcoming talks`}</Text>
+                >{`Upcoming talks`}</Text>
               )}
               <ChannelPageTalkList
                 talks={this.state.talks}

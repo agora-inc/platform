@@ -119,8 +119,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       label = "Unregister";
     }
 
-    console.log("Edit", this.state.showEdit)
-    console.log("Modal", this.state.showModal)
+    console.log("Width = ", this.props.width)
 
     return (
       <Box

@@ -184,7 +184,7 @@ class TalkRepository:
         return self.getTalkById(insertId)
 
     def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker):
-        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset="{showLinkOffset}", visibility="{visibility}", topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker={talk_speaker} WHERE id = {talkId}'
+        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset="{showLinkOffset}", visibility="{visibility}", topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker="{talk_speaker}" WHERE id = {talkId};'
         print(query)
         self.db.run_query(query)
 
@@ -366,5 +366,6 @@ class TalkRepository:
     
 #     db = Database()
 #     obj = TalkRepository(db)
-#     # scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talkSpeaker)
-#     obj.scheduleTalk(45, 'test1', 'testest', '2020-06-07 14:00:00', '2020-06-07 15:00:00', 'aiedontenderstande', 'd', [], 15, 'Everybody', 0, 0, 0, 'Remy Mess')
+#     obj.editTalk(115, 'A nice introduction to computational neuroscience', '2020-07-11 11:00:00', '2020-07-11 12:00:00', 'Come and hear from Dr. Claudia Clopath', 'zoom', [], 15, 'Everybody', 0, 0, 0, 'Dr. Claudia Clopath')
+
+
