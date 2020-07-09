@@ -344,7 +344,7 @@ export default class ChannelPage extends Component<Props, State> {
                 {this.banner()}
                 {/* <AboutUs text={this.state.channel?.long_description} /> */}
                 {this.state.talks.length !== 0 && (
-                  <Box gap="5px">
+                  <Box gap="5px" width="100%">
                     <Text
                       size="24px"
                       weight="bold"

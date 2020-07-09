@@ -210,27 +210,23 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 {this.formatDate(this.props.talk.date)}
               </Text>
             </Box>
-
-          
-
-
-          {this.state.showShadow && (
-            <Box
-              height="100%"
-              width="100%"
-              round="xsmall"
-              style={{
-                zIndex: -1,
-                position: "absolute",
-                top: 8,
-                left: 8,
-                opacity: 0.5,
-              }}
-              background={this.props.talk.channel_colour}
-            ></Box>
-          )}
+            {this.state.showShadow && (
+              <Box
+                height="180px"
+                width="100%"
+                round="xsmall"
+                style={{
+                  zIndex: -1,
+                  position: "absolute",
+                  top: 8,
+                  left: 8,
+                  opacity: 0.5,
+                }}
+                background={this.props.talk.channel_colour}
+              ></Box>
+            )}
           </Box>
-                </Box>
+        </Box>
         {this.props.admin && (
           <Box
             onClick={() => {this.toggleEdit()}}
