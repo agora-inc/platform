@@ -1,7 +1,7 @@
 export const theme = {
   global: {
     font: {
-      family: "Helvetica Neue",
+      family: "Arial",
       size: "18px",
       height: "20px",
     },
