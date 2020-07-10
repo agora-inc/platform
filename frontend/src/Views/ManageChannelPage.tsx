@@ -252,7 +252,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   getCoverBoxStyle = (): CSSProperties => {
     let background = this.state.channel?.has_cover
-      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id})`
+      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` + new Date().getTime() + `)` 
       : this.state.colour;
 
     let border = this.state.channel?.has_cover
@@ -264,6 +264,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
+      // HACK: we add the new time at the end of the URL to avoid caching
       backgroundSize: "75vw 25vw",
       padding: 20,
       border: border,
@@ -323,7 +324,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                 )}
                 {!!this.state.channel!.has_avatar && (
                   <img
-                    src={ChannelService.getAvatar(this.state.channel!.id)}
+                    src={ChannelService.getAvatar(this.state.channel!.id) +`&ts=` + new Date().getTime()}
+                    // HACK: we had the ts argument to prevent from caching.
                     height={100}
                     width={100}
                   />
