@@ -383,7 +383,7 @@ export default class SiteWideSearch extends Component<{}, State> {
   };
 
   render() {
-    console.log(this.state.results);
+    // console.log(this.state.results);
     return (
       <Dropdown
         overlay={this.menu()}

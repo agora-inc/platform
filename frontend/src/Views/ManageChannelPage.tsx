@@ -235,12 +235,10 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   onModifyLongDescription = (value: any) => {
     this.setState({longDescription: value});
-    console.log("wesh");
-    console.log(value);
   }
 
   onFileChosen = (e: any) => {
-    console.log(e.target.files[0]);
+    // console.log(e.target.files[0]);
     ChannelService.uploadAvatar(
       this.state.channel!.id,
       e.target.files[0],
@@ -375,7 +373,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
-    console.log(this.state.channel);
+    // console.log(this.state.channel);
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">

@@ -57,7 +57,7 @@ export default class Streaming extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    console.log("UNMOUNTING");
+    // console.log("UNMOUNTING");
     this.webrtc?.closeStream();
     this.webrtc?.closeWebSocket();
     StreamService.archiveStream(
@@ -89,10 +89,10 @@ export default class Streaming extends Component<Props, State> {
       localVideoId: "local",
       debug: true,
       callback: (info: any, obj: any) => {
-        console.log(info, obj);
+        // console.log(info, obj);
       },
       callbackError: (error: any, message: any) => {
-        console.log(error, message);
+        // console.log(error, message);
       },
     });
   };
@@ -150,7 +150,7 @@ export default class Streaming extends Component<Props, State> {
     const tracks = (stream as MediaStream).getTracks();
 
     tracks.forEach(function (track) {
-      console.log(track);
+      // console.log(track);
       track.stop();
     });
 
@@ -171,7 +171,7 @@ export default class Streaming extends Component<Props, State> {
     const stream = videoElem.srcObject;
     const tracks = (stream as MediaStream).getTracks();
     tracks.forEach(function (track) {
-      console.log(track);
+      // console.log(track);
       track.stop();
     });
 

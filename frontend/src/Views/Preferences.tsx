@@ -23,7 +23,7 @@ export default class Preferences extends Component<Props, State> {
   }
 
   componentDidMount() {
-    console.log("Preferences logged");
+    // console.log("Preferences logged");
   }
 
   render() {

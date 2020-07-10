@@ -74,7 +74,7 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
   //   };
 
   render() {
-    console.log("TALKS:", this.state.talks);
+    // console.log("TALKS:", this.state.talks);
     return (
       <Box
         pad={{ top: "7.5%", bottom: "100px" }}
