@@ -58,8 +58,8 @@ function thanksSpeaker() {
         ratio = countUpdates / nUpdates
         audioBase.volume = Math.max(0.0, Math.min(1.0, 4*(1-ratio)*(ratio + startVolume/4) + 0.5 *  Math.sqrt(ratio * (1-ratio)) * (Math.random()-0.5)));
         audioUser.volume = Math.max(audioUser.volume - 0.03, 0.0)
-        console.log("Volume base: " + audioBase.volume);
-        console.log("Volume user: " + audioUser.volume);
+        // console.log("Volume base: " + audioBase.volume);
+        // console.log("Volume user: " + audioUser.volume);
     }
 }
 

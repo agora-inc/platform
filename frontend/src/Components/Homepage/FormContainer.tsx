@@ -54,7 +54,7 @@ export default class FormContainer extends Component<{}, State> {
     let userData = this.state.user;
 
     // Send it via email to revolutionising.research@gmail.com
-    console.log(userData);
+    // console.log(userData);
     const templateId = "feedback_form";
     this.sendFeedback(templateId, {
       message_html: JSON.stringify(this.state.user),
@@ -68,7 +68,7 @@ export default class FormContainer extends Component<{}, State> {
     emailjs
       .send("gmail", templateId, variables, "user_ERRg2QIuCtD8bEjlX1qRw")
       .then(() => {
-        console.log("Email successfully sent!");
+        // console.log("Email successfully sent!");
       })
       // Handle errors here however you like, or use a React error boundary
       .catch((err: any) =>

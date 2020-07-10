@@ -53,7 +53,7 @@ export default class TagSelector extends Component<Props, State> {
     this.state.selected.includes(tag)
       ? this.deselectTag(tag)
       : this.selectTag(tag);
-    console.log(this.state);
+    // console.log(this.state);
   };
 
   selectTag = (tag: Tag) => {

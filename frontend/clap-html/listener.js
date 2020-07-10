@@ -34,7 +34,7 @@ document.addEventListener('keydown', event => {
         count += 1;
         // Getting volume level
         const volume = audio.volume;
-        console.log("Volume: " + volume);
+        // console.log("Volume: " + volume);
         // Setting volume level
         audio.volume = Math.min(0.1 + count / 10.0, 1.0)
     }
