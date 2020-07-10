@@ -344,16 +344,34 @@ export default class ChannelPage extends Component<Props, State> {
               <Box width="75%" align="start" gap="20px">
                 {this.banner()}
                 {/* <AboutUs text={this.state.channel?.long_description} /> */}
+                <Text
+                  size="24px"
+                  weight="bold"
+                  color="black"
+                  margin={{ bottom: "10px" }}
+                >
+                  Upcoming talks
+                </Text>
+                {this.state.talks.length === 0 && (
+                  <Box
+                    direction="row"
+                    width="100%"
+                    pad="small"
+                    justify="between"
+                    round="xsmall"
+                    align="center"
+                    alignSelf="center"
+                    background="#F3EACE"
+                    margin={{bottom: "36px"}}
+                  >
+                    <Text size="18px" weight="bold" color="grey">
+                      There are no upcoming talks in {this.state.channel ? this.state.channel.name : "this channel"}
+                    </Text>
+                  </Box>
+                )}
                 {this.state.talks.length !== 0 && (
                   <Box gap="5px" width="100%">
-                    <Text
-                      size="24px"
-                      weight="bold"
-                      color="black"
-                      margin={{ bottom: "10px" }}
-                    >
-                      Upcoming talks
-                    </Text>
+
                     <ChannelPageTalkList
                       talks={this.state.talks}
                       channelId={this.state.channel!.id}
@@ -371,7 +389,7 @@ export default class ChannelPage extends Component<Props, State> {
                       direction="row"
                       width="100%"
                       wrap
-                      justify="between"
+                      // justify="between"
                       margin={{ top: "10px" }}
                     >
                       {this.state.pastTalks.map((talk: Talk) => (

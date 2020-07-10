@@ -118,9 +118,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     } else if ((this.props.admin || this.props.user) && this.state.registered) {
       label = "Unregister";
     }
-
-    console.log("Width = ", this.props.width)
-
+    
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
