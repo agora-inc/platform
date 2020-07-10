@@ -114,19 +114,20 @@ export default class CountdownAndCalendarButtons extends Component<
               height="35px"
               round="xsmall"
               background="white"
-              style={{ border: "3px solid black" }}
+              style={{ border: "2px solid #C2C2C2" }}
               align="center"
               justify="center"
               direction="row"
               gap="4px"
+              pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={() => {}}
               hoverIndicator={true}
             >
-              <Text size="14px" weight="bold" color="black">
+              <Text size="14px" weight="bold" color="grey" >
                 Add to
               </Text>
               <Google size="14px" color="plain" />
-              <Text size="14px" weight="bold" color="black">
+              <Text size="14px" weight="bold" color="grey">
                 Calendar
               </Text>
             </Box>
@@ -142,13 +143,14 @@ export default class CountdownAndCalendarButtons extends Component<
               height="35px"
               round="xsmall"
               background="white"
-              style={{ border: "3px solid black" }}
+              style={{ border: "2px solid #C2C2C2" }}
               align="center"
               justify="center"
+              pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={() => {}}
               hoverIndicator={true}
             >
-              <Text size="14px" weight="bold" color="black">
+              <Text size="14px" weight="bold" color="grey">
                 Download .ics file
               </Text>
             </Box>

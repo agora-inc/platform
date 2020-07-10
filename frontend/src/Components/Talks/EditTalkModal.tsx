@@ -39,6 +39,7 @@ interface State {
   releaseLinkOffset: number;
   linkVisibility: string;
   topics: Topic[];
+  talkSpeaker: string;
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -63,7 +64,8 @@ export default class EditTalkModal extends Component<Props, State> {
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
         : "Everybody",
-      topics: []
+      topics: [],
+      talkSpeaker: this.props.talk ? this.props.talk.talk_speaker : "",
     };
   }
 
@@ -137,6 +139,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
         this.state.topics,
+        this.state.talkSpeaker,
         (talk: Talk) => {
           this.setState(
             {
@@ -161,6 +164,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
         this.state.topics,
+        this.state.talkSpeaker,
         (talk: Talk) => {
           this.setState(
             {
@@ -282,6 +286,8 @@ export default class EditTalkModal extends Component<Props, State> {
                 </Text>
                 <TextInput
                   placeholder=""
+                  value={this.state.talkSpeaker}
+                  onChange={(e) => this.setState({ talkSpeaker: e.target.value })}
                 />
               </Box>
               <Box width="100%" gap="5px" margin={{bottom: "0px"}}>

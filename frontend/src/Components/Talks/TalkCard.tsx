@@ -1,13 +1,17 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer } from "grommet";
+import { Box, Text, Button, Layer, TextArea } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
+import { Link } from "react-router-dom";
 import { Tag } from "../../Services/TagService";
+import AsyncButton from "../Core/AsyncButton";
+import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
 import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
 import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
+
 
 interface Props {
   talk: Talk;
@@ -38,6 +42,16 @@ export default class TalkCard extends Component<Props, State> {
     const dateStr = date.toDateString().slice(0, -4);
     const timeStr = date.toTimeString().slice(0, 5);
     return `${dateStr} ${timeStr}`;
+  };
+
+  formatDateFull = (s: string, e: string) => {
+    const start = new Date(s);
+    const dateStartStr = start.toDateString().slice(0, -4);
+    const timeStartStr = start.toTimeString().slice(0, 5);
+    const end = new Date(e);
+    const dateEndStr = end.toDateString().slice(0, -4);
+    const timeEndStr = end.toTimeString().slice(0, 5);
+    return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
 
   toggleModal = () => {
@@ -82,6 +96,7 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   register = () => {
+    console.log("Is there?")
     this.props.user &&
       TalkService.registerForTalk(
         this.props.talk.id,
@@ -97,6 +112,7 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   unregister = () => {
+    console.log("Is there not?")
     this.props.user &&
       TalkService.unRegisterForTalk(
         this.props.talk.id,
@@ -370,7 +386,7 @@ export default class TalkCard extends Component<Props, State> {
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
-        height="300px"
+        height="180px"
         onClick={this.toggleModal}
         focusIndicator={false}
         style={{ position: "relative" }}
@@ -391,22 +407,18 @@ export default class TalkCard extends Component<Props, State> {
           gap="small"
           overflow="hidden"
         >
-          <Box
-            height="50%"
-            background={this.props.talk.channel_colour}
-            style={{ opacity: 0.75 }}
-          ></Box>
-          <Box height="50%" pad="15px" justify="end">
+          <Box height="100%" pad="10px">
             <Box
               direction="row"
               gap="xsmall"
               align="center"
-              style={{ minHeight: "30px" }}
+              style={{ height: "40px" }}
+              margin={{bottom: "10px"}}
             >
               <Box
-                height="25px"
-                width="25px"
-                round="12.5px"
+                height="30px"
+                width="30px"
+                round="15px"
                 justify="center"
                 align="center"
                 background="#efeff1"
@@ -418,15 +430,15 @@ export default class TalkCard extends Component<Props, State> {
                 {!!this.props.talk.has_avatar && (
                   <img
                     src={ChannelService.getAvatar(this.props.talk.channel_id)}
-                    height={25}
-                    width={25}
+                    height={30}
+                    width={30}
                   />
                 )}
               </Box>
               <Text
                 weight="bold"
-                size="18px"
-                color={this.props.talk.channel_colour}
+                size="16px"
+                color="grey"
               >
                 {this.props.talk.channel_name}
               </Text>
@@ -435,13 +447,31 @@ export default class TalkCard extends Component<Props, State> {
               size="18px"
               color="black"
               weight="bold"
-              style={{ maxHeight: 150, overflow: "auto" }}
+              style={{ minHeight: "75px", overflow: "auto" }}
             >
               {this.props.talk.name}
             </Text>
-            <Text size="18px" color="black">
-              {this.formatDate(this.props.talk.date)}
-            </Text>
+            <Box direction="row" gap="small">
+              <UserExpert size="18px" />
+              <Text
+                size="18px"
+                color="black"
+                style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
+                margin={{bottom: "10px"}}
+              >
+                {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+              </Text>
+            </Box>
+            <Box direction="row" gap="small">
+              <Calendar size="18px" />
+              <Text 
+                size="18px" 
+                color="black"
+                style={{ height: "30px", fontStyle: "normal" }}
+              >
+                {this.formatDate(this.props.talk.date)}
+              </Text>
+            </Box>
           </Box>
         </Box>
         {this.state.showShadow && (
@@ -473,126 +503,166 @@ export default class TalkCard extends Component<Props, State> {
             responsive
             animation="fadeIn"
             style={{
-              width: 400,
-              height: this.state.registered ? 540 : 500,
+              width: 640,
+              height: this.state.registered ? 640 : 540,
               borderRadius: 15,
               overflow: "hidden",
             }}
           >
             <Box
-              // align="center"
+              //align="center"
               pad="25px"
               // width="100%"
               height="100%"
               justify="between"
               gap="xsmall"
             >
-              <Box style={{ minHeight: "25%", maxHeight: "60%" }}>
-                <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
-                  <Box
-                    justify="center"
-                    align="center"
-                    background="#efeff1"
-                    overflow="hidden"
-                    style={{
-                      minHeight: 25,
-                      minWidth: 25,
-                      maxHeight: 25,
-                      maxWidth: 25,
-                      borderRadius: 12.5,
-                    }}
+              <Box style={{ minHeight: "200px", maxHeight: "540px" }} direction="column">
+                <Box 
+                  direction="row" 
+                  gap="xsmall" 
+                  style={{ minHeight: "30px" }} 
+                >
+                  <Link
+                    className="channel"
+                    to={`/${this.props.talk.channel_name}`}
+                    style={{ textDecoration: "none" }}
                   >
-                    {!this.props.talk.has_avatar && (
-                      <Identicon
-                        string={this.props.talk.channel_name}
-                        size={15}
-                      />
-                    )}
-                    {!!this.props.talk.has_avatar && (
-                      <img
-                        src={ChannelService.getAvatar(
-                          this.props.talk.channel_id
+                    <Box
+                      direction="row"
+                      gap="xsmall"
+                      align="center"
+                      round="xsmall" 
+                      pad={{ vertical: "6px", horizontal: "6px" }}
+                    >
+                      <Box
+                        justify="center"
+                        align="center"
+                        background="#efeff1"
+                        overflow="hidden"
+                        style={{
+                          minHeight: 30,
+                          minWidth: 30,
+                          borderRadius: 15,
+                        }}
+                      >
+                        {!this.props.talk.has_avatar && (
+                          <Identicon
+                            string={this.props.talk.channel_name}
+                            size={30}
+                          />
                         )}
-                        height={25}
-                        width={25}
-                      />
-                    )}
-                  </Box>
-                  <Text
-                    weight="bold"
-                    size="22px"
-                    color={this.props.talk.channel_colour}
-                  >
-                    {this.props.talk.channel_name}
-                  </Text>
+                        {!!this.props.talk.has_avatar && (
+                          <img
+                            src={ChannelService.getAvatar(
+                              this.props.talk.channel_id
+                            )}
+                            height={30}
+                            width={30}
+                          />
+                        )}
+                      </Box>
+                      <Box justify="between">
+                        <Text
+                          weight="bold"
+                          size="18px"
+                          color="grey"
+                        >
+                          {this.props.talk.channel_name}
+                        </Text>
+                      </Box>
+                    </Box>
+                  </Link>
                 </Box>
                 <Text
                   weight="bold"
-                  size="24px"
+                  size="21px"
                   color="black"
-                  style={{ overflowY: "auto" }}
+                  style={{ minHeight: "50px", maxHeight: "120px", overflowY: "auto" }}
+                  margin={{bottom: "20px", top: "10px"}}
                 >
                   {this.props.talk.name}
                 </Text>
-              </Box>
-              <Box
-                gap="xsmall"
-                justify="end"
-                style={{ minHeight: "40%", maxHeight: "75%" }}
-              >
-                <Text size="22px" color="black" style={{ overflowY: "auto" }}>
+                <Box direction="row" gap="small">
+                  <UserExpert size="18px" />
+                  <Text
+                    size="18px"
+                    color="black"
+                    style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
+                    margin={{bottom: "10px"}}
+                  >
+                    {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+                  </Text>
+                </Box>
+                <Text 
+                  size="16px" 
+                  color="black" 
+                  style={{ minHeight: "50px", maxHeight: "200px", overflowY: "auto" }}
+                  margin={{bottom: "10px"}}
+                >
                   {this.props.talk.description}
                 </Text>
-                {this.props.talk.tags.length !== 0 && (
-                  <Box
-                    direction="row"
-                    gap="xsmall"
-                    wrap
-                    style={{ minHeight: "35px", marginTop: "5px" }}
+              </Box>
+              <Box direction="column" gap="small">
+                <Box direction="row" gap="small">
+                  <Calendar size="18px" />
+                  <Text 
+                    size="18px" 
+                    color="black"
+                    style={{ height: "20px", fontStyle: "normal" }}
                   >
-                    {this.props.talk.tags.map((tag: Tag) => (
-                      <TagComponent
-                        tagName={tag.name}
-                        width="80px"
-                        height="35px"
-                        colour="#f3f3f3"
-                        marginTop={8}
-                      />
-                    ))}
+                    {this.formatDateFull(this.props.talk.date, this.props.talk.end_date)}
+                  </Text>
+                </Box>
+                {this.state.registered && (
+                  <Box margin={{top: "10px", bottom: "20px"}}>
+                    <CountdownAndCalendarButtons
+                      talkStart={this.props.talk.date}
+                      showLinkOffset={this.props.talk.show_link_offset}
+                      link={this.props.talk.link}
+                      color={this.props.talk.channel_colour}
+                      startTime={this.props.talk.date}
+                      endTime={this.props.talk.end_date}
+                      name={this.props.talk.name}
+                      description={this.props.talk.description}
+                    />
                   </Box>
                 )}
-                <Text size="18px" color="black" weight="bold">
-                  {this.formatDate(this.props.talk.date)}
-                </Text>
-                {this.state.registered && (
-                  <CountdownAndCalendarButtons
-                    talkStart={this.props.talk.date}
-                    showLinkOffset={this.props.talk.show_link_offset}
-                    link={this.props.talk.link}
-                    color={this.props.talk.channel_colour}
-                    startTime={this.props.talk.date}
-                    endTime={this.props.talk.end_date}
-                    name={this.props.talk.name}
-                    description={this.props.talk.description}
-                  />
-                )}
-                {this.state.available && (
-                  <Button
+                {this.state.available && this.props.user !== null && (
+                  <Box
                     onClick={
                       this.state.registered ? this.unregister : this.register
                     }
-                    primary
-                    color={this.props.talk.channel_colour}
-                    disabled={this.props.user === null}
-                    label={
-                      this.props.user !== null
-                        ? this.state.registered
-                          ? "Unregister"
-                          : "Register"
-                        : "Log in to register"
-                    }
-                    size="large"
-                  ></Button>
+                    background="#7E1115"
+                    round="xsmall"
+                    pad="xsmall"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator="#5A0C0F"
+                  >
+                    <Text size="18px"> 
+                      {this.state.registered ? "Unregister" : "Register"}
+                    </Text>
+                  </Box>
+                )}
+                {this.state.available && this.props.user === null && (
+                  <Box
+                    direction="row"
+                    width="100%"
+                    margin="none"
+                    pad="small"
+                    justify="center"
+                    round="xsmall"
+                    align="center"
+                    alignSelf="center"
+                    background="#F3EACE"
+                >
+                  <Text size="18px" weight="bold" color="grey">
+                    Log in to register
+                  </Text>
+                </Box>
                 )}
               </Box>
             </Box>

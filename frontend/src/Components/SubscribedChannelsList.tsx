@@ -74,21 +74,21 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                 >
                   <Box
                     background="white"
-                    height="40px"
-                    width="40px"
-                    round="20px"
+                    height="30px"
+                    width="30px"
+                    round="15px"
                     justify="center"
                     align="center"
                     overflow="hidden"
                   >
                     {!channel.has_avatar && (
-                      <Identicon string={channel.name} size={25} />
+                      <Identicon string={channel.name} size={30} />
                     )}
                     {!!channel.has_avatar && (
                       <img
                         src={ChannelService.getAvatar(channel.id)}
-                        height={40}
-                        width={40}
+                        height={30}
+                        width={30}
                       />
                     )}
                   </Box>
