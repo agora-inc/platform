@@ -583,17 +583,21 @@ export default class TalkCard extends Component<Props, State> {
                 >
                   {this.props.talk.name}
                 </Text>
-                <Box direction="row" gap="small">
-                  <UserExpert size="18px" />
-                  <Text
-                    size="18px"
-                    color="black"
-                    style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
-                    margin={{bottom: "10px"}}
-                  >
-                    {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
-                  </Text>
-                </Box>
+                <a 
+                  href={this.props.talk.talk_speaker_url}
+                >
+                  <Box direction="row" gap="small">
+                    <UserExpert size="18px" />
+                    <Text
+                      size="18px"
+                      color="black"
+                      style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
+                      margin={{bottom: "10px"}}
+                    >
+                      {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+                    </Text>
+                  </Box>
+                </a>
                 <Text 
                   size="16px" 
                   color="black" 

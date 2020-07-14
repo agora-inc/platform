@@ -171,8 +171,8 @@ class TalkRepository:
         talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talk
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker):
-        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', '{topic_1_id}', '{topic_2_id}', '{topic_3_id}', '{talk_speaker}');"
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url):
+        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', '{showLinkOffset}', '{visibility}', '{topic_1_id}', '{topic_2_id}', '{topic_3_id}', '{talk_speaker}', '{talk_speaker_url}');"
         insertId = self.db.run_query(query)[0]
 
         if not isinstance(insertId, int):
@@ -183,8 +183,8 @@ class TalkRepository:
 
         return self.getTalkById(insertId)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker):
-        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset="{showLinkOffset}", visibility="{visibility}", topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker="{talk_speaker}" WHERE id = {talkId};'
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url):
+        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset="{showLinkOffset}", visibility="{visibility}", topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker="{talk_speaker}", talk_speaker_url="{talk_speaker_url}" WHERE id = {talkId};'
         print(query)
         self.db.run_query(query)
 

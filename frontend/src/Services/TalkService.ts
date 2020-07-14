@@ -106,6 +106,7 @@ const editTalk = (
   visibility: string,
   topics: Topic[],
   talkSpeaker: string,
+  talkSpeakerURL: string,
   callback: any
 ) => {
   axios
@@ -125,6 +126,7 @@ const editTalk = (
         topic2Id: topics[1] ? topics[1].id : 0,
         topic3Id: topics[2] ? topics[2].id : 0,
         talkSpeaker: talkSpeaker,
+        talkSpeakerURL: talkSpeakerURL,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -149,9 +151,9 @@ const scheduleTalk = (
   visibility: string,
   topics: Topic[],
   talkSpeaker: string,
+  talkSpeakerURL: string,
   callback: any
 ) => {
-  console.log("Speaker TalkService.ts: ", talkSpeaker)
   axios
     .post(
       baseApiUrl + "/talks/create",
@@ -170,6 +172,7 @@ const scheduleTalk = (
         topic2Id: topics.length > 1 ? topics[1].id : null,
         topic3Id: topics.length > 2 ? topics[2].id : null,
         talkSpeaker: talkSpeaker,
+        talkSpeakerURL: talkSpeakerURL,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -384,4 +387,5 @@ export type Talk = {
   visibility: string;
   topics: Topic[];
   talk_speaker: string;
+  talk_speaker_url: string;
 };
