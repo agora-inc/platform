@@ -80,7 +80,7 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   fetchChannel = () => {
-    console.log(this.props.location.pathname.split("/"));
+    // console.log(this.props.location.pathname.split("/"));
     ChannelService.getChannelByName(
       this.props.location.pathname.split("/")[1],
       (channel: Channel) => {
@@ -202,10 +202,11 @@ export default class ChannelPage extends Component<Props, State> {
       : "none";
 
     return {
-      width: "100%",
+      width: "75vw",
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
+      backgroundSize: "75vw 25vw",
       padding: 20,
       border: border,
     };
@@ -217,12 +218,12 @@ export default class ChannelPage extends Component<Props, State> {
 
   banner = () => {
     return (
-      <Box width="100%" background="white" round="10px">
+      <Box width="75vw" background="white" round="10px">
         <Box
           direction="row"
           justify="between"
           style={this.getCoverBoxStyle()}
-          height="312px"
+          height="25vw"
         />
         <Box
           direction="row"
@@ -305,7 +306,7 @@ export default class ChannelPage extends Component<Props, State> {
             style={{ textAlign: "justify", fontWeight: 450 }}
             margin={{ horizontal: "16px", bottom: "16px" }}
           >
-            {this.state.channel?.long_description}
+            <div dangerouslySetInnerHTML={{__html: this.state.channel?.long_description ? this.state.channel?.long_description : "" }} />
           </Text>
         )}
       </Box>
@@ -345,16 +346,34 @@ export default class ChannelPage extends Component<Props, State> {
               <Box width="75%" align="start" gap="20px">
                 {this.banner()}
                 {/* <AboutUs text={this.state.channel?.long_description} /> */}
-                {this.state.talks.length !== 0 && (
-                  <Box gap="5px">
-                    <Text
-                      size="24px"
-                      weight="bold"
-                      color="black"
-                      margin={{ bottom: "10px" }}
-                    >
-                      Upcoming talks
+                <Text
+                  size="24px"
+                  weight="bold"
+                  color="black"
+                  margin={{ bottom: "10px" }}
+                >
+                  Upcoming talks
+                </Text>
+                {this.state.talks.length === 0 && (
+                  <Box
+                    direction="row"
+                    width="100%"
+                    pad="small"
+                    justify="between"
+                    round="xsmall"
+                    align="center"
+                    alignSelf="center"
+                    background="#F3EACE"
+                    margin={{bottom: "36px"}}
+                  >
+                    <Text size="18px" weight="bold" color="grey">
+                      There are no upcoming talks in {this.state.channel ? this.state.channel.name : "this channel"}
                     </Text>
+                  </Box>
+                )}
+                {this.state.talks.length !== 0 && (
+                  <Box gap="5px" width="100%">
+
                     <ChannelPageTalkList
                       talks={this.state.talks}
                       channelId={this.state.channel!.id}
@@ -372,7 +391,7 @@ export default class ChannelPage extends Component<Props, State> {
                       direction="row"
                       width="100%"
                       wrap
-                      justify="between"
+                      // justify="between"
                       margin={{ top: "10px" }}
                     >
                       {this.state.pastTalks.map((talk: Talk) => (

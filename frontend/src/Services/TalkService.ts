@@ -105,6 +105,8 @@ const editTalk = (
   showLinkOffset: number,
   visibility: string,
   topics: Topic[],
+  talkSpeaker: string,
+  talkSpeakerURL: string,
   callback: any
 ) => {
   axios
@@ -120,9 +122,11 @@ const editTalk = (
         talkTags: talkTags,
         showLinkOffset: showLinkOffset,
         visibility: visibility,
-        topic1Id: topics[0].id,
-        topic2Id: topics[1].id,
-        topic3Id: topics[2].id,
+        topic1Id: topics[0] ? topics[0].id : 0,
+        topic2Id: topics[1] ? topics[1].id : 0,
+        topic3Id: topics[2] ? topics[2].id : 0,
+        talkSpeaker: talkSpeaker,
+        talkSpeakerURL: talkSpeakerURL,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -146,6 +150,8 @@ const scheduleTalk = (
   showLinkOffset: number,
   visibility: string,
   topics: Topic[],
+  talkSpeaker: string,
+  talkSpeakerURL: string,
   callback: any
 ) => {
   axios
@@ -165,6 +171,8 @@ const scheduleTalk = (
         topic1Id: topics.length > 0 ? topics[0].id : null,
         topic2Id: topics.length > 1 ? topics[1].id : null,
         topic3Id: topics.length > 2 ? topics[2].id : null,
+        talkSpeaker: talkSpeaker,
+        talkSpeakerURL: talkSpeakerURL,
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -172,7 +180,6 @@ const scheduleTalk = (
       callback(response.data);
     })
     .catch(function (error) {
-      console.log("Schedule talk go brrrr")
       callback(false);
     });
 };
@@ -379,4 +386,6 @@ export type Talk = {
   show_link_offset: number;
   visibility: string;
   topics: Topic[];
+  talk_speaker: string;
+  talk_speaker_url: string;
 };

@@ -164,15 +164,21 @@ const updateLongChannelDescription = (
   newDescription: string,
   callback: any
 ) => {
+  // escape double quotes for href in HTML using regex (reason: JSON issue with double quotes inside double quotes)
+  var re = "\"";
+  var newDescriptionSkipped = newDescription.replace(new RegExp(re, 'g'), "\\\"");
+  console.log(newDescriptionSkipped)
+
+
   axios
-    .post(
-      baseApiUrl + "/channels/updatelongdescription",
-      { channelId: channelId, newDescription: newDescription },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then(function (response) {
-      callback(response.data);
-    });
+  .post(
+    baseApiUrl + "/channels/updatelongdescription",
+    { channelId: channelId, newDescription: newDescriptionSkipped},
+    { headers: { "Access-Control-Allow-Origin": "*" } }
+  )
+  .then(function (response) {
+    callback(response.data);
+  });
 };
 
 const updateChannelColour = (

@@ -47,12 +47,12 @@ export default class SubscribedChannelsList extends Component<Props, State> {
       this.state.channels.length !== 0 ? (
         <Box>
           <Text
-            size="16px"
+            size="14px"
             weight="bold"
-            color="black"
-            margin={{ left: "small" }}
+            color="grey"
+            margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
           >
-            FOLLOWING
+            Following
           </Text>
           {this.state.loading && (
             <Box width="100%" height="80%" justify="center" align="center">
@@ -74,21 +74,21 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                 >
                   <Box
                     background="white"
-                    height="40px"
-                    width="40px"
-                    round="20px"
+                    height="30px"
+                    width="30px"
+                    round="15px"
                     justify="center"
                     align="center"
                     overflow="hidden"
                   >
                     {!channel.has_avatar && (
-                      <Identicon string={channel.name} size={25} />
+                      <Identicon string={channel.name} size={30} />
                     )}
                     {!!channel.has_avatar && (
                       <img
                         src={ChannelService.getAvatar(channel.id)}
-                        height={40}
-                        width={40}
+                        height={30}
+                        width={30}
                       />
                     )}
                   </Box>

@@ -18,6 +18,7 @@ import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
+import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 
 interface Props {
   location: any;
@@ -39,6 +40,7 @@ interface State {
   pastStreams: Talk[];
   totalNumberOfTalks: number;
   bannerExtended: boolean;
+  longDescription: string;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -59,6 +61,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       pastStreams: [],
       totalNumberOfTalks: 0,
       bannerExtended: true,
+      longDescription: "",
     };
   }
 
@@ -220,23 +223,23 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
-  onEditLongDescriptionClicked = () => {
-    let desc = document.getElementById("long-description")!
-      .textContent as string;
-    if (this.state.editingLongDescription) {
-      ChannelService.updateLongChannelDescription(
-        this.state.channel!.id,
-        desc.slice(0, desc.length - 4),
-        () => {}
-      );
-    }
+  onSaveLongDescriptionClicked = (newDescription: string) => {
+    ChannelService.updateLongChannelDescription(
+      this.state.channel!.id,
+      newDescription,
+      () => {}
+    );
     this.setState({
       editingLongDescription: !this.state.editingLongDescription,
     });
   };
 
+  onModifyLongDescription = (value: any) => {
+    this.setState({ longDescription: value });
+  };
+
   onFileChosen = (e: any) => {
-    console.log(e.target.files[0]);
+    // console.log(e.target.files[0]);
     ChannelService.uploadAvatar(
       this.state.channel!.id,
       e.target.files[0],
@@ -248,7 +251,9 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   getCoverBoxStyle = (): CSSProperties => {
     let background = this.state.channel?.has_cover
-      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id})`
+      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
+        new Date().getTime() +
+        `)`
       : this.state.colour;
 
     let border = this.state.channel?.has_cover
@@ -256,10 +261,12 @@ export default class ManageChannelPage extends Component<Props, State> {
       : "none";
 
     return {
-      width: "100%",
+      width: "75vw",
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
+      // HACK: we add the new time at the end of the URL to avoid caching
+      backgroundSize: "75vw 25vw",
       padding: 20,
       border: border,
     };
@@ -272,7 +279,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   banner = () => {
     return (
       <Box
-        width="100%"
+        width="75vw"
         background="white"
         round="10px"
         margin={{ bottom: "30px" }}
@@ -281,7 +288,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           direction="row"
           justify="between"
           style={this.getCoverBoxStyle()}
-          height="312px"
+          height="25vw"
         >
           <Box width="100%" direction="row" justify="end" height="50px">
             <ColorPicker
@@ -318,7 +325,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                 )}
                 {!!this.state.channel!.has_avatar && (
                   <img
-                    src={ChannelService.getAvatar(this.state.channel!.id)}
+                    src={
+                      ChannelService.getAvatar(this.state.channel!.id) +
+                      `&ts=` +
+                      new Date().getTime()
+                    }
+                    // HACK: we had the ts argument to prevent from caching.
                     height={100}
                     width={100}
                   />
@@ -355,28 +367,17 @@ export default class ManageChannelPage extends Component<Props, State> {
           )}
         </Box>
         {this.state.bannerExtended && (
-          <Text
-            id="long-description"
-            size="20px"
-            style={{ textAlign: "justify", fontWeight: 450 }}
-            margin={{ horizontal: "16px", bottom: "16px" }}
-            contentEditable={this.state.editingLongDescription}
-          >
-            {this.state.channel?.long_description}
-            <Text
-              style={{
-                textDecoration: "underline",
-                marginLeft: 5,
-                cursor: "pointer",
-                color: "blue",
-              }}
-              size="20px"
-              onClick={this.onEditLongDescriptionClicked}
-              contentEditable={false}
-            >
-              {this.state.editingLongDescription ? "save" : "edit"}
-            </Text>
-          </Text>
+          <>
+            <EnrichedTextEditor
+              text={
+                this.state.channel?.long_description
+                  ? this.state.channel?.long_description
+                  : ""
+              }
+              onModify={this.onModifyLongDescription}
+              onSave={this.onSaveLongDescriptionClicked}
+            />
+          </>
         )}
       </Box>
     );
@@ -519,7 +520,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   weight="bold"
                   color="black"
                   margin={{ top: "40px", bottom: "10px" }}
-                >{`Your upcoming talks`}</Text>
+                >{`Upcoming talks`}</Text>
               )}
               <ChannelPageTalkList
                 talks={this.state.talks}

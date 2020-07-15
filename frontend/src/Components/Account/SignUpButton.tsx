@@ -76,7 +76,7 @@ export default class SignUpButton extends Component<Props, State> {
         />
         <Overlay
           width={400}
-          height={550}
+          height={450}
           visible={this.state.showModal}
           title="Sign up"
           onEsc={this.toggleModal}
@@ -120,36 +120,30 @@ export default class SignUpButton extends Component<Props, State> {
                 </Text>{" "}
                 - these are what you'll use to organise talks.
               </Text>
-              <Text size="14px" weight="bold" color="black">
-                Username
-              </Text>
               <TextInput
-                placeholder="type something"
+                placeholder="Username"
                 onChange={(e) => this.setState({ username: e.target.value })}
               />
             </Box>
             <Box width="100%" gap="2px">
-              <Text size="14px" weight="bold" color="black">
-                Password
-              </Text>
               <TextInput
                 type="password"
-                placeholder="type something"
+                placeholder="Password"
                 onChange={(e) => this.setState({ password: e.target.value })}
               />
             </Box>
             <Box width="100%" gap="2px">
-              <Text size="14px" weight="bold" color="black">
-                Confirm password
-              </Text>
               <TextInput
                 type="password"
-                placeholder="type something"
+                placeholder="Confirm password"
                 onChange={(e) =>
                   this.setState({ confirmPassword: e.target.value })
                 }
               />
             </Box>
+            <Text size="14px" color="grey" margin="none" weight="bold">
+                By clicking Sign Up, you agree to our <a href="https://www.agora.stream/info/welcome"> terms</a>.
+            </Text>
           </Box>
         </Overlay>
       </Box>

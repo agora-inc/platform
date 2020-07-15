@@ -54,7 +54,7 @@ export default class FormContainer extends Component<{}, State> {
     let userData = this.state.user;
 
     // Send it via email to revolutionising.research@gmail.com
-    console.log(userData);
+    // console.log(userData);
     const templateId = "feedback_form";
     this.sendFeedback(templateId, {
       message_html: JSON.stringify(this.state.user),
@@ -68,7 +68,7 @@ export default class FormContainer extends Component<{}, State> {
     emailjs
       .send("gmail", templateId, variables, "user_ERRg2QIuCtD8bEjlX1qRw")
       .then(() => {
-        console.log("Email successfully sent!");
+        // console.log("Email successfully sent!");
       })
       // Handle errors here however you like, or use a React error boundary
       .catch((err: any) =>
@@ -103,10 +103,15 @@ export default class FormContainer extends Component<{}, State> {
           focusIndicator={false}
           background="white"
           round="xsmall"
+          pad={{ vertical: "2px", horizontal: "xsmall" }}
           onClick={() => this.setState({ showForm: true })}
           margin={{ horizontal: "xsmall" }}
+          style={{
+            border: "2px solid #C2C2C2",
+          }}
+          hoverIndicator={true}   
         >
-          <u style={{ color: "black", fontSize: 16 }}>Give feedback</u>
+          <Text size="16px" color="grey"> Give feedback</Text>
         </Box>
         <Overlay
           visible={this.state.showForm}
@@ -117,7 +122,7 @@ export default class FormContainer extends Component<{}, State> {
           submitButtonText="Submit"
           canProceed={true}
           width={500}
-          height={625}
+          height={640}
           contentHeight="500px"
           title="Submit feedback"
         >

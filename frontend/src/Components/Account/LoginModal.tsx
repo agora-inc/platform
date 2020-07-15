@@ -65,16 +65,16 @@ export default class LoginModal extends Component<Props, State> {
         />
         <Overlay
           width={400}
-          height={400}
+          height={350}
           visible={this.state.showModal}
-          title="Log in"
+          title="Log into agora.stream"
           onEsc={this.toggleModal}
           onClickOutside={this.toggleModal}
           onCancelClick={this.toggleModal}
-          submitButtonText="Log in"
+          submitButtonText="Log in "
           onSubmitClick={this.onSubmit}
           canProceed={true}
-          contentHeight="300px"
+          contentHeight="200px"
         >
           {this.state.failed && (
             <Box
@@ -87,34 +87,30 @@ export default class LoginModal extends Component<Props, State> {
             >
               <StatusCritical />
               <Heading level={5} margin="none" color="white">
-                Incorrect username or password
+                Unrecognised credentials
               </Heading>
             </Box>
           )}
+          
           <Box
             width="100%"
             height="100%"
             justify="end"
             align="center"
-            pad={{ bottom: "50px" }}
+            // pad={{ bottom: "50px" }}
             gap="xsmall"
           >
+
             <Box width="100%" gap="2px">
-              <Text size="14px" weight="bold" color="black">
-                Username
-              </Text>
               <TextInput
-                placeholder="type something"
+                placeholder="Username"
                 onChange={(e) => this.setState({ username: e.target.value })}
               />
             </Box>
             <Box width="100%" gap="2px">
-              <Text size="14px" weight="bold" color="black">
-                Password
-              </Text>
               <TextInput
                 type="password"
-                placeholder="type something"
+                placeholder="Password"
                 onChange={(e) => this.setState({ password: e.target.value })}
               />
             </Box>

@@ -6,6 +6,15 @@ import { User } from "../../Services/UserService";
 import { Previous } from "grommet-icons";
 import { ChannelService } from "../../Services/ChannelService";
 
+
+import RichTextEditor from 'react-rte';
+
+
+
+
+
+
+
 interface Props {
   user: User | null;
   onBackClicked: any;
@@ -67,24 +76,28 @@ export default class CreateChannelCard extends Component<Props, State> {
             <Previous color="black" />
           </Box>
           <Text weight="bold" color="black">
-            New channel
+            New Agora
           </Text>
         </Box>
+        <Text color="grey" size="14px">
+            Enter the name and a short description of your Agora. You can customize it later.
+        </Text>
         <Box gap="small">
           <TextInput
-            style={{ width: 225 }}
-            placeholder="channel name"
+            style={{ width: 300 }}
+            placeholder="Name"
             onChange={(e) => this.setState({ newChannelName: e.target.value })}
           />
           <TextArea
-            style={{ width: 225 }}
-            placeholder="channel description"
+            style={{ width: 300, height: 100 }}
+            placeholder="Description"
             onChange={(e) =>
               this.setState({ newChannelDescription: e.target.value })
             }
           />
+
           <AsyncButton
-            color="black"
+            color="#7E1115"
             fontColor="white"
             label="Create"
             disabled={
@@ -92,8 +105,9 @@ export default class CreateChannelCard extends Component<Props, State> {
               this.state.newChannelDescription === ""
             }
             onClick={this.onCreateClicked}
-            width="100%"
+            width="300px"
             height="40px"
+            round="xsmall"
           />
         </Box>
       </Box>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Text } from "grommet";
+import { Box, Text, Heading } from "grommet";
 import { Talk, TalkService } from "../Services/TalkService";
 import { User, UserService } from "../Services/UserService";
 import TalkList from "../Components/Talks/TalkList";
@@ -43,25 +43,37 @@ export default class Schedule extends Component<Props, State> {
   render() {
     return (
       <Box
+        pad={{ top: "7.5%", bottom: "100px" }}
         width="100vw"
         height="100vh"
         align="center"
-        margin={{ top: "140px" }}
+        
+      > 
+      <Box 
+        margin={{left: "2.5%"}}
+        width="90%"
       >
-        <Box width="75%">
+        <Box margin={{bottom: "30px"}}>
+          <Heading
+            color="black"
+            size="24px"
+            margin="none"
+            style={{ height: "20px" }}
+          >
+            Personal schedule
+          </Heading>
+        </Box>
+
           <Box
-            width="98.25%"
-            height="80px"
-            background="#CEFEE9"
+            width="553px"
+            height="50px"
+            background="#F3EACE"
             round="xsmall"
             pad="small"
             // gap="xsmall"
           >
-            <Text color="black" weight="bold" size="18px">
-              Welcome to your personal schedule 📅
-            </Text>
             <Box direction="row" align="center" gap="xsmall">
-              <Text>You are currently registered for</Text>
+              <Text> Currently registered for</Text>
               <Box
                 height="25px"
                 width="25px"
@@ -72,7 +84,7 @@ export default class Schedule extends Component<Props, State> {
               >
                 <Text weight="bold">{this.state.talks.length}</Text>
               </Box>
-              <Text>Upcoming talks</Text>
+              <Text> talks</Text>
             </Box>
           </Box>
           {this.state.loading && (

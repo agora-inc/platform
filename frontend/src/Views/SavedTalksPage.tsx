@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import { Box, Text } from "grommet";
+import { Box, Text, Heading } from "grommet";
 import { Talk, TalkService } from "../Services/TalkService";
 import { User, UserService } from "../Services/UserService";
 import Loading from "../Components/Core/Loading";
@@ -44,23 +44,35 @@ export default class SavedTalksPage extends Component<Props, State> {
       <Redirect to="/" />
     ) : (
       <Box
+        pad={{ top: "7.5%", bottom: "100px" }}
         width="100vw"
         height="100vh"
         align="center"
-        margin={{ top: "140px" }}
+        
+      > 
+      <Box 
+        margin={{left: "2.5%"}}
+        width="90%"
       >
-        <Box width="75%">
+        <Box margin={{bottom: "30px"}}>
+          <Heading
+            color="black"
+            size="24px"
+            margin="none"
+            style={{ height: "20px" }}
+          >
+            Bookmarks
+          </Heading>
+        </Box>
+
           <Box
-            width="98.25%"
-            height="80px"
-            background="#CEFEE9"
+            width="553px"
+            height="50px"
+            background="#F3EACE"
             round="xsmall"
             pad="small"
             // gap="xsmall"
           >
-            <Text color="black" weight="bold" size="18px">
-              Welcome to your library
-            </Text>
             <Box direction="row" align="center" gap="xsmall">
               <Text>You have</Text>
               <Box

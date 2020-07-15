@@ -17,6 +17,7 @@ import AllUpcomingTalksPage from "./Views/AllUpcomingTalksPage";
 import AllPastTalksPage from "./Views/AllPastTalksPage";
 import SavedTalksPage from "./Views/SavedTalksPage";
 import InformationPage from "./Views/InformationPage";
+import GettingStartedPage from "./Views/GettingStartedPage";
 import TermsOfServicePage from "./Views/TermsOfServicePage";
 import PrivacyPage from "./Views/PrivacyPage";
 
@@ -41,6 +42,7 @@ function App() {
           <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
           <Route path="/info/welcome" component={InformationPage} />
+          <Route path="/info/getting-started" component={GettingStartedPage} />
           <Route path="/info/tos" component={TermsOfServicePage} />
           <Route path="/info/privacy" component={PrivacyPage} />
           <Route path="*" component={ChannelPage} />

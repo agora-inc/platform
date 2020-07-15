@@ -43,7 +43,7 @@ export default class TermsOfService extends Component<Props, State> {
             pad="small"
             // gap="xsmall"
           > */}
-            <Text color="black" size="20px">
+            <Text color="black" size="18px">
             <h1><b>Terms of service</b></h1>
             <p>Simply put, we thrive to maintain a high scientific standard of conduct on this plateform. The following paragraphs are here to set the ground guidelines of usage for you, the user, and state the rights we have to sanction any misconduct. </p>
 
