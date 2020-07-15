@@ -11,6 +11,8 @@ import { default as TagComponent } from "../Core/Tag";
 import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
 import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
+import LoginModal from "../Account/LoginModal";
+import SignUpButton from "../Account/SignUpButton";
 
 
 interface Props {
@@ -662,7 +664,7 @@ export default class TalkCard extends Component<Props, State> {
                     onClick={
                       this.state.registered ? this.unregister : this.register
                     }
-                    background="#7E1115"
+                    background="brand"
                     round="xsmall"
                     pad="xsmall"
                     height="40px"
@@ -677,6 +679,21 @@ export default class TalkCard extends Component<Props, State> {
                   </Box>
                 )}
                 {this.state.available && this.props.user === null && (
+                  <Box 
+                    direction="row" 
+                    align="center"
+                    gap="10px"
+                  >
+                    <LoginModal callback={() => {}} />
+                    <Text size="18px"> or </Text>
+                    <SignUpButton callback={() => {}} />
+                    <Text size="18px"> to register </Text>
+                  </Box>
+                )}
+
+
+
+                  {/*
                   <Box
                     direction="row"
                     width="100%"
@@ -692,7 +709,8 @@ export default class TalkCard extends Component<Props, State> {
                     Log in to register
                   </Text>
                 </Box>
-                )}
+                  */}
+                
               </Box>
             </Box>
             {!this.state.available && (

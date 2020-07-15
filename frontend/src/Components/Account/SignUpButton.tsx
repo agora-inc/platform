@@ -61,6 +61,7 @@ export default class SignUpButton extends Component<Props, State> {
         <Button
           label="Sign up"
           onClick={this.toggleModal}
+          hoverIndicator={false}
           style={{
             width: 90,
             height: 35,
@@ -68,10 +69,9 @@ export default class SignUpButton extends Component<Props, State> {
             fontWeight: "bold",
             color: "white",
             padding: 0,
-            // margin: 6,
-            backgroundColor: "#61EC9F",
+            backgroundColor: "#7E1115",
             border: "none",
-            borderRadius: 7,
+            borderRadius: 5,
           }}
         />
         <Overlay
