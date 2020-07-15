@@ -382,7 +382,7 @@ export default class TalkCard extends Component<Props, State> {
   }
 */
 
-  render() {  
+  render() {
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
@@ -583,28 +583,50 @@ export default class TalkCard extends Component<Props, State> {
                 >
                   {this.props.talk.name}
                 </Text>
-                <a 
-                  href={this.props.talk.talk_speaker_url}
-                >
-                  
-                    <Box direction="row" gap="small">
+
+                {this.props.talk.talk_speaker_url && (
+                  <a href={this.props.talk.talk_speaker_url} target="_blank">
+                    <Box 
+                      direction="row" 
+                      gap="small" 
+                      onClick={() => {}}
+                      hoverIndicator={true}
+                      pad={{left: "6px", top:"4px"}}
+                    >
                       <UserExpert size="18px" />
                       <Text
                         size="18px"
                         color="black"
-                        style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
-                        margin={{bottom: "10px"}}
+                        style={{ height: "24px", overflow: "auto", fontStyle: "italic" }}
                       >
                         {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
                       </Text>
                     </Box>
-                  
-                </a>
+                  </a>
+                )}
+
+                {!this.props.talk.talk_speaker_url && (
+                  <Box 
+                    direction="row" 
+                    gap="small"
+                  >
+                    <UserExpert size="18px" />
+                    <Text
+                      size="18px"
+                      color="black"
+                      style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
+                      margin={{bottom: "10px"}}
+                    >
+                      {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+                    </Text>
+                  </Box>
+                )}
+
                 <Text 
                   size="16px" 
                   color="black" 
                   style={{ minHeight: "50px", maxHeight: "200px", overflowY: "auto" }}
-                  margin={{bottom: "10px"}}
+                  margin={{top: "10px", bottom: "10px"}}
                 >
                   {this.props.talk.description}
                 </Text>
