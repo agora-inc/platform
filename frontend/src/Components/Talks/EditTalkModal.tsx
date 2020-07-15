@@ -40,6 +40,7 @@ interface State {
   linkVisibility: string;
   topics: Topic[];
   talkSpeaker: string;
+  talkSpeakerURL: string;
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -66,6 +67,7 @@ export default class EditTalkModal extends Component<Props, State> {
         : "Everybody",
       topics: [],
       talkSpeaker: this.props.talk ? this.props.talk.talk_speaker : "",
+      talkSpeakerURL: this.props.talk ? this.props.talk.talk_speaker_url : "",
     };
   }
 
@@ -140,6 +142,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.linkVisibility,
         this.state.topics,
         this.state.talkSpeaker,
+        this.state.talkSpeakerURL,
         (talk: Talk) => {
           this.setState(
             {
@@ -165,6 +168,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.linkVisibility,
         this.state.topics,
         this.state.talkSpeaker,
+        this.state.talkSpeakerURL,
         (talk: Talk) => {
           this.setState(
             {
@@ -290,12 +294,22 @@ export default class EditTalkModal extends Component<Props, State> {
                   onChange={(e) => this.setState({ talkSpeaker: e.target.value })}
                 />
               </Box>
+              <Box width="100%" gap="5px">
+                <Text size="14px" weight="bold" color="black">
+                  Speaker website
+                </Text>
+                <TextInput
+                  placeholder="Enter a valid URL"
+                  value={this.state.talkSpeakerURL}
+                  onChange={(e) => this.setState({ talkSpeakerURL: e.target.value })}
+                />
+              </Box>
               <Box width="100%" gap="5px" margin={{bottom: "0px"}}>
                 <Text size="14px" weight="bold" color="black">
                   Description
                 </Text>
                 <TextArea
-                  style={{height: "172px"}}
+                  style={{height: "102px"}}
                   value={this.state.description}
                   placeholder=""
                   onChange={(e) => this.setState({ description: e.target.value })}

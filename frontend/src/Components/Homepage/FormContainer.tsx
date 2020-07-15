@@ -122,7 +122,7 @@ export default class FormContainer extends Component<{}, State> {
           submitButtonText="Submit"
           canProceed={true}
           width={500}
-          height={625}
+          height={640}
           contentHeight="500px"
           title="Submit feedback"
         >
