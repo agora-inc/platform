@@ -57,7 +57,7 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal, showShadow: true });
+    this.setState({ showModal: !this.state.showModal  });
   };
 
   componentWillMount() {

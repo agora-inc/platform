@@ -13,6 +13,10 @@ import { ChannelService } from "../../Services/ChannelService";
 import CountdownAndCalendarButtons from "../Talks/CountdownAndCalendarButtons";
 import AsyncButton from "../Core/AsyncButton";
 import TalkCard from "../Talks/TalkCard";
+import LoginModal from "../Account/LoginModal";
+import SignUpButton from "../Account/SignUpButton";
+import { thisExpression } from "@babel/types";
+
 
 
 interface Props {
@@ -112,12 +116,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   render() {
-    let label = ""
-    if ((this.props.admin || this.props.user) && !this.state.registered) {
-      label = "Register";
-    } else if ((this.props.admin || this.props.user) && this.state.registered) {
-      label = "Unregister";
-    }
+
     
     return (
       <Box
@@ -409,7 +408,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     />
                   </Box>
                 )}
-                {this.state.available && (this.props.user !== null || this.props.admin) && (
+                {this.state.available && (this.props.user !== null || this.props.admin) && !this.state.registered && (
                   <Box
                     onClick={this.onClick}
                     background="#7E1115"
@@ -422,27 +421,40 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     hoverIndicator="#5A0C0F"
                   >
                     <Text size="18px"> 
-                      {label}
+                      Register
+                    </Text>
+                  </Box>
+                )}
+                {this.state.available && (this.props.user !== null || this.props.admin) && this.state.registered && (
+                  <Box
+                    focusIndicator={false}
+                    background="white"
+                    round="xsmall"
+                    pad={{ vertical: "6px", horizontal: "12px" }}
+                    onClick={this.onClick}
+                    margin={{ horizontal: "xsmall" }}
+                    style={{
+                      border: "2px solid #C2C2C2",
+                    }}
+                    alignSelf="end"
+                    hoverIndicator={true}   
+                  >
+                    <Text size="14px"> 
+                      Unregister
                     </Text>
                   </Box>
                 )}
                 {this.state.available && this.props.user === null && !this.props.admin && (
-                  <Box
-                    direction="row"
-                    width="100%"
-                    height="40px"
-                    margin="none"
-                    pad="small"
-                    justify="center"
-                    round="xsmall"
+                  <Box 
+                    direction="row" 
                     align="center"
-                    alignSelf="center"
-                    background="#F3EACE"
-                >
-                  <Text size="18px" weight="bold" color="grey">
-                    Log in to register
-                  </Text>
-                </Box>
+                    gap="10px"
+                  >
+                    <LoginModal callback={() => {}} />
+                    <Text size="18px"> or </Text>
+                    <SignUpButton callback={() => {}} />
+                    <Text size="18px"> to register </Text>
+                  </Box>
                 )}
               </Box>
             </Box>
