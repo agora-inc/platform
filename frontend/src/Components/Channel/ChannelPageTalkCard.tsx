@@ -394,7 +394,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     {this.formatDateFull(this.props.talk.date, this.props.talk.end_date)}
                   </Text>
                 </Box>
-                {this.state.registered && (
+                {this.state.available && (this.props.user !== null || this.props.admin) && this.state.registered && (
                   <Box margin={{top: "10px", bottom: "20px"}}>
                     <CountdownAndCalendarButtons
                       talkStart={this.props.talk.date}
@@ -406,6 +406,25 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       name={this.props.talk.name}
                       description={this.props.talk.description}
                     />
+                    <Box
+
+                      focusIndicator={false}
+                      background="#FF4040"
+                      round="xsmall"
+                      pad="xsmall"
+                      justify="center"
+                      align="center"
+                      width="20%"
+                      height="35px"
+                      onClick={this.onClick}
+                      margin={{ top: "-35px" }}
+                      alignSelf="end"
+                      hoverIndicator={true}   
+                    >
+                      <Text size="14px" weight="bold"> 
+                        Unregister
+                      </Text>
+                    </Box>
                   </Box>
                 )}
                 {this.state.available && (this.props.user !== null || this.props.admin) && !this.state.registered && (
@@ -422,25 +441,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   >
                     <Text size="18px"> 
                       Register
-                    </Text>
-                  </Box>
-                )}
-                {this.state.available && (this.props.user !== null || this.props.admin) && this.state.registered && (
-                  <Box
-                    focusIndicator={false}
-                    background="white"
-                    round="xsmall"
-                    pad={{ vertical: "6px", horizontal: "12px" }}
-                    onClick={this.onClick}
-                    margin={{ horizontal: "xsmall" }}
-                    style={{
-                      border: "2px solid #C2C2C2",
-                    }}
-                    alignSelf="end"
-                    hoverIndicator={true}   
-                  >
-                    <Text size="14px"> 
-                      Unregister
                     </Text>
                   </Box>
                 )}

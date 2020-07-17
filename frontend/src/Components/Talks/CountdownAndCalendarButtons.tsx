@@ -82,16 +82,8 @@ export default class CountdownAndCalendarButtons extends Component<
   };
 
   render() {
-    return this.shouldShowLink() ? (
-      <Button
-        primary
-        color={this.props.color}
-        label="Go to talk"
-        size="large"
-      ></Button>
-    ) : (
-      <Box gap="xsmall">
-        <Text size="17px">{this.showTimeUntil()}</Text>
+    return( 
+      <Box gap="30px" direction="column">
         <Box
           direction="row"
           width="100%"
@@ -156,6 +148,36 @@ export default class CountdownAndCalendarButtons extends Component<
             </Box>
           </a>
         </Box>
+
+        {this.shouldShowLink() && (
+          <a 
+            style={{ width: "48%", textDecoration: "none" }} 
+            href={this.props.link} target="_blank"
+          >
+            <Box
+              onClick={() => {}}
+              background="#7E1115"
+              round="xsmall"
+              pad="xsmall"
+              height="35px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+            >
+              <Text size="14px" weight="bold"> 
+                Go to talk
+              </Text>
+            </Box>
+          </a>
+        )}
+
+        {!this.shouldShowLink() && (
+          <Box height="35px">
+            <Text size="14px" weight="bold" margin={{top: "10px"}}>
+              {this.showTimeUntil()}</Text>
+          </Box>
+        )}
       </Box>
     );
   }
