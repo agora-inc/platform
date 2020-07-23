@@ -76,15 +76,18 @@ const getUsersForChannel = (
     });
 };
 
-const isUserInChannel = (
-  userId: number,
-  channelId: number,
-  roles: string[],
-  callback: any
-) => {
-  getUsersForChannel(channelId, roles, (users: User[]) => {
-    callback(users.some((user) => user.id === userId));
-  });
+const getRoleInChannel = (userId: number, channelId: number, callback: any) => {
+  axios
+    .get(
+      baseApiUrl +
+        `/channels/user/role?channelId=${channelId}&userId=${userId}`,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      }
+    )
+    .then(function (response) {
+      callback(response.data);
+    });
 };
 
 const addUserToChannel = (
@@ -249,7 +252,7 @@ export const ChannelService = {
   createChannel,
   getChannelsForUser,
   getUsersForChannel,
-  isUserInChannel,
+  getRoleInChannel,
   addUserToChannel,
   removeUserFromChannel,
   getViewsForChannel,
