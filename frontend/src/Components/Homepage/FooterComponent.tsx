@@ -29,6 +29,9 @@ export default class FooterComponent extends Component {
             <a href="/info/welcome" style={{ color: "grey" }}>
               About us
             </a>
+            <a href="/info/getting-started" style={{ color: "grey" }}>
+              Getting started
+            </a>
             <a href="/info/tos" style={{ color: "grey" }}>
               Terms of service
             </a>

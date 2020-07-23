@@ -46,6 +46,9 @@ export default class HeaderBar extends Component {
             </Box>
           </Link>
         </Box>
+        <a href="/info/getting-started">
+              How to use me?
+            </a>
         <SiteWideSearch />
         {/* <Box>
           <TextInput
