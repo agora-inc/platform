@@ -250,26 +250,45 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   getCoverBoxStyle = (): CSSProperties => {
+    let current_time = Math.floor(new Date().getTime() / 200000);
     let background = this.state.channel?.has_cover
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
-        new Date().getTime() +
-        `)`
+      current_time +
+      `)`
+      // HACK: we add the new time at the end of the URL to avoid caching; 
+      // we divide time by value such that all block of requested image have 
+      // the same name (important for the name to be the same for the styling).
       : this.state.colour;
 
     let border = this.state.channel?.has_cover
       ? `8px solid ${this.state.channel.colour}`
       : "none";
 
-    return {
-      width: "75vw",
-      borderTopRightRadius: 10,
-      borderTopLeftRadius: 10,
-      background: background,
-      // HACK: we add the new time at the end of the URL to avoid caching
-      backgroundSize: "75vw 25vw",
-      padding: 20,
-      border: border,
-    };
+    let color = this.state.channel?.has_cover
+    ? `${this.state.channel.colour}`
+    : "none";
+
+    if (color == "white"){
+      return {
+        width: "75vw",
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+        background: background,
+        backgroundSize: "75vw 25vw",
+        padding: 20,
+      };
+    }
+    else {
+      return {
+        width: "75vw",
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+        background: background,
+        backgroundSize: "75vw 25vw",
+        padding: 20,
+        border: border,
+      };
+    }
   };
 
   toggleBanner = () => {
@@ -345,7 +364,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {this.state.followerCount} followers
               </Text>
               <ImageUploader
-                text="upload avatar"
+                text="Upload avatar"
                 onUpload={this.onFileChosen}
               />
             </Box>
@@ -407,6 +426,29 @@ export default class ManageChannelPage extends Component<Props, State> {
                   onCreatedCallback={this.fetchTalks}
                 />
               )}
+
+              <Box
+                  width="100%"
+                  height="100%"
+                  background="yellow"
+                  round="7.5px"
+                  pad="10px"
+                >   
+                <h2><b> Agora administrator page: </b></h2>
+                <p>As an administrator, you can:</p>
+                <ul>
+                  <li><b>Create and edit events</b> via the <i><b>"Schedule talk"</b></i> button</li>
+                  <li><b>Customize your header</b> via the <i><b>"Header"</b></i> button <i>(recommended dim: 1500x500px)</i></li>
+                  <li><b>Customize your avatar </b><i>(recommended dim: 400x400px)</i></li>
+                  <li><b>Edit your agora description</b> </li>
+                  <li><b>Promote users</b> to the rank of administrator/member.</li>
+                  <li><b>Link talk recordings</b> to your previous agora events.</li>
+
+                </ul>
+                <p>For more general information, visit our <a href="/info/getting-started">getting-started page</a>.</p>
+                <i><b>N.B.:</b> This help box and customisation options are only visible to admins.</i>
+              </Box>
+
               {this.banner()}
               <Box direction="row" width="100%" justify="between">
                 <Box
