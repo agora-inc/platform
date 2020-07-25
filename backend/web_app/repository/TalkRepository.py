@@ -131,7 +131,7 @@ class TalkRepository:
         return (talks, self.getNumberOfCurrentTalks())
 
     def getAllPastTalks(self, limit, offset):
-        query = f'SELECT * FROM Talks WHERE end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
+        query = f'SELECT * FROM Talks WHERE end_date < CURRENT_TIMESTAMP AND recording_link IS NOT NULL ORDER BY date DESC LIMIT {limit} OFFSET {offset}'
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -294,78 +294,3 @@ class TalkRepository:
             return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
         
         return True
-
-
-# UNIT TEST
-# if __name__ == "__main__":
-#     import pymysql
-#     import logging
-#     class Database:
-
-#         def __init__(self):
-#             self.host = "apollo-2.c91ghtqneybi.eu-west-2.rds.amazonaws.com"
-#             self.user = "admin"
-#             self.password = "123.qwe.asd"
-#             self.db = "apollo"
-#             self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.
-#                                     DictCursor)
-#         def open_connection(self):
-#             """Connect to MySQL Database."""
-#             try:
-#                 if self.con is None:
-#                     self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.DictCursor)
-#             except pymysql.MySQLError as e:
-#                 logging.error(e)
-#                 sys.exit()
-#             finally:
-#                 logging.info('Connection opened successfully.')
-
-#         def run_query(self, query):
-#             """Execute SQL query."""
-#             def _single_query(query):
-#                 try:
-#                     self.open_connection()
-#                     with self.con.cursor() as cur:
-#                         if 'SELECT' in query:
-#                             records = []
-#                             cur.execute(query)
-#                             result = cur.fetchall()
-#                             for row in result:
-#                                 records.append(row)
-#                             cur.close()
-#                             return records
-#                         else:
-#                             result = cur.execute(query)
-#                             self.con.commit()
-#                             insertId = cur.lastrowid
-#                             rowCount = cur.rowcount
-#                             cur.close()
-#                             return [insertId, rowCount]
-#                 except pymysql.MySQLError as e:
-#                     logging.warning(f"(Database):run_query: exception: {e}")
-#                 finally:
-#                     if self.con:
-#                         self.con.close()
-#                         self.con = None
-#                         logging.info('Database connection closed.')
-
-#             if isinstance(query, str):
-#                 return _single_query(query)
-#             elif isinstance(query, list):
-#                 responses = []
-#                 for q in query:
-#                     if isinstance(q, str):
-#                         responses.append(_single_query(q))
-#                     else:
-#                         raise TypeError("run_query: each element of the list must be a string.")
-#                 return responses
-#             elif isinstance(query, None):
-#                 pass
-#             else:
-#                 raise TypeError("run_query: query must be a SQL request string or a list of SQL request strings.")
-    
-#     db = Database()
-#     obj = TalkRepository(db)
-#     obj.editTalk(115, 'A nice introduction to computational neuroscience', '2020-07-11 11:00:00', '2020-07-11 12:00:00', 'Come and hear from Dr. Claudia Clopath', 'zoom', [], 15, 'Everybody', 0, 0, 0, 'Dr. Claudia Clopath')
-
-
