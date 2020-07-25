@@ -219,7 +219,9 @@ export default class PastTalkCard extends Component<Props, State> {
       <Box
         width={this.props.width ? this.props.width : "32%"}
         height={this.props.height ? this.props.height : "350px"}
-        onClick={this.toggleModal}
+        onClick={() => {
+          !this.state.showModal && this.toggleModal();
+        }}
         focusIndicator={false}
         style={{ position: "relative" }}
         margin={this.props.margin ? this.props.margin : { bottom: "small" }}
