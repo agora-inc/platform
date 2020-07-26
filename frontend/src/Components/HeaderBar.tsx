@@ -51,6 +51,7 @@ export default class HeaderBar extends Component {
             style={{ textDecoration: "none" }}
         >
           <Box
+            onClick={() => {}}
             background="#7E1115"
             round="xsmall"
             pad="xsmall"
@@ -59,7 +60,7 @@ export default class HeaderBar extends Component {
             focusIndicator={false}
             hoverIndicator="#5A0C0F"
           >
-            <Text size="16px" margin={{horizontal: "4px"}}> How to use me? </Text>
+            <Text size="16px" margin={{horizontal: "4px", vertical: "2px"}}> How to use me? </Text>
           </Box>
         </Link>
         <SiteWideSearch />

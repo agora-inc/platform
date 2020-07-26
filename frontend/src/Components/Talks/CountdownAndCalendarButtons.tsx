@@ -16,6 +16,7 @@ interface Props {
 }
 
 interface State {
+  linkSchedule: string;
   showLinkAt: Date;
   now: Date;
 }
@@ -27,6 +28,7 @@ export default class CountdownAndCalendarButtons extends Component<
   constructor(props: Props) {
     super(props);
     this.state = {
+      linkSchedule: "https://www.agora.stream/schedule",
       showLinkAt: this.computeShowLinkTime(),
       now: new Date(),
     };
@@ -38,7 +40,7 @@ export default class CountdownAndCalendarButtons extends Component<
       this.props.endTime,
       this.props.name,
       this.props.description,
-      this.props.link
+      this.state.linkSchedule,
     );
     const blob = new Blob([url], { type: "text/calendar;charset=utf-8" });
     return window.URL.createObjectURL(blob);
@@ -97,7 +99,7 @@ export default class CountdownAndCalendarButtons extends Component<
               this.props.endTime,
               this.props.name,
               this.props.description,
-              this.props.link
+              this.state.linkSchedule,
             )}
             target="_blank"
           >

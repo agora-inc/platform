@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text } from "grommet";
-
+import { Link } from "react-router-dom";
 import accessing_link from "../assets/getting-started/accessing_link.png";
 import agora_created_done from "../assets/getting-started/agora_created_done.png";
 import create_agora from "../assets/getting-started/create_agora.png";
@@ -251,11 +251,20 @@ export default class GettingStartedPage extends Component<Props, State> {
           <br></br>
           <br></br>
           <h2><strong>Any questions? Reach out!</strong></h2>
-          <p>Do you have any questions, inqueries, or feedbacks? If yes, please reach out to us using the top right-hand side button, or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our <a href="https://www.agora.stream/info/tos">Term of services</a> and <a href="https://www.agora.stream/info/privacy">data privacy policies</a>.</p>
- 
-
-
-
+          <p>Do you have any questions, inqueries, or feedbacks? If yes, please reach out to us using the top right-hand side button, or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our{" "} 
+            <Link to={"/info/tos"}>
+              <Text weight="bold" color="brand">
+                Term of services
+              </Text>
+            </Link>
+            {" "} and {" "} 
+            <Link to={"/info/privacy"}>
+              <Text weight="bold" color="brand">
+                data privacy policies
+              </Text>
+            </Link>
+            .
+          </p>
         </Box>
       </Box>
     );
