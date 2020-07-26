@@ -103,6 +103,12 @@ def getUsersForChannel():
     print(roles)
     return jsonify(channels.getUsersForChannel(channelId, roles))
 
+@app.route('/channels/user/role', methods=["GET"])
+def getRoleInChannel():
+    channelId = int(request.args.get("channelId"))
+    userId = int(request.args.get("userId"))
+    return jsonify(channels.getRoleInChannel(channelId, userId))
+
 @app.route('/channels/followercount', methods=["GET"])
 def getFollowerCountForChannel():
     channelId = int(request.args.get("channelId"))

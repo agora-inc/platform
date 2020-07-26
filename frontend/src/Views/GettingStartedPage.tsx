@@ -65,7 +65,7 @@ export default class GettingStartedPage extends Component<Props, State> {
           > */}
             {/* <Text color="black" size="18px"> */}
             <h1><strong>Getting started:</strong></h1>
-            <p>Welcome to agora! Here is a quick overview to use the website.</p>
+            <p>Welcome to agora! Here is a quick overview on how to use the website.</p>
 
             <br></br>
             <h2><strong>1. Where to browse for talks?</strong></h2>

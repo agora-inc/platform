@@ -24,15 +24,13 @@ export default class ColorPicker extends Component<Props, State> {
       selected: this.props.selected,
       open: false,
       options: [
-        "orange",
-        "goldenrod",
-        "teal",
-        "aquamarine",
-        "mediumslateblue",
-        "blueviolet",
-        "palevioletred",
-        "lightcoral",
-        "pink",
+        // "white",
+        // "orange",
+        // "goldenrod",
+        // "teal",
+        // "aquamarine",
+        // "mediumslateblue",
+        // "blueviolet",
       ],
     };
   }
@@ -93,7 +91,7 @@ export default class ColorPicker extends Component<Props, State> {
         </Box>
         <Box gap="4px">
           <ImageUploader
-            text="upload cover"
+            text="Upload header"
             onUpload={this.onCoverUpload}
             width="100%"
           />
@@ -109,7 +107,7 @@ export default class ColorPicker extends Component<Props, State> {
               onClick={this.onDeleteCoverClicked}
             >
               <Text size="13px" weight="bold" color="white">
-                delete cover
+                Remove header
               </Text>
             </Box>
           )}
@@ -121,7 +119,7 @@ export default class ColorPicker extends Component<Props, State> {
   render() {
     return (
       <Box
-        width={this.state.open ? "139px" : "90px"}
+        width={this.state.open ? "139px" : "120px"}
         background="#f2f2f2"
         direction="row"
         justify="between"
@@ -144,9 +142,9 @@ export default class ColorPicker extends Component<Props, State> {
           width="30px"
           height="30px"
           round="xsmall"
-          background={this.state.selected}
+          // background={this.state.selected}
           style={{ zIndex: 100 }}
-        ></Box>
+        ><b>Header</b></Box>
         <DropButton
           reverse
           // label={this.state.selected}

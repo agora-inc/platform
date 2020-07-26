@@ -25,7 +25,7 @@ interface Props {
 
 interface State {
   channel: Channel | null;
-  admin: boolean;
+  role: "none" | "owner" | "member" | "follower";
   loading: boolean;
   streams: Stream[];
   talks: Talk[];
@@ -42,7 +42,7 @@ export default class ChannelPage extends Component<Props, State> {
     super(props);
     this.state = {
       channel: null,
-      admin: false,
+      role: "none",
       loading: true,
       streams: [],
       talks: [],
@@ -64,6 +64,10 @@ export default class ChannelPage extends Component<Props, State> {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
+  shouldRedirect = (): boolean => {
+    return this.state.role === "owner" || this.state.role === "member";
+  };
+
   handleScroll = (e: any) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
@@ -83,7 +87,7 @@ export default class ChannelPage extends Component<Props, State> {
         let user = UserService.getCurrentUser();
         if (user === null) {
           this.setState(
-            { channel: channel, admin: false, loading: false },
+            { channel: channel, role: "none", loading: false },
             () => {
               this.fetchStreams();
               this.fetchPastTalks();
@@ -95,13 +99,12 @@ export default class ChannelPage extends Component<Props, State> {
           );
           return;
         }
-        ChannelService.isUserInChannel(
+        ChannelService.getRoleInChannel(
           user.id,
           channel.id,
-          ["owner", "member"],
-          (res: boolean) => {
+          (role: "none" | "owner" | "member" | "follower") => {
             this.setState(
-              { channel: channel, admin: res, loading: false },
+              { channel: channel, role: role, loading: false },
               () => {
                 this.fetchStreams();
                 this.fetchPastTalks();
@@ -158,12 +161,11 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   checkIfFollowing = () => {
-    ChannelService.isUserInChannel(
+    ChannelService.getRoleInChannel(
       this.state.user!.id,
       this.state.channel!.id,
-      ["follower"],
-      (following: boolean) => {
-        this.setState({ following });
+      (role: string) => {
+        this.setState({ following: role === "follower" });
       }
     );
   };
@@ -321,7 +323,7 @@ export default class ChannelPage extends Component<Props, State> {
     } else {
       return (
         <Box>
-          {this.state.admin ? (
+          {this.shouldRedirect() ? (
             <Redirect
               to={{
                 pathname: this.props.location.pathname + "/manage",

@@ -111,7 +111,7 @@ export default class FormContainer extends Component<{}, State> {
           }}
           hoverIndicator={true}   
         >
-          <Text size="16px" color="grey"> Give feedback</Text>
+          <Text size="16px" color="grey"> Give feedback </Text>
         </Box>
         <Overlay
           visible={this.state.showForm}

@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from "react";
+import React, { Component } from "react";
 import { Redirect } from "react-router";
 import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
@@ -28,7 +28,7 @@ interface Props {
 interface State {
   channel: Channel | null;
   loading: boolean;
-  allowed: boolean;
+  role: "none" | "owner" | "member" | "follower";
   followerCount: number;
   colour: string;
   editingDescription: boolean;
@@ -40,7 +40,7 @@ interface State {
   pastStreams: Talk[];
   totalNumberOfTalks: number;
   bannerExtended: boolean;
-  longDescription: string
+  longDescription: string;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -49,7 +49,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.state = {
       channel: null,
       loading: true,
-      allowed: false,
+      role: "none",
       followerCount: 0,
       colour: "pink",
       editingDescription: false,
@@ -61,7 +61,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       pastStreams: [],
       totalNumberOfTalks: 0,
       bannerExtended: true,
-      longDescription: ""
+      longDescription: "",
     };
   }
 
@@ -79,6 +79,10 @@ export default class ManageChannelPage extends Component<Props, State> {
       this.getChannelAndCheckAccess();
     }
   }
+
+  isAllowed = (): boolean => {
+    return this.state.role === "owner" || this.state.role === "member";
+  };
 
   handleScroll = (e: any) => {
     const bottom =
@@ -102,23 +106,21 @@ export default class ManageChannelPage extends Component<Props, State> {
               channel: channel,
               colour: channel.colour,
               loading: false,
-              allowed: false
             },
             () => {
               this.fetchData();
             }
           );
         } else {
-          ChannelService.isUserInChannel(
+          ChannelService.getRoleInChannel(
             user.id,
             channel.id,
-            ["owner", "member"],
-            (res: boolean) => {
+            (role: "none" | "owner" | "member" | "follower") => {
               this.setState(
                 {
                   channel: channel,
                   colour: channel.colour,
-                  allowed: res,
+                  role: role,
                   loading: false,
                 },
                 () => {
@@ -221,7 +223,6 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
-
   onSaveLongDescriptionClicked = (newDescription: string) => {
     ChannelService.updateLongChannelDescription(
       this.state.channel!.id,
@@ -234,8 +235,8 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   onModifyLongDescription = (value: any) => {
-    this.setState({longDescription: value});
-  }
+    this.setState({ longDescription: value });
+  };
 
   onFileChosen = (e: any) => {
     // console.log(e.target.files[0]);
@@ -249,24 +250,45 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   getCoverBoxStyle = (): CSSProperties => {
+    let current_time = Math.floor(new Date().getTime() / 200000);
     let background = this.state.channel?.has_cover
-      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` + new Date().getTime() + `)` 
+      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
+      current_time +
+      `)`
+      // HACK: we add the new time at the end of the URL to avoid caching; 
+      // we divide time by value such that all block of requested image have 
+      // the same name (important for the name to be the same for the styling).
       : this.state.colour;
 
     let border = this.state.channel?.has_cover
       ? `8px solid ${this.state.channel.colour}`
       : "none";
 
-    return {
-      width: "75vw",
-      borderTopRightRadius: 10,
-      borderTopLeftRadius: 10,
-      background: background,
-      // HACK: we add the new time at the end of the URL to avoid caching
-      backgroundSize: "75vw 25vw",
-      padding: 20,
-      border: border,
-    };
+    let color = this.state.channel?.has_cover
+    ? `${this.state.channel.colour}`
+    : "none";
+
+    if (color == "white"){
+      return {
+        width: "75vw",
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+        background: background,
+        backgroundSize: "75vw 25vw",
+        padding: 20,
+      };
+    }
+    else {
+      return {
+        width: "75vw",
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+        background: background,
+        backgroundSize: "75vw 25vw",
+        padding: 20,
+        border: border,
+      };
+    }
   };
 
   toggleBanner = () => {
@@ -322,7 +344,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                 )}
                 {!!this.state.channel!.has_avatar && (
                   <img
-                    src={ChannelService.getAvatar(this.state.channel!.id) +`&ts=` + new Date().getTime()}
+                    src={
+                      ChannelService.getAvatar(this.state.channel!.id) +
+                      `&ts=` +
+                      new Date().getTime()
+                    }
                     // HACK: we had the ts argument to prevent from caching.
                     height={100}
                     width={100}
@@ -338,7 +364,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {this.state.followerCount} followers
               </Text>
               <ImageUploader
-                text="upload avatar"
+                text="Upload avatar"
                 onUpload={this.onFileChosen}
               />
             </Box>
@@ -362,18 +388,21 @@ export default class ManageChannelPage extends Component<Props, State> {
         {this.state.bannerExtended && (
           <>
             <EnrichedTextEditor
-              text = {this.state.channel?.long_description ? this.state.channel?.long_description : "" }
+              text={
+                this.state.channel?.long_description
+                  ? this.state.channel?.long_description
+                  : ""
+              }
               onModify={this.onModifyLongDescription}
               onSave={this.onSaveLongDescriptionClicked}
             />
-        </>
+          </>
         )}
       </Box>
     );
   };
 
   render() {
-    // console.log(this.state.channel);
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -381,7 +410,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         </Box>
       );
     } else {
-      return this.state.allowed ? (
+      return this.isAllowed() ? (
         <Box>
           <Box
             width="100%"
@@ -390,11 +419,36 @@ export default class ManageChannelPage extends Component<Props, State> {
             margin={{ top: "100px" }}
           >
             <Box width="75%" align="start">
-              <ScheduleTalkButton
-                margin={{ bottom: "10px" }}
-                channel={this.state.channel}
-                onCreatedCallback={this.fetchTalks}
-              />
+              {this.state.role === "owner" && (
+                <ScheduleTalkButton
+                  margin={{ bottom: "10px" }}
+                  channel={this.state.channel}
+                  onCreatedCallback={this.fetchTalks}
+                />
+              )}
+
+              <Box
+                  width="100%"
+                  height="100%"
+                  background="yellow"
+                  round="7.5px"
+                  pad="10px"
+                >   
+                <h2><b> Agora administrator page: </b></h2>
+                <p>As an administrator, you can:</p>
+                <ul>
+                  <li><b>Create and edit events</b> via the <i><b>"Schedule talk"</b></i> button</li>
+                  <li><b>Customize your header</b> via the <i><b>"Header"</b></i> button <i>(recommended dim: 1500x500px)</i></li>
+                  <li><b>Customize your avatar </b><i>(recommended dim: 400x400px)</i></li>
+                  <li><b>Edit your agora description</b> </li>
+                  <li><b>Promote users</b> to the rank of administrator/member.</li>
+                  <li><b>Link talk recordings</b> to your previous agora events.</li>
+
+                </ul>
+                <p>For more general information, visit our <a href="/info/getting-started">getting-started page</a>.</p>
+                <i><b>N.B.:</b> This help box and customisation options are only visible to admins.</i>
+              </Box>
+
               {this.banner()}
               <Box direction="row" width="100%" justify="between">
                 <Box
@@ -408,16 +462,18 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text weight="bold" size="20px" color="black">
                       Agora administrators
                     </Text>
-                    <AddUsersButton
-                      role="owner"
-                      existingUsers={this.state.channelOwners}
-                      channelId={this.state.channel!.id}
-                      onUserAddedCallback={() => {
-                        this.fetchMembers();
-                        this.fetchOwners();
-                        this.fetchFollowers();
-                      }}
-                    />
+                    {this.state.role === "owner" && (
+                      <AddUsersButton
+                        role="owner"
+                        existingUsers={this.state.channelOwners}
+                        channelId={this.state.channel!.id}
+                        onUserAddedCallback={() => {
+                          this.fetchMembers();
+                          this.fetchOwners();
+                          this.fetchFollowers();
+                        }}
+                      />
+                    )}
                   </Box>
                   <Box
                     direction="row"
@@ -430,6 +486,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         user={owner}
                         channelId={this.state.channel?.id}
                         onRemovedCallback={this.fetchOwners}
+                        showRemoveButton={this.state.role === "owner"}
                       />
                     ))}
                   </Box>
@@ -445,16 +502,18 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text weight="bold" size="20px" color="black">
                       Agora members
                     </Text>
-                    <AddUsersButton
-                      role="member"
-                      existingUsers={this.state.channelMembers}
-                      channelId={this.state.channel!.id}
-                      onUserAddedCallback={() => {
-                        this.fetchMembers();
-                        this.fetchOwners();
-                        this.fetchFollowers();
-                      }}
-                    />
+                    {this.state.role === "owner" && (
+                      <AddUsersButton
+                        role="member"
+                        existingUsers={this.state.channelMembers}
+                        channelId={this.state.channel!.id}
+                        onUserAddedCallback={() => {
+                          this.fetchMembers();
+                          this.fetchOwners();
+                          this.fetchFollowers();
+                        }}
+                      />
+                    )}
                   </Box>
                   <Box
                     direction="row"
@@ -467,6 +526,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         user={member}
                         channelId={this.state.channel?.id}
                         onRemovedCallback={this.fetchMembers}
+                        showRemoveButton={this.state.role === "owner"}
                       />
                     ))}
                   </Box>
@@ -478,12 +538,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   round="7.5px"
                   pad="10px"
                 >
-                  <Text
-                    weight="bold"
-                    size="20px"
-                    color="black"
-                    style={{ height: "34px" }}
-                  >
+                  <Text weight="bold" size="20px" color="black">
                     Followers
                   </Text>
                   <Box
@@ -493,64 +548,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="xsmall"
                   >
                     {this.state.followers.map((follower: User) => (
-                      <ChannelPageUserCircle user={follower} />
+                      <ChannelPageUserCircle
+                        user={follower}
+                        showRemoveButton={false}
+                      />
                     ))}
                   </Box>
                 </Box>
               </Box>
-
-              {/* <Box
-                height="100%"
-                width="100%"
-                style={{ maxHeight: "100%", minHeight: "50%" }}
-              >
-                <Text
-                  size="28px"
-                  weight="bold"
-                  color="black"
-                  margin={{ top: "40px", bottom: "10px" }}
-                >{`About us`}</Text>
-                <Box
-                  style={{ minHeight: "50%" }}
-                  height="50%"
-                  width="100%"
-                  pad="20px"
-                >
-                  <Text
-                    id="long-description"
-                    className="channel-description"
-                    size="22px"
-                    margin="10px"
-                    color="black"
-                    contentEditable={this.state.editingLongDescription}
-                    style={
-                      this.state.editingLongDescription
-                        ? {
-                            border: `2px solid ${this.state.colour}`,
-                            borderRadius: 7,
-                            padding: 5,
-                            overflow: "scroll",
-                            height: 900,
-                            maxHeight: 500,
-                          }
-                        : {}
-                    }
-                  >
-                    {this.state.channel?.longDescription}
-                  </Text>
-                </Box>
-                <Box
-                  focusIndicator={false}
-                  margin={{ top: "-10px" }}
-                  pad="none"
-                  onClick={this.onEditLongDescriptionClicked}
-                >
-                  <Text style={{ textDecoration: "underline" }} size="16px">
-                    {this.state.editingLongDescription ? "save" : "edit"}
-                  </Text>
-                </Box>
-              </Box> */}
-
               {this.state.talks.length !== 0 && (
                 <Text
                   size="28px"

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Button, Heading, Grommet, TextInput } from "grommet";
+import { Box, Text, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 import { ReactComponent as Logo } from "../apollo.svg";
 import { Link } from "react-router-dom";
@@ -23,8 +23,8 @@ export default class HeaderBar extends Component {
         pad={{ left: "xsmall", right: "small", vertical: "small" }}
         elevation="none"
         style={{
-          height: "6vh",
-          minHeight: "6vh",
+          height: "8vh",
+          minHeight: "8vh",
           width: "100vw",
           color: "black",
           position: "absolute",
@@ -32,7 +32,7 @@ export default class HeaderBar extends Component {
         }}
         {...this.props}
       >
-        <Box style={{ minWidth: "30%" }}>
+        <Box style={{ minWidth: "15%" }}>
           <Link to="/" style={{ textDecoration: "none", width: 140 }}>
             <Box direction="row" align="center">
               <Logo style={{ height: "5vh", margin: 0 }} />
@@ -46,6 +46,22 @@ export default class HeaderBar extends Component {
             </Box>
           </Link>
         </Box>
+        <Link
+            to={{ pathname: "/info/getting-started" }}
+            style={{ textDecoration: "none" }}
+        >
+          <Box
+            background="#7E1115"
+            round="xsmall"
+            pad="xsmall"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator="#5A0C0F"
+          >
+            <Text size="16px" margin={{horizontal: "4px"}}> How to use me? </Text>
+          </Box>
+        </Link>
         <SiteWideSearch />
         {/* <Box>
           <TextInput

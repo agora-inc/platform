@@ -8,6 +8,7 @@ interface Props {
   user: User;
   channelId?: number;
   onRemovedCallback?: any;
+  showRemoveButton: boolean;
 }
 
 interface State {
@@ -56,18 +57,20 @@ export default class ChannelPageUserCircle extends Component<Props, State> {
             <Text size="14px" weight="bold" color="black">
               {this.props.user.username}
             </Text>
-            <Box
-              background="#FF4040"
-              round="4px"
-              pad="2.5px"
-              align="center"
-              justify="center"
-              onClick={this.onRemoveClicked}
-            >
-              <Text color="white" size="14px" style={{ fontWeight: 500 }}>
-                remove
-              </Text>
-            </Box>
+            {this.props.showRemoveButton && (
+              <Box
+                background="#FF4040"
+                round="4px"
+                pad="2.5px"
+                align="center"
+                justify="center"
+                onClick={this.onRemoveClicked}
+              >
+                <Text color="white" size="14px" style={{ fontWeight: 500 }}>
+                  remove
+                </Text>
+              </Box>
+            )}
           </Box>
         )}
         <Box

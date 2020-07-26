@@ -104,7 +104,7 @@ export default class EnrichedTextEditor extends Component<Props, State> {
             onClick={this.onClick}
             contentEditable={false}
           >
-          {this.state.editing_mode ? "save" : "edit"}
+          {this.state.editing_mode ? "Save description" : "Edit description"}
           </Text>
           </>
         
@@ -123,7 +123,7 @@ export default class EnrichedTextEditor extends Component<Props, State> {
           onClick={this.onClick}
           contentEditable={false}
         >
-          {this.state.editing_mode ? "save" : "edit"}
+          {this.state.editing_mode ? "Save description" : "Edit description"}
         </Text>
       </>)
         }

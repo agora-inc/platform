@@ -70,7 +70,7 @@ export default class RecentTalksList extends Component<Props, State> {
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
           {this.state.talks.map((talk: Talk) => (
-            <PastTalkCard talk={talk} user={this.props.user} />
+            <PastTalkCard talk={talk} user={this.props.user} width={"32%"} />
           ))}
         </Box>
       </Box>

@@ -102,6 +102,13 @@ class ChannelRepository:
                 return True
         return False
 
+    def getRoleInChannel(self, channelId, userId):
+        query = f'SELECT role FROM ChannelUsers WHERE user_id = {userId} AND channel_id = {channelId}'
+        result = self.db.run_query(query)
+        if not result:
+            return "none"
+        return result[0]["role"]
+
     def getViewsForChannel(self, channelId):
         query = f'SELECT views FROM Videos where channel_id = {channelId}'
         result = self.db.run_query(query)
