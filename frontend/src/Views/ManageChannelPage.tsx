@@ -4,6 +4,7 @@ import { Box, Text } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { Link } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
 import Identicon from "react-identicons";
@@ -445,7 +446,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <li><b>Link talk recordings</b> to your previous agora events.</li>
 
                 </ul>
-                <p>For more general information, visit our <a href="/info/getting-started">getting-started page</a>.</p>
+                <p>For more general information, visit our
+                  <Link to={"/info/getting-started"}>
+                    <Text weight="bold" color="brand">
+                      {" "}getting-started{" "}
+                    </Text>
+                  </Link>
+                  page.
+                </p>
                 <i><b>N.B.:</b> This help box and customisation options are only visible to admins.</i>
               </Box>
 
