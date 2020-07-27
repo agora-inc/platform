@@ -16,6 +16,7 @@ interface Props {
 }
 
 interface State {
+  linkSchedule: string;
   showLinkAt: Date;
   now: Date;
 }
@@ -27,6 +28,7 @@ export default class CountdownAndCalendarButtons extends Component<
   constructor(props: Props) {
     super(props);
     this.state = {
+      linkSchedule: "https://www.agora.stream/schedule",
       showLinkAt: this.computeShowLinkTime(),
       now: new Date(),
     };
@@ -38,7 +40,7 @@ export default class CountdownAndCalendarButtons extends Component<
       this.props.endTime,
       this.props.name,
       this.props.description,
-      this.props.link
+      this.state.linkSchedule,
     );
     const blob = new Blob([url], { type: "text/calendar;charset=utf-8" });
     return window.URL.createObjectURL(blob);
@@ -82,16 +84,8 @@ export default class CountdownAndCalendarButtons extends Component<
   };
 
   render() {
-    return this.shouldShowLink() ? (
-      <Button
-        primary
-        color={this.props.color}
-        label="Go to talk"
-        size="large"
-      ></Button>
-    ) : (
-      <Box gap="xsmall">
-        <Text size="17px">{this.showTimeUntil()}</Text>
+    return( 
+      <Box gap="30px" direction="column">
         <Box
           direction="row"
           width="100%"
@@ -105,7 +99,7 @@ export default class CountdownAndCalendarButtons extends Component<
               this.props.endTime,
               this.props.name,
               this.props.description,
-              this.props.link
+              this.state.linkSchedule,
             )}
             target="_blank"
           >
@@ -156,6 +150,36 @@ export default class CountdownAndCalendarButtons extends Component<
             </Box>
           </a>
         </Box>
+
+        {this.shouldShowLink() && (
+          <a 
+            style={{ width: "48%", textDecoration: "none" }} 
+            href={this.props.link} target="_blank"
+          >
+            <Box
+              onClick={() => {}}
+              background="#7E1115"
+              round="xsmall"
+              pad="xsmall"
+              height="35px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+            >
+              <Text size="14px" weight="bold"> 
+                Link to talk
+              </Text>
+            </Box>
+          </a>
+        )}
+
+        {!this.shouldShowLink() && (
+          <Box height="35px">
+            <Text size="14px" weight="bold" margin={{top: "10px"}}>
+              {this.showTimeUntil()}</Text>
+          </Box>
+        )}
       </Box>
     );
   }

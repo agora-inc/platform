@@ -85,10 +85,10 @@ export default class LoginModal extends Component<Props, State> {
               direction="row"
               justify="between"
             >
-              <StatusCritical />
               <Heading level={5} margin="none" color="white">
                 Unrecognised credentials
               </Heading>
+              <StatusCritical />
             </Box>
           )}
           

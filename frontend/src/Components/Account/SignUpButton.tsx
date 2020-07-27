@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Box, Heading, Button, TextInput, Text } from "grommet";
+import { Link } from "react-router-dom";
 import { StatusCritical } from "grommet-icons";
 import { UserService } from "../../Services/UserService";
 import { Overlay } from "../Core/Overlay";
@@ -61,6 +62,7 @@ export default class SignUpButton extends Component<Props, State> {
         <Button
           label="Sign up"
           onClick={this.toggleModal}
+          hoverIndicator={false}
           style={{
             width: 90,
             height: 35,
@@ -68,10 +70,9 @@ export default class SignUpButton extends Component<Props, State> {
             fontWeight: "bold",
             color: "white",
             padding: 0,
-            // margin: 6,
-            backgroundColor: "#61EC9F",
+            backgroundColor: "#7E1115",
             border: "none",
-            borderRadius: 7,
+            borderRadius: 5,
           }}
         />
         <Overlay
@@ -85,7 +86,7 @@ export default class SignUpButton extends Component<Props, State> {
           submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
-          contentHeight="450px"
+          contentHeight="300px"
         >
           {this.state.failed && (
             <Box
@@ -107,18 +108,20 @@ export default class SignUpButton extends Component<Props, State> {
             height="100%"
             justify="end"
             align="center"
-            pad={{ bottom: "50px" }}
+            pad={{ bottom: "10px" }}
             gap="xsmall"
           >
             <Box width="100%" gap="2px">
-              <Text size="17px" color="black" margin={{ bottom: "xsmall" }}>
+              <Text size="14px" color="black" margin={{ bottom: "24px" }}>
                 This account will be associated with you as an individual - so
-                you can choose any username you like. After you've signed up
-                you'll be able to create one or more{" "}
-                <Text color="brand" weight="bold">
-                  <a href="https://www.agora.stream/info/welcome">Agoras</a>.
-                </Text>{" "}
-                - these are what you'll use to organise talks.
+                you can choose any username you like. 
+                After you've signed up you'll be able to create one or more {" "}
+                <Link to={"/info/welcome"} onClick={this.toggleModal}>
+                  <Text color="brand" weight="bold" size="14px">
+                    Agoras
+                  </Text>
+                </Link>
+                . These are what you'll use to organise talks.
               </Text>
               <TextInput
                 placeholder="Username"
@@ -141,8 +144,15 @@ export default class SignUpButton extends Component<Props, State> {
                 }
               />
             </Box>
-            <Text size="14px" color="grey" margin="none" weight="bold">
-                By clicking Sign Up, you agree to our <a href="https://www.agora.stream/info/welcome"> terms</a>.
+
+            <Text size="14px" color="black" margin={{top: "24px"}} alignSelf="start">
+                By clicking Sign Up, you agree to our {" "}
+                <Link to={"/info/tos"} onClick={this.toggleModal}>
+                  <Text size="14px" weight="bold" color="brand">
+                    terms
+                  </Text>
+                </Link>
+                .
             </Text>
           </Box>
         </Overlay>

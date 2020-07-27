@@ -261,7 +261,7 @@ export default class EditTalkModal extends Component<Props, State> {
               fill="#FF4040"
               width="90px"
               height="35px"
-              text="delete"
+              text="Delete"
               onClick={this.onDeleteClicked}
             />
           ) : null

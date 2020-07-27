@@ -22,7 +22,7 @@ export default class CustomSideBar extends Component<Props> {
         <Box
           margin={{ top: "60px" }}
           pad={{ top: "3px" }}
-          style={{ position: "sticky", top: 63 }}
+          style={{ position: "sticky", top: 83 }}
           gap="small"
         >
           {/* <TrendingChannelsList /> */}

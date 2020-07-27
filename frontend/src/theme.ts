@@ -26,7 +26,7 @@ export const theme = {
       calendarSize: "192px",
     },
     colors: {
-      brand: "#61EC9F",
+      brand: "#7E1115",
       selected: "F5F5F5",
     },
     drop: {

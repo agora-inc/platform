@@ -13,6 +13,10 @@ import { ChannelService } from "../../Services/ChannelService";
 import CountdownAndCalendarButtons from "../Talks/CountdownAndCalendarButtons";
 import AsyncButton from "../Core/AsyncButton";
 import TalkCard from "../Talks/TalkCard";
+import LoginModal from "../Account/LoginModal";
+import SignUpButton from "../Account/SignUpButton";
+import { thisExpression } from "@babel/types";
+
 
 
 interface Props {
@@ -22,6 +26,7 @@ interface Props {
   onEditCallback?: any;
   width?: any;
   margin?: any;
+  isCurrent?: boolean;
 }
 
 interface State {
@@ -103,6 +108,22 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
 
+  getTimeRemaining = (): string => {
+    const end = new Date(this.props.talk.end_date);
+    const now = new Date();
+    const deltaSec = Math.floor((end.valueOf() - now.valueOf()) / 1000);
+    if (deltaSec < 60) {
+      return `Finishing in ${deltaSec} seconds`;
+    }
+    if (deltaSec < 3600) {
+      let deltaMin = Math.floor(deltaSec / 60);
+      return `Finishing in ${deltaMin} minutes`;
+    }
+    let deltaHour = Math.floor(deltaSec / 3600);
+    let remainderMin = Math.floor((deltaSec % 3600) / 60);
+    return `Finishing in ${deltaHour} hours and ${remainderMin} minutes`;
+  };
+
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
   };
@@ -112,12 +133,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   render() {
-    let label = ""
-    if ((this.props.admin || this.props.user) && !this.state.registered) {
-      label = "Register";
-    } else if ((this.props.admin || this.props.user) && this.state.registered) {
-      label = "Unregister";
-    }
+    console.log("USER", this.props.user)
     
     return (
       <Box
@@ -200,13 +216,25 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             </Box>
             <Box direction="row" gap="small">
               <Calendar size="18px" />
-              <Text 
-                size="18px" 
-                color="black"
-                style={{ height: "30px", fontStyle: "normal" }}
-              >
-                {this.formatDate(this.props.talk.date)}
-              </Text>
+              {this.props.isCurrent && (
+                <Text
+                  size="18px"
+                  color="#5454A0"
+                  weight="bold"
+                  style={{ height: "20px", fontStyle: "normal" }}
+                >
+                  {this.getTimeRemaining()}
+                </Text>
+              )}
+              {!this.props.isCurrent && (
+                <Text
+                  size="18px"
+                  color="black"
+                  style={{ height: "30px", fontStyle: "normal" }}
+                >
+                  {this.formatDate(this.props.talk.date)}
+                </Text>
+              )}
             </Box>
             {this.state.showShadow && (
               <Box
@@ -387,15 +415,18 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
                   <Calendar size="18px" />
-                  <Text 
-                    size="18px" 
-                    color="black"
-                    style={{ height: "20px", fontStyle: "normal" }}
-                  >
-                    {this.formatDateFull(this.props.talk.date, this.props.talk.end_date)}
-                  </Text>
+                    <Text
+                      size="18px"
+                      color="black"
+                      style={{ height: "20px", fontStyle: "normal" }}
+                    >
+                      {this.formatDateFull(
+                        this.props.talk.date,
+                        this.props.talk.end_date
+                      )}
+                    </Text>
                 </Box>
-                {this.state.registered && (
+                {this.state.available && (this.props.user !== null || this.props.admin) && this.state.registered && (
                   <Box margin={{top: "10px", bottom: "20px"}}>
                     <CountdownAndCalendarButtons
                       talkStart={this.props.talk.date}
@@ -407,9 +438,28 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       name={this.props.talk.name}
                       description={this.props.talk.description}
                     />
+                    <Box
+
+                      focusIndicator={false}
+                      background="#FF4040"
+                      round="xsmall"
+                      pad="xsmall"
+                      justify="center"
+                      align="center"
+                      width="20%"
+                      height="35px"
+                      onClick={this.onClick}
+                      margin={{ top: "-35px" }}
+                      alignSelf="end"
+                      hoverIndicator={true}   
+                    >
+                      <Text size="14px" weight="bold"> 
+                        Unregister
+                      </Text>
+                    </Box>
                   </Box>
                 )}
-                {this.state.available && (this.props.user !== null || this.props.admin) && (
+                {this.state.available && (this.props.user !== null || this.props.admin) && !this.state.registered && (
                   <Box
                     onClick={this.onClick}
                     background="#7E1115"
@@ -422,27 +472,21 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     hoverIndicator="#5A0C0F"
                   >
                     <Text size="18px"> 
-                      {label}
+                      Register
                     </Text>
                   </Box>
                 )}
                 {this.state.available && this.props.user === null && !this.props.admin && (
-                  <Box
-                    direction="row"
-                    width="100%"
-                    height="40px"
-                    margin="none"
-                    pad="small"
-                    justify="center"
-                    round="xsmall"
+                  <Box 
+                    direction="row" 
                     align="center"
-                    alignSelf="center"
-                    background="#F3EACE"
-                >
-                  <Text size="18px" weight="bold" color="grey">
-                    Log in to register
-                  </Text>
-                </Box>
+                    gap="10px"
+                  >
+                    <LoginModal callback={() => {}} />
+                    <Text size="18px"> or </Text>
+                    <SignUpButton callback={() => {}} />
+                    <Text size="18px"> to register </Text>
+                  </Box>
                 )}
               </Box>
             </Box>
