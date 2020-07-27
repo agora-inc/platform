@@ -116,7 +116,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   render() {
-
+    console.log("USER", this.props.user)
     
     return (
       <Box

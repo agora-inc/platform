@@ -168,7 +168,7 @@ export default class CountdownAndCalendarButtons extends Component<
               hoverIndicator="#5A0C0F"
             >
               <Text size="14px" weight="bold"> 
-                Go to talk
+                Link to talk
               </Text>
             </Box>
           </a>

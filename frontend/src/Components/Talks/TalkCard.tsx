@@ -128,6 +128,15 @@ export default class TalkCard extends Component<Props, State> {
       );
   };
 
+  onClick = () => {
+    if (this.state.registered) {
+      this.unregister();
+    } else {
+      this.register();
+    }
+  };
+
+
   /*
   render() {
     // console.log(this.props.talk);
@@ -675,14 +684,30 @@ export default class TalkCard extends Component<Props, State> {
                       name={this.props.talk.name}
                       description={this.props.talk.description}
                     />
+                    <Box
+                      focusIndicator={false}
+                      background="#FF4040"
+                      round="xsmall"
+                      pad="xsmall"
+                      justify="center"
+                      align="center"
+                      width="20%"
+                      height="35px"
+                      onClick={this.onClick}
+                      margin={{ top: "-35px" }}
+                      alignSelf="end"
+                      hoverIndicator={true}   
+                    >
+                      <Text size="14px" weight="bold"> 
+                        Unregister
+                      </Text>
+                    </Box>
                   </Box>
                 )}
-                {this.state.available && this.props.user !== null && (
+                {this.state.available && (this.props.user !== null) && !this.state.registered && (
                   <Box
-                    onClick={
-                      this.state.registered ? this.unregister : this.register
-                    }
-                    background="brand"
+                    onClick={this.onClick}
+                    background="#7E1115"
                     round="xsmall"
                     pad="xsmall"
                     height="40px"
@@ -691,8 +716,8 @@ export default class TalkCard extends Component<Props, State> {
                     focusIndicator={false}
                     hoverIndicator="#5A0C0F"
                   >
-                    <Text size="18px">
-                      {this.state.registered ? "Unregister" : "Register"}
+                    <Text size="18px"> 
+                      Register
                     </Text>
                   </Box>
                 )}
