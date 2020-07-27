@@ -393,7 +393,6 @@ export default class TalkCard extends Component<Props, State> {
 */
 
   render() {
-    console.log(this.props.talk.name, this.state.showModal);
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
