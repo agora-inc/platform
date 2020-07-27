@@ -105,7 +105,6 @@ export default class FormContainer extends Component<{}, State> {
           round="xsmall"
           pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
           onClick={() => this.setState({ showForm: true })}
-          //margin={{ horizontal: "xsmall" }}
           style={{
             border: "1px solid #C2C2C2",
           }}
