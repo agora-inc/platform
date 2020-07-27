@@ -383,28 +383,30 @@ export default class ChannelPage extends Component<Props, State> {
                   </Box>
                 )}
                 {this.state.pastTalks.length !== 0 && (
-                  <Box gap="5px">
-                    <Text size="24px" weight="bold" color="black">
-                      Past talks
-                    </Text>
-                    <Box
-                      direction="row"
-                      width="100%"
-                      wrap
-                      // justify="between"
-                      margin={{ top: "10px" }}
-                    >
-                      {this.state.pastTalks.map((talk: Talk) => (
-                        <PastTalkCard
-                          width="31.5%"
-                          talk={talk}
-                          margin={{ bottom: "medium" }}
-                          user={this.state.user}
-                        />
-                      ))}
-                    </Box>
-                  </Box>
+                  <Text
+                    size="28px"
+                    weight="bold"
+                    color="black"
+                    margin={{ top: "40px" }}
+                  >{`Past talks`}</Text>
                 )}
+                <Box
+                  direction="row"
+                  width="100%"
+                  wrap
+                  // justify="between"
+                  gap="1.5%"
+                  margin={{ top: "10px" }}
+                >
+                  {this.state.pastTalks.map((talk: Talk) => (
+                    <PastTalkCard
+                      width="31.5%"
+                      talk={talk}
+                      margin={{ bottom: "medium" }}
+                      user={this.state.user}
+                    />
+                  ))}
+                </Box>
               </Box>
             </Box>
           )}
