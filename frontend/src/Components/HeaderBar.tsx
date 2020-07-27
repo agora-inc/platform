@@ -52,15 +52,18 @@ export default class HeaderBar extends Component {
         >
           <Box
             onClick={() => {}}
-            background="#7E1115"
+            background="white"
             round="xsmall"
-            pad="xsmall"
+            pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#5A0C0F"
+            style={{
+              border: "1px solid #C2C2C2",
+            }}
+            hoverIndicator={true}   
           >
-            <Text size="16px" margin={{horizontal: "4px", vertical: "2px"}}> How to use me? </Text>
+            <Text size="16px" color="grey"> How to use me? </Text>
           </Box>
         </Link>
         <SiteWideSearch />

@@ -103,18 +103,17 @@ export default class FormContainer extends Component<{}, State> {
           focusIndicator={false}
           background="white"
           round="xsmall"
-          pad={{ vertical: "2px", horizontal: "xsmall" }}
+          pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
           onClick={() => this.setState({ showForm: true })}
-          margin={{ horizontal: "xsmall" }}
+          //margin={{ horizontal: "xsmall" }}
           style={{
-            border: "2px solid #C2C2C2",
+            border: "1px solid #C2C2C2",
           }}
           hoverIndicator={true}   
         >
           <Text 
             size="16px" 
             color="grey" 
-            margin={{horizontal: "4px", vertical: "2px"}}
           > 
             Give feedback 
           </Text>

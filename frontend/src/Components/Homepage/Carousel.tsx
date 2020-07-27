@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
-import CurrentTalkCard from "../Talks/CurrentTalkCard";
+import TalkCard from "../Talks/TalkCard";
 import { User, UserService } from "../../Services/UserService";
 
 interface Props {
@@ -90,7 +90,7 @@ export default class Carousel extends Component<Props, State> {
           margin={{ top: "10px" }}
         >
           {this.state.talks.map((talk: Talk) => (
-            <CurrentTalkCard talk={talk} user={this.state.user} width="31.5%" />
+            <TalkCard talk={talk} user={this.state.user} width="31.5%" isCurrent={true} />
           ))}
         </Box>
       </Box>

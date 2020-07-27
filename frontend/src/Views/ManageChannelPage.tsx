@@ -577,7 +577,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   weight="bold"
                   color="black"
                   margin={{ top: "40px" }}
-                >{`Your past talks`}</Text>
+                >{`Past talks`}</Text>
               )}
               <Box
                 direction="row"

@@ -26,6 +26,7 @@ interface Props {
   onEditCallback?: any;
   width?: any;
   margin?: any;
+  isCurrent?: boolean;
 }
 
 interface State {
@@ -105,6 +106,22 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     const dateEndStr = end.toDateString().slice(0, -4);
     const timeEndStr = end.toTimeString().slice(0, 5);
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
+  };
+
+  getTimeRemaining = (): string => {
+    const end = new Date(this.props.talk.end_date);
+    const now = new Date();
+    const deltaSec = Math.floor((end.valueOf() - now.valueOf()) / 1000);
+    if (deltaSec < 60) {
+      return `Finishing in ${deltaSec} seconds`;
+    }
+    if (deltaSec < 3600) {
+      let deltaMin = Math.floor(deltaSec / 60);
+      return `Finishing in ${deltaMin} minutes`;
+    }
+    let deltaHour = Math.floor(deltaSec / 3600);
+    let remainderMin = Math.floor((deltaSec % 3600) / 60);
+    return `Finishing in ${deltaHour} hours and ${remainderMin} minutes`;
   };
 
   toggleModal = () => {
@@ -199,13 +216,25 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             </Box>
             <Box direction="row" gap="small">
               <Calendar size="18px" />
-              <Text 
-                size="18px" 
-                color="black"
-                style={{ height: "30px", fontStyle: "normal" }}
-              >
-                {this.formatDate(this.props.talk.date)}
-              </Text>
+              {this.props.isCurrent && (
+                <Text
+                  size="18px"
+                  color="#5454A0"
+                  weight="bold"
+                  style={{ height: "20px", fontStyle: "normal" }}
+                >
+                  {this.getTimeRemaining()}
+                </Text>
+              )}
+              {!this.props.isCurrent && (
+                <Text
+                  size="18px"
+                  color="black"
+                  style={{ height: "30px", fontStyle: "normal" }}
+                >
+                  {this.formatDate(this.props.talk.date)}
+                </Text>
+              )}
             </Box>
             {this.state.showShadow && (
               <Box
@@ -386,13 +415,16 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
                   <Calendar size="18px" />
-                  <Text 
-                    size="18px" 
-                    color="black"
-                    style={{ height: "20px", fontStyle: "normal" }}
-                  >
-                    {this.formatDateFull(this.props.talk.date, this.props.talk.end_date)}
-                  </Text>
+                    <Text
+                      size="18px"
+                      color="black"
+                      style={{ height: "20px", fontStyle: "normal" }}
+                    >
+                      {this.formatDateFull(
+                        this.props.talk.date,
+                        this.props.talk.end_date
+                      )}
+                    </Text>
                 </Box>
                 {this.state.available && (this.props.user !== null || this.props.admin) && this.state.registered && (
                   <Box margin={{top: "10px", bottom: "20px"}}>
