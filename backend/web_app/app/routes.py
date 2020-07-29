@@ -15,14 +15,30 @@ channels = ChannelRepository.ChannelRepository(db=db)
 search = SearchRepository.SearchRepository(db=db)
 
 # --------------------------------------------
+# HELPER FUNCTIONS
+# --------------------------------------------
+def checkAuth(authHeader):
+    if not authHeader:
+        return False
+    authToken = authHeader.split(" ")[1]
+    result = users.decodeAuthToken(authToken)
+    return not isinstance(result, str)
+
+# --------------------------------------------
 # USER ROUTES
 # --------------------------------------------
 @app.route('/users/all')
 def getAllUsers():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     return jsonify(users.getAllUsers())
 
 @app.route('/users/user')
 def getUser():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     username = request.args.get('username')
     return jsonify(users.getUser(username))
 
@@ -31,7 +47,9 @@ def addUser():
     params = request.json
     username = params['username']
     password = params['password']
-    return jsonify(users.addUser(username, password))
+    user = users.addUser(username, password)
+    token = users.encodeAuthToken(user["id"])
+    return jsonify({"id": user["id"], "username": user["username"], "token": token.decode()})
 
 @app.route('/users/authenticate', methods=["POST", "OPTIONS"])
 def authenticate():
@@ -46,8 +64,10 @@ def authenticate():
 
     if not user:
         return exceptions.Unauthorized("Incorrect username or password")
-    
-    return jsonify({"id": user["id"], "username": user["username"]})
+
+    token = users.encodeAuthToken(user["id"])
+    return jsonify({"id": user["id"], "username": user["username"], "token": token.decode()})
+
 
 # --------------------------------------------
 # CHANNEL ROUTES
@@ -65,6 +85,9 @@ def getAllChannels():
 
 @app.route('/channels/foruser', methods=["GET"])
 def getChannelsForUser():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     userId = int(request.args.get("userId"))
     roles = request.args.getlist("role")
     print(roles)
@@ -72,8 +95,12 @@ def getChannelsForUser():
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
 def createChannel():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     name = params["name"]
     description = params["description"]
@@ -82,22 +109,33 @@ def createChannel():
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
     return jsonify("Success")
 
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
 def removeUserForChannel():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     channels.removeUserFromChannel(params["userId"], params["channelId"])
     return jsonify("Success")
 
 @app.route('/channels/users', methods=["GET"])
 def getUsersForChannel():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     channelId = int(request.args.get("channelId"))
     roles = request.args.getlist("role")
     print(roles)
@@ -121,6 +159,9 @@ def getViewCountForChannel():
 
 @app.route('/channels/updatecolour', methods=["POST", "OPTIONS"])
 def updateChannelColour():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json 
@@ -132,8 +173,12 @@ def updateChannelColour():
 def updateChannelDescription():
     """TODO: refact this into updateshortdescription and propagate
     """
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json 
     channelId = params["channelId"]
     newDescription = params["newDescription"]
@@ -141,8 +186,12 @@ def updateChannelDescription():
 
 @app.route('/channels/updatelongdescription', methods=["POST", "OPTIONS"])
 def updateLongChannelDescription():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json 
     channelId = params["channelId"]
     newDescription = params["newDescription"]
@@ -151,6 +200,9 @@ def updateLongChannelDescription():
 @app.route('/channels/avatar', methods=["POST", "GET"])
 def avatar():
     if request.method == "POST":
+        if not checkAuth(request.headers.get('Authorization')):
+            return exceptions.Unauthorized("Authorization header invalid or not present")
+
         channelId = request.form["channelId"]
         file = request.files["image"]
         print(file)
@@ -167,6 +219,9 @@ def avatar():
 @app.route('/channels/cover', methods=["POST", "GET", "DELETE"])
 def cover():
     if request.method == "POST":
+        if not checkAuth(request.headers.get('Authorization')):
+            return exceptions.Unauthorized("Authorization header invalid or not present")
+
         channelId = request.form["channelId"]
         file = request.files["image"]
         print(file)
@@ -208,16 +263,24 @@ def getStreamById():
 
 @app.route('/streams/create', methods=["POST", "OPTIONS"])
 def createStream():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     stream = streams.createStream(params["channelId"], params["channelName"], params["streamName"], params["streamDescription"], params["streamTags"], params["imageUrl"])
     return jsonify(stream)
 
 @app.route('/streams/archive', methods=["POST", "OPTIONS"])
 def archiveStream():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     videoId = streams.archiveStream(params["streamId"], params["delete"])
     return jsonify({"videoId": videoId})
@@ -291,6 +354,9 @@ def getAllPastTalksForTopic():
 
 @app.route('/talks/create', methods=["POST", "OPTIONS"])
 def scheduleTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
 
@@ -304,81 +370,124 @@ def scheduleTalk():
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 def editTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"]))
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     return jsonify(talks.deleteTalk(params["id"]))
 
 @app.route('/talks/add-recording', methods=["OPTIONS", "POST"])
 def addRecordingLink():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     return jsonify(talks.addRecordingLink(params["talkId"], params["link"]))
 
 @app.route('/talks/isregistered', methods=["GET"])
 def isRegisteredForTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     talkId = int(request.args.get("talkId"))
     userId = int(request.args.get("userId"))
     return jsonify({"is_registered": talks.isUserRegisteredForTalk(talkId, userId)})
 
 @app.route('/talks/register', methods=["POST", "OPTIONS"])
 def registerForTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     talks.registerForTalk(params["talkId"], params["userId"])
     return jsonify("success")
 
 @app.route('/talks/unregister', methods=["POST", "OPTIONS"])
 def unRegisterForTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     talks.unRegisterForTalk(params["talkId"], params["userId"])
     return jsonify("success")
 
 @app.route('/talks/registered', methods=["GET"])
 def getTalksForUser():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     userId = int(request.args.get("userId"))
     return jsonify(talks.getFutureTalksForUser(userId))
 
 @app.route('/talks/saved', methods=["GET"])
 def getSavedTalks():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     userId = int(request.args.get("userId"))
     return jsonify(talks.getSavedTalksForUser(userId))
 
 @app.route('/talks/save', methods=["POST", "OPTIONS"])
 def saveTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     talks.saveTalk(params["talkId"], params["userId"])
     return jsonify("ok")
 
 @app.route('/talks/unsave', methods=["POST", "OPTIONS"])
 def unsaveTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     talks.unsaveTalk(params["talkId"], params["userId"])
     return jsonify("ok")
 
 @app.route('/talks/issaved', methods=["GET"])
 def isSaved():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     userId = int(request.args.get("userId"))
     talkId = int(request.args.get("talkId"))
     return jsonify({"is_saved": talks.hasUserSavedTalk(talkId, userId)})
 
 @app.route('/talks/isavailable', methods=["GET"])
 def isAvailable():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     userId = int(request.args.get("userId"))
     talkId = int(request.args.get("talkId"))
     return jsonify(talks.isTalkAvailableToUser(talkId, userId))
@@ -438,8 +547,12 @@ def getAllQuestionsForStream():
 
 @app.route('/questions/ask', methods=["POST", "OPTIONS"])
 def askQuestion():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     userId = params["userId"]
     content = params["content"]
@@ -450,8 +563,12 @@ def askQuestion():
 
 @app.route('/questions/answer', methods=["POST", "OPTIONS"])
 def answerQuestion():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     userId = params["userId"]
     questionId = params["questionId"]
@@ -460,8 +577,12 @@ def answerQuestion():
 
 @app.route('/questions/upvote', methods=["POST", "OPTIONS"])
 def upvoteQuestion():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     questionId = params["questionId"]
     userId = params["userId"]
@@ -469,8 +590,12 @@ def upvoteQuestion():
 
 @app.route('/questions/downvote', methods=["POST", "OPTIONS"])
 def downvoteQuestion():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     questionId = params["questionId"]
     userId = params["userId"]
@@ -478,8 +603,12 @@ def downvoteQuestion():
 
 @app.route('/questions/answer/upvote', methods=["POST", "OPTIONS"])
 def upvoteAnswer():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     answerId = params["answerId"]
     userId = params["userId"]
@@ -487,8 +616,12 @@ def upvoteAnswer():
 
 @app.route('/questions/answer/downvote', methods=["POST", "OPTIONS"])
 def downvoteAnswer():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     answerId = params["answerId"]
     userId = params["userId"]
@@ -496,8 +629,12 @@ def downvoteAnswer():
 
 @app.route('/questions/upvote/remove', methods=["POST", "OPTIONS"])
 def removeQuestionUpvote():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     questionId = params["questionId"]
     userId = params["userId"]
@@ -505,8 +642,12 @@ def removeQuestionUpvote():
 
 @app.route('/questions/downvote/remove', methods=["POST", "OPTIONS"])
 def removeQuestionDownvote():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     questionId = params["questionId"]
     userId = params["userId"]
@@ -514,8 +655,12 @@ def removeQuestionDownvote():
 
 @app.route('/questions/answer/upvote/remove', methods=["POST", "OPTIONS"])
 def removeAnswerUpvote():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     answerId = params["answerId"]
     userId = params["userId"]
@@ -523,8 +668,12 @@ def removeAnswerUpvote():
 
 @app.route('/questions/answer/downvote/remove', methods=["POST", "OPTIONS"])
 def removeAnswerDownvote():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     answerId = params["answerId"]
     userId = params["userId"]
@@ -544,16 +693,24 @@ def getPopularTags():
 
 @app.route('/tags/add', methods=["POST", "OPTIONS"])
 def addTag():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     name = params["name"]
     return jsonify(tags.addTag(name))
 
 @app.route('/tags/tagstream', methods=["POST", "OPTIONS"])
 def tagStream():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if request.method == "OPTIONS":
         return jsonify("ok")
+
     params = request.json
     return jsonify(tags.tagStream(params["streamId"], params["tagIds"]))
 
@@ -586,6 +743,8 @@ def getPopularTopics():
 
 @app.route('/topics/addtopicstream', methods=["POST", "OPTIONS"])
 def addTopicOnStream():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
     # if request.method == "OPTIONS":
     #     return jsonify("ok")
     # params = request.json
