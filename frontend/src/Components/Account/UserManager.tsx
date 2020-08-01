@@ -67,7 +67,7 @@ export default class UserManager extends Component<{}, State> {
           marginTop: 5,
           overflow: "hidden",
           paddingBottom: 0,
-          height: 326,
+          height: 175,
           width: 350,
         }}
       >

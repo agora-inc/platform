@@ -431,15 +431,10 @@ export default class ManageChannelPage extends Component<Props, State> {
               <Box
                   width="100%"
                   height="100%"
-                  // background="yellow"
-                  // round="7.5px"
                   pad="10px"
                   background="white"
                   round="xsmall"
-                  // pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
                   justify="center"
-                  // align="center"
-                  // focusIndicator={false}
                   style={{
                     border: "1px solid #C2C2C2",
                   }}
