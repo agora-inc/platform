@@ -50,40 +50,6 @@ const getCurrentUser = () => {
   return user ? JSON.parse(user) : null;
 };
 
-const getLiveUsers = (callback: any) => {
-  axios
-    .get(baseApiUrl + "/users/live", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then(function (response) {
-      callback(response.data);
-    });
-};
-
-const goLive = (username: string | null, callback: any) => {
-  axios
-    .post(
-      baseApiUrl + "/users/user/golive",
-      { username: username },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then(function (response) {
-      callback();
-    });
-};
-
-const stopLive = (username: string | null, callback: any) => {
-  axios
-    .post(
-      baseApiUrl + "/users/user/stoplive",
-      { username: username },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then(function (response) {
-      callback();
-    });
-};
-
 export type User = {
   id: number;
   username: string;
@@ -95,7 +61,4 @@ export const UserService = {
   logout,
   isLoggedIn,
   getCurrentUser,
-  getLiveUsers,
-  goLive,
-  stopLive,
 };

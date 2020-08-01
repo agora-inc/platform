@@ -1,41 +1,27 @@
-import axios from "axios";
-import { baseApiUrl } from "../config";
+import { get } from "../Middleware/httpMiddleware";
 
 const getAll = (callback: any) => {
-  axios
-    .get(baseApiUrl + "/topics/all", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then((response) => {
-      callback(response.data);
-    });
+  get("topics/all", callback);
 };
 
 const getDataTreeStructure = (callback: any) => {
-  axios
-    .get(baseApiUrl + "/topics/treestructure", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then((response) => {
-      console.log("Great success")
-      callback(response.data);
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    });
+  get("topics/treestructure", callback);
 };
 
 const getDescendenceId = (node: Topic, topics: Topic[]): number[] => {
-  let res: number[] = []
+  let res: number[] = [];
   for (let topic of topics) {
-    if (topic.parent_1_id === node.id || topic.parent_1_id === node.id || topic.parent_1_id === node.id) {
-      res.push(topic.id)
-      res = res.concat(getDescendenceId(topic, topics))
+    if (
+      topic.parent_1_id === node.id ||
+      topic.parent_1_id === node.id ||
+      topic.parent_1_id === node.id
+    ) {
+      res.push(topic.id);
+      res = res.concat(getDescendenceId(topic, topics));
     }
   }
-  return res
-}
+  return res;
+};
 
 // const getPopular = (callback: any) => {
 //   axios
@@ -66,16 +52,16 @@ export const TopicService = {
 };
 
 export type Topic = {
-  field: string,
-  is_primitive_node: boolean, 
-  id: number,
-  parent_1_id: number | null, 
-  parent_2_id: number | null,
-  parent_3_id: number | null,
-}
+  field: string;
+  is_primitive_node: boolean;
+  id: number;
+  parent_1_id: number | null;
+  parent_2_id: number | null;
+  parent_3_id: number | null;
+};
 
 export type TreeTopic = {
-  name: string,
-  attribute: any,
-  children: any,
+  name: string;
+  attribute: any;
+  children: any;
 };

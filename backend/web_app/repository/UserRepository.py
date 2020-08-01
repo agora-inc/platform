@@ -45,11 +45,13 @@ class UserRepository:
         else:
             return None
 
-    def encodeAuthToken(self, userId):
+    def encodeAuthToken(self, userId, type):
+        now = datetime.utcnow()
+        exp = now + timedelta(days=7) if type == "refresh" else now + timedelta(minutes=30)
         try:
             payload = {
-                'exp': datetime.utcnow() + timedelta(hours=1),
-                'iat': datetime.utcnow(),
+                'exp': exp,
+                'iat': now,
                 'sub': userId
             }
             return jwt.encode(
@@ -68,6 +70,8 @@ class UserRepository:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
+
+    
 
 
     

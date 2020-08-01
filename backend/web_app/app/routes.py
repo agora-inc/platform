@@ -48,8 +48,11 @@ def addUser():
     username = params['username']
     password = params['password']
     user = users.addUser(username, password)
-    token = users.encodeAuthToken(user["id"])
-    return jsonify({"id": user["id"], "username": user["username"], "token": token.decode()})
+
+    accessToken = users.encodeAuthToken(user["id"], "access")
+    refreshToken = users.encodeAuthToken(user["id"], "refresh")
+
+    return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
 
 @app.route('/users/authenticate', methods=["POST", "OPTIONS"])
 def authenticate():
@@ -65,8 +68,22 @@ def authenticate():
     if not user:
         return exceptions.Unauthorized("Incorrect username or password")
 
-    token = users.encodeAuthToken(user["id"])
-    return jsonify({"id": user["id"], "username": user["username"], "token": token.decode()})
+    accessToken = users.encodeAuthToken(user["id"], "access")
+    refreshToken = users.encodeAuthToken(user["id"], "refresh")
+
+    return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
+
+@app.route('/refreshtoken', methods=["POST"])
+def refreshAccessToken():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    if "userId" not in params:
+        return exceptions.BadRequest("userId must be present in request")
+
+    accessToken = users.encodeAuthToken(request.json.userId, "access")
+    return jsonify({"accessToken": accessToken.decode()})
 
 
 # --------------------------------------------
