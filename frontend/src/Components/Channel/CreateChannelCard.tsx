@@ -65,7 +65,7 @@ export default class CreateChannelCard extends Component<Props, State> {
         <Box
           direction="row"
           width="100%"
-          gap="xsmall"
+          // gap="xsmall"
           pad="none"
           margin={{ left: "-7px" }}
         >
@@ -76,25 +76,25 @@ export default class CreateChannelCard extends Component<Props, State> {
             <Previous color="black" />
           </Box>
           <Text weight="bold" color="black">
-            New Agora
+            Create Agora
           </Text>
         </Box>
-        <Text color="grey" size="14px">
-            Enter the name and a short description of your Agora. You can customize it later.
-        </Text>
+
+
+        
         <Box gap="small">
           <TextInput
             style={{ width: 300 }}
-            placeholder="Name"
+            placeholder="Your Agora name"
             onChange={(e) => this.setState({ newChannelName: e.target.value })}
           />
-          <TextArea
+          {/* <TextArea
             style={{ width: 300, height: 100 }}
             placeholder="Description"
             onChange={(e) =>
               this.setState({ newChannelDescription: e.target.value })
             }
-          />
+          /> */}
 
           <AsyncButton
             color="#7E1115"
