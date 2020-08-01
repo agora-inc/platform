@@ -17,8 +17,6 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import { thisExpression } from "@babel/types";
 
-
-
 interface Props {
   talk: Talk;
   user: User | null;
@@ -27,6 +25,7 @@ interface Props {
   width?: any;
   margin?: any;
   isCurrent?: boolean;
+  show?: boolean;
 }
 
 interface State {
@@ -41,7 +40,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showModal: false,
+      showModal: this.props.show ? this.props.show && !this.props.admin : false,
       showEdit: false,
       registered: false,
       showShadow: false,
@@ -128,13 +127,13 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.setState({ showModal: !this.state.showModal });
   };
 
-  toggleEdit = () => { 
-    this.setState({ showEdit: !this.state.showEdit})
+  toggleEdit = () => {
+    this.setState({ showEdit: !this.state.showEdit });
   };
 
   render() {
-    console.log("USER", this.props.user)
-    
+    console.log("USER", this.props.user);
+
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
@@ -165,7 +164,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               gap="xsmall"
               align="center"
               style={{ height: "40px" }}
-              margin={{bottom: "10px"}}
+              margin={{ bottom: "10px" }}
             >
               <Box
                 height="30px"
@@ -187,11 +186,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   />
                 )}
               </Box>
-              <Text
-                weight="bold"
-                size="16px"
-                color="grey"
-              >
+              <Text weight="bold" size="16px" color="grey">
                 {this.props.talk.channel_name}
               </Text>
             </Box>
@@ -208,10 +203,16 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               <Text
                 size="18px"
                 color="black"
-                style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
-                margin={{bottom: "10px"}}
+                style={{
+                  height: "30px",
+                  overflow: "auto",
+                  fontStyle: "italic",
+                }}
+                margin={{ bottom: "10px" }}
               >
-                {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+                {this.props.talk.talk_speaker
+                  ? this.props.talk.talk_speaker
+                  : "TBA"}
               </Text>
             </Box>
             <Box direction="row" gap="small">
@@ -255,7 +256,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
         </Box>
         {this.props.admin && (
           <Box
-            onClick={() => {this.toggleEdit()}}
+            onClick={() => {
+              this.toggleEdit();
+            }}
             background="#7E1115"
             round="xsmall"
             pad="xsmall"
@@ -266,9 +269,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             hoverIndicator="#5A0C0F"
             margin="10px"
           >
-            <Text size="18px"> 
-              Edit
-            </Text>
+            <Text size="18px">Edit</Text>
           </Box>
         )}
         {this.state.showModal && (
@@ -299,12 +300,11 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               justify="between"
               gap="xsmall"
             >
-              <Box style={{ minHeight: "200px", maxHeight: "540px" }} direction="column">
-                <Box 
-                  direction="row" 
-                  gap="xsmall" 
-                  style={{ minHeight: "30px" }} 
-                >
+              <Box
+                style={{ minHeight: "200px", maxHeight: "540px" }}
+                direction="column"
+              >
+                <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
                   <Link
                     className="channel"
                     to={`/${this.props.talk.channel_name}`}
@@ -314,7 +314,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       direction="row"
                       gap="xsmall"
                       align="center"
-                      round="xsmall" 
+                      round="xsmall"
                       pad={{ vertical: "6px", horizontal: "6px" }}
                     >
                       <Box
@@ -345,11 +345,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                         )}
                       </Box>
                       <Box justify="between">
-                        <Text
-                          weight="bold"
-                          size="18px"
-                          color="grey"
-                        >
+                        <Text weight="bold" size="18px" color="grey">
                           {this.props.talk.channel_name}
                         </Text>
                       </Box>
@@ -360,54 +356,71 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   weight="bold"
                   size="21px"
                   color="black"
-                  style={{ minHeight: "50px", maxHeight: "120px", overflowY: "auto" }}
-                  margin={{bottom: "20px", top: "10px"}}
+                  style={{
+                    minHeight: "50px",
+                    maxHeight: "120px",
+                    overflowY: "auto",
+                  }}
+                  margin={{ bottom: "20px", top: "10px" }}
                 >
                   {this.props.talk.name}
                 </Text>
 
                 {this.props.talk.talk_speaker_url && (
                   <a href={this.props.talk.talk_speaker_url} target="_blank">
-                    <Box 
-                      direction="row" 
-                      gap="small" 
+                    <Box
+                      direction="row"
+                      gap="small"
                       onClick={() => {}}
                       hoverIndicator={true}
-                      pad={{left: "6px", top:"4px"}}
+                      pad={{ left: "6px", top: "4px" }}
                     >
                       <UserExpert size="18px" />
                       <Text
                         size="18px"
                         color="black"
-                        style={{ height: "24px", overflow: "auto", fontStyle: "italic" }}
+                        style={{
+                          height: "24px",
+                          overflow: "auto",
+                          fontStyle: "italic",
+                        }}
                       >
-                        {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+                        {this.props.talk.talk_speaker
+                          ? this.props.talk.talk_speaker
+                          : "TBA"}
                       </Text>
                     </Box>
                   </a>
                 )}
 
                 {!this.props.talk.talk_speaker_url && (
-                  <Box 
-                    direction="row" 
-                    gap="small"
-                  >
+                  <Box direction="row" gap="small">
                     <UserExpert size="18px" />
                     <Text
                       size="18px"
                       color="black"
-                      style={{ height: "30px", overflow: "auto", fontStyle: "italic" }}
-                      margin={{bottom: "10px"}}
+                      style={{
+                        height: "30px",
+                        overflow: "auto",
+                        fontStyle: "italic",
+                      }}
+                      margin={{ bottom: "10px" }}
                     >
-                      {this.props.talk.talk_speaker ? this.props.talk.talk_speaker : "TBA" }
+                      {this.props.talk.talk_speaker
+                        ? this.props.talk.talk_speaker
+                        : "TBA"}
                     </Text>
                   </Box>
                 )}
-                <Text 
-                  size="16px" 
-                  color="black" 
-                  style={{ minHeight: "50px", maxHeight: "200px", overflowY: "auto" }}
-                  margin={{top: "10px", bottom: "10px"}}
+                <Text
+                  size="16px"
+                  color="black"
+                  style={{
+                    minHeight: "50px",
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                  }}
+                  margin={{ top: "10px", bottom: "10px" }}
                 >
                   {this.props.talk.description}
                 </Text>
@@ -415,79 +428,78 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
                   <Calendar size="18px" />
-                    <Text
-                      size="18px"
-                      color="black"
-                      style={{ height: "20px", fontStyle: "normal" }}
-                    >
-                      {this.formatDateFull(
-                        this.props.talk.date,
-                        this.props.talk.end_date
-                      )}
-                    </Text>
+                  <Text
+                    size="18px"
+                    color="black"
+                    style={{ height: "20px", fontStyle: "normal" }}
+                  >
+                    {this.formatDateFull(
+                      this.props.talk.date,
+                      this.props.talk.end_date
+                    )}
+                  </Text>
                 </Box>
-                {this.state.available && (this.props.user !== null || this.props.admin) && this.state.registered && (
-                  <Box margin={{top: "10px", bottom: "20px"}}>
-                    <CountdownAndCalendarButtons
-                      talkStart={this.props.talk.date}
-                      showLinkOffset={this.props.talk.show_link_offset}
-                      link={this.props.talk.link}
-                      color={this.props.talk.channel_colour}
-                      startTime={this.props.talk.date}
-                      endTime={this.props.talk.end_date}
-                      name={this.props.talk.name}
-                      description={this.props.talk.description}
-                    />
+                {this.state.available &&
+                  (this.props.user !== null || this.props.admin) &&
+                  this.state.registered && (
+                    <Box margin={{ top: "10px", bottom: "20px" }}>
+                      <CountdownAndCalendarButtons
+                        talkStart={this.props.talk.date}
+                        showLinkOffset={this.props.talk.show_link_offset}
+                        link={this.props.talk.link}
+                        color={this.props.talk.channel_colour}
+                        startTime={this.props.talk.date}
+                        endTime={this.props.talk.end_date}
+                        name={this.props.talk.name}
+                        description={this.props.talk.description}
+                      />
+                      <Box
+                        focusIndicator={false}
+                        background="#FF4040"
+                        round="xsmall"
+                        pad="xsmall"
+                        justify="center"
+                        align="center"
+                        width="20%"
+                        height="35px"
+                        onClick={this.onClick}
+                        margin={{ top: "-35px" }}
+                        alignSelf="end"
+                        hoverIndicator={true}
+                      >
+                        <Text size="14px" weight="bold">
+                          Unregister
+                        </Text>
+                      </Box>
+                    </Box>
+                  )}
+                {this.state.available &&
+                  (this.props.user !== null || this.props.admin) &&
+                  !this.state.registered && (
                     <Box
-
-                      focusIndicator={false}
-                      background="#FF4040"
+                      onClick={this.onClick}
+                      background="#7E1115"
                       round="xsmall"
                       pad="xsmall"
+                      height="40px"
                       justify="center"
                       align="center"
-                      width="20%"
-                      height="35px"
-                      onClick={this.onClick}
-                      margin={{ top: "-35px" }}
-                      alignSelf="end"
-                      hoverIndicator={true}   
+                      focusIndicator={false}
+                      hoverIndicator="#5A0C0F"
                     >
-                      <Text size="14px" weight="bold"> 
-                        Unregister
-                      </Text>
+                      <Text size="18px">Register</Text>
                     </Box>
-                  </Box>
-                )}
-                {this.state.available && (this.props.user !== null || this.props.admin) && !this.state.registered && (
-                  <Box
-                    onClick={this.onClick}
-                    background="#7E1115"
-                    round="xsmall"
-                    pad="xsmall"
-                    height="40px"
-                    justify="center"
-                    align="center"
-                    focusIndicator={false}
-                    hoverIndicator="#5A0C0F"
-                  >
-                    <Text size="18px"> 
-                      Register
-                    </Text>
-                  </Box>
-                )}
-                {this.state.available && this.props.user === null && !this.props.admin && (
-                  <Box 
-                    direction="row" 
-                    align="center"
-                    gap="10px"
-                  >
-                    <LoginModal callback={() => {}} />
-                    <Text size="18px"> or </Text>
-                    <SignUpButton callback={() => {}} />
-                    <Text size="18px"> to register </Text>
-                  </Box>
-                )}
+                  )}
+                {this.state.available &&
+                  this.props.user === null &&
+                  !this.props.admin && (
+                    <Box direction="row" align="center" gap="10px">
+                      <LoginModal callback={() => {}} />
+                      <Text size="18px"> or </Text>
+                      <SignUpButton callback={() => {}} />
+                      <Text size="18px"> to register </Text>
+                    </Box>
+                  )}
               </Box>
             </Box>
             {!this.state.available && (

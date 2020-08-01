@@ -21,7 +21,6 @@ import GettingStartedPage from "./Views/GettingStartedPage";
 import TermsOfServicePage from "./Views/TermsOfServicePage";
 import PrivacyPage from "./Views/PrivacyPage";
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -32,7 +31,6 @@ function App() {
           <Route exact path="/videos" component={AllVideosPage} />
           <Route path="/video" component={VideoPage} />
           <Route path="/stream" component={StreamPage} />
-          {/* <Route exact path={`/channel/:name`} component={ChannelPage} /> */}
           <Route path={`/:name/manage`} component={ManageChannelPage} />
           <Route path="/tag" component={TagPage} />
           <Route path="/streaming" component={Streaming} />

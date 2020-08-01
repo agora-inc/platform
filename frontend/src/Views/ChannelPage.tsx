@@ -35,6 +35,7 @@ interface State {
   following: boolean;
   user: User | null;
   bannerExtended: boolean;
+  showTalkId: number;
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -52,6 +53,7 @@ export default class ChannelPage extends Component<Props, State> {
       following: false,
       user: UserService.getCurrentUser(),
       bannerExtended: true,
+      showTalkId: this.getTalkIdFromUrl(),
     };
   }
 
@@ -63,6 +65,15 @@ export default class ChannelPage extends Component<Props, State> {
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
   }
+
+  getTalkIdFromUrl = (): number => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const talkId = urlParams.get("talkId");
+    if (!talkId) {
+      return -1;
+    }
+    return Number(talkId);
+  };
 
   shouldRedirect = (): boolean => {
     return this.state.role === "owner" || this.state.role === "member";
@@ -306,7 +317,13 @@ export default class ChannelPage extends Component<Props, State> {
             style={{ textAlign: "justify", fontWeight: 450 }}
             margin={{ horizontal: "16px", bottom: "16px" }}
           >
-            <div dangerouslySetInnerHTML={{__html: this.state.channel?.long_description ? this.state.channel?.long_description : "" }} />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: this.state.channel?.long_description
+                  ? this.state.channel?.long_description
+                  : "",
+              }}
+            />
           </Text>
         )}
       </Box>
@@ -364,21 +381,24 @@ export default class ChannelPage extends Component<Props, State> {
                     align="center"
                     alignSelf="center"
                     background="#F3EACE"
-                    margin={{bottom: "36px"}}
+                    margin={{ bottom: "36px" }}
                   >
                     <Text size="18px" weight="bold" color="grey">
-                      There are no upcoming talks in {this.state.channel ? this.state.channel.name : "this channel"}
+                      There are no upcoming talks in{" "}
+                      {this.state.channel
+                        ? this.state.channel.name
+                        : "this channel"}
                     </Text>
                   </Box>
                 )}
                 {this.state.talks.length !== 0 && (
                   <Box gap="5px" width="100%">
-
                     <ChannelPageTalkList
                       talks={this.state.talks}
                       channelId={this.state.channel!.id}
                       user={this.state.user}
                       admin={false}
+                      showTalkId={this.state.showTalkId}
                     />
                   </Box>
                 )}
@@ -404,6 +424,7 @@ export default class ChannelPage extends Component<Props, State> {
                       talk={talk}
                       margin={{ bottom: "medium" }}
                       user={this.state.user}
+                      show={talk.id === this.state.showTalkId}
                     />
                   ))}
                 </Box>

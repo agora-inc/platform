@@ -21,6 +21,7 @@ interface Props {
   onSave?: any;
   onUnsave?: any;
   user: User | null;
+  show?: boolean;
 }
 
 interface State {
@@ -35,7 +36,7 @@ export default class PastTalkCard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showModal: false,
+      showModal: this.props.show ? this.props.show && !this.props.admin : false,
       showShadow: false,
       saved: false,
       showLinkInput: false,
@@ -123,11 +124,11 @@ export default class PastTalkCard extends Component<Props, State> {
     this.setState({
       showLinkInput: !this.state.showLinkInput,
       showModal: true,
-    })
+    });
     if (this.state.showLinkInput) {
-      this.onSaveRecordingUrlClicked()
+      this.onSaveRecordingUrlClicked();
     }
-  }
+  };
 
   getButtons = () => {
     if (this.props.admin) {
@@ -137,29 +138,33 @@ export default class PastTalkCard extends Component<Props, State> {
             onClick={this.onClick}
             background="#7E1115"
             round="xsmall"
-            pad={{bottom: "6px", top: "8px", left: "18px", right: "18px"}}
+            pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
             height="40px"
             width="33%"
             align="start"
             focusIndicator={false}
             hoverIndicator="#5A0C0F"
           >
-            <Text alignSelf="center" size="18px"> 
-              {this.state.showLinkInput ? "Save link recording" : "Enter link recording"}
+            <Text alignSelf="center" size="18px">
+              {this.state.showLinkInput
+                ? "Save link recording"
+                : "Enter link recording"}
             </Text>
           </Box>
           <Box
             onClick={this.onDeleteClicked}
             background="#FF4040"
             round="xsmall"
-            pad={{bottom: "6px", top: "8px", left: "18px", right: "18px"}}
+            pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
             height="40px"
             width="25%"
             alignSelf="end"
             focusIndicator={false}
             hoverIndicator="white"
           >
-            <Text alignSelf="center" size="18px">Delete talk</Text>
+            <Text alignSelf="center" size="18px">
+              Delete talk
+            </Text>
           </Box>
         </Box>
       );
@@ -174,24 +179,26 @@ export default class PastTalkCard extends Component<Props, State> {
             <Box
               background="#7E1115"
               round="xsmall"
-              pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
+              pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
               height="40px"
-              width="33%" 
+              width="33%"
               justify="center"
               align="start"
               focusIndicator={false}
               hoverIndicator="#5A0C0F"
             >
-              <Text alignSelf="center" size="18px">Watch talk</Text>
+              <Text alignSelf="center" size="18px">
+                Watch talk
+              </Text>
             </Box>
           </a>
           {this.props.user && (
             <Box
               background="white"
               round="xsmall"
-              pad={{bottom: "6px", top: "8px", left: "18px", right: "18px"}}
+              pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
               height="40px"
-              width={this.state.saved ? "50%" : "33%"} 
+              width={this.state.saved ? "50%" : "33%"}
               onClick={this.onSaveTalkClicked}
               style={{
                 border: "1px solid #C2C2C2",
@@ -199,7 +206,7 @@ export default class PastTalkCard extends Component<Props, State> {
               focusIndicator={false}
               hoverIndicator={true}
             >
-              <Text alignSelf="center" color="grey" size="18px" >
+              <Text alignSelf="center" color="grey" size="18px">
                 {this.state.saved ? "Remove from saved" : "Save talk"}
               </Text>
             </Box>

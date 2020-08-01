@@ -44,7 +44,9 @@ export const get = async (
   if (user !== null) {
     userObj = JSON.parse(user);
     let accessToken = userObj.accessToken;
-    tokenExpired = isTokenExpired(accessToken);
+    if (accessToken) {
+      tokenExpired = isTokenExpired(accessToken);
+    }
   }
 
   if (user !== null && tokenExpired) {
