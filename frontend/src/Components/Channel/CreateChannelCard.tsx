@@ -23,7 +23,7 @@ interface Props {
 
 interface State {
   newChannelName: string;
-  newChannelDescription: string,
+  newChannelDescription: string;
   redirect: boolean;
 }
 
