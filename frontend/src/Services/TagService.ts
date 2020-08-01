@@ -1,36 +1,17 @@
 import axios from "axios";
 import { baseApiUrl } from "../config";
+import { get, post } from "../Middleware/httpMiddleware";
 
 const getAll = (callback: any) => {
-  axios
-    .get(baseApiUrl + "/tags/all", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then((response) => {
-      callback(response.data);
-    });
+  get("tags/all", callback);
 };
 
 const getPopular = (callback: any) => {
-  axios
-    .get(baseApiUrl + "/tags/popular?n=5", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then((response) => {
-      callback(response.data);
-    });
+  get("tags/popular?n=5", callback);
 };
 
 const createTag = (tagName: string, callback: any) => {
-  axios
-    .post(
-      baseApiUrl + "/tags/add",
-      { name: tagName },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then((response) => {
-      callback(response.data);
-    });
+  post("tags/add", { name: tagName }, callback);
 };
 
 export const TagService = {
