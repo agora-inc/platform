@@ -17,6 +17,7 @@ import TagSelector from "../Core/TagSelector";
 import TopicSelector from "../Talks/TopicSelector";
 import { Topic } from "../../Services/TopicService";
 import "../../Styles/edit-talk-modal.css";
+import LatexInput from "../Streaming/LatexInput";
 
 interface Props {
   channel: Channel | null;
