@@ -431,30 +431,41 @@ export default class ManageChannelPage extends Component<Props, State> {
               <Box
                   width="100%"
                   height="100%"
-                  background="yellow"
-                  round="7.5px"
+                  // background="yellow"
+                  // round="7.5px"
                   pad="10px"
-                >   
-                <h2><b> Agora administrator page: </b></h2>
-                <p>As an administrator, you can:</p>
-                <ul>
-                  <li><b>Create and edit events</b> via the <i><b>"Schedule talk"</b></i> button</li>
-                  <li><b>Customize your header</b> via the <i><b>"Header"</b></i> button <i>(recommended dim: 1500x500px)</i></li>
-                  <li><b>Customize your avatar </b><i>(recommended dim: 400x400px)</i></li>
-                  <li><b>Edit your agora description</b> </li>
-                  <li><b>Promote users</b> to the rank of administrator/member.</li>
-                  <li><b>Link talk recordings</b> to your previous agora events.</li>
+                  background="white"
+                  round="xsmall"
+                  // pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
+                  justify="center"
+                  // align="center"
+                  // focusIndicator={false}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                >
+                <Text color="#5A5A5A">
+                  <p><big><b> Agora administrator page </b></big></p>
+                  <p>As an administrator, you can:</p>
+                  <ul>
+                    <li><b>Create and edit events</b></li>
+                    <li><b>Customize header</b> <i>(recommended dim: 1500x500px)</i></li>
+                    <li><b>Customize avatar </b><i>(recommended dim: 400x400px)</i></li>
+                    <li><b>Edit Agora description</b> </li>
+                    <li><b>Promote users</b> to administrator/member.</li>
+                    <li><b>Link recordings</b> to your previous Agora events.</li>
 
-                </ul>
-                <p>For more general information, visit our
-                  <Link to={"/info/getting-started"}>
-                    <Text weight="bold" color="brand">
-                      {" "}getting-started{" "}
-                    </Text>
-                  </Link>
-                  page.
-                </p>
-                <i><b>N.B.:</b> This help box and customisation options are only visible to admins.</i>
+                  </ul>
+                  <p>For more general information, visit our
+                    <Link to={"/info/getting-started"}>
+                      <Text weight="bold" color="brand">
+                        {" "}getting-started{" "}
+                      </Text>
+                    </Link>
+                    page.
+                  </p>
+                  <i><b>NB:</b> This help box and customisation options are only visible to admins.</i>
+                </Text>
               </Box>
 
               {this.banner()}
