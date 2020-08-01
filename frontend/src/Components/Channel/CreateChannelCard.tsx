@@ -23,7 +23,7 @@ interface Props {
 
 interface State {
   newChannelName: string;
-  newChannelDescription: string;
+  newChannelDescription: string,
   redirect: boolean;
 }
 
@@ -101,8 +101,7 @@ export default class CreateChannelCard extends Component<Props, State> {
             fontColor="white"
             label="Create"
             disabled={
-              this.state.newChannelName === "" ||
-              this.state.newChannelDescription === ""
+              this.state.newChannelName === ""
             }
             onClick={this.onCreateClicked}
             width="300px"

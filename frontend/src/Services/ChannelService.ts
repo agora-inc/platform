@@ -29,6 +29,11 @@ const createChannel = (
   userId: number,
   callback: any
 ) => {
+  // default description if none
+  if (description == ""){
+    description = "<p> Welcome to <b>" + name + "</b>! </p> <p>This section will contain general information about us. Stay tuned! </p>"
+  };
+
   axios
     .post(
       baseApiUrl + "/channels/create",

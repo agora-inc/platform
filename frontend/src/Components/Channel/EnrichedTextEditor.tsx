@@ -110,8 +110,15 @@ export default class EnrichedTextEditor extends Component<Props, State> {
         
         )}
       {!this.state.editing_mode && (
-        <>       
+        <> 
+          <Text
+            size="20px"
+            style={{ textAlign: "justify", fontWeight: 450 }}
+            margin={{ horizontal: "16px", bottom: "16px" }}
+          >
           <div dangerouslySetInnerHTML={{__html: this.state.currentText}} />
+          </Text>
+          
           <Text
           style={{
             textDecoration: "underline",
