@@ -443,16 +443,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   (this.props.user !== null || this.props.admin) &&
                   this.state.registered && (
                     <Box margin={{ top: "10px", bottom: "20px" }}>
-                      <CountdownAndCalendarButtons
-                        talkStart={this.props.talk.date}
-                        showLinkOffset={this.props.talk.show_link_offset}
-                        link={this.props.talk.link}
-                        color={this.props.talk.channel_colour}
-                        startTime={this.props.talk.date}
-                        endTime={this.props.talk.end_date}
-                        name={this.props.talk.name}
-                        description={this.props.talk.description}
-                      />
+                      <CountdownAndCalendarButtons talk={this.props.talk} />
                       <Box
                         focusIndicator={false}
                         background="#FF4040"

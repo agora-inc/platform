@@ -2,21 +2,14 @@ import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
 import { CalendarService } from "../../Services/CalendarService";
 import { Google } from "grommet-icons";
+import { Talk } from "../../Services/TalkService";
 var moment = require("moment");
 
 interface Props {
-  talkStart: string;
-  showLinkOffset: number;
-  color: string;
-  startTime: string;
-  endTime: string;
-  name: string;
-  description: string;
-  link: string;
+  talk: Talk;
 }
 
 interface State {
-  linkSchedule: string;
   showLinkAt: Date;
   now: Date;
 }
@@ -28,7 +21,6 @@ export default class CountdownAndCalendarButtons extends Component<
   constructor(props: Props) {
     super(props);
     this.state = {
-      linkSchedule: "https://www.agora.stream/schedule",
       showLinkAt: this.computeShowLinkTime(),
       now: new Date(),
     };
@@ -36,19 +28,23 @@ export default class CountdownAndCalendarButtons extends Component<
 
   createICShref = () => {
     const url = CalendarService.generateICSDownloadLink(
-      this.props.startTime,
-      this.props.endTime,
-      this.props.name,
-      this.props.description,
-      this.state.linkSchedule,
+      this.props.talk.date,
+      this.props.talk.end_date,
+      this.props.talk.name,
+      this.props.talk.description,
+      `https://agora.stream/${this.props.talk.channel_name.toLowerCase()}?talkId=${
+        this.props.talk.id
+      }`
     );
     const blob = new Blob([url], { type: "text/calendar;charset=utf-8" });
     return window.URL.createObjectURL(blob);
   };
 
   computeShowLinkTime = () => {
-    let d = new Date(this.props.talkStart);
-    return moment(d).subtract(this.props.showLinkOffset, "minutes").toDate();
+    let d = new Date(this.props.talk.date);
+    return moment(d)
+      .subtract(this.props.talk.show_link_offset, "minutes")
+      .toDate();
   };
 
   componentWillMount() {
@@ -84,7 +80,7 @@ export default class CountdownAndCalendarButtons extends Component<
   };
 
   render() {
-    return( 
+    return (
       <Box gap="30px" direction="column">
         <Box
           direction="row"
@@ -95,11 +91,13 @@ export default class CountdownAndCalendarButtons extends Component<
           <a
             style={{ width: "48%", textDecoration: "none" }}
             href={CalendarService.generateGoogleCalendarLink(
-              this.props.startTime,
-              this.props.endTime,
-              this.props.name,
-              this.props.description,
-              this.state.linkSchedule,
+              this.props.talk.date,
+              this.props.talk.end_date,
+              this.props.talk.name,
+              this.props.talk.description,
+              `https://agora.stream/${this.props.talk.channel_name.toLowerCase()}?talkId=${
+                this.props.talk.id
+              }`
             )}
             target="_blank"
           >
@@ -117,7 +115,7 @@ export default class CountdownAndCalendarButtons extends Component<
               onClick={() => {}}
               hoverIndicator={true}
             >
-              <Text size="14px" weight="bold" color="grey" >
+              <Text size="14px" weight="bold" color="grey">
                 Add to
               </Text>
               <Google size="14px" color="plain" />
@@ -152,9 +150,10 @@ export default class CountdownAndCalendarButtons extends Component<
         </Box>
 
         {this.shouldShowLink() && (
-          <a 
-            style={{ width: "48%", textDecoration: "none" }} 
-            href={this.props.link} target="_blank"
+          <a
+            style={{ width: "48%", textDecoration: "none" }}
+            href={this.props.talk.link}
+            target="_blank"
           >
             <Box
               onClick={() => {}}
@@ -167,7 +166,7 @@ export default class CountdownAndCalendarButtons extends Component<
               focusIndicator={false}
               hoverIndicator="#5A0C0F"
             >
-              <Text size="14px" weight="bold"> 
+              <Text size="14px" weight="bold">
                 Link to talk
               </Text>
             </Box>
@@ -176,8 +175,9 @@ export default class CountdownAndCalendarButtons extends Component<
 
         {!this.shouldShowLink() && (
           <Box height="35px">
-            <Text size="14px" weight="bold" margin={{top: "10px"}}>
-              {this.showTimeUntil()}</Text>
+            <Text size="14px" weight="bold" margin={{ top: "10px" }}>
+              {this.showTimeUntil()}
+            </Text>
           </Box>
         )}
       </Box>

@@ -13,7 +13,6 @@ import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 
-
 interface Props {
   talk: Talk;
   user: User | null;
@@ -219,14 +218,14 @@ export default class CurrentTalkCard extends Component<Props, State> {
             </Box>
             <Box direction="row" gap="small">
               <Calendar size="18px" />
-                <Text
-                  size="18px"
-                  color="#5454A0"
-                  weight="bold"
-                  style={{ height: "30px", fontStyle: "normal" }}
-                >
-                  {this.getTimeRemaining()}
-                </Text>
+              <Text
+                size="18px"
+                color="#5454A0"
+                weight="bold"
+                style={{ height: "30px", fontStyle: "normal" }}
+              >
+                {this.getTimeRemaining()}
+              </Text>
             </Box>
           </Box>
         </Box>
@@ -408,21 +407,12 @@ export default class CurrentTalkCard extends Component<Props, State> {
                     weight="bold"
                     style={{ height: "20px", fontStyle: "normal" }}
                   >
-                     {this.getTimeRemaining()}
+                    {this.getTimeRemaining()}
                   </Text>
                 </Box>
                 {this.state.registered && (
                   <Box margin={{ top: "10px", bottom: "20px" }}>
-                    <CountdownAndCalendarButtons
-                      talkStart={this.props.talk.date}
-                      showLinkOffset={this.props.talk.show_link_offset}
-                      link={this.props.talk.link}
-                      color={this.props.talk.channel_colour}
-                      startTime={this.props.talk.date}
-                      endTime={this.props.talk.end_date}
-                      name={this.props.talk.name}
-                      description={this.props.talk.description}
-                    />
+                    <CountdownAndCalendarButtons talk={this.props.talk} />
                     <Box
                       focusIndicator={false}
                       background="#FF4040"
@@ -435,43 +425,39 @@ export default class CurrentTalkCard extends Component<Props, State> {
                       onClick={this.onClick}
                       margin={{ top: "-35px" }}
                       alignSelf="end"
-                      hoverIndicator={true}   
+                      hoverIndicator={true}
                     >
-                      <Text size="14px" weight="bold"> 
+                      <Text size="14px" weight="bold">
                         Unregister
                       </Text>
                     </Box>
                   </Box>
                 )}
-                {this.state.available && (this.props.user !== null) && !this.state.registered && (
-                  <Box
-                    onClick={this.onClick}
-                    background="#7E1115"
-                    round="xsmall"
-                    pad="xsmall"
-                    height="40px"
-                    justify="center"
-                    align="center"
-                    focusIndicator={false}
-                    hoverIndicator="#5A0C0F"
-                  >
-                    <Text size="18px"> 
-                      Register
-                    </Text>
-                  </Box>
-                )}
+                {this.state.available &&
+                  this.props.user !== null &&
+                  !this.state.registered && (
+                    <Box
+                      onClick={this.onClick}
+                      background="#7E1115"
+                      round="xsmall"
+                      pad="xsmall"
+                      height="40px"
+                      justify="center"
+                      align="center"
+                      focusIndicator={false}
+                      hoverIndicator="#5A0C0F"
+                    >
+                      <Text size="18px">Register</Text>
+                    </Box>
+                  )}
                 {this.state.available && this.props.user === null && (
-                  <Box 
-                    direction="row" 
-                    align="center"
-                    gap="10px"
-                  >
+                  <Box direction="row" align="center" gap="10px">
                     <LoginModal callback={() => {}} />
                     <Text size="18px"> or </Text>
                     <SignUpButton callback={() => {}} />
                     <Text size="18px"> to register </Text>
                   </Box>
-                )}                
+                )}
               </Box>
             </Box>
             {!this.state.available && (

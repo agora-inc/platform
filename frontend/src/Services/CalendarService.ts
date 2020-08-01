@@ -40,7 +40,6 @@ const generateICSDownloadLink = (
     "DTEND:" + formatTime(endTime),
     "SUMMARY:" + name,
     "DESCRIPTION:" + description,
-    // "LOCATION:" + event.location,
     "END:VEVENT",
     "END:VCALENDAR",
   ].join("\n");
