@@ -229,9 +229,15 @@ def avatar():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        channelId = int(request.args.get("channelId"))
-        fn = f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
-        return send_file(fn, mimetype="image/jpg")
+        
+        # REMY: NOT DEBUGGED YET
+        if "channelId" in request.args:
+            channelId = int(request.args.get("channelId"))
+            fn = f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
+            return send_file(fn, mimetype="image/jpg")
+        elif "default" in request.args:
+            fn = f"/home/cloud-user/plateform/agora/images/avatars/default.jpg"
+            return send_file(fn, mimetype="image/jpg")
 
 @app.route('/channels/cover', methods=["POST", "GET", "DELETE"])
 def cover():
@@ -248,10 +254,15 @@ def cover():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        channelId = int(request.args.get("channelId"))
-        fn = f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
-        return send_file(fn, mimetype="image/jpg")
-    
+        if "channelId" in request.args:
+            channelId = int(request.args.get("channelId"))
+            fn = f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
+            return send_file(fn, mimetype="image/jpg")
+
+        elif "default" in request.args:
+            fn = f"/home/cloud-user/plateform/agora/images/covers/default.jpg"
+            return send_file(fn, mimetype="image/jpg")
+
     if request.method == "DELETE":
         params = request.json 
         print(params)
