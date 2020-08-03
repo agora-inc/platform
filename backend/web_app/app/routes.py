@@ -82,7 +82,7 @@ def refreshAccessToken():
     if "userId" not in params:
         return exceptions.BadRequest("userId must be present in request")
 
-    accessToken = users.encodeAuthToken(request.json.userId, "access")
+    accessToken = users.encodeAuthToken(request.json["userId"], "access")
     return jsonify({"accessToken": accessToken.decode()})
 
 
