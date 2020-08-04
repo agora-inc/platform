@@ -1,20 +1,25 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
 
-const register = (username: string, password: string, callback: any) => {
+const register = (
+  username: string,
+  password: string,
+  email: string,
+  callback: any
+) => {
   axios
     .post(
       baseApiUrl + "/users/add",
-      { username: username, password: password },
+      { username: username, password: password, email: email },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
       localStorage.setItem("user", JSON.stringify(response.data));
-      callback(true);
+      callback("ok");
       window.location.reload(false);
     })
     .catch(function (error) {
-      callback(false);
+      callback(error.response.data);
     });
 };
 

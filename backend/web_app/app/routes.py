@@ -47,7 +47,11 @@ def addUser():
     params = request.json
     username = params['username']
     password = params['password']
-    user = users.addUser(username, password)
+    email = params['email']
+    user = users.addUser(username, password, email)
+
+    if not user:
+        return "username is taken", 400
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
