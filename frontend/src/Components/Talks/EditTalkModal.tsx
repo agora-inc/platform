@@ -257,29 +257,28 @@ export default class EditTalkModal extends Component<Props, State> {
         overflow={{"vertical": "scroll"}}
       >
         {textArr.map((textElement: string, index) => {
-            if (index % 2 == 0) {
-              return (
-                <Text
-                  color="black"
-                  style={{
-                    marginLeft: 3,
-                    marginRight: 3,
-                    // whiteSpace: "pre",
-                    overflowWrap: "break-word",
-                    wordBreak: "break-all",
-                  }}
-                  size="18px"
-                  weight="bold"
-                >
-                  {textElement}
-                </Text>
-              );
-            } else {
-              if (textElement != "" && index != textArr.length - 1) {
-                return <InlineMath math={textElement} />;
-              }
+          if (index % 2 == 0) {
+            return (
+              <Text
+                color="black"
+                style={{
+                  marginLeft: 3,
+                  marginRight: 3,
+                  // whiteSpace: "pre",
+                  overflowWrap: "break-word",
+                  wordBreak: "break-all",
+                }}
+                size="18px"
+              >
+                {textElement}
+              </Text>
+            );
+          } else {
+            if (textElement != "" && index != textArr.length - 1) {
+              return <InlineMath math={textElement} />;
             }
-          })}
+          }
+        })}
       </Box>
     );
   };
