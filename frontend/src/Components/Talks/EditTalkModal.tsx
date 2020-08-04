@@ -17,7 +17,9 @@ import TagSelector from "../Core/TagSelector";
 import TopicSelector from "../Talks/TopicSelector";
 import { Topic } from "../../Services/TopicService";
 import "../../Styles/edit-talk-modal.css";
-import LatexInput from "../Streaming/LatexInput";
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
+import { Switch } from "antd";
 
 interface Props {
   channel: Channel | null;
@@ -42,6 +44,7 @@ interface State {
   topics: Topic[];
   talkSpeaker: string;
   talkSpeakerURL: string;
+  latex: boolean;
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -69,6 +72,7 @@ export default class EditTalkModal extends Component<Props, State> {
       topics: [],
       talkSpeaker: this.props.talk ? this.props.talk.talk_speaker : "",
       talkSpeakerURL: this.props.talk ? this.props.talk.talk_speaker_url : "",
+      latex: false,
     };
   }
 
@@ -242,6 +246,44 @@ export default class EditTalkModal extends Component<Props, State> {
     );
   };
 
+  parse = (rawText: string, height: string) => {
+    const textArr = rawText.split("$");
+    return (
+      <Box 
+        height={height}
+        style={{ border: "1px solid grey" }}
+        round="xsmall"
+        pad="small"
+        overflow={{"vertical": "scroll"}}
+      >
+        {textArr.map((textElement: string, index) => {
+            if (index % 2 == 0) {
+              return (
+                <Text
+                  color="black"
+                  style={{
+                    marginLeft: 3,
+                    marginRight: 3,
+                    // whiteSpace: "pre",
+                    overflowWrap: "break-word",
+                    wordBreak: "break-all",
+                  }}
+                  size="18px"
+                  weight="bold"
+                >
+                  {textElement}
+                </Text>
+              );
+            } else {
+              if (textElement != "" && index != textArr.length - 1) {
+                return <InlineMath math={textElement} />;
+              }
+            }
+          })}
+      </Box>
+    );
+  };
+
   render() {
     return (
       <Overlay
@@ -306,15 +348,31 @@ export default class EditTalkModal extends Component<Props, State> {
                 />
               </Box>
               <Box width="100%" gap="5px" margin={{bottom: "0px"}}>
-                <Text size="14px" weight="bold" color="black">
-                  Description
-                </Text>
-                <TextArea
-                  style={{height: "102px"}}
-                  value={this.state.description}
-                  placeholder=""
-                  onChange={(e) => this.setState({ description: e.target.value })}
-                />
+                <Box direction="row" gap="small">
+                  <Text size="14px" weight="bold" color="black" margin={{"right": "100px"}}>
+                    Description
+                  </Text>
+                  <Switch
+                    checked={this.state.latex}
+                    onChange={(checked: boolean) => {
+                      this.setState({ latex: checked });
+                    }}
+                    size="small"
+                  />
+                  <InlineMath math={"{\\small \\LaTeX}"} />
+                </Box>
+                {!this.state.latex && (
+                  <TextArea
+                    style={{height: "102px"}}
+                    value={this.state.description}
+                    placeholder=""
+                    onChange={(e) => this.setState({ description: e.target.value })}
+                  />
+                )}
+                {this.state.latex && (
+                  this.parse(this.state.description, "102px")
+                )}
+
               </Box>
             </OverlaySection>
             {/*<OverlaySection heading="Add a few relevant tags">
