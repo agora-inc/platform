@@ -32,9 +32,13 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password):
+    def addUser(self, username, password, email):
+        # check if username exists
+        if self.getUser(username):
+            return None
+
         passwordHash = generate_password_hash(password)
-        query = f'INSERT INTO Users(username, password_hash) VALUES ("{username}", "{passwordHash}")'
+        query = f'INSERT INTO Users(username, password_hash, email) VALUES ("{username}", "{passwordHash}", "{email}")'
         insertId = self.db.run_query(query)[0]
         return self.getUserById(insertId)
     
