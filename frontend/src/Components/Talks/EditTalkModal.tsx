@@ -251,7 +251,7 @@ export default class EditTalkModal extends Component<Props, State> {
     return (
       <Box 
         height={height}
-        style={{ border: "1px solid grey" }}
+        style={{ border: "1px solid #C2C2C2" }}
         round="xsmall"
         pad="small"
         overflow={{"vertical": "scroll"}}
@@ -347,7 +347,22 @@ export default class EditTalkModal extends Component<Props, State> {
                   onChange={(e) => this.setState({ talkSpeakerURL: e.target.value })}
                 />
               </Box>
-              <Box width="100%" gap="5px" margin={{bottom: "0px"}}>
+              <Box width="100%" gap="5px">
+                <Text size="14px" weight="bold" color="black">
+                  Talk card visible by...
+                </Text>
+                <Select
+                  dropAlign={{ bottom: "top" }}
+                  focusIndicator={false}
+                  id="card-visibility-select"
+                  options={["Everybody", "Followers and members", "Members only"]}
+                  value={this.state.linkVisibility}
+                  onChange={({ option }) =>
+                    this.setState({ linkVisibility: option })
+                  }
+                />
+              </Box>
+              <Box width="100%" gap="5px" margin={{top: "15px"}}>
                 <Box direction="row" gap="small">
                   <Text size="14px" weight="bold" color="black" margin={{"right": "100px"}}>
                     Description
@@ -363,16 +378,15 @@ export default class EditTalkModal extends Component<Props, State> {
                 </Box>
                 {!this.state.latex && (
                   <TextArea
-                    style={{height: "102px"}}
+                    style={{height: "240px"}}
                     value={this.state.description}
                     placeholder=""
                     onChange={(e) => this.setState({ description: e.target.value })}
                   />
                 )}
                 {this.state.latex && (
-                  this.parse(this.state.description, "102px")
+                  this.parse(this.state.description, "240px")
                 )}
-
               </Box>
             </OverlaySection>
             {/*<OverlaySection heading="Add a few relevant tags">
@@ -386,141 +400,151 @@ export default class EditTalkModal extends Component<Props, State> {
                 </OverlaySection>*/}
             
           </Box>
-          <Box 
-            direction="column" 
-            width="33%"
-            margin={{left: "large", right: "xsmall"}}
-          > 
-            <OverlaySection> {/*heading="When is your talk going to be held?">*/}
-              <Calendar
-                date={this.state.date}
-                bounds={this.getDateBounds()}
-                size="small"
-                onSelect={(date: any) => {
-                  this.setState({ date });
-                }}
-                daysOfWeek
-                style={{ width: "100%" }}
-              />
-              <Box direction="row" gap="medium" margin={{top: "medium"}}>
-                <Box direction="column" width="100%" gap="5px">
-                  <Text size="14px" weight="bold" color="black">
-                    Start
-                  </Text>
-                  <MaskedInput
-                    mask={[
-                      {
-                        length: 2,
-                        regexp: /^[01][0-9]$|^2[0-3]|^[0-9]$/,
-                        placeholder: "hh",
-                      },
-                      { fixed: ":" },
-                      {
-                        length: 2,
-                        regexp: /^[0-5][0-9]$|^[0-5]$/,
-                        placeholder: "mm",
-                      },
-                    ]}
-                    value={this.state.startTime}
-                    onChange={(event: any) => {
-                      this.setState({ startTime: event.target.value });
+          <Box width="66%" direction="column">
+            <Box width="100%" direction="row">
+              <Box 
+                direction="column" 
+                width="50%"
+                margin={{left: "large", right: "xsmall"}}
+              > 
+                <OverlaySection> {/*heading="When is your talk going to be held?">*/}
+                  <Calendar
+                    date={this.state.date}
+                    bounds={this.getDateBounds()}
+                    size="small"
+                    onSelect={(date: any) => {
+                      this.setState({ date });
                     }}
+                    daysOfWeek
+                    style={{ width: "100%" }}
                   />
-                </Box>
-                <Box direction="column" width="100%" gap="5px">
-                  <Text size="14px" weight="bold" color="black">
-                    Finish
-                  </Text>
-                  <MaskedInput
-                    mask={[
-                      {
-                        length: 2,
-                        regexp: /^[01][0-9]$|^2[0-3]|^[0-9]$/,
-                        placeholder: "hh",
-                      },
-                      { fixed: ":" },
-                      {
-                        length: 2,
-                        regexp: /^[0-5][0-9]$|^[0-5]$/,
-                        placeholder: "mm",
-                      },
-                    ]}
-                    value={this.state.endTime}
-                    onChange={(event: any) => {
-                      this.setState({ endTime: event.target.value });
-                    }}
-                  />
-                </Box>
+                  <Box direction="row" gap="medium" margin={{top: "medium"}}>
+                    <Box direction="column" width="100%" gap="5px">
+                      <Text size="14px" weight="bold" color="black">
+                        Start
+                      </Text>
+                      <MaskedInput
+                        mask={[
+                          {
+                            length: 2,
+                            regexp: /^[01][0-9]$|^2[0-3]|^[0-9]$/,
+                            placeholder: "hh",
+                          },
+                          { fixed: ":" },
+                          {
+                            length: 2,
+                            regexp: /^[0-5][0-9]$|^[0-5]$/,
+                            placeholder: "mm",
+                          },
+                        ]}
+                        value={this.state.startTime}
+                        onChange={(event: any) => {
+                          this.setState({ startTime: event.target.value });
+                        }}
+                      />
+                    </Box>
+                    <Box direction="column" width="100%" gap="5px">
+                      <Text size="14px" weight="bold" color="black">
+                        Finish
+                      </Text>
+                      <MaskedInput
+                        mask={[
+                          {
+                            length: 2,
+                            regexp: /^[01][0-9]$|^2[0-3]|^[0-9]$/,
+                            placeholder: "hh",
+                          },
+                          { fixed: ":" },
+                          {
+                            length: 2,
+                            regexp: /^[0-5][0-9]$|^[0-5]$/,
+                            placeholder: "mm",
+                          },
+                        ]}
+                        value={this.state.endTime}
+                        onChange={(event: any) => {
+                          this.setState({ endTime: event.target.value });
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                </OverlaySection>
               </Box>
-            </OverlaySection>
-          </Box>
 
-          <Box 
-            direction="column" 
-            width="33%"
-            margin={{left: "large", right: "xsmall", top:"6px"}}
-          > 
-            <OverlaySection heading="Link to talk ">
-              <Text
-                size="14px" 
-                weight="bold" 
-                color="grey" 
-                alignSelf="start"
-                margin={{top: "10px", bottom: "21px"}}
-              >
-                Enter here a link towards a meeting room. No need to put a password, you choose the users you want to show the link to!
-              </Text>
-              <TextInput
-                value={this.state.link}
-                placeholder="e.g. https://zoom.us/"
-                onChange={(e) => this.setState({ link: e.target.value })}
-              />
-              <Box width="100%" gap="5px" margin={{top: "24px"}}>
-                <Text size="14px" weight="bold" color="black">
-                  Visible...
-                </Text>
-                <Select
-                  dropAlign={{ bottom: "top" }}
-                  focusIndicator={false}
-                  id="link-release-select"
-                  options={this.makeLinkDateOptions()}
-                  labelKey="label"
-                  value={this.makeLinkDateOption(this.state.releaseLinkOffset)}
-                  valueLabel={
-                    <Text
-                      weight="bold"
-                      margin={{ horizontal: "small", vertical: "10px" }}
-                    >
-                      {this.makeLinkDateOption(this.state.releaseLinkOffset).label}
+              <Box 
+                direction="column" 
+                width="50%"
+                margin={{left: "large", right: "xsmall", top:"6px"}}
+              > 
+                <OverlaySection heading="Link to talk ">
+                  <Text
+                    size="14px" 
+                    weight="bold" 
+                    color="grey" 
+                    alignSelf="start"
+                    margin={{top: "10px", bottom: "21px"}}
+                  >
+                    Enter here a link towards a meeting room. No need to put a password, you choose the users you want to show the link to!
+                  </Text>
+                  <TextInput
+                    value={this.state.link}
+                    placeholder="e.g. https://zoom.us/"
+                    onChange={(e) => this.setState({ link: e.target.value })}
+                  />
+                  <Box width="100%" gap="5px" margin={{top: "24px"}}>
+                    <Text size="14px" weight="bold" color="black">
+                      Visible...
                     </Text>
-                  }
-                  onChange={({ option }) => {
-                    console.log("OPTION: ", option);
-                    this.setState({ releaseLinkOffset: option.value });
-                  }}
-                />
+                    <Select
+                      dropAlign={{ bottom: "top" }}
+                      focusIndicator={false}
+                      id="link-release-select"
+                      options={this.makeLinkDateOptions()}
+                      labelKey="label"
+                      value={this.makeLinkDateOption(this.state.releaseLinkOffset)}
+                      valueLabel={
+                        <Text
+                          weight="bold"
+                          margin={{ horizontal: "small", vertical: "10px" }}
+                        >
+                          {this.makeLinkDateOption(this.state.releaseLinkOffset).label}
+                        </Text>
+                      }
+                      onChange={({ option }) => {
+                        console.log("OPTION: ", option);
+                        this.setState({ releaseLinkOffset: option.value });
+                      }}
+                    />
+                  </Box>
+                  <Box width="100%" gap="5px">
+                    <Text size="14px" weight="bold" color="black">
+                      By...
+                    </Text>
+                    <Select
+                      dropAlign={{ bottom: "top" }}
+                      focusIndicator={false}
+                      id="link-visibility-select"
+                      options={["Everybody", "Followers and members", "Members only"]}
+                      value={this.state.linkVisibility}
+                      onChange={({ option }) =>
+                        this.setState({ linkVisibility: option })
+                      }
+                    />
+                  </Box>
+                </OverlaySection>
               </Box>
-              <Box width="100%" gap="5px">
-                <Text size="14px" weight="bold" color="black">
-                  By...
-                </Text>
-                <Select
-                  dropAlign={{ bottom: "top" }}
-                  focusIndicator={false}
-                  id="link-visibility-select"
-                  options={["Everybody", "Followers and members", "Members only"]}
-                  value={this.state.linkVisibility}
-                  onChange={({ option }) =>
-                    this.setState({ linkVisibility: option })
-                  }
-                />
-              </Box>
-            </OverlaySection>
+            </Box>
+            <Box 
+              width="100%" 
+              direction="row" 
+              margin={{top: "20px", left: "47px"}}
+            >
+              <OverlaySection heading="Related topics">
+                <TopicSelector onSelectedCallback={this.selectTopic} />
+              </OverlaySection>  
+            </Box>
           </Box>
-        </Box>
-        <OverlaySection heading="Related topics">
-          <TopicSelector onSelectedCallback={this.selectTopic} />
-        </OverlaySection>
+        </Box>  
       </Overlay>
     );
   }
