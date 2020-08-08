@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_mail import Mail
 import pymysql
 from flask_cors import CORS
 import logging
@@ -73,5 +74,13 @@ app = Flask(__name__)
 CORS(app)
 
 db = Database()
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'maxtaylordavies@gmail.com'
+app.config['MAIL_PASSWORD'] = 'xJ!7J3Hj*r'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 from app import routes

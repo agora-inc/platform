@@ -51,7 +51,14 @@ class UserRepository:
 
     def encodeAuthToken(self, userId, type):
         now = datetime.utcnow()
-        exp = now + timedelta(days=7) if type == "refresh" else now + timedelta(minutes=30)
+
+        if type == "refresh":
+            exp = now + timedelta(days=7)
+        elif type == "changePassword":
+            exp = now + timedelta(minutes=15)
+        else:
+            exp = now + timedelta(minutes=30)
+
         try:
             payload = {
                 'exp': exp,
@@ -74,6 +81,12 @@ class UserRepository:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
+
+    def changePassword(self, userId, newPassword):
+        passwordHash = generate_password_hash(newPassword)
+        query = f'UPDATE Users SET password_hash = "{passwordHash}" WHERE id = {userId}'
+        self.db.run_query(query)
+
 
     
 

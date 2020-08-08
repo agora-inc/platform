@@ -1,6 +1,7 @@
-from app import app, db
+from app import app, db, mail
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository
 from flask import jsonify, request, send_file
+from flask_mail import Message
 from werkzeug import exceptions
 import os
 
@@ -23,6 +24,8 @@ def checkAuth(authHeader):
     authToken = authHeader.split(" ")[1]
     result = users.decodeAuthToken(authToken)
     return not isinstance(result, str)
+
+
 
 # --------------------------------------------
 # USER ROUTES
@@ -88,6 +91,30 @@ def refreshAccessToken():
 
     accessToken = users.encodeAuthToken(request.json["userId"], "access")
     return jsonify({"accessToken": accessToken.decode()})
+
+@app.route('/users/email_change_password_link', methods=["POST"])
+def generateChangePasswordLink():
+    # generate link
+    params = request.json
+    user = users.getUser(params["username"])
+    code = users.encodeAuthToken(user["id"], "changePassword")
+    link = f'http://localhost:3000/changepassword?code={code.decode()}'
+    
+    # email link
+    msg = Message('Hello', sender = 'maxtaylordavies@gmail.com', recipients = [user["email"]])
+    msg.body = f'Link to reset your password: {link}'
+    msg.subject = "Reset password"
+    mail.send(msg)
+    return "ok"
+
+@app.route('/users/change_password', methods=["POST"])
+def changePassword():
+    authToken = request.headers.get('Authorization').split(" ")[1]
+    userId = users.decodeAuthToken(authToken)
+    params = request.json
+    users.changePassword(userId, params["password"])
+    return "ok"
+
 
 
 # --------------------------------------------

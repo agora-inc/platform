@@ -4,13 +4,13 @@ import Button from "./Button";
 
 interface OverlayProps {
   visible: boolean;
-  onEsc: any;
-  onClickOutside: any;
+  onEsc?: any;
+  onClickOutside?: any;
   title: string;
   submitButtonText: string;
   cancelButtonText?: string;
   onSubmitClick: any;
-  onCancelClick: any;
+  onCancelClick?: any;
   contentHeight: string;
   canProceed: boolean;
   width: number;
@@ -41,7 +41,7 @@ export class Overlay extends Component<OverlayProps> {
             padding: 0,
           }}
         >
-          <Box align="center" width="100%" style={{overflowY: "auto" }}>
+          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
             <Box
               justify="center"
               width="100%"
@@ -126,7 +126,6 @@ export class OverlaySection extends Component<OverlaySectionProps> {
             <Text size="16px" weight="bold" color="black">
               {this.props.heading}
             </Text>
-
           </Box>
         )}
         {this.props.children}
