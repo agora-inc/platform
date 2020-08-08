@@ -17,18 +17,21 @@ import TopicSelector from "../Talks/TopicSelector";
 
 interface State {
     user: {
-        name: string;
-        email: string;
-        personal_website: string;
-        personal_message: string;
-      },
-      talk: {
-        title: string;
-        abstract: string;
-        topics: Topic[],
-        date: string;
-      },
-  showForm: boolean;
+      speaker_title: string;
+      speaker_name : string;
+      speaker_position: string;
+      email: string;
+      personal_website: string;
+      personal_message: string;
+      affiliation: string;
+    },
+    talk: {
+      talk_title: string;
+      abstract: string;
+      topics: Topic[],
+      date: string;
+    }
+    showForm: boolean;
 }
 
 export default class ApplyToTalkForm extends Component<{}, State> {
@@ -36,34 +39,38 @@ export default class ApplyToTalkForm extends Component<{}, State> {
     super(props);
     this.state = {
       user: {
-        name: "",
+        speaker_title: "",
+        speaker_name: "",
+        speaker_position : "",
         email: "",
         personal_website: "",
         personal_message: "",
+        affiliation: ""
       },
       talk: {
-        title: "",
+        talk_title: "",
         abstract: "",
         topics: [],
-        date: ""
-      },
+        date: "",
+        },
       showForm: false,
     };
   }
 
-  handleCheckBox = (name: string) => {
-    this.setState((prevState: any) => ({
-      user: {
-        ...prevState.user,
-        about: { ...prevState.user.about, [name]: !prevState.user.about[name] },
-      },
-    }));
-  };
+  // handleCheckBox = (name: string) => {
+  //   this.setState((prevState: any) => ({
+  //     user: {
+  //       ...prevState.user,
+  //       about: { ...prevState.user.about, [name]: !prevState.user.about[name] },
+  //     },
+  //   }));
+  // };
 
   handleInput = (e: any, key: string) => {
     let value = e.target.value;
     this.setState((prevState: any) => ({
       user: { ...prevState.user, [key]: value },
+      talk: { ...prevState.talk, [key]: value },
     }));
   };
 
@@ -76,9 +83,9 @@ export default class ApplyToTalkForm extends Component<{}, State> {
     // console.log(userData);
     const templateId = "feedback_form";
     this.sendFeedback(templateId, {
-      message_html: JSON.stringify(this.state.user),
-      from_name: this.state.user.name,
-      reply_to: this.state.user.name,
+      message_html: JSON.stringify(this.state.user.speaker_name),
+      from_name: this.state.user.speaker_name,
+      reply_to: this.state.user.speaker_name,
     });
     this.setState({ showForm: false });
   };
@@ -103,19 +110,23 @@ export default class ApplyToTalkForm extends Component<{}, State> {
     // prevents the page from being refreshed on form submission
     e.preventDefault();
     this.setState({
-    user: {
-        name: "",
+      user:{
+        speaker_title: "",
+        speaker_name: "",
+        speaker_position : "",
         email: "",
         personal_website: "",
         personal_message: "",
+        affiliation: ""
         },
-        talk: {
-        title: "",
+      talk: {
+        talk_title: "",
         abstract: "",
         topics: [],
         date: ""
-        },
-    });
+        }
+      }
+    );
   };
 
   toggleModal = () => {
@@ -126,9 +137,12 @@ export default class ApplyToTalkForm extends Component<{}, State> {
     console.log(num, topic)
     let tempTopics = this.state.talk.topics;
     tempTopics[num] = topic;
-    this.setState({
-      talk: tempTopics
-    });
+    this.setState((prevState: any) => ({
+      talk: {
+        ...prevState.talk,
+        topics: tempTopics
+    },
+  }));
   }
   render() {
     return (
@@ -159,42 +173,47 @@ export default class ApplyToTalkForm extends Component<{}, State> {
           onSubmitClick={this.handleFormSubmit}
           submitButtonText="Submit"
           canProceed={true}
-          width={500}
-          height={640}
-          contentHeight="500px"
+          width={900}
+          height={540}
+          contentHeight="1200px"
           title="Talk Application"
         >
-        <Text size="16px" weight="bold" color="black">
-              Tell us about you!
-            </Text>
 
-          <Box width="100%" gap="2px">
+        <OverlaySection heading="1. Tell us about you!">
+          <Box width="100%" gap="1px">
             <TextInput
               placeholder="Name"
-              value={this.state.user.name}
-              onChange={(e: any) => this.handleInput(e, "name")}
-            />
+              value={this.state.user.speaker_name}
+              onChange={(e: any) => this.handleInput(e, "speaker_name")}
+              />
           </Box>
-          <Box width="100%" gap="2px">
+          <Box width="100%" gap="1px">
+            <TextInput
+              placeholder="Social title"
+              value={this.state.user.speaker_title}
+              onChange={(e: any) => this.handleInput(e, "speaker_title")}
+              />
+          </Box>
+          <Box width="100%" gap="1px">
             <TextInput
               placeholder="Position / level of education"
-              value={this.state.user.position}
-              onChange={(e: any) => this.handleInput(e, "position")}
-            />
+              value={this.state.user.speaker_position}
+              onChange={(e: any) => this.handleInput(e, "speaker_position")}
+              />
           </Box>
           <Box width="100%" gap="2px">
             <TextInput
               placeholder="Email address"
               value={this.state.user.email}
               onChange={(e: any) => this.handleInput(e, "email")}
-            />
+              />
           </Box>
           <Box width="100%" gap="2px">
             <TextInput
               placeholder="Personal website"
               value={this.state.user.personal_website}
               onChange={(e: any) => this.handleInput(e, "personal_website")}
-            />
+              />
           </Box>
 
           <Box width="100%" gap="2px">
@@ -202,56 +221,58 @@ export default class ApplyToTalkForm extends Component<{}, State> {
               placeholder="Affiliation"
               value={this.state.user.affiliation}
               onChange={(e: any) => this.handleInput(e, "affiliation")}
-            />
+              />
           </Box>
+              </OverlaySection>
         
-          <br></br>
+          <OverlaySection heading="2. Tell us about your talk!"/>
+          <Box width="100%" gap="2px">
+              <TextInput
+                placeholder="Title"
+                value={this.state.talk.talk_title}
+                onChange={(e: any) => this.handleInput(e, "talk_title")}
+              />
+            </Box>
 
-          <Text size="16px" weight="bold" color="black">
-              Tell us about your talk!
-            </Text>
+            <Box width="100%" gap="2px">
+              <TextArea
+                placeholder="Advertised abstract"
+                value={this.state.talk.abstract}
+                onChange={(e: any) => this.handleInput(e, "abstract")}
+                rows={8}
+              />
+            </Box>
+
+            <Box width="100%" align="center" gap="xsmall">
+            <Box
+              height="30px"
+              width="100%"
+              // background="#F3EACE"
+              round="xsmall"
+              pad="small"
+              justify="center"
+            >
+              <Text size="16px" color="black">
+              <i>Categorise your talk:</i>
+              </Text>
+
+            </Box>
+          
+          <TopicSelector onSelectedCallback={this.selectTopic} />
+        </Box>
 
 
-          {/* user: {
-        name: "",
-        email: "",
-        personal_website: "",
-        personal_message: "",
-      },
-      talk: {
-        title: "",
-        abstract: "",
-        topics: "",
-        date: ""
-      }, */}
 
-        <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="Title"
-              value={this.state.talk.title}
-              onChange={(e: any) => this.handleInput(e, "title")}
-            />
-          </Box>
-
+        <OverlaySection heading="3. Personal message to us!">
           <Box width="100%" gap="2px">
             <TextArea
-              placeholder="Advertised abstract"
+              placeholder="Personal message to us!"
               value={this.state.talk.abstract}
               onChange={(e: any) => this.handleInput(e, "abstract")}
               rows={8}
             />
           </Box>
-
-          <OverlaySection heading="Related topics">
-          <TopicSelector onSelectedCallback={this.selectTopic} />
         </OverlaySection>
-
-
-
-
-
-
-
         </Overlay>
       </Box>
     );
