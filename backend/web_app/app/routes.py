@@ -101,7 +101,7 @@ def generateChangePasswordLink():
     link = f'http://localhost:3000/changepassword?code={code.decode()}'
     
     # email link
-    msg = Message('Hello', sender = 'maxtaylordavies@gmail.com', recipients = [user["email"]])
+    msg = Message('Hello', sender = 'team@agora.stream', recipients = [user["email"]])
     msg.body = f'Link to reset your password: {link}'
     msg.subject = "Reset password"
     mail.send(msg)
