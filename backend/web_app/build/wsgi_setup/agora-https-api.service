@@ -5,8 +5,8 @@ After=network.target
 [Service]
 User=cloud-user
 WorkingDirectory=/home/cloud-user/plateform/agora/backend/web_app
-EnvironmentFile=/home/cloud-user/plateform/agora/backend/web_app/.env_web_app
-ExecStart=/usr/local/bin/gunicorn --certfile=/etc/nginx/conf.d/ssl-files/www_agora_stream.crt --keyfile=/etc/nginx/conf.d/ssl-files/ssl_csr.key --workers=8 wsgi:app
+#EnvironmentFile=/home/cloud-user/plateform/agora/backend/web_app/.env_web_app
+ExecStart=/home/cloud-user/plateform/agora/backend/web_app/.env_web_app/bin/gunicorn --certfile=/etc/nginx/conf.d/ssl-files/www_agora_stream.crt --keyfile=/etc/nginx/conf.d/ssl-files/ssl_csr.key --workers=8 wsgi:app
 Restart=always
 
 
