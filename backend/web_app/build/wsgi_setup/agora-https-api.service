@@ -1,13 +1,12 @@
 [Unit]
-Description=agora rest api
+Description=Agora Rest Api
 After=network.target
 
 [Service]
+User=cloud-user
 WorkingDirectory=/home/cloud-user/plateform/agora/backend/web_app
-# ExecStart=/usr/local/bin/gunicorn --bind unix:/home/cloud-user/plateform/agora/backend/web_app/agora-api.sock -m 007 wsgi:app --workers 15 --certfile /etc/nginx/conf.d/ssl-files/www_agora_stream.crt --keyfile /etc/nginx/conf.d/ssl-files/ssl_csr.key
-#ExecStart=/usr/local/bin/gunicorn --bind unix:/home/cloud-user/plateform/agora/backend/web_app/agora-api.sock -m 007 wsgi:app --workers 15 --certfile /etc/nginx/conf.d/ssl-files/www_agora_stream.crt --keyfile /etc/nginx/conf.d/ssl-files/ssl_csr.key
-#ExecStart=/usr/local/bin/gunicorn --bind 0.0.0.0:8000 -m 007 wsgi:app --workers 15
-ExecStart=/usr/local/bin/gunicorn --certfile='/etc/nginx/conf.d/ssl-files/www_agora_stream.crt' --keyfile='/etc/nginx/conf.d/ssl-files/ssl_csr.key' wsgi:app
+#EnvironmentFile=/home/cloud-user/plateform/agora/backend/web_app/.env_web_app
+ExecStart=/home/cloud-user/plateform/agora/backend/web_app/.env_web_app/bin/gunicorn --certfile=/etc/nginx/conf.d/ssl-files/www_agora_stream.crt --keyfile=/etc/nginx/conf.d/ssl-files/ssl_csr.key --workers=8 wsgi:app
 Restart=always
 
 
