@@ -11,10 +11,11 @@ interface Props {
 
 interface State {
   showModal: boolean;
-  failed: boolean;
+  error: string;
   username: string;
   password: string;
   confirmPassword: string;
+  email: string;
 }
 
 export default class SignUpButton extends Component<Props, State> {
@@ -22,10 +23,11 @@ export default class SignUpButton extends Component<Props, State> {
     super(props);
     this.state = {
       showModal: false,
-      failed: false,
+      error: "",
       username: "",
       password: "",
       confirmPassword: "",
+      email: "",
     };
   }
 
@@ -33,27 +35,34 @@ export default class SignUpButton extends Component<Props, State> {
     UserService.register(
       this.state.username,
       this.state.password,
-      (result: boolean) => {
-        if (result) {
+      this.state.email,
+      (result: string) => {
+        if (result === "ok") {
           this.toggleModal();
           this.props.callback();
         } else {
-          this.setState({ failed: true });
+          this.setState({ error: result });
         }
       }
     );
   };
 
   toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal, failed: false });
+    this.setState({ showModal: !this.state.showModal, error: "" });
   };
 
   isComplete = () => {
     return (
       this.state.username !== "" &&
       this.state.password !== "" &&
-      this.state.confirmPassword === this.state.password
+      this.state.confirmPassword === this.state.password &&
+      this.isValidEmail(this.state.email)
     );
+  };
+
+  isValidEmail = (email: string) => {
+    let re = /\S+@\S+\.\S+/;
+    return re.test(email);
   };
 
   render() {
@@ -77,7 +86,7 @@ export default class SignUpButton extends Component<Props, State> {
         />
         <Overlay
           width={400}
-          height={450}
+          height={this.state.error !== "" ? 600 : 500}
           visible={this.state.showModal}
           title="Sign up"
           onEsc={this.toggleModal}
@@ -86,20 +95,20 @@ export default class SignUpButton extends Component<Props, State> {
           submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
-          contentHeight="300px"
+          contentHeight={this.state.error !== "" ? "450px" : "350px"}
         >
-          {this.state.failed && (
+          {this.state.error !== "" && (
             <Box
               style={{ width: "100%" }}
               background="status-error"
               round="small"
               pad="small"
+              gap="small"
               direction="row"
-              justify="between"
             >
               <StatusCritical />
               <Heading level={5} margin="none" color="white">
-                Error
+                Error: {this.state.error}
               </Heading>
             </Box>
           )}
@@ -111,11 +120,11 @@ export default class SignUpButton extends Component<Props, State> {
             pad={{ bottom: "10px" }}
             gap="xsmall"
           >
-            <Box width="100%" gap="2px">
+            <Box width="100%" gap="5px">
               <Text size="14px" color="black" margin={{ bottom: "24px" }}>
                 This account will be associated with you as an individual - so
-                you can choose any username you like. 
-                After you've signed up you'll be able to create one or more {" "}
+                you can choose any username you like. After you've signed up
+                you'll be able to create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
                   <Text color="brand" weight="bold" size="14px">
                     Agoras
@@ -123,19 +132,22 @@ export default class SignUpButton extends Component<Props, State> {
                 </Link>
                 . These are what you'll use to organise talks.
               </Text>
+              <Text size="14px" color="black">
+                (this is just in case you need a password reset)
+              </Text>
+              <TextInput
+                placeholder="Email"
+                onChange={(e) => this.setState({ email: e.target.value })}
+              />
               <TextInput
                 placeholder="Username"
                 onChange={(e) => this.setState({ username: e.target.value })}
               />
-            </Box>
-            <Box width="100%" gap="2px">
               <TextInput
                 type="password"
                 placeholder="Password"
                 onChange={(e) => this.setState({ password: e.target.value })}
               />
-            </Box>
-            <Box width="100%" gap="2px">
               <TextInput
                 type="password"
                 placeholder="Confirm password"
@@ -145,14 +157,19 @@ export default class SignUpButton extends Component<Props, State> {
               />
             </Box>
 
-            <Text size="14px" color="black" margin={{top: "24px"}} alignSelf="start">
-                By clicking Sign Up, you agree to our {" "}
-                <Link to={"/info/tos"} onClick={this.toggleModal}>
-                  <Text size="14px" weight="bold" color="brand">
-                    terms
-                  </Text>
-                </Link>
-                .
+            <Text
+              size="14px"
+              color="black"
+              margin={{ top: "24px" }}
+              alignSelf="start"
+            >
+              By clicking Sign Up, you agree to our{" "}
+              <Link to={"/info/tos"} onClick={this.toggleModal}>
+                <Text size="14px" weight="bold" color="brand">
+                  terms
+                </Text>
+              </Link>
+              .
             </Text>
           </Box>
         </Overlay>

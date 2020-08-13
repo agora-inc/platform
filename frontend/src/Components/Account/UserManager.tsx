@@ -14,6 +14,10 @@ import "../../Styles/antd.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
 
+interface Props {
+  showLogin: boolean;
+}
+
 interface State {
   isLoggedIn: boolean;
   user: { id: number; username: string } | null;
@@ -22,8 +26,8 @@ interface State {
   showDropdown: boolean;
 }
 
-export default class UserManager extends Component<{}, State> {
-  constructor(props: any) {
+export default class UserManager extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       isLoggedIn: UserService.isLoggedIn(),
@@ -137,11 +141,15 @@ export default class UserManager extends Component<{}, State> {
               <Text size="18px"> My schedule </Text>
             </Box>
           </Link>
-          
         </Box>
         <Menu.Divider />
         <Box
-          margin={{bottom: "medium", top: "small", left: "small", right: "small"}}
+          margin={{
+            bottom: "medium",
+            top: "small",
+            left: "small",
+            right: "small",
+          }}
           focusIndicator={false}
           // style={{ pointerEvents: "none" }}
           gap="xsmall"
@@ -178,15 +186,13 @@ export default class UserManager extends Component<{}, State> {
         </Menu.Item> */}
         <Menu.Item>
           <Link
-              to={{ pathname: "/saved", state: { user: this.state.user } }}
-              style={{ textDecoration: "none" }}
-              onClick={this.toggleDropdown}
-            >
-            
-                <Text size="18px"> Bookmarks </Text>
-            
-            </Link>
-          </Menu.Item>
+            to={{ pathname: "/saved", state: { user: this.state.user } }}
+            style={{ textDecoration: "none" }}
+            onClick={this.toggleDropdown}
+          >
+            <Text size="18px"> Bookmarks </Text>
+          </Link>
+        </Menu.Item>
         <Menu.Item
           key="2"
           onClick={() => {
@@ -234,6 +240,7 @@ export default class UserManager extends Component<{}, State> {
   loggedOutStuff = (
     <Box direction="row" align="center" justify="center" gap="xsmall">
       <LoginModal
+        open={this.props.showLogin}
         callback={() => {
           this.setState(
             {

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 import { ReactComponent as Logo } from "../apollo.svg";
@@ -8,10 +9,29 @@ import FormContainer from "./Homepage/FormContainer";
 import SiteWideSearch from "./SiteWideSearch";
 import TimeZoneInfo from "./TimeZoneInfo";
 
-export default class HeaderBar extends Component {
-  constructor(props: any) {
+type State = {
+  showLogin: boolean;
+};
+
+class HeaderBar extends Component<RouteComponentProps, State> {
+  constructor(props: RouteComponentProps) {
     super(props);
+    this.state = {
+      showLogin:
+        new URL(window.location.href).searchParams.get("showLogin") === "true",
+    };
   }
+
+  componentDidUpdate(prevProps: RouteComponentProps) {
+    if (this.props.location !== prevProps.location) {
+      this.setState({
+        showLogin:
+          new URL(window.location.href).searchParams.get("showLogin") ===
+          "true",
+      });
+    }
+  }
+
   render() {
     return (
       <Box
@@ -47,23 +67,26 @@ export default class HeaderBar extends Component {
           </Link>
         </Box>
         <Link
-            to={{ pathname: "/info/getting-started" }}
-            style={{ textDecoration: "none" }}
+          to={{ pathname: "/info/getting-started" }}
+          style={{ textDecoration: "none" }}
         >
           <Box
             onClick={() => {}}
             background="white"
             round="xsmall"
-            pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
+            pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
             justify="center"
             align="center"
             focusIndicator={false}
             style={{
               border: "1px solid #C2C2C2",
             }}
-            hoverIndicator={true}   
+            hoverIndicator={true}
           >
-            <Text size="16px" color="grey"> How to use me? </Text>
+            <Text size="16px" color="grey">
+              {" "}
+              How to use me?{" "}
+            </Text>
           </Box>
         </Link>
         <SiteWideSearch />
@@ -84,9 +107,11 @@ export default class HeaderBar extends Component {
         >
           <FormContainer />
           <TimeZoneInfo />
-          <UserManager />
+          <UserManager showLogin={this.state.showLogin} />
         </Box>
       </Box>
     );
   }
 }
+
+export default withRouter(HeaderBar);
