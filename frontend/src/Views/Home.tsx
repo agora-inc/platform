@@ -91,7 +91,7 @@ export default class Home extends Component<{}, State> {
           gap="25px"
         >
           <Carousel gridArea="carousel" />
-          <TreeClassification />
+          {/*<TreeClassification />*/}
           <TopicTalkList
             seeMore={true}
             title={true}

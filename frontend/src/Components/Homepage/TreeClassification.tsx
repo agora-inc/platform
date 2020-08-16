@@ -21,6 +21,13 @@ const myTreeData = [
       {
         name: 'Algebra',
         attribute: {leaf: false},
+        nodeSvgShape: {
+          shape: 'circle',
+          shapeProps: {
+            r: 10,
+            fill: 'red'
+          },
+         },
         _collapsed: true,
         children: [
           {name: 'Symplectic geometry',
@@ -57,6 +64,13 @@ const myTreeData = [
       attribute: {leaf: true}},
       {name: 'Probability',
       attribute: {leaf: true},
+      nodeSvgShape: {
+        shape: 'circle',
+        shapeProps: {
+          r: 10,
+          fill: 'red'
+        },
+       },
       _collapsed: true,
         children : [
           {name: 'Stochastic calculus',
@@ -65,7 +79,7 @@ const myTreeData = [
             shape: 'circle',
             shapeProps: {
               r: 10,
-              fill: 'red'
+              fill: 'blue'
             },
            },
           },
@@ -146,19 +160,25 @@ export default class TreeClassification extends React.Component<{}, State> {
   };
 
   nodeOnClick = (nodeData: any, e: any) => {
-    let temp = this.state.data;
-    temp[0].nodeSvgShape.shapeProps.fill = 'blue' 
-    console.log(this.state.data[0].children[1])
+    console.log("nodedata", nodeData)
+        let temp = this.state.data;
+        console.log("temp", temp)
+
+        temp[0].children[0].nodeSvgShape.shapeProps.fill = 'blue'
     this.setState({data: temp})
+    // nodeData.nodeSvgShape.shapeProps.fill = 'blue'
+    // console.log("nodedata", nodeData)
+    this.forceUpdate();
+    //this.setState({selectedTopic: })
   };
 
   render() {
     console.log(this.state.data)
     return (
-      <div id="treeWrapper" style={{ width: "200em", height: "50em" }}>
+      <div id="treeWrapper" style={{ width: "200em", height: "40em" }}>
         <Tree
           data={this.state.data}
-          translate={{ y: 100, x: 400 }}
+          translate={{ y: 350, x: 20 }}
           orientation={"horizontal"}
           separation={{ siblings: 0.3, nonSiblings: 0.2 }}
           allowForeignObjects
@@ -166,6 +186,7 @@ export default class TreeClassification extends React.Component<{}, State> {
           useCollapseData={true}
           shouldCollapseNeighborNodes={true}
           depthFactor={250}
+          zoomable={false}
         />
       </div>
     );
