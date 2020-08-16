@@ -16,7 +16,8 @@ interface OverlayProps {
   canProceed: boolean;
   width: number;
   height: number;
-  extraButton?: any;
+  deleteButton?: any;
+  saveDraftButton?: any;
 }
 
 interface OverlaySectionProps {
@@ -42,7 +43,7 @@ export class Overlay extends Component<OverlayProps> {
             padding: 0,
           }}
         >
-          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+          <Box align="center" width="100%" style={{ overflowY: "hidden" }}>
             <Box
               justify="start"
               width="99.7%"
@@ -53,7 +54,7 @@ export class Overlay extends Component<OverlayProps> {
                 borderTopRightRadius: "15px",
                 position: "sticky",
                 top: 0,
-                minHeight: "60px",
+                minHeight: "45px",
                 zIndex: 10,
               }}
             >
@@ -80,12 +81,11 @@ export class Overlay extends Component<OverlayProps> {
             </Box>
             <Box
               direction="row"
-              justify="end"
+              justify="start"
               align="center"
               gap="xsmall"
               width="99.7%"
               background="#F5F5F5"
-              pad={{ right: "24px" }}
               style={{
                 borderBottomLeftRadius: "15px",
                 borderBottomRightRadius: "15px",
@@ -95,14 +95,19 @@ export class Overlay extends Component<OverlayProps> {
                 zIndex: 10,
               }}
             >
-              {this.props.extraButton}
-              <Button
-                disabled={!this.props.canProceed}
-                height="35px"
-                width="90px"
-                text={this.props.submitButtonText}
-                onClick={this.props.onSubmitClick}
-              />
+              <Box fill={true} pad="30px"> {this.props.deleteButton} </Box>
+              <Box > {this.props.saveDraftButton} </Box>
+              <Box pad="32px"> 
+                <Button
+                  fill="#7E1115"
+                  disabled={!this.props.canProceed}
+                  height="35px"
+                  width="150px"
+                  text={this.props.submitButtonText}
+                  onClick={this.props.onSubmitClick}
+                  hoverIndicator="#5A0C0F"
+                />
+              </Box>
             </Box>
           </Box>
         </Layer>

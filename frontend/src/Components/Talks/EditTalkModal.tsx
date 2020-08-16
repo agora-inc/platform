@@ -204,6 +204,21 @@ export default class EditTalkModal extends Component<Props, State> {
     });
   };
 
+  onSaveDraft = () => {
+    if (!this.props.talk) {
+      return;
+    }
+    this.setState({published: false});
+    this.setState(
+      {
+        loading: true,
+      },
+      () => {
+        this.onFinish();
+      }
+    );
+  }
+
   selectTag = (tag: Tag) => {
     this.setState({ tags: [...this.state.tags, tag] });
   };
@@ -252,14 +267,14 @@ export default class EditTalkModal extends Component<Props, State> {
         height={750}
         visible={this.props.visible}
         title={this.props.talk ? "Edit talk" : "New talk"}
-        submitButtonText="Save"
+        submitButtonText="Publish"
         onSubmitClick={this.onFinishClicked}
         contentHeight="600px"
         canProceed={this.isComplete()}
         onCancelClick={this.props.onCanceledCallback}
         onClickOutside={this.props.onCanceledCallback}
         onEsc={this.props.onCanceledCallback}
-        extraButton={
+        deleteButton={
           this.props.talk ? (
             <Button
               fill="#FF4040"
@@ -267,6 +282,16 @@ export default class EditTalkModal extends Component<Props, State> {
               height="35px"
               text="Delete"
               onClick={this.onDeleteClicked}
+            />
+          ) : null
+        }
+        saveDraftButton={
+          this.props.talk ? (
+            <Button
+              width="150px"
+              height="35px"
+              text="Save draft"
+              onClick={this.onSaveDraft}
             />
           ) : null
         }
