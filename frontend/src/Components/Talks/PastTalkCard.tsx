@@ -10,6 +10,7 @@ import { default as TagComponent } from "../Core/Tag";
 import { default as CoreButton } from "../Core/Button";
 import Identicon from "react-identicons";
 import "../../Styles/past-talk-card.css";
+import EditTalkModal from "../Talks/EditTalkModal";
 
 interface Props {
   talk: Talk;
@@ -22,10 +23,12 @@ interface Props {
   onUnsave?: any;
   user: User | null;
   show?: boolean;
+  onEditCallback?: any;
 }
 
 interface State {
   showModal: boolean;
+  showEdit: boolean;
   showShadow: boolean;
   saved: boolean;
   showLinkInput: boolean;
@@ -37,6 +40,7 @@ export default class PastTalkCard extends Component<Props, State> {
     super(props);
     this.state = {
       showModal: this.props.show ? this.props.show && !this.props.admin : false,
+      showEdit: false,
       showShadow: false,
       saved: false,
       showLinkInput: false,
@@ -84,6 +88,11 @@ export default class PastTalkCard extends Component<Props, State> {
       showShadow: true,
     });
   };
+
+  toggleEdit = () => {
+    this.setState({ showEdit: !this.state.showEdit });
+  };
+
 
   onDeleteClicked = () => {
     TalkService.deleteTalk(this.props.talk.id, () => {
@@ -224,9 +233,6 @@ export default class PastTalkCard extends Component<Props, State> {
       <Box
         width={this.props.width ? this.props.width : "32%"}
         height={this.props.height ? this.props.height : "350px"}
-        onClick={() => {
-          !this.state.showModal && this.toggleModal();
-        }}
         focusIndicator={false}
         style={{ position: "relative" }}
         margin={this.props.margin ? this.props.margin : { bottom: "small" }}
@@ -237,6 +243,9 @@ export default class PastTalkCard extends Component<Props, State> {
             if (!this.state.showModal) {
               this.setState({ showShadow: false });
             }
+          }}
+          onClick={() => {
+            !this.state.showModal && this.toggleModal();
           }}
           height="100%"
           width="100%"
@@ -313,23 +322,28 @@ export default class PastTalkCard extends Component<Props, State> {
             >
               {this.props.talk.name}
             </Text>
+
           </Box>
+
         </Box>
         {this.state.showShadow && (
-          <Box
-            height="100%"
-            width="100%"
-            round="xsmall"
-            style={{
-              zIndex: -1,
-              position: "absolute",
-              top: 8,
-              left: 8,
-              opacity: 0.5,
-            }}
-            background={this.props.talk.channel_colour}
-          ></Box>
-        )}
+            <Box
+              height={this.props.height ? this.props.height : "300px"}
+              width="100%"
+              round="xsmall"
+              style={{
+                zIndex: -1,
+                position: "absolute",
+                top: 8,
+                left: 8,
+                opacity: 0.5,
+              }}
+              background={this.props.talk.channel_colour}
+            ></Box>
+          )}
+
+
+
         {this.state.showModal && (
           <Layer
             onEsc={() => {
@@ -692,6 +706,40 @@ export default class PastTalkCard extends Component<Props, State> {
           //     </Box>
           //   )}
           // </Layer>
+        )}
+                {this.props.admin && (
+          <Box
+            onClick={() => {
+              this.toggleEdit();
+            }}
+            background="#7E1115"
+            round="xsmall"
+            pad="xsmall"
+            height="40px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator="#5A0C0F"
+            margin="10px"
+          >
+            <Text size="18px">Edit</Text>
+          </Box>
+        )}
+        {this.props.admin && this.state.showEdit && (
+          <EditTalkModal
+            visible={this.state.showEdit}
+            channel={null}
+            talk={this.props.talk}
+            onFinishedCallback={() => {
+              this.toggleEdit();
+              this.props.onEditCallback();
+            }}
+            onDeletedCallback={() => {
+              this.toggleEdit();
+              this.props.onEditCallback();
+            }}
+            onCanceledCallback={this.toggleEdit}
+          />
         )}
       </Box>
     );

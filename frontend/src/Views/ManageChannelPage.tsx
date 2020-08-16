@@ -609,6 +609,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     margin={{ bottom: "medium" }}
                     onDelete={() => this.fetchPastTalks()}
                     user={null}
+                    onEditCallback={this.fetchTalks}
                   />
                 ))}
               </Box>
