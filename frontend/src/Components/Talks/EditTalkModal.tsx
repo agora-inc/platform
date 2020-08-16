@@ -41,6 +41,7 @@ interface State {
   topics: Topic[];
   talkSpeaker: string;
   talkSpeakerURL: string;
+  published: boolean,
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -68,6 +69,7 @@ export default class EditTalkModal extends Component<Props, State> {
       topics: [],
       talkSpeaker: this.props.talk ? this.props.talk.talk_speaker : "",
       talkSpeakerURL: this.props.talk ? this.props.talk.talk_speaker_url : "",
+      published: this.props.talk ? this.props.talk.published : false,
     };
   }
 
@@ -143,6 +145,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.topics,
         this.state.talkSpeaker,
         this.state.talkSpeakerURL,
+        this.state.published,
         (talk: Talk) => {
           this.setState(
             {
@@ -169,6 +172,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.topics,
         this.state.talkSpeaker,
         this.state.talkSpeakerURL,
+        this.state.published,
         (talk: Talk) => {
           this.setState(
             {

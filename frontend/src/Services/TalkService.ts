@@ -71,7 +71,7 @@ const editTalk = (
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
-  state: string,
+  published: boolean,
   callback: any
 ) => {
   post(
@@ -91,7 +91,7 @@ const editTalk = (
       topic3Id: topics[2] ? topics[2].id : 0,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
-      state: state
+      published: published
     },
     callback
   );
@@ -111,7 +111,7 @@ const scheduleTalk = (
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
-  state: string,
+  published: boolean,
   callback: any
 ) => {
   post(
@@ -132,7 +132,7 @@ const scheduleTalk = (
       topic3Id: topics.length > 2 ? topics[2].id : null,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
-      state: state
+      published: published
     },
     callback
   );
@@ -276,5 +276,5 @@ export type Talk = {
   topics: Topic[];
   talk_speaker: string;
   talk_speaker_url: string;
-  published: boolean;
+  published: boolean
 };
