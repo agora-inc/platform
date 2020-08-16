@@ -236,7 +236,7 @@ export default class ApplyToTalkForm extends Component<{}, State> {
 
             <Box width="100%" gap="2px">
               <TextArea
-                placeholder="Advertised abstract"
+                placeholder="Abstract"
                 value={this.state.talk.abstract}
                 onChange={(e: any) => this.handleInput(e, "abstract")}
                 rows={8}

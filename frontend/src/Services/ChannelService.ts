@@ -46,6 +46,63 @@ const getUsersForChannel = (
   get(url, callback);
 };
 
+const getContactAddresses = (
+  // TO TEST
+  //
+  channelId: number,
+  callback: any
+) => {
+  const url = `channels/contacts/channelId=${channelId}`;
+  get(url, callback);
+};
+
+const addContactAddress = (
+  // TO TEST
+  //
+  userId: number,
+  channelId: number,
+  contactAddress: string,
+  callback: any
+) => {
+  post(
+    `channels/contact?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`,
+    { contactAddress: contactAddress, 
+      channelId: channelId, 
+      userId: userId },
+    callback
+  );
+};
+
+const removeContactAddress = (
+  // TO TEST
+  //
+  channelId: number,
+  contactAddress: string,
+  userId: number,
+  callback: any
+) => {
+  const url = `channels/contact?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
+  axios.delete(url, callback);
+  axios
+  .delete(url, {
+    // headers: { "Access-Control-Allow-Origin": "*" },
+    data: {
+      channelId: channelId,
+      userId: userId,
+      contactAddress: contactAddress
+    },
+  })
+};
+
+
+
+
+
+
+
+
+
+
 const getRoleInChannel = (userId: number, channelId: number, callback: any) => {
   const url = `channels/user/role?channelId=${channelId}&userId=${userId}`;
   get(url, callback);
@@ -81,7 +138,7 @@ const removeUserFromChannel = (
 //     .get(baseApiUrl + "/channels/viewcount?channelId=" + channelId, {
 //       headers: { "Access-Control-Allow-Origin": "*" },
 //     })
-//     .then(function (response) {
+//     .then(function (response) {updateLongChannelDescription
 //       callback(response.data);
 //     });
 // };
@@ -164,7 +221,7 @@ const getDefaultCover = () => {
 
 const removeCover = (channelId: number, callback: any) => {
   axios
-    .delete(baseApiUrl + "/channels/cover", {
+    .delete(baseApiUrl + "/channgetContactAddressesels/cover", {
       headers: { "Access-Control-Allow-Origin": "*" },
       data: {
         channelId: channelId,
@@ -190,6 +247,7 @@ export const ChannelService = {
   getChannelsForUser,
   getUsersForChannel,
   getRoleInChannel,
+  getContactAddresses,
   addUserToChannel,
   removeUserFromChannel,
   getFollowerCountForChannel,

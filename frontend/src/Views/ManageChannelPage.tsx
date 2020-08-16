@@ -18,8 +18,9 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin} from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
+import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 
 interface Props {
   location: any;
@@ -440,7 +441,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   }}
                 >
                 <Text color="#5A5A5A">
-                  <p><big><b> Agora administrator page </b></big></p>
+                  <p>{<UserAdmin/>}<big><b> Agora administrator page </b></big></p>
                   <p>As an administrator, you can:</p>
                   <ul>
                     <li><b>Create and edit events</b></li>
@@ -464,17 +465,38 @@ export default class ManageChannelPage extends Component<Props, State> {
               </Box>
 
               {this.banner()}
+
+
+              <Text
+                  size="28px"
+                  weight="bold"
+                  color="black"
+                  margin={{ top: "10px" }}
+                >{<UserAdmin/>} {`Administrator panel`} </Text>
+
+
+              <Box
+                direction="row"
+                width="100%"
+                wrap
+                // justify="between"
+                gap="20px"
+                margin={{ top: "10px", bottom: "15px" }}
+              >
+                <EmailContactManagement/>
+              </Box>
+                  
               <Box direction="row" width="100%" justify="between">
                 <Box
                   width="31.5%"
-                  height="300px"
+                  height="250px"
                   background="#e5e5e5"
                   round="7.5px"
                   pad="10px"
                 >
                   <Box direction="row" justify="between">
                     <Text weight="bold" size="20px" color="black">
-                      Agora administrators
+                      Agora admins
                     </Text>
                     {this.state.role === "owner" && (
                       <AddUsersButton
@@ -505,9 +527,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                     ))}
                   </Box>
                 </Box>
+                
                 <Box
                   width="31.5%"
-                  height="300px"
+                  height="250px"
                   background="#e5e5e5"
                   round="7.5px"
                   pad="10px"
@@ -547,7 +570,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </Box>
                 <Box
                   width="31.5%"
-                  height="300px"
+                  height="250px"
                   background="#e5e5e5"
                   round="7.5px"
                   pad="10px"

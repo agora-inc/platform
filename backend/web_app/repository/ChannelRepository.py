@@ -1,4 +1,5 @@
 import random
+import logging
 
 
 class ChannelRepository:
@@ -125,3 +126,34 @@ class ChannelRepository:
     def removeCover(self, channelId):
         query = f'UPDATE Channels SET has_cover=NULL WHERE id = {channelId}'
         self.db.run_query(query)
+
+    def getContactAddresses(self, channelId):
+        query = f"SELECT * FROM ChannelContacts WHERE channel_id = {channelId}"
+        result = self.db.run_query(query)
+
+        list_res = list(map(lambda x: x["email_address"], result))
+        return list_res
+
+    def addContactAddress(self, contactAddress, channelId, userId):
+        # check user is an admin in the agora
+        query = f"SELECT * FROM ChannelUsers where channel_id = {channelId} AND user_id = {userId} AND role = 'owner'"
+
+        if len(self.db.run_query(query)) != 0:
+            # add new address
+            query = f"INSERT INTO ChannelContacts (channel_id, email_address) VALUES ({channelId}, '{contactAddress}')"
+            result = self.db.run_query(query)
+
+            logging.warning(f"addContactAddress: RESULT = {result}")
+            return result
+
+    def removeContactAddress(self, contactAddress, channelId, userId):
+        # check user is an admin in the agora
+        query = f"SELECT * FROM ChannelUsers where channel_id = {channelId} AND user_id = {userId} AND role = 'owner'"
+
+        if len(self.db.run_query(query)) != 0:
+            # add new address
+            query = f"DELETE FROM ChannelContacts * WHERE email_address = '{contactAddress}' AND channel_id = {channelId}"
+            result = self.db.run_query(query)
+
+            logging.warning(f"addContactAddress: RESULT = {result}")
+            return result

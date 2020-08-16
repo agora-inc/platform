@@ -163,7 +163,7 @@ def addUserToChannel():
     if request.method == "OPTIONS":
         return jsonify("ok")
 
-    params = request.json
+    params = request.json-
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
     return jsonify("Success")
 
@@ -300,6 +300,59 @@ def cover():
         channelId = params["channelId"]
         channels.removeCover(channelId)
         return jsonify("ok")
+
+@app.route('/channels/contacts', methods=["GET"])
+def getContactAddresses():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    if "channelId" in request.args: 
+        channel_id = request.args.get("channelId")
+        return channels.getContactAddresses(channel_id)
+
+@app.route('/channels/contact', methods=["POST"])
+def addContactAddress():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+    
+    if "channelId" in request.args: 
+        channelId = request.args.get("channelId")
+    else:
+        raise Exception("addContactAddress: missing channelId in URL")
+
+    if "contactAddress" in request.args: 
+        contactAddress = request.args.get("contactAddress")
+    else:
+        raise Exception("addContactAddress: missing contactAddress in URL")
+
+    if "userId" in request.args: 
+        userId = request.args.get("userId")
+    else:
+        raise Exception("addContactAddress: missing userId in URL")
+    
+    return channels.addContactAddress(channelId, contactAddress, userId)
+
+@app.route('/channels/contact', methods=["DELETE"])
+def removeContactAddress():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    if "channelId" in request.args: 
+        channelId = request.args.get("channelId")
+    else:
+        raise Exception("addContactAddress: missing channelId in URL")
+
+    if "contactAddress" in request.args: 
+        contactAddress = request.args.get("contactAddress")
+    else:
+        raise Exception("addContactAddress: missing contactAddress in URL")
+
+    if "userId" in request.args: 
+        userId = request.args.get("userId")
+    else:
+        raise Exception("addContactAddress: missing userId in URL")
+
+    return channels.removeContactAddress(channelId, contactAddress, userId)
 
 # --------------------------------------------
 # STREAM ROUTES
