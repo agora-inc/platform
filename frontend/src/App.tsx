@@ -20,6 +20,7 @@ import InformationPage from "./Views/InformationPage";
 import GettingStartedPage from "./Views/GettingStartedPage";
 import TermsOfServicePage from "./Views/TermsOfServicePage";
 import PrivacyPage from "./Views/PrivacyPage";
+import ChangePasswordPage from "./Views/ChangePasswordPage";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path="/info/getting-started" component={GettingStartedPage} />
           <Route path="/info/tos" component={TermsOfServicePage} />
           <Route path="/info/privacy" component={PrivacyPage} />
+          <Route path="/changepassword" component={ChangePasswordPage} />
           <Route path="*" component={ChannelPage} />
         </Switch>
       </Grommet>

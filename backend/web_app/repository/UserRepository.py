@@ -32,9 +32,13 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password):
+    def addUser(self, username, password, email):
+        # check if username exists
+        if self.getUser(username):
+            return None
+
         passwordHash = generate_password_hash(password)
-        query = f'INSERT INTO Users(username, password_hash) VALUES ("{username}", "{passwordHash}")'
+        query = f'INSERT INTO Users(username, password_hash, email) VALUES ("{username}", "{passwordHash}", "{email}")'
         insertId = self.db.run_query(query)[0]
         return self.getUserById(insertId)
     
@@ -47,7 +51,14 @@ class UserRepository:
 
     def encodeAuthToken(self, userId, type):
         now = datetime.utcnow()
-        exp = now + timedelta(days=7) if type == "refresh" else now + timedelta(minutes=30)
+
+        if type == "refresh":
+            exp = now + timedelta(days=7)
+        elif type == "changePassword":
+            exp = now + timedelta(minutes=15)
+        else:
+            exp = now + timedelta(minutes=30)
+
         try:
             payload = {
                 'exp': exp,
@@ -70,6 +81,12 @@ class UserRepository:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
+
+    def changePassword(self, userId, newPassword):
+        passwordHash = generate_password_hash(newPassword)
+        query = f'UPDATE Users SET password_hash = "{passwordHash}" WHERE id = {userId}'
+        self.db.run_query(query)
+
 
     
 

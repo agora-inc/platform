@@ -1,20 +1,25 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
 
-const register = (username: string, password: string, callback: any) => {
+const register = (
+  username: string,
+  password: string,
+  email: string,
+  callback: any
+) => {
   axios
     .post(
       baseApiUrl + "/users/add",
-      { username: username, password: password },
+      { username: username, password: password, email: email },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
       localStorage.setItem("user", JSON.stringify(response.data));
-      callback(true);
+      callback("ok");
       window.location.reload(false);
     })
     .catch(function (error) {
-      callback(false);
+      callback(error.response.data);
     });
 };
 
@@ -50,6 +55,47 @@ const getCurrentUser = () => {
   return user ? JSON.parse(user) : null;
 };
 
+const emailChangePasswordLink = (username: string, callback: any) => {
+  axios
+    .post(
+      baseApiUrl + "/users/email_change_password_link",
+      { username },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    )
+    .then(function (response) {
+      // localStorage.setItem("user", JSON.stringify(response.data));
+      callback(true);
+    })
+    .catch(function (error) {
+      callback(false);
+    });
+};
+
+const changePassword = (newPassword: string, code: string, callback: any) => {
+  axios
+    .post(
+      baseApiUrl + "/users/change_password",
+      { password: newPassword },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${code}`,
+        },
+      }
+    )
+    .then(function (response) {
+      // localStorage.setItem("user", JSON.stringify(response.data));
+      callback(true);
+    })
+    .catch(function (error) {
+      callback(false);
+    });
+};
+
 export type User = {
   id: number;
   username: string;
@@ -61,4 +107,6 @@ export const UserService = {
   logout,
   isLoggedIn,
   getCurrentUser,
+  changePassword,
+  emailChangePasswordLink,
 };
