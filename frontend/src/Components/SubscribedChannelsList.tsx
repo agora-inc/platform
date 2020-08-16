@@ -13,7 +13,8 @@ interface Props {
 }
 
 interface State {
-  channels: Channel[];
+  memberChannels: Channel[];
+  followerChannels: Channel[];
   loading: boolean;
 }
 
@@ -21,7 +22,8 @@ export default class SubscribedChannelsList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      channels: [],
+      memberChannels: [],
+      followerChannels: [],
       loading: true,
     };
   }
@@ -35,7 +37,17 @@ export default class SubscribedChannelsList extends Component<Props, State> {
       ["follower"],
       (channels: Channel[]) => {
         this.setState({
-          channels: channels,
+          followerChannels: channels,
+          loading: false,
+        });
+      }
+    );
+    ChannelService.getChannelsForUser(
+      this.props.user.id,
+      ["member"],
+      (channels: Channel[]) => {
+        this.setState({
+          memberChannels: channels,
           loading: false,
         });
       }
@@ -43,112 +55,184 @@ export default class SubscribedChannelsList extends Component<Props, State> {
   }
 
   render() {
-    return this.props.user ? (
-      this.state.channels.length !== 0 ? (
-        <Box>
-          <Text
-            size="14px"
-            weight="bold"
-            color="grey"
-            margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
+    if (this.props.user) {
+      if (this.state.memberChannels.length === 0 && this.state.followerChannels.length === 0) {
+        return (
+          <Box
+            background="white"
+            round="xsmall"
+            height="180px"
+            margin={{ horizontal: "small", bottom: "10px" }}
+            pad="medium"
+            gap="small"
+            justify="between"
           >
-            Following
-          </Text>
-          {this.state.loading && (
-            <Box width="100%" height="80%" justify="center" align="center">
-              <Loading color="black" size={50} />
-            </Box>
-          )}
-          <Box margin={{ top: "2px" }}>
-            {this.state.channels.map((channel: Channel) => (
-              <Link
-                className="channel"
-                to={`/${channel.name}`}
-                style={{ textDecoration: "none" }}
-              >
-                <Box
-                  direction="row"
-                  gap="xsmall"
-                  align="center"
-                  pad={{ vertical: "3.5px", horizontal: "small" }}
-                >
-                  <Box
-                    background="white"
-                    height="30px"
-                    width="30px"
-                    round="15px"
-                    justify="center"
-                    align="center"
-                    overflow="hidden"
-                  >
-                    {!channel.has_avatar && (
-                      <Identicon string={channel.name} size={30} />
-                    )}
-                    {!!channel.has_avatar && (
-                      <img
-                        src={ChannelService.getAvatar(channel.id)}
-                        height={30}
-                        width={30}
-                      />
-                    )}
-                  </Box>
-                  <Box justify="between">
-                    <Text size="16px" weight="bold" color="black">
-                      {channel.name}
-                    </Text>
-                    {/* <Text size="12px" weight="bold" color="#6B6A6A">
-                      Last live 3 days ago
-                    </Text> */}
-                  </Box>
-                </Box>
-              </Link>
-            ))}
+            <Text size="1.4rem" weight="bold">
+              Channels you follow will appear here
+            </Text>
+            <Text size="16px" color="grey">
+              Use the search bar to find channels that interest you
+            </Text>
           </Box>
-        </Box>
-      ) : (
+        )
+      } else {
+        return (
+          <Box direction="column" gap="50px" margin={{top: "25px"}}>
+            {this.state.memberChannels.length !== 0 && (
+              <Box>
+                <Text
+                  size="14px"
+                  weight="bold"
+                  color="grey"
+                  margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
+                >
+                  Your Agoras
+                </Text>
+                {this.state.loading && (
+                  <Box width="100%" height="80%" justify="center" align="center">
+                    <Loading color="black" size={50} />
+                  </Box>
+                )}
+                <Box margin={{ top: "2px" }}>
+                  {this.state.memberChannels.map((channel: Channel) => (
+                    <Link
+                      className="channel"
+                      to={`/${channel.name}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Box
+                        direction="row"
+                        gap="xsmall"
+                        align="center"
+                        pad={{ vertical: "3.5px", horizontal: "small" }}
+                      >
+                        <Box
+                          background="white"
+                          height="30px"
+                          width="30px"
+                          round="15px"
+                          justify="center"
+                          align="center"
+                          overflow="hidden"
+                        >
+                          {!channel.has_avatar && (
+                            <Identicon string={channel.name} size={30} />
+                          )}
+                          {!!channel.has_avatar && (
+                            <img
+                              src={ChannelService.getAvatar(channel.id)}
+                              height={30}
+                              width={30}
+                            />
+                          )}
+                        </Box>
+                        <Box justify="between">
+                          <Text size="16px" weight="bold" color="black">
+                            {channel.name}
+                          </Text>
+                          {/* <Text size="12px" weight="bold" color="#6B6A6A">
+                            Last live 3 days ago
+                          </Text> */}
+                        </Box>
+                      </Box>
+                    </Link>
+                  ))}
+                </Box>
+              </Box>
+            )} 
+            {this.state.followerChannels.length !== 0 && (
+              <Box>
+                <Text
+                  size="14px"
+                  weight="bold"
+                  color="grey"
+                  margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
+                >
+                  Following
+                </Text>
+                {this.state.loading && (
+                  <Box width="100%" height="80%" justify="center" align="center">
+                    <Loading color="black" size={50} />
+                  </Box>
+                )}
+                <Box margin={{ top: "2px" }}>
+                  {this.state.followerChannels.map((channel: Channel) => (
+                    <Link
+                      className="channel"
+                      to={`/${channel.name}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Box
+                        direction="row"
+                        gap="xsmall"
+                        align="center"
+                        pad={{ vertical: "3.5px", horizontal: "small" }}
+                      >
+                        <Box
+                          background="white"
+                          height="30px"
+                          width="30px"
+                          round="15px"
+                          justify="center"
+                          align="center"
+                          overflow="hidden"
+                        >
+                          {!channel.has_avatar && (
+                            <Identicon string={channel.name} size={30} />
+                          )}
+                          {!!channel.has_avatar && (
+                            <img
+                              src={ChannelService.getAvatar(channel.id)}
+                              height={30}
+                              width={30}
+                            />
+                          )}
+                        </Box>
+                        <Box justify="between">
+                          <Text size="16px" weight="bold" color="black">
+                            {channel.name}
+                          </Text>
+                          {/* <Text size="12px" weight="bold" color="#6B6A6A">
+                            Last live 3 days ago
+                          </Text> */}
+                        </Box>
+                      </Box>
+                    </Link>
+                  ))}
+                </Box>
+              </Box>
+            )}
+          </Box>
+        )
+      }
+    } else {
+      return (
         <Box
           background="white"
           round="xsmall"
-          height="180px"
+          height="215px"
           margin={{ horizontal: "small", bottom: "10px" }}
           pad="medium"
           gap="small"
           justify="between"
         >
-          <Text size="1.4rem" weight="bold">
-            Channels you've followed will appear here
-          </Text>
-          <Text size="16px" color="grey">
-            You can use the search bar to find channels that interest you
-          </Text>
+          <Box gap="xsmall">
+            <Text size="1.7rem" weight="bold">
+              Join the{" "}
+              {
+                <Text size="1.7rem" weight="bold" color="brand">
+                  Agora
+                </Text>
+              }{" "}
+              Community
+            </Text>
+            <Text size="16px" color="grey">
+              Discover the best talks on every topic
+            </Text>
+          </Box>
+          <SignUpButton callback={() => {}} />
         </Box>
       )
-    ) : (
-      <Box
-        background="white"
-        round="xsmall"
-        height="215px"
-        margin={{ horizontal: "small", bottom: "10px" }}
-        pad="medium"
-        gap="small"
-        justify="between"
-      >
-        <Box gap="xsmall">
-          <Text size="1.7rem" weight="bold">
-            Join the{" "}
-            {
-              <Text size="1.7rem" weight="bold" color="brand">
-                Agora
-              </Text>
-            }{" "}
-            Community
-          </Text>
-          <Text size="16px" color="grey">
-            Discover the best talks on every topic
-          </Text>
-        </Box>
-        <SignUpButton callback={() => {}} />
-      </Box>
-    );
+    }
   }
 }
