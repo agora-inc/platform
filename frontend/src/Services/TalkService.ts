@@ -50,6 +50,10 @@ const getPastTalksForChannel = (channelId: number, callback: any) => {
   get(`talks/channel/past?channelId=${channelId}`, callback);
 };
 
+const getDraftedTalksForChannel = (channelId: number, callback: any) => {
+  get(`talks/channel/drafted?channelId=${channelId}`, callback);
+};
+
 const getPastTalksForTag = (tagName: string, callback: any) => {
   get(`talks/tag/past?tagName=${tagName}`, callback);
 };
@@ -67,6 +71,7 @@ const editTalk = (
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
+  state: string,
   callback: any
 ) => {
   post(
@@ -86,6 +91,7 @@ const editTalk = (
       topic3Id: topics[2] ? topics[2].id : 0,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
+      state: state
     },
     callback
   );
@@ -105,6 +111,7 @@ const scheduleTalk = (
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
+  state: string,
   callback: any
 ) => {
   post(
@@ -125,6 +132,7 @@ const scheduleTalk = (
       topic3Id: topics.length > 2 ? topics[2].id : null,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
+      state: state
     },
     callback
   );
@@ -229,6 +237,7 @@ export const TalkService = {
   getAllPastTalks,
   getFutureTalksForChannel,
   getPastTalksForChannel,
+  getDraftedTalksForChannel,
   getFutureTalksForTopic,
   getAllFutureTalksForTopicWithChildren,
   getPastTalksForTopic,
