@@ -267,4 +267,5 @@ export type Talk = {
   topics: Topic[];
   talk_speaker: string;
   talk_speaker_url: string;
+  published: boolean;
 };

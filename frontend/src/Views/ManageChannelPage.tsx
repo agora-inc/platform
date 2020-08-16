@@ -20,6 +20,7 @@ import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
+import { StatusInfo } from "grommet-icons";
 
 interface Props {
   location: any;
@@ -42,6 +43,7 @@ interface State {
   totalNumberOfTalks: number;
   bannerExtended: boolean;
   longDescription: string;
+  showDraftInfo: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -63,6 +65,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       totalNumberOfTalks: 0,
       bannerExtended: true,
       longDescription: "",
+      showDraftInfo: false,
     };
   }
 
@@ -570,6 +573,48 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
               </Box>
+              {this.state.pastStreams.length !== 0 && (
+                <Box 
+                  direction="row"
+                  gap="small"
+                  margin={{ top: "40px", bottom: "20px" }}
+                >
+                  <Text
+                    size="28px"
+                    weight="bold"
+                    color="black"
+                    
+                  >
+                    {`Drafts`}
+                  </Text>
+                  <StatusInfo 
+                    onMouseEnter={() => {this.setState({showDraftInfo: true})}}
+                    onMouseLeave={() => {this.setState({showDraftInfo: false})}}
+                  />
+                  {this.state.showDraftInfo && (
+                    <Box
+                      background="black"
+                      round="xsmall"
+                      pad="small"
+                      //height="30px"
+                      width="210px"
+                      margin={{top: "-6px"}}
+                    >
+                      <Text size="12px">
+                        These talks are only visible to you.
+                      </Text>
+                    </Box> 
+                  )}
+                </Box>
+                
+              )}
+              <ChannelPageTalkList
+                talks={this.state.talks.filter((talk: Talk) => (!talk.published))}
+                channelId={this.state.channel!.id}
+                user={null}
+                admin
+                onEditCallback={this.fetchTalks}
+              />
               {this.state.talks.length !== 0 && (
                 <Text
                   size="28px"
@@ -579,7 +624,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 >{`Upcoming talks`}</Text>
               )}
               <ChannelPageTalkList
-                talks={this.state.talks}
+                talks={this.state.talks.filter((talk: Talk) => (talk.published))}
                 channelId={this.state.channel!.id}
                 user={null}
                 admin
