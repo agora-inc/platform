@@ -707,7 +707,7 @@ export default class PastTalkCard extends Component<Props, State> {
           //   )}
           // </Layer>
         )}
-                {this.props.admin && (
+        {this.props.admin && (
           <Box
             onClick={() => {
               this.toggleEdit();
