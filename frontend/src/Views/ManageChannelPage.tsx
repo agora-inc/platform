@@ -187,6 +187,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   fetchTalks = () => {
+    console.log("FETCH TALKS")
     TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
       (talks: Talk[]) => {
@@ -414,6 +415,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         </Box>
       );
     } else {
+      console.log("TALKS", this.state.talks)
       return this.isAllowed() ? (
         <Box>
           <Box
@@ -573,41 +575,39 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
               </Box>
-              {this.state.pastStreams.length !== 0 && (
-                <Box 
-                  direction="row"
-                  gap="small"
-                  margin={{ top: "40px", bottom: "20px" }}
+              <Box 
+                direction="row"
+                gap="small"
+                margin={{ top: "40px", bottom: "20px" }}
+              >
+                <Text
+                  size="28px"
+                  weight="bold"
+                  color="black"
+                  
                 >
-                  <Text
-                    size="28px"
-                    weight="bold"
-                    color="black"
-                    
+                  {`Drafts`}
+                </Text>
+                <StatusInfo 
+                  onMouseEnter={() => {this.setState({showDraftInfo: true})}}
+                  onMouseLeave={() => {this.setState({showDraftInfo: false})}}
+                />
+                {this.state.showDraftInfo && (
+                  <Box
+                    background="black"
+                    round="xsmall"
+                    pad="small"
+                    //height="30px"
+                    width="210px"
+                    margin={{top: "-6px"}}
                   >
-                    {`Drafts`}
-                  </Text>
-                  <StatusInfo 
-                    onMouseEnter={() => {this.setState({showDraftInfo: true})}}
-                    onMouseLeave={() => {this.setState({showDraftInfo: false})}}
-                  />
-                  {this.state.showDraftInfo && (
-                    <Box
-                      background="black"
-                      round="xsmall"
-                      pad="small"
-                      //height="30px"
-                      width="210px"
-                      margin={{top: "-6px"}}
-                    >
-                      <Text size="12px">
-                        These talks are only visible to you.
-                      </Text>
-                    </Box> 
-                  )}
-                </Box>
+                    <Text size="12px">
+                      These talks are only visible to you.
+                    </Text>
+                  </Box> 
+                )}
+              </Box>
                 
-              )}
               <ChannelPageTalkList
                 talks={this.state.talks.filter((talk: Talk) => (!talk.published))}
                 channelId={this.state.channel!.id}
@@ -615,14 +615,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                 admin
                 onEditCallback={this.fetchTalks}
               />
-              {this.state.talks.length !== 0 && (
-                <Text
-                  size="28px"
-                  weight="bold"
-                  color="black"
-                  margin={{ top: "40px", bottom: "10px" }}
-                >{`Upcoming talks`}</Text>
-              )}
+              <Text
+                size="28px"
+                weight="bold"
+                color="black"
+                margin={{ top: "40px", bottom: "10px" }}
+              >
+                {`Upcoming talks`}
+              </Text>
               <ChannelPageTalkList
                 talks={this.state.talks.filter((talk: Talk) => (talk.published))}
                 channelId={this.state.channel!.id}

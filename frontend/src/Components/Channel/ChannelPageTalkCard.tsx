@@ -133,6 +133,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
   render() {
     console.log("USER", this.props.user);
+    console.log("IS ADMIN", this.props.admin);
 
     return (
       <Box
