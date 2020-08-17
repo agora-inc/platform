@@ -74,6 +74,7 @@ const editTalk = (
   published: boolean,
   callback: any
 ) => {
+  console.log("PUBBB", published)
   post(
     "talks/edit",
     {
@@ -91,7 +92,7 @@ const editTalk = (
       topic3Id: topics[2] ? topics[2].id : 0,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
-      published: published
+      published: published ? 1 : 0,
     },
     callback
   );
@@ -132,7 +133,7 @@ const scheduleTalk = (
       topic3Id: topics.length > 2 ? topics[2].id : null,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
-      published: published
+      published: published ? 1 : 0,
     },
     callback
   );
