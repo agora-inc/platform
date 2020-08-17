@@ -76,7 +76,7 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   shouldRedirect = (): boolean => {
-    return this.state.role === "owner" || this.state.role === "member";
+    return this.state.role === "owner";
   };
 
   handleScroll = (e: any) => {

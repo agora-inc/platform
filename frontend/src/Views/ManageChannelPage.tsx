@@ -85,7 +85,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   }
 
   isAllowed = (): boolean => {
-    return this.state.role === "owner" || this.state.role === "member";
+    return this.state.role === "owner";
   };
 
   handleScroll = (e: any) => {
