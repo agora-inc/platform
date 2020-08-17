@@ -8,6 +8,7 @@ import Button from "../Core/Button";
 
 
 interface Props {
+    channelId: number
 }
 
 interface State {
@@ -20,7 +21,7 @@ export default class EmailContactManagement extends Component<Props, State> {
     super(props);
     this.state = {
         insertString: "",
-        current_email: "jojo@gmail.com"
+        current_email: ""
     };
     // set current_email equal to the current email in db
   }
@@ -32,8 +33,11 @@ export default class EmailContactManagement extends Component<Props, State> {
     };
 
   onSave = () => {
-      // delete previous value (aka current_email) dans la db
-      // save new value
+    // ChannelService.removeContactAddress(
+    //     this.props.channelId,
+    //     this.state.current_email),
+    //     this.props.userId)
+    // save new value
   }
 
   render() {
@@ -63,7 +67,6 @@ export default class EmailContactManagement extends Component<Props, State> {
                 onClick={this.onSave}
               />
         </Box>
-
       </Box>
     );
   }

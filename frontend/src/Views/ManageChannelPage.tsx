@@ -483,7 +483,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                 gap="20px"
                 margin={{ top: "10px", bottom: "15px" }}
               >
-                <EmailContactManagement/>
+                <EmailContactManagement 
+                    channelId={this.state.channel?.id}
+                    userId={}/>
               </Box>
                   
               <Box direction="row" width="100%" justify="between">
