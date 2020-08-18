@@ -7,7 +7,6 @@ import { Talk, TalkService } from "../Services/TalkService";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
-import Identicon from "react-identicons";
 import ColorPicker from "../Components/Channel/ColorPicker";
 import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
 import AddUsersButton from "../Components/Channel/AddUsersButton";
@@ -252,7 +251,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   getCoverBoxStyle = (): CSSProperties => {
     let current_time = Math.floor(new Date().getTime() / 200000);
-    let background = this.state.channel?.has_cover
+    let background = this.state.channel?.id
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
       current_time +
       `)`
@@ -261,9 +260,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       // the same name (important for the name to be the same for the styling).
       : this.state.colour;
 
-    let border = this.state.channel?.has_cover
-      ? `8px solid ${this.state.channel.colour}`
-      : "none";
+    let border = "none";
 
     let color = this.state.channel?.has_cover
     ? `${this.state.channel.colour}`
@@ -340,15 +337,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                 style={{ minWidth: 100, minHeight: 100 }}
                 overflow="hidden"
               >
-                {!this.state.channel!.has_avatar && (
-                  <Identicon string={this.state.channel!.name} size={50} />
-                )}
-                {!!this.state.channel!.has_avatar && (
+                {(
                   <img
                     src={
                       ChannelService.getAvatar(this.state.channel!.id) +
                       `&ts=` +
-                      new Date().getTime()
+                      Math.floor(new Date().getTime() / 100000)
                     }
                     // HACK: we had the ts argument to prevent from caching.
                     height={100}

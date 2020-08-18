@@ -247,6 +247,9 @@ def updateLongChannelDescription():
 
 @app.route('/channels/avatar', methods=["POST", "GET"])
 def avatar():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     if request.method == "POST":
         if not checkAuth(request.headers.get('Authorization')):
             return exceptions.Unauthorized("Authorization header invalid or not present")
@@ -260,12 +263,16 @@ def avatar():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        channelId = int(request.args.get("channelId"))
-        fn = f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
-        return send_file(fn, mimetype="image/jpg")
+        if "channelId" in request.args:
+            channelId = int(request.args.get("channelId"))
+            fn = channels.getAvatarLocation(channelId)
+            return send_file(fn, mimetype="image/jpg")
 
 @app.route('/channels/cover', methods=["POST", "GET", "DELETE"])
 def cover():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     if request.method == "POST":
         if not checkAuth(request.headers.get('Authorization')):
             return exceptions.Unauthorized("Authorization header invalid or not present")
@@ -279,10 +286,11 @@ def cover():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        channelId = int(request.args.get("channelId"))
-        fn = f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
-        return send_file(fn, mimetype="image/jpg")
-    
+        if "channelId" in request.args:
+            channelId = int(request.args.get("channelId"))
+            fn = channels.getCoverLocation(channelId)
+            return send_file(fn, mimetype="image/jpg")
+
     if request.method == "DELETE":
         params = request.json 
         print(params)
@@ -314,6 +322,9 @@ def createStream():
     if request.method == "OPTIONS":
         return jsonify("ok")
         
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 

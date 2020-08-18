@@ -84,7 +84,7 @@ export class Overlay extends Component<OverlayProps> {
                 borderBottomRightRadius: "15px",
                 position: "sticky",
                 bottom: 0,
-                minHeight: "45px",
+                minHeight: "63px",
                 zIndex: 10,
               }}
             >
