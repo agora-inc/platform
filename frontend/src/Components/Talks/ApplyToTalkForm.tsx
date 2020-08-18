@@ -1,19 +1,22 @@
 import React, { Component } from "react";
 import {
   Box,
-  Button,
-  Heading,
+  Select,
   Text,
   TextInput,
   TextArea,
-  Layer,
-  Form,
-  CheckBox,
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import emailjs from "emailjs-com";
 import { Topic } from "../../Services/TopicService";
 import TopicSelector from "../Talks/TopicSelector";
+import { ChannelService } from "../../Services/ChannelService";
+
+
+
+interface Props {
+  channelId: number,
+}
 
 interface State {
     user: {
@@ -29,12 +32,13 @@ interface State {
       talk_title: string;
       abstract: string;
       topics: Topic[],
-      date: string;
+      // date: string;
     }
     showForm: boolean;
+    contactAddresses: string
 }
 
-export default class ApplyToTalkForm extends Component<{}, State> {
+export default class ApplyToTalkForm extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -51,20 +55,23 @@ export default class ApplyToTalkForm extends Component<{}, State> {
         talk_title: "",
         abstract: "",
         topics: [],
-        date: "",
+        // date: "",
         },
       showForm: false,
+      contactAddresses: ""
     };
   }
 
-  // handleCheckBox = (name: string) => {
-  //   this.setState((prevState: any) => ({
-  //     user: {
-  //       ...prevState.user,
-  //       about: { ...prevState.user.about, [name]: !prevState.user.about[name] },
-  //     },
-  //   }));
-  // };
+  fetchContactAddresses = () => {
+    ChannelService.getContactAddresses(
+      this.props.channelId,
+      (contactAddresses: string) => {
+        this.setState({ contactAddresses: contactAddresses[0] });
+      }
+    );
+    console.log("yoyo", this.state.contactAddresses);
+  };
+
 
   handleInput = (e: any, key: string) => {
     let value = e.target.value;
@@ -74,19 +81,27 @@ export default class ApplyToTalkForm extends Component<{}, State> {
     }));
   };
 
+  setValueAcademicTitle = (e: any) => {
+    this.setState((prevState: any) => ({
+      user: {...prevState.user, speaker_title: e}
+    }))
+  };
+
   handleFormSubmit = (e: any) => {
-    // prevents the page from being refreshed on form submission
+    // prevents the page from bein
+    this.fetchContactAddresses();
     e.preventDefault();
     let userData = this.state.user;
 
     // Send it via email to revolutionising.research@gmail.com
     // console.log(userData);
     const templateId = "feedback_form";
-    this.sendFeedback(templateId, {
-      message_html: JSON.stringify(this.state.user.speaker_name),
-      from_name: this.state.user.speaker_name,
-      reply_to: this.state.user.speaker_name,
-    });
+    // this.sendFeedback(templateId, {
+    //   message_html: JSON.stringify(this.state.user.speaker_name),
+    //   from_name: this.state.user.speaker_name,
+    //   reply_to: this.state.user.speaker_name,
+    // });
+    console.log("wewesweshweshwesh", this.props.channelId);
     this.setState({ showForm: false });
   };
 
@@ -123,7 +138,7 @@ export default class ApplyToTalkForm extends Component<{}, State> {
         talk_title: "",
         abstract: "",
         topics: [],
-        date: ""
+        // date: ""
         }
       }
     );
@@ -133,8 +148,24 @@ export default class ApplyToTalkForm extends Component<{}, State> {
     this.setState({ showForm: !this.state.showForm });
   };
 
+  isComplete = () => {
+    return (
+      console.log("wesh maggle", this.state.talk.topics),
+      this.state.user.speaker_title !== "" &&
+      this.state.user.speaker_name !== "" &&
+      this.state.user.speaker_position !== "" &&
+      this.state.user.personal_website !== "" &&
+      this.state.user.personal_message !== "" &&
+      this.state.user.email !== "" &&
+      this.state.user.affiliation !== "" &&
+      this.state.talk.talk_title !== "" &&
+      this.state.talk.abstract !== "" &&
+      this.state.talk.topics.length !== 0 
+    );
+  };
+
   selectTopic = (topic: Topic, num: number) => {
-    console.log(num, topic)
+    // console.log(num, topic)
     let tempTopics = this.state.talk.topics;
     tempTopics[num] = topic;
     this.setState((prevState: any) => ({
@@ -161,7 +192,7 @@ export default class ApplyToTalkForm extends Component<{}, State> {
           <Text 
             size="16px" 
             color="grey" 
-          > 
+          >
             Give a talk!
           </Text>
         </Box>
@@ -171,34 +202,47 @@ export default class ApplyToTalkForm extends Component<{}, State> {
           onCancelClick={this.toggleModal}
           onClickOutside={this.toggleModal}
           onSubmitClick={this.handleFormSubmit}
-          submitButtonText="Submit"
-          canProceed={true}
+          submitButtonText="Apply"
+          canProceed={this.isComplete()}
           width={900}
           height={540}
-          contentHeight="1200px"
+          contentHeight="1000px"
           title="Talk Application"
         >
 
         <OverlaySection heading="1. Tell us about you!">
-          <Box width="100%" gap="1px">
+        <Box width="100%" gap="2px">
+            {/* <TextInput
+              placeholder="Academic title"
+              value={this.state.user.speaker_title}
+              onChange={(e: any) => this.handleInput(e, "speaker_title")}
+              /> */}
+            <Box width="100%" gap="2px">
             <TextInput
-              placeholder="Name"
+              placeholder="Full name"
               value={this.state.user.speaker_name}
               onChange={(e: any) => this.handleInput(e, "speaker_name")}
               />
           </Box>
-          <Box width="100%" gap="1px">
-            <TextInput
-              placeholder="Social title"
+            <Select
+              placeholder="Academic title"
+              options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof']}
               value={this.state.user.speaker_title}
-              onChange={(e: any) => this.handleInput(e, "speaker_title")}
-              />
+              onChange={({options}) => this.setValueAcademicTitle(options)}
+            />
           </Box>
-          <Box width="100%" gap="1px">
+          {/* <Box width="100%" gap="2px">
             <TextInput
               placeholder="Position / level of education"
               value={this.state.user.speaker_position}
               onChange={(e: any) => this.handleInput(e, "speaker_position")}
+              />
+          </Box> */}
+          <Box width="100%" gap="2px">
+            <TextInput
+              placeholder="Current affiliation"
+              value={this.state.user.affiliation}
+              onChange={(e: any) => this.handleInput(e, "affiliation")}
               />
           </Box>
           <Box width="100%" gap="2px">
@@ -210,17 +254,9 @@ export default class ApplyToTalkForm extends Component<{}, State> {
           </Box>
           <Box width="100%" gap="2px">
             <TextInput
-              placeholder="Personal website"
+              placeholder="(Personal website)"
               value={this.state.user.personal_website}
               onChange={(e: any) => this.handleInput(e, "personal_website")}
-              />
-          </Box>
-
-          <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="Affiliation"
-              value={this.state.user.affiliation}
-              onChange={(e: any) => this.handleInput(e, "affiliation")}
               />
           </Box>
               </OverlaySection>
@@ -261,14 +297,12 @@ export default class ApplyToTalkForm extends Component<{}, State> {
           <TopicSelector onSelectedCallback={this.selectTopic} />
         </Box>
 
-
-
         <OverlaySection heading="3. Personal message to us!">
-          <Box width="100%" gap="2px">
+          <Box width="100%" gap="2px" margin={{bottom: "20px"}}>
             <TextArea
               placeholder="Personal message to us!"
-              value={this.state.talk.abstract}
-              onChange={(e: any) => this.handleInput(e, "abstract")}
+              value={this.state.user.personal_message}
+              onChange={(e: any) => this.handleInput(e, "personal_message")}
               rows={8}
             />
           </Box>

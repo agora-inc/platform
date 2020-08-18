@@ -368,7 +368,7 @@ export default class ChannelPage extends Component<Props, State> {
                 />
               )}
               <Box width="75%" align="start" gap="20px">
-                <ApplyToTalkForm/>
+                <ApplyToTalkForm channelId={this.state.channel!.id} />
                 {this.banner()}
                 {/* <AboutUs text={this.state.channel?.long_description} /> */}
                 <Text

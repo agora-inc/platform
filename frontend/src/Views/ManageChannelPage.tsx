@@ -144,17 +144,6 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchFollowers();
     this.fetchPastTalks();
     this.fetchTalks();
-    this.fetchContactAddresses();
-  };
-
-  fetchContactAddresses = () => {
-    ChannelService.getContactAddresses(
-      this.state.channel!.id,
-      (contactAddresses: string) => {
-        this.setState({ contactAddresses: contactAddresses });
-      }
-    );
-    console.log("bigpipi", this.state.contactAddresses)
   };
 
   fetchFollowerCount = () => {

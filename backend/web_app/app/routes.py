@@ -305,17 +305,10 @@ def cover():
 
 @app.route('/channels/contacts', methods=["GET", "OPTIONS"])
 def getContactAddresses():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-    
     if "channelId" in request.args: 
         channel_id = request.args.get("channelId")
         res = channels.getContactAddresses(channel_id)
         return jsonify(res)
-
 
 @app.route('/channels/contact/add', methods=["POST", "OPTIONS"])
 def addContactAddress():

@@ -52,7 +52,7 @@ const getContactAddresses = (
   channelId: number,
   callback: any
 ) => {
-  const url = `channels/contacts/channelId=${channelId}`;
+  const url = `channels/contacts?channelId=${channelId}`;
   get(url, callback);
 };
 

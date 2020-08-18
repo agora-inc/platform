@@ -151,10 +151,6 @@ class ChannelRepository:
 
         list_res = list(map(lambda x: x["email_address"], result))
 
-        with open("/home/cloud-user/bigpipi.txt", "w") as file:
-            file.write(str(list_res))
-
-
         return list_res
 
     def addContactAddress(self, contactAddress, channelId, userId):

@@ -11,7 +11,7 @@ interface Props {
     channelId: number,
     currentAddress: string,
     onAddAddress: any,
-    onDeleteAddress: any
+    onDeleteAddress: any,
 }
 
 interface State {
@@ -28,6 +28,7 @@ export default class EmailContactManagement extends Component<Props, State> {
         currentAddress: "",
         invalidEmailFlag: false
     };
+    this.fetchContactAddresses();
     if (this.props.currentAddress !== ""){
       this.setState({currentAddress: this.props.currentAddress})
     }
@@ -39,6 +40,15 @@ export default class EmailContactManagement extends Component<Props, State> {
         insertString: insertString,
       });
     };
+
+  fetchContactAddresses = () => {
+    ChannelService.getContactAddresses(
+      this.props.channelId,
+      (contactAddresses: string) => {
+        this.setState({ currentAddress: contactAddresses[0] });
+      }
+    );
+  };
 
   onSave = () => {
     if (this.state.insertString.includes("@") 
@@ -98,7 +108,7 @@ export default class EmailContactManagement extends Component<Props, State> {
             onChange={(e) => this.onType(e.target.value)}
             //   icon={<UserAdmin />}
             reverse
-            placeholder="New email of contact"
+            placeholder="New contact email"
             style={{ width: "27vw", height: "4.5vh", justifySelf: "center" }}
             />
 
