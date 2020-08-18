@@ -39,6 +39,7 @@ interface State {
   channelMembers: User[];
   followers: User[];
   talks: Talk[];
+  drafts: Talk[];
   pastStreams: Talk[];
   totalNumberOfTalks: number;
   bannerExtended: boolean;
@@ -61,6 +62,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelMembers: [],
       followers: [],
       talks: [],
+      drafts: [],
       pastStreams: [],
       totalNumberOfTalks: 0,
       bannerExtended: true,
@@ -145,6 +147,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchFollowers();
     this.fetchPastTalks();
     this.fetchTalks();
+    this.fetchDrafts();
   };
 
   fetchFollowerCount = () => {
@@ -196,6 +199,21 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
+  fetchDrafts = () => {
+    console.log("FETCH DRAFTS")
+    TalkService.getDraftedTalksForChannel(
+      this.state.channel!.id,
+      (drafts: Talk[]) => {
+        this.setState({ drafts });
+      }
+    );
+  };
+
+  fetchTalksDrafts = () => {
+    this.fetchDrafts()
+    this.fetchTalks()
+  }
+
   fetchPastTalks = () => {
     TalkService.getPastTalksForChannel(
       this.state.channel!.id,
@@ -213,7 +231,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.updateChannelColour(
       this.state.channel!.id,
       colour,
-      () => {}
+      () => { }
     );
   };
 
@@ -222,7 +240,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       ChannelService.updateChannelDescription(
         this.state.channel!.id,
         document.getElementById("description")!.textContent as string,
-        () => {}
+        () => { }
       );
     }
     this.setState({ editingDescription: !this.state.editingDescription });
@@ -232,7 +250,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.updateLongChannelDescription(
       this.state.channel!.id,
       newDescription,
-      () => {}
+      () => { }
     );
     this.setState({
       editingLongDescription: !this.state.editingLongDescription,
@@ -256,7 +274,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   getCoverBoxStyle = (): CSSProperties => {
     let current_time = Math.floor(new Date().getTime() / 200000);
-    let background = this.state.channel?.has_cover
+    let background = this.state.channel ?.has_cover
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
       current_time +
       `)`
@@ -265,15 +283,15 @@ export default class ManageChannelPage extends Component<Props, State> {
       // the same name (important for the name to be the same for the styling).
       : this.state.colour;
 
-    let border = this.state.channel?.has_cover
+    let border = this.state.channel ?.has_cover
       ? `8px solid ${this.state.channel.colour}`
       : "none";
 
-    let color = this.state.channel?.has_cover
-    ? `${this.state.channel.colour}`
-    : "none";
+    let color = this.state.channel ?.has_cover
+      ? `${this.state.channel.colour}`
+      : "none";
 
-    if (color == "white"){
+    if (color == "white") {
       return {
         width: "75vw",
         borderTopRightRadius: 10,
@@ -318,7 +336,7 @@ export default class ManageChannelPage extends Component<Props, State> {
             <ColorPicker
               selected={this.state.colour}
               callback={this.updateColour}
-              channelId={this.state.channel?.id}
+              channelId={this.state.channel ?.id}
               hasCover={
                 this.state.channel ? this.state.channel.has_cover : false
               }
@@ -363,7 +381,7 @@ export default class ManageChannelPage extends Component<Props, State> {
             </Box>
             <Box>
               <Text size="30px" color="black" weight="bold">
-                {this.state.channel?.name}
+                {this.state.channel ?.name}
               </Text>
               <Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers
@@ -382,21 +400,21 @@ export default class ManageChannelPage extends Component<Props, State> {
               style={{ cursor: "pointer" }}
             />
           ) : (
-            <FormDown
-              onClick={this.toggleBanner}
-              size="50px"
-              color="black"
-              style={{ cursor: "pointer" }}
-            />
-          )}
+              <FormDown
+                onClick={this.toggleBanner}
+                size="50px"
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
         </Box>
         {this.state.bannerExtended && (
           <>
             <EnrichedTextEditor
               text={
-                this.state.channel?.long_description
-                  ? this.state.channel?.long_description
-                  : ""
+                this.state.channel ?.long_description
+                  ? this.state.channel ?.long_description
+                    : ""
               }
               onModify={this.onModifyLongDescription}
               onSave={this.onSaveLongDescriptionClicked}
@@ -434,16 +452,16 @@ export default class ManageChannelPage extends Component<Props, State> {
               )}
 
               <Box
-                  width="100%"
-                  height="100%"
-                  pad="10px"
-                  background="white"
-                  round="xsmall"
-                  justify="center"
-                  style={{
-                    border: "1px solid #C2C2C2",
-                  }}
-                >
+                width="100%"
+                height="100%"
+                pad="10px"
+                background="white"
+                round="xsmall"
+                justify="center"
+                style={{
+                  border: "1px solid #C2C2C2",
+                }}
+              >
                 <Text color="#5A5A5A">
                   <p><big><b> Agora administrator page </b></big></p>
                   <p>As an administrator, you can:</p>
@@ -503,7 +521,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     {this.state.channelOwners.map((owner: User) => (
                       <ChannelPageUserCircle
                         user={owner}
-                        channelId={this.state.channel?.id}
+                        channelId={this.state.channel ?.id}
                         onRemovedCallback={this.fetchOwners}
                         showRemoveButton={this.state.role === "owner"}
                       />
@@ -543,7 +561,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     {this.state.channelMembers.map((member: User) => (
                       <ChannelPageUserCircle
                         user={member}
-                        channelId={this.state.channel?.id}
+                        channelId={this.state.channel ?.id}
                         onRemovedCallback={this.fetchMembers}
                         showRemoveButton={this.state.role === "owner"}
                       />
@@ -575,7 +593,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
               </Box>
-              <Box 
+              <Box
                 direction="row"
                 gap="small"
                 margin={{ top: "40px", bottom: "20px" }}
@@ -584,13 +602,13 @@ export default class ManageChannelPage extends Component<Props, State> {
                   size="28px"
                   weight="bold"
                   color="black"
-                  
+
                 >
                   {`Drafts`}
                 </Text>
-                <StatusInfo 
-                  onMouseEnter={() => {this.setState({showDraftInfo: true})}}
-                  onMouseLeave={() => {this.setState({showDraftInfo: false})}}
+                <StatusInfo
+                  onMouseEnter={() => { this.setState({ showDraftInfo: true }) }}
+                  onMouseLeave={() => { this.setState({ showDraftInfo: false }) }}
                 />
                 {this.state.showDraftInfo && (
                   <Box
@@ -599,21 +617,21 @@ export default class ManageChannelPage extends Component<Props, State> {
                     pad="small"
                     //height="30px"
                     width="210px"
-                    margin={{top: "-6px"}}
+                    margin={{ top: "-6px" }}
                   >
                     <Text size="12px">
                       These talks are only visible to you.
                     </Text>
-                  </Box> 
+                  </Box>
                 )}
               </Box>
-                
+
               <ChannelPageTalkList
-                talks={this.state.talks.filter((talk: Talk) => (!talk.published))}
+                talks={this.state.drafts}
                 channelId={this.state.channel!.id}
                 user={null}
                 admin
-                onEditCallback={this.fetchTalks}
+                onEditCallback={this.fetchTalksDrafts}
               />
               <Text
                 size="28px"
@@ -624,11 +642,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {`Upcoming talks`}
               </Text>
               <ChannelPageTalkList
-                talks={this.state.talks.filter((talk: Talk) => (talk.published))}
+                talks={this.state.talks}
                 channelId={this.state.channel!.id}
                 user={null}
                 admin
-                onEditCallback={this.fetchTalks}
+                onEditCallback={this.fetchTalksDrafts}
               />
               {this.state.pastStreams.length !== 0 && (
                 <Text
@@ -662,12 +680,12 @@ export default class ManageChannelPage extends Component<Props, State> {
           <ReactTooltip />
         </Box>
       ) : (
-        <Redirect
-          to={{
-            pathname: `/${this.state.channel!.name}`,
-          }}
-        />
-      );
+          <Redirect
+            to={{
+              pathname: `/${this.state.channel!.name}`,
+            }}
+          />
+        );
     }
   }
 }

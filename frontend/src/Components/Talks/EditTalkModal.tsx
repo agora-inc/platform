@@ -41,7 +41,7 @@ interface State {
   topics: Topic[];
   talkSpeaker: string;
   talkSpeakerURL: string;
-  published: boolean,
+  published: number,
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -69,14 +69,14 @@ export default class EditTalkModal extends Component<Props, State> {
       topics: [],
       talkSpeaker: this.props.talk ? this.props.talk.talk_speaker : "",
       talkSpeakerURL: this.props.talk ? this.props.talk.talk_speaker_url : "",
-      published: this.props.talk ? this.props.talk.published : false,
+      published: this.props.talk ? this.props.talk.published : 0,
     };
   }
 
   onFinishClicked = () => {
     this.setState(
       {
-        published: true,
+        published: 1,
         loading: true,
       },
       () => {
@@ -210,7 +210,7 @@ export default class EditTalkModal extends Component<Props, State> {
     if (!this.props.talk) {
       return;
     }
-    this.setState({ published: false });
+    this.setState({ published: 0 });
     this.setState(
       {
         loading: true,
@@ -292,7 +292,7 @@ export default class EditTalkModal extends Component<Props, State> {
             <Button
               width="150px"
               height="35px"
-              text="Save draft"
+              text="Save as draft"
               onClick={this.onSaveDraft}
             />
           ) : null
