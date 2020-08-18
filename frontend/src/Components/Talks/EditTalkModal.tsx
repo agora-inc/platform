@@ -41,6 +41,7 @@ interface State {
   topics: Topic[];
   talkSpeaker: string;
   talkSpeakerURL: string;
+  published: number,
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -68,13 +69,14 @@ export default class EditTalkModal extends Component<Props, State> {
       topics: [],
       talkSpeaker: this.props.talk ? this.props.talk.talk_speaker : "",
       talkSpeakerURL: this.props.talk ? this.props.talk.talk_speaker_url : "",
+      published: this.props.talk ? this.props.talk.published : 0,
     };
   }
 
   onFinishClicked = () => {
-    console.log(this.state)
     this.setState(
       {
+        published: 1,
         loading: true,
       },
       () => {
@@ -129,6 +131,8 @@ export default class EditTalkModal extends Component<Props, State> {
 
   onFinish = () => {
     const dateTimeStrs = this.combineDateAndTimeStrings();
+    console.log("NOW", this.state)
+    console.log("NOW1", this.props.talk)
     if (this.props.talk) {
       TalkService.editTalk(
         this.props.talk.id,
@@ -143,6 +147,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.topics,
         this.state.talkSpeaker,
         this.state.talkSpeakerURL,
+        this.state.published,
         (talk: Talk) => {
           this.setState(
             {
@@ -169,6 +174,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.topics,
         this.state.talkSpeaker,
         this.state.talkSpeakerURL,
+        this.state.published,
         (talk: Talk) => {
           this.setState(
             {
@@ -199,6 +205,21 @@ export default class EditTalkModal extends Component<Props, State> {
       this.props.onDeletedCallback();
     });
   };
+
+  onSaveDraft = () => {
+    if (!this.props.talk) {
+      return;
+    }
+    this.setState({ published: 0 });
+    this.setState(
+      {
+        loading: true,
+      },
+      () => {
+        this.onFinish();
+      }
+    );
+  }
 
   selectTag = (tag: Tag) => {
     this.setState({ tags: [...this.state.tags, tag] });
@@ -248,14 +269,14 @@ export default class EditTalkModal extends Component<Props, State> {
         height={750}
         visible={this.props.visible}
         title={this.props.talk ? "Edit talk" : "New talk"}
-        submitButtonText="Save"
+        submitButtonText="Publish"
         onSubmitClick={this.onFinishClicked}
         contentHeight="600px"
         canProceed={this.isComplete()}
         onCancelClick={this.props.onCanceledCallback}
         onClickOutside={this.props.onCanceledCallback}
         onEsc={this.props.onCanceledCallback}
-        extraButton={
+        deleteButton={
           this.props.talk ? (
             <Button
               fill="#FF4040"
@@ -266,13 +287,23 @@ export default class EditTalkModal extends Component<Props, State> {
             />
           ) : null
         }
+        saveDraftButton={
+          this.props.talk ? (
+            <Button
+              width="170px"
+              height="35px"
+              text="Save as draft"
+              onClick={this.onSaveDraft}
+            />
+          ) : null
+        }
       >
-        <Box direction="row"> 
-          <Box 
-            direction="column" 
+        <Box direction="row">
+          <Box
+            direction="column"
             width="33%"
-            margin={{right: "12px"}}
-          > 
+            margin={{ right: "12px" }}
+          >
             <OverlaySection> {/* heading="Add a title and a short description"> */}
               <Box width="100%" gap="5px">
                 <Text size="14px" weight="bold" color="black">
@@ -304,12 +335,12 @@ export default class EditTalkModal extends Component<Props, State> {
                   onChange={(e) => this.setState({ talkSpeakerURL: e.target.value })}
                 />
               </Box>
-              <Box width="100%" gap="5px" margin={{bottom: "0px"}}>
+              <Box width="100%" gap="5px" margin={{ bottom: "0px" }}>
                 <Text size="14px" weight="bold" color="black">
                   Description
                 </Text>
                 <TextArea
-                  style={{height: "102px"}}
+                  style={{ height: "102px" }}
                   value={this.state.description}
                   placeholder=""
                   onChange={(e) => this.setState({ description: e.target.value })}
@@ -325,13 +356,13 @@ export default class EditTalkModal extends Component<Props, State> {
                 height="200px"
               />
                 </OverlaySection>*/}
-            
+
           </Box>
-          <Box 
-            direction="column" 
+          <Box
+            direction="column"
             width="33%"
-            margin={{left: "large", right: "xsmall"}}
-          > 
+            margin={{ left: "large", right: "xsmall" }}
+          >
             <OverlaySection> {/*heading="When is your talk going to be held?">*/}
               <Calendar
                 date={this.state.date}
@@ -343,7 +374,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 daysOfWeek
                 style={{ width: "100%" }}
               />
-              <Box direction="row" gap="medium" margin={{top: "medium"}}>
+              <Box direction="row" gap="medium" margin={{ top: "medium" }}>
                 <Box direction="column" width="100%" gap="5px">
                   <Text size="14px" weight="bold" color="black">
                     Start
@@ -396,18 +427,18 @@ export default class EditTalkModal extends Component<Props, State> {
             </OverlaySection>
           </Box>
 
-          <Box 
-            direction="column" 
+          <Box
+            direction="column"
             width="33%"
-            margin={{left: "large", right: "xsmall", top:"6px"}}
-          > 
+            margin={{ left: "large", right: "xsmall", top: "6px" }}
+          >
             <OverlaySection heading="Link to talk ">
               <Text
-                size="14px" 
-                weight="bold" 
-                color="grey" 
+                size="14px"
+                weight="bold"
+                color="grey"
                 alignSelf="start"
-                margin={{top: "10px", bottom: "21px"}}
+                margin={{ top: "10px", bottom: "21px" }}
               >
                 Enter here a link towards a meeting room. No need to put a password, you choose the users you want to show the link to!
               </Text>
@@ -416,7 +447,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 placeholder="e.g. https://zoom.us/"
                 onChange={(e) => this.setState({ link: e.target.value })}
               />
-              <Box width="100%" gap="5px" margin={{top: "24px"}}>
+              <Box width="100%" gap="5px" margin={{ top: "24px" }}>
                 <Text size="14px" weight="bold" color="black">
                   Visible...
                 </Text>

@@ -50,6 +50,10 @@ const getPastTalksForChannel = (channelId: number, callback: any) => {
   get(`talks/channel/past?channelId=${channelId}`, callback);
 };
 
+const getDraftedTalksForChannel = (channelId: number, callback: any) => {
+  get(`talks/channel/drafted?channelId=${channelId}`, callback);
+};
+
 const getPastTalksForTag = (tagName: string, callback: any) => {
   get(`talks/tag/past?tagName=${tagName}`, callback);
 };
@@ -67,8 +71,10 @@ const editTalk = (
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
+  published: number,
   callback: any
 ) => {
+  console.log("PUBBB", published)
   post(
     "talks/edit",
     {
@@ -86,6 +92,7 @@ const editTalk = (
       topic3Id: topics[2] ? topics[2].id : 0,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
+      published: published,
     },
     callback
   );
@@ -105,6 +112,7 @@ const scheduleTalk = (
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
+  published: number,
   callback: any
 ) => {
   post(
@@ -125,6 +133,7 @@ const scheduleTalk = (
       topic3Id: topics.length > 2 ? topics[2].id : null,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
+      published: published,
     },
     callback
   );
@@ -229,6 +238,7 @@ export const TalkService = {
   getAllPastTalks,
   getFutureTalksForChannel,
   getPastTalksForChannel,
+  getDraftedTalksForChannel,
   getFutureTalksForTopic,
   getAllFutureTalksForTopicWithChildren,
   getPastTalksForTopic,
@@ -267,4 +277,5 @@ export type Talk = {
   topics: Topic[];
   talk_speaker: string;
   talk_speaker_url: string;
+  published: number;
 };

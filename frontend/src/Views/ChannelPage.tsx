@@ -372,7 +372,7 @@ export default class ChannelPage extends Component<Props, State> {
                 {this.banner()}
                 {/* <AboutUs text={this.state.channel?.long_description} /> */}
                 <Text
-                  size="24px"
+                  size="28px"
                   weight="bold"
                   color="black"
                   margin={{ bottom: "10px" }}
