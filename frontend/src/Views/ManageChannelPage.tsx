@@ -190,7 +190,6 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   fetchTalks = () => {
-    console.log("FETCH TALKS")
     TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
       (talks: Talk[]) => {
@@ -200,7 +199,6 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   fetchDrafts = () => {
-    console.log("FETCH DRAFTS")
     TalkService.getDraftedTalksForChannel(
       this.state.channel!.id,
       (drafts: Talk[]) => {
@@ -433,7 +431,6 @@ export default class ManageChannelPage extends Component<Props, State> {
         </Box>
       );
     } else {
-      console.log("TALKS", this.state.talks)
       return this.isAllowed() ? (
         <Box>
           <Box
