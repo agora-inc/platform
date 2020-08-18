@@ -42,6 +42,7 @@ interface State {
   totalNumberOfTalks: number;
   bannerExtended: boolean;
   longDescription: string;
+  contactAddresses: string;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -63,6 +64,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       totalNumberOfTalks: 0,
       bannerExtended: true,
       longDescription: "",
+      contactAddresses: ""
     };
   }
 
@@ -142,6 +144,17 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchFollowers();
     this.fetchPastTalks();
     this.fetchTalks();
+    this.fetchContactAddresses();
+  };
+
+  fetchContactAddresses = () => {
+    ChannelService.getContactAddresses(
+      this.state.channel!.id,
+      (contactAddresses: string) => {
+        this.setState({ contactAddresses: contactAddresses });
+      }
+    );
+    console.log("bigpipi", this.state.contactAddresses)
   };
 
   fetchFollowerCount = () => {
@@ -237,6 +250,26 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   onModifyLongDescription = (value: any) => {
     this.setState({ longDescription: value });
+  };
+
+  onAddContactAddress = (newAddress: any) => {
+    let user = UserService.getCurrentUser();
+    ChannelService.addContactAddress(
+      this.state.channel!.id,
+      newAddress,
+      user.id,
+      () => {}
+    );
+  };
+
+  onDeleteContactAddress = (oldAddress: any) => {
+    let user = UserService.getCurrentUser();
+    ChannelService.removeContactAddress(
+      this.state.channel!.id,
+      oldAddress,
+      user.id,
+      () => {}
+    );
   };
 
   onFileChosen = (e: any) => {
@@ -460,14 +493,12 @@ export default class ManageChannelPage extends Component<Props, State> {
 
               {this.banner()}
 
-
               <Text
                   size="28px"
                   weight="bold"
                   color="black"
                   margin={{ top: "10px" }}
                 >{<UserAdmin/>} {`Administrator panel`} </Text>
-
 
               <Box
                 direction="row"
@@ -478,8 +509,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                 margin={{ top: "10px", bottom: "15px" }}
               >
                 <EmailContactManagement 
-                    channelId={this.state.channel?.id}
-                    userId={}/>
+                    channelId={this.state.channel!.id}
+                    currentAddress={this.state.contactAddresses}
+                    onAddAddress={this.onAddContactAddress}
+                    onDeleteAddress={this.onDeleteContactAddress}
+                />
               </Box>
                   
               <Box direction="row" width="100%" justify="between">

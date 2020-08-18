@@ -8,12 +8,16 @@ import Button from "../Core/Button";
 
 
 interface Props {
-    channelId: number
+    channelId: number,
+    currentAddress: string,
+    onAddAddress: any,
+    onDeleteAddress: any
 }
 
 interface State {
     insertString: string;
-    current_email: string
+    currentAddress: string;
+    invalidEmailFlag: boolean
 }
 
 export default class EmailContactManagement extends Component<Props, State> {
@@ -21,8 +25,12 @@ export default class EmailContactManagement extends Component<Props, State> {
     super(props);
     this.state = {
         insertString: "",
-        current_email: ""
+        currentAddress: "",
+        invalidEmailFlag: false
     };
+    if (this.props.currentAddress !== ""){
+      this.setState({currentAddress: this.props.currentAddress})
+    }
     // set current_email equal to the current email in db
   }
 
@@ -33,30 +41,64 @@ export default class EmailContactManagement extends Component<Props, State> {
     };
 
   onSave = () => {
-    // ChannelService.removeContactAddress(
-    //     this.props.channelId,
-    //     this.state.current_email),
-    //     this.props.userId)
-    // save new value
+    if (this.state.insertString.includes("@") 
+    && !(this.state.insertString.includes(" ")) 
+    && (this.state.insertString.includes("."))
+    && !(this.state.insertString.includes("&"))
+    && !(this.state.insertString.includes("?"))
+    && !(this.state.insertString.includes("/"))
+    && !(this.state.insertString.includes("#"))
+    && !(this.state.insertString.includes(","))
+    && !(this.state.insertString.includes("!"))
+    && !(this.state.insertString.includes("%"))
+    && !(this.state.insertString.includes("("))
+    && !(this.state.insertString.includes(")"))
+    && !(this.state.insertString.includes("{"))
+    && !(this.state.insertString.includes("}"))
+    && !(this.state.insertString.includes("'"))
+    ){
+      this.props.onDeleteAddress(this.state.currentAddress)
+      this.props.onAddAddress(this.state.insertString);
+      this.setState({
+        currentAddress: this.state.insertString,
+        insertString: "",
+        invalidEmailFlag: false
+    })
+  } else {
+      this.setState({invalidEmailFlag: true})
+    }
   }
 
   render() {
+    let invalid_email;
+    if (this.state.invalidEmailFlag){
+      invalid_email = <Text
+                        weight="bold"
+                        //   color={this.props.fill ? "white" : "black"}
+                        size="16px"
+                        color="red"
+                        >Invalid email format</Text>
+    }
+
     return (
-        <Box margin={{top: "10px", bottom: "10px"}}>
-        {this.state.current_email !== "" && (
+        <Box margin={{top: "0px", bottom: "5px"}}>
+        {this.state.currentAddress !== "" && (
+          <>
             <Text
             weight="bold"
             //   color={this.props.fill ? "white" : "black"}
             size="16px"
-            >Current contact email: <i>{this.state.current_email}</i></Text>
+            >Current contact email: <i>{this.state.currentAddress}</i></Text>
+          </>
         )}
-        <Box gap="20px" direction="row" margin={{top: "20px"}}>
+        {invalid_email}
+        <Box gap="5px" direction="row" margin={{top: "5px"}}>
             <TextInput
             value={this.state.insertString}
             onChange={(e) => this.onType(e.target.value)}
             //   icon={<UserAdmin />}
             reverse
-            placeholder="New email of contact."
+            placeholder="New email of contact"
             style={{ width: "27vw", height: "4.5vh", justifySelf: "center" }}
             />
 

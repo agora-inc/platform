@@ -1,3 +1,8 @@
+"""
+    TODO: 
+        - Make "removeContactAddress" into a delete endpoint instead of a GET
+""" 
+
 from app import app, db, mail
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository
 from flask import jsonify, request, send_file
@@ -163,7 +168,7 @@ def addUserToChannel():
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
-    params = request.json-
+    params = request.json
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
     return jsonify("Success")
 
@@ -298,17 +303,25 @@ def cover():
         channels.removeCover(channelId)
         return jsonify("ok")
 
-@app.route('/channels/contacts', methods=["GET"])
+@app.route('/channels/contacts', methods=["GET", "OPTIONS"])
 def getContactAddresses():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
-
+    
     if "channelId" in request.args: 
         channel_id = request.args.get("channelId")
-        return channels.getContactAddresses(channel_id)
+        res = channels.getContactAddresses(channel_id)
+        return jsonify(res)
 
-@app.route('/channels/contact', methods=["POST"])
+
+@app.route('/channels/contact/add', methods=["POST", "OPTIONS"])
 def addContactAddress():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
     
@@ -327,10 +340,17 @@ def addContactAddress():
     else:
         raise Exception("addContactAddress: missing userId in URL")
     
-    return channels.addContactAddress(channelId, contactAddress, userId)
+    channels.addContactAddress(contactAddress, channelId, userId)
+    return jsonify("ok")
 
-@app.route('/channels/contact', methods=["DELETE"])
+@app.route('/channels/contact/delete', methods=["GET", "OPTIONS"])
 def removeContactAddress():
+    """
+    TODO: Make this into a DELETE request
+    """
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
@@ -349,7 +369,12 @@ def removeContactAddress():
     else:
         raise Exception("addContactAddress: missing userId in URL")
 
-    return channels.removeContactAddress(channelId, contactAddress, userId)
+    # NOTE: For now, we only add 1 email address per agora. 
+    # Later, expand frontend to display more.
+    # channels.removeContactAddress(contactAddress, channelId, userId)
+    channels.removeAllContactAddresses(contactAddress, channelId, userId)
+    return jsonify("ok")
+
 
 # --------------------------------------------
 # STREAM ROUTES

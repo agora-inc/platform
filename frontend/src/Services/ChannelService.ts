@@ -57,15 +57,13 @@ const getContactAddresses = (
 };
 
 const addContactAddress = (
-  // TO TEST
-  //
-  userId: number,
   channelId: number,
   contactAddress: string,
+  userId: number,
   callback: any
 ) => {
   post(
-    `channels/contact?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`,
+    `channels/contact/add?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`,
     { contactAddress: contactAddress, 
       channelId: channelId, 
       userId: userId },
@@ -74,34 +72,15 @@ const addContactAddress = (
 };
 
 const removeContactAddress = (
-  // TO TEST
-  //
+  // TODO: make this into a delete request
   channelId: number,
   contactAddress: string,
   userId: number,
   callback: any
 ) => {
-  const url = `channels/contact?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
-  axios.delete(url, callback);
-  axios
-  .delete(url, {
-    // headers: { "Access-Control-Allow-Origin": "*" },
-    data: {
-      channelId: channelId,
-      userId: userId,
-      contactAddress: contactAddress
-    },
-  })
+  const url = `channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
+  get(url, callback);
 };
-
-
-
-
-
-
-
-
-
 
 const getRoleInChannel = (userId: number, channelId: number, callback: any) => {
   const url = `channels/user/role?channelId=${channelId}&userId=${userId}`;
@@ -255,4 +234,6 @@ export const ChannelService = {
   uploadCover,
   getCover,
   removeCover,
+  addContactAddress,
+  removeContactAddress
 };
