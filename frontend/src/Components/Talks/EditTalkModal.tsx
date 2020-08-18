@@ -290,7 +290,7 @@ export default class EditTalkModal extends Component<Props, State> {
         saveDraftButton={
           this.props.talk ? (
             <Button
-              width="150px"
+              width="170px"
               height="35px"
               text="Save as draft"
               onClick={this.onSaveDraft}

@@ -87,7 +87,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   }
 
   isAllowed = (): boolean => {
-    return this.state.role === "owner" || this.state.role === "member";
+    return this.state.role === "owner";
   };
 
   handleScroll = (e: any) => {
@@ -596,7 +596,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               <Box
                 direction="row"
                 gap="small"
-                margin={{ top: "40px", bottom: "20px" }}
+                margin={{ top: "40px", bottom: "24px" }}
               >
                 <Text
                   size="28px"
@@ -625,7 +625,26 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 )}
               </Box>
-
+              {this.state.drafts.length === 0 && (
+                <Box
+                  direction="row"
+                  width="100%"
+                  pad="small"
+                  justify="between"
+                  round="xsmall"
+                  align="center"
+                  alignSelf="center"
+                  background="#F3EACE"
+                  margin={{ bottom: "36px" }}
+                >
+                  <Text size="18px" weight="bold" color="grey">
+                    No draft saved in{" "}
+                    {this.state.channel
+                      ? this.state.channel.name
+                      : "this channel"}
+                  </Text>
+                </Box>
+              )}
               <ChannelPageTalkList
                 talks={this.state.drafts}
                 channelId={this.state.channel!.id}
@@ -637,10 +656,30 @@ export default class ManageChannelPage extends Component<Props, State> {
                 size="28px"
                 weight="bold"
                 color="black"
-                margin={{ top: "40px", bottom: "10px" }}
+                margin={{ top: "40px", bottom: "24px" }}
               >
                 {`Upcoming talks`}
               </Text>
+              {this.state.talks.length === 0 && (
+                <Box
+                  direction="row"
+                  width="100%"
+                  pad="small"
+                  justify="between"
+                  round="xsmall"
+                  align="center"
+                  alignSelf="center"
+                  background="#F3EACE"
+                  margin={{ bottom: "36px" }}
+                >
+                  <Text size="18px" weight="bold" color="grey">
+                    There are no upcoming talks in{" "}
+                    {this.state.channel
+                      ? this.state.channel.name
+                      : "this channel"}
+                  </Text>
+                </Box>
+              )}
               <ChannelPageTalkList
                 talks={this.state.talks}
                 channelId={this.state.channel!.id}
