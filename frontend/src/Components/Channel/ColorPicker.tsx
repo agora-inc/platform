@@ -65,6 +65,25 @@ export default class ColorPicker extends Component<Props, State> {
   };
 
   renderDropContent = () => {
+    let remove_button;
+    if (this.props.hasCover){
+    remove_button =
+      <Box
+        width="100%"
+        height="25px"
+        background="#FF4040"
+        round="xsmall"
+        style={{ cursor: "pointer" }}
+        align="center"
+        justify="center"
+        onClick={this.onDeleteCoverClicked}
+      >
+        <Text size="13px" weight="bold" color="white">
+          Remove header
+        </Text>
+      </Box>
+    }
+
     return (
       <Box
         width="139px"
@@ -95,22 +114,7 @@ export default class ColorPicker extends Component<Props, State> {
             onUpload={this.onCoverUpload}
             width="100%"
           />
-          {this.props.hasCover && (
-            <Box
-              width="100%"
-              height="25px"
-              background="#FF4040"
-              round="xsmall"
-              style={{ cursor: "pointer" }}
-              align="center"
-              justify="center"
-              onClick={this.onDeleteCoverClicked}
-            >
-              <Text size="13px" weight="bold" color="white">
-                Remove header
-              </Text>
-            </Box>
-          )}
+          {remove_button}
         </Box>
       </Box>
     );

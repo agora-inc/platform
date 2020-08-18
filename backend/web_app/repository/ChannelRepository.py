@@ -115,6 +115,15 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return sum([x["views"] for x in result])
 
+    def getAvatarLocation(self, channelId):
+        query = f'SELECT has_avatar FROM Channels WHERE id = {channelId}'
+        res = self.db.run_query(query)
+
+        if res[0]["has_avatar"] == 1:
+            return f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
+        else:
+            return f"/home/cloud-user/plateform/agora/images/avatars/default.jpg"
+
     def addAvatar(self, channelId):
         query = f'UPDATE Channels SET has_avatar=1 WHERE id = {channelId}'
         self.db.run_query(query)
@@ -157,3 +166,17 @@ class ChannelRepository:
 
             logging.warning(f"addContactAddress: RESULT = {result}")
             return result
+        query = f'UPDATE Channels SET has_cover=0 WHERE id = {channelId}'
+        self.db.run_query(query)
+
+    def getCoverLocation(self, channelId):
+        query = f'SELECT has_cover FROM Channels WHERE id = {channelId}'
+        res = self.db.run_query(query)
+
+        if res[0]["has_cover"] == 1:
+            return f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
+        else:
+            return f"/home/cloud-user/plateform/agora/images/covers/default.jpg"
+
+
+
