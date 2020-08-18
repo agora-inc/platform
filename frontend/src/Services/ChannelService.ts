@@ -140,10 +140,6 @@ const getAvatar = (channelId: number) => {
   return baseApiUrl + `/channels/avatar?channelId=${channelId}`;
 };
 
-const getDefaultAvatar = () => {
-  return baseApiUrl + `/channels/avatar?default=1`;
-};
-
 const uploadCover = (channelId: number, image: File, callback: any) => {
   const data = new FormData();
   data.append("channelId", channelId.toString());

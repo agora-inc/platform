@@ -247,6 +247,9 @@ def updateLongChannelDescription():
 
 @app.route('/channels/avatar', methods=["POST", "GET"])
 def avatar():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     if request.method == "POST":
         if not checkAuth(request.headers.get('Authorization')):
             return exceptions.Unauthorized("Authorization header invalid or not present")
@@ -260,18 +263,16 @@ def avatar():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        
-        # REMY: NOT DEBUGGED YET
         if "channelId" in request.args:
             channelId = int(request.args.get("channelId"))
-            fn = f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
-            return send_file(fn, mimetype="image/jpg")
-        elif "default" in request.args:
-            fn = f"/home/cloud-user/plateform/agora/images/avatars/default.jpg"
+            fn = channels.getAvatarLocation(channelId)
             return send_file(fn, mimetype="image/jpg")
 
 @app.route('/channels/cover', methods=["POST", "GET", "DELETE"])
 def cover():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     if request.method == "POST":
         if not checkAuth(request.headers.get('Authorization')):
             return exceptions.Unauthorized("Authorization header invalid or not present")
@@ -287,11 +288,7 @@ def cover():
     if request.method == "GET":
         if "channelId" in request.args:
             channelId = int(request.args.get("channelId"))
-            fn = f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
-            return send_file(fn, mimetype="image/jpg")
-
-        elif "default" in request.args:
-            fn = f"/home/cloud-user/plateform/agora/images/covers/default.jpg"
+            fn = channels.getCoverLocation(channelId)
             return send_file(fn, mimetype="image/jpg")
 
     if request.method == "DELETE":
@@ -322,11 +319,11 @@ def getStreamById():
 
 @app.route('/streams/create', methods=["POST", "OPTIONS"])
 def createStream():
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
     if request.method == "OPTIONS":
         return jsonify("ok")
+
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
     stream = streams.createStream(params["channelId"], params["channelName"], params["streamName"], params["streamDescription"], params["streamTags"], params["imageUrl"])
