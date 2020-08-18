@@ -247,6 +247,9 @@ def updateLongChannelDescription():
 
 @app.route('/channels/avatar', methods=["POST", "GET"])
 def avatar():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     if request.method == "POST":
         if not checkAuth(request.headers.get('Authorization')):
             return exceptions.Unauthorized("Authorization header invalid or not present")
@@ -260,12 +263,16 @@ def avatar():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        channelId = int(request.args.get("channelId"))
-        fn = f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
-        return send_file(fn, mimetype="image/jpg")
+        if "channelId" in request.args:
+            channelId = int(request.args.get("channelId"))
+            fn = channels.getAvatarLocation(channelId)
+            return send_file(fn, mimetype="image/jpg")
 
 @app.route('/channels/cover', methods=["POST", "GET", "DELETE"])
 def cover():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     if request.method == "POST":
         if not checkAuth(request.headers.get('Authorization')):
             return exceptions.Unauthorized("Authorization header invalid or not present")
@@ -279,10 +286,11 @@ def cover():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        channelId = int(request.args.get("channelId"))
-        fn = f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
-        return send_file(fn, mimetype="image/jpg")
-    
+        if "channelId" in request.args:
+            channelId = int(request.args.get("channelId"))
+            fn = channels.getCoverLocation(channelId)
+            return send_file(fn, mimetype="image/jpg")
+
     if request.method == "DELETE":
         params = request.json 
         print(params)
@@ -314,6 +322,9 @@ def createStream():
     if request.method == "OPTIONS":
         return jsonify("ok")
         
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
@@ -367,6 +378,16 @@ def getAllFutureTalksForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(talks.getAllFutureTalksForChannel(channelId))
 
+@app.route('/talks/channel/drafted', methods=["GET"])
+def getAllDraftedTalksForChannel():
+    ############################
+    #                          #
+    # TODO: Test this works    #
+    #                          #
+    ############################
+    channelId = int(request.args.get("channelId"))
+    return jsonify(talks.getAllDraftedTalksForChannel(channelId))
+
 @app.route('/talks/channel/past', methods=["GET"])
 def getAllPastTalksForChannel():
     channelId = int(request.args.get("channelId"))
@@ -414,7 +435,7 @@ def scheduleTalk():
         if topic_key not in params:
             params[topic_key] = "NULL" 
 
-    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"]))
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 def editTalk():
@@ -425,7 +446,7 @@ def editTalk():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"]))
+    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():
