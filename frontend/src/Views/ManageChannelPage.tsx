@@ -7,6 +7,7 @@ import { Talk, TalkService } from "../Services/TalkService";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
+import Identicon from "react-identicons";
 import ColorPicker from "../Components/Channel/ColorPicker";
 import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
 import AddUsersButton from "../Components/Channel/AddUsersButton";
@@ -19,6 +20,7 @@ import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
+import { StatusInfo } from "grommet-icons";
 
 interface Props {
   location: any;
@@ -37,10 +39,12 @@ interface State {
   channelMembers: User[];
   followers: User[];
   talks: Talk[];
+  drafts: Talk[];
   pastStreams: Talk[];
   totalNumberOfTalks: number;
   bannerExtended: boolean;
   longDescription: string;
+  showDraftInfo: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -58,10 +62,12 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelMembers: [],
       followers: [],
       talks: [],
+      drafts: [],
       pastStreams: [],
       totalNumberOfTalks: 0,
       bannerExtended: true,
       longDescription: "",
+      showDraftInfo: false,
     };
   }
 
@@ -141,6 +147,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchFollowers();
     this.fetchPastTalks();
     this.fetchTalks();
+    this.fetchDrafts();
   };
 
   fetchFollowerCount = () => {
@@ -183,6 +190,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   fetchTalks = () => {
+    console.log("FETCH TALKS")
     TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
       (talks: Talk[]) => {
@@ -190,6 +198,21 @@ export default class ManageChannelPage extends Component<Props, State> {
       }
     );
   };
+
+  fetchDrafts = () => {
+    console.log("FETCH DRAFTS")
+    TalkService.getDraftedTalksForChannel(
+      this.state.channel!.id,
+      (drafts: Talk[]) => {
+        this.setState({ drafts });
+      }
+    );
+  };
+
+  fetchTalksDrafts = () => {
+    this.fetchDrafts()
+    this.fetchTalks()
+  }
 
   fetchPastTalks = () => {
     TalkService.getPastTalksForChannel(
@@ -208,7 +231,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.updateChannelColour(
       this.state.channel!.id,
       colour,
-      () => {}
+      () => { }
     );
   };
 
@@ -217,7 +240,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       ChannelService.updateChannelDescription(
         this.state.channel!.id,
         document.getElementById("description")!.textContent as string,
-        () => {}
+        () => { }
       );
     }
     this.setState({ editingDescription: !this.state.editingDescription });
@@ -227,7 +250,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.updateLongChannelDescription(
       this.state.channel!.id,
       newDescription,
-      () => {}
+      () => { }
     );
     this.setState({
       editingLongDescription: !this.state.editingLongDescription,
@@ -251,7 +274,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   getCoverBoxStyle = (): CSSProperties => {
     let current_time = Math.floor(new Date().getTime() / 200000);
-    let background = this.state.channel?.id
+    let background = this.state.channel ?.has_cover
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
       current_time +
       `)`
@@ -260,13 +283,15 @@ export default class ManageChannelPage extends Component<Props, State> {
       // the same name (important for the name to be the same for the styling).
       : this.state.colour;
 
-    let border = "none";
+    let border = this.state.channel ?.has_cover
+      ? `8px solid ${this.state.channel.colour}`
+      : "none";
 
-    let color = this.state.channel?.has_cover
-    ? `${this.state.channel.colour}`
-    : "none";
+    let color = this.state.channel ?.has_cover
+      ? `${this.state.channel.colour}`
+      : "none";
 
-    if (color == "white"){
+    if (color == "white") {
       return {
         width: "75vw",
         borderTopRightRadius: 10,
@@ -311,7 +336,7 @@ export default class ManageChannelPage extends Component<Props, State> {
             <ColorPicker
               selected={this.state.colour}
               callback={this.updateColour}
-              channelId={this.state.channel?.id}
+              channelId={this.state.channel ?.id}
               hasCover={
                 this.state.channel ? this.state.channel.has_cover : false
               }
@@ -337,12 +362,15 @@ export default class ManageChannelPage extends Component<Props, State> {
                 style={{ minWidth: 100, minHeight: 100 }}
                 overflow="hidden"
               >
-                {(
+                {!this.state.channel!.has_avatar && (
+                  <Identicon string={this.state.channel!.name} size={50} />
+                )}
+                {!!this.state.channel!.has_avatar && (
                   <img
                     src={
                       ChannelService.getAvatar(this.state.channel!.id) +
                       `&ts=` +
-                      Math.floor(new Date().getTime() / 100000)
+                      new Date().getTime()
                     }
                     // HACK: we had the ts argument to prevent from caching.
                     height={100}
@@ -353,7 +381,7 @@ export default class ManageChannelPage extends Component<Props, State> {
             </Box>
             <Box>
               <Text size="30px" color="black" weight="bold">
-                {this.state.channel?.name}
+                {this.state.channel ?.name}
               </Text>
               <Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers
@@ -372,21 +400,21 @@ export default class ManageChannelPage extends Component<Props, State> {
               style={{ cursor: "pointer" }}
             />
           ) : (
-            <FormDown
-              onClick={this.toggleBanner}
-              size="50px"
-              color="black"
-              style={{ cursor: "pointer" }}
-            />
-          )}
+              <FormDown
+                onClick={this.toggleBanner}
+                size="50px"
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
         </Box>
         {this.state.bannerExtended && (
           <>
             <EnrichedTextEditor
               text={
-                this.state.channel?.long_description
-                  ? this.state.channel?.long_description
-                  : ""
+                this.state.channel ?.long_description
+                  ? this.state.channel ?.long_description
+                    : ""
               }
               onModify={this.onModifyLongDescription}
               onSave={this.onSaveLongDescriptionClicked}
@@ -405,6 +433,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         </Box>
       );
     } else {
+      console.log("TALKS", this.state.talks)
       return this.isAllowed() ? (
         <Box>
           <Box
@@ -423,16 +452,16 @@ export default class ManageChannelPage extends Component<Props, State> {
               )}
 
               <Box
-                  width="100%"
-                  height="100%"
-                  pad="10px"
-                  background="white"
-                  round="xsmall"
-                  justify="center"
-                  style={{
-                    border: "1px solid #C2C2C2",
-                  }}
-                >
+                width="100%"
+                height="100%"
+                pad="10px"
+                background="white"
+                round="xsmall"
+                justify="center"
+                style={{
+                  border: "1px solid #C2C2C2",
+                }}
+              >
                 <Text color="#5A5A5A">
                   <p><big><b> Agora administrator page </b></big></p>
                   <p>As an administrator, you can:</p>
@@ -492,7 +521,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     {this.state.channelOwners.map((owner: User) => (
                       <ChannelPageUserCircle
                         user={owner}
-                        channelId={this.state.channel?.id}
+                        channelId={this.state.channel ?.id}
                         onRemovedCallback={this.fetchOwners}
                         showRemoveButton={this.state.role === "owner"}
                       />
@@ -532,7 +561,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     {this.state.channelMembers.map((member: User) => (
                       <ChannelPageUserCircle
                         user={member}
-                        channelId={this.state.channel?.id}
+                        channelId={this.state.channel ?.id}
                         onRemovedCallback={this.fetchMembers}
                         showRemoveButton={this.state.role === "owner"}
                       />
@@ -564,20 +593,99 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
               </Box>
-              {this.state.talks.length !== 0 && (
+              <Box
+                direction="row"
+                gap="small"
+                margin={{ top: "40px", bottom: "24px" }}
+              >
                 <Text
                   size="28px"
                   weight="bold"
                   color="black"
-                  margin={{ top: "40px", bottom: "10px" }}
-                >{`Upcoming talks`}</Text>
+
+                >
+                  {`Drafts`}
+                </Text>
+                <StatusInfo
+                  onMouseEnter={() => { this.setState({ showDraftInfo: true }) }}
+                  onMouseLeave={() => { this.setState({ showDraftInfo: false }) }}
+                />
+                {this.state.showDraftInfo && (
+                  <Box
+                    background="black"
+                    round="xsmall"
+                    pad="small"
+                    //height="30px"
+                    width="210px"
+                    margin={{ top: "-6px" }}
+                  >
+                    <Text size="12px">
+                      These talks are only visible to you.
+                    </Text>
+                  </Box>
+                )}
+              </Box>
+              {this.state.drafts.length === 0 && (
+                <Box
+                  direction="row"
+                  width="100%"
+                  pad="small"
+                  justify="between"
+                  round="xsmall"
+                  align="center"
+                  alignSelf="center"
+                  background="#F3EACE"
+                  margin={{ bottom: "36px" }}
+                >
+                  <Text size="18px" weight="bold" color="grey">
+                    No draft saved in{" "}
+                    {this.state.channel
+                      ? this.state.channel.name
+                      : "this channel"}
+                  </Text>
+                </Box>
+              )}
+              <ChannelPageTalkList
+                talks={this.state.drafts}
+                channelId={this.state.channel!.id}
+                user={null}
+                admin
+                onEditCallback={this.fetchTalksDrafts}
+              />
+              <Text
+                size="28px"
+                weight="bold"
+                color="black"
+                margin={{ top: "40px", bottom: "24px" }}
+              >
+                {`Upcoming talks`}
+              </Text>
+              {this.state.talks.length === 0 && (
+                <Box
+                  direction="row"
+                  width="100%"
+                  pad="small"
+                  justify="between"
+                  round="xsmall"
+                  align="center"
+                  alignSelf="center"
+                  background="#F3EACE"
+                  margin={{ bottom: "36px" }}
+                >
+                  <Text size="18px" weight="bold" color="grey">
+                    There are no upcoming talks in{" "}
+                    {this.state.channel
+                      ? this.state.channel.name
+                      : "this channel"}
+                  </Text>
+                </Box>
               )}
               <ChannelPageTalkList
                 talks={this.state.talks}
                 channelId={this.state.channel!.id}
                 user={null}
                 admin
-                onEditCallback={this.fetchTalks}
+                onEditCallback={this.fetchTalksDrafts}
               />
               {this.state.pastStreams.length !== 0 && (
                 <Text
@@ -611,12 +719,12 @@ export default class ManageChannelPage extends Component<Props, State> {
           <ReactTooltip />
         </Box>
       ) : (
-        <Redirect
-          to={{
-            pathname: `/${this.state.channel!.name}`,
-          }}
-        />
-      );
+          <Redirect
+            to={{
+              pathname: `/${this.state.channel!.name}`,
+            }}
+          />
+        );
     }
   }
 }

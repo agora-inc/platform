@@ -8,6 +8,7 @@ interface Props {
   onClick: any;
   text: string;
   fill?: string;
+  hoverIndicator?: string;
 }
 
 export default class Button extends Component<Props> {
@@ -32,7 +33,7 @@ export default class Button extends Component<Props> {
         width={this.props.width}
         onClick={this.props.onClick}
         focusIndicator={false}
-        hoverIndicator={true}
+        hoverIndicator={this.props.hoverIndicator || true}
       >
         <Text
           weight="bold"
