@@ -101,7 +101,7 @@ export default class LoginModal extends Component<Props, State> {
           submitButtonText="Log in "
           onSubmitClick={this.onSubmit}
           canProceed={true}
-          contentHeight={this.state.failed ? "300px" : "200px"}
+          contentHeight={this.state.failed ? "300px" : "170px"}
         >
           {this.state.failed && (
             <Box
