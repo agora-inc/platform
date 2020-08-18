@@ -154,6 +154,10 @@ const getCover = (channelId: number) => {
   return baseApiUrl + `/channels/cover?channelId=${channelId}`;
 };
 
+const getDefaultCover = () => {
+  return baseApiUrl + `/channels/cover?default=1`;
+};
+
 const removeCover = (channelId: number, callback: any) => {
   axios
     .delete(baseApiUrl + "/channels/cover", {

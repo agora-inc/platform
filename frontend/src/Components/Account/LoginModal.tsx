@@ -122,7 +122,7 @@ export default class LoginModal extends Component<Props, State> {
           <Box
             width="100%"
             height="100%"
-            justify="end"
+            // justify="end"
             align="center"
             pad={{ bottom: "30px" }}
             gap="xsmall"
