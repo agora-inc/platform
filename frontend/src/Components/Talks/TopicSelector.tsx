@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Select } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
+import { Close } from "grommet-icons";
 // import allTopics from "../../assets/allTopics.json"
 import Button from "../Core/Button";
 import Icon from "@ant-design/icons";
@@ -13,7 +14,8 @@ interface State {
 }
 
 interface Props {
-  onSelectedCallback: any
+  onSelectedCallback: any;
+  size?: string;
 }
 
 export default class TopicSelector extends Component<Props, State> {
@@ -110,6 +112,27 @@ export default class TopicSelector extends Component<Props, State> {
       .map((temp: Topic) => temp.field);
   };
 
+  onCancelClick = (choiceNumber: number) => {
+    return (() => {
+        let tempTopics = this.state.topics;
+        tempTopics[choiceNumber] = []; 
+        let tempTopicsBeingShown = this.state.topicsBeingShown;
+        tempTopicsBeingShown[choiceNumber] = 0;
+        // let tempTopics = this.state.topics.splice(choiceNumber, 1);
+        // tempTopics.push([]);
+        // let tempTopicsBeingShown = this.state.topicsBeingShown.splice(choiceNumber, 1);
+        // tempTopicsBeingShown.push(0);
+        this.setState({
+          topics: tempTopics,
+          topicsBeingShown: tempTopicsBeingShown,
+        });
+        // this.setState((state) => ({
+        //  numberTopicsChosen: state.numberTopicsChosen - 1
+        // }));
+      }
+    );
+  };
+
   renderTopicChoice = (choiceNumber: number) => {
     if (choiceNumber <= this.state.numberTopicsChosen) {
       return (
@@ -117,15 +140,17 @@ export default class TopicSelector extends Component<Props, State> {
           width="100%"
           direction="row"
           gap="xsmall"
-          align="end"
+          align="center"
           margin={{ bottom: "15px" }}
         >
           {this.state.topicsBeingShown[choiceNumber] >= 0 && (
             <Select
+              searchPlaceholder={"All"}
               options={this.getPrimitiveNodes().concat("All")}
               onChange={({ option }) =>
                 this.onFieldChoose(choiceNumber, this.nameToTopic(option), 0)
               }
+              size={this.props.size}
             />
           )}
           {this.state.topicsBeingShown[choiceNumber] >= 1 && (
@@ -136,6 +161,7 @@ export default class TopicSelector extends Component<Props, State> {
               onChange={({ option }) =>
                 this.onFieldChoose(choiceNumber, this.nameToTopic(option), 1)
               }
+              size={this.props.size}
             />
           )}
           {this.state.topicsBeingShown[choiceNumber] >= 2 && (
@@ -146,7 +172,13 @@ export default class TopicSelector extends Component<Props, State> {
               onChange={({ option }) =>
                 this.onFieldChoose(choiceNumber, this.nameToTopic(option), 2)
               }
+              size={this.props.size}
             />
+          )}
+          {this.state.topicsBeingShown[choiceNumber] >= 0 && (
+            <Box margin={{left: "10px"}}>
+            <Close onClick={this.onCancelClick(choiceNumber)} />
+            </Box>
           )}
         </Box>
       );
@@ -166,7 +198,7 @@ export default class TopicSelector extends Component<Props, State> {
           align="center"   
         >
          
-          <Text color="grey"> 
+          <Text color="grey" size="small"> 
             + Add 
           </Text>
 

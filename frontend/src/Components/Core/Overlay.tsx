@@ -37,13 +37,13 @@ export class Overlay extends Component<OverlayProps> {
           animation="fadeIn"
           style={{
             width: this.props.width,
-            height: this.props.height,
+            height: this.props.height > 700 ? "82%" : this.props.height,
             borderRadius: 15,
             border: "3.5px solid black",
             padding: 0,
           }}
         >
-          <Box align="center" width="100%" style={{ overflowY: "hidden" }}>
+          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
             <Box
               justify="start"
               width="99.7%"
