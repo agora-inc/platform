@@ -171,7 +171,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       this.state.user.speaker_name !== "" &&
       // this.state.user.speaker_position !== "" &&
       // this.state.user.personal_website !== "" &&
-      this.state.user.personal_message !== "" &&
+      // this.state.user.personal_message !== "" &&
       this.state.user.email !== "" &&
       this.state.user.affiliation !== "" &&
       this.state.talk.talk_title !== "" &&
@@ -222,7 +222,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           canProceed={this.isComplete()}
           width={900}
           height={540}
-          contentHeight="1000px"
+          contentHeight="1100px"
           title="Talk Application"
         >
 
@@ -241,7 +241,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
             </Box>
           <Box width="100%" gap="2px">
             <Select
-              placeholder="Academic title"
+              placeholder="Title"
               options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof']}
               value={this.state.user.speaker_title}
               onChange={({options}) => this.setValueAcademicTitle(options)}
@@ -305,7 +305,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
               justify="center"
             >
               <Text size="16px" color="black">
-              <i>Categorise your talk:</i>
+              <b>Categorise your talk:</b>
               </Text>
             </Box>
           
