@@ -444,7 +444,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <ScheduleTalkButton
                   margin={{ bottom: "10px" }}
                   channel={this.state.channel}
-                  onCreatedCallback={this.fetchTalks}
+                  onCreatedCallback={this.fetchTalksDrafts}
                 />
               )}
 
