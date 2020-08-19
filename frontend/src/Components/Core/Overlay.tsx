@@ -43,7 +43,7 @@ export class Overlay extends Component<OverlayProps> {
             padding: 0,
           }}
         >
-          <Box align="center" width="100%" style={{ overflowY: "hidden" }}>
+          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
             <Box
               justify="start"
               width="99.7%"

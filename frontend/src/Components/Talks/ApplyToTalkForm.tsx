@@ -16,13 +16,13 @@ import { ChannelService } from "../../Services/ChannelService";
 
 interface Props {
   channelId: number,
+  channelName: string
 }
 
 interface State {
     user: {
       speaker_title: string;
       speaker_name : string;
-      speaker_position: string;
       email: string;
       personal_website: string;
       personal_message: string;
@@ -45,7 +45,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       user: {
         speaker_title: "",
         speaker_name: "",
-        speaker_position : "",
         email: "",
         personal_website: "",
         personal_message: "",
@@ -60,16 +59,16 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       showForm: false,
       contactAddresses: ""
     };
+    this.fetchContactAddresses()
   }
 
   fetchContactAddresses = () => {
     ChannelService.getContactAddresses(
       this.props.channelId,
       (contactAddresses: string) => {
-        this.setState({ contactAddresses: contactAddresses[0] });
+        this.setState({ contactAddresses: contactAddresses });
       }
     );
-    console.log("yoyo", this.state.contactAddresses);
   };
 
 
@@ -95,20 +94,38 @@ export default class ApplyToTalkForm extends Component<Props, State> {
 
     // Send it via email to revolutionising.research@gmail.com
     // console.log(userData);
-    const templateId = "feedback_form";
-    // this.sendFeedback(templateId, {
-    //   message_html: JSON.stringify(this.state.user.speaker_name),
+    this.sendApplication();
+    //   message_html: JSON.stringisdffy(this.state.user.speaker_name),
     //   from_name: this.state.user.speaker_name,
     //   reply_to: this.state.user.speaker_name,
     // });
-    console.log("wewesweshweshwesh", this.props.channelId);
     this.setState({ showForm: false });
   };
 
-  sendFeedback = (templateId: string, variables: any) => {
-    emailjs
+  sendApplication = () => {
+    let email_topics = [];
+    let raw_topics;
+    raw_topics = this.state.talk.topics;
+    for (let i = 0; i < raw_topics.length; i++) {
+      email_topics.push(raw_topics[i]["field"])
+    };
+    let email_topics_string = email_topics.toString();
 
-      .send("gmail", templateId, variables, "user_ERRg2QIuCtD8bEjlX1qRw")
+    emailjs.send("gmail", "template_pP8phl4n", 
+    {
+      "agora_administrators_contact_email": this.state.contactAddresses,
+      "agora_name": this.props.channelName,
+      "speaker_name": this.state.user.speaker_name,
+      "speaker_title": this.state.user.speaker_title,
+      "speaker_affiliation": this.state.user.affiliation,
+      "personal_website": this.state.user.affiliation,
+      "speaker_email": this.state.user.email,
+      "talk_title": this.state.talk.talk_title,
+      "talk_abstract": this.state.talk.abstract,
+      "talk_topics": email_topics_string,
+      "personal_message": this.state.user.personal_message
+    },
+    "user_ERRg2QIuCtD8bEjlX1qRw")
       .then(() => {
         // console.log("Email successfully sent!");
       })
@@ -128,7 +145,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       user:{
         speaker_title: "",
         speaker_name: "",
-        speaker_position : "",
+        // speaker_position : "",
         email: "",
         personal_website: "",
         personal_message: "",
@@ -150,11 +167,10 @@ export default class ApplyToTalkForm extends Component<Props, State> {
 
   isComplete = () => {
     return (
-      console.log("wesh maggle", this.state.talk.topics),
       this.state.user.speaker_title !== "" &&
       this.state.user.speaker_name !== "" &&
-      this.state.user.speaker_position !== "" &&
-      this.state.user.personal_website !== "" &&
+      // this.state.user.speaker_position !== "" &&
+      // this.state.user.personal_website !== "" &&
       this.state.user.personal_message !== "" &&
       this.state.user.email !== "" &&
       this.state.user.affiliation !== "" &&
@@ -211,19 +227,19 @@ export default class ApplyToTalkForm extends Component<Props, State> {
         >
 
         <OverlaySection heading="1. Tell us about you!">
-        <Box width="100%" gap="2px">
+          <Box width="100%" gap="2px">
             {/* <TextInput
               placeholder="Academic title"
               value={this.state.user.speaker_title}
               onChange={(e: any) => this.handleInput(e, "speaker_title")}
               /> */}
-            <Box width="100%" gap="2px">
             <TextInput
               placeholder="Full name"
               value={this.state.user.speaker_name}
               onChange={(e: any) => this.handleInput(e, "speaker_name")}
               />
-          </Box>
+            </Box>
+          <Box width="100%" gap="2px">
             <Select
               placeholder="Academic title"
               options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof']}
@@ -291,7 +307,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
               <Text size="16px" color="black">
               <i>Categorise your talk:</i>
               </Text>
-
             </Box>
           
           <TopicSelector onSelectedCallback={this.selectTopic} />

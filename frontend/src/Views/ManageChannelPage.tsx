@@ -69,7 +69,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       totalNumberOfTalks: 0,
       bannerExtended: true,
       longDescription: "",
-      contactAddresses: ""
+      contactAddresses: "",
       showDraftInfo: false,
     };
   }
