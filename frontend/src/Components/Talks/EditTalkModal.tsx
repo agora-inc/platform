@@ -136,8 +136,6 @@ export default class EditTalkModal extends Component<Props, State> {
 
   onFinish = () => {
     const dateTimeStrs = this.combineDateAndTimeStrings();
-    console.log("NOW", this.state)
-    console.log("NOW1", this.props.talk)
     if (this.props.talk) {
       TalkService.editTalk(
         this.props.talk.id,
@@ -212,12 +210,9 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   onSaveDraft = () => {
-    if (!this.props.talk) {
-      return;
-    }
-    this.setState({ published: 0 });
     this.setState(
       {
+        published: 0,
         loading: true,
       },
       () => {
@@ -330,14 +325,12 @@ export default class EditTalkModal extends Component<Props, State> {
           ) : null
         }
         saveDraftButton={
-          this.props.talk ? (
-            <Button
-              width="170px"
-              height="35px"
-              text="Save as draft"
-              onClick={this.onSaveDraft}
-            />
-          ) : null
+          <Button
+            width="170px"
+            height="35px"
+            text="Save as draft"
+            onClick={this.onSaveDraft}
+          />
         }
       >
         <Box direction="row">
