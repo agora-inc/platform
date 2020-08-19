@@ -46,6 +46,42 @@ const getUsersForChannel = (
   get(url, callback);
 };
 
+const getContactAddresses = (
+  // TO TEST
+  //
+  channelId: number,
+  callback: any
+) => {
+  const url = `channels/contacts?channelId=${channelId}`;
+  get(url, callback);
+};
+
+const addContactAddress = (
+  channelId: number,
+  contactAddress: string,
+  userId: number,
+  callback: any
+) => {
+  post(
+    `channels/contact/add?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`,
+    { contactAddress: contactAddress, 
+      channelId: channelId, 
+      userId: userId },
+    callback
+  );
+};
+
+const removeContactAddress = (
+  // TODO: make this into a delete request
+  channelId: number,
+  contactAddress: string,
+  userId: number,
+  callback: any
+) => {
+  const url = `channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
+  get(url, callback);
+};
+
 const getRoleInChannel = (userId: number, channelId: number, callback: any) => {
   const url = `channels/user/role?channelId=${channelId}&userId=${userId}`;
   get(url, callback);
@@ -81,7 +117,7 @@ const removeUserFromChannel = (
 //     .get(baseApiUrl + "/channels/viewcount?channelId=" + channelId, {
 //       headers: { "Access-Control-Allow-Origin": "*" },
 //     })
-//     .then(function (response) {
+//     .then(function (response) {updateLongChannelDescription
 //       callback(response.data);
 //     });
 // };
@@ -160,7 +196,7 @@ const getDefaultCover = () => {
 
 const removeCover = (channelId: number, callback: any) => {
   axios
-    .delete(baseApiUrl + "/channels/cover", {
+    .delete(baseApiUrl + "/channgetContactAddressesels/cover", {
       headers: { "Access-Control-Allow-Origin": "*" },
       data: {
         channelId: channelId,
@@ -186,6 +222,7 @@ export const ChannelService = {
   getChannelsForUser,
   getUsersForChannel,
   getRoleInChannel,
+  getContactAddresses,
   addUserToChannel,
   removeUserFromChannel,
   getFollowerCountForChannel,
@@ -197,4 +234,6 @@ export const ChannelService = {
   uploadCover,
   getCover,
   removeCover,
+  addContactAddress,
+  removeContactAddress
 };

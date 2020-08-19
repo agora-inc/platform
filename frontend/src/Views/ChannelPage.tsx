@@ -17,6 +17,7 @@ import AboutUs from "../Components/Channel/AboutUs";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
+import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 
 interface Props {
   location: { pathname: string };
@@ -367,6 +368,9 @@ export default class ChannelPage extends Component<Props, State> {
                 />
               )}
               <Box width="75%" align="start" gap="20px">
+                <ApplyToTalkForm 
+                  channelId={this.state.channel!.id}
+                  channelName={this.state.channel!.name} />
                 {this.banner()}
                 {/* <AboutUs text={this.state.channel?.long_description} /> */}
                 <Text
