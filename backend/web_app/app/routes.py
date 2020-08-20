@@ -368,6 +368,60 @@ def removeContactAddress():
     channels.removeAllContactAddresses(contactAddress, channelId, userId)
     return jsonify("ok")
 
+@app.route('/channel/apply/talk', methods=["POST"])
+def sendTalkApplicationEmail():
+    # NOTE: used https://wordtohtml.net/ to easily create syntax for the body
+    # generate link
+    params = request.json
+    # user = users.getUser(params["username"])
+    # code = users.encodeAuthToken(user["id"], "changePassword")
+    # link = f'http://localhost:3000/changepassword?code={code.decode()}'
+    
+    # email link
+    email_subject = f"New speaker application: agora.stream ({params.agora_name})"
+    body_msg = f"""<p>Dear Administrator,</p>
+                    <p>{params.speaker_name} wants to give a talk within your {params.agora_name} community!</p>
+                    <p><br></p>
+                    <p><strong>About the applicant:</strong></p>
+                    <table style="width: 61%; margin-right: calc(39%);">
+                        <tbody>
+                            <tr>
+                                <td style="width: 45.2381%;">Name</td>
+                                <td style="width: 54.5635%;">{params.speaker_title} {params.speaker_name}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 45.2381%;">Affiliation</td>
+                                <td style="width: 54.5635%;">{params.speaker_affiliation}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 45.2381%;">Email of contact</td>
+                                <td style="width: 54.5635%;">{params.speaker_email}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 45.2381%;">Personal homepage (optional)</td>
+                                <td style="width: 54.5635%;">{params.speaker_personal_webpage}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><strong>About the talk:</strong></p>
+                    <ul>
+                        <li><em>Title:</em> <strong>{params.talk_title}</strong></li>
+                        <li><em>Abstract</em> (can use LateX syntax): <br>{params.talk_abstract}</li>
+                        <li><em>Topics</em>: {topics}</li>
+                    </ul>
+                    <p><strong>Message from the applicant:</strong></p>
+                    <p>{params.speaker_personal_message}</p>
+                    <p><br></p>
+                    <p>Best wishes,</p>
+                    <p>The agora.stream Team</p>
+    """
+
+
+    msg = Message(body_msg, sender = 'team@agora.stream', recipients = [user["email"]])
+    msg.body = body_msg
+    msg.subject = email_subject
+    mail.send(msg)
+    return "ok"
 
 # --------------------------------------------
 # STREAM ROUTES
