@@ -136,6 +136,10 @@ def getAllChannels():
     offset = int(request.args.get("offset"))
     return jsonify(channels.getAllChannels(limit, offset))
 
+@app.route('/channels/trending', methods=["GET"])
+def getTrendingChannels():
+    return jsonify(channels.getTrendingChannels())
+
 @app.route('/channels/foruser', methods=["GET"])
 def getChannelsForUser():
     if not checkAuth(request.headers.get('Authorization')):
