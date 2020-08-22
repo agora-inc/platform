@@ -74,7 +74,7 @@ const editTalk = (
   published: number,
   callback: any
 ) => {
-  console.log("PUBBB", published)
+  console.log("PUBBB", published);
   post(
     "talks/edit",
     {
@@ -225,7 +225,7 @@ const getYoutubeThumbnail = (url: string | null, id: number) => {
     return "";
   }
   const ytId = url.split("&")[0].split("=")[1];
-  return `https://img.youtube.com/vi/${ytId}/0.jpg`;
+  return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
 };
 
 const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
