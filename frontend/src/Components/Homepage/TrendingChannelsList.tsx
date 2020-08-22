@@ -32,7 +32,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
     return (
       <Box height="263px">
         <Text size="14px" weight="bold" color="grey" margin={{ left: "small" }}>
-          Trending channels
+          Trending agoras
         </Text>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
