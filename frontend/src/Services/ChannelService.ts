@@ -47,8 +47,7 @@ const getUsersForChannel = (
 };
 
 const getContactAddresses = (
-  // TO TEST
-  //
+  // Query list of contact addresses from DB
   channelId: number,
   callback: any
 ) => {
@@ -78,8 +77,52 @@ const removeContactAddress = (
   userId: number,
   callback: any
 ) => {
-  const url = `channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
+  const url = baseApiUrl + `/channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
   get(url, callback);
+};
+
+const sendTalkApplicationEmail = (
+  // note: administrator email addresses are queried in the backend.
+  channel_id: number,
+  agora_name: string,
+  speaker_name: string, 
+  speaker_title: string, 
+  speaker_affiliation: string, 
+  speaker_personal_website: string, 
+  speaker_email: string, 
+  talk_title: string, 
+  talk_abstract: string, 
+  talk_topics: string, 
+  personal_message: string,
+  callback: any) => {
+  const url = baseApiUrl + "/channel/apply/talk";
+  axios
+    .post(url,
+      { channel_id,
+        agora_name,
+        speaker_name,
+        speaker_title,
+        speaker_affiliation,
+        speaker_personal_website,
+        speaker_email,
+        talk_title,
+        talk_abstract,
+        talk_topics,
+        personal_message
+      },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    )
+    .then(function (response) {
+      // localStorage.setItem("user", JSON.stringify(response.data));
+      callback(true);
+    })
+    .catch(function (error) {
+      callback(false);
+    });
 };
 
 const getRoleInChannel = (userId: number, channelId: number, callback: any) => {
@@ -166,7 +209,7 @@ const uploadAvatar = (channelId: number, image: File, callback: any) => {
   const data = new FormData();
   data.append("channelId", channelId.toString());
   data.append("image", image);
-  console.log(data.get("image"));
+  // console.log(data.get("image"));
   axios.post(baseApiUrl + "/channels/avatar", data).then(function (response) {
     callback(response.data);
   });
@@ -180,7 +223,7 @@ const uploadCover = (channelId: number, image: File, callback: any) => {
   const data = new FormData();
   data.append("channelId", channelId.toString());
   data.append("image", image);
-  console.log(data.get("image"));
+  // console.log(data.get("image"));
   axios.post(baseApiUrl + "/channels/cover", data).then(function (response) {
     callback(response.data);
   });
@@ -235,5 +278,6 @@ export const ChannelService = {
   getCover,
   removeCover,
   addContactAddress,
-  removeContactAddress
+  removeContactAddress,
+  sendTalkApplicationEmail,
 };

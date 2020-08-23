@@ -189,5 +189,3 @@ class ChannelRepository:
                 query = f"DELETE FROM ChannelContacts WHERE channel_id = {channelId}"
                 result = self.db.run_query(query)
                 return result
-
-
