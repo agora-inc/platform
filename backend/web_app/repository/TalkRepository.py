@@ -190,8 +190,8 @@ class TalkRepository:
         talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talk
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
-        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', {showLinkOffset}, '{visibility}', '{topic_1_id}', '{topic_2_id}', '{topic_3_id}', '{talk_speaker}', '{talk_speaker_url}', {published});"
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
+        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', {showLinkOffset}, '{visibility}', '{cardVisibility}', '{topic_1_id}', '{topic_2_id}', '{topic_3_id}', '{talk_speaker}', '{talk_speaker_url}', {published});"
         insertId = self.db.run_query(query)[0]
 
         if not isinstance(insertId, int):
@@ -203,7 +203,7 @@ class TalkRepository:
         return self.getTalkById(insertId)
 
     def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
-        query = f"UPDATE Talks SET name='{talkName}', description='{talkDescription}', date='{startDate}', end_date='{endDate}', link='{talkLink}', show_link_offset={showLinkOffset}, visibility='{visibility}', topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker='{talk_speaker}', talk_speaker_url='{talk_speaker_url}', published={published} WHERE id = {talkId};"
+        query = f"UPDATE Talks SET name='{talkName}', description='{talkDescription}', date='{startDate}', end_date='{endDate}', link='{talkLink}', show_link_offset={showLinkOffset}, visibility='{visibility}', cardVisibility='{cardVisibility}', topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker='{talk_speaker}', talk_speaker_url='{talk_speaker_url}', published={published} WHERE id = {talkId};"
         self.db.run_query(query)
 
         tagIds = [t["id"] for t in talkTags]
@@ -305,10 +305,26 @@ class TalkRepository:
         visibility  = result[0]["visibility"]
         if visibility == "Everybody":
             return True
-        
         if visibility == "Followers and members":
             return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["follower", "member", "owner"])
         if visibility == "Members only":
+            return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
+        
+        return True
+
+    def isTalkAvailableToUser(self, talkId, userId):
+        query = f"SELECT card_visibility, channel_id FROM Talks WHERE id={talkId} AND published=1"
+        result = self.db.run_query(query)
+
+        if len(result) == 0:
+            return False
+
+        card_visibility  = result[0]["card_visibility"]
+        if card_visibility == "Everybody":
+            return True
+        if card_visibility == "Followers and members":
+            return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["follower", "member", "owner"])
+        if card_visibility == "Members only":
             return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
         
         return True

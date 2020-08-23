@@ -41,6 +41,7 @@ interface State {
   link: string;
   releaseLinkOffset: number;
   linkVisibility: string;
+  cardVisibility: string;
   topics: Topic[];
   talkSpeaker: string;
   talkSpeakerURL: string;
@@ -69,6 +70,9 @@ export default class EditTalkModal extends Component<Props, State> {
       releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 0,
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
+        : "Everybody",
+      cardVisibility: this.props.talk
+        ? this.props.talk.card_visibility
         : "Everybody",
       topics: [],
       talkSpeaker: this.props.talk ? this.props.talk.talk_speaker : "",
@@ -147,6 +151,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.tags,
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
+        this.state.cardVisibility,
         this.state.topics,
         this.state.talkSpeaker,
         this.state.talkSpeakerURL,
@@ -174,6 +179,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.tags,
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
+        this.state.cardVisibility,
         this.state.topics,
         this.state.talkSpeaker,
         this.state.talkSpeakerURL,
@@ -379,9 +385,9 @@ export default class EditTalkModal extends Component<Props, State> {
                   focusIndicator={false}
                   id="card-visibility-select"
                   options={["Everybody", "Followers and members", "Members only"]}
-                  value={this.state.linkVisibility}
+                  value={this.state.cardVisibility}
                   onChange={({ option }) =>
-                    this.setState({ linkVisibility: option })
+                    this.setState({ cardVisibility: option })
                   }
                 />
               </Box>

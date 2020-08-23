@@ -68,13 +68,13 @@ const editTalk = (
   talkTags: Tag[],
   showLinkOffset: number,
   visibility: string,
+  cardVisibility: string,
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
   published: number,
   callback: any
 ) => {
-  console.log("PUBBB", published);
   post(
     "talks/edit",
     {
@@ -87,6 +87,7 @@ const editTalk = (
       talkTags: talkTags,
       showLinkOffset: showLinkOffset,
       visibility: visibility,
+      cardVisibility: cardVisibility,
       topic1Id: topics[0] ? topics[0].id : 0,
       topic2Id: topics[1] ? topics[1].id : 0,
       topic3Id: topics[2] ? topics[2].id : 0,
@@ -109,6 +110,7 @@ const scheduleTalk = (
   talkTags: Tag[],
   showLinkOffset: number,
   visibility: string,
+  cardVisibility: string,
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
@@ -128,6 +130,7 @@ const scheduleTalk = (
       talkTags: talkTags,
       showLinkOffset: showLinkOffset,
       visibility: visibility,
+      cardVisibility: cardVisibility,
       topic1Id: topics.length > 0 ? topics[0].id : null,
       topic2Id: topics.length > 1 ? topics[1].id : null,
       topic3Id: topics.length > 2 ? topics[2].id : null,
@@ -274,6 +277,7 @@ export type Talk = {
   tags: Tag[];
   show_link_offset: number;
   visibility: string;
+  card_visibility: string;
   topics: Topic[];
   talk_speaker: string;
   talk_speaker_url: string;
