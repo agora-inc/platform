@@ -47,19 +47,19 @@ class ChannelRepository:
         return result
 
     def createChannel(self, channelName, channelDescription, userId):
-        colours = [
-            "orange",
-            "goldenrod",
-            "teal",
-            "aquamarine",
-            "mediumslateblue",
-            "blueviolet",
-            "palevioletred",
-            "lightcoral",
-            "pink",
-        ]
-        colour = random.choice(colours)
-        # colour = "white"
+        # colours = [
+        #     "orange",
+        #     "goldenrod",
+        #     "teal",
+        #     "aquamarine",
+        #     "mediumslateblue",
+        #     "blueviolet",
+        #     "palevioletred",
+        #     "lightcoral",
+        #     "pink",
+        # ]
+        # colour = random.choice(colours)
+        colour = "white"
 
         query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
         insertId = self.db.run_query(query)[0]
