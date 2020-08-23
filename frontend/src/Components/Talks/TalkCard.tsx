@@ -108,7 +108,7 @@ export default class TalkCard extends Component<Props, State> {
         this.props.talk.id,
         this.props.user.id,
         (registered: any) => {
-          this.setState({ registered: registered.is_registered });
+          this.setState({ registered });
         }
       );
   };
