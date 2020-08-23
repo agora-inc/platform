@@ -295,44 +295,26 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   getCoverBoxStyle = (): CSSProperties => {
     let current_time = Math.floor(new Date().getTime() / 200000);
-    let background = this.state.channel ?.has_cover
+    let background = this.state.channel?.id
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
       current_time +
       `)`
       // HACK: we add the new time at the end of the URL to avoid caching; 
       // we divide time by value such that all block of requested image have 
       // the same name (important for the name to be the same for the styling).
-      : this.state.colour;
+      : this.state.channel?.colour;
 
-    let border = this.state.channel ?.has_cover
-      ? `8px solid ${this.state.channel.colour}`
-      : "none";
+    let border = "none";
 
-    let color = this.state.channel ?.has_cover
-      ? `${this.state.channel.colour}`
-      : "none";
-
-    if (color == "white") {
-      return {
-        width: "75vw",
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10,
-        background: background,
-        backgroundSize: "75vw 25vw",
-        padding: 20,
-      };
-    }
-    else {
-      return {
-        width: "75vw",
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10,
-        background: background,
-        backgroundSize: "75vw 25vw",
-        padding: 20,
-        border: border,
-      };
-    }
+    return {
+      width: "75vw",
+      borderTopRightRadius: 10,
+      borderTopLeftRadius: 10,
+      background: background,
+      backgroundSize: "75vw 25vw",
+      padding: 20,
+      border: border,
+    };
   };
 
   toggleBanner = () => {
@@ -383,21 +365,18 @@ export default class ManageChannelPage extends Component<Props, State> {
                 style={{ minWidth: 100, minHeight: 100 }}
                 overflow="hidden"
               >
-                {!this.state.channel!.has_avatar && (
-                  <Identicon string={this.state.channel!.name} size={50} />
-                )}
-                {!!this.state.channel!.has_avatar && (
-                  <img
-                    src={
-                      ChannelService.getAvatar(this.state.channel!.id) +
-                      `&ts=` +
-                      new Date().getTime()
-                    }
-                    // HACK: we had the ts argument to prevent from caching.
-                    height={100}
-                    width={100}
-                  />
-                )}
+              {(
+                <img
+                src={
+                  ChannelService.getAvatar(this.state.channel!.id) +
+                  `&ts=` +
+                  Math.floor(new Date().getTime() / 200000)
+                }
+                // HACK: we had the ts argument to prevent from caching.
+                  height={100}
+                  width={100}
+                />
+              )}
               </Box>
             </Box>
             <Box>
