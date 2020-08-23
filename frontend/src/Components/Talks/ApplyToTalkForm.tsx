@@ -11,6 +11,7 @@ import emailjs from "emailjs-com";
 import { Topic } from "../../Services/TopicService";
 import TopicSelector from "../Talks/TopicSelector";
 import { ChannelService } from "../../Services/ChannelService";
+import { Empty } from "antd";
 
 
 
@@ -71,7 +72,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
     );
   };
 
-
   handleInput = (e: any, key: string) => {
     let value = e.target.value;
     this.setState((prevState: any) => ({
@@ -83,7 +83,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
   setValueAcademicTitle = (e: any) => {
     this.setState((prevState: any) => ({
       user: {...prevState.user, speaker_title: e}
-    }))
+    }));
   };
 
   handleFormSubmit = (e: any) => {
@@ -103,44 +103,44 @@ export default class ApplyToTalkForm extends Component<Props, State> {
   };
 
   sendApplication = () => {
-    let email_topics = [];
+    let email_topics_string = "";
     let raw_topics;
+    let topic_str;
     raw_topics = this.state.talk.topics;
     for (let i = 0; i < raw_topics.length; i++) {
-      email_topics.push(raw_topics[i]["field"])
+      if (raw_topics[i] != null){
+        topic_str = raw_topics[i]["field"].toString();
+        if (email_topics_string != ""){
+          email_topics_string = email_topics_string.concat(", ", topic_str)}
+        else {
+          email_topics_string = email_topics_string.concat(topic_str)
+        }
+      };
+    }
+    ChannelService.sendTalkApplicationEmail(
+      // "agora_administrators_contact_email": this.state.contactAddresses,
+      this.props.channelId,
+      this.props.channelName,
+      this.state.user.speaker_name,
+      this.state.user.speaker_title,
+      this.state.user.affiliation,
+      this.state.user.personal_website,
+      this.state.user.email,
+      this.state.talk.talk_title,
+      this.state.talk.abstract,
+      email_topics_string,
+      this.state.user.personal_message,
+      //TODO: Error handling
+      (answer: any) => {
+        console.log("Successful application!")
+      }
+     );
+    // TODO: add error handling if email is not succesffully sent.
+    this.handleClearForm();
     };
-    let email_topics_string = email_topics.toString();
 
-    emailjs.send("gmail", "template_pP8phl4n", 
-    {
-      "agora_administrators_contact_email": this.state.contactAddresses,
-      "agora_name": this.props.channelName,
-      "speaker_name": this.state.user.speaker_name,
-      "speaker_title": this.state.user.speaker_title,
-      "speaker_affiliation": this.state.user.affiliation,
-      "personal_website": this.state.user.affiliation,
-      "speaker_email": this.state.user.email,
-      "talk_title": this.state.talk.talk_title,
-      "talk_abstract": this.state.talk.abstract,
-      "talk_topics": email_topics_string,
-      "personal_message": this.state.user.personal_message
-    },
-    "user_ERRg2QIuCtD8bEjlX1qRw")
-      .then(() => {
-        // console.log("Email successfully sent!");
-      })
-      // Handle errors here however you like, or use a React error boundary
-      .catch((err: any) =>
-        console.error(
-          "Oh well, you failed. Here some thoughts on the error that occured:",
-          err
-        )
-      );
-  };
-
-  handleClearForm = (e: any) => {
+  handleClearForm = () => {
     // prevents the page from being refreshed on form submission
-    e.preventDefault();
     this.setState({
       user:{
         speaker_title: "",
@@ -181,7 +181,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
   };
 
   selectTopic = (topic: Topic, num: number) => {
-    // console.log(num, topic)
     let tempTopics = this.state.talk.topics;
     tempTopics[num] = topic;
     this.setState((prevState: any) => ({
@@ -244,7 +243,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
               placeholder="Title"
               options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof']}
               value={this.state.user.speaker_title}
-              onChange={({options}) => this.setValueAcademicTitle(options)}
+              onChange={({option}) => this.setValueAcademicTitle(option)}
             />
           </Box>
           {/* <Box width="100%" gap="2px">
