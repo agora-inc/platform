@@ -28,19 +28,38 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
+    def getTrendingChannels(self):
+        query = """SELECT
+            c.id, 
+            c.name, 
+            c.colour,
+            c.has_avatar,
+            count(*) as count
+        from Channels c
+        join Talks t 
+        on c.id = t.channel_id
+        where t.date > now()
+        group by c.id
+        order by count desc
+        limit 5"""
+
+        result = self.db.run_query(query)
+        return result
+
     def createChannel(self, channelName, channelDescription, userId):
-        # colours = [
-        #     "orange",
-        #     "goldenrod",
-        #     "teal",
-        #     "aquamarine",
-        #     "mediumslateblue",
-        #     "blueviolet",
-        #     "palevioletred",
-        #     "lightcoral",
-        #     "pink",
-        # ]
-        colour = "white"
+        colours = [
+            "orange",
+            "goldenrod",
+            "teal",
+            "aquamarine",
+            "mediumslateblue",
+            "blueviolet",
+            "palevioletred",
+            "lightcoral",
+            "pink",
+        ]
+        colour = random.choice(colours)
+        # colour = "white"
 
         query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
         insertId = self.db.run_query(query)[0]

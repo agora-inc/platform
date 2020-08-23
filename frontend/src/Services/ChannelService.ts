@@ -6,6 +6,10 @@ const getAllChannels = (limit: number, offset: number, callback: any) => {
   get(`channels/all?limit=${limit}&offset=${offset}`, callback);
 };
 
+const getTrendingChannels = (callback: any) => {
+  get("channels/trending", callback);
+};
+
 const getChannelByName = (name: string, callback: any) => {
   get(`channels/channel?name=${name}`, callback);
 };
@@ -17,10 +21,13 @@ const createChannel = (
   callback: any
 ) => {
   // default description if none
-  if (description == ""){
-    description = "<p> Welcome to <b>" + name + "</b>! </p> <p>This section will contain general information about us. Stay tuned! </p>"
-  };
-  
+  if (description == "") {
+    description =
+      "<p> Welcome to <b>" +
+      name +
+      "</b>! </p> <p>This section will contain general information about us. Stay tuned! </p>";
+  }
+
   post(
     `channels/create`,
     { name: name, description: description, userId: userId },
@@ -63,9 +70,7 @@ const addContactAddress = (
 ) => {
   post(
     `channels/contact/add?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`,
-    { contactAddress: contactAddress, 
-      channelId: channelId, 
-      userId: userId },
+    { contactAddress: contactAddress, channelId: channelId, userId: userId },
     callback
   );
 };
@@ -260,6 +265,7 @@ export type Channel = {
 
 export const ChannelService = {
   getAllChannels,
+  getTrendingChannels,
   getChannelByName,
   createChannel,
   getChannelsForUser,
@@ -279,5 +285,5 @@ export const ChannelService = {
   removeCover,
   addContactAddress,
   removeContactAddress,
-  sendTalkApplicationEmail,
+  sendTalkApplicationEmail
 };
