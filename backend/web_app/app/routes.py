@@ -625,7 +625,7 @@ def isRegisteredForTalk():
 
     talkId = int(request.args.get("talkId"))
     userId = int(request.args.get("userId"))
-    return jsonify({"is_registered": talks.isUserRegisteredForTalk(talkId, userId)})
+    return jsonify(talks.isUserRegisteredForTalk(talkId, userId))
 
 @app.route('/talks/register', methods=["POST", "OPTIONS"])
 def registerForTalk():
