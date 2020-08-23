@@ -21,7 +21,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
   }
 
   componentWillMount() {
-    ChannelService.getAllChannels(6, 0, (channels: Channel[]) => {
+    ChannelService.getTrendingChannels((channels: Channel[]) => {
       this.setState({
         channels: channels,
         loading: false,
@@ -31,13 +31,8 @@ export default class TrendingChannelsList extends Component<{}, State> {
   render() {
     return (
       <Box height="263px">
-        <Text
-          size="16px"
-          weight="bold"
-          color="black"
-          margin={{ left: "small" }}
-        >
-          TRENDING CHANNELS
+        <Text size="14px" weight="bold" color="grey" margin={{ left: "small" }}>
+          Trending agoras
         </Text>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
@@ -81,12 +76,9 @@ export default class TrendingChannelsList extends Component<{}, State> {
                     />
                   )}
                 </Box>
-                <Box justify="between">
+                <Box justify="center">
                   <Text size="16px" weight="bold" color="black">
                     {channel.name}
-                  </Text>
-                  <Text size="12px" weight="bold" color="#6B6A6A">
-                    Last live 3 days ago
                   </Text>
                 </Box>
               </Box>

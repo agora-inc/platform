@@ -1,4 +1,5 @@
 import random
+import logging
 
 
 class ChannelRepository:
@@ -27,19 +28,38 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
+    def getTrendingChannels(self):
+        query = """SELECT
+            c.id, 
+            c.name, 
+            c.colour,
+            c.has_avatar,
+            count(*) as count
+        from Channels c
+        join Talks t 
+        on c.id = t.channel_id
+        where t.date > now()
+        group by c.id
+        order by count desc
+        limit 5"""
+
+        result = self.db.run_query(query)
+        return result
+
     def createChannel(self, channelName, channelDescription, userId):
-        # colours = [
-        #     "orange",
-        #     "goldenrod",
-        #     "teal",
-        #     "aquamarine",
-        #     "mediumslateblue",
-        #     "blueviolet",
-        #     "palevioletred",
-        #     "lightcoral",
-        #     "pink",
-        # ]
-        colour = "white"
+        colours = [
+            "orange",
+            "goldenrod",
+            "teal",
+            "aquamarine",
+            "mediumslateblue",
+            "blueviolet",
+            "palevioletred",
+            "lightcoral",
+            "pink",
+        ]
+        colour = random.choice(colours)
+        # colour = "white"
 
         query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
         insertId = self.db.run_query(query)[0]
@@ -144,5 +164,49 @@ class ChannelRepository:
         else:
             return f"/home/cloud-user/plateform/agora/images/covers/default.jpg"
 
+    def getContactAddresses(self, channelId):
+        query = f"SELECT * FROM ChannelContacts WHERE channel_id = {channelId}"
+        result = self.db.run_query(query)
+
+        list_res = list(map(lambda x: x["email_address"], result))
+
+        return list_res
+
+    def addContactAddress(self, contactAddress, channelId, userId):
+        # check user is an admin in the agora
+        query = f"SELECT * FROM ChannelUsers where channel_id = {channelId} AND user_id = {userId} AND role = 'owner'"
+        res = self.db.run_query(query)
+
+        if res:
+            if len(self.db.run_query(query)) != 0:
+                # add new address
+                query = f"INSERT INTO ChannelContacts (channel_id, email_address) VALUES ({channelId}, '{contactAddress}')"
+                result = self.db.run_query(query)
+
+                logging.warning(f"addContactAddress: RESULT = {result}")
+                return result
+
+    def removeContactAddress(self, contactAddress, channelId, userId):
+        # check user is an admin in the agora
+        query = f"SELECT * FROM ChannelUsers where channel_id = {channelId} AND user_id = {userId} AND role = 'owner'"
+        res = self.db.run_query(query)
+        if res:
+            if len(self.db.run_query(query)) != 0:
+                # add new address
+                query = f"DELETE FROM ChannelContacts WHERE email_address = '{contactAddress}' AND channel_id = {channelId}"
+                result = self.db.run_query(query)
+                return result
+
+    def removeAllContactAddresses(self, contactAddress, channelId, userId):
+        # check user is an admin in the agora
+        query = f"SELECT * FROM ChannelUsers where channel_id = {channelId} AND user_id = {userId} AND role = 'owner'"
+        res = self.db.run_query(query)
+
+        if res:
+            if len(self.db.run_query(query)) != 0:
+                # add new address
+                query = f"DELETE FROM ChannelContacts WHERE channel_id = {channelId}"
+                result = self.db.run_query(query)
+                return result
 
 

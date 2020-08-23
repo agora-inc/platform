@@ -6,6 +6,10 @@ const getAllChannels = (limit: number, offset: number, callback: any) => {
   get(`channels/all?limit=${limit}&offset=${offset}`, callback);
 };
 
+const getTrendingChannels = (callback: any) => {
+  get("channels/trending", callback);
+};
+
 const getChannelByName = (name: string, callback: any) => {
   get(`channels/channel?name=${name}`, callback);
 };
@@ -17,10 +21,13 @@ const createChannel = (
   callback: any
 ) => {
   // default description if none
-  if (description == ""){
-    description = "<p> Welcome to <b>" + name + "</b>! </p> <p>This section will contain general information about us. Stay tuned! </p>"
-  };
-  
+  if (description == "") {
+    description =
+      "<p> Welcome to <b>" +
+      name +
+      "</b>! </p> <p>This section will contain general information about us. Stay tuned! </p>";
+  }
+
   post(
     `channels/create`,
     { name: name, description: description, userId: userId },
@@ -43,6 +50,40 @@ const getUsersForChannel = (
   const url = `channels/users?channelId=${channelId}&role=${roles.reduce(
     (acc, curr) => acc + `&role=${curr}`
   )}`;
+  get(url, callback);
+};
+
+const getContactAddresses = (
+  // TO TEST
+  //
+  channelId: number,
+  callback: any
+) => {
+  const url = `channels/contacts?channelId=${channelId}`;
+  get(url, callback);
+};
+
+const addContactAddress = (
+  channelId: number,
+  contactAddress: string,
+  userId: number,
+  callback: any
+) => {
+  post(
+    `channels/contact/add?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`,
+    { contactAddress: contactAddress, channelId: channelId, userId: userId },
+    callback
+  );
+};
+
+const removeContactAddress = (
+  // TODO: make this into a delete request
+  channelId: number,
+  contactAddress: string,
+  userId: number,
+  callback: any
+) => {
+  const url = `channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
   get(url, callback);
 };
 
@@ -81,7 +122,7 @@ const removeUserFromChannel = (
 //     .get(baseApiUrl + "/channels/viewcount?channelId=" + channelId, {
 //       headers: { "Access-Control-Allow-Origin": "*" },
 //     })
-//     .then(function (response) {
+//     .then(function (response) {updateLongChannelDescription
 //       callback(response.data);
 //     });
 // };
@@ -160,7 +201,7 @@ const getDefaultCover = () => {
 
 const removeCover = (channelId: number, callback: any) => {
   axios
-    .delete(baseApiUrl + "/channels/cover", {
+    .delete(baseApiUrl + "/channgetContactAddressesels/cover", {
       headers: { "Access-Control-Allow-Origin": "*" },
       data: {
         channelId: channelId,
@@ -181,11 +222,13 @@ export type Channel = {
 
 export const ChannelService = {
   getAllChannels,
+  getTrendingChannels,
   getChannelByName,
   createChannel,
   getChannelsForUser,
   getUsersForChannel,
   getRoleInChannel,
+  getContactAddresses,
   addUserToChannel,
   removeUserFromChannel,
   getFollowerCountForChannel,
@@ -197,4 +240,6 @@ export const ChannelService = {
   uploadCover,
   getCover,
   removeCover,
+  addContactAddress,
+  removeContactAddress,
 };
