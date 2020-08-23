@@ -107,14 +107,13 @@ export default class TalkCard extends Component<Props, State> {
       TalkService.isRegisteredForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: boolean) => {
-          this.setState({ registered });
+        (registered: any) => {
+          this.setState({ registered: registered.is_registered });
         }
       );
   };
 
   register = () => {
-    console.log("Is there?");
     this.props.user &&
       TalkService.registerForTalk(
         this.props.talk.id,
@@ -130,7 +129,6 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   unregister = () => {
-    console.log("Is there not?");
     this.props.user &&
       TalkService.unRegisterForTalk(
         this.props.talk.id,
@@ -444,7 +442,9 @@ export default class TalkCard extends Component<Props, State> {
                     )}
                   </Text>
                 </Box>
-                {this.state.registered && (
+                {this.state.available &&
+                  this.props.user !== null &&
+                  this.state.registered && (
                   <Box margin={{ top: "10px", bottom: "20px" }}>
                     <CountdownAndCalendarButtons talk={this.props.talk} />
                     <Box
