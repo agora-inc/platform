@@ -202,7 +202,11 @@ class TalkRepository:
 
         return self.getTalkById(insertId)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
+        with open("/home/cloud-user/edittalk.txt", "w") as outfile:
+            outfile.write("WESH")
+            outfile.write(str(cardVisibility))
+
         query = f"UPDATE Talks SET name='{talkName}', description='{talkDescription}', date='{startDate}', end_date='{endDate}', link='{talkLink}', show_link_offset={showLinkOffset}, visibility='{visibility}', cardVisibility='{cardVisibility}', topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker='{talk_speaker}', talk_speaker_url='{talk_speaker_url}', published={published} WHERE id = {talkId};"
         self.db.run_query(query)
 
@@ -312,7 +316,7 @@ class TalkRepository:
         
         return True
 
-    def isTalkAvailableToUser(self, talkId, userId):
+    def isTalkCardAvailableToUser(self, talkId, userId):
         query = f"SELECT card_visibility, channel_id FROM Talks WHERE id={talkId} AND published=1"
         result = self.db.run_query(query)
 
