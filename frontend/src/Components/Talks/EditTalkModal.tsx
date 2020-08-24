@@ -17,9 +17,9 @@ import TagSelector from "../Core/TagSelector";
 import TopicSelector from "../Talks/TopicSelector";
 import { Topic } from "../../Services/TopicService";
 import "../../Styles/edit-talk-modal.css";
-import { InlineMath } from "react-katex";
-import "katex/dist/katex.min.css";
+import { textToLatex } from "../Core/LatexRendering";
 import { Switch } from "antd";
+import { InlineMath } from "react-katex";
 
 interface Props {
   channel: Channel | null;
@@ -268,43 +268,6 @@ export default class EditTalkModal extends Component<Props, State> {
     );
   };
 
-  parse = (rawText: string, height: string) => {
-    const textArr = rawText.split("$");
-    return (
-      <Box 
-        height={height}
-        style={{ border: "1px solid #C2C2C2" }}
-        round="xsmall"
-        pad="small"
-        overflow={{"vertical": "scroll"}}
-      >
-        {textArr.map((textElement: string, index) => {
-          if (index % 2 == 0) {
-            return (
-              <Text
-                color="black"
-                style={{
-                  marginLeft: 3,
-                  marginRight: 3,
-                  // whiteSpace: "pre",
-                  overflowWrap: "break-word",
-                  wordBreak: "break-all",
-                }}
-                size="18px"
-              >
-                {textElement}
-              </Text>
-            );
-          } else {
-            if (textElement != "" && index != textArr.length - 1) {
-              return <InlineMath math={textElement} />;
-            }
-          }
-        })}
-      </Box>
-    );
-  };
-
   render() {
     return (
       <Overlay
@@ -414,7 +377,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                 )}
                 {this.state.latex && (
-                  this.parse(this.state.description, "240px")
+                  textToLatex(this.state.description, "240px")
                 )}
               </Box>
             </OverlaySection>
