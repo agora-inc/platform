@@ -31,6 +31,7 @@ interface Props {
 interface State {
   channel: Channel | null;
   loading: boolean;
+  user: User | null;
   role: "none" | "owner" | "member" | "follower";
   followerCount: number;
   colour: string;
@@ -55,6 +56,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.state = {
       channel: null,
       loading: true,
+      user: null,
       role: "none",
       followerCount: 0,
       colour: "pink",
@@ -129,6 +131,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {
                   channel: channel,
                   colour: channel.colour,
+                  user: user,
                   role: role,
                   loading: false,
                 },
@@ -426,6 +429,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
+    console.log(UserService.getCurrentUser())
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -672,7 +676,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               <ChannelPageTalkList
                 talks={this.state.drafts}
                 channelId={this.state.channel!.id}
-                user={null}
+                user={this.state.user}
                 admin
                 onEditCallback={this.fetchTalksDrafts}
               />
@@ -707,7 +711,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               <ChannelPageTalkList
                 talks={this.state.talks}
                 channelId={this.state.channel!.id}
-                user={null}
+                user={this.state.user}
                 admin
                 onEditCallback={this.fetchTalksDrafts}
               />
