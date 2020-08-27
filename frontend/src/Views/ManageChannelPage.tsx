@@ -426,6 +426,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
+    console.log(UserService.getCurrentUser())
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
