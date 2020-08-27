@@ -113,7 +113,30 @@ class TalkRepository:
             return []
 
     def getAllFutureTalks(self, limit, offset):
-        query = f"SELECT * FROM Talks WHERE published = 1 AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+        if user_id == None:
+            query = f"SELECT * FROM Talks WHERE published = 1 AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+        else:
+            #######################################
+            # TODO: ELSE CLOSE TO BE TESTED (Remy)
+            #######################################
+            # QUERY ALL FUTURE TALKS THAT ARE PUBLISHED AND SUCH THAT THEIR VISIBILITY CONDITION MATCHES THE USER'S STATUS
+            # JOIN METHODS; https://i.stack.imgur.com/VQ5XP.png
+            # JOIN doc: https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins
+            query = f'''SELECT * FROM Talks 
+            INNER JOIN Channels
+                ON Talks.channel_id = Channels.id
+            INNER JOIN ChannelUsers
+                ON ChannelUsers.user_id = {user_id}
+            
+            WHERE Talks.published = 1 
+                AND (Talks.card_visibility = 'Everybody' 
+                        OR (Talks.card_visibility = 'Followers and members' AND (ChannelUsers.role = 'member') OR (ChannelUsers.role = 'follower'))
+                        OR (Talks.card_visilibity = 'Members only' AND ChannelUsers.role = 'member')
+                        )
+                AND Talks.date > CURRENT_TIMESTAMP 
+            ORDER BY Talks.date ASC LIMIT {limit} 
+            OFFSET {offset}'''
+
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -122,6 +145,7 @@ class TalkRepository:
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talks
+
 
     def getAllCurrentTalks(self, limit, offset):
         query = f"SELECT * FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
@@ -234,7 +258,10 @@ class TalkRepository:
         self.db.run_query(query)
 
     def getFutureTalksForUser(self, userId):
-        query = f"SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link, Talks.show_link_offset, Talks.visibility FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP AND Talks.published = 1"
+        query = f"SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link, Talks.show_link_offset, Talks.visibility 
+        FROM Talks 
+        INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id 
+        WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP AND Talks.published = 1"
         talks = self.db.run_query(query)
 
         for talk in talks:
