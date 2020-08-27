@@ -264,9 +264,28 @@ export default class EditTalkModal extends Component<Props, State> {
       this.state.endTime !== "" &&
       this.state.title !== "" &&
       this.state.description !== "" &&
-      this.state.link !== ""
+      this.state.link !== "" &&
+      this.state.topics.length > 0
     );
   };
+
+  isMissing = () => {
+    console.log("ENTERER")
+    return (
+      <Box
+      background="black"
+      round="xsmall"
+      pad="small"
+      //height="30px"
+      width="210px"
+      margin={{ top: "-6px" }}
+      >
+        <Text size="12px">
+          These talks are only visible to you.
+        </Text>
+      </Box>
+    );
+  }
 
   render() {
     return (
@@ -301,6 +320,7 @@ export default class EditTalkModal extends Component<Props, State> {
             onClick={this.onSaveDraft}
           />
         }
+        buttonOnMouseEnter={this.isMissing}
       >
         <Box direction="row"> 
           <Box 

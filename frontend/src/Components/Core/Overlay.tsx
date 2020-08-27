@@ -18,6 +18,7 @@ interface OverlayProps {
   height: number;
   deleteButton?: any;
   saveDraftButton?: any;
+  buttonOnMouseEnter?: any;
 }
 
 interface OverlaySectionProps {
@@ -106,6 +107,7 @@ export class Overlay extends Component<OverlayProps> {
                   text={this.props.submitButtonText}
                   onClick={this.props.onSubmitClick}
                   hoverIndicator="#5A0C0F"
+                  onMouseEnter={this.props.buttonOnMouseEnter}
                 />
               </Box>
             </Box>
