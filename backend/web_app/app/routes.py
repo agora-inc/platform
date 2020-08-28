@@ -42,6 +42,10 @@ def getAllUsers():
 
     return jsonify(users.getAllUsers())
 
+@app.route('/users/public')
+def getPublicUsers():
+    return jsonify(users.getAllPublicUsers())
+
 @app.route('/users/user')
 def getUser():
     if not checkAuth(request.headers.get('Authorization')):
@@ -119,6 +123,22 @@ def changePassword():
     params = request.json
     users.changePassword(userId, params["password"])
     return "ok"
+
+@app.route('/users/update_bio', methods=["POST"])
+def updateBio():
+   authToken = request.headers.get('Authorization').split(" ")[1]
+   userId = users.decodeAuthToken(authToken)
+   params = request.json
+   updatedUser = users.updateBio(userId, params["newBio"])
+   return jsonify(updatedUser)
+
+@app.route('/users/update_public', methods=["POST"])
+def updatePublic():
+    authToken = request.headers.get('Authorization').split(" ")[1]
+    userId = users.decodeAuthToken(authToken)
+    params = request.json
+    updatedUser = users.updatePublic(userId, params["public"])
+    return jsonify(updatedUser)
 
 
 

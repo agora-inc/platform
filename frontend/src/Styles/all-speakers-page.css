@@ -1,0 +1,78 @@
+.all-speakers-page {
+  margin: 60px;
+  margin-top: 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+.all-speakers-title {
+  font-size: 30px;
+  font-weight: 550;
+  line-height: 24px;
+  color: black;
+}
+
+.all-speakers-grid {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 30px;
+}
+
+.speaker-card {
+  width: 420px;
+  background: white;
+  border-radius: 10px;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.speaker-card:hover {
+  color: black;
+}
+
+.speaker-card-banner {
+  width: 100%;
+  height: 140px;
+}
+
+.speaker-card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.speaker-avatar-and-name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.speaker-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  margin-right: 8px;
+  overflow: hidden;
+}
+
+.speaker-content {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.speaker-email {
+  color: blue;
+  text-decoration: underline;
+}
+
+.speaker-email:hover {
+  color: blue;
+  text-decoration: underline;
+}

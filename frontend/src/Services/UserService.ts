@@ -1,5 +1,15 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
+import { post } from "../Middleware/httpMiddleware";
+
+const getAllPublicUsers = (callback: any) => {
+  axios
+    .get(baseApiUrl + "/users/public")
+    .then((response) => {
+      callback(response.data);
+    })
+    .catch((error) => console.error(error));
+};
 
 const register = (
   username: string,
@@ -96,12 +106,36 @@ const changePassword = (newPassword: string, code: string, callback: any) => {
     });
 };
 
+const updateBio = (userId: number, newBio: string, callback: any) => {
+  post(
+    "users/update_bio",
+    {
+      userId: userId,
+      newBio: newBio,
+    },
+    callback
+  );
+};
+
+const updatePublic = (userId: number, _public: boolean, callback: any) => {
+  post(
+    "users/update_public",
+    {
+      userId,
+      public: _public,
+    },
+    callback
+  );
+};
+
 export type User = {
   id: number;
   username: string;
+  bio: string;
 };
 
 export const UserService = {
+  getAllPublicUsers,
   register,
   login,
   logout,
@@ -109,4 +143,6 @@ export const UserService = {
   getCurrentUser,
   changePassword,
   emailChangePasswordLink,
+  updateBio,
+  updatePublic,
 };

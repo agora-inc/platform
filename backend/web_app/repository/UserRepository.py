@@ -18,6 +18,11 @@ class UserRepository:
         result = self.db.run_query(query)
         return result
 
+    def getAllPublicUsers(self):
+        query = "SELECT id, username, email, bio FROM Users WHERE public = 1"
+        result = self.db.run_query(query)
+        return result
+
     def getUser(self, username):
         query = f'SELECT * FROM Users WHERE username = "{username}"'
         result = self.db.run_query(query)
@@ -86,6 +91,16 @@ class UserRepository:
         passwordHash = generate_password_hash(newPassword)
         query = f'UPDATE Users SET password_hash = "{passwordHash}" WHERE id = {userId}'
         self.db.run_query(query)
+
+    def updateBio(self, userId, newBio):
+        query = f'UPDATE Users SET bio = "{newBio}" WHERE id = {userId}'
+        self.db.run_query(query)
+        return self.getUserById(userId)
+
+    def updatePublic(self, userId, public):
+        query = f'UPDATE Users SET public = "{int(public)}" WHERE id = {userId}'
+        self.db.run_query(query)
+        return self.getUserById(userId)
 
 
     
