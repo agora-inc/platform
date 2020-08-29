@@ -91,14 +91,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
     this.fetchContactAddresses();
     e.preventDefault();
     let userData = this.state.user;
-
-    // Send it via email to revolutionising.research@gmail.com
-    // console.log(userData);
     this.sendApplication();
-    //   message_html: JSON.stringisdffy(this.state.user.speaker_name),
-    //   from_name: this.state.user.speaker_name,
-    //   reply_to: this.state.user.speaker_name,
-    // });
     this.setState({ showForm: false });
   };
 

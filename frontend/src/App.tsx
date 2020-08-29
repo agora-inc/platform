@@ -33,7 +33,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
-          <Route exact path="/speakers" component={AllSpeakersPage} />
+          {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
           <Route path="/video" component={VideoPage} />
           <Route path="/stream" component={StreamPage} />
           <Route path={`/:name/manage`} component={ManageChannelPage} />
