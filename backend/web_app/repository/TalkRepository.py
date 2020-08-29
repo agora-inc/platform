@@ -114,28 +114,32 @@ class TalkRepository:
 
     def getAllFutureTalks(self, limit, offset):
         if user_id == None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+            query = f"SELECT * FROM Talks WHERE published = 1 card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         else:
-            #######################################
-            # TODO: ELSE CLOSE TO BE TESTED (Remy)
-            #######################################
-            # QUERY ALL FUTURE TALKS THAT ARE PUBLISHED AND SUCH THAT THEIR VISIBILITY CONDITION MATCHES THE USER'S STATUS
-            # JOIN METHODS; https://i.stack.imgur.com/VQ5XP.png
-            # JOIN doc: https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins
-            query = f'''SELECT * FROM Talks 
-            INNER JOIN Channels
-                ON Talks.channel_id = Channels.id
-            INNER JOIN ChannelUsers
-                ON ChannelUsers.user_id = {user_id}
-            
-            WHERE Talks.published = 1 
-                AND (Talks.card_visibility = 'Everybody' 
-                        OR (Talks.card_visibility = 'Followers and members' AND (ChannelUsers.role = 'member') OR (ChannelUsers.role = 'follower'))
-                        OR (Talks.card_visilibity = 'Members only' AND ChannelUsers.role = 'member')
-                        )
-                AND Talks.date > CURRENT_TIMESTAMP 
-            ORDER BY Talks.date ASC LIMIT {limit} 
-            OFFSET {offset}'''
+            query = f'''SELECT DISTINCT * FROM Talks 
+                    WHERE Talks.published = 1 
+                        AND (Talks.card_visibility = 'Everybody' 
+                                OR (Talks.card_visibility = 'Followers and members' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'follower' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                                OR (Talks.card_visibility = 'Members only' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                            )
+                        AND Talks.date > CURRENT_TIMESTAMP 
+                    ORDER BY Talks.date ASC LIMIT {limit}
+                    OFFSET {offset}
+                    '''
 
         talks = self.db.run_query(query)
         for talk in talks:
