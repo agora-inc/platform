@@ -166,6 +166,9 @@ export default class UserManager extends Component<Props, State> {
             {this.state.user?.username}
           </Text>
         </Box>
+
+
+        {/* TODO: INTEGRATE THIS 'add bio' functionality with profile homepage + 'speakers' page
         <Box margin={{ horizontal: "small" }} focusIndicator={false}>
           <Text
             size="12px"
@@ -193,7 +196,9 @@ export default class UserManager extends Component<Props, State> {
               style={{ padding: 3 }}
             />
           )}
-        </Box>
+        </Box> */}
+
+
         <Menu.Divider />
         <Box gap="xsmall" pad={{ vertical: "medium" }} focusIndicator={false}>
           <Link
@@ -259,6 +264,8 @@ export default class UserManager extends Component<Props, State> {
         >
           <PreferenceButton />
         </Menu.Item> */}
+
+        {/* TODO: REINTEGRATE THIS 'PUBLIC' OR 'PRIVATE' PUBLIC SECTION WHEN 'speakers' page is done
         <Box
           margin={{ horizontal: "small", vertical: "xsmall" }}
           focusIndicator={false}
@@ -283,7 +290,8 @@ export default class UserManager extends Component<Props, State> {
                 : "Make profile public"}
             </Text>
           </Box>
-        </Box>
+        </Box> */}
+
         <Menu.Item>
           <Link
             to={{ pathname: "/saved", state: { user: this.state.user } }}
