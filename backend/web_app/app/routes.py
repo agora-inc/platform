@@ -574,6 +574,14 @@ def getAllPastTalksForTopic():
     offset = int(request.args.get("offset"))
     return jsonify(talks.getAllPastTalksForTopic(topicId, limit, offset))
 
+@app.route('/talks/available/future', methods=["GET"])
+def getAvailableFutureTalks():
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    return jsonify(talks.getAvailableFutureTalks(limit, offset, user_id))
+
 @app.route('/talks/create', methods=["POST", "OPTIONS"])
 def scheduleTalk():
     if request.method == "OPTIONS":

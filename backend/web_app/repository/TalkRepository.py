@@ -112,8 +112,8 @@ class TalkRepository:
         else:
             return []
 
-    def getAllFutureTalks(self, limit, offset):
-        if user_id == None:
+    def getAvailableFutureTalks(self, limit, offset, user_id):
+        if user_id is None:
             query = f"SELECT * FROM Talks WHERE published = 1 card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
@@ -266,10 +266,7 @@ class TalkRepository:
         self.db.run_query(query)
 
     def getFutureTalksForUser(self, userId):
-        query = f"SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link, Talks.show_link_offset, Talks.visibility 
-        FROM Talks 
-        INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id 
-        WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP AND Talks.published = 1"
+        query = f"SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link, Talks.show_link_offset, Talks.visibility FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP AND Talks.published = 1"
         talks = self.db.run_query(query)
 
         for talk in talks:

@@ -58,6 +58,18 @@ const getPastTalksForTag = (tagName: string, callback: any) => {
   get(`talks/tag/past?tagName=${tagName}`, callback);
 };
 
+const getAvailableFutureTalks = (
+  limit: number,
+  offset: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/available/future?userId=${userId}&limit=${limit}&offset=${offset}`, 
+    callback
+  );
+};
+
 const editTalk = (
   talkId: number,
   talkName: string,
@@ -246,6 +258,7 @@ export const TalkService = {
   getAllFutureTalksForTopicWithChildren,
   getPastTalksForTopic,
   getPastTalksForTag,
+  getAvailableFutureTalks,
   editTalk,
   scheduleTalk,
   deleteTalk,
