@@ -505,7 +505,12 @@ def serveThumbnail():
 def getAllFutureTalks():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllFutureTalks(limit, offset))
+
+    try:
+        user_id = int(request.args.get("offset"))
+        return jsonify(talks.getAllFutureTalks(limit, offset, user_id))
+    except:
+        return jsonify(talks.getAllFutureTalks(limit, offset))
 
 @app.route('/talks/all/current', methods=["GET"])
 def getAllCurrentTalks():
