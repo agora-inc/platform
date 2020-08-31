@@ -49,7 +49,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
             <Loading color="black" size={50} />
           </Box>
         )}
-        <Box margin={{ top: "2px" }} overflow="scroll">
+        <Box margin={{ top: "2px" }} overflow="auto">
           {this.state.channels.map((channel: Channel) => (
             <Link
               className="channel"
