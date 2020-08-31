@@ -61,15 +61,15 @@ export default class TalkCard extends Component<Props, State> {
     const now = new Date();
     const deltaSec = Math.floor((end.valueOf() - now.valueOf()) / 1000);
     if (deltaSec < 60) {
-      return `Finishing in ${deltaSec} seconds`;
+      return `Finishing in ${deltaSec}s`;
     }
     if (deltaSec < 3600) {
       let deltaMin = Math.floor(deltaSec / 60);
-      return `Finishing in ${deltaMin} minutes`;
+      return `Finishing in ${deltaMin}m`;
     }
     let deltaHour = Math.floor(deltaSec / 3600);
     let remainderMin = Math.floor((deltaSec % 3600) / 60);
-    return `Finishing in ${deltaHour} hours and ${remainderMin} minutes`;
+    return `Finishing in ${deltaHour}h ${remainderMin}m`;
   };
 
   toggleModal = () => {
@@ -429,18 +429,30 @@ export default class TalkCard extends Component<Props, State> {
                 </Text>
               </Box>
               <Box direction="column" gap="small">
-                <Box direction="row" gap="small">
-                  <Calendar size="18px" />
-                  <Text
-                    size="18px"
-                    color="black"
-                    style={{ height: "20px", fontStyle: "normal" }}
+                <Box direction="row" gap="small" height="30px">
+                  <Box direction="row" gap="small" alignSelf="center">
+                    <Calendar size="18px"  />
+                    <Text
+                      size="18px"
+                      color="black"
+                    >
+                      {this.formatDateFull(
+                        this.props.talk.date,
+                        this.props.talk.end_date
+                      )}
+                    </Text>
+                  </Box>
+                  <Box
+                    round="xsmall"
+                    background="#C2C2C2"
+                    pad="small"
+                    justify="center"
+                    align="center"                
                   >
-                    {this.formatDateFull(
-                      this.props.talk.date,
-                      this.props.talk.end_date
-                    )}
-                  </Text>
+                    <Text size="14px">
+                      Members only
+                    </Text>
+                  </Box>
                 </Box>
                 {this.state.available &&
                   this.props.user !== null &&
@@ -520,7 +532,7 @@ export default class TalkCard extends Component<Props, State> {
                 justify="center"
               >
                 <Text textAlign="center" weight="bold">
-                  {`Sorry, this talk is only available to ${
+                  {`Sorry, the link to talk is only available to ${
                     this.props.talk.visibility === "Followers and members"
                       ? "followers and members"
                       : "members"

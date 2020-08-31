@@ -114,7 +114,7 @@ class TalkRepository:
 
     def getAvailableFutureTalks(self, limit, offset, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 

@@ -116,13 +116,11 @@ export default class PastTalkCard extends Component<Props, State> {
     }
     if (this.state.saved) {
       TalkService.unsaveTalk(this.props.user.id, this.props.talk.id, () => {
-        this.toggleModal();
         this.setState({ saved: false });
         this.props.onUnsave && this.props.onUnsave();
       });
     } else {
       TalkService.saveTalk(this.props.user.id, this.props.talk.id, () => {
-        this.toggleModal();
         this.setState({ saved: true });
         this.props.onSave && this.props.onSave();
       });
@@ -142,17 +140,40 @@ export default class PastTalkCard extends Component<Props, State> {
   getButtons = () => {
     if (this.props.admin) {
       return (
-        <Box gap="250px" direction="row">
+        <Box gap="small" direction="row" margin={{top: "20px", bottom: "20px"}}>
+          <a
+            href={this.state.recordingLink}
+            target="_blank"
+            style={{ width: "100%" }}
+          >
+            <Box
+              background="#7E1115"
+              round="xsmall"
+              height="40px"
+              width="50%"
+              justify="center"
+              align="start"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+            >
+              <Text alignSelf="center" size="18px">
+                Watch talk
+              </Text>
+            </Box>
+          </a>
           <Box
             onClick={this.onClick}
-            background="#7E1115"
+            background="white"
             round="xsmall"
-            pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
             height="40px"
-            width="33%"
+            width="50%"
+            justify="center"
             align="start"
             focusIndicator={false}
-            hoverIndicator="#5A0C0F"
+            hoverIndicator={true}
+            style={{
+              border: "1px solid #C2C2C2",
+            }}
           >
             <Text alignSelf="center" size="18px">
               {this.state.showLinkInput
@@ -160,26 +181,11 @@ export default class PastTalkCard extends Component<Props, State> {
                 : "Enter link recording"}
             </Text>
           </Box>
-          <Box
-            onClick={this.onDeleteClicked}
-            background="#FF4040"
-            round="xsmall"
-            pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
-            height="40px"
-            width="25%"
-            alignSelf="end"
-            focusIndicator={false}
-            hoverIndicator="white"
-          >
-            <Text alignSelf="center" size="18px">
-              Delete talk
-            </Text>
-          </Box>
         </Box>
       );
     } else if (this.props.talk.recording_link) {
       return (
-        <Box gap="small" direction="row">
+        <Box gap="small" direction="row" margin={{top: "20px", bottom: "20px"}}>
           <a
             href={this.props.talk.recording_link}
             target="_blank"
@@ -188,9 +194,8 @@ export default class PastTalkCard extends Component<Props, State> {
             <Box
               background="#7E1115"
               round="xsmall"
-              pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
               height="40px"
-              width="33%"
+              width="50%"
               justify="center"
               align="start"
               focusIndicator={false}
@@ -205,9 +210,10 @@ export default class PastTalkCard extends Component<Props, State> {
             <Box
               background="white"
               round="xsmall"
-              pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
+              justify="center"
+              align="center"
               height="40px"
-              width={this.state.saved ? "50%" : "33%"}
+              width="50%"
               onClick={this.onSaveTalkClicked}
               style={{
                 border: "1px solid #C2C2C2",
@@ -360,11 +366,9 @@ export default class PastTalkCard extends Component<Props, State> {
             style={{
               width: 640,
               height:
-                this.props.admin && this.state.showLinkInput
-                  ? 570
-                  : this.props.talk.recording_link
+                this.state.showLinkInput
                   ? 540
-                  : 480,
+                  : 500,
               borderRadius: 15,
               overflow: "hidden",
             }}
@@ -464,7 +468,7 @@ export default class PastTalkCard extends Component<Props, State> {
                   color="black"
                   style={{
                     minHeight: "50px",
-                    maxHeight: "200px",
+                    maxHeight: "180px",
                     overflowY: "auto",
                   }}
                   margin={{ bottom: "10px" }}
@@ -475,7 +479,8 @@ export default class PastTalkCard extends Component<Props, State> {
               <Box
                 direction="column"
                 gap="small"
-                style={{ minHeight: "90px", maxHeight: "150px" }}
+                height={this.state.showLinkInput ? "130px" : (this.props.talk.recording_link || this.props.admin ? "100px" : "30px")}
+                //style={{ minHeight: "90px", maxHeight: "150px" }}
               >
                 <Box direction="row" gap="small">
                   <Calendar size="18px" />
