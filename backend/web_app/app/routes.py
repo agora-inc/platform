@@ -582,6 +582,24 @@ def getAvailableFutureTalks():
     user_id = int(user_id) if user_id != 'null' else None
     return jsonify(talks.getAvailableFutureTalks(limit, offset, user_id))
 
+@app.route('/talks/available/current', methods=["GET"])
+def getAvailableCurrentTalks():
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    data = talks.getAvailableCurrentTalks(limit, offset, user_id)
+    return jsonify({"talks": data[0],"count": data[1]})
+
+@app.route('/talks/available/past', methods=["GET"])
+def getAvailablePastTalks():
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    data = talks.getAvailablePastTalks(limit, offset, user_id)
+    return jsonify({"talks": data[0],"count": data[1]})
+
 @app.route('/talks/create', methods=["POST", "OPTIONS"])
 def scheduleTalk():
     if request.method == "OPTIONS":

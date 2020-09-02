@@ -30,9 +30,10 @@ export default class RecentTalksList extends Component<Props, State> {
   }
 
   fetchPastTalks = () => {
-    TalkService.getAllPastTalks(
+    TalkService.getAvailablePastTalks(
       6,
       0,
+      this.props.user ? this.props.user.id : null,
       (data: { count: number; talks: Talk[] }) => {
         this.setState({ talks: data.talks, loading: false });
       }

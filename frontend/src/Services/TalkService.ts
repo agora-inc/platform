@@ -70,6 +70,30 @@ const getAvailableFutureTalks = (
   );
 };
 
+const getAvailableCurrentTalks = (
+  limit: number,
+  offset: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/available/current?userId=${userId}&limit=${limit}&offset=${offset}`, 
+    callback
+  );
+};
+
+const getAvailablePastTalks = (
+  limit: number,
+  offset: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/available/past?userId=${userId}&limit=${limit}&offset=${offset}`, 
+    callback
+  );
+};
+
 const editTalk = (
   talkId: number,
   talkName: string,
@@ -259,6 +283,8 @@ export const TalkService = {
   getPastTalksForTopic,
   getPastTalksForTag,
   getAvailableFutureTalks,
+  getAvailableCurrentTalks,
+  getAvailablePastTalks,
   editTalk,
   scheduleTalk,
   deleteTalk,

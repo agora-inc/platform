@@ -33,6 +33,7 @@ interface State {
   saved: boolean;
   showLinkInput: boolean;
   recordingLink: string;
+  isRecordingLinkHidden: boolean;
 }
 
 export default class PastTalkCard extends Component<Props, State> {
@@ -47,6 +48,7 @@ export default class PastTalkCard extends Component<Props, State> {
       recordingLink: this.props.talk.recording_link
         ? this.props.talk.recording_link
         : "",
+      isRecordingLinkHidden: true,
     };
   }
 
@@ -62,6 +64,7 @@ export default class PastTalkCard extends Component<Props, State> {
 
   componentWillMount() {
     this.checkIfSaved();
+    this.isRecordingHidden();
   }
 
   checkIfSaved = () => {
@@ -137,6 +140,26 @@ export default class PastTalkCard extends Component<Props, State> {
     }
   };
 
+  isRecordingHidden = () => {
+    if (this.props.talk.recording_link && !this.props.admin) {
+      if (this.props.user) {
+        TalkService.isAvailableToUser(
+          this.props.user.id, 
+          this.props.talk.id, 
+          (available: boolean) => {
+            this.setState({ isRecordingLinkHidden: !available })
+          }
+        )
+      } else if (this.props.talk.visibility === "Everybody") {
+        this.setState({ isRecordingLinkHidden: false })
+      } else {
+        this.setState({ isRecordingLinkHidden: true })
+      }
+    } else {
+      this.setState({ isRecordingLinkHidden: true })
+    }
+  };
+
   getButtons = () => {
     if (this.props.admin) {
       return (
@@ -183,7 +206,7 @@ export default class PastTalkCard extends Component<Props, State> {
           </Box>
         </Box>
       );
-    } else if (this.props.talk.recording_link) {
+    } else if (this.props.talk.recording_link && !this.state.isRecordingLinkHidden) {
       return (
         <Box gap="small" direction="row" margin={{top: "20px", bottom: "20px"}}>
           <a
@@ -546,7 +569,23 @@ export default class PastTalkCard extends Component<Props, State> {
               >
                 <Text textAlign="center" weight="bold">
                   Sorry, there is currently no recording available for this talk
-                  :(
+                </Text>
+              </Box>
+            )}
+            {this.state.isRecordingLinkHidden && (
+              <Box
+                background="#d5d5d5"
+                pad="small"
+                align="center"
+                justify="center"
+              >
+                <Text textAlign="center" weight="bold">
+                {`Sorry, the recording is only available to ${
+                    this.props.talk.visibility === "Followers and members"
+                      ? "followers and members"
+                      : "members"
+                  }
+                  of ${this.props.talk.channel_name}`}
                 </Text>
               </Box>
             )}
