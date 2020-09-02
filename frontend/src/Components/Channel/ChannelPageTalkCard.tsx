@@ -215,25 +215,41 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             </Box>
             <Box direction="row" gap="small">
               <Calendar size="18px" />
-              {this.props.isCurrent && (
-                <Text
-                  size="18px"
-                  color="#5454A0"
-                  weight="bold"
-                  style={{ height: "20px", fontStyle: "normal" }}
+              <Box direction="row" width="100%">
+                {this.props.isCurrent && (
+                  <Text
+                    size="18px"
+                    color="#5454A0"
+                    weight="bold"
+                    style={{ height: "20px", fontStyle: "normal" }}
+                  >
+                    {this.getTimeRemaining()}
+                  </Text>
+                )}
+                {!this.props.isCurrent && (
+                  <Text
+                    size="18px"
+                    color="black"
+                    style={{ height: "30px", fontStyle: "normal" }}
+                  >
+                    {this.formatDate(this.props.talk.date)}
+                  </Text>
+                )}
+              </Box>
+              {this.props.talk.card_visibility === "Members only" && 
+                <Box
+                  round="xsmall"
+                  background="#C2C2C2"
+                  pad="xsmall"
+                  justify="center"
+                  align="center"
+                  width="160px"                
                 >
-                  {this.getTimeRemaining()}
-                </Text>
-              )}
-              {!this.props.isCurrent && (
-                <Text
-                  size="18px"
-                  color="black"
-                  style={{ height: "30px", fontStyle: "normal" }}
-                >
-                  {this.formatDate(this.props.talk.date)}
-                </Text>
-              )}
+                  <Text size="14px">
+                    Members only
+                  </Text>
+                </Box>
+              }
             </Box>
             {this.state.showShadow && (
               <Box
