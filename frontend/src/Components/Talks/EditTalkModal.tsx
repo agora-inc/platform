@@ -20,6 +20,8 @@ import "../../Styles/edit-talk-modal.css";
 import { textToLatex } from "../Core/LatexRendering";
 import { Switch } from "antd";
 import { InlineMath } from "react-katex";
+import { StatusInfo } from "grommet-icons";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   channel: Channel | null;
@@ -47,6 +49,7 @@ interface State {
   talkSpeakerURL: string;
   latex: boolean;
   published: number,
+  showCardVisibilityInfo: boolean,
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -79,6 +82,7 @@ export default class EditTalkModal extends Component<Props, State> {
       talkSpeakerURL: this.props.talk ? this.props.talk.talk_speaker_url : "",
       latex: false,
       published: this.props.talk ? this.props.talk.published : 0,
+      showCardVisibilityInfo: false,
     };
   }
 
@@ -270,21 +274,26 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   isMissing = () => {
-    console.log("ENTERER")
-    return (
-      <Box
-      background="black"
-      round="xsmall"
-      pad="small"
-      //height="30px"
-      width="210px"
-      margin={{ top: "-6px" }}
-      >
-        <Text size="12px">
-          These talks are only visible to you.
-        </Text>
-      </Box>
-    );
+    let res: string[] = []
+    if (this.state.startTime === "") {
+      res.push("Start time")
+    }
+    if (this.state.endTime === "") {
+      res.push("End time")
+    }
+    if (this.state.title === "") {
+      res.push("Title")
+    }
+    if (this.state.description === "") {
+      res.push("Description")
+    }
+    if (this.state.link === "") {
+      res.push("Link to talk")
+    }
+    if (this.state.topics.length === 0) {
+      res.push("At least 1 topic")
+    }
+    return res;
   }
 
   render() {
@@ -298,6 +307,7 @@ export default class EditTalkModal extends Component<Props, State> {
         onSubmitClick={this.onFinishClicked}
         contentHeight="600px"
         canProceed={this.isComplete()}
+        isMissing={this.isMissing()}
         onCancelClick={this.props.onCanceledCallback}
         onClickOutside={this.props.onCanceledCallback}
         onEsc={this.props.onCanceledCallback}
@@ -360,9 +370,16 @@ export default class EditTalkModal extends Component<Props, State> {
                 />
               </Box>
               <Box width="100%" gap="5px">
-                <Text size="14px" weight="bold" color="black">
-                  Talk card visible by...
-                </Text>
+                <Box direction="row" gap="small">
+                  <Text size="14px" weight="bold" color="black">
+                    Talk card visible by...
+                  </Text>
+                  <StatusInfo size="small" data-tip data-for='talkcardinfo'/>
+                  <ReactTooltip id='talkcardinfo' place="right" effect="solid">
+                    Decide who is able to see the talk information. It will be hidden to everyone else.
+                  </ReactTooltip>
+                </Box>
+
                 <Select
                   dropAlign={{ bottom: "top" }}
                   focusIndicator={false}
@@ -529,9 +546,15 @@ export default class EditTalkModal extends Component<Props, State> {
                     />
                   </Box>
                   <Box width="100%" gap="5px">
-                    <Text size="14px" weight="bold" color="black">
-                      By...
-                    </Text>
+                    <Box direction="row" gap="small">
+                      <Text size="14px" weight="bold" color="black">
+                        By...
+                      </Text>
+                      <StatusInfo size="small" data-tip data-for='linkinfo'/>
+                      <ReactTooltip id='linkinfo' place="right" effect="solid">
+                        Decide who has access to the link. The same people, and only them, will also have access to the recording if there is one.
+                      </ReactTooltip>
+                    </Box>
                     <Select
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
