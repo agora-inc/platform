@@ -82,7 +82,10 @@ def authenticate():
     user = users.authenticate(username, password)
 
     if not user:
+        app.logger.info(f"Unsuccessful login for user {username}")
         return exceptions.Unauthorized("Incorrect username or password")
+
+    app.logger.info(f"Successful login for user {username}")
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")

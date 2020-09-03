@@ -71,6 +71,7 @@ class Database:
 
 
 app = Flask(__name__)
+logging.basicConfig(filename='agora.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 CORS(app)
 
 db = Database()
