@@ -63,7 +63,10 @@ def addUser():
     user = users.addUser(username, password, email)
 
     if not user:
+        app.logger.error(f"Attempted registration of new user with existing username {username}")
         return "username is taken", 400
+
+    app.logger.error(f"Successful registration of new user with username {username} and email {email}")
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
@@ -82,7 +85,7 @@ def authenticate():
     user = users.authenticate(username, password)
 
     if not user:
-        app.logger.info(f"Unsuccessful login for user {username}")
+        app.logger.error(f"Unsuccessful login for user {username} (incorrect username or password)")
         return exceptions.Unauthorized("Incorrect username or password")
 
     app.logger.info(f"Successful login for user {username}")
