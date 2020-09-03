@@ -192,6 +192,9 @@ def createChannel():
     name = params["name"]
     description = params["description"]
     userId = params["userId"]
+
+    app.logger.info(f"New agora '{name}' created by user with id {userId}")
+
     return jsonify(channels.createChannel(name, description, userId))
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
