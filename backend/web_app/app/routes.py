@@ -120,6 +120,8 @@ def generateChangePasswordLink():
     msg.body = f'Link to reset your password: {link}'
     msg.subject = "Reset password"
     mail.send(msg)
+
+    app.logger.info(f"User {username} requested link to change password")
     return "ok"
 
 @app.route('/users/change_password', methods=["POST"])
@@ -128,6 +130,8 @@ def changePassword():
     userId = users.decodeAuthToken(authToken)
     params = request.json
     users.changePassword(userId, params["password"])
+
+    app.logger.info(f"User {username} changed password to {params['password']}")
     return "ok"
 
 @app.route('/users/update_bio', methods=["POST"])
