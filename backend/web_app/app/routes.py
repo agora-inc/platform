@@ -686,6 +686,7 @@ def registerForTalk():
 
     params = request.json
     talks.registerForTalk(params["talkId"], params["userId"])
+    app.logger.info(f"User with id {params['userId']} registered for talk with id {params['talkId']}")
     return jsonify("success")
 
 @app.route('/talks/unregister', methods=["POST", "OPTIONS"])
@@ -698,6 +699,7 @@ def unRegisterForTalk():
 
     params = request.json
     talks.unRegisterForTalk(params["talkId"], params["userId"])
+    app.logger.info(f"User with id {params['userId']} unregistered for talk with id {params['talkId']}")
     return jsonify("success")
 
 @app.route('/talks/registered', methods=["GET"])
@@ -726,6 +728,7 @@ def saveTalk():
 
     params = request.json
     talks.saveTalk(params["talkId"], params["userId"])
+    app.logger.info(f"User with id {params['userId']} saved talk with id {params['talkId']}")
     return jsonify("ok")
 
 @app.route('/talks/unsave', methods=["POST", "OPTIONS"])
@@ -738,6 +741,7 @@ def unsaveTalk():
 
     params = request.json
     talks.unsaveTalk(params["talkId"], params["userId"])
+    app.logger.info(f"User with id {params['userId']} unsaved talk with id {params['talkId']}")
     return jsonify("ok")
 
 @app.route('/talks/issaved', methods=["GET"])
