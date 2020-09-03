@@ -9,6 +9,7 @@ import { Talk, TalkService } from "../Services/TalkService";
 import Identicon from "react-identicons";
 import Loading from "../Components/Core/Loading";
 import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
+import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import VideoCard from "../Components/Streaming/VideoCard";
 import ChannelLiveNowCard from "../Components/Channel/ChannelLiveNowCard";
 import "../Styles/channel-page.css";
@@ -30,6 +31,7 @@ interface State {
   loading: boolean;
   streams: Stream[];
   talks: Talk[];
+  currentTalks: Talk[];
   pastTalks: Talk[];
   totalNumberOfpastTalks: number;
   followerCount: number;
@@ -48,6 +50,7 @@ export default class ChannelPage extends Component<Props, State> {
       loading: true,
       streams: [],
       talks: [],
+      currentTalks: [],
       pastTalks: [],
       totalNumberOfpastTalks: 0,
       followerCount: 0,
@@ -104,7 +107,8 @@ export default class ChannelPage extends Component<Props, State> {
               this.fetchStreams();
               this.fetchPastTalks();
               // this.fetchVideos();
-              this.fetchTalks();
+              this.fetchFutureTalks();
+              this.fetchCurrentTalks();
               this.fetchFollowerCount();
               // this.fetchViewCount();
             }
@@ -121,7 +125,8 @@ export default class ChannelPage extends Component<Props, State> {
                 this.fetchStreams();
                 this.fetchPastTalks();
                 // this.fetchVideos();
-                this.fetchTalks();
+                this.fetchFutureTalks();
+                this.fetchCurrentTalks();
                 this.fetchFollowerCount();
                 // this.fetchViewCount();
                 this.checkIfFollowing();
@@ -151,11 +156,20 @@ export default class ChannelPage extends Component<Props, State> {
     );
   };
 
-  fetchTalks = () => {
+  fetchFutureTalks = () => {
     TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
       (talks: Talk[]) => {
         this.setState({ talks });
+      }
+    );
+  };
+
+  fetchCurrentTalks = () => {
+    TalkService.getCurrentTalksForChannel(
+      this.state.channel!.id,
+      (currentTalks: Talk[]) => {
+        this.setState({ currentTalks });
       }
     );
   };
@@ -373,6 +387,27 @@ export default class ChannelPage extends Component<Props, State> {
                   channelName={this.state.channel!.name} />
                 {this.banner()}
                 {/* <AboutUs text={this.state.channel?.long_description} /> */}
+                {this.state.currentTalks.length > 0 && (
+                  <Box width="100%">
+                    <Text
+                      size="28px"
+                      weight="bold"
+                      color="black"
+                      margin={{ top: "40px", bottom: "24px" }}
+                    >
+                      {`Happening now`}
+                    </Text>
+                    {this.state.currentTalks.map((talk: Talk) => (
+                      <ChannelPageTalkCard 
+                        talk={talk} 
+                        user={this.state.user}
+                        admin={false}
+                        width="31.5%" 
+                        isCurrent={true}
+                      />
+                    ))}
+                  </Box>
+                )}
                 <Text
                   size="28px"
                   weight="bold"

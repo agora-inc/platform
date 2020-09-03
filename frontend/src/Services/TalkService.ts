@@ -46,6 +46,10 @@ const getFutureTalksForChannel = (channelId: number, callback: any) => {
   get(`talks/channel/future?channelId=${channelId}`, callback);
 };
 
+const getCurrentTalksForChannel = (channelId: number, callback: any) => {
+  get(`talks/channel/current?channelId=${channelId}`, callback);
+};
+
 const getPastTalksForChannel = (channelId: number, callback: any) => {
   get(`talks/channel/past?channelId=${channelId}`, callback);
 };
@@ -276,6 +280,7 @@ export const TalkService = {
   getAllCurrentTalks,
   getAllPastTalks,
   getFutureTalksForChannel,
+  getCurrentTalksForChannel,
   getPastTalksForChannel,
   getDraftedTalksForChannel,
   getFutureTalksForTopic,

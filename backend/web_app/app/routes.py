@@ -531,6 +531,11 @@ def getAllFutureTalksForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(talks.getAllFutureTalksForChannel(channelId))
 
+@app.route('/talks/channel/current', methods=["GET"])
+def getAllCurrentTalksForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(talks.getAllCurrentTalksForChannel(channelId))
+
 @app.route('/talks/channel/drafted', methods=["GET"])
 def getAllDraftedTalksForChannel():
     ############################

@@ -112,15 +112,15 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     const now = new Date();
     const deltaSec = Math.floor((end.valueOf() - now.valueOf()) / 1000);
     if (deltaSec < 60) {
-      return `Finishing in ${deltaSec} seconds`;
+      return `Finishing in ${deltaSec}s`;
     }
     if (deltaSec < 3600) {
       let deltaMin = Math.floor(deltaSec / 60);
-      return `Finishing in ${deltaMin} minutes`;
+      return `Finishing in ${deltaMin}m`;
     }
     let deltaHour = Math.floor(deltaSec / 3600);
     let remainderMin = Math.floor((deltaSec % 3600) / 60);
-    return `Finishing in ${deltaHour} hours and ${remainderMin} minutes`;
+    return `Finishing in ${deltaHour}h ${remainderMin}m`;
   };
 
   toggleModal = () => {
