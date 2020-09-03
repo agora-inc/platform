@@ -304,6 +304,9 @@ def avatar():
         fn = f"{channelId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
         channels.addAvatar(channelId)
+
+        app.logger.info(f"Agora with id {request.form['channelId']} updated avatar")
+
         return jsonify({"filename": fn})
 
     if request.method == "GET":
@@ -327,6 +330,9 @@ def cover():
         fn = f"{channelId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/images/covers/{fn}")
         channels.addCover(channelId)
+
+        app.logger.info(f"Agora with id {request.form['channelId']} updated banner")
+
         return jsonify({"filename": fn})
 
     if request.method == "GET":
@@ -340,6 +346,9 @@ def cover():
         print(params)
         channelId = params["channelId"]
         channels.removeCover(channelId)
+
+        app.logger.info(f"Agora with id {params['channelId']} removed banner")
+
         return jsonify("ok")
 
 @app.route('/channels/contacts', methods=["GET", "OPTIONS"])
@@ -618,6 +627,8 @@ def scheduleTalk():
         if topic_key not in params:
             params[topic_key] = "NULL" 
 
+    app.logger.info(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
+
     return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
@@ -629,6 +640,7 @@ def editTalk():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
+    app.logger.info(f"Talk with id {params['talkId']} edited")
     return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
@@ -640,6 +652,7 @@ def deleteTalk():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
+    app.logger.info(f"Talk with id {params['talkId']} deleted")
     return jsonify(talks.deleteTalk(params["id"]))
 
 @app.route('/talks/add-recording', methods=["OPTIONS", "POST"])
