@@ -157,33 +157,39 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   fetchFutureTalks = () => {
-    TalkService.getFutureTalksForChannel(
-      this.state.channel!.id,
-      (talks: Talk[]) => {
-        this.setState({ talks });
-      }
-    );
+    if (this.state.channel) {
+      TalkService.getAvailableFutureTalksForChannel(
+        this.state.channel!.id,
+        this.state.user ? this.state.user.id : null,
+        (talks: Talk[]) => {
+          this.setState({ talks });
+        }
+      );
+    }
   };
 
   fetchCurrentTalks = () => {
-    TalkService.getCurrentTalksForChannel(
-      this.state.channel!.id,
-      (currentTalks: Talk[]) => {
-        this.setState({ currentTalks });
-      }
-    );
+    if (this.state.channel) {
+      TalkService.getAvailableCurrentTalksForChannel(
+        this.state.channel!.id,
+        this.state.user ? this.state.user.id : null,
+        (currentTalks: Talk[]) => {
+          this.setState({ currentTalks });
+        }
+      );
+    }
   };
 
   fetchPastTalks = () => {
-    TalkService.getPastTalksForChannel(
-      this.state.channel!.id,
-      (data: { talks: Talk[]; count: number }) => {
-        this.setState({
-          pastTalks: data.talks,
-          totalNumberOfpastTalks: data.count,
-        });
-      }
-    );
+    if (this.state.channel) {
+      TalkService.getAvailablePastTalksForChannel(
+        this.state.channel!.id,
+        this.state.user ? this.state.user.id : null,
+        (pastTalks: Talk[]) => {
+          this.setState({ pastTalks });
+        }
+      );
+    }
   };
 
   checkIfFollowing = () => {
@@ -220,14 +226,14 @@ export default class ChannelPage extends Component<Props, State> {
 
   getCoverBoxStyle = (): CSSProperties => {
     let current_time = Math.floor(new Date().getTime() / 200000);
-    let background = this.state.channel?.id
+    let background = this.state.channel ?.id
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
       current_time +
       `)`
       // HACK: we add the new time at the end of the URL to avoid caching; 
       // we divide time by value such that all block of requested image have 
       // the same name (important for the name to be the same for the styling).
-      : this.state.channel?.colour;
+      : this.state.channel ?.colour;
 
     let border = "none";
 
@@ -275,12 +281,12 @@ export default class ChannelPage extends Component<Props, State> {
             >
               {(
                 <img
-                src={
-                  ChannelService.getAvatar(this.state.channel!.id) +
-                  `&ts=` +
-                  Math.floor(new Date().getTime() / 200000)
-                }
-                // HACK: we had the ts argument to prevent from caching.
+                  src={
+                    ChannelService.getAvatar(this.state.channel!.id) +
+                    `&ts=` +
+                    Math.floor(new Date().getTime() / 200000)
+                  }
+                  // HACK: we had the ts argument to prevent from caching.
                   height={100}
                   width={100}
                 />
@@ -288,7 +294,7 @@ export default class ChannelPage extends Component<Props, State> {
             </Box>
             <Box>
               <Text size="30px" color="black" weight="bold">
-                {this.state.channel?.name}
+                {this.state.channel ?.name}
               </Text>
               <Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers
@@ -323,13 +329,13 @@ export default class ChannelPage extends Component<Props, State> {
                 style={{ cursor: "pointer" }}
               />
             ) : (
-              <FormDown
-                onClick={this.toggleBanner}
-                size="50px"
-                color="black"
-                style={{ cursor: "pointer" }}
-              />
-            )}
+                <FormDown
+                  onClick={this.toggleBanner}
+                  size="50px"
+                  color="black"
+                  style={{ cursor: "pointer" }}
+                />
+              )}
           </Box>
         </Box>
         {this.state.bannerExtended && (
@@ -340,9 +346,9 @@ export default class ChannelPage extends Component<Props, State> {
           >
             <div
               dangerouslySetInnerHTML={{
-                __html: this.state.channel?.long_description
-                  ? this.state.channel?.long_description
-                  : "",
+                __html: this.state.channel ?.long_description
+                  ? this.state.channel ?.long_description
+                    : "",
               }}
             />
           </Text>
@@ -369,113 +375,113 @@ export default class ChannelPage extends Component<Props, State> {
               }}
             />
           ) : (
-            <Box
-              width="100%"
-              height="100%"
-              align="center"
-              margin={{ top: "100px" }}
-            >
-              {this.state.streams.length !== 0 && (
-                <ChannelLiveNowCard
-                  stream={this.state.streams[0]}
-                  colour={this.state.channel!.colour}
-                />
-              )}
-              <Box width="75%" align="start" gap="20px">
-                <ApplyToTalkForm 
-                  channelId={this.state.channel!.id}
-                  channelName={this.state.channel!.name} />
-                {this.banner()}
-                {/* <AboutUs text={this.state.channel?.long_description} /> */}
-                {this.state.currentTalks.length > 0 && (
-                  <Box width="100%">
-                    <Text
-                      size="28px"
-                      weight="bold"
-                      color="black"
-                      margin={{ top: "40px", bottom: "24px" }}
-                    >
-                      {`Happening now`}
-                    </Text>
-                    {this.state.currentTalks.map((talk: Talk) => (
-                      <ChannelPageTalkCard 
-                        talk={talk} 
-                        user={this.state.user}
-                        admin={false}
-                        width="31.5%" 
-                        isCurrent={true}
-                      />
-                    ))}
-                  </Box>
+              <Box
+                width="100%"
+                height="100%"
+                align="center"
+                margin={{ top: "100px" }}
+              >
+                {this.state.streams.length !== 0 && (
+                  <ChannelLiveNowCard
+                    stream={this.state.streams[0]}
+                    colour={this.state.channel!.colour}
+                  />
                 )}
-                <Text
-                  size="28px"
-                  weight="bold"
-                  color="black"
-                  margin={{ bottom: "10px" }}
-                >
-                  Upcoming talks
-                </Text>
-                {this.state.talks.length === 0 && (
-                  <Box
-                    direction="row"
-                    width="100%"
-                    pad="small"
-                    justify="between"
-                    round="xsmall"
-                    align="center"
-                    alignSelf="center"
-                    background="#F3EACE"
-                    margin={{ bottom: "36px" }}
-                  >
-                    <Text size="18px" weight="bold" color="grey">
-                      There are no upcoming talks in{" "}
-                      {this.state.channel
-                        ? this.state.channel.name
-                        : "this channel"}
-                    </Text>
-                  </Box>
-                )}
-                {this.state.talks.length !== 0 && (
-                  <Box gap="5px" width="100%">
-                    <ChannelPageTalkList
-                      talks={this.state.talks}
-                      channelId={this.state.channel!.id}
-                      user={this.state.user}
-                      admin={false}
-                      showTalkId={this.state.showTalkId}
-                    />
-                  </Box>
-                )}
-                {this.state.pastTalks.length !== 0 && (
+                <Box width="75%" align="start" gap="20px">
+                  <ApplyToTalkForm
+                    channelId={this.state.channel!.id}
+                    channelName={this.state.channel!.name} />
+                  {this.banner()}
+                  {/* <AboutUs text={this.state.channel?.long_description} /> */}
+                  {this.state.currentTalks.length > 0 && (
+                    <Box width="100%">
+                      <Text
+                        size="28px"
+                        weight="bold"
+                        color="black"
+                        margin={{ top: "40px", bottom: "24px" }}
+                      >
+                        {`Happening now`}
+                      </Text>
+                      {this.state.currentTalks.map((talk: Talk) => (
+                        <ChannelPageTalkCard
+                          talk={talk}
+                          user={this.state.user}
+                          admin={false}
+                          width="31.5%"
+                          isCurrent={true}
+                        />
+                      ))}
+                    </Box>
+                  )}
                   <Text
                     size="28px"
                     weight="bold"
                     color="black"
-                    margin={{ top: "40px" }}
-                  >{`Past talks`}</Text>
-                )}
-                <Box
-                  direction="row"
-                  width="100%"
-                  wrap
-                  // justify="between"
-                  gap="1.5%"
-                  margin={{ top: "10px" }}
-                >
-                  {this.state.pastTalks.map((talk: Talk) => (
-                    <PastTalkCard
-                      width="31.5%"
-                      talk={talk}
-                      margin={{ bottom: "medium" }}
-                      user={this.state.user}
-                      show={talk.id === this.state.showTalkId}
-                    />
-                  ))}
+                    margin={{ bottom: "10px" }}
+                  >
+                    Upcoming talks
+                </Text>
+                  {this.state.talks.length === 0 && (
+                    <Box
+                      direction="row"
+                      width="100%"
+                      pad="small"
+                      justify="between"
+                      round="xsmall"
+                      align="center"
+                      alignSelf="center"
+                      background="#F3EACE"
+                      margin={{ bottom: "36px" }}
+                    >
+                      <Text size="18px" weight="bold" color="grey">
+                        There are no upcoming talks in{" "}
+                        {this.state.channel
+                          ? this.state.channel.name
+                          : "this channel"}
+                      </Text>
+                    </Box>
+                  )}
+                  {this.state.talks.length !== 0 && (
+                    <Box gap="5px" width="100%">
+                      <ChannelPageTalkList
+                        talks={this.state.talks}
+                        channelId={this.state.channel!.id}
+                        user={this.state.user}
+                        admin={false}
+                        showTalkId={this.state.showTalkId}
+                      />
+                    </Box>
+                  )}
+                  {this.state.pastTalks.length !== 0 && (
+                    <Text
+                      size="28px"
+                      weight="bold"
+                      color="black"
+                      margin={{ top: "40px" }}
+                    >{`Past talks`}</Text>
+                  )}
+                  <Box
+                    direction="row"
+                    width="100%"
+                    wrap
+                    // justify="between"
+                    gap="1.5%"
+                    margin={{ top: "10px" }}
+                  >
+                    {this.state.pastTalks.map((talk: Talk) => (
+                      <PastTalkCard
+                        width="31.5%"
+                        talk={talk}
+                        margin={{ bottom: "medium" }}
+                        user={this.state.user}
+                        show={talk.id === this.state.showTalkId}
+                      />
+                    ))}
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-          )}
+            )}
         </Box>
       );
     }
