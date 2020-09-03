@@ -205,6 +205,8 @@ def addUserToChannel():
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
+    app.logger.info(f"User with id {params['userId']} added to agora with id {params['channelId']} in role {params['role']}")
+
     params = request.json
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
     return jsonify("Success")
