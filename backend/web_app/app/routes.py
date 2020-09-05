@@ -30,7 +30,11 @@ def checkAuth(authHeader):
     result = users.decodeAuthToken(authToken)
     return not isinstance(result, str)
 
-
+def logRequest(request):
+    if request.method == "GET":
+        app.logger.info(f"request made to {request.path} with args {request.args}")
+    elif request.method == "POST":
+        app.logger.info(f"request made to {request.path} with body {request.data}")
 
 # --------------------------------------------
 # USER ROUTES
@@ -56,6 +60,8 @@ def getUser():
 
 @app.route('/users/add', methods=["POST"])
 def addUser():
+    logRequest(request)
+
     params = request.json
     username = params['username']
     password = params['password']
@@ -77,9 +83,8 @@ def addUser():
 def authenticate():
     if request.method == "OPTIONS":
         return jsonify("ok")
-
+    logRequest(request)
     params = request.json
-
     username = params['username']
     password = params['password']
     user = users.authenticate(username, password)
@@ -109,6 +114,7 @@ def refreshAccessToken():
 
 @app.route('/users/email_change_password_link', methods=["POST"])
 def generateChangePasswordLink():
+    logRequest(request)
     # generate link
     params = request.json
     user = users.getUser(params["username"])
@@ -126,6 +132,8 @@ def generateChangePasswordLink():
 
 @app.route('/users/change_password', methods=["POST"])
 def changePassword():
+    logRequest(request)
+
     authToken = request.headers.get('Authorization').split(" ")[1]
     userId = users.decodeAuthToken(authToken)
     params = request.json
@@ -182,6 +190,7 @@ def getChannelsForUser():
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
 def createChannel():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -199,6 +208,7 @@ def createChannel():
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -295,6 +305,7 @@ def avatar():
         return jsonify("ok")
 
     if request.method == "POST":
+        logRequest(request)
         if not checkAuth(request.headers.get('Authorization')):
             return exceptions.Unauthorized("Authorization header invalid or not present")
 
@@ -321,6 +332,7 @@ def cover():
         return jsonify("ok")
 
     if request.method == "POST":
+        logRequest(request)
         if not checkAuth(request.headers.get('Authorization')):
             return exceptions.Unauthorized("Authorization header invalid or not present")
 
@@ -615,6 +627,7 @@ def getAllPastTalksForTopic():
 
 @app.route('/talks/create', methods=["POST", "OPTIONS"])
 def scheduleTalk():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -633,6 +646,7 @@ def scheduleTalk():
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 def editTalk():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -645,6 +659,7 @@ def editTalk():
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -678,6 +693,7 @@ def isRegisteredForTalk():
 
 @app.route('/talks/register', methods=["POST", "OPTIONS"])
 def registerForTalk():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -691,6 +707,7 @@ def registerForTalk():
 
 @app.route('/talks/unregister', methods=["POST", "OPTIONS"])
 def unRegisterForTalk():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -720,6 +737,7 @@ def getSavedTalks():
 
 @app.route('/talks/save', methods=["POST", "OPTIONS"])
 def saveTalk():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -733,6 +751,7 @@ def saveTalk():
 
 @app.route('/talks/unsave', methods=["POST", "OPTIONS"])
 def unsaveTalk():
+    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
