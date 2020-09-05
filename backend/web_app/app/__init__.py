@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask
 from flask_mail import Mail
 import pymysql
@@ -71,7 +72,7 @@ class Database:
 
 
 app = Flask(__name__)
-logging.basicConfig(filename='agora.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.basicConfig(filename=f"/home/cloud-user/logs/{datetime.datetime.utcnow().isoformat()[:10]}", level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 CORS(app)
 
 db = Database()
