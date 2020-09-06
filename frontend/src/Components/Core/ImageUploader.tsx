@@ -10,11 +10,7 @@ interface Props {
 export default class ImageUploader extends Component<Props> {
   render() {
     return (
-      <Box
-        style={{ position: "relative" }}
-        margin={{ top: "xsmall" }}
-        width={this.props.width}
-      >
+      <Box style={{ position: "relative" }} width={this.props.width}>
         <input
           type="file"
           className="input-hidden"
