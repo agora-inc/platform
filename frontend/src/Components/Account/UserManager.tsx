@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Button, Text } from "grommet";
+import { Box, Button, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
@@ -11,8 +11,12 @@ import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../../Styles/header.css";
 import "../../Styles/antd.css";
+import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
+
+const makeProfilePublicInfo =
+  "Making your profile public means that it will be shown in the 'speaker marketplace' feature of the platform, and administrators of relevant agoras may reach out to you about speaking opportunities if you have contact details in your bio. This action can be undone at any time.";
 
 interface Props {
   showLogin: boolean;
@@ -20,10 +24,11 @@ interface Props {
 
 interface State {
   isLoggedIn: boolean;
-  user: { id: number; username: string } | null;
+  user: { id: number; username: string; bio: string; public: boolean } | null;
   channels: Channel[];
   showCreateChannelCard: boolean;
   showDropdown: boolean;
+  editingBio: boolean;
 }
 
 export default class UserManager extends Component<Props, State> {
@@ -35,6 +40,7 @@ export default class UserManager extends Component<Props, State> {
       channels: [],
       showCreateChannelCard: false,
       showDropdown: false,
+      editingBio: false,
     };
   }
 
@@ -61,6 +67,48 @@ export default class UserManager extends Component<Props, State> {
     this.setState({
       showCreateChannelCard: !this.state.showCreateChannelCard,
     });
+  };
+
+  onBioChange = (bio: string) => {
+    if (this.state.user) {
+      this.setState({ ...this.state, user: { ...this.state.user, bio } });
+    }
+  };
+
+  onBioSave = () => {
+    if (this.state.user) {
+      UserService.updateBio(
+        this.state.user.id,
+        this.state.user.bio,
+        (updatedUser: any) => {
+          if (this.state.user) {
+            let user = { ...this.state.user, bio: updatedUser.bio };
+            localStorage.setItem("user", JSON.stringify(user));
+            this.setState({
+              user,
+            });
+          }
+        }
+      );
+    }
+  };
+
+  onMakePublicClicked = () => {
+    if (this.state.user) {
+      UserService.updatePublic(
+        this.state.user.id,
+        !this.state.user.public,
+        (updatedUser: any) => {
+          if (this.state.user) {
+            let user = { ...this.state.user, public: updatedUser.public === 1 };
+            localStorage.setItem("user", JSON.stringify(user));
+            this.setState({ user }, () => {
+              console.log(this.state.user);
+            });
+          }
+        }
+      );
+    }
   };
 
   menu = () => {
@@ -91,14 +139,13 @@ export default class UserManager extends Component<Props, State> {
         style={{
           borderRadius: 10,
           marginTop: 5,
-          overflow: "hidden",
           paddingBottom: 0,
           minHeight: 326,
           width: 350,
         }}
       >
         <Box
-          margin="small"
+          margin={{ horizontal: "small" }}
           gap="xsmall"
           focusIndicator={false}
           style={{ pointerEvents: "none" }}
@@ -119,6 +166,39 @@ export default class UserManager extends Component<Props, State> {
             {this.state.user?.username}
           </Text>
         </Box>
+
+
+        {/* TODO: INTEGRATE THIS 'add bio' functionality with profile homepage + 'speakers' page
+        <Box margin={{ horizontal: "small" }} focusIndicator={false}>
+          <Text
+            size="12px"
+            color="blue"
+            style={{
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              this.state.editingBio && this.onBioSave();
+              this.setState({ editingBio: !this.state.editingBio });
+            }}
+          >
+            {this.state.editingBio
+              ? "save"
+              : this.state.user?.bio
+              ? "edit bio"
+              : "add bio"}
+          </Text>
+          {this.state.editingBio && (
+            <TextArea
+              focusIndicator={false}
+              value={this.state.user?.bio}
+              onChange={(event) => this.onBioChange(event.target.value)}
+              style={{ padding: 3 }}
+            />
+          )}
+        </Box> */}
+
+
         <Menu.Divider />
         <Box gap="xsmall" pad={{ vertical: "medium" }} focusIndicator={false}>
           <Link
@@ -184,6 +264,34 @@ export default class UserManager extends Component<Props, State> {
         >
           <PreferenceButton />
         </Menu.Item> */}
+
+        {/* TODO: REINTEGRATE THIS 'PUBLIC' OR 'PRIVATE' PUBLIC SECTION WHEN 'speakers' page is done
+        <Box
+          margin={{ horizontal: "small", vertical: "xsmall" }}
+          focusIndicator={false}
+        >
+          <Text size="12px" className="tooltip" style={{ width: "80px" }}>
+            What's this?
+            <span className="tooltiptext">{makeProfilePublicInfo}</span>
+          </Text>
+          <Box
+            background="#E3E1E1"
+            round="xsmall"
+            pad="xsmall"
+            height="40px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            onClick={this.onMakePublicClicked}
+          >
+            <Text size="18px">
+              {this.state.user?.public
+                ? "Make profile private"
+                : "Make profile public"}
+            </Text>
+          </Box>
+        </Box> */}
+
         <Menu.Item>
           <Link
             to={{ pathname: "/saved", state: { user: this.state.user } }}

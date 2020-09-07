@@ -21,6 +21,8 @@ import GettingStartedPage from "./Views/GettingStartedPage";
 import TermsOfServicePage from "./Views/TermsOfServicePage";
 import PrivacyPage from "./Views/PrivacyPage";
 import ChangePasswordPage from "./Views/ChangePasswordPage";
+import AllAgorasPage from "./Views/AllAgorasPage";
+import AllSpeakersPage from "./Views/AllSpeakersPage";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/videos" component={AllVideosPage} />
+          <Route exact path="/agoras" component={AllAgorasPage} />
+          {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
           <Route path="/video" component={VideoPage} />
           <Route path="/stream" component={StreamPage} />
           <Route path={`/:name/manage`} component={ManageChannelPage} />

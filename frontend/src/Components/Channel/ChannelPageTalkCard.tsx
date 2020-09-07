@@ -50,7 +50,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
   checkIfRegistered = () => {
     this.props.user &&
-      !this.props.admin &&
       TalkService.isRegisteredForTalk(
         this.props.talk.id,
         this.props.user.id,

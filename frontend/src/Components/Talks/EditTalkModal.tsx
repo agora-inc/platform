@@ -156,6 +156,14 @@ export default class EditTalkModal extends Component<Props, State> {
     return offsets.map(this.makeLinkDateOption);
   };
 
+  validLink = (link: string) => {
+    if (link.startsWith('https://') || link.startsWith('http://')) {
+      return link
+    } else {
+      return 'https://'.concat(link)
+    }
+  }
+
   onFinish = () => {
     const dateTimeStrs = this.combineDateAndTimeStrings();
     if (this.props.talk) {
@@ -165,7 +173,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.description,
         dateTimeStrs[0],
         dateTimeStrs[1],
-        this.state.link,
+        this.validLink(this.state.link),
         this.state.tags,
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
@@ -193,7 +201,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.description,
         dateTimeStrs[0],
         dateTimeStrs[1],
-        this.state.link,
+        this.validLink(this.state.link),
         this.state.tags,
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
