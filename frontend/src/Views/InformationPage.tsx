@@ -47,10 +47,25 @@ export default class InformationPage extends Component<Props, State> {
           <Text color="black" size="18px">
             <h1> <b>Welcome to agora.stream!</b> </h1> 
               <h2><strong>1) What do we believe in?</strong></h2>
-                <p>In 1989, the Word Wide Web was created by scientists with the goal to faciliate international scientific research communications. While we deeply believe in the values carried by this revolution, we also believe in the huge non-exploited potential of modern technologies in making the shining of research communities a lot more effective.</p>
+                <p> In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
+                  While we deeply believe in the values carried out by this revolution, we also see the huge unexploited potential of 
+                  modern technologies at the service of researchers to broadly promote their research and reach out to the relevant audience. </p>
+                <p> The COVID-19 crisis created an outburst of ad hoc solutions 
+                  (e.g. websites hosting excel sheets of talks or nested mailing lists) to advertise the newly online seminars. 
+                  While the majority of online talks are meant to disappear as soon as travel restrictions are lifted, 
+                  we strongly believe that a technological paradigm shift should remain even after the pandemic. 
+                  Indeed, online streaming technologies offer the tools to broadcast seminars in every place of the world, 
+                  democratizing access to world-class research and reducing the carbon footprint 
+                  associated with scholars' countless travels.  </p>
+                <p>
+                  We are working on executing this vision by building a scalable, mature and long-term solution.
+                </p>
                 {/* <p>Founded in 2020 by a team of researchers at Imperial College London and the University of Oxford, Agora believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.</p> */}
-          
-              <h2><strong>2) How to use agora.stream?</strong></h2>
+              <h2><strong> 2) What is agora.stream? </strong></h2>
+                <p> Built for researchers and by researchers, agora.stream is a centralised research platform to share talks, 
+                  broadly advertise academic research and connect research communities to potential speakers. 
+                  It promotes cross-curricular collaboration through recommendation of talks related to the researcher's field of expertise. </p>
+              <h2><strong> 3) How to use agora.stream?</strong></h2>
                 <p>We made the use of this plateform very intuitive.</p>
                 <h3>a) Are you a researcher?&nbsp;</h3>
                   <ul>
@@ -87,10 +102,10 @@ export default class InformationPage extends Component<Props, State> {
                     <li>(Optional) If you decide to record your talks and upload them on Youtube, we offer the possibility for you to link your recording to your event: hence, people will be able to watch/re-watch the talk at any time!</li>
                   </ul>
 
-                <h2><strong>3) Who are we?</strong></h2>
+                <h2><strong>4) Who are we?</strong></h2>
                   <p>Founded in 2020 by a team of three researchers at Imperial College London and the University of Oxford, Agora believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.</p>
 
-                <h2><strong>4) Any questions? Reach out!</strong></h2>
+                <h2><strong>5) Any questions? Reach out!</strong></h2>
                   <p>Do you have any questions, inqueries, or suggestions? If yes, please reach out to us using the top right-hand side button, or drop us a message at <em>agora.stream.inquiries(.at.)gmail.com</em>. For more information, check our{" "}
                     <Link to={"/info/tos"} color="brand">
                       <Text color="brand" weight="bold">
