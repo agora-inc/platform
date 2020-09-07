@@ -19,10 +19,11 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin} from "grommet-icons";
+import { FormDown, FormUp, UserAdmin } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import { StatusInfo } from "grommet-icons";
+import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 
 interface Props {
   location: any;
@@ -217,6 +218,10 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
+  fetchTalksDrafts = () => {
+    this.fetchDrafts();
+    this.fetchTalks();
+  };
   fetchAllTalks = () => {
     this.fetchDrafts()
     this.fetchTalks()
@@ -252,7 +257,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.updateChannelColour(
       this.state.channel!.id,
       colour,
-      () => { }
+      () => {}
     );
   };
 
@@ -261,7 +266,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       ChannelService.updateChannelDescription(
         this.state.channel!.id,
         document.getElementById("description")!.textContent as string,
-        () => { }
+        () => {}
       );
     }
     this.setState({ editingDescription: !this.state.editingDescription });
@@ -271,7 +276,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.updateLongChannelDescription(
       this.state.channel!.id,
       newDescription,
-      () => { }
+      () => {}
     );
     this.setState({
       editingLongDescription: !this.state.editingLongDescription,
@@ -317,12 +322,12 @@ export default class ManageChannelPage extends Component<Props, State> {
     let current_time = Math.floor(new Date().getTime() / 200000);
     let background = this.state.channel?.id
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
-      current_time +
-      `)`
-      // HACK: we add the new time at the end of the URL to avoid caching; 
-      // we divide time by value such that all block of requested image have 
-      // the same name (important for the name to be the same for the styling).
-      : this.state.channel?.colour;
+        current_time +
+        `)`
+      : // HACK: we add the new time at the end of the URL to avoid caching;
+        // we divide time by value such that all block of requested image have
+        // the same name (important for the name to be the same for the styling).
+        this.state.channel?.colour;
 
     let border = "none";
 
@@ -359,7 +364,7 @@ export default class ManageChannelPage extends Component<Props, State> {
             <ColorPicker
               selected={this.state.colour}
               callback={this.updateColour}
-              channelId={this.state.channel ?.id}
+              channelId={this.state.channel?.id}
               hasCover={
                 this.state.channel ? this.state.channel.has_cover : false
               }
@@ -385,31 +390,37 @@ export default class ManageChannelPage extends Component<Props, State> {
                 style={{ minWidth: 100, minHeight: 100 }}
                 overflow="hidden"
               >
-              {(
-                <img
-                src={
-                  ChannelService.getAvatar(this.state.channel!.id) +
-                  `&ts=` +
-                  Math.floor(new Date().getTime() / 200000)
+                {
+                  <img
+                    src={
+                      ChannelService.getAvatar(this.state.channel!.id) +
+                      `&ts=` +
+                      Math.floor(new Date().getTime() / 200000)
+                    }
+                    // HACK: we had the ts argument to prevent from caching.
+                    height={100}
+                    width={100}
+                  />
                 }
-                // HACK: we had the ts argument to prevent from caching.
-                  height={100}
-                  width={100}
-                />
-              )}
               </Box>
             </Box>
             <Box>
               <Text size="30px" color="black" weight="bold">
-                {this.state.channel ?.name}
+                {this.state.channel?.name}
               </Text>
               <Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers
               </Text>
-              <ImageUploader
-                text="Upload avatar"
-                onUpload={this.onFileChosen}
-              />
+              <Box direction="row" align="center">
+                <ImageUploader
+                  text="Upload avatar"
+                  onUpload={this.onFileChosen}
+                />
+                <DeleteAgoraButton
+                  name={this.state.channel!.name}
+                  id={this.state.channel!.id}
+                />
+              </Box>
             </Box>
           </Box>
           {this.state.bannerExtended ? (
@@ -420,21 +431,21 @@ export default class ManageChannelPage extends Component<Props, State> {
               style={{ cursor: "pointer" }}
             />
           ) : (
-              <FormDown
-                onClick={this.toggleBanner}
-                size="50px"
-                color="black"
-                style={{ cursor: "pointer" }}
-              />
-            )}
+            <FormDown
+              onClick={this.toggleBanner}
+              size="50px"
+              color="black"
+              style={{ cursor: "pointer" }}
+            />
+          )}
         </Box>
         {this.state.bannerExtended && (
           <>
             <EnrichedTextEditor
               text={
-                this.state.channel ?.long_description
-                  ? this.state.channel ?.long_description
-                    : ""
+                this.state.channel?.long_description
+                  ? this.state.channel?.long_description
+                  : ""
               }
               onModify={this.onModifyLongDescription}
               onSave={this.onSaveLongDescriptionClicked}
@@ -446,7 +457,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
-    console.log(UserService.getCurrentUser())
+    console.log(UserService.getCurrentUser());
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -483,37 +494,62 @@ export default class ManageChannelPage extends Component<Props, State> {
                 }}
               >
                 <Text color="#5A5A5A">
-                  <p>{<UserAdmin/>}<big><b> Agora administrator page </b></big></p>
+                  <p>
+                    {<UserAdmin />}
+                    <big>
+                      <b> Agora administrator page </b>
+                    </big>
+                  </p>
                   <p>As an administrator, you can:</p>
                   <ul>
-                    <li><b>Create and edit events</b></li>
-                    <li><b>Customize header</b> <i>(recommended dim: 1500x500px)</i></li>
-                    <li><b>Customize avatar </b><i>(recommended dim: 400x400px)</i></li>
-                    <li><b>Edit Agora description</b> </li>
-                    <li><b>Promote users</b> to administrator/member.</li>
-                    <li><b>Link recordings</b> to your previous Agora events.</li>
-
+                    <li>
+                      <b>Create and edit events</b>
+                    </li>
+                    <li>
+                      <b>Customize header</b>{" "}
+                      <i>(recommended dim: 1500x500px)</i>
+                    </li>
+                    <li>
+                      <b>Customize avatar </b>
+                      <i>(recommended dim: 400x400px)</i>
+                    </li>
+                    <li>
+                      <b>Edit Agora description</b>{" "}
+                    </li>
+                    <li>
+                      <b>Promote users</b> to administrator/member.
+                    </li>
+                    <li>
+                      <b>Link recordings</b> to your previous Agora events.
+                    </li>
                   </ul>
-                  <p>For more general information, visit our
+                  <p>
+                    For more general information, visit our
                     <Link to={"/info/getting-started"}>
                       <Text weight="bold" color="brand">
-                        {" "}getting-started{" "}
+                        {" "}
+                        getting-started{" "}
                       </Text>
                     </Link>
                     page.
                   </p>
-                  <i><b>NB:</b> This help box and customisation options are only visible to admins.</i>
+                  <i>
+                    <b>NB:</b> This help box and customisation options are only
+                    visible to admins.
+                  </i>
                 </Text>
               </Box>
 
               {this.banner()}
 
               <Text
-                  size="28px"
-                  weight="bold"
-                  color="black"
-                  margin={{ top: "10px" }}
-                >{<UserAdmin/>} {`Administrator panel`} </Text>
+                size="28px"
+                weight="bold"
+                color="black"
+                margin={{ top: "10px" }}
+              >
+                {<UserAdmin />} {`Administrator panel`}{" "}
+              </Text>
 
               <Box
                 direction="row"
@@ -523,14 +559,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                 gap="20px"
                 margin={{ top: "10px", bottom: "15px" }}
               >
-                <EmailContactManagement 
-                    channelId={this.state.channel!.id}
-                    currentAddress={this.state.contactAddresses}
-                    onAddAddress={this.onAddContactAddress}
-                    onDeleteAddress={this.onDeleteContactAddress}
+                <EmailContactManagement
+                  channelId={this.state.channel!.id}
+                  currentAddress={this.state.contactAddresses}
+                  onAddAddress={this.onAddContactAddress}
+                  onDeleteAddress={this.onDeleteContactAddress}
                 />
               </Box>
-                  
+
               <Box direction="row" width="100%" justify="between">
                 <Box
                   width="31.5%"
@@ -565,14 +601,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                     {this.state.channelOwners.map((owner: User) => (
                       <ChannelPageUserCircle
                         user={owner}
-                        channelId={this.state.channel ?.id}
+                        channelId={this.state.channel?.id}
                         onRemovedCallback={this.fetchOwners}
                         showRemoveButton={this.state.role === "owner"}
                       />
                     ))}
                   </Box>
                 </Box>
-                
+
                 <Box
                   width="31.5%"
                   height="250px"
@@ -606,7 +642,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     {this.state.channelMembers.map((member: User) => (
                       <ChannelPageUserCircle
                         user={member}
-                        channelId={this.state.channel ?.id}
+                        channelId={this.state.channel?.id}
                         onRemovedCallback={this.fetchMembers}
                         showRemoveButton={this.state.role === "owner"}
                       />
@@ -643,17 +679,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                 gap="small"
                 margin={{ top: "40px", bottom: "24px" }}
               >
-                <Text
-                  size="28px"
-                  weight="bold"
-                  color="black"
-
-                >
+                <Text size="28px" weight="bold" color="black">
                   {`Drafts`}
                 </Text>
                 <StatusInfo
-                  onMouseEnter={() => { this.setState({ showDraftInfo: true }) }}
-                  onMouseLeave={() => { this.setState({ showDraftInfo: false }) }}
+                  onMouseEnter={() => {
+                    this.setState({ showDraftInfo: true });
+                  }}
+                  onMouseLeave={() => {
+                    this.setState({ showDraftInfo: false });
+                  }}
                 />
                 {this.state.showDraftInfo && (
                   <Box
@@ -787,12 +822,12 @@ export default class ManageChannelPage extends Component<Props, State> {
           <ReactTooltip />
         </Box>
       ) : (
-          <Redirect
-            to={{
-              pathname: `/${this.state.channel!.name}`,
-            }}
-          />
-        );
+        <Redirect
+          to={{
+            pathname: `/${this.state.channel!.name}`,
+          }}
+        />
+      );
     }
   }
 }

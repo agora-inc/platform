@@ -31,10 +31,15 @@ def checkAuth(authHeader):
     return not isinstance(result, str)
 
 def logRequest(request):
+    try:
+        authToken = request.headers.get('Authorization').split(" ")[1]
+        userId = users.decodeAuthToken(authToken)
+    except:
+        userId = None
     if request.method == "GET":
-        app.logger.info(f"request made to {request.path} with args {request.args}")
+        app.logger.info(f"request made to {request.path} with args {request.args} {f'by user with id {userId}' if userId else ''}")
     elif request.method == "POST":
-        app.logger.info(f"request made to {request.path} with body {request.data}")
+        app.logger.info(f"request made to {request.path} with body {request.data} {f'by user with id {userId}' if userId else ''}")
 
 # --------------------------------------------
 # USER ROUTES
@@ -501,6 +506,12 @@ def sendTalkApplicationEmail():
     msg.subject = email_subject
     mail.send(msg)
     return "ok"
+
+@app.route('/channels/delete', methods=["POST"])
+def deleteChannel():
+    params = request.json
+    channels.deleteChannel(params["id"])
+    return jsonify("ok")
 
 # --------------------------------------------
 # STREAM ROUTES
