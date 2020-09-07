@@ -387,10 +387,28 @@ export default class ChannelPage extends Component<Props, State> {
                     colour={this.state.channel!.colour}
                   />
                 )}
-                <Box width="75%" align="start" gap="20px">
-                  <ApplyToTalkForm
-                    channelId={this.state.channel!.id}
-                    channelName={this.state.channel!.name} />
+                <Box width="75%" align="start" gap="20px" direction="column">
+                  <Box direction="row" gap="small" width="100%">
+                    <Box>
+                      <ApplyToTalkForm
+                        channelId={this.state.channel!.id}
+                        channelName={this.state.channel!.name} 
+                      />
+                    </Box>
+                    <Box
+                      round="xsmall"
+                      background="#C2C2C2"
+                      pad="xsmall"
+                      justify="center"
+                      align="center"
+                      width="160px"                
+                    >
+                      <Text size="14px">
+                        {this.state.role}
+                      </Text>
+                    </Box>
+                  </Box>
+                    
                   {this.banner()}
                   {/* <AboutUs text={this.state.channel?.long_description} /> */}
                   {this.state.currentTalks.length > 0 && (
