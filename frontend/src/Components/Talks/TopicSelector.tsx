@@ -10,11 +10,13 @@ interface State {
   all: Topic[],
   topics: Topic[][];
   topicsShown: number[];
+  // I don't understand why I need this argument, but it doesn't work without (Alain, Sep 2020)
   isFilledTopics: boolean[];
 }
 
 interface Props {
   onSelectedCallback: any;
+  onCanceledCallback: any;
   prevTopics: Topic[];
   isPrevTopics: boolean[];
   size?: string;
@@ -66,8 +68,8 @@ export default class TopicSelector extends Component<Props, State> {
         this.setState({
           isFilledTopics: tempIsFilled
         })
-
       }
+      this.props.onCanceledCallback(choice);
     })
   };
 

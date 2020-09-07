@@ -265,6 +265,21 @@ export default class EditTalkModal extends Component<Props, State> {
     });
   }
 
+  cancelTopic = (num: number) => {
+    let tempTopics = this.state.topics;
+    tempTopics[num] = {
+      field: "",
+      id: 0,
+      is_primitive_node: false,
+      parent_1_id: -1,
+      parent_2_id: -1, 
+      parent_3_id: -1,
+    }
+    this.setState({
+      topics: tempTopics
+    });
+  }
+
   getDateBounds = () => {
     const today = new Date();
     const todayStr = today.toISOString().slice(0, 10);
@@ -590,6 +605,7 @@ export default class EditTalkModal extends Component<Props, State> {
               <OverlaySection heading="Related topics">
                 <TopicSelector 
                   onSelectedCallback={this.selectTopic}
+                  onCanceledCallback={this.cancelTopic}
                   isPrevTopics={this.state.isPrevTopics}
                   prevTopics={this.props.talk ? this.props.talk.topics : []} 
                   size="small" 
