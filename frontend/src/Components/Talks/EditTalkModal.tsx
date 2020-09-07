@@ -50,6 +50,7 @@ interface State {
   latex: boolean;
   published: number,
   showCardVisibilityInfo: boolean,
+  isPrevTopics: boolean[];
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -77,13 +78,26 @@ export default class EditTalkModal extends Component<Props, State> {
       cardVisibility: this.props.talk
         ? this.props.talk.card_visibility
         : "Everybody",
-      topics: [],
+      topics: this.props.talk ? this.props.talk.topics : [],
       talkSpeaker: this.props.talk ? this.props.talk.talk_speaker : "",
       talkSpeakerURL: this.props.talk ? this.props.talk.talk_speaker_url : "",
       latex: false,
       published: this.props.talk ? this.props.talk.published : 0,
       showCardVisibilityInfo: false,
+      isPrevTopics: this.props.talk ? this.topicExists(this.props.talk.topics) : [false, false, false]
     };
+  }
+
+  topicExists = (topics: Topic[]) => {
+    let res = [];
+    for (let topic in topics) {
+      if (topic) {
+        res.push(true)
+      } else {
+        res.push(false)
+      }
+    }
+    return res;
   }
 
   onFinishClicked = () => {
@@ -244,7 +258,6 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   selectTopic = (topic: Topic, num: number) => {
-    console.log(num, topic)
     let tempTopics = this.state.topics;
     tempTopics[num] = topic;
     this.setState({
@@ -575,7 +588,12 @@ export default class EditTalkModal extends Component<Props, State> {
               margin={{top: "20px", left: "47px"}}
             >
               <OverlaySection heading="Related topics">
-                <TopicSelector onSelectedCallback={this.selectTopic} size="small" />
+                <TopicSelector 
+                  onSelectedCallback={this.selectTopic}
+                  isPrevTopics={this.state.isPrevTopics}
+                  prevTopics={this.props.talk ? this.props.talk.topics : []} 
+                  size="small" 
+                />
               </OverlaySection>  
             </Box>
           </Box>

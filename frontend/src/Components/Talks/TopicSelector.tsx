@@ -10,10 +10,13 @@ interface State {
   all: Topic[],
   topics: Topic[][];
   topicsShown: number[];
+  isFilledTopics: boolean[];
 }
 
 interface Props {
   onSelectedCallback: any;
+  prevTopics: Topic[];
+  isPrevTopics: boolean[];
   size?: string;
 }
 
@@ -24,6 +27,7 @@ export default class TopicSelector extends Component<Props, State> {
       all: [],
       topics: [[], [], []],
       topicsShown: [0, 0, 0],
+      isFilledTopics: this.props.isPrevTopics,
     };
   }
 
@@ -56,6 +60,14 @@ export default class TopicSelector extends Component<Props, State> {
         topicsShown: tempShown,
         topics: tempTopics 
       });
+      if (this.state.isFilledTopics[choice]) {
+        let tempIsFilled = this.state.isFilledTopics;
+        tempIsFilled[choice] = false
+        this.setState({
+          isFilledTopics: tempIsFilled
+        })
+
+      }
     })
   };
 
@@ -130,7 +142,24 @@ export default class TopicSelector extends Component<Props, State> {
 
 
   renderTopicChoice = (choice: number) => {
-    if (this.state.topicsShown[choice] > 0) {
+    if (this.state.isFilledTopics[choice]) {
+      return (
+        <Box
+          width="100%"
+          direction="row"
+          gap="xsmall"
+          align="center"
+          margin={{ bottom: "15px" }}
+        >
+          <Text size={this.props.size} weight="bold">
+            {this.props.prevTopics[choice].field}
+          </Text>
+          <Box margin={{left: "10px"}}>
+            <Close onClick={this.onCancelTopicShown(choice)} />
+          </Box>
+        </Box>
+      );
+    } else if (this.state.topicsShown[choice] > 0) {
       return (
         <Box
           width="100%"
@@ -178,7 +207,7 @@ export default class TopicSelector extends Component<Props, State> {
           )}
         </Box>
       );
-    } else  {
+    } else {
       return (
         <Box
           focusIndicator={false}

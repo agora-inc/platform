@@ -308,7 +308,11 @@ export default class ApplyToTalkForm extends Component<Props, State> {
               </Text>
             </Box>
           
-          <TopicSelector onSelectedCallback={this.selectTopic} />
+          <TopicSelector 
+            onSelectedCallback={this.selectTopic} 
+            isPrevTopics={[false, false, false]} 
+            prevTopics={[]} 
+          />
         </Box>
 
         <OverlaySection heading="3. Personal message to us!">
