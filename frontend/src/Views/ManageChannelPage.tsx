@@ -395,7 +395,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                   text="Upload avatar"
                   onUpload={this.onFileChosen}
                 />
-                <DeleteAgoraButton />
+                <DeleteAgoraButton
+                  name={this.state.channel!.name}
+                  id={this.state.channel!.id}
+                />
               </Box>
             </Box>
           </Box>

@@ -82,7 +82,9 @@ const removeContactAddress = (
   userId: number,
   callback: any
 ) => {
-  const url = baseApiUrl + `/channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
+  const url =
+    baseApiUrl +
+    `/channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
   get(url, callback);
 };
 
@@ -90,20 +92,23 @@ const sendTalkApplicationEmail = (
   // note: administrator email addresses are queried in the backend.
   channel_id: number,
   agora_name: string,
-  speaker_name: string, 
-  speaker_title: string, 
-  speaker_affiliation: string, 
-  speaker_personal_website: string, 
-  speaker_email: string, 
-  talk_title: string, 
-  talk_abstract: string, 
-  talk_topics: string, 
+  speaker_name: string,
+  speaker_title: string,
+  speaker_affiliation: string,
+  speaker_personal_website: string,
+  speaker_email: string,
+  talk_title: string,
+  talk_abstract: string,
+  talk_topics: string,
   personal_message: string,
-  callback: any) => {
+  callback: any
+) => {
   const url = baseApiUrl + "/channel/apply/talk";
   axios
-    .post(url,
-      { channel_id,
+    .post(
+      url,
+      {
+        channel_id,
         agora_name,
         speaker_name,
         speaker_title,
@@ -113,7 +118,7 @@ const sendTalkApplicationEmail = (
         talk_title,
         talk_abstract,
         talk_topics,
-        personal_message
+        personal_message,
       },
       {
         headers: {
@@ -244,13 +249,17 @@ const getDefaultCover = () => {
 
 const removeCover = (channelId: number, callback: any) => {
   axios
-    .delete(baseApiUrl + "/channgetContactAddressesels/cover", {
+    .delete(baseApiUrl + "/channels/cover", {
       headers: { "Access-Control-Allow-Origin": "*" },
       data: {
         channelId: channelId,
       },
     })
     .then(() => callback());
+};
+
+const deleteAgora = (id: number, callback: any) => {
+  post("channels/delete", { id }, callback);
 };
 
 export type Channel = {
@@ -285,5 +294,6 @@ export const ChannelService = {
   removeCover,
   addContactAddress,
   removeContactAddress,
-  sendTalkApplicationEmail
+  sendTalkApplicationEmail,
+  deleteAgora,
 };
