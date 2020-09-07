@@ -55,7 +55,16 @@ export default class TopicTalkList extends Component<Props, State> {
     }
 
     // Limit to 1000 talks
+    /*
     TalkService.getAllFutureTalks(1000, 0, (allTalks: Talk[]) => {
+      this.setState({
+        allTalks: allTalks,
+        chosenTalks: allTalks,
+      });
+    });
+    */
+    
+    TalkService.getAvailableFutureTalks(1000, 0, this.props.user ? this.props.user.id : null, (allTalks: Talk[]) => {
       this.setState({
         allTalks: allTalks,
         chosenTalks: allTalks,

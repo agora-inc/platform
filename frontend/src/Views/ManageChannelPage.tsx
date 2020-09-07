@@ -14,6 +14,7 @@ import AddUsersButton from "../Components/Channel/AddUsersButton";
 import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
+import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
@@ -43,6 +44,7 @@ interface State {
   followers: User[];
   talks: Talk[];
   drafts: Talk[];
+  currentTalks: Talk[];
   pastStreams: Talk[];
   totalNumberOfTalks: number;
   bannerExtended: boolean;
@@ -68,6 +70,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       followers: [],
       talks: [],
       drafts: [],
+      currentTalks: [],
       pastStreams: [],
       totalNumberOfTalks: 0,
       bannerExtended: true,
@@ -153,6 +156,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchMembers();
     this.fetchFollowers();
     this.fetchPastTalks();
+    this.fetchCurrentTalks();
     this.fetchTalks();
     this.fetchDrafts();
   };
@@ -218,6 +222,12 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchDrafts();
     this.fetchTalks();
   };
+  fetchAllTalks = () => {
+    this.fetchDrafts()
+    this.fetchTalks()
+    this.fetchCurrentTalks()
+    this.fetchPastTalks()
+  }
 
   fetchPastTalks = () => {
     TalkService.getPastTalksForChannel(
@@ -226,6 +236,17 @@ export default class ManageChannelPage extends Component<Props, State> {
         this.setState({
           pastStreams: data.talks,
           totalNumberOfTalks: data.count,
+        });
+      }
+    );
+  };
+
+  fetchCurrentTalks = () => {
+    TalkService.getCurrentTalksForChannel(
+      this.state.channel!.id,
+      (talks: Talk[]) => {
+        this.setState({
+          currentTalks: talks
         });
       }
     );
@@ -457,7 +478,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <ScheduleTalkButton
                   margin={{ bottom: "10px" }}
                   channel={this.state.channel}
-                  onCreatedCallback={this.fetchTalksDrafts}
+                  onCreatedCallback={this.fetchAllTalks}
                 />
               )}
 
@@ -709,8 +730,30 @@ export default class ManageChannelPage extends Component<Props, State> {
                 channelId={this.state.channel!.id}
                 user={this.state.user}
                 admin
-                onEditCallback={this.fetchTalksDrafts}
+                onEditCallback={this.fetchAllTalks}
               />
+              {this.state.currentTalks.length > 0 && (
+                <Box width="100%">
+                  <Text
+                    size="28px"
+                    weight="bold"
+                    color="black"
+                    margin={{ top: "40px", bottom: "24px" }}
+                  >
+                    {`Happening now`}
+                  </Text>
+                  {this.state.currentTalks.map((talk: Talk) => (
+                    <ChannelPageTalkCard 
+                      talk={talk} 
+                      user={null}
+                      admin
+                      width="31.5%" 
+                      isCurrent={true}
+                      onEditCallback={this.fetchAllTalks}
+                    />
+                  ))}
+                </Box>
+              )}
               <Text
                 size="28px"
                 weight="bold"
@@ -744,7 +787,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 channelId={this.state.channel!.id}
                 user={this.state.user}
                 admin
-                onEditCallback={this.fetchTalksDrafts}
+                onEditCallback={this.fetchAllTalks}
               />
               {this.state.pastStreams.length !== 0 && (
                 <Text
@@ -770,6 +813,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     margin={{ bottom: "medium" }}
                     onDelete={() => this.fetchPastTalks()}
                     user={null}
+                    onEditCallback={this.fetchAllTalks}
                   />
                 ))}
               </Box>
