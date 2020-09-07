@@ -180,9 +180,28 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       talk: {
         ...prevState.talk,
         topics: tempTopics
-    },
-  }));
+      },
+    }));
   }
+
+  cancelTopic = (num: number) => {
+    let tempTopics = this.state.talk.topics;
+    tempTopics[num] = {
+      field: "",
+      id: 0,
+      is_primitive_node: false,
+      parent_1_id: -1,
+      parent_2_id: -1, 
+      parent_3_id: -1,
+    }
+    this.setState((prevState: any) => ({
+      talk: {
+        ...prevState.talk,
+        topics: tempTopics
+      },
+    }));
+  }
+
   render() {
     return (
       <Box>
@@ -301,7 +320,12 @@ export default class ApplyToTalkForm extends Component<Props, State> {
               </Text>
             </Box>
           
-          <TopicSelector onSelectedCallback={this.selectTopic} />
+          <TopicSelector 
+            onSelectedCallback={this.selectTopic}
+            onCanceledCallback={this.cancelTopic}
+            isPrevTopics={[false, false, false]} 
+            prevTopics={[]} 
+          />
         </Box>
 
         <OverlaySection heading="3. Personal message to us!">

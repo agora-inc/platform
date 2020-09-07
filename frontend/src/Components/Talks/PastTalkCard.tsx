@@ -10,6 +10,7 @@ import { default as TagComponent } from "../Core/Tag";
 import { default as CoreButton } from "../Core/Button";
 import Identicon from "react-identicons";
 import "../../Styles/past-talk-card.css";
+import EditTalkModal from "../Talks/EditTalkModal";
 
 interface Props {
   talk: Talk;
@@ -22,14 +23,17 @@ interface Props {
   onUnsave?: any;
   user: User | null;
   show?: boolean;
+  onEditCallback?: any;
 }
 
 interface State {
   showModal: boolean;
+  showEdit: boolean;
   showShadow: boolean;
   saved: boolean;
   showLinkInput: boolean;
   recordingLink: string;
+  isRecordingLinkHidden: boolean;
 }
 
 export default class PastTalkCard extends Component<Props, State> {
@@ -37,12 +41,14 @@ export default class PastTalkCard extends Component<Props, State> {
     super(props);
     this.state = {
       showModal: this.props.show ? this.props.show && !this.props.admin : false,
+      showEdit: false,
       showShadow: false,
       saved: false,
       showLinkInput: false,
       recordingLink: this.props.talk.recording_link
         ? this.props.talk.recording_link
         : "",
+      isRecordingLinkHidden: true,
     };
   }
 
@@ -58,6 +64,7 @@ export default class PastTalkCard extends Component<Props, State> {
 
   componentWillMount() {
     this.checkIfSaved();
+    this.isRecordingHidden();
   }
 
   checkIfSaved = () => {
@@ -85,6 +92,11 @@ export default class PastTalkCard extends Component<Props, State> {
     });
   };
 
+  toggleEdit = () => {
+    this.setState({ showEdit: !this.state.showEdit });
+  };
+
+
   onDeleteClicked = () => {
     TalkService.deleteTalk(this.props.talk.id, () => {
       this.props.onDelete();
@@ -107,13 +119,11 @@ export default class PastTalkCard extends Component<Props, State> {
     }
     if (this.state.saved) {
       TalkService.unsaveTalk(this.props.user.id, this.props.talk.id, () => {
-        this.toggleModal();
         this.setState({ saved: false });
         this.props.onUnsave && this.props.onUnsave();
       });
     } else {
       TalkService.saveTalk(this.props.user.id, this.props.talk.id, () => {
-        this.toggleModal();
         this.setState({ saved: true });
         this.props.onSave && this.props.onSave();
       });
@@ -130,20 +140,63 @@ export default class PastTalkCard extends Component<Props, State> {
     }
   };
 
+  isRecordingHidden = () => {
+    if (this.props.talk.recording_link && !this.props.admin) {
+      if (this.props.user) {
+        TalkService.isAvailableToUser(
+          this.props.user.id, 
+          this.props.talk.id, 
+          (available: boolean) => {
+            this.setState({ isRecordingLinkHidden: !available })
+          }
+        )
+      } else if (this.props.talk.visibility === "Everybody") {
+        this.setState({ isRecordingLinkHidden: false })
+      } else {
+        this.setState({ isRecordingLinkHidden: true })
+      }
+    } else {
+      this.setState({ isRecordingLinkHidden: true })
+    }
+  };
+
   getButtons = () => {
     if (this.props.admin) {
       return (
-        <Box gap="250px" direction="row">
+        <Box gap="small" direction="row" margin={{top: "20px", bottom: "20px"}}>
+          <a
+            href={this.state.recordingLink}
+            target="_blank"
+            style={{ width: "100%" }}
+          >
+            <Box
+              background="#7E1115"
+              round="xsmall"
+              height="40px"
+              width="50%"
+              justify="center"
+              align="start"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+            >
+              <Text alignSelf="center" size="18px">
+                Watch talk
+              </Text>
+            </Box>
+          </a>
           <Box
             onClick={this.onClick}
-            background="#7E1115"
+            background="white"
             round="xsmall"
-            pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
             height="40px"
-            width="33%"
+            width="50%"
+            justify="center"
             align="start"
             focusIndicator={false}
-            hoverIndicator="#5A0C0F"
+            hoverIndicator={true}
+            style={{
+              border: "1px solid #C2C2C2",
+            }}
           >
             <Text alignSelf="center" size="18px">
               {this.state.showLinkInput
@@ -151,26 +204,11 @@ export default class PastTalkCard extends Component<Props, State> {
                 : "Enter link recording"}
             </Text>
           </Box>
-          <Box
-            onClick={this.onDeleteClicked}
-            background="#FF4040"
-            round="xsmall"
-            pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
-            height="40px"
-            width="25%"
-            alignSelf="end"
-            focusIndicator={false}
-            hoverIndicator="white"
-          >
-            <Text alignSelf="center" size="18px">
-              Delete talk
-            </Text>
-          </Box>
         </Box>
       );
-    } else if (this.props.talk.recording_link) {
+    } else if (this.props.talk.recording_link && !this.state.isRecordingLinkHidden) {
       return (
-        <Box gap="small" direction="row">
+        <Box gap="small" direction="row" margin={{top: "20px", bottom: "20px"}}>
           <a
             href={this.props.talk.recording_link}
             target="_blank"
@@ -179,9 +217,8 @@ export default class PastTalkCard extends Component<Props, State> {
             <Box
               background="#7E1115"
               round="xsmall"
-              pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
               height="40px"
-              width="33%"
+              width="50%"
               justify="center"
               align="start"
               focusIndicator={false}
@@ -196,9 +233,10 @@ export default class PastTalkCard extends Component<Props, State> {
             <Box
               background="white"
               round="xsmall"
-              pad={{ bottom: "6px", top: "8px", left: "18px", right: "18px" }}
+              justify="center"
+              align="center"
               height="40px"
-              width={this.state.saved ? "50%" : "33%"}
+              width="50%"
               onClick={this.onSaveTalkClicked}
               style={{
                 border: "1px solid #C2C2C2",
@@ -224,9 +262,6 @@ export default class PastTalkCard extends Component<Props, State> {
       <Box
         width={this.props.width ? this.props.width : "32%"}
         height={this.props.height ? this.props.height : "350px"}
-        onClick={() => {
-          !this.state.showModal && this.toggleModal();
-        }}
         focusIndicator={false}
         style={{ position: "relative" }}
         margin={this.props.margin ? this.props.margin : { bottom: "small" }}
@@ -237,6 +272,9 @@ export default class PastTalkCard extends Component<Props, State> {
             if (!this.state.showModal) {
               this.setState({ showShadow: false });
             }
+          }}
+          onClick={() => {
+            !this.state.showModal && this.toggleModal();
           }}
           height="100%"
           width="100%"
@@ -313,23 +351,28 @@ export default class PastTalkCard extends Component<Props, State> {
             >
               {this.props.talk.name}
             </Text>
+
           </Box>
+
         </Box>
         {this.state.showShadow && (
-          <Box
-            height="100%"
-            width="100%"
-            round="xsmall"
-            style={{
-              zIndex: -1,
-              position: "absolute",
-              top: 8,
-              left: 8,
-              opacity: 0.5,
-            }}
-            background={this.props.talk.channel_colour}
-          ></Box>
-        )}
+            <Box
+              height={this.props.height ? this.props.height : "300px"}
+              width="100%"
+              round="xsmall"
+              style={{
+                zIndex: -1,
+                position: "absolute",
+                top: 8,
+                left: 8,
+                opacity: 0.5,
+              }}
+              background={this.props.talk.channel_colour}
+            ></Box>
+          )}
+
+
+
         {this.state.showModal && (
           <Layer
             onEsc={() => {
@@ -346,11 +389,9 @@ export default class PastTalkCard extends Component<Props, State> {
             style={{
               width: 640,
               height:
-                this.props.admin && this.state.showLinkInput
-                  ? 570
-                  : this.props.talk.recording_link
+                this.state.showLinkInput
                   ? 540
-                  : 480,
+                  : 500,
               borderRadius: 15,
               overflow: "hidden",
             }}
@@ -450,7 +491,7 @@ export default class PastTalkCard extends Component<Props, State> {
                   color="black"
                   style={{
                     minHeight: "50px",
-                    maxHeight: "200px",
+                    maxHeight: "180px",
                     overflowY: "auto",
                   }}
                   margin={{ bottom: "10px" }}
@@ -461,7 +502,8 @@ export default class PastTalkCard extends Component<Props, State> {
               <Box
                 direction="column"
                 gap="small"
-                style={{ minHeight: "90px", maxHeight: "150px" }}
+                height={this.state.showLinkInput ? "130px" : (this.props.talk.recording_link || this.props.admin ? "100px" : "30px")}
+                //style={{ minHeight: "90px", maxHeight: "150px" }}
               >
                 <Box direction="row" gap="small">
                   <Calendar size="18px" />
@@ -527,7 +569,23 @@ export default class PastTalkCard extends Component<Props, State> {
               >
                 <Text textAlign="center" weight="bold">
                   Sorry, there is currently no recording available for this talk
-                  :(
+                </Text>
+              </Box>
+            )}
+            {this.state.isRecordingLinkHidden && (
+              <Box
+                background="#d5d5d5"
+                pad="small"
+                align="center"
+                justify="center"
+              >
+                <Text textAlign="center" weight="bold">
+                {`Sorry, the recording is only available to ${
+                    this.props.talk.visibility === "Followers and members"
+                      ? "followers and members"
+                      : "members"
+                  }
+                  of ${this.props.talk.channel_name}`}
                 </Text>
               </Box>
             )}
@@ -692,6 +750,40 @@ export default class PastTalkCard extends Component<Props, State> {
           //     </Box>
           //   )}
           // </Layer>
+        )}
+        {this.props.admin && (
+          <Box
+            onClick={() => {
+              this.toggleEdit();
+            }}
+            background="#7E1115"
+            round="xsmall"
+            pad="xsmall"
+            height="40px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator="#5A0C0F"
+            margin="10px"
+          >
+            <Text size="18px">Edit</Text>
+          </Box>
+        )}
+        {this.props.admin && this.state.showEdit && (
+          <EditTalkModal
+            visible={this.state.showEdit}
+            channel={null}
+            talk={this.props.talk}
+            onFinishedCallback={() => {
+              this.toggleEdit();
+              this.props.onEditCallback();
+            }}
+            onDeletedCallback={() => {
+              this.toggleEdit();
+              this.props.onEditCallback();
+            }}
+            onCanceledCallback={this.toggleEdit}
+          />
         )}
       </Box>
     );

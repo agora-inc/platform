@@ -46,6 +46,10 @@ const getFutureTalksForChannel = (channelId: number, callback: any) => {
   get(`talks/channel/future?channelId=${channelId}`, callback);
 };
 
+const getCurrentTalksForChannel = (channelId: number, callback: any) => {
+  get(`talks/channel/current?channelId=${channelId}`, callback);
+};
+
 const getPastTalksForChannel = (channelId: number, callback: any) => {
   get(`talks/channel/past?channelId=${channelId}`, callback);
 };
@@ -58,6 +62,75 @@ const getPastTalksForTag = (tagName: string, callback: any) => {
   get(`talks/tag/past?tagName=${tagName}`, callback);
 };
 
+const getAvailableFutureTalks = (
+  limit: number,
+  offset: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/available/future?userId=${userId}&limit=${limit}&offset=${offset}`,
+    callback
+  );
+};
+
+const getAvailableCurrentTalks = (
+  limit: number,
+  offset: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/available/current?userId=${userId}&limit=${limit}&offset=${offset}`,
+    callback
+  );
+};
+
+const getAvailablePastTalks = (
+  limit: number,
+  offset: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/available/past?userId=${userId}&limit=${limit}&offset=${offset}`,
+    callback
+  );
+};
+
+const getAvailableFutureTalksForChannel = (
+  channelId: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/channel/available/future?channelId=${channelId}&userId=${userId}`,
+    callback
+  );
+};
+
+const getAvailableCurrentTalksForChannel = (
+  channelId: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/channel/available/current?channelId=${channelId}&userId=${userId}`,
+    callback
+  );
+};
+
+const getAvailablePastTalksForChannel = (
+  channelId: number,
+  userId: number | null,
+  callback: any,
+) => {
+  get(
+    `/talks/channel/available/past?channelId=${channelId}&userId=${userId}`,
+    callback
+  );
+};
+
 const editTalk = (
   talkId: number,
   talkName: string,
@@ -68,13 +141,13 @@ const editTalk = (
   talkTags: Tag[],
   showLinkOffset: number,
   visibility: string,
+  cardVisibility: string,
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
   published: number,
   callback: any
 ) => {
-  console.log("PUBBB", published);
   post(
     "talks/edit",
     {
@@ -87,6 +160,7 @@ const editTalk = (
       talkTags: talkTags,
       showLinkOffset: showLinkOffset,
       visibility: visibility,
+      cardVisibility: cardVisibility,
       topic1Id: topics[0] ? topics[0].id : 0,
       topic2Id: topics[1] ? topics[1].id : 0,
       topic3Id: topics[2] ? topics[2].id : 0,
@@ -109,6 +183,7 @@ const scheduleTalk = (
   talkTags: Tag[],
   showLinkOffset: number,
   visibility: string,
+  cardVisibility: string,
   topics: Topic[],
   talkSpeaker: string,
   talkSpeakerURL: string,
@@ -128,6 +203,7 @@ const scheduleTalk = (
       talkTags: talkTags,
       showLinkOffset: showLinkOffset,
       visibility: visibility,
+      cardVisibility: cardVisibility,
       topic1Id: topics.length > 0 ? topics[0].id : null,
       topic2Id: topics.length > 1 ? topics[1].id : null,
       topic3Id: topics.length > 2 ? topics[2].id : null,
@@ -237,12 +313,19 @@ export const TalkService = {
   getAllCurrentTalks,
   getAllPastTalks,
   getFutureTalksForChannel,
+  getCurrentTalksForChannel,
   getPastTalksForChannel,
   getDraftedTalksForChannel,
   getFutureTalksForTopic,
   getAllFutureTalksForTopicWithChildren,
   getPastTalksForTopic,
   getPastTalksForTag,
+  getAvailableFutureTalks,
+  getAvailableCurrentTalks,
+  getAvailablePastTalks,
+  getAvailableFutureTalksForChannel,
+  getAvailableCurrentTalksForChannel,
+  getAvailablePastTalksForChannel,
   editTalk,
   scheduleTalk,
   deleteTalk,
@@ -274,6 +357,7 @@ export type Talk = {
   tags: Tag[];
   show_link_offset: number;
   visibility: string;
+  card_visibility: string;
   topics: Topic[];
   talk_speaker: string;
   talk_speaker_url: string;

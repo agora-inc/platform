@@ -112,8 +112,35 @@ class TalkRepository:
         else:
             return []
 
-    def getAllFutureTalks(self, limit, offset):
-        query = f"SELECT * FROM Talks WHERE published = 1 AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+    def getAvailableFutureTalks(self, limit, offset, user_id):
+        if user_id is None:
+            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+        else:
+            query = f'''SELECT DISTINCT * FROM Talks 
+                    WHERE Talks.published = 1 
+                        AND (Talks.card_visibility = 'Everybody' 
+                                OR (Talks.card_visibility = 'Followers and members' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'follower' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                                OR (Talks.card_visibility = 'Members only' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                            )
+                        AND Talks.date > CURRENT_TIMESTAMP 
+                    ORDER BY Talks.date ASC LIMIT {limit}
+                    OFFSET {offset}
+                    '''
+
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -122,6 +149,194 @@ class TalkRepository:
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talks
+
+    def getAvailableCurrentTalks(self, limit, offset, user_id):
+        if user_id is None:
+            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+        else:
+            query = f'''SELECT DISTINCT * FROM Talks 
+                    WHERE Talks.published = 1 
+                        AND (Talks.card_visibility = 'Everybody' 
+                                OR (Talks.card_visibility = 'Followers and members' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'follower' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                                OR (Talks.card_visibility = 'Members only' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                            )
+                        AND Talks.date < CURRENT_TIMESTAMP AND Talks.end_date > CURRENT_TIMESTAMP
+                    ORDER BY Talks.date ASC LIMIT {limit}
+                    OFFSET {offset}
+                    '''
+
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return (talks, len(talks))
+
+    def getAvailablePastTalks(self, limit, offset, user_id):
+        if user_id is None:
+            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+        else:
+            query = f'''SELECT DISTINCT * FROM Talks 
+                    WHERE Talks.published = 1 
+                        AND (Talks.card_visibility = 'Everybody' AND recording_link <> ''
+                                OR (Talks.card_visibility = 'Followers and members' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'follower' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                                OR (Talks.card_visibility = 'Members only' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                            )
+                        AND Talks.end_date < CURRENT_TIMESTAMP 
+                    ORDER BY Talks.date ASC LIMIT {limit}
+                    OFFSET {offset}
+                    '''
+
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return (talks, len(talks))
+
+    def getAvailableFutureTalksForChannel(self, channelId, user_id):
+        if user_id is None:
+            query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND published = 1 AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date"
+        else:
+            query = f'''SELECT DISTINCT * FROM Talks 
+                    WHERE channel_id = {channelId} AND Talks.published = 1 
+                        AND (Talks.card_visibility = 'Everybody' 
+                                OR (Talks.card_visibility = 'Followers and members' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'follower' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                                OR (Talks.card_visibility = 'Members only' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                            )
+                        AND Talks.date > CURRENT_TIMESTAMP 
+                    ORDER BY Talks.date
+                    '''
+
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return talks
+
+    def getAvailableCurrentTalksForChannel(self, channelId, user_id):
+        if user_id is None:
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date"
+        else:
+            query = f'''SELECT DISTINCT * FROM Talks 
+                    WHERE Talks.published = 1 AND channel_id = {channelId}
+                        AND (Talks.card_visibility = 'Everybody' 
+                                OR (Talks.card_visibility = 'Followers and members' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'follower' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                                OR (Talks.card_visibility = 'Members only' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                            )
+                        AND Talks.date < CURRENT_TIMESTAMP AND Talks.end_date > CURRENT_TIMESTAMP
+                    ORDER BY Talks.date
+                    '''
+
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return talks
+
+    def getAvailablePastTalksForChannel(self, channelId, user_id):
+        if user_id is None:
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date"
+        else:
+            query = f'''SELECT DISTINCT * FROM Talks 
+                    WHERE Talks.published = 1 AND channel_id = {channelId}
+                        AND (Talks.card_visibility = 'Everybody' AND recording_link <> ''
+                                OR (Talks.card_visibility = 'Followers and members' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'follower' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                                OR (Talks.card_visibility = 'Members only' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {user_id}
+                                        )
+                                    )
+                            )
+                        AND Talks.end_date < CURRENT_TIMESTAMP 
+                    ORDER BY Talks.date
+                    '''
+
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return talks
+
 
     def getAllCurrentTalks(self, limit, offset):
         query = f"SELECT * FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
@@ -146,6 +361,17 @@ class TalkRepository:
 
     def getAllFutureTalksForChannel(self, channelId):
         query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP AND published = 1"
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return talks
+
+    def getAllCurrentTalksForChannel(self, channelId):
+        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP AND published = 1"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -190,8 +416,8 @@ class TalkRepository:
         talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return talk
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
-        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', {showLinkOffset}, '{visibility}', '{topic_1_id}', '{topic_2_id}', '{topic_3_id}', '{talk_speaker}', '{talk_speaker_url}', {published});"
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
+        query = f"INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, card_visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published) VALUES ({channelId}, '{channelName}', '{talkName}', '{startDate}', '{endDate}', '{talkDescription}', '{talkLink}', {showLinkOffset}, '{visibility}', '{cardVisibility}', '{topic_1_id}', '{topic_2_id}', '{topic_3_id}', '{talk_speaker}', '{talk_speaker_url}', {published});"
         insertId = self.db.run_query(query)[0]
 
         if not isinstance(insertId, int):
@@ -202,8 +428,12 @@ class TalkRepository:
 
         return self.getTalkById(insertId)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
-        query = f"UPDATE Talks SET name='{talkName}', description='{talkDescription}', date='{startDate}', end_date='{endDate}', link='{talkLink}', show_link_offset={showLinkOffset}, visibility='{visibility}', topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker='{talk_speaker}', talk_speaker_url='{talk_speaker_url}', published={published} WHERE id = {talkId};"
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
+        with open("/home/cloud-user/edittalk.txt", "w") as outfile:
+            outfile.write("WESH")
+            outfile.write(str(cardVisibility))
+
+        query = f"UPDATE Talks SET name='{talkName}', description='{talkDescription}', date='{startDate}', end_date='{endDate}', link='{talkLink}', show_link_offset={showLinkOffset}, visibility='{visibility}', card_visibility='{cardVisibility}', topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker='{talk_speaker}', talk_speaker_url='{talk_speaker_url}', published={published} WHERE id = {talkId};"
         self.db.run_query(query)
 
         tagIds = [t["id"] for t in talkTags]
@@ -305,10 +535,26 @@ class TalkRepository:
         visibility  = result[0]["visibility"]
         if visibility == "Everybody":
             return True
-        
         if visibility == "Followers and members":
             return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["follower", "member", "owner"])
         if visibility == "Members only":
+            return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
+        
+        return True
+
+    def isTalkCardAvailableToUser(self, talkId, userId):
+        query = f"SELECT card_visibility, channel_id FROM Talks WHERE id={talkId} AND published=1"
+        result = self.db.run_query(query)
+
+        if len(result) == 0:
+            return False
+
+        card_visibility  = result[0]["card_visibility"]
+        if card_visibility == "Everybody":
+            return True
+        if card_visibility == "Followers and members":
+            return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["follower", "member", "owner"])
+        if card_visibility == "Members only":
             return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
         
         return True

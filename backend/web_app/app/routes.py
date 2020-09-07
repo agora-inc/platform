@@ -561,7 +561,12 @@ def serveThumbnail():
 def getAllFutureTalks():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllFutureTalks(limit, offset))
+
+    try:
+        user_id = int(request.args.get("offset"))
+        return jsonify(talks.getAllFutureTalks(limit, offset, user_id))
+    except:
+        return jsonify(talks.getAllFutureTalks(limit, offset))
 
 @app.route('/talks/all/current', methods=["GET"])
 def getAllCurrentTalks():
@@ -581,6 +586,11 @@ def getAllPastTalks():
 def getAllFutureTalksForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(talks.getAllFutureTalksForChannel(channelId))
+
+@app.route('/talks/channel/current', methods=["GET"])
+def getAllCurrentTalksForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(talks.getAllCurrentTalksForChannel(channelId))
 
 @app.route('/talks/channel/drafted', methods=["GET"])
 def getAllDraftedTalksForChannel():
@@ -625,6 +635,53 @@ def getAllPastTalksForTopic():
     offset = int(request.args.get("offset"))
     return jsonify(talks.getAllPastTalksForTopic(topicId, limit, offset))
 
+@app.route('/talks/available/future', methods=["GET"])
+def getAvailableFutureTalks():
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    return jsonify(talks.getAvailableFutureTalks(limit, offset, user_id))
+
+@app.route('/talks/available/current', methods=["GET"])
+def getAvailableCurrentTalks():
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    data = talks.getAvailableCurrentTalks(limit, offset, user_id)
+    return jsonify({"talks": data[0],"count": data[1]})
+
+@app.route('/talks/available/past', methods=["GET"])
+def getAvailablePastTalks():
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    data = talks.getAvailablePastTalks(limit, offset, user_id)
+    return jsonify({"talks": data[0],"count": data[1]})
+
+@app.route('/talks/channel/available/future', methods=["GET"])
+def getAvailableFutureTalksForChannel():
+    channel_id = int(request.args.get("channelId"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    return jsonify(talks.getAvailableFutureTalksForChannel(channel_id, user_id))
+
+@app.route('/talks/channel/available/current', methods=["GET"])
+def getAvailableCurrentTalksForChannel():
+    channel_id = int(request.args.get("channelId"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    return jsonify(talks.getAvailableCurrentTalksForChannel(channel_id, user_id))
+
+@app.route('/talks/channel/available/past', methods=["GET"])
+def getAvailablePastTalksForChannel():
+    channel_id = int(request.args.get("channelId"))
+    user_id = request.args.get("userId")
+    user_id = int(user_id) if user_id != 'null' else None
+    return jsonify(talks.getAvailablePastTalksForChannel(channel_id, user_id))
+
 @app.route('/talks/create', methods=["POST", "OPTIONS"])
 def scheduleTalk():
     logRequest(request)
@@ -641,8 +698,7 @@ def scheduleTalk():
             params[topic_key] = "NULL" 
 
     app.logger.info(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
-
-    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 def editTalk():
@@ -654,8 +710,9 @@ def editTalk():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
+
     app.logger.info(f"Talk with id {params['talkId']} edited")
-    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
+    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():

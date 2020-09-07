@@ -13,6 +13,7 @@ import { User, UserService } from "../Services/UserService";
 import { Talk, TalkService } from "../Services/TalkService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicTalkList from "../Components/Talks/TopicTalksList";
+import TreeClassification from "../Components/Homepage/TreeClassification";
 
 interface State {
   user: User | null;
@@ -90,6 +91,7 @@ export default class Home extends Component<{}, State> {
           gap="25px"
         >
           <Carousel gridArea="carousel" />
+          {/*<TreeClassification />*/}
           <TopicTalkList
             seeMore={true}
             title={true}
