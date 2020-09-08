@@ -70,7 +70,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           to={{ pathname: "/info/getting-started" }}
           style={{ textDecoration: "none" }}
         >
-          {/* <Box
+        <Box
             onClick={() => {}}
             background="white"
             round="xsmall"
@@ -87,7 +87,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
               {" "}
               How to use me?{" "}
             </Text>
-          </Box> */}
+          </Box>
         </Link>
         <SiteWideSearch />
         {/* <Box>
