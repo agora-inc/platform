@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
-import { Box, Text } from "grommet";
+import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
 import accessing_link from "../assets/getting-started/accessing_link.png";
 import agora_created_done from "../assets/getting-started/agora_created_done.png";
@@ -18,8 +18,10 @@ import homepage_following from "../assets/getting-started/homepage_following.png
 import admin_agora from "../assets/getting-started/admin_agora.png";
 import top_right_panel_select_agora from "../assets/getting-started/top_right_panel_select_agora.png";
 import watch_past_talk from "../assets/getting-started/watch_past_talk.png";
+import LatexInput from "../Components/Streaming/LatexInput";
 
-
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 
 interface Props {
@@ -29,6 +31,7 @@ interface Props {
 interface State {
   user: User;
   loading: boolean;
+  text: string
 }
 
 export default class GettingStartedPage extends Component<Props, State> {
@@ -39,21 +42,113 @@ export default class GettingStartedPage extends Component<Props, State> {
         ? this.props.location.state.user
         : UserService.getCurrentUser(),
       loading: true,
+      text: ""
     };
   }
 
   componentWillMount() {
   }
 
+  updateText = (e: any) => {
+    this.setState({
+      text: e.target.value,
+    });
+  };
+
+  parse = (rawText: string) => {
+    const textArr = rawText.split("$");
+    return (
+      <Box
+        width="100%"
+        height="100%"
+        margin={{ left: "15px" }}
+        overflow="scroll"
+      >
+        <Box
+          //   height="100%"
+          direction="row"
+          wrap
+          align="center"
+          style={{
+            overflowWrap: "break-word",
+            wordBreak: "break-all",
+          }}
+        >
+          {textArr.map((textElement: string, index) => {
+            if (index % 2 == 0) {
+              return (
+                <Text
+                  color="black"
+                  style={{
+                    marginLeft: 3,
+                    marginRight: 3,
+                    // whiteSpace: "pre",
+                    overflowWrap: "break-word",
+                    wordBreak: "break-all",
+                  }}
+                  size="18px"
+                >
+                  {textElement}
+                </Text>
+              );
+            } else {
+              if (textElement != "" && index != textArr.length - 1) {
+                return <InlineMath math={textElement} />;
+              }
+            }
+          })}
+        </Box>
+      </Box>
+    );
+  };
+
 
   render() {
     return (
+      <>
+      <Box
+        direction="row"
+        width="50%"
+        height="200px"
+        pad={{ horizontal: "15px" }}
+        margin={{top: "50px"}}
+      >
+        <TextArea
+          style={{
+            paddingTop: 15,
+            paddingLeft: 0,
+            paddingRight: 15,
+            marginBottom: 5,
+            height: "100%",
+            width: "50%",
+            //   border: "1px solid pink",
+          }}
+          onChange={this.updateText}
+          focusIndicator={false}
+          plain={true}
+          resize={false}
+        />
+        <Box
+          width="50%"
+          height="100%"
+          direction="row"
+          pad={{ top: "15px" }}
+          style={{ minHeight: "100%", borderLeft: "2px solid grey" }}
+        >
+          {this.parse(this.state.text)}
+        </Box>
+      </Box>
+
       <Box
         width="100vw"
         height="100vh"
         align="center"
         margin={{ top: "140px" }}
       >
+
+
+        
+       
         <Box width="75%">
           {/* <Box
             width="98.25%"
@@ -267,6 +362,7 @@ export default class GettingStartedPage extends Component<Props, State> {
           </p>
         </Box>
       </Box>
+      </>
     );
   }
 }
