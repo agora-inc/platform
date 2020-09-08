@@ -5,6 +5,7 @@ import Loading from "../Core/Loading";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../../Styles/trending-channels-box.css";
+import { FormNextLink } from "grommet-icons";
 
 interface State {
   channels: Channel[];
@@ -31,18 +32,32 @@ export default class TrendingChannelsList extends Component<{}, State> {
   render() {
     return (
       <Box height="263px">
-        <Box>
+        <Box direction="row">
           <Text
             size="14px"
             weight="bold"
             color="grey"
             margin={{ left: "small" }}
+            alignSelf="center"
           >
             Trending agoras
           </Text>
           <Link to="/agoras" style={{ fontSize: 12, marginLeft: 15 }}>
-            see all agoras
+            <Box
+              className="see-more-button"
+              pad={{ vertical: "2px", horizontal: "xsmall" }}
+              round="xsmall"
+              style={{
+                border: "2px solid #C2C2C2",
+              }}
+              direction="row"
+              align="end"
+            >
+              <Text color="grey" size="14px"> See all </Text>
+              <FormNextLink color="grey" size="14px" />
+            </Box>
           </Link>
+
         </Box>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">

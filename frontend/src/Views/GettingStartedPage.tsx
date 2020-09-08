@@ -105,50 +105,12 @@ export default class GettingStartedPage extends Component<Props, State> {
 
   render() {
     return (
-      <>
-      <Box
-        direction="row"
-        width="50%"
-        height="200px"
-        pad={{ horizontal: "15px" }}
-        margin={{top: "50px"}}
-      >
-        <TextArea
-          style={{
-            paddingTop: 15,
-            paddingLeft: 0,
-            paddingRight: 15,
-            marginBottom: 5,
-            height: "100%",
-            width: "50%",
-            //   border: "1px solid pink",
-          }}
-          onChange={this.updateText}
-          focusIndicator={false}
-          plain={true}
-          resize={false}
-        />
-        <Box
-          width="50%"
-          height="100%"
-          direction="row"
-          pad={{ top: "15px" }}
-          style={{ minHeight: "100%", borderLeft: "2px solid grey" }}
-        >
-          {this.parse(this.state.text)}
-        </Box>
-      </Box>
-
       <Box
         width="100vw"
         height="100vh"
         align="center"
         margin={{ top: "140px" }}
       >
-
-
-        
-       
         <Box width="75%">
           {/* <Box
             width="98.25%"
@@ -159,8 +121,8 @@ export default class GettingStartedPage extends Component<Props, State> {
             // gap="xsmall"
           > */}
             {/* <Text color="black" size="18px"> */}
-            <h1><strong>Getting started:</strong></h1>
-            <p>Welcome to agora! Here is a quick overview on how to use the website.</p>
+            <h1><strong>Getting started! </strong></h1>
+            <p>Welcome to agora. Here is a quick overview on how to use the website.</p>
 
             <br></br>
             <h2><strong>1. Where to browse for talks?</strong></h2>
@@ -362,7 +324,6 @@ export default class GettingStartedPage extends Component<Props, State> {
           </p>
         </Box>
       </Box>
-      </>
     );
   }
 }
