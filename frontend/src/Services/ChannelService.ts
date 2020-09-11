@@ -222,7 +222,7 @@ const uploadAvatar = (channelId: number, image: File, callback: any) => {
   // console.log(data.get("image"));
   // HACK: we had the ts argument to prevent from caching.
   let current_time = Math.floor(new Date().getTime() / 200000);
-  axios.post(baseApiUrl + "/channels/avatar&ts=" + current_time, data).then(function (response) {
+  axios.post(baseApiUrl + "/channels/avatar?ts=" + current_time, data).then(function (response) {
     callback(response.data);
   });
 };
