@@ -234,7 +234,23 @@ const uploadCover = (channelId: number, image: File, callback: any) => {
   data.append("channelId", channelId.toString());
   data.append("image", image);
   // console.log(data.get("image"));
-  axios.post(baseApiUrl + "/channels/cover", data).then(function (response) {
+
+  // const options = {
+  //   method: 'POST',
+  //   body: data,
+  //   // If you add this, upload won't work
+  //   headers: {
+  //     'Content-Type': 'multipart/form-data',
+  //   }
+  // };
+
+  // fetch(baseApiUrl + "/channels/cover", options);
+
+  axios.post(baseApiUrl + "/channels/cover", data,       {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  }).then(function (response) {
     callback(response.data);
   });
 };

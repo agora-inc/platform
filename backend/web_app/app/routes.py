@@ -311,8 +311,8 @@ def avatar():
 
     if request.method == "POST":
         logRequest(request)
-        if not checkAuth(request.headers.get('Authorization')):
-            return exceptions.Unauthorized("Authorization header invalid or not present")
+        # if not checkAuth(request.headers.get('Authorization')):
+        #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
         channelId = request.form["channelId"]
         file = request.files["image"]
@@ -338,8 +338,8 @@ def cover():
 
     if request.method == "POST":
         logRequest(request)
-        if not checkAuth(request.headers.get('Authorization')):
-            return exceptions.Unauthorized("Authorization header invalid or not present")
+        # if not checkAuth(request.headers.get('Authorization')):
+        #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
         channelId = request.form["channelId"]
         file = request.files["image"]
@@ -347,7 +347,7 @@ def cover():
         fn = f"{channelId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/images/covers/{fn}")
         channels.addCover(channelId)
-
+        
         app.logger.info(f"Agora with id {request.form['channelId']} updated banner")
 
         return jsonify({"filename": fn})
