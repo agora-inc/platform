@@ -357,7 +357,7 @@ export default class PastTalkCard extends Component<Props, State> {
         </Box>
         {this.state.showShadow && (
             <Box
-              height={this.props.height ? this.props.height : "300px"}
+              height={this.props.height ? this.props.height : "350px"}
               width="100%"
               round="xsmall"
               style={{
