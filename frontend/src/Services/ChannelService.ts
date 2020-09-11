@@ -220,13 +220,17 @@ const uploadAvatar = (channelId: number, image: File, callback: any) => {
   data.append("channelId", channelId.toString());
   data.append("image", image);
   // console.log(data.get("image"));
-  axios.post(baseApiUrl + "/channels/avatar", data).then(function (response) {
+  // HACK: we had the ts argument to prevent from caching.
+  let current_time = Math.floor(new Date().getTime() / 200000);
+  axios.post(baseApiUrl + "/channels/avatar&ts=" + current_time, data).then(function (response) {
     callback(response.data);
   });
 };
 
 const getAvatar = (channelId: number) => {
-  return baseApiUrl + `/channels/avatar?channelId=${channelId}`;
+  // HACK: we had the ts argument to prevent from caching.
+  let current_time = Math.floor(new Date().getTime() / 200000);
+  return baseApiUrl + `/channels/avatar?channelId=${channelId}&ts=` + current_time;
 };
 
 const uploadCover = (channelId: number, image: File, callback: any) => {
