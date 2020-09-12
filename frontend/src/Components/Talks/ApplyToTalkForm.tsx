@@ -253,7 +253,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           <Box width="100%" gap="2px">
             <Select
               placeholder="Title"
-              options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof']}
+              options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof', 'Mx']}
               value={this.state.user.speaker_title}
               onChange={({option}) => this.setValueAcademicTitle(option)}
             />
