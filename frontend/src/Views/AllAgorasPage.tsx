@@ -22,13 +22,13 @@ const AllAgorasPage = () => {
               className="agora-card-banner"
               style={{ background: agora.colour }}
             >
-              {agora.has_cover && (
+              {
                 <img
                   src={ChannelService.getCover(agora.id)}
                   width={420}
                   height={140}
                 />
-              )}
+              }
             </div>
             <div className="avatar-and-name">
               <div className="agora-card-avatar">
