@@ -297,11 +297,18 @@ const isSaved = (userId: number, talkId: number, callback: any) => {
 };
 
 const getYoutubeThumbnail = (url: string | null, id: number) => {
-  if (!url || !url.includes("youtube")) {
-    return "";
+  if (url && url.includes("youtube")) {
+    const ytId = url.split("&")[0].split("=")[1];
+    return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+
+  } else if (url && url.includes("youtu.be")) {
+    const ytId = url.split("/").pop()
+    return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+
+  } else {
+    return ""
   }
-  const ytId = url.split("&")[0].split("=")[1];
-  return `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+  
 };
 
 const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
