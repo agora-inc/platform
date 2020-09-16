@@ -141,11 +141,13 @@ export default class PastTalkCard extends Component<Props, State> {
   };
 
   isRecordingHidden = () => {
-    if (this.props.talk.recording_link && !this.props.admin) {
-      if (this.props.user) {
+    if (this.props.talk.recording_link) {
+      if (this.props.admin) {
+        this.setState({ isRecordingLinkHidden: false })
+      } else if (this.props.user) {
         TalkService.isAvailableToUser(
-          this.props.user.id, 
-          this.props.talk.id, 
+          this.props.user.id,
+          this.props.talk.id,
           (available: boolean) => {
             this.setState({ isRecordingLinkHidden: !available })
           }
@@ -160,10 +162,22 @@ export default class PastTalkCard extends Component<Props, State> {
     }
   };
 
+  getHeight = () => {
+    if (this.props.height) {
+      return this.props.height
+    } else {
+      if (this.props.admin) {
+        return "400px"
+      } else {
+        return "350px"
+      }
+    }
+  }
+
   getButtons = () => {
     if (this.props.admin) {
       return (
-        <Box gap="small" direction="row" margin={{top: "20px", bottom: "20px"}}>
+        <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
           <a
             href={this.state.recordingLink}
             target="_blank"
@@ -208,7 +222,7 @@ export default class PastTalkCard extends Component<Props, State> {
       );
     } else if (this.props.talk.recording_link && !this.state.isRecordingLinkHidden) {
       return (
-        <Box gap="small" direction="row" margin={{top: "20px", bottom: "20px"}}>
+        <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
           <a
             href={this.props.talk.recording_link}
             target="_blank"
@@ -261,7 +275,7 @@ export default class PastTalkCard extends Component<Props, State> {
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
-        height={this.props.height ? this.props.height : "350px"}
+        height={this.getHeight()}
         focusIndicator={false}
         style={{ position: "relative" }}
         margin={this.props.margin ? this.props.margin : { bottom: "small" }}
@@ -356,22 +370,20 @@ export default class PastTalkCard extends Component<Props, State> {
 
         </Box>
         {this.state.showShadow && (
-            <Box
-              height={this.props.height ? this.props.height : "350px"}
-              width="100%"
-              round="xsmall"
-              style={{
-                zIndex: -1,
-                position: "absolute",
-                top: 8,
-                left: 8,
-                opacity: 0.5,
-              }}
-              background={this.props.talk.channel_colour}
-            ></Box>
-          )}
-
-
+          <Box
+            height={this.props.height ? this.props.height : "350px"}
+            width="100%"
+            round="xsmall"
+            style={{
+              zIndex: -1,
+              position: "absolute",
+              top: 8,
+              left: 8,
+              opacity: 0.5,
+            }}
+            background={this.props.talk.channel_colour}
+          ></Box>
+        )}
 
         {this.state.showModal && (
           <Layer
@@ -503,7 +515,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 direction="column"
                 gap="small"
                 height={this.state.showLinkInput ? "130px" : (this.props.talk.recording_link || this.props.admin ? "100px" : "30px")}
-                //style={{ minHeight: "90px", maxHeight: "150px" }}
+              //style={{ minHeight: "90px", maxHeight: "150px" }}
               >
                 <Box direction="row" gap="small">
                   <Calendar size="18px" />
@@ -580,11 +592,11 @@ export default class PastTalkCard extends Component<Props, State> {
                 justify="center"
               >
                 <Text textAlign="center" weight="bold">
-                {`Sorry, the recording is only available to ${
+                  {`Sorry, the recording is only available to ${
                     this.props.talk.visibility === "Followers and members"
                       ? "followers and members"
                       : "members"
-                  }
+                    }
                   of ${this.props.talk.channel_name}`}
                 </Text>
               </Box>
