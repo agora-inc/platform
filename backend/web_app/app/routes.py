@@ -366,7 +366,7 @@ def cover():
         channelId = params["channelId"]
         channels.removeCover(channelId)
 
-        app.logger.debug(f"Agora with id {params['channelId']} removed banner")
+        app.logger.debug(f"Agora with id {channelId} removed banner")
 
         return jsonify("ok")
 
@@ -737,8 +737,8 @@ def deleteTalk():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-    app.logger.debug(f"Talk with id {params['talkId']} deleted")
-    return jsonify(talks.deleteTalk(params["id"]))
+    app.logger.debug(f"Talk with id {params['id']} deleted")
+    return jsonify(talks.deleteTalk(params['id']))
 
 @app.route('/talks/add-recording', methods=["OPTIONS", "POST"])
 def addRecordingLink():
