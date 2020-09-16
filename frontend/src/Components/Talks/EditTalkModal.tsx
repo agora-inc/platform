@@ -432,7 +432,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   <Text size="14px" weight="bold" color="black" margin={{"right": "100px"}}>
                     Description
                   </Text>
-                  <Switch
+                  {/*<Switch
                     checked={this.state.latex}
                     onChange={(checked: boolean) => {
                       this.setState({ latex: checked });
@@ -440,6 +440,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     size="small"
                   />
                   <InlineMath math={"{\\small \\LaTeX}"} />
+                  */}
                 </Box>
                 {!this.state.latex && (
                   <TextArea
