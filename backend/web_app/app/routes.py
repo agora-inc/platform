@@ -37,9 +37,9 @@ def logRequest(request):
     except:
         userId = None
     if request.method == "GET":
-        app.logger.info(f"request made to {request.path} with args {request.args} {f'by user with id {userId}' if userId else ''}")
+        app.logger.debug(f"request made to {request.path} with args {request.args} {f'by user with id {userId}' if userId else ''}")
     elif request.method == "POST":
-        app.logger.info(f"request made to {request.path} with body {request.data} {f'by user with id {userId}' if userId else ''}")
+        app.logger.debug(f"request made to {request.path} with body {request.data} {f'by user with id {userId}' if userId else ''}")
 
 # --------------------------------------------
 # USER ROUTES
@@ -95,10 +95,10 @@ def authenticate():
     user = users.authenticate(username, password)
 
     if not user:
-        app.logger.error(f"Unsuccessful login for user {username} (incorrect username or password)")
+        app.logger.debug(f"Unsuccessful login for user {username} (incorrect username or password)")
         return exceptions.Unauthorized("Incorrect username or password")
 
-    app.logger.info(f"Successful login for user {username}")
+    app.logger.debug(f"Successful login for user {username}")
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
@@ -122,6 +122,7 @@ def generateChangePasswordLink():
     logRequest(request)
     # generate link
     params = request.json
+    username = params["username"]
     user = users.getUser(params["username"])
     code = users.encodeAuthToken(user["id"], "changePassword")
     link = f'http://localhost:3000/changepassword?code={code.decode()}'
@@ -132,7 +133,7 @@ def generateChangePasswordLink():
     msg.subject = "Reset password"
     mail.send(msg)
 
-    app.logger.info(f"User {username} requested link to change password")
+    app.logger.debug(f"User {username} requested link to change password")
     return "ok"
 
 @app.route('/users/change_password', methods=["POST"])
@@ -144,7 +145,7 @@ def changePassword():
     params = request.json
     users.changePassword(userId, params["password"])
 
-    app.logger.info(f"User {username} changed password to {params['password']}")
+    app.logger.debug(f"User {userId} changed password to {params['password']}")
     return "ok"
 
 @app.route('/users/update_bio', methods=["POST"])
@@ -207,7 +208,7 @@ def createChannel():
     description = params["description"]
     userId = params["userId"]
 
-    app.logger.info(f"New agora '{name}' created by user with id {userId}")
+    app.logger.debug(f"New agora '{name}' created by user with id {userId}")
 
     return jsonify(channels.createChannel(name, description, userId))
 
@@ -220,10 +221,11 @@ def addUserToChannel():
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
-    app.logger.info(f"User with id {params['userId']} added to agora with id {params['channelId']} in role {params['role']}")
-
     params = request.json
+
+    app.logger.debug(f"User with id {params['userId']} added to agora with id {params['channelId']} in role {params['role']}")
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+
     return jsonify("Success")
 
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
@@ -321,7 +323,7 @@ def avatar():
         file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
         channels.addAvatar(channelId)
 
-        app.logger.info(f"Agora with id {request.form['channelId']} updated avatar")
+        app.logger.debug(f"Agora with id {request.form['channelId']} updated avatar")
 
         return jsonify({"filename": fn})
 
@@ -348,7 +350,7 @@ def cover():
         file.save(f"/home/cloud-user/plateform/agora/images/covers/{fn}")
         channels.addCover(channelId)
         
-        app.logger.info(f"Agora with id {request.form['channelId']} updated banner")
+        app.logger.debug(f"Agora with id {request.form['channelId']} updated banner")
 
         return jsonify({"filename": fn})
 
@@ -364,7 +366,7 @@ def cover():
         channelId = params["channelId"]
         channels.removeCover(channelId)
 
-        app.logger.info(f"Agora with id {params['channelId']} removed banner")
+        app.logger.debug(f"Agora with id {params['channelId']} removed banner")
 
         return jsonify("ok")
 
@@ -708,7 +710,7 @@ def scheduleTalk():
         if topic_key not in params:
             params[topic_key] = "NULL" 
 
-    app.logger.info(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
+    app.logger.debug(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
     return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
@@ -722,7 +724,7 @@ def editTalk():
 
     params = request.json
 
-    app.logger.info(f"Talk with id {params['talkId']} edited")
+    app.logger.debug(f"Talk with id {params['talkId']} edited")
     return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
@@ -735,7 +737,7 @@ def deleteTalk():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-    app.logger.info(f"Talk with id {params['talkId']} deleted")
+    app.logger.debug(f"Talk with id {params['talkId']} deleted")
     return jsonify(talks.deleteTalk(params["id"]))
 
 @app.route('/talks/add-recording', methods=["OPTIONS", "POST"])
@@ -770,7 +772,7 @@ def registerForTalk():
 
     params = request.json
     talks.registerForTalk(params["talkId"], params["userId"])
-    app.logger.info(f"User with id {params['userId']} registered for talk with id {params['talkId']}")
+    app.logger.debug(f"User with id {params['userId']} registered for talk with id {params['talkId']}")
     return jsonify("success")
 
 @app.route('/talks/unregister', methods=["POST", "OPTIONS"])
@@ -784,7 +786,7 @@ def unRegisterForTalk():
 
     params = request.json
     talks.unRegisterForTalk(params["talkId"], params["userId"])
-    app.logger.info(f"User with id {params['userId']} unregistered for talk with id {params['talkId']}")
+    app.logger.debug(f"User with id {params['userId']} unregistered for talk with id {params['talkId']}")
     return jsonify("success")
 
 @app.route('/talks/registered', methods=["GET"])
@@ -814,7 +816,7 @@ def saveTalk():
 
     params = request.json
     talks.saveTalk(params["talkId"], params["userId"])
-    app.logger.info(f"User with id {params['userId']} saved talk with id {params['talkId']}")
+    app.logger.debug(f"User with id {params['userId']} saved talk with id {params['talkId']}")
     return jsonify("ok")
 
 @app.route('/talks/unsave', methods=["POST", "OPTIONS"])
@@ -828,7 +830,7 @@ def unsaveTalk():
 
     params = request.json
     talks.unsaveTalk(params["talkId"], params["userId"])
-    app.logger.info(f"User with id {params['userId']} unsaved talk with id {params['talkId']}")
+    app.logger.debug(f"User with id {params['userId']} unsaved talk with id {params['talkId']}")
     return jsonify("ok")
 
 @app.route('/talks/issaved', methods=["GET"])
