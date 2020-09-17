@@ -24,7 +24,7 @@ const AllAgorasPage = () => {
             >
               {
                 <img
-                  src={ChannelService.getCover(agora.id)}
+                  src={ChannelService.getCover(agora.id, Math.floor(new Date().getTime() / 45000))}
                   width={420}
                   height={140}
                 />
@@ -33,7 +33,7 @@ const AllAgorasPage = () => {
             <div className="avatar-and-name">
               <div className="agora-card-avatar">
                 <img
-                  src={ChannelService.getAvatar(agora.id)}
+                  src={ChannelService.getAvatar(agora.id, Math.floor(new Date().getTime() / 45000))}
                   height={30}
                   width={30}
                 />

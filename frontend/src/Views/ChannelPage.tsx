@@ -225,7 +225,7 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   getCoverBoxStyle = (): CSSProperties => {
-    let current_time = Math.floor(new Date().getTime() / 200000);
+    let current_time = Math.floor(new Date().getTime() / 5000);
     let background = this.state.channel ?.id
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
       current_time +
@@ -282,9 +282,7 @@ export default class ChannelPage extends Component<Props, State> {
               {(
                 <img
                   src={
-                    ChannelService.getAvatar(this.state.channel!.id) +
-                    `&ts=` +
-                    Math.floor(new Date().getTime() / 200000)
+                    ChannelService.getAvatar(this.state.channel!.id, Math.floor(new Date().getTime() / 45000))
                   }
                   // HACK: we had the ts argument to prevent from caching.
                   height={100}
