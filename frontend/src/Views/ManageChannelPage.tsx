@@ -319,7 +319,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   getCoverBoxStyle = (): CSSProperties => {
-    let current_time = Math.floor(new Date().getTime() / 200000);
+    let current_time = Math.floor(new Date().getTime() / 5000);
     let background = this.state.channel?.id
       ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
         current_time +
