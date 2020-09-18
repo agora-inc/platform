@@ -474,11 +474,26 @@ export default class ManageChannelPage extends Component<Props, State> {
           >
             <Box width="75%" align="start">
               {this.state.role === "owner" && (
-                <ScheduleTalkButton
-                  margin={{ bottom: "10px" }}
-                  channel={this.state.channel}
-                  onCreatedCallback={this.fetchAllTalks}
-                />
+                <Box direction="row" gap="40vw">
+                  <ScheduleTalkButton
+                    margin={{ bottom: "10px" }}
+                    channel={this.state.channel}
+                    onCreatedCallback={this.fetchAllTalks}
+                  />
+                  <Box
+                    width="20vw"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    pad="small"
+                    round="xsmall"
+                    background="#F3EACE"
+                  >
+                    <Text size="18px" weight="bold" color="grey">
+                      You are an administrator
+                    </Text>
+                  </Box>
+                </Box>
               )}
 
               <Box
