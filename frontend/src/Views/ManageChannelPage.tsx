@@ -20,12 +20,11 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
-import { StatusInfo } from "grommet-icons";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
-import 'react-tabs/style/react-tabs.css';
+import "../Styles/react-tabs.css";
 
 interface Props {
   location: any;
@@ -354,7 +353,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         width="75vw"
         background="white"
         round="10px"
-        margin={{ bottom: "30px" }}
+        margin={{ bottom: "60px" }}
       >
         <Box
           direction="row"
@@ -544,18 +543,40 @@ export default class ManageChannelPage extends Component<Props, State> {
 
               <Tabs>
                 <TabList>
-                  <Tab> Talks </Tab>
-                  <Tab> Community </Tab>
-                  <Tab> Contact </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <Workshop />
+                      <Text size="24px"> 
+                        Talks 
+                      </Text>
+                    </Box>
+                  </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <Group />
+                      <Text size="24px"> 
+                        Community 
+                      </Text>
+                    </Box>
+                  </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <ContactInfo />
+                      <Text size="24px"> 
+                        Contact 
+                      </Text>
+                    </Box>
+                  </Tab>
                 </TabList>
                 
-                <TabPanel>
+                <TabPanel style={{width: "74.35vw"}}>
                   <Box
+                    width="100%"
                     direction="row"
                     gap="small"
                     margin={{ top: "40px", bottom: "24px" }}
                   >
-                    <Text size="28px" weight="bold" color="black">
+                    <Text size="24px" weight="bold" color="black">
                       {`Drafts`}
                     </Text>
                     <StatusInfo
@@ -630,14 +651,18 @@ export default class ManageChannelPage extends Component<Props, State> {
                       ))}
                     </Box>
                   )}
-                  <Text
-                    size="28px"
-                    weight="bold"
-                    color="black"
-                    margin={{ top: "40px", bottom: "24px" }}
+                  <Box
+                    width="100%"
+                    margin={{top: "12px", bottom: "24px" }}
                   >
-                    {`Upcoming talks`}
-                  </Text>
+                    <Text
+                      size="24px"
+                      weight="bold"
+                      color="black"
+                    >
+                      {`Upcoming talks`}
+                    </Text>
+                  </Box>
                   {this.state.talks.length === 0 && (
                     <Box
                       direction="row"
@@ -666,12 +691,19 @@ export default class ManageChannelPage extends Component<Props, State> {
                     onEditCallback={this.fetchAllTalks}
                   />
                   {this.state.pastStreams.length !== 0 && (
-                    <Text
-                      size="28px"
-                      weight="bold"
-                      color="black"
-                      margin={{ top: "40px" }}
-                    >{`Past talks`}</Text>
+                    <Box
+                      width="100%"
+                      margin={{top: "12px", bottom: "24px" }}
+                    >
+                      <Text
+                        size="24px"
+                        weight="bold"
+                        color="black"
+                        margin={{ top: "40px" }}
+                      >
+                        {`Past talks`}
+                      </Text>
+                    </Box>
                   )}
                   <Box
                     direction="row"
@@ -694,8 +726,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                     ))}
                   </Box>
                 </TabPanel>
-                <TabPanel>
-                  <Box direction="row" width="100%" justify="between">
+                <TabPanel style={{width: "74.35vw"}}>
+                  <Box 
+                    direction="row" 
+                    width="100%" 
+                    justify="between" 
+                    margin={{bottom: "60px"}}>
                     <Box
                       width="25%"
                       height="250px"
@@ -805,7 +841,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                     */}
                   </Box>
                 </TabPanel>
-                <TabPanel>
+                <TabPanel style={{width: "74.35vw"}}>
+                  {/*
                   <Text
                     size="28px"
                     weight="bold"
@@ -814,6 +851,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   >
                     {<UserAdmin />} {`Administrator panel`}{" "}
                   </Text>
+                  */}
 
                   <Box
                     direction="row"
@@ -821,7 +859,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     wrap
                     // justify="between"
                     gap="20px"
-                    margin={{ top: "10px", bottom: "15px" }}
+                    margin={{ top: "10px", bottom: "60px" }}
                   >
                     <EmailContactManagement
                       channelId={this.state.channel!.id}
