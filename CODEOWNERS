@@ -1,5 +1,6 @@
-*.ts @maxtaylordavies
-*.tsx @maxtaylordavies
-*.js @maxtaylordavies
-*.jsx @maxtaylordavies
-*.css @maxtaylordavies
+*.py @remymess
+*.ts @alainrossier
+*.tsx @alainrossier
+*.js @alainrossier
+*.jsx @alainrossier
+*.css @alainrossier
