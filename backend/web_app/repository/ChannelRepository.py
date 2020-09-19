@@ -59,7 +59,7 @@ class ChannelRepository:
         #     "pink",
         # ]
         # colour = random.choice(colours)
-        colour = "#5454A0"
+        colour = "white"
 
         query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
         insertId = self.db.run_query(query)[0]
@@ -105,6 +105,9 @@ class ChannelRepository:
         # if user has no current role wrt channel, create new link between user and channel    
         query = f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {channelId}, "{role}")'
         self.db.run_query(query)
+
+    def addMemberToChannel(self, userId, roles):
+        raise NotADirectoryError
 
     def removeUserFromChannel(self, userId, channelId):
         query = f'DELETE FROM ChannelUsers WHERE user_id = {userId} AND channel_id = {channelId}'
