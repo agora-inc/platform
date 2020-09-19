@@ -36,6 +36,7 @@ export default class ScheduleTalkButton extends Component<Props, State> {
           margin={{bottom: "medium"}}
           pad={{bottom: "small", top: "small", left: "medium", right: "medium"}}
           height="40px"
+          width="15vw"
           justify="center"
           align="center"
           focusIndicator={false}

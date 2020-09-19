@@ -13,17 +13,18 @@ import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
 import AddUsersButton from "../Components/Channel/AddUsersButton";
 import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
-import { StatusInfo } from "grommet-icons";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
+import "../Styles/react-tabs.css";
 
 interface Props {
   location: any;
@@ -352,7 +353,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         width="75vw"
         background="white"
         round="10px"
-        margin={{ bottom: "30px" }}
+        margin={{ bottom: "60px" }}
       >
         <Box
           direction="row"
@@ -473,11 +474,26 @@ export default class ManageChannelPage extends Component<Props, State> {
           >
             <Box width="75%" align="start">
               {this.state.role === "owner" && (
-                <ScheduleTalkButton
-                  margin={{ bottom: "10px" }}
-                  channel={this.state.channel}
-                  onCreatedCallback={this.fetchAllTalks}
-                />
+                <Box direction="row" gap="40vw">
+                  <ScheduleTalkButton
+                    margin={{ bottom: "10px" }}
+                    channel={this.state.channel}
+                    onCreatedCallback={this.fetchAllTalks}
+                  />
+                  <Box
+                    width="20vw"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    pad="small"
+                    round="xsmall"
+                    background="#F3EACE"
+                  >
+                    <Text size="18px" weight="bold" color="grey">
+                      You are an administrator
+                    </Text>
+                  </Box>
+                </Box>
               )}
 
               <Box
@@ -540,281 +556,335 @@ export default class ManageChannelPage extends Component<Props, State> {
 
               {this.banner()}
 
-              <Text
-                size="28px"
-                weight="bold"
-                color="black"
-                margin={{ top: "10px" }}
-              >
-                {<UserAdmin />} {`Administrator panel`}{" "}
-              </Text>
-
-              <Box
-                direction="row"
-                width="100%"
-                wrap
-                // justify="between"
-                gap="20px"
-                margin={{ top: "10px", bottom: "15px" }}
-              >
-                <EmailContactManagement
-                  channelId={this.state.channel!.id}
-                  currentAddress={this.state.contactAddresses}
-                  onAddAddress={this.onAddContactAddress}
-                  onDeleteAddress={this.onDeleteContactAddress}
-                />
-              </Box>
-
-              <Box direction="row" width="100%" justify="between">
-                <Box
-                  width="31.5%"
-                  height="250px"
-                  background="#e5e5e5"
-                  round="7.5px"
-                  pad="10px"
-                >
-                  <Box direction="row" justify="between">
-                    <Text weight="bold" size="20px" color="black">
-                      Agora admins
+              <Tabs>
+                <TabList>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <Workshop />
+                      <Text size="24px"> 
+                        Talks 
+                      </Text>
+                    </Box>
+                  </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <Group />
+                      <Text size="24px"> 
+                        Community 
+                      </Text>
+                    </Box>
+                  </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <ContactInfo />
+                      <Text size="24px"> 
+                        Contact 
+                      </Text>
+                    </Box>
+                  </Tab>
+                </TabList>
+                
+                <TabPanel style={{width: "74.35vw"}}>
+                  <Box
+                    width="100%"
+                    direction="row"
+                    gap="small"
+                    margin={{ top: "40px", bottom: "24px" }}
+                  >
+                    <Text size="24px" weight="bold" color="black">
+                      {`Drafts`}
                     </Text>
-                    {this.state.role === "owner" && (
-                      <AddUsersButton
-                        role="owner"
-                        existingUsers={this.state.channelOwners}
-                        channelId={this.state.channel!.id}
-                        onUserAddedCallback={() => {
-                          this.fetchMembers();
-                          this.fetchOwners();
-                          this.fetchFollowers();
-                        }}
-                      />
+                    <StatusInfo
+                      onMouseEnter={() => {
+                        this.setState({ showDraftInfo: true });
+                      }}
+                      onMouseLeave={() => {
+                        this.setState({ showDraftInfo: false });
+                      }}
+                    />
+                    {this.state.showDraftInfo && (
+                      <Box
+                        background="black"
+                        round="xsmall"
+                        pad="small"
+                        //height="30px"
+                        width="210px"
+                        margin={{ top: "-6px" }}
+                      >
+                        <Text size="12px">
+                          These talks are only visible to you.
+                        </Text>
+                      </Box>
                     )}
                   </Box>
+                  {this.state.drafts.length === 0 && (
+                    <Box
+                      direction="row"
+                      width="100%"
+                      pad="small"
+                      justify="between"
+                      round="xsmall"
+                      align="center"
+                      alignSelf="center"
+                      background="#F3EACE"
+                      margin={{ bottom: "36px" }}
+                    >
+                      <Text size="18px" weight="bold" color="grey">
+                        No draft saved in{" "}
+                        {this.state.channel
+                          ? this.state.channel.name
+                          : "this channel"}
+                      </Text>
+                    </Box>
+                  )}
+                  <ChannelPageTalkList
+                    talks={this.state.drafts}
+                    channelId={this.state.channel!.id}
+                    user={this.state.user}
+                    admin
+                    onEditCallback={this.fetchAllTalks}
+                  />
+                  {this.state.currentTalks.length > 0 && (
+                    <Box width="100%">
+                      <Text
+                        size="28px"
+                        weight="bold"
+                        color="black"
+                        margin={{ top: "40px", bottom: "24px" }}
+                      >
+                        {`Happening now`}
+                      </Text>
+                      {this.state.currentTalks.map((talk: Talk) => (
+                        <ChannelPageTalkCard 
+                          talk={talk} 
+                          user={null}
+                          admin
+                          width="31.5%" 
+                          isCurrent={true}
+                          onEditCallback={this.fetchAllTalks}
+                        />
+                      ))}
+                    </Box>
+                  )}
+                  <Box
+                    width="100%"
+                    margin={{top: "12px", bottom: "24px" }}
+                  >
+                    <Text
+                      size="24px"
+                      weight="bold"
+                      color="black"
+                    >
+                      {`Upcoming talks`}
+                    </Text>
+                  </Box>
+                  {this.state.talks.length === 0 && (
+                    <Box
+                      direction="row"
+                      width="100%"
+                      pad="small"
+                      justify="between"
+                      round="xsmall"
+                      align="center"
+                      alignSelf="center"
+                      background="#F3EACE"
+                      margin={{ bottom: "36px" }}
+                    >
+                      <Text size="18px" weight="bold" color="grey">
+                        There are no upcoming talks in{" "}
+                        {this.state.channel
+                          ? this.state.channel.name
+                          : "this channel"}
+                      </Text>
+                    </Box>
+                  )}
+                  <ChannelPageTalkList
+                    talks={this.state.talks}
+                    channelId={this.state.channel!.id}
+                    user={this.state.user}
+                    admin
+                    onEditCallback={this.fetchAllTalks}
+                  />
+                  {this.state.pastStreams.length !== 0 && (
+                    <Box
+                      width="100%"
+                      margin={{top: "12px", bottom: "24px" }}
+                    >
+                      <Text
+                        size="24px"
+                        weight="bold"
+                        color="black"
+                        margin={{ top: "40px" }}
+                      >
+                        {`Past talks`}
+                      </Text>
+                    </Box>
+                  )}
                   <Box
                     direction="row"
+                    width="100%"
                     wrap
-                    margin={{ top: "5px" }}
-                    gap="xsmall"
+                    // justify="between"
+                    gap="1.5%"
+                    margin={{ top: "10px" }}
                   >
-                    {this.state.channelOwners.map((owner: User) => (
-                      <ChannelPageUserCircle
-                        user={owner}
-                        channelId={this.state.channel?.id}
-                        onRemovedCallback={this.fetchOwners}
-                        showRemoveButton={this.state.role === "owner"}
+                    {this.state.pastStreams.map((talk: Talk) => (
+                      <PastTalkCard
+                        width="31.5%"
+                        talk={talk}
+                        admin
+                        margin={{ bottom: "medium" }}
+                        onDelete={() => this.fetchPastTalks()}
+                        user={null}
+                        onEditCallback={this.fetchAllTalks}
                       />
                     ))}
                   </Box>
-                </Box>
+                </TabPanel>
+                <TabPanel style={{width: "74.35vw"}}>
+                  <Box 
+                    direction="row" 
+                    width="100%" 
+                    justify="between" 
+                    margin={{bottom: "60px"}}>
+                    <Box
+                      width="25%"
+                      height="250px"
+                      background="#e5e5e5"
+                      round="7.5px"
+                      pad="10px"
+                    >
+                      <Box direction="row" justify="between">
+                        <Text weight="bold" size="20px" color="black">
+                          Agora admins
+                        </Text>
+                        {this.state.role === "owner" && (
+                          <AddUsersButton
+                            role="owner"
+                            existingUsers={this.state.channelOwners}
+                            channelId={this.state.channel!.id}
+                            onUserAddedCallback={() => {
+                              this.fetchMembers();
+                              this.fetchOwners();
+                              this.fetchFollowers();
+                            }}
+                          />
+                        )}
+                      </Box>
+                      <Box
+                        direction="row"
+                        wrap
+                        margin={{ top: "5px" }}
+                        gap="xsmall"
+                      >
+                        {this.state.channelOwners.map((owner: User) => (
+                          <ChannelPageUserCircle
+                            user={owner}
+                            channelId={this.state.channel?.id}
+                            onRemovedCallback={this.fetchOwners}
+                            showRemoveButton={this.state.role === "owner"}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
 
-                <Box
-                  width="31.5%"
-                  height="250px"
-                  background="#e5e5e5"
-                  round="7.5px"
-                  pad="10px"
-                >
-                  <Box direction="row" justify="between">
-                    <Text weight="bold" size="20px" color="black">
-                      Agora members
-                    </Text>
-                    {this.state.role === "owner" && (
-                      <AddUsersButton
-                        role="member"
-                        existingUsers={this.state.channelMembers}
-                        channelId={this.state.channel!.id}
-                        onUserAddedCallback={() => {
-                          this.fetchMembers();
-                          this.fetchOwners();
-                          this.fetchFollowers();
-                        }}
-                      />
-                    )}
+                    <Box
+                      width="70%"
+                      height="250px"
+                      background="#e5e5e5"
+                      round="7.5px"
+                      pad="10px"
+                    >
+                      <Box direction="row" justify="between">
+                        <Text weight="bold" size="20px" color="black">
+                          Agora members
+                        </Text>
+                        {this.state.role === "owner" && (
+                          <AddUsersButton
+                            role="member"
+                            existingUsers={this.state.channelMembers}
+                            channelId={this.state.channel!.id}
+                            onUserAddedCallback={() => {
+                              this.fetchMembers();
+                              this.fetchOwners();
+                              this.fetchFollowers();
+                            }}
+                          />
+                        )}
+                      </Box>
+                      <Box
+                        direction="row"
+                        wrap
+                        margin={{ top: "5px" }}
+                        gap="xsmall"
+                      >
+                        {this.state.channelMembers.map((member: User) => (
+                          <ChannelPageUserCircle
+                            user={member}
+                            channelId={this.state.channel?.id}
+                            onRemovedCallback={this.fetchMembers}
+                            showRemoveButton={this.state.role === "owner"}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
+                    {/*       
+                    <Box
+                      width="31.5%"
+                      height="250px"
+                      background="#e5e5e5"
+                      round="7.5px"
+                      pad="10px"
+                    >
+                      <Text weight="bold" size="20px" color="black">
+                        Followers
+                      </Text>
+                      <Box
+                        direction="row"
+                        wrap
+                        margin={{ top: "5px" }}
+                        gap="xsmall"
+                      >
+                        {this.state.followers.map((follower: User) => (
+                          <ChannelPageUserCircle
+                            user={follower}
+                            showRemoveButton={false}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
+                    */}
                   </Box>
-                  <Box
-                    direction="row"
-                    wrap
-                    margin={{ top: "5px" }}
-                    gap="xsmall"
-                  >
-                    {this.state.channelMembers.map((member: User) => (
-                      <ChannelPageUserCircle
-                        user={member}
-                        channelId={this.state.channel?.id}
-                        onRemovedCallback={this.fetchMembers}
-                        showRemoveButton={this.state.role === "owner"}
-                      />
-                    ))}
-                  </Box>
-                </Box>
-                <Box
-                  width="31.5%"
-                  height="250px"
-                  background="#e5e5e5"
-                  round="7.5px"
-                  pad="10px"
-                >
-                  <Text weight="bold" size="20px" color="black">
-                    Followers
-                  </Text>
-                  <Box
-                    direction="row"
-                    wrap
-                    margin={{ top: "5px" }}
-                    gap="xsmall"
-                  >
-                    {this.state.followers.map((follower: User) => (
-                      <ChannelPageUserCircle
-                        user={follower}
-                        showRemoveButton={false}
-                      />
-                    ))}
-                  </Box>
-                </Box>
-              </Box>
-              <Box
-                direction="row"
-                gap="small"
-                margin={{ top: "40px", bottom: "24px" }}
-              >
-                <Text size="28px" weight="bold" color="black">
-                  {`Drafts`}
-                </Text>
-                <StatusInfo
-                  onMouseEnter={() => {
-                    this.setState({ showDraftInfo: true });
-                  }}
-                  onMouseLeave={() => {
-                    this.setState({ showDraftInfo: false });
-                  }}
-                />
-                {this.state.showDraftInfo && (
-                  <Box
-                    background="black"
-                    round="xsmall"
-                    pad="small"
-                    //height="30px"
-                    width="210px"
-                    margin={{ top: "-6px" }}
-                  >
-                    <Text size="12px">
-                      These talks are only visible to you.
-                    </Text>
-                  </Box>
-                )}
-              </Box>
-              {this.state.drafts.length === 0 && (
-                <Box
-                  direction="row"
-                  width="100%"
-                  pad="small"
-                  justify="between"
-                  round="xsmall"
-                  align="center"
-                  alignSelf="center"
-                  background="#F3EACE"
-                  margin={{ bottom: "36px" }}
-                >
-                  <Text size="18px" weight="bold" color="grey">
-                    No draft saved in{" "}
-                    {this.state.channel
-                      ? this.state.channel.name
-                      : "this channel"}
-                  </Text>
-                </Box>
-              )}
-              <ChannelPageTalkList
-                talks={this.state.drafts}
-                channelId={this.state.channel!.id}
-                user={this.state.user}
-                admin
-                onEditCallback={this.fetchAllTalks}
-              />
-              {this.state.currentTalks.length > 0 && (
-                <Box width="100%">
+                </TabPanel>
+                <TabPanel style={{width: "74.35vw"}}>
+                  {/*
                   <Text
                     size="28px"
                     weight="bold"
                     color="black"
-                    margin={{ top: "40px", bottom: "24px" }}
+                    margin={{ top: "10px" }}
                   >
-                    {`Happening now`}
+                    {<UserAdmin />} {`Administrator panel`}{" "}
                   </Text>
-                  {this.state.currentTalks.map((talk: Talk) => (
-                    <ChannelPageTalkCard 
-                      talk={talk} 
-                      user={null}
-                      admin
-                      width="31.5%" 
-                      isCurrent={true}
-                      onEditCallback={this.fetchAllTalks}
+                  */}
+
+                  <Box
+                    direction="row"
+                    width="100%"
+                    wrap
+                    // justify="between"
+                    gap="20px"
+                    margin={{ top: "10px", bottom: "60px" }}
+                  >
+                    <EmailContactManagement
+                      channelId={this.state.channel!.id}
+                      currentAddress={this.state.contactAddresses}
+                      onAddAddress={this.onAddContactAddress}
+                      onDeleteAddress={this.onDeleteContactAddress}
                     />
-                  ))}
-                </Box>
-              )}
-              <Text
-                size="28px"
-                weight="bold"
-                color="black"
-                margin={{ top: "40px", bottom: "24px" }}
-              >
-                {`Upcoming talks`}
-              </Text>
-              {this.state.talks.length === 0 && (
-                <Box
-                  direction="row"
-                  width="100%"
-                  pad="small"
-                  justify="between"
-                  round="xsmall"
-                  align="center"
-                  alignSelf="center"
-                  background="#F3EACE"
-                  margin={{ bottom: "36px" }}
-                >
-                  <Text size="18px" weight="bold" color="grey">
-                    There are no upcoming talks in{" "}
-                    {this.state.channel
-                      ? this.state.channel.name
-                      : "this channel"}
-                  </Text>
-                </Box>
-              )}
-              <ChannelPageTalkList
-                talks={this.state.talks}
-                channelId={this.state.channel!.id}
-                user={this.state.user}
-                admin
-                onEditCallback={this.fetchAllTalks}
-              />
-              {this.state.pastStreams.length !== 0 && (
-                <Text
-                  size="28px"
-                  weight="bold"
-                  color="black"
-                  margin={{ top: "40px" }}
-                >{`Past talks`}</Text>
-              )}
-              <Box
-                direction="row"
-                width="100%"
-                wrap
-                // justify="between"
-                gap="1.5%"
-                margin={{ top: "10px" }}
-              >
-                {this.state.pastStreams.map((talk: Talk) => (
-                  <PastTalkCard
-                    width="31.5%"
-                    talk={talk}
-                    admin
-                    margin={{ bottom: "medium" }}
-                    onDelete={() => this.fetchPastTalks()}
-                    user={null}
-                    onEditCallback={this.fetchAllTalks}
-                  />
-                ))}
-              </Box>
+                  </Box>
+                </TabPanel>
+              </Tabs>
             </Box>
           </Box>
           <ReactTooltip />
