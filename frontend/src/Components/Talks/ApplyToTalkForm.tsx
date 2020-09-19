@@ -207,6 +207,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       <Box>
         <Box
           focusIndicator={false}
+          width="10vw"
           background="white"
           round="xsmall"
           pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
@@ -214,11 +215,13 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           style={{
             border: "1px solid #C2C2C2",
           }}
-          hoverIndicator={true}   
+          hoverIndicator={true}
+          justify="center"   
         >
           <Text 
             size="16px" 
-            color="grey" 
+            color="grey"
+            alignSelf="center"
           >
             Give a talk!
           </Text>
