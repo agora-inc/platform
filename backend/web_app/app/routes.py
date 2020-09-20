@@ -125,12 +125,12 @@ def generateChangePasswordLink():
     username = params["username"]
     user = users.getUser(params["username"])
     code = users.encodeAuthToken(user["id"], "changePassword")
-    link = f'http://localhost:3000/changepassword?code={code.decode()}'
+    link = f'https://agora.stream:3000/changepassword?code={code.decode()}'
     
     # email link
-    msg = Message('Hello', sender = 'team@agora.stream', recipients = [user["email"]])
-    msg.body = f'Link to reset your password: {link}'
-    msg.subject = "Reset password"
+    msg = Message('Agora.stream: password reset', sender = 'team@agora.stream', recipients = [user["email"]])
+    msg.body = f'Password reset link: {link}'
+    msg.subject = "Agora.stream: password reset"
     mail.send(msg)
 
     app.logger.debug(f"User {username} requested link to change password")

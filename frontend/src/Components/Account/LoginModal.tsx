@@ -65,7 +65,7 @@ export default class LoginModal extends Component<Props, State> {
           this.setState({ forgotPasswordText: "Email sent!" });
         } else {
           this.setState({
-            forgotPasswordText: "Error sending email :( please try again later",
+            forgotPasswordText: "Username not found. Try again.",
           });
         }
       }
@@ -145,6 +145,7 @@ export default class LoginModal extends Component<Props, State> {
               direction="row"
               gap="xsmall"
             >
+            
               <Text
                 onClick={this.onForgotPasswordClicked}
                 style={{
@@ -168,6 +169,11 @@ export default class LoginModal extends Component<Props, State> {
               {this.state.forgotPasswordText === "Email sent!" && (
                 <StatusGood size="16px" color="status-ok" />
               )}
+
+
+
+
+
             </Box>
           </Box>
         </Overlay>
