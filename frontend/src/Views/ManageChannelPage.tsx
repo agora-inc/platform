@@ -394,9 +394,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {
                   <img
                     src={
-                      ChannelService.getAvatar(this.state.channel!.id)
+                      ChannelService.getAvatar(this.state.channel!.id, 1)
                     }
-                    // HACK: we had the ts argument to prevent from caching.
                     height={100}
                     width={100}
                   />
