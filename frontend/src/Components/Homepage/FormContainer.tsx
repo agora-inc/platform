@@ -131,21 +131,15 @@ export default class FormContainer extends Component<{}, State> {
           title="Submit feedback"
         >
           <Box width="100%" gap="2px">
-            <Text size="14px" weight="bold" color="black">
-              Your name
-            </Text>
             <TextInput
-              placeholder="type something"
+              placeholder="Name (optional)"
               value={this.state.user.name}
               onChange={(e: any) => this.handleInput(e, "name")}
             />
           </Box>
           <Box width="100%" gap="2px">
-            <Text size="14px" weight="bold" color="black">
-              Your email
-            </Text>
             <TextInput
-              placeholder="type something"
+              placeholder="Email (optional)"
               value={this.state.user.email}
               onChange={(e: any) => this.handleInput(e, "email")}
             />
@@ -163,11 +157,8 @@ export default class FormContainer extends Component<{}, State> {
             />
           </Box>
           <Box width="100%" gap="2px">
-            <Text size="14px" weight="bold" color="black">
-              Description
-            </Text>
             <TextArea
-              placeholder="We are looking forward to hearing your feedback!"
+              placeholder="Feedback / suggestion"
               value={this.state.user.description}
               onChange={(e: any) => this.handleInput(e, "description")}
               rows={8}

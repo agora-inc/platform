@@ -97,6 +97,12 @@ export default class AddUsersButton extends Component<Props, State> {
             style={{ height: "30px" }}
           />
         </Box>
+        
+        {/* "
+        The below section will need rework.
+        Remy
+        " */}
+
         {this.state.searchResults.map((user: User) => {
           if (
             !this.props.existingUsers.some((u) => u.username === user.username)
