@@ -19,6 +19,7 @@ talks = TalkRepository.TalkRepository(db=db)
 videos = VideoRepository.VideoRepository(db=db)
 channels = ChannelRepository.ChannelRepository(db=db)
 search = SearchRepository.SearchRepository(db=db)
+invitations = InvitationRepository.InvitationRepository(db=db)
 
 # --------------------------------------------
 # HELPER FUNCTIONS
@@ -224,7 +225,15 @@ def addUserToChannel():
     params = request.json
 
     app.logger.debug(f"User with id {params['userId']} added to agora with id {params['channelId']} in role {params['role']}")
-    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+    
+    # Check if user registered, else send an invitation
+    res = invitations.getRolesandChannelIds(params["email"])
+
+    if len(res) == 0:
+        invitations.sendNewInvitation(params["email"], params["channelId"], params["role"])
+        
+    else:
+        channels.addUserToChannel(params["email"], params["channelId"], params["role"])
 
     return jsonify("Success")
 
