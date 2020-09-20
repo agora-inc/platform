@@ -230,7 +230,8 @@ const uploadAvatar = (channelId: number, image: File, callback: any) => {
 const getAvatar = (channelId: number, cacheDelay?: number) => {
   // HACK: we had the ts argument to prevent from caching.
   if (cacheDelay) {
-    return baseApiUrl + `/channels/avatar?channelId=${channelId}&ts=` + cacheDelay;
+    let current_time = Math.floor(new Date().getTime() / 1000) * cacheDelay;
+    return baseApiUrl + `/channels/avatar?channelId=${channelId}&ts=` + current_time;
   } else {
     return baseApiUrl + `/channels/avatar?channelId=${channelId}`;
   }
