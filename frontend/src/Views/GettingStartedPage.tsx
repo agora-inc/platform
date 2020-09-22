@@ -125,14 +125,13 @@ export default class GettingStartedPage extends Component<Props, State> {
             <p>Welcome to agora. Here is a quick overview on how to use the site.</p>
             <div>
               <ReactPlayer
-                url="https://www.youtube.com/embed/lUM9cKgnFh4"
+                url="https://www.youtube.com/embed/vlqhG3YGMUg"
                 playing={true}
                 controls
                 width="60vw"
                 height="60vh"
               />
             </div>
-            
             
             {/* <h2><strong>1. Where to browse for talks?</strong></h2>
             <p>i) On the main page, you will be able to browse for upcoming talks given your topic of interest. Results will be shown below.&nbsp;</p>
