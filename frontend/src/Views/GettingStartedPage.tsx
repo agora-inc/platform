@@ -125,7 +125,7 @@ export default class GettingStartedPage extends Component<Props, State> {
             <p>Welcome to agora. Here is a quick overview on how to use the site.</p>
             <div>
               <ReactPlayer
-                url="https://www.youtube.com/embed/8Kst6-4pTzY"
+                url="https://www.youtube.com/embed/lUM9cKgnFh4"
                 playing={true}
                 controls
                 width="60vw"
