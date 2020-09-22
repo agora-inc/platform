@@ -72,6 +72,17 @@ export default class LoginModal extends Component<Props, State> {
     );
   };
 
+  isMissing = () => {
+    let res: string[] = []
+    if (this.state.username === "") {
+      res.push("Username")
+    }
+    if (this.state.password === "") {
+      res.push("Password")
+    }
+    return res;
+  }
+
   render() {
     return (
       <Box>
@@ -100,7 +111,8 @@ export default class LoginModal extends Component<Props, State> {
           onCancelClick={this.toggleModal}
           submitButtonText="Log in "
           onSubmitClick={this.onSubmit}
-          canProceed={true}
+          canProceed={this.isMissing().length === 0}
+          isMissing={this.isMissing()}
           contentHeight={this.state.failed ? "300px" : "170px"}
         >
           {this.state.failed && (

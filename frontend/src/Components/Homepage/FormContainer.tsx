@@ -96,6 +96,14 @@ export default class FormContainer extends Component<{}, State> {
     this.setState({ showForm: !this.state.showForm });
   };
 
+  isMissing = () => {
+    let res: string[] = []
+    if (this.state.user.description === "") {
+      res.push("Feedback / suggestion")
+    }
+    return res;
+  }
+
   render() {
     return (
       <Box>
@@ -124,7 +132,8 @@ export default class FormContainer extends Component<{}, State> {
           onClickOutside={this.toggleModal}
           onSubmitClick={this.handleFormSubmit}
           submitButtonText="Submit"
-          canProceed={true}
+          canProceed={this.isMissing().length === 0}
+          isMissing={this.isMissing()}
           width={500}
           height={640}
           contentHeight="500px"
