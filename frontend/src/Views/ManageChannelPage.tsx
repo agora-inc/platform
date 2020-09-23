@@ -46,7 +46,6 @@ interface State {
   mailingList: string;
   listEmailCorrect: string[];
   listEmailWrong: string[];
-  validMailingList: boolean;
   talks: Talk[];
   drafts: Talk[];
   currentTalks: Talk[];
@@ -77,7 +76,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       mailingList: "",
       listEmailCorrect: [],
       listEmailWrong: [],
-      validMailingList: true,
       talks: [],
       drafts: [],
       currentTalks: [],
@@ -290,18 +288,20 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   parseMailingList = () => {
     let listEmail = this.state.mailingList.split(";");
-    let validMailingList = true;
-    for (let email in listEmail) {
+    console.log(listEmail)
+    let listEmailCorrect = this.state.listEmailCorrect;
+    let listEmailWrong = [];
+    for (var email of listEmail) {
+      email = email.replace(" ", "")
       if (!email.includes("@") || !email.includes(".")) {
-        validMailingList = false;
+        listEmailWrong.push(email);
+      } else {
+        listEmailCorrect.push(email);
       }
     }
-    this.setState({ validMailingList })
-    if (validMailingList) {
-
-    } else {
-
-    }
+    this.setState({ listEmailCorrect })
+    this.setState({ listEmailWrong });
+    this.setState({ mailingList: listEmailWrong.join("; ")})
   };
 
   onSaveLongDescriptionClicked = (newDescription: string) => {
@@ -486,6 +486,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
+    console.log(this.state.listEmailCorrect)
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -778,7 +779,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       justify="between" 
                       margin={{bottom: "30px"}}>
                       <Box
-                        width="25%"
+                        width="31.5%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -819,7 +820,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Box>
 
                       <Box
-                        width="70%"
+                        width="31.5%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -856,6 +857,25 @@ export default class ManageChannelPage extends Component<Props, State> {
                               showRemoveButton={this.state.role === "owner"}
                             />
                           ))}
+                        </Box>
+                      </Box>
+                      <Box
+                        width="31.5%"
+                        height="250px"
+                        //background="white"
+                        round="7.5px"
+                        pad="10px"
+                      >
+                        <Text weight="bold" size="20px" color="black">
+                          Invited members
+                        </Text>
+                        <Box
+                          direction="row"
+                          wrap
+                          margin={{ top: "5px" }}
+                          gap="xsmall"
+                        >
+                          {this.state.listEmailCorrect}
                         </Box>
                       </Box>
                       {/*       
@@ -919,17 +939,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                         value={this.state.mailingList}
                         onChange={(e: any) => this.handleMailingList(e)}
                         rows={4}
-                        style={{border: this.state.validMailingList ? "2px solid black" : "2px solid red"}}
+                        style={{border: this.state.listEmailWrong.length === 0 ? "2px solid black" : "2px solid red"}}
                         data-tip data-for='email'
                       />
                       <Box direction="row" width="100%" margin={{top: "20px"}}>
                         <Box width="100%"> 
-                          {!this.state.validMailingList && (
+                          {this.state.listEmailWrong.length > 0 && (
                             <Text color="red">
-                              The following email addresses are invalid.
-                              {this.state.listEmailWrong.map((item, index) => (
-                                <li key={item}>{item}</li>
-                              ))}
+                              The remaining email addresses are invalid.
                             </Text>
 
                             
@@ -939,7 +956,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                           onClick={this.parseMailingList}
                           background="#7E1115"
                           round="xsmall"
-                          //margin={{ horizontal: "small" }}
                           pad="xsmall"
                           height="40px"
                           width="18%"
@@ -948,7 +964,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           focusIndicator={false}
                           hoverIndicator="#5A0C0F"
                         >
-                          <Text size="18px"> Add addresses </Text>
+                          <Text size="18px"> Add </Text>
                         </Box>
                       </Box>
                     </Box>
