@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text } from "grommet";
+import { Box, Text, TextArea } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -25,7 +25,6 @@ import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import "../Styles/react-tabs.css";
-import TextArea from "antd/lib/input/TextArea";
 
 interface Props {
   location: any;
@@ -44,6 +43,8 @@ interface State {
   channelOwners: User[];
   channelMembers: User[];
   followers: User[];
+  mailingList: string;
+  validMailingList: boolean;
   talks: Talk[];
   drafts: Talk[];
   currentTalks: Talk[];
@@ -71,6 +72,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelOwners: [],
       channelMembers: [],
       followers: [],
+      mailingList: "",
+      validMailingList: true,
       talks: [],
       drafts: [],
       currentTalks: [],
@@ -276,6 +279,23 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
+  handleMailingList = (e: any) => {
+    let value = e.target.value;
+    this.setState({"mailingList": value});
+  };
+
+  parseMailingList = (seq: string) => {
+    let listEmail = seq.split(";");
+    let temp = true;
+    for (let email in listEmail) {
+      if (!email.includes("@") || !email.includes(".")) {
+        temp = false;
+      }
+    }
+    this.setState({validMailingList: temp})
+    return listEmail
+  };
+
   onSaveLongDescriptionClicked = (newDescription: string) => {
     ChannelService.updateLongChannelDescription(
       this.state.channel!.id,
@@ -458,7 +478,6 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
-    // console.log(UserService.getCurrentUser());
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -878,10 +897,13 @@ export default class ManageChannelPage extends Component<Props, State> {
                         )}
                       </Box>
                       
-                      <TextArea>
-                        adasaa
-                      </TextArea>
-                      
+                      <TextArea
+                        placeholder="Enter your list of email addresses"
+                        value={this.state.mailingList}
+                        onChange={(e: any) => this.handleMailingList(e)}
+                        rows={4}
+                        style={{border: "2px solid red"}}
+                      />
                     </Box>
                   </Box>
                 </TabPanel>
