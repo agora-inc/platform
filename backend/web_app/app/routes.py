@@ -3,23 +3,24 @@
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
 
-from app import app, db, mail
+from app import app, mail
+from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
 from flask import jsonify, request, send_file
 from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-users = UserRepository.UserRepository(db=db)
-tags = TagRepository.TagRepository(db=db)
-topics = TopicRepository.TopicRepository(db=db)
-questions = QandARepository.QandARepository(db=db)
-streams = StreamRepository.StreamRepository(db=db)
-talks = TalkRepository.TalkRepository(db=db)
-videos = VideoRepository.VideoRepository(db=db)
-channels = ChannelRepository.ChannelRepository(db=db)
-search = SearchRepository.SearchRepository(db=db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=db, mail_sys=mail)
+users = UserRepository.UserRepository(db=agora_db)
+tags = TagRepository.TagRepository(db=agora_db)
+topics = TopicRepository.TopicRepository(db=agora_db)
+questions = QandARepository.QandARepository(db=agora_db)
+streams = StreamRepository.StreamRepository(db=agora_db)
+talks = TalkRepository.TalkRepository(db=agora_db)
+videos = VideoRepository.VideoRepository(db=agora_db)
+channels = ChannelRepository.ChannelRepository(db=agora_db)
+search = SearchRepository.SearchRepository(db=agora_db)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
 
 # --------------------------------------------
 # HELPER FUNCTIONS
@@ -233,7 +234,7 @@ def addInvitedMembersToChannel():
 
     params = request.json
 
-    res = invitations.addInvitedMemberToChannel(params["emailList"], params["channelId"], 'member')
+    invitations.addInvitedMemberToChannel(params["emailList"], params["channelId"], 'member')
     app.logger.debug(f"Users with email {params['emailList']} invited to agora with id {params['channelId']}")
 
     return jsonify("Success")

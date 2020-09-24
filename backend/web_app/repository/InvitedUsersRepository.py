@@ -92,7 +92,3 @@ class InvitedUsersRepository:
             WHERE channel_id = {channelId};
             '''
         return self.db.run_query(all_invited_emails_query)
-
-
-
-
