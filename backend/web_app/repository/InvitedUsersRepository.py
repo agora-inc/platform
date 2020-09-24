@@ -1,10 +1,14 @@
 import random
 import logging
+from repository.ChannelRepository import ChannelRepository
+from flask_mail import Message
 
 
 class InvitedUsersRepository:
-    def __init__(self, db):
+    def __init__(self, db, mail_sys):
         self.db = db
+        self.mail_sys = mail_sys
+        self.channels = ChannelRepository(db=db)
 
     def sendNewInvitation(self, emailAddress, channelId, role):
         # 1. create user
@@ -37,13 +41,13 @@ class InvitedUsersRepository:
             '''
         return self.db.run_query(add_member_query, delete_email_mailing_list_query)
 
-    def addInvitedMemberToChannel(self, email_list: list, channelId, role):
+    def addInvitedMemberToChannel(self, emailList: list, channelId, role):
         #
         # TODO: TO TEST
         #
         # Remove all duplicates in the email_list
-        assert( isinstance(email_list, list))
-        email_list_cleaned = list(set([i[0].lower() for i in email_list]))
+        assert( isinstance(emailList, list))
+        email_list_cleaned = list(set([i[0].lower() for i in emailList]))
 
         # A. if one of the email is already associated to a user, remove it
         registered_users_email_query = f'''
@@ -63,6 +67,7 @@ class InvitedUsersRepository:
 
         # B. Insert emails in DB
         email_list_insert = list([tuple(i[0].lower(), channelId) for i in email_list_cleaned])
+        # app.logger.debug(f"Invitation send to")
         sql_email_list = str(email_list_insert)
         if len(sql_email_list) >=2:
             sql_email_list = sql_email_list[1:-1]
@@ -70,15 +75,14 @@ class InvitedUsersRepository:
         add_query = f'''INSERT INTO 'GhostUsers' (email, channel_id) VALUES {sql_email_list};'''
         self.db.run_query(add_query)
 
-        for email in email_list:
-            self.sendInvitation_email(email)
-
-    def sendInvitation_email(self, email):
-        #
-        # TODO: TO TEST
-        #
-        # add formatting here; maybe from a noreply@agora.stream
-        raise NotImplementedError
+        # send emails
+        channel_name = self.channels.getChannelById(channelId)["name"]
+        text_msg = 'Agora.stream: password reset'
+        for email in emailList:
+            msg = Message(text_msg, sender = 'team@agora.stream', recipients = [email])
+            msg.body = f'Hi there! This is a test from {channel_name}'
+            msg.subject = f"Agora.stream: invitation to {channel_name}"
+            self.mail_sys.send(msg)
 
     def getInvitedMembersEmails(self, channelId):
         #
@@ -88,3 +92,7 @@ class InvitedUsersRepository:
             WHERE channel_id = {channelId};
             '''
         return self.db.run_query(all_invited_emails_query)
+
+
+
+

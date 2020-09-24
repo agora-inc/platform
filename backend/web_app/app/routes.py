@@ -19,7 +19,7 @@ talks = TalkRepository.TalkRepository(db=db)
 videos = VideoRepository.VideoRepository(db=db)
 channels = ChannelRepository.ChannelRepository(db=db)
 search = SearchRepository.SearchRepository(db=db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=db)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=db, mail_sys=mail)
 
 # --------------------------------------------
 # HELPER FUNCTIONS
