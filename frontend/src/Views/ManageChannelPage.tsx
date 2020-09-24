@@ -20,7 +20,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, MailOption, Channel } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, MailOption } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -316,6 +316,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.addInvitedMembersToChannel(
       this.state.channel!.id,
       listEmailCorrect,
+      () => {},
     )
     this.setState({ listEmailWrong });
     this.setState({ mailingList: listEmailWrong.join("; ")})

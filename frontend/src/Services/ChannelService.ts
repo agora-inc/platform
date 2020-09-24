@@ -35,6 +35,16 @@ const createChannel = (
   );
 };
 
+const addInvitedMembersToChannel = (channelId: number, emails: string[], callback: any) => {
+  const url = `channels/invite/add?channelId=${channelId}&emailList=${emails.join(",")}`;
+  get(url, callback)
+};
+
+const getInvitedMembersForChannel = (channelId: number, callback: any) => {
+  const url = `channels/invite/?channelId=${channelId}`;
+  get(url, callback)
+}
+
 const getChannelsForUser = (userId: number, roles: string[], callback: any) => {
   const url = `channels/foruser?userId=${userId}&role=${roles.reduce(
     (acc, curr) => acc + `&role=${curr}`
@@ -307,6 +317,8 @@ export const ChannelService = {
   getTrendingChannels,
   getChannelByName,
   createChannel,
+  addInvitedMembersToChannel,
+  getInvitedMembersForChannel,
   getChannelsForUser,
   getUsersForChannel,
   getRoleInChannel,

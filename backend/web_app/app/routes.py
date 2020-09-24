@@ -222,7 +222,7 @@ def createChannel():
 
     return jsonify(channels.createChannel(name, description, userId))
 
-@app.route('/channels/invite', methods=["POST", "OPTIONS"])
+@app.route('/channels/invite/add', methods=["POST", "OPTIONS"])
 def addInvitedMembersToChannel():
     logRequest(request)
     if request.method == "OPTIONS":
@@ -237,6 +237,14 @@ def addInvitedMembersToChannel():
     app.logger.debug(f"Users with email {params['emailList']} invited to agora with id {params['channelId']}")
 
     return jsonify("Success")
+
+@app.route('/channels/invite', methods=["GET"])
+def getInvitedMembersForChannel():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(invitations.getInvitedMembersEmails(channelId))
 
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
 def removeUserForChannel():
