@@ -97,9 +97,11 @@ export default class AddUsersButton extends Component<Props, State> {
             style={{ height: "30px" }}
           />
         </Box>
-        
+
         {/* "
         The below section will need rework.
+        - Remove ability to browse
+        - 
         Remy
         " */}
 

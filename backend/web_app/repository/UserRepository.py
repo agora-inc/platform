@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import os
 import jwt
 
+
 class User:
     def __init__(self, username, password):
         self.username = username
@@ -44,9 +45,9 @@ class UserRepository:
 
         passwordHash = generate_password_hash(password)
         query = f'INSERT INTO Users(username, password_hash, email) VALUES ("{username}", "{passwordHash}", "{email}")'
-        insertId = self.db.run_query(query)[0]
-        return self.getUserById(insertId)
-    
+        userId = self.db.run_query(query)[0]
+        return self.getUserById(userId)
+
     def authenticate(self, username, password):
         user = self.getUser(username)
         if user != None and check_password_hash(user["password_hash"], password):
@@ -101,9 +102,3 @@ class UserRepository:
         query = f'UPDATE Users SET public = "{int(public)}" WHERE id = {userId}'
         self.db.run_query(query)
         return self.getUserById(userId)
-
-
-    
-
-
-    
