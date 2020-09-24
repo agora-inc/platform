@@ -37,7 +37,7 @@ class InvitedUsersRepository:
             '''
         return self.db.run_query(add_member_query, delete_email_mailing_list_query)
 
-    def addInvitedMemberToChannel(self, email_list: list, channelId):
+    def addInvitedMemberToChannel(self, email_list: list, channelId, role='member'):
         #
         # TODO: TO TEST
         #
@@ -55,20 +55,8 @@ class InvitedUsersRepository:
             WHERE email IS NOT NULL
             ;
         '''
-        with open("/home/cloud-user/text2.txt", "w") as outfile:
-            outfile.write("WELCOME TO ST TROPEZ")
-            outfile.write(registered_users_email_query)
 
         registered_users_emails = self.db.run_query(registered_users_email_query)
-
-        with open("/home/cloud-user/text3.txt", "w") as outfile:
-            outfile.write("WELCOME TO ST TROPEZ")
-            outfile.write(str(email_list_cleaned))
-
-        
-        with open("/home/cloud-user/text3.txt", "w") as outfile:
-            outfile.write("WELCOME TO ST TROPEZ")
-            outfile.write(str(email_list_cleaned))
 
         for email in email_list_cleaned:
             if email in registered_users_emails:
