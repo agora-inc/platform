@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea } from "grommet";
+import { Box, Text, TextArea} from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -293,10 +293,12 @@ export default class ManageChannelPage extends Component<Props, State> {
     let listEmailWrong = [];
     for (var email of listEmail) {
       email = email.replace(" ", "")
-      if (!email.includes("@") || !email.includes(".")) {
-        listEmailWrong.push(email);
-      } else {
-        listEmailCorrect.push(email);
+      if (email.length > 0) {
+        if (!email.includes("@") || !email.includes(".")) {
+          listEmailWrong.push(email);
+        } else {
+          listEmailCorrect.push(email);
+        }
       }
     }
     this.setState({ listEmailCorrect })
@@ -862,20 +864,23 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Box
                         width="31.5%"
                         height="250px"
-                        //background="white"
                         round="7.5px"
                         pad="10px"
                       >
-                        <Text weight="bold" size="20px" color="black">
+                        <Text weight="bold" size="20px" color="black" margin={{bottom: "10px"}}>
                           Invited members
                         </Text>
                         <Box
-                          direction="row"
-                          wrap
+                          direction="column"
+                          width="100%"
+                          height="100%"
+                          overflow={{"vertical": "scroll", "horizontal": "auto"}} 
                           margin={{ top: "5px" }}
                           gap="xsmall"
                         >
-                          {this.state.listEmailCorrect}
+                          {this.state.listEmailCorrect.map((item) =>
+                            <Text> {item} </Text>
+                          )}
                         </Box>
                       </Box>
                       {/*       
