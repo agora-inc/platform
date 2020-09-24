@@ -20,7 +20,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, MailOption } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, MailOption, Channel } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -164,6 +164,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchOwners();
     this.fetchMembers();
     this.fetchFollowers();
+    this.fetchInvitedMembers();
     this.fetchPastTalks();
     this.fetchCurrentTalks();
     this.fetchTalks();
@@ -209,6 +210,15 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
+  fetchInvitedMembers = () => {
+    ChannelService.getInvitedMembersForChannel(
+      this.state.channel!.id,
+      (listEmailCorrect: string[]) => {
+        this.setState({ listEmailCorrect });
+      }
+    )
+  }
+
   fetchTalks = () => {
     TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
@@ -231,6 +241,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchDrafts();
     this.fetchTalks();
   };
+
   fetchAllTalks = () => {
     this.fetchDrafts()
     this.fetchTalks()
@@ -301,9 +312,14 @@ export default class ManageChannelPage extends Component<Props, State> {
         }
       }
     }
-    this.setState({ listEmailCorrect })
+    // this.setState({ listEmailCorrect })
+    ChannelService.addInvitedMembersToChannel(
+      this.state.channel!.id,
+      listEmailCorrect,
+    )
     this.setState({ listEmailWrong });
     this.setState({ mailingList: listEmailWrong.join("; ")})
+    this.fetchInvitedMembers()
   };
 
   onSaveLongDescriptionClicked = (newDescription: string) => {
