@@ -96,35 +96,6 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
-    def addUserToChannel(self, email, channelId, role):
-        query_registered = f'SELECT id FROM ChannelUsers WHERE email={email}'
-        id = self.db.run_query(query_registered)
-
-
-        #
-        #
-        #
-        #
-        #
-        # ON-GOING WORK (REMY) 
-        #
-        #
-        #
-        #
-        #
-        #
-
-
-        
-        query_1 = f'UPDATE ChannelUsers SET role="{role}" WHERE user_id={userId} AND channel_id={channelId}'
-        rowcount = self.db.run_query(query_1)[1]
-        if rowcount != 0:
-            return
-
-        # if user has no current role wrt channel, create new link between user and channel    
-        query_2 = f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {channelId}, "{role}")'
-        self.db.run_query(query_2)
-
     def removeUserFromChannel(self, userId, channelId):
         query = f'DELETE FROM ChannelUsers WHERE user_id = {userId} AND channel_id = {channelId}'
         self.db.run_query(query)
@@ -230,5 +201,19 @@ class ChannelRepository:
 
     def deleteChannel(self, id):
         query = f"DELETE FROM Channels where id = {id}"
-        self.db.run_query(query)
+        return self.db.run_query(query)
 
+    def getEmailAddressesMembersAndAdmins(self, channelId):
+        #
+        # TODO: TEST
+        #
+        email_members_and_admins_query = f'''
+            SELECT email from Users t1
+            INNER JOIN ChannelUsers t2
+            WHERE
+                (t1.id = t2.user_id 
+                    AND (t2.role in ('member', 'admin'))
+                )
+            ;
+            '''
+        return self.db.run_query(email_members_and_admins_query)

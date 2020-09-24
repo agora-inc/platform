@@ -4,7 +4,7 @@
 """ 
 
 from app import app, db, mail
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
 from flask import jsonify, request, send_file
 from flask_mail import Message
 from werkzeug import exceptions
@@ -19,7 +19,7 @@ talks = TalkRepository.TalkRepository(db=db)
 videos = VideoRepository.VideoRepository(db=db)
 channels = ChannelRepository.ChannelRepository(db=db)
 search = SearchRepository.SearchRepository(db=db)
-invitations = InvitationRepository.InvitationRepository(db=db)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=db)
 
 # --------------------------------------------
 # HELPER FUNCTIONS
@@ -66,6 +66,9 @@ def getUser():
 
 @app.route('/users/add', methods=["POST"])
 def addUser():
+    #
+    # TODO: TEST THAT MEMBERSHIP ARE MOVED
+    #
     logRequest(request)
 
     params = request.json
@@ -77,6 +80,13 @@ def addUser():
     if not user:
         app.logger.error(f"Attempted registration of new user with existing username {username}")
         return "username is taken", 400
+
+    try:
+        invitations.transfertInvitedMembershipsToUser(user, email)
+    except:
+        # We need to keep trace if an error happens.
+        # TODO: add this into logs in a file called "issue to fix manually"
+        pass
 
     app.logger.error(f"Successful registration of new user with username {username} and email {email}")
 
@@ -166,7 +176,6 @@ def updatePublic():
     return jsonify(updatedUser)
 
 
-
 # --------------------------------------------
 # CHANNEL ROUTES
 # --------------------------------------------
@@ -213,8 +222,8 @@ def createChannel():
 
     return jsonify(channels.createChannel(name, description, userId))
 
-@app.route('/channels/users/add', methods=["POST", "OPTIONS"])
-def addUserToChannel():
+@app.route('/channels/invite', methods=["POST", "OPTIONS"])
+def addInvitedMembersToChannel():
     logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
@@ -224,16 +233,8 @@ def addUserToChannel():
 
     params = request.json
 
-    app.logger.debug(f"User with id {params['userId']} added to agora with id {params['channelId']} in role {params['role']}")
-    
-    # Check if user registered, else send an invitation
-    res = invitations.getRolesandChannelIds(params["email"])
-
-    if len(res) == 0:
-        invitations.sendNewInvitation(params["email"], params["channelId"], params["role"])
-        
-    else:
-        channels.addUserToChannel(params["email"], params["channelId"], params["role"])
+    res = invitations.addInvitedMemberToChannel(params["emailList"], params["channelId"], 'member')
+    app.logger.debug(f"Users with email {params['emailList']} invited to agora with id {params['channelId']}")
 
     return jsonify("Success")
 
@@ -581,6 +582,8 @@ def serveThumbnail():
 # -------------------------------------------- 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
+    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
+    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
 
@@ -616,11 +619,6 @@ def getAllCurrentTalksForChannel():
 
 @app.route('/talks/channel/drafted', methods=["GET"])
 def getAllDraftedTalksForChannel():
-    ############################
-    #                          #
-    # TODO: Test this works    #
-    #                          #
-    ############################
     channelId = int(request.args.get("channelId"))
     return jsonify(talks.getAllDraftedTalksForChannel(channelId))
 
