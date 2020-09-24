@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea } from "grommet";
+import { Box, Text, TextArea} from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -20,7 +20,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, MailOption } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -44,7 +44,8 @@ interface State {
   channelMembers: User[];
   followers: User[];
   mailingList: string;
-  validMailingList: boolean;
+  listEmailCorrect: string[];
+  listEmailWrong: string[];
   talks: Talk[];
   drafts: Talk[];
   currentTalks: Talk[];
@@ -73,7 +74,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelMembers: [],
       followers: [],
       mailingList: "",
-      validMailingList: true,
+      listEmailCorrect: [],
+      listEmailWrong: [],
       talks: [],
       drafts: [],
       currentTalks: [],
@@ -162,6 +164,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchOwners();
     this.fetchMembers();
     this.fetchFollowers();
+    this.fetchInvitedMembers();
     this.fetchPastTalks();
     this.fetchCurrentTalks();
     this.fetchTalks();
@@ -207,6 +210,15 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
+  fetchInvitedMembers = () => {
+    ChannelService.getInvitedMembersForChannel(
+      this.state.channel!.id,
+      (listEmailCorrect: string[]) => {
+        this.setState({ listEmailCorrect });
+      }
+    )
+  }
+
   fetchTalks = () => {
     TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
@@ -229,6 +241,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchDrafts();
     this.fetchTalks();
   };
+
   fetchAllTalks = () => {
     this.fetchDrafts()
     this.fetchTalks()
@@ -284,16 +297,30 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({"mailingList": value});
   };
 
-  parseMailingList = (seq: string) => {
-    let listEmail = seq.split(";");
-    let temp = true;
-    for (let email in listEmail) {
-      if (!email.includes("@") || !email.includes(".")) {
-        temp = false;
+  parseMailingList = () => {
+    let listEmail = this.state.mailingList.split(";");
+    console.log(listEmail)
+    let listEmailCorrect = this.state.listEmailCorrect;
+    let listEmailWrong = [];
+    for (var email of listEmail) {
+      email = email.replace(" ", "")
+      if (email.length > 0) {
+        if (!email.includes("@") || !email.includes(".")) {
+          listEmailWrong.push(email);
+        } else {
+          listEmailCorrect.push(email);
+        }
       }
     }
-    this.setState({validMailingList: temp})
-    return listEmail
+    // this.setState({ listEmailCorrect })
+    ChannelService.addInvitedMembersToChannel(
+      this.state.channel!.id,
+      listEmailCorrect,
+      () => {},
+    )
+    this.setState({ listEmailWrong });
+    this.setState({ mailingList: listEmailWrong.join("; ")})
+    this.fetchInvitedMembers()
   };
 
   onSaveLongDescriptionClicked = (newDescription: string) => {
@@ -478,6 +505,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
+    console.log(this.state.listEmailCorrect)
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -595,6 +623,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
+                  {/*<Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <MailOption />
+                      <Text size="24px"> 
+                        Mailing list 
+                      </Text>
+                    </Box>
+                  </Tab>*/}
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <ContactInfo />
@@ -762,7 +798,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       justify="between" 
                       margin={{bottom: "30px"}}>
                       <Box
-                        width="25%"
+                        width="31.5%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -803,7 +839,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Box>
 
                       <Box
-                        width="70%"
+                        width="31.5%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -840,6 +876,28 @@ export default class ManageChannelPage extends Component<Props, State> {
                               showRemoveButton={this.state.role === "owner"}
                             />
                           ))}
+                        </Box>
+                      </Box>
+                      <Box
+                        width="31.5%"
+                        height="250px"
+                        round="7.5px"
+                        pad="10px"
+                      >
+                        <Text weight="bold" size="20px" color="black" margin={{bottom: "10px"}}>
+                          Invited members
+                        </Text>
+                        <Box
+                          direction="column"
+                          width="100%"
+                          height="100%"
+                          overflow={{"vertical": "scroll", "horizontal": "auto"}} 
+                          margin={{ top: "5px" }}
+                          gap="xsmall"
+                        >
+                          {this.state.listEmailCorrect.map((item) =>
+                            <Text> {item} </Text>
+                          )}
                         </Box>
                       </Box>
                       {/*       
@@ -879,7 +937,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         margin={{ top: "40px", bottom: "24px" }}
                       >
                         <Text size="24px" weight="bold" color="black">
-                          Add members via your mailing list
+                          Invite members
                         </Text>
                         <StatusInfo
                           data-tip data-for='mailingListInfo'
@@ -892,7 +950,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                         />
                         {this.state.showMemberEmailInfo && (
                           <ReactTooltip id='mailingListInfo' place="right" effect="solid">
-                            (Alain) Describe exactly what it is.
+                            Enter the email addresses of the people you want to invite as member of{" "}
+                            {this.state.channel ? this.state.channel.name : "your agora"}.
                           </ReactTooltip>
                         )}
                       </Box>
@@ -902,8 +961,34 @@ export default class ManageChannelPage extends Component<Props, State> {
                         value={this.state.mailingList}
                         onChange={(e: any) => this.handleMailingList(e)}
                         rows={4}
-                        style={{border: "2px solid red"}}
+                        style={{border: this.state.listEmailWrong.length === 0 ? "2px solid black" : "2px solid red"}}
+                        data-tip data-for='email'
                       />
+                      <Box direction="row" width="100%" margin={{top: "20px"}}>
+                        <Box width="100%"> 
+                          {this.state.listEmailWrong.length > 0 && (
+                            <Text color="red">
+                              The remaining email addresses are invalid.
+                            </Text>
+
+                            
+                          )}
+                        </Box>
+                        <Box
+                          onClick={this.parseMailingList}
+                          background="#7E1115"
+                          round="xsmall"
+                          pad="xsmall"
+                          height="40px"
+                          width="18%"
+                          justify="center"
+                          align="center"
+                          focusIndicator={false}
+                          hoverIndicator="#5A0C0F"
+                        >
+                          <Text size="18px"> Add </Text>
+                        </Box>
+                      </Box>
                     </Box>
                   </Box>
                 </TabPanel>
@@ -938,7 +1023,6 @@ export default class ManageChannelPage extends Component<Props, State> {
               </Tabs>
             </Box>
           </Box>
-          <ReactTooltip />
         </Box>
       ) : (
         <Redirect
