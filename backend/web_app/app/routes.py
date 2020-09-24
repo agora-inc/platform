@@ -233,7 +233,7 @@ def addInvitedMembersToChannel():
 
     params = request.json
 
-    res = invitations.addInvitedMemberToChannel(params["emailList"], params["channelId"], 'member')
+    invitations.addInvitedMemberToChannel(params["emailList"], params["channelId"], 'member')
     app.logger.debug(f"Users with email {params['emailList']} invited to agora with id {params['channelId']}")
 
     return jsonify("Success")

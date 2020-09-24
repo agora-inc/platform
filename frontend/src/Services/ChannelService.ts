@@ -36,8 +36,18 @@ const createChannel = (
 };
 
 const addInvitedMembersToChannel = (channelId: number, emails: string[], callback: any) => {
-  const url = `channels/invite/add?channelId=${channelId}&emailList=${emails.join(",")}`;
-  get(url, callback)
+  axios
+    .post(
+      baseApiUrl + `/channels/invite/add`,
+      { channelId: channelId, emails: emails },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback("ok");
+    })
+    .catch(function (error) {
+      callback(error.response.data);
+    });
 };
 
 const getInvitedMembersForChannel = (channelId: number, callback: any) => {
