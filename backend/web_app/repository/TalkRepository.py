@@ -1,13 +1,6 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
-
-
-# from ChannelRepository import ChannelRepository
-# from TagRepository import TagRepository
-# from TopicRepository import TopicRepository
-
-
 """
     TODO: All methods involving the "state" field must be tested.
 """
