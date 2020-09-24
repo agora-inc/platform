@@ -37,25 +37,38 @@ class InvitedUsersRepository:
             '''
         return self.db.run_query(add_member_query, delete_email_mailing_list_query)
 
-    def addInvitedMemberToChannel(self, email_list: list, channelId, role):
+    def addInvitedMemberToChannel(self, email_list: list, channelId):
         #
         # TODO: TO TEST
         #
         # Remove all duplicates in the email_list
         assert( isinstance(email_list, list))
-        email_list_cleaned = list(set([i[0].lower() for i in email_list]))
+        email_list_cleaned = list(set([email.lower() for email in email_list]))
 
         # A. if one of the email is already associated to a user, remove it
         registered_users_email_query = f'''
             SELECT email FROM Users t1
             INNER JOIN ChannelUsers t2
                 ON (t2.user_id = t1.id 
-                        AND t2.channel_id = 44
+                        AND t2.channel_id = {channelId}
                         AND (t2.role IN ('member', 'owner')))
             WHERE email IS NOT NULL
             ;
         '''
+        with open("/home/cloud-user/text2.txt", "w") as outfile:
+            outfile.write("WELCOME TO ST TROPEZ")
+            outfile.write(registered_users_email_query)
+
         registered_users_emails = self.db.run_query(registered_users_email_query)
+
+        with open("/home/cloud-user/text3.txt", "w") as outfile:
+            outfile.write("WELCOME TO ST TROPEZ")
+            outfile.write(str(email_list_cleaned))
+
+        
+        with open("/home/cloud-user/text3.txt", "w") as outfile:
+            outfile.write("WELCOME TO ST TROPEZ")
+            outfile.write(str(email_list_cleaned))
 
         for email in email_list_cleaned:
             if email in registered_users_emails:

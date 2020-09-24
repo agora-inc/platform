@@ -228,13 +228,14 @@ def addInvitedMembersToChannel():
     if request.method == "OPTIONS":
         return jsonify("ok")
         
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
+    #if not checkAuth(request.headers.get('Authorization')):
+    #    return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
 
-    invitations.addInvitedMemberToChannel(params["emailList"], params["channelId"], 'member')
-    app.logger.debug(f"Users with email {params['emailList']} invited to agora with id {params['channelId']}")
+    invitations.addInvitedMemberToChannel(params['emails'], params['channelId'], 'member')
+    for email in params['emails']:
+        app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
 
     return jsonify("Success")
 
@@ -462,10 +463,6 @@ def sendTalkApplicationEmail():
     # query email address from administrators 
     # NOTE: we receive a list of all of admins but we only send to 1 for now; to be extended later
     administrator_emails = channels.getContactAddresses(params['channel_id'])[0]
-
-
-    with open("/home/cloud-user/weshmaggle2.txt", "w") as file:
-        file.write(str(params))
 
     # handling optional field
     if "speaker_personal_website" not in params:

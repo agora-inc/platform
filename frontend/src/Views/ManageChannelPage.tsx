@@ -216,8 +216,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       (listEmailCorrect: string[]) => {
         this.setState({ listEmailCorrect });
       }
-    )
-  }
+    );
+  }; 
 
   fetchTalks = () => {
     TalkService.getFutureTalksForChannel(
@@ -300,7 +300,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   parseMailingList = () => {
     let listEmail = this.state.mailingList.split(";");
     console.log(listEmail)
-    let listEmailCorrect = this.state.listEmailCorrect;
+    let listEmailCorrect = [];
     let listEmailWrong = [];
     for (var email of listEmail) {
       email = email.replace(" ", "")
@@ -887,18 +887,20 @@ export default class ManageChannelPage extends Component<Props, State> {
                         <Text weight="bold" size="20px" color="black" margin={{bottom: "10px"}}>
                           Invited members
                         </Text>
-                        <Box
-                          direction="column"
-                          width="100%"
-                          height="100%"
-                          overflow={{"vertical": "scroll", "horizontal": "auto"}} 
-                          margin={{ top: "5px" }}
-                          gap="xsmall"
-                        >
-                          {this.state.listEmailCorrect.map((item) =>
-                            <Text> {item} </Text>
-                          )}
-                        </Box>
+                        {this.state.listEmailCorrect && (
+                          <Box
+                            direction="column"
+                            width="100%"
+                            height="100%"
+                            overflow={{"vertical": "scroll", "horizontal": "auto"}} 
+                            margin={{ top: "5px" }}
+                            gap="xsmall"
+                          >
+                            {this.state.listEmailCorrect.map((item) =>
+                              <Text> {item} </Text>
+                            )}
+                          </Box>
+                        )}                        
                       </Box>
                       {/*       
                       <Box

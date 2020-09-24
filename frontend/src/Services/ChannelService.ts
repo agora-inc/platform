@@ -51,7 +51,7 @@ const addInvitedMembersToChannel = (channelId: number, emails: string[], callbac
 };
 
 const getInvitedMembersForChannel = (channelId: number, callback: any) => {
-  const url = `channels/invite/?channelId=${channelId}`;
+  const url = `channels/invite?channelId=${channelId}`;
   get(url, callback)
 }
 
