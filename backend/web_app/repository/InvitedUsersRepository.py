@@ -49,70 +49,105 @@ class InvitedUsersRepository:
         if isinstance(emailList, str):
             emailList = [emailList]
 
+        with open("/home/cloud-user/test/federer1.txt", "w") as file:
+            file.write(str(emailList))
+
         # A. Separate emails from users who have an agora account from from the other ones
         if len(emailList) == 1:
             sql_syntax_email_list = "('" + str(emailList[0]) + "')"
         elif len(emailList) > 1:
             sql_syntax_email_list = str(tuple(emailList))
 
-        with open("/home/cloud-user/test/billy1.txt", "w") as file:
-            file.write(str(sql_syntax_email_list))
 
-        # NOTE: the 'registered_users_email_query' queries user id of people who might already be members in the agora
+        # 
+        # 
+        # 
+        # BELOW QUERY IS BEGIN DEBUGED
+        # 
+        # 
+
+        # query emails that are registered to an account which is not already member or owner of the channel
         registered_users_email_query = f'''
             SELECT * FROM Users
-            WHERE email in {sql_syntax_email_list}
+            FULL OUTER JOIN ChannelUsers
+            ON ChannelUsers.user_id = Users.id
+            WHERE Users.email in {sql_syntax_email_list}
+                AND NOT (ChannelUsers.channel_id = {channelId}
+                    AND ChannelUsers.role in ('member', 'owner'));
             '''
+        # SELECT Users.email, t1.id FROM Users t1
+        # LEFT JOIN ChannelUsers t2
+        # ON t1.id = t2.user_id 
+        #     AND t2.channel_id = {channelId}
+        #     AND t2.role in ('member', 'owner')
+        # WHERE email in {sql_syntax_email_list}
+        #     AND t2.user_id IS NULL;
+
+        with open("/home/cloud-user/test/federer31.txt", "w") as file:
+            file.write(str(registered_users_email_query))
+
         registered_users_sql = self.db.run_query(registered_users_email_query)
         registered_users_emails = [i["email"] for i in registered_users_sql]
 
-        # NOTE: this bit in the code could be rewritten to be faster (i.e only one LEFT OUTER JOIN query instead of two queries)
-        existing_members_query = f'''
-            SELECT email FROM Users t1
-            LEFT JOIN ChannelUsers t2
-            ON t1.id = t2.user_id 
-                AND t2.channel_id = {channelId}
-                AND t2.role in ('members', 'owners');
-            '''
 
-        existing_members_sql = self.db.run_query(existing_members_query)
-        existing_members_emails = [i["email"] for i in existing_members_sql]
-
-        with open("/home/cloud-user/test/billy2.txt", "w") as file:
+        with open("/home/cloud-user/test/federer32.txt", "w") as file:
             file.write(str(registered_users_sql))
 
+        # 
+        # 
+        # 
+        # ABOVE QUERY IS BEGIN DEBUGED
+        # 
+        # 
+        # 
+        # 
+        # 
+
+
+
+
+
+
+
+
+
+
+
         for email in emailList:
-            if email in registered_users_emails or email in existing_members_emails:
+            if email in registered_users_emails:
                 emailList.remove(email)
+
+        with open("/home/cloud-user/test/federer33.txt", "w") as file:
+            file.write(str(registered_users_sql))
 
         # B. Make existing users new members (if they are some)
         if isinstance(registered_users_emails, list):
-            if len(registered_users_emails) > 0:
-                if len(registered_users_emails) == 1:
-                    sql_values_formatting = f'''({channelId}, {registered_users_emails[0]["id"]}, "member")'''
-                elif len(registered_users_emails) > 1:
-                    sql_values_formatting = str([tuple(channelId, i["id"], "member") for i in registered_users_emails])[1:-1]
-
-            with open("/home/cloud-user/test/federer44.txt", "w") as file:
-                file.write(str(sql_values_formatting))
-                #
-                #
-                #
-                # CURRENT TESTING POINTER
-                #
-                #
-                ##
+            if len(registered_users_emails) == 1:
+                sql_values_formatting = f'''({channelId}, {registered_users_sql[0]["id"]}, "member")'''
+            elif len(registered_users_emails) > 1:
+                sql_values_formatting = str([tuple(channelId, i["id"], "member") for i in registered_users_sql])[1:-1]
 
             add_query = f'''
                 INSERT INTO ChannelUsers (channel_id, user_id, role)
                 VALUES {sql_values_formatting};
                 '''
-
-            with open("/home/cloud-user/test/federer33.txt", "w") as file:
-                file.write(add_query)
-
             self.db.run_query(add_query)
 
+
+            with open("/home/cloud-user/test/federer43.txt", "w") as file:
+                file.write(str(registered_users_sql))
+
+            # Send emails
+            channel_name = self.channels.getChannelById(channelId)["name"]
+            for email in registered_users_emails:
+                msg = Message(sender = 'team@agora.stream', recipients = [email])
+                msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been granted a membership by the administrators of <strong>{channel_name}</strong> to their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you very soon!</span></span></p>
+                    <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The agora.stream Team</span></p>'''
+                msg.subject = f"Agora.stream: you have been granted a membership to {channel_name}"
+                self.mail_sys.send(msg)
 
         # C. Add invitations in DB and send emails to new ones
         if len(emailList) > 0:
@@ -127,17 +162,19 @@ class InvitedUsersRepository:
             self.db.run_query(add_query)
 
             # Send emails
-            channel_name = self.channels.getChannelById(channelId)["name"]
+            if not channel_name:
+                channel_name = self.channels.getChannelById(channelId)["name"]
+
             for email in emailList:
                 msg = Message(sender = 'team@agora.stream', recipients = [email])
-                msg.html = f'''
-                    <p>yoyo there!</p>
-                    <p>This is a <b>mega test</b>  from {channel_name}</p>
-                    <p>Signe: PAtrick</p>
-                    '''
-                msg.subject = f"Agora.stream: invitation to {channel_name}"
+                msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been granted a membership by the administrators of <strong>{channel_name}</strong> to their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">To claim your membership, simply register on <a href="https://agora.stream">agora.stream</a> using this email address.</span></span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you very soon!</span></span></p>
+                    <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The agora.stream Team</span></p>'''
+                msg.subject = f"Agora.stream: you have been granted a membership to {channel_name}"
                 self.mail_sys.send(msg)
-
 
     def getInvitedMembersEmails(self, channelId):
         all_invited_emails_query = f'''SELECT email FROM InvitedUsers
