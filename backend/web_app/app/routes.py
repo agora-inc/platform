@@ -11,7 +11,7 @@ from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-users = UserRepository.UserRepository(db=agora_db)
+users = UserRepository.UserRepository(db=agora_db, mail_sys=mail)
 tags = TagRepository.TagRepository(db=agora_db)
 topics = TopicRepository.TopicRepository(db=agora_db)
 questions = QandARepository.QandARepository(db=agora_db)
@@ -79,8 +79,8 @@ def addUser():
     user = users.addUser(username, password, email)
 
     if not user:
-        app.logger.error(f"Attempted registration of new user with existing username {username}")
-        return "username is taken", 400
+        app.logger.error(f"Attempted registration of new user with existing email {email}")
+        return "Email already in use", 400
 
     try:
         invitations.transfertInvitedMembershipsToUser(user, email)
