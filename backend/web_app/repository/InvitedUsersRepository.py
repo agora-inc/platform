@@ -58,112 +58,66 @@ class InvitedUsersRepository:
         elif len(emailList) > 1:
             sql_syntax_email_list = str(tuple(emailList))
 
-
-        # 
-        # 
-        # 
-        # BELOW QUERY IS BEGIN DEBUGED
-        # 
-        # 
-
         # query emails that are registered to an account which is not already member or owner of the channel
         registered_users_email_query = f'''
-            SELECT * FROM Users
-            FULL OUTER JOIN ChannelUsers
-            ON ChannelUsers.user_id = Users.id
-            WHERE Users.email in {sql_syntax_email_list}
-                AND NOT (ChannelUsers.channel_id = {channelId}
-                    AND ChannelUsers.role in ('member', 'owner'));
-            '''
-        # SELECT Users.email, t1.id FROM Users t1
-        # LEFT JOIN ChannelUsers t2
-        # ON t1.id = t2.user_id 
-        #     AND t2.channel_id = {channelId}
-        #     AND t2.role in ('member', 'owner')
-        # WHERE email in {sql_syntax_email_list}
-        #     AND t2.user_id IS NULL;
-
-        with open("/home/cloud-user/test/federer31.txt", "w") as file:
-            file.write(str(registered_users_email_query))
-
+        SELECT t1.id, t1.email FROM Users t1
+        WHERE NOT EXISTS (
+            SELECT *
+            FROM ChannelUsers t2
+            WHERE t1.id = t2.user_id AND t2.channel_id = {channelId} AND t2.role in ('member', 'owner')
+            )
+            AND t1.email in {sql_syntax_email_list}
+        ;
+        '''
         registered_users_sql = self.db.run_query(registered_users_email_query)
         registered_users_emails = [i["email"] for i in registered_users_sql]
-
-
-        with open("/home/cloud-user/test/federer32.txt", "w") as file:
-            file.write(str(registered_users_sql))
-
-        # 
-        # 
-        # 
-        # ABOVE QUERY IS BEGIN DEBUGED
-        # 
-        # 
-        # 
-        # 
-        # 
-
-
-
-
-
-
-
-
-
-
 
         for email in emailList:
             if email in registered_users_emails:
                 emailList.remove(email)
 
-        with open("/home/cloud-user/test/federer33.txt", "w") as file:
+        with open("/home/cloud-user/test/federer2.txt", "w") as file:
             file.write(str(registered_users_sql))
 
         # B. Make existing users new members (if they are some)
         if isinstance(registered_users_emails, list):
-            if len(registered_users_emails) == 1:
-                sql_values_formatting = f'''({channelId}, {registered_users_sql[0]["id"]}, "member")'''
-            elif len(registered_users_emails) > 1:
-                sql_values_formatting = str([tuple(channelId, i["id"], "member") for i in registered_users_sql])[1:-1]
+            if len(registered_users_emails) > 0:
+                if len(registered_users_emails) == 1:
+                    sql_values_formatting = f'''({channelId}, {registered_users_sql[0]["id"]}, "member")'''
+                elif len(registered_users_emails) > 1:
+                    sql_values_formatting = str([tuple(channelId, i["id"], "member") for i in registered_users_sql])[1:-1]
 
-            add_query = f'''
-                INSERT INTO ChannelUsers (channel_id, user_id, role)
-                VALUES {sql_values_formatting};
-                '''
-            self.db.run_query(add_query)
+                add_query = f'''
+                    INSERT INTO ChannelUsers (channel_id, user_id, role)
+                    VALUES {sql_values_formatting};
+                    '''
+                self.db.run_query(add_query)
 
-
-            with open("/home/cloud-user/test/federer43.txt", "w") as file:
-                file.write(str(registered_users_sql))
-
-            # Send emails
-            channel_name = self.channels.getChannelById(channelId)["name"]
-            for email in registered_users_emails:
-                msg = Message(sender = 'team@agora.stream', recipients = [email])
-                msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
-                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been granted a membership by the administrators of <strong>{channel_name}</strong> to their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
-                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
-                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you very soon!</span></span></p>
-                    <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The agora.stream Team</span></p>'''
-                msg.subject = f"Agora.stream: you have been granted a membership to {channel_name}"
-                self.mail_sys.send(msg)
+                # Send emails
+                channel_name = self.channels.getChannelById(channelId)["name"]
+                for email in registered_users_emails:
+                    msg = Message(sender = 'team@agora.stream', recipients = [email])
+                    msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
+                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been granted a membership by the administrators of <strong>{channel_name}</strong> to their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
+                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
+                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you very soon!</span></span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The agora.stream Team</span></p>'''
+                    msg.subject = f"Agora.stream: you have been granted a membership to {channel_name}"
+                    self.mail_sys.send(msg)
 
         # C. Add invitations in DB and send emails to new ones
         if len(emailList) > 0:
             # Insert invitations in DB
-            email_list_insert = list([tuple([i.lower(), channelId]) for i in emailList])
-
-            sql_email_list = str(email_list_insert)
-            if len(sql_email_list) > 1:
-                sql_email_list = sql_email_list[1:-1]
+            if len(emailList) == 1:
+                sql_email_list = f"('{emailList[0]}', {channelId})"
+            else:
+                sql_email_list = str(list([tuple([i.lower(), channelId]) for i in emailList]))[1:-1]
 
             add_query = f'''INSERT INTO InvitedUsers (email, channel_id) VALUES {sql_email_list};'''
             self.db.run_query(add_query)
 
             # Send emails
-            if not channel_name:
-                channel_name = self.channels.getChannelById(channelId)["name"]
+            channel_name = self.channels.getChannelById(channelId)["name"]
 
             for email in emailList:
                 msg = Message(sender = 'team@agora.stream', recipients = [email])
