@@ -164,13 +164,17 @@ export default class EditTalkModal extends Component<Props, State> {
     }
   }
 
+  addDoubleQuotes = (text: string) => {
+    return '"'.concat(text).concat('"') 
+  }
+
   onFinish = () => {
     const dateTimeStrs = this.combineDateAndTimeStrings();
     if (this.props.talk) {
       TalkService.editTalk(
         this.props.talk.id,
         this.state.title,
-        this.state.description,
+        this.addDoubleQuotes(this.state.description),
         dateTimeStrs[0],
         dateTimeStrs[1],
         this.validLink(this.state.link),
@@ -442,7 +446,13 @@ export default class EditTalkModal extends Component<Props, State> {
                   <InlineMath math={"{\\small \\LaTeX}"} />
                   */}
                 </Box>
-                {!this.state.latex && (
+                <TextArea
+                    style={{height: "240px"}}
+                    value={this.state.description}
+                    placeholder=""
+                    onChange={(e) => this.setState({ description: e.target.value })}
+                  />
+                {/*!this.state.latex && (
                   <TextArea
                     style={{height: "240px"}}
                     value={this.state.description}
@@ -452,7 +462,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 )}
                 {this.state.latex && (
                   textToLatex(this.state.description, "240px")
-                )}
+                )*/}
               </Box>
             </OverlaySection>
             {/*<OverlaySection heading="Add a few relevant tags">
