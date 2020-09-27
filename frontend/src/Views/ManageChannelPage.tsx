@@ -298,21 +298,24 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   parseMailingList = () => {
-    let listEmail = this.state.mailingList.split(";");
-    console.log(listEmail)
     let listEmailCorrect = [];
     let listEmailWrong = [];
-    for (var email of listEmail) {
-      email = email.replace(" ", "")
-      if (email.length > 0) {
-        if (!email.includes("@") || !email.includes(".")) {
-          listEmailWrong.push(email);
-        } else {
-          listEmailCorrect.push(email);
-        }
-      }
+
+    // get all emails constructed using non-alphanumerical characters except "@", ".", "_", and "-"
+    let regExtraction = this.state.mailingList.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
+    if (regExtraction === null){
+      regExtraction = []
     }
-    // this.setState({ listEmailCorrect })
+
+    // filtering admissibles emails from badly formatted ones
+    let rawNonExtractedStr = this.state.mailingList;
+    for (var email of regExtraction){
+      listEmailCorrect.push(email.toLowerCase());
+      rawNonExtractedStr = rawNonExtractedStr.replace(email, "")
+    }
+    listEmailWrong = rawNonExtractedStr.split(";");
+
+    // send invitations for admissible emails
     ChannelService.addInvitedMembersToChannel(
       this.state.channel!.id,
       listEmailCorrect,
@@ -505,7 +508,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
-    console.log(this.state.listEmailCorrect)
+    // console.log(this.state.listEmailCorrect)
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
