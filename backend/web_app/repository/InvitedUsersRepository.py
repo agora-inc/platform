@@ -49,9 +49,6 @@ class InvitedUsersRepository:
         if isinstance(emailList, str):
             emailList = [emailList]
 
-        with open("/home/cloud-user/test/federer1.txt", "w") as file:
-            file.write(str(emailList))
-
         # A. Separate emails from users who have an agora account from from the other ones
         if len(emailList) == 1:
             sql_syntax_email_list = "('" + str(emailList[0]) + "')"
@@ -75,9 +72,6 @@ class InvitedUsersRepository:
         for email in emailList:
             if email in registered_users_emails:
                 emailList.remove(email)
-
-        with open("/home/cloud-user/test/federer2.txt", "w") as file:
-            file.write(str(registered_users_sql))
 
         # B. Make existing users new members (if they are some)
         if isinstance(registered_users_emails, list):
