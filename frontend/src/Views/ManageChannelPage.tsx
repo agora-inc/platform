@@ -44,8 +44,9 @@ interface State {
   channelMembers: User[];
   followers: User[];
   mailingList: string;
+  listInvitedMembers: string[];
   listEmailCorrect: string[];
-  listEmailWrong: string[];
+  strEmailWrong: string;
   talks: Talk[];
   drafts: Talk[];
   currentTalks: Talk[];
@@ -74,8 +75,9 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelMembers: [],
       followers: [],
       mailingList: "",
+      listInvitedMembers: [],
       listEmailCorrect: [],
-      listEmailWrong: [],
+      strEmailWrong: "",
       talks: [],
       drafts: [],
       currentTalks: [],
@@ -213,8 +215,8 @@ export default class ManageChannelPage extends Component<Props, State> {
   fetchInvitedMembers = () => {
     ChannelService.getInvitedMembersForChannel(
       this.state.channel!.id,
-      (listEmailCorrect: string[]) => {
-        this.setState({ listEmailCorrect });
+      (listInvitedMembers: string[]) => {
+        this.setState({ listInvitedMembers });
       }
     );
   }; 
@@ -299,7 +301,6 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   parseMailingList = () => {
     let listEmailCorrect = [];
-    let listEmailWrong = [];
 
     // get all emails constructed using non-alphanumerical characters except "@", ".", "_", and "-"
     let regExtraction = this.state.mailingList.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
@@ -307,22 +308,30 @@ export default class ManageChannelPage extends Component<Props, State> {
       regExtraction = []
     }
 
-    // filtering admissibles emails from badly formatted ones
-    let rawNonExtractedStr = this.state.mailingList;
+    // filtering new admissibles emails from badly formatted ones
+    let strEmailWrong = this.state.mailingList;
     for (var email of regExtraction){
-      listEmailCorrect.push(email.toLowerCase());
-      rawNonExtractedStr = rawNonExtractedStr.replace(email, "")
+      if (!(this.state.listInvitedMembers.includes(email))){
+      listEmailCorrect.push(email.toLowerCase())};
+      strEmailWrong = strEmailWrong.replace(email, "");
     }
-    listEmailWrong = rawNonExtractedStr.split(";");
+    
+    // clean box if empty
+    strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
+    if (strEmailWrong.replace(/[\s]/g, "") === ""){
+      strEmailWrong = "";
+    }
 
     // send invitations for admissible emails
     ChannelService.addInvitedMembersToChannel(
       this.state.channel!.id,
       listEmailCorrect,
       () => {},
-    )
-    this.setState({ listEmailWrong });
-    this.setState({ mailingList: listEmailWrong.join("; ")})
+    );
+    this.setState({ listEmailCorrect });
+    this.setState({ listInvitedMembers : this.state.listInvitedMembers.concat(listEmailCorrect) });
+    this.setState({ strEmailWrong });
+    this.setState({ mailingList: strEmailWrong})
     this.fetchInvitedMembers()
   };
 
@@ -330,6 +339,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.updateLongChannelDescription(
       this.state.channel!.id,
       newDescription,
+
       () => {}
     );
     this.setState({
@@ -890,7 +900,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         <Text weight="bold" size="20px" color="black" margin={{bottom: "10px"}}>
                           Invited members
                         </Text>
-                        {this.state.listEmailCorrect && (
+                        {this.state.listInvitedMembers && (
                           <Box
                             direction="column"
                             width="100%"
@@ -899,7 +909,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                             margin={{ top: "5px" }}
                             gap="xsmall"
                           >
-                            {this.state.listEmailCorrect.map((item) =>
+                            {this.state.listInvitedMembers.map((item) =>
                               <Text> {item} </Text>
                             )}
                           </Box>
@@ -966,16 +976,21 @@ export default class ManageChannelPage extends Component<Props, State> {
                         value={this.state.mailingList}
                         onChange={(e: any) => this.handleMailingList(e)}
                         rows={4}
-                        style={{border: this.state.listEmailWrong.length === 0 ? "2px solid black" : "2px solid red"}}
+                        style={{border: this.state.strEmailWrong.length === 0 ? "2px solid black" : "2px solid red"}}
                         data-tip data-for='email'
                       />
                       <Box direction="row" width="100%" margin={{top: "20px"}}>
                         <Box width="100%"> 
-                          {this.state.listEmailWrong.length > 0 && (
-                            <Text color="red">
-                              These remaining emails are invalid (Note: an email can only include "-_,.@" as special characters).
+                          {this.state.listEmailCorrect.length > 0 && (
+                            <Text color="green">
+                              Emails successfully extracted from text.
                             </Text>
                           )}
+                          {/* {this.state.strEmailWrong.length > 0 && (
+                            <Text color="red">
+                              No emails detected.
+                            </Text>
+                          )} */}
                         </Box>
                         <Box
                           onClick={this.parseMailingList}
