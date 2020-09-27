@@ -809,9 +809,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                       >
                         <Box direction="row" justify="between">
                           <Text weight="bold" size="20px" color="black">
-                            Agora admins
+                            Agora admin
                           </Text>
-                          {this.state.role === "owner" && (
+                          {/* {this.state.role === "owner" && (
                             <AddUsersButton
                               role="owner"
                               existingUsers={this.state.channelOwners}
@@ -822,7 +822,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                                 this.fetchFollowers();
                               }}
                             />
-                          )}
+                          )} */}
                         </Box>
                         <Box
                           direction="row"
@@ -852,7 +852,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           <Text weight="bold" size="20px" color="black">
                             Agora members
                           </Text>
-                          {this.state.role === "owner" && (
+                          {/* {this.state.role === "owner" && (
                             <AddUsersButton
                               role="member"
                               existingUsers={this.state.channelMembers}
@@ -863,7 +863,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                                 this.fetchFollowers();
                               }}
                             />
-                          )}
+                          )} */}
                         </Box>
                         <Box
                           direction="row"
@@ -962,7 +962,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Box>
                       
                       <TextArea
-                        placeholder="Enter your list of email addresses"
+                        placeholder="Enter your list of emails"
                         value={this.state.mailingList}
                         onChange={(e: any) => this.handleMailingList(e)}
                         rows={4}
@@ -975,8 +975,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                             <Text color="red">
                               These remaining emails are invalid (Note: an email can only include "-_,.@" as special characters).
                             </Text>
-
-                            
                           )}
                         </Box>
                         <Box
