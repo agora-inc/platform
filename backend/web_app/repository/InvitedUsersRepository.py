@@ -44,16 +44,16 @@ class InvitedUsersRepository:
             '''
         return self.db.run_query(add_member_query, delete_email_mailing_list_query)
 
-    def addInvitedMemberToChannel(self, emailList, channelId, role):
+    def addInvitedMemberToChannel(self, invitationEmailList, channelId, role):
         # Remove all duplicates in the email_list
-        if isinstance(emailList, str):
-            emailList = [emailList]
+        if isinstance(invitationEmailList, str):
+            invitationEmailList = [invitationEmailList]
 
         # A. Separate emails from users who have an agora account from from the other ones
-        if len(emailList) == 1:
-            sql_syntax_email_list = "('" + str(emailList[0]) + "')"
-        elif len(emailList) > 1:
-            sql_syntax_email_list = str(tuple(emailList))
+        if len(invitationEmailList) == 1:
+            sql_syntax_email_list = "('" + str(invitationEmailList[0]) + "')"
+        elif len(invitationEmailList) > 1:
+            sql_syntax_email_list = str(tuple(invitationEmailList))
 
         # query emails that are registered to an account which is not already member or owner of the channel
         registered_users_email_query = f'''
@@ -69,9 +69,54 @@ class InvitedUsersRepository:
         registered_users_sql = self.db.run_query(registered_users_email_query)
         registered_users_emails = [i["email"] for i in registered_users_sql]
 
-        for email in emailList:
-            if email in registered_users_emails:
-                emailList.remove(email)
+
+
+
+
+
+
+
+        #
+        #
+        # DEBUG THIS BIT
+        #
+        #
+        # query emails from existing members or admins and cancel their invitation
+        registered_members_email_query = f'''
+            SELECT t1.email FROM Users t1
+            INNER JOIN ChannelUsers t2
+            WHERE t1.id = t2.user_id AND t2.channel_id = {channelId} AND t2.role in ('member', 'owner')
+            ;
+            '''
+        registered_members_sql = self.db.run_query(registered_members_email_query)
+        registered_members_emails = [i["email"] for i in registered_members_sql]
+        if len(registered_members_emails) > 0:
+            if len(registered_members_emails) == 1:
+                sql_registered_members_emails_syntax =  "(" + registered_members_emails[0]["email"] + ")"
+            else:
+                sql_registered_members_emails_syntax = str(tuple([i["email"] for i in registered_members_emails]))
+
+            cancel_invitation_query = f'''
+                DELETE FROM InvitedUsers WHERE email in ({sql_registered_members_emails_syntax});
+                '''
+            self.db.run_query(cancel_invitation_query)
+
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+
+
+
+
+
+
+        for email in invitationEmailList:
+            if email in registered_users_emails or email in registered_members_emails:
+                invitationEmailList.remove(email)
 
         # B. Make existing users new members (if they are some)
         if isinstance(registered_users_emails, list):
@@ -90,7 +135,7 @@ class InvitedUsersRepository:
                 # Send emails
                 channel_name = self.channels.getChannelById(channelId)["name"]
                 for email in registered_users_emails:
-                    msg = Message(sender = 'team@agora.stream', recipients = [email])
+                    msg = Message(sender = ("Agora.stream Team", 'team@agora.stream'), recipients = [email])
                     msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
                         <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been granted a membership by the administrators of <strong>{channel_name}</strong> to their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
                         <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
@@ -100,12 +145,12 @@ class InvitedUsersRepository:
                     self.mail_sys.send(msg)
 
         # C. Add invitations in DB and send emails to new ones
-        if len(emailList) > 0:
+        if len(invitationEmailList) > 0:
             # Insert invitations in DB
-            if len(emailList) == 1:
-                sql_email_list = f"('{emailList[0]}', {channelId})"
+            if len(invitationEmailList) == 1:
+                sql_email_list = f"('{invitationEmailList[0]}', {channelId})"
             else:
-                sql_email_list = str(list([tuple([i.lower(), channelId]) for i in emailList]))[1:-1]
+                sql_email_list = str(list([tuple([i.lower(), channelId]) for i in invitationEmailList]))[1:-1]
 
             add_query = f'''INSERT INTO InvitedUsers (email, channel_id) VALUES {sql_email_list};'''
             self.db.run_query(add_query)
@@ -113,7 +158,7 @@ class InvitedUsersRepository:
             # Send emails
             channel_name = self.channels.getChannelById(channelId)["name"]
 
-            for email in emailList:
+            for email in invitationEmailList:
                 msg = Message(sender = 'team@agora.stream', recipients = [email])
                 msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
                     <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been granted a membership by the administrators of <strong>{channel_name}</strong> to their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
