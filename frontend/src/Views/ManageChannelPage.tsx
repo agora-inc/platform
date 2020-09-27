@@ -955,7 +955,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         />
                         {this.state.showMemberEmailInfo && (
                           <ReactTooltip id='mailingListInfo' place="right" effect="solid">
-                            Enter the email addresses of the people you want to invite as member of{" "}
+                            Enter the emails of the people you want to invite as member of{" "}
                             {this.state.channel ? this.state.channel.name : "your agora"}.
                           </ReactTooltip>
                         )}
@@ -973,7 +973,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         <Box width="100%"> 
                           {this.state.listEmailWrong.length > 0 && (
                             <Text color="red">
-                              The remaining email addresses are invalid.
+                              These remaining emails are invalid (Note: an email can only include "-_,.@" as special characters).
                             </Text>
 
                             
