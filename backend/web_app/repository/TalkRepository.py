@@ -433,7 +433,7 @@ class TalkRepository:
             outfile.write("WESH")
             outfile.write(str(cardVisibility))
 
-        query = f"UPDATE Talks SET name='{talkName}', description='{talkDescription}', date='{startDate}', end_date='{endDate}', link='{talkLink}', show_link_offset={showLinkOffset}, visibility='{visibility}', card_visibility='{cardVisibility}', topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker='{talk_speaker}', talk_speaker_url='{talk_speaker_url}', published={published} WHERE id = {talkId};"
+        query = f"UPDATE Talks SET name='{talkName}', description={talkDescription}, date='{startDate}', end_date='{endDate}', link='{talkLink}', show_link_offset={showLinkOffset}, visibility='{visibility}', card_visibility='{cardVisibility}', topic_1_id={topic_1_id}, topic_2_id={topic_2_id}, topic_3_id={topic_3_id}, talk_speaker='{talk_speaker}', talk_speaker_url='{talk_speaker_url}', published={published} WHERE id = {talkId};"
         self.db.run_query(query)
 
         tagIds = [t["id"] for t in talkTags]
