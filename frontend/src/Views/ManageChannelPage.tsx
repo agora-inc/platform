@@ -332,7 +332,9 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ listInvitedMembers : this.state.listInvitedMembers.concat(listEmailCorrect) });
     this.setState({ strEmailWrong });
     this.setState({ mailingList: strEmailWrong})
-    this.fetchInvitedMembers()
+    this.fetchInvitedMembers();
+    this.fetchMembers();
+    this.fetchOwners();
   };
 
   onSaveLongDescriptionClicked = (newDescription: string) => {
