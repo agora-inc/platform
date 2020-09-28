@@ -69,19 +69,7 @@ class InvitedUsersRepository:
         registered_users_sql = self.db.run_query(registered_users_email_query)
         registered_users_emails = [i["email"] for i in registered_users_sql]
 
-
-
-
-
-
-
-
-        #
-        #
-        # DEBUG THIS BIT
-        #
-        #
-        # query emails from existing members or admins and cancel their invitation
+        # query emails from existing members or admins
         registered_members_email_query = f'''
             SELECT t1.email FROM Users t1
             INNER JOIN ChannelUsers t2
@@ -90,30 +78,8 @@ class InvitedUsersRepository:
             '''
         registered_members_sql = self.db.run_query(registered_members_email_query)
         registered_members_emails = [i["email"] for i in registered_members_sql]
-        if len(registered_members_emails) > 0:
-            if len(registered_members_emails) == 1:
-                sql_registered_members_emails_syntax =  "(" + registered_members_emails[0]["email"] + ")"
-            else:
-                sql_registered_members_emails_syntax = str(tuple([i["email"] for i in registered_members_emails]))
 
-            cancel_invitation_query = f'''
-                DELETE FROM InvitedUsers WHERE email in ({sql_registered_members_emails_syntax});
-                '''
-            self.db.run_query(cancel_invitation_query)
-
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-
-
-
-
-
-
+        # Gather addresses of non-existing users to be invited
         for email in invitationEmailList:
             if email in registered_users_emails or email in registered_members_emails:
                 invitationEmailList.remove(email)
@@ -157,7 +123,6 @@ class InvitedUsersRepository:
 
             # Send emails
             channel_name = self.channels.getChannelById(channelId)["name"]
-
             for email in invitationEmailList:
                 msg = Message(sender = 'team@agora.stream', recipients = [email])
                 msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
