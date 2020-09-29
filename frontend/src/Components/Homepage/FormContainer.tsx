@@ -96,6 +96,14 @@ export default class FormContainer extends Component<{}, State> {
     this.setState({ showForm: !this.state.showForm });
   };
 
+  isMissing = () => {
+    let res: string[] = []
+    if (this.state.user.description === "") {
+      res.push("Feedback / suggestion")
+    }
+    return res;
+  }
+
   render() {
     return (
       <Box>
@@ -124,28 +132,23 @@ export default class FormContainer extends Component<{}, State> {
           onClickOutside={this.toggleModal}
           onSubmitClick={this.handleFormSubmit}
           submitButtonText="Submit"
-          canProceed={true}
+          canProceed={this.isMissing().length === 0}
+          isMissing={this.isMissing()}
           width={500}
           height={640}
           contentHeight="500px"
           title="Submit feedback"
         >
           <Box width="100%" gap="2px">
-            <Text size="14px" weight="bold" color="black">
-              Your name
-            </Text>
             <TextInput
-              placeholder="type something"
+              placeholder="Name (optional)"
               value={this.state.user.name}
               onChange={(e: any) => this.handleInput(e, "name")}
             />
           </Box>
           <Box width="100%" gap="2px">
-            <Text size="14px" weight="bold" color="black">
-              Your email
-            </Text>
             <TextInput
-              placeholder="type something"
+              placeholder="Email (optional)"
               value={this.state.user.email}
               onChange={(e: any) => this.handleInput(e, "email")}
             />
@@ -163,11 +166,8 @@ export default class FormContainer extends Component<{}, State> {
             />
           </Box>
           <Box width="100%" gap="2px">
-            <Text size="14px" weight="bold" color="black">
-              Description
-            </Text>
             <TextArea
-              placeholder="We are looking forward to hearing your feedback!"
+              placeholder="Feedback / suggestion"
               value={this.state.user.description}
               onChange={(e: any) => this.handleInput(e, "description")}
               rows={8}

@@ -132,16 +132,13 @@ export default class SignUpButton extends Component<Props, State> {
                 </Link>
                 . These are what you'll use to organise talks.
               </Text>
-              <Text size="14px" color="black">
-                (this is just in case you need a password reset)
-              </Text>
-              <TextInput
-                placeholder="Email"
-                onChange={(e) => this.setState({ email: e.target.value })}
-              />
               <TextInput
                 placeholder="Username"
                 onChange={(e) => this.setState({ username: e.target.value })}
+              />
+              <TextInput
+                placeholder="Email"
+                onChange={(e) => this.setState({ email: e.target.value })}
               />
               <TextInput
                 type="password"
@@ -166,7 +163,7 @@ export default class SignUpButton extends Component<Props, State> {
               By clicking Sign Up, you agree to our{" "}
               <Link to={"/info/tos"} onClick={this.toggleModal}>
                 <Text size="14px" weight="bold" color="brand">
-                  terms
+                  terms.
                 </Text>
               </Link>
               .

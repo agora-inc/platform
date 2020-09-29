@@ -101,7 +101,7 @@ export class Overlay extends Component<OverlayProps> {
             >
               <Box fill={true} pad="30px"> {this.props.deleteButton} </Box>
               <Box > {this.props.saveDraftButton} </Box>
-              <Box pad="32px" data-tip data-for='submitbutton'  > 
+              <Box data-tip data-for='submitbutton' margin={{right: "32px"}}   > 
                 <Button
                   fill="#7E1115"
                   disabled={!this.props.canProceed}
@@ -111,7 +111,6 @@ export class Overlay extends Component<OverlayProps> {
                   onClick={this.props.onSubmitClick}
                   hoverIndicator="#5A0C0F"
                   onMouseEnter={this.props.buttonOnMouseEnter}
-                  
                 />
                 {!this.props.canProceed && this.props.isMissing && (
                   <ReactTooltip id='submitbutton' place="top" effect="solid">

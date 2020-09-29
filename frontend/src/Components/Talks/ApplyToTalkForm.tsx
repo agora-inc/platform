@@ -202,6 +202,32 @@ export default class ApplyToTalkForm extends Component<Props, State> {
     }));
   }
 
+  isMissing = () => {
+    let res: string[] = []
+    if (this.state.user.speaker_title === "") {
+      res.push("Speaker's title")
+    }
+    if (this.state.user.speaker_name === "") {
+      res.push("Name")
+    }
+    if (this.state.user.email === "") {
+      res.push("Email address")
+    }
+    if (this.state.user.affiliation === "") {
+      res.push("Affiliation")
+    }
+    if (this.state.talk.talk_title === "") {
+      res.push("Talk's title")
+    }
+    if (this.state.talk.abstract === "") {
+      res.push("Abstract")
+    }
+    if (this.state.talk.topics.length === 0 ) {
+      res.push("At least one topic")
+    }
+    return res;
+  }
+
   render() {
     return (
       <Box>
@@ -234,6 +260,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           onSubmitClick={this.handleFormSubmit}
           submitButtonText="Apply"
           canProceed={this.isComplete()}
+          isMissing={this.isMissing()}
           width={900}
           height={540}
           contentHeight="1100px"

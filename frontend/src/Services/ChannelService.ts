@@ -35,6 +35,26 @@ const createChannel = (
   );
 };
 
+const addInvitedMembersToChannel = (channelId: number, emails: string[], callback: any) => {
+  axios
+    .post(
+      baseApiUrl + `/channels/invite/add`,
+      { channelId: channelId, emails: emails },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback("ok");
+    })
+    .catch(function (error) {
+      callback(error.response.data);
+    });
+};
+
+const getInvitedMembersForChannel = (channelId: number, callback: any) => {
+  const url = `channels/invite?channelId=${channelId}`;
+  get(url, callback)
+}
+
 const getChannelsForUser = (userId: number, roles: string[], callback: any) => {
   const url = `channels/foruser?userId=${userId}&role=${roles.reduce(
     (acc, curr) => acc + `&role=${curr}`
@@ -230,7 +250,8 @@ const uploadAvatar = (channelId: number, image: File, callback: any) => {
 const getAvatar = (channelId: number, cacheDelay?: number) => {
   // HACK: we had the ts argument to prevent from caching.
   if (cacheDelay) {
-    return baseApiUrl + `/channels/avatar?channelId=${channelId}&ts=` + cacheDelay;
+    let current_time = Math.floor(new Date().getTime() / 1000) * cacheDelay;
+    return baseApiUrl + `/channels/avatar?channelId=${channelId}&ts=` + current_time;
   } else {
     return baseApiUrl + `/channels/avatar?channelId=${channelId}`;
   }
@@ -306,6 +327,8 @@ export const ChannelService = {
   getTrendingChannels,
   getChannelByName,
   createChannel,
+  addInvitedMembersToChannel,
+  getInvitedMembersForChannel,
   getChannelsForUser,
   getUsersForChannel,
   getRoleInChannel,

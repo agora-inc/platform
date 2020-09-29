@@ -65,12 +65,23 @@ export default class LoginModal extends Component<Props, State> {
           this.setState({ forgotPasswordText: "Email sent!" });
         } else {
           this.setState({
-            forgotPasswordText: "Error sending email :( please try again later",
+            forgotPasswordText: "Username not found. Try again.",
           });
         }
       }
     );
   };
+
+  isMissing = () => {
+    let res: string[] = []
+    if (this.state.username === "") {
+      res.push("Username")
+    }
+    if (this.state.password === "") {
+      res.push("Password")
+    }
+    return res;
+  }
 
   render() {
     return (
@@ -100,7 +111,8 @@ export default class LoginModal extends Component<Props, State> {
           onCancelClick={this.toggleModal}
           submitButtonText="Log in "
           onSubmitClick={this.onSubmit}
-          canProceed={true}
+          canProceed={this.isMissing().length === 0}
+          isMissing={this.isMissing()}
           contentHeight={this.state.failed ? "300px" : "170px"}
         >
           {this.state.failed && (
@@ -145,6 +157,7 @@ export default class LoginModal extends Component<Props, State> {
               direction="row"
               gap="xsmall"
             >
+            
               <Text
                 onClick={this.onForgotPasswordClicked}
                 style={{
@@ -168,6 +181,11 @@ export default class LoginModal extends Component<Props, State> {
               {this.state.forgotPasswordText === "Email sent!" && (
                 <StatusGood size="16px" color="status-ok" />
               )}
+
+
+
+
+
             </Box>
           </Box>
         </Overlay>

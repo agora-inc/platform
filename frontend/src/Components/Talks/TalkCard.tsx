@@ -478,11 +478,10 @@ export default class TalkCard extends Component<Props, State> {
                     </Box>
                       */}
                 </Box>
-                {this.state.available &&
-                  this.props.user !== null &&
-                  this.state.registered && (
+                {this.state.available && (
                   <Box margin={{ top: "10px", bottom: "20px" }}>
                     <CountdownAndCalendarButtons talk={this.props.talk} />
+                    {this.props.user !== null && this.state.registered && (
                     <Box
                       focusIndicator={false}
                       background="#FF4040"
@@ -501,6 +500,7 @@ export default class TalkCard extends Component<Props, State> {
                         Unregister
                       </Text>
                     </Box>
+                    )}
                   </Box>
                 )}
                 {this.state.available &&
@@ -520,7 +520,7 @@ export default class TalkCard extends Component<Props, State> {
                       <Text size="18px">Register</Text>
                     </Box>
                   )}
-                {this.state.available && this.props.user === null && (
+                {!this.state.available && this.props.user === null && (
                   <Box direction="row" align="center" gap="10px">
                     <LoginModal callback={() => {}} />
                     <Text size="18px"> or </Text>

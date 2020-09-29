@@ -69,7 +69,7 @@ const getAvailableFutureTalks = (
   callback: any,
 ) => {
   get(
-    `/talks/available/future?userId=${userId}&limit=${limit}&offset=${offset}`,
+    `talks/available/future?userId=${userId}&limit=${limit}&offset=${offset}`,
     callback
   );
 };
@@ -81,7 +81,7 @@ const getAvailableCurrentTalks = (
   callback: any,
 ) => {
   get(
-    `/talks/available/current?userId=${userId}&limit=${limit}&offset=${offset}`,
+    `talks/available/current?userId=${userId}&limit=${limit}&offset=${offset}`,
     callback
   );
 };
@@ -93,7 +93,7 @@ const getAvailablePastTalks = (
   callback: any,
 ) => {
   get(
-    `/talks/available/past?userId=${userId}&limit=${limit}&offset=${offset}`,
+    `talks/available/past?userId=${userId}&limit=${limit}&offset=${offset}`,
     callback
   );
 };
@@ -104,7 +104,7 @@ const getAvailableFutureTalksForChannel = (
   callback: any,
 ) => {
   get(
-    `/talks/channel/available/future?channelId=${channelId}&userId=${userId}`,
+    `talks/channel/available/future?channelId=${channelId}&userId=${userId}`,
     callback
   );
 };
@@ -115,7 +115,7 @@ const getAvailableCurrentTalksForChannel = (
   callback: any,
 ) => {
   get(
-    `/talks/channel/available/current?channelId=${channelId}&userId=${userId}`,
+    `talks/channel/available/current?channelId=${channelId}&userId=${userId}`,
     callback
   );
 };
@@ -126,7 +126,7 @@ const getAvailablePastTalksForChannel = (
   callback: any,
 ) => {
   get(
-    `/talks/channel/available/past?channelId=${channelId}&userId=${userId}`,
+    `talks/channel/available/past?channelId=${channelId}&userId=${userId}`,
     callback
   );
 };

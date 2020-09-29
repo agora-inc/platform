@@ -59,7 +59,7 @@ class ChannelRepository:
         #     "pink",
         # ]
         # colour = random.choice(colours)
-        colour = "#5454A0"
+        colour = "white"
 
         query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
         insertId = self.db.run_query(query)[0]
@@ -95,16 +95,6 @@ class ChannelRepository:
         query = f'SELECT Channels.id, Channels.name, Channels.description, Channels.colour, Channels.has_avatar FROM Channels INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id WHERE ChannelUsers.user_id = {userId} AND ChannelUsers.role IN {tuple(roles)}'.replace(",)", ")")
         result = self.db.run_query(query)
         return result
-
-    def addUserToChannel(self, userId, channelId, role):
-        query = f'UPDATE ChannelUsers SET role="{role}" WHERE user_id={userId} AND channel_id={channelId}'
-        rowcount = self.db.run_query(query)[1]
-        if rowcount != 0:
-            return
-
-        # if user has no current role wrt channel, create new link between user and channel    
-        query = f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {channelId}, "{role}")'
-        self.db.run_query(query)
 
     def removeUserFromChannel(self, userId, channelId):
         query = f'DELETE FROM ChannelUsers WHERE user_id = {userId} AND channel_id = {channelId}'
@@ -211,5 +201,19 @@ class ChannelRepository:
 
     def deleteChannel(self, id):
         query = f"DELETE FROM Channels where id = {id}"
-        self.db.run_query(query)
+        return self.db.run_query(query)
 
+    def getEmailAddressesMembersAndAdmins(self, channelId):
+        #
+        # TODO: TEST
+        #
+        email_members_and_admins_query = f'''
+            SELECT email from Users t1
+            INNER JOIN ChannelUsers t2
+            WHERE
+                (t1.id = t2.user_id 
+                    AND (t2.role in ('member', 'admin'))
+                )
+            ;
+            '''
+        return self.db.run_query(email_members_and_admins_query)

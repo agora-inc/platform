@@ -1,4 +1,4 @@
-from app import app, db
+from app import app
 from OpenSSL import SSL
 
 if __name__ == "__main__":

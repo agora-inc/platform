@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text } from "grommet";
+import { Box, Text, TextArea} from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -20,7 +20,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, MailOption } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -43,6 +43,10 @@ interface State {
   channelOwners: User[];
   channelMembers: User[];
   followers: User[];
+  mailingList: string;
+  listInvitedMembers: string[];
+  listEmailCorrect: string[];
+  strEmailWrong: string;
   talks: Talk[];
   drafts: Talk[];
   currentTalks: Talk[];
@@ -52,6 +56,7 @@ interface State {
   longDescription: string;
   contactAddresses: string;
   showDraftInfo: boolean;
+  showMemberEmailInfo: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -69,6 +74,10 @@ export default class ManageChannelPage extends Component<Props, State> {
       channelOwners: [],
       channelMembers: [],
       followers: [],
+      mailingList: "",
+      listInvitedMembers: [],
+      listEmailCorrect: [],
+      strEmailWrong: "",
       talks: [],
       drafts: [],
       currentTalks: [],
@@ -78,6 +87,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       longDescription: "",
       contactAddresses: "",
       showDraftInfo: false,
+      showMemberEmailInfo: false,
     };
   }
 
@@ -156,6 +166,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchOwners();
     this.fetchMembers();
     this.fetchFollowers();
+    this.fetchInvitedMembers();
     this.fetchPastTalks();
     this.fetchCurrentTalks();
     this.fetchTalks();
@@ -201,6 +212,15 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
+  fetchInvitedMembers = () => {
+    ChannelService.getInvitedMembersForChannel(
+      this.state.channel!.id,
+      (listInvitedMembers: string[]) => {
+        this.setState({ listInvitedMembers });
+      }
+    );
+  }; 
+
   fetchTalks = () => {
     TalkService.getFutureTalksForChannel(
       this.state.channel!.id,
@@ -223,6 +243,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchDrafts();
     this.fetchTalks();
   };
+
   fetchAllTalks = () => {
     this.fetchDrafts()
     this.fetchTalks()
@@ -273,10 +294,54 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ editingDescription: !this.state.editingDescription });
   };
 
+  handleMailingList = (e: any) => {
+    let value = e.target.value;
+    this.setState({"mailingList": value});
+  };
+
+  parseMailingList = () => {
+    let listEmailCorrect = [];
+
+    // get all emails constructed using non-alphanumerical characters except "@", ".", "_", and "-"
+    let regExtraction = this.state.mailingList.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
+    if (regExtraction === null){
+      regExtraction = []
+    }
+
+    // filtering new admissibles emails from badly formatted ones
+    let strEmailWrong = this.state.mailingList;
+    for (var email of regExtraction){
+      if (!(this.state.listInvitedMembers.includes(email))){
+      listEmailCorrect.push(email.toLowerCase())};
+      strEmailWrong = strEmailWrong.replace(email, "");
+    }
+    
+    // clean box if empty
+    strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
+    if (strEmailWrong.replace(/[\s]/g, "") === ""){
+      strEmailWrong = "";
+    }
+
+    // send invitations for admissible emails
+    ChannelService.addInvitedMembersToChannel(
+      this.state.channel!.id,
+      listEmailCorrect,
+      () => {},
+    );
+    this.setState({ listEmailCorrect });
+    this.setState({ listInvitedMembers : this.state.listInvitedMembers.concat(listEmailCorrect) });
+    this.setState({ strEmailWrong });
+    this.setState({ mailingList: strEmailWrong})
+    this.fetchInvitedMembers();
+    this.fetchMembers();
+    this.fetchOwners();
+  };
+
   onSaveLongDescriptionClicked = (newDescription: string) => {
     ChannelService.updateLongChannelDescription(
       this.state.channel!.id,
       newDescription,
+
       () => {}
     );
     this.setState({
@@ -394,9 +459,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {
                   <img
                     src={
-                      ChannelService.getAvatar(this.state.channel!.id)
+                      ChannelService.getAvatar(this.state.channel!.id, 1)
                     }
-                    // HACK: we had the ts argument to prevent from caching.
                     height={100}
                     width={100}
                   />
@@ -456,7 +520,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
-    // console.log(UserService.getCurrentUser());
+    // console.log(this.state.listEmailCorrect)
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -574,6 +638,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
+                  {/*<Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <MailOption />
+                      <Text size="24px"> 
+                        Mailing list 
+                      </Text>
+                    </Box>
+                  </Tab>*/}
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <ContactInfo />
@@ -595,6 +667,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       {`Drafts`}
                     </Text>
                     <StatusInfo
+                      data-tip data-for='draftInfo'
                       onMouseEnter={() => {
                         this.setState({ showDraftInfo: true });
                       }}
@@ -603,18 +676,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                       }}
                     />
                     {this.state.showDraftInfo && (
-                      <Box
-                        background="black"
-                        round="xsmall"
-                        pad="small"
-                        //height="30px"
-                        width="210px"
-                        margin={{ top: "-6px" }}
-                      >
-                        <Text size="12px">
-                          These talks are only visible to you.
-                        </Text>
-                      </Box>
+                      <ReactTooltip id='draftInfo' place="right" effect="solid">
+                        These talks are only visible to you.
+                      </ReactTooltip>
                     )}
                   </Box>
                   {this.state.drafts.length === 0 && (
@@ -742,118 +806,210 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
                 <TabPanel style={{width: "74.35vw"}}>
-                  <Box 
-                    direction="row" 
-                    width="100%" 
-                    justify="between" 
-                    margin={{bottom: "60px"}}>
-                    <Box
-                      width="25%"
-                      height="250px"
-                      background="#e5e5e5"
-                      round="7.5px"
-                      pad="10px"
-                    >
-                      <Box direction="row" justify="between">
-                        <Text weight="bold" size="20px" color="black">
-                          Agora admins
-                        </Text>
-                        {this.state.role === "owner" && (
-                          <AddUsersButton
-                            role="owner"
-                            existingUsers={this.state.channelOwners}
-                            channelId={this.state.channel!.id}
-                            onUserAddedCallback={() => {
-                              this.fetchMembers();
-                              this.fetchOwners();
-                              this.fetchFollowers();
-                            }}
-                          />
-                        )}
-                      </Box>
+                  <Box direction="column">
+                    <Box 
+                      direction="row" 
+                      width="100%" 
+                      justify="between" 
+                      margin={{bottom: "30px"}}>
                       <Box
-                        direction="row"
-                        wrap
-                        margin={{ top: "5px" }}
-                        gap="xsmall"
+                        width="31.5%"
+                        height="250px"
+                        background="#e5e5e5"
+                        round="7.5px"
+                        pad="10px"
                       >
-                        {this.state.channelOwners.map((owner: User) => (
-                          <ChannelPageUserCircle
-                            user={owner}
-                            channelId={this.state.channel?.id}
-                            onRemovedCallback={this.fetchOwners}
-                            showRemoveButton={this.state.role === "owner"}
-                          />
-                        ))}
+                        <Box direction="row" justify="between">
+                          <Text weight="bold" size="20px" color="black">
+                            Agora admin
+                          </Text>
+                          {/* {this.state.role === "owner" && (
+                            <AddUsersButton
+                              role="owner"
+                              existingUsers={this.state.channelOwners}
+                              channelId={this.state.channel!.id}
+                              onUserAddedCallback={() => {
+                                this.fetchMembers();
+                                this.fetchOwners();
+                                this.fetchFollowers();
+                              }}
+                            />
+                          )} */}
+                        </Box>
+                        <Box
+                          direction="row"
+                          wrap
+                          margin={{ top: "5px" }}
+                          gap="xsmall"
+                        >
+                          {this.state.channelOwners.map((owner: User) => (
+                            <ChannelPageUserCircle
+                              user={owner}
+                              channelId={this.state.channel?.id}
+                              onRemovedCallback={this.fetchOwners}
+                              showRemoveButton={this.state.role === "owner"}
+                            />
+                          ))}
+                        </Box>
                       </Box>
-                    </Box>
 
-                    <Box
-                      width="70%"
-                      height="250px"
-                      background="#e5e5e5"
-                      round="7.5px"
-                      pad="10px"
-                    >
-                      <Box direction="row" justify="between">
-                        <Text weight="bold" size="20px" color="black">
-                          Agora members
+                      <Box
+                        width="31.5%"
+                        height="250px"
+                        background="#e5e5e5"
+                        round="7.5px"
+                        pad="10px"
+                      >
+                        <Box direction="row" justify="between">
+                          <Text weight="bold" size="20px" color="black">
+                            Agora members
+                          </Text>
+                          {/* {this.state.role === "owner" && (
+                            <AddUsersButton
+                              role="member"
+                              existingUsers={this.state.channelMembers}
+                              channelId={this.state.channel!.id}
+                              onUserAddedCallback={() => {
+                                this.fetchMembers();
+                                this.fetchOwners();
+                                this.fetchFollowers();
+                              }}
+                            />
+                          )} */}
+                        </Box>
+                        <Box
+                          direction="row"
+                          wrap
+                          margin={{ top: "5px" }}
+                          gap="xsmall"
+                        >
+                          {this.state.channelMembers.map((member: User) => (
+                            <ChannelPageUserCircle
+                              user={member}
+                              channelId={this.state.channel?.id}
+                              onRemovedCallback={this.fetchMembers}
+                              showRemoveButton={this.state.role === "owner"}
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+                      <Box
+                        width="31.5%"
+                        height="250px"
+                        round="7.5px"
+                        pad="10px"
+                      >
+                        <Text weight="bold" size="20px" color="black" margin={{bottom: "10px"}}>
+                          Invited members
                         </Text>
-                        {this.state.role === "owner" && (
-                          <AddUsersButton
-                            role="member"
-                            existingUsers={this.state.channelMembers}
-                            channelId={this.state.channel!.id}
-                            onUserAddedCallback={() => {
-                              this.fetchMembers();
-                              this.fetchOwners();
-                              this.fetchFollowers();
-                            }}
-                          />
+                        {this.state.listInvitedMembers && (
+                          <Box
+                            direction="column"
+                            width="100%"
+                            height="100%"
+                            overflow={{"vertical": "scroll", "horizontal": "auto"}} 
+                            margin={{ top: "5px" }}
+                            gap="xsmall"
+                          >
+                            {this.state.listInvitedMembers.map((item) =>
+                              <Text> {item} </Text>
+                            )}
+                          </Box>
+                        )}                        
+                      </Box>
+                      {/*       
+                      <Box
+                        width="31.5%"
+                        height="250px"
+                        background="#e5e5e5"
+                        round="7.5px"
+                        pad="10px"
+                      >
+                        <Text weight="bold" size="20px" color="black">
+                          Followers
+                        </Text>
+                        <Box
+                          direction="row"
+                          wrap
+                          margin={{ top: "5px" }}
+                          gap="xsmall"
+                        >
+                          {this.state.followers.map((follower: User) => (
+                            <ChannelPageUserCircle
+                              user={follower}
+                              showRemoveButton={false}
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+                      */}
+                    </Box>
+                    <Box 
+                      direction="column"
+                      margin={{bottom: "60px"}}
+                    >
+                      <Box 
+                        direction="row"
+                        gap="small"
+                        margin={{ top: "40px", bottom: "24px" }}
+                      >
+                        <Text size="24px" weight="bold" color="black">
+                          Invite members
+                        </Text>
+                        <StatusInfo
+                          data-tip data-for='mailingListInfo'
+                          onMouseEnter={() => {
+                            this.setState({ showMemberEmailInfo: true });
+                          }}
+                          onMouseLeave={() => {
+                            this.setState({ showMemberEmailInfo: false });
+                          }}
+                        />
+                        {this.state.showMemberEmailInfo && (
+                          <ReactTooltip id='mailingListInfo' place="right" effect="solid">
+                            Enter the emails of the people you want to invite as member of{" "}
+                            {this.state.channel ? this.state.channel.name : "your agora"}.
+                          </ReactTooltip>
                         )}
                       </Box>
-                      <Box
-                        direction="row"
-                        wrap
-                        margin={{ top: "5px" }}
-                        gap="xsmall"
-                      >
-                        {this.state.channelMembers.map((member: User) => (
-                          <ChannelPageUserCircle
-                            user={member}
-                            channelId={this.state.channel?.id}
-                            onRemovedCallback={this.fetchMembers}
-                            showRemoveButton={this.state.role === "owner"}
-                          />
-                        ))}
+                      
+                      <TextArea
+                        placeholder="Enter your list of emails"
+                        value={this.state.mailingList}
+                        onChange={(e: any) => this.handleMailingList(e)}
+                        rows={4}
+                        style={{border: this.state.strEmailWrong.length === 0 ? "2px solid black" : "2px solid red"}}
+                        data-tip data-for='email'
+                      />
+                      <Box direction="row" width="100%" margin={{top: "20px"}}>
+                        <Box width="100%"> 
+                          {this.state.listEmailCorrect.length > 0 && (
+                            <Text color="green">
+                              Emails successfully extracted from text.
+                            </Text>
+                          )}
+                          {/* {this.state.strEmailWrong.length > 0 && (
+                            <Text color="red">
+                              No emails detected.
+                            </Text>
+                          )} */}
+                        </Box>
+                        <Box
+                          onClick={this.parseMailingList}
+                          background="#7E1115"
+                          round="xsmall"
+                          pad="xsmall"
+                          height="40px"
+                          width="18%"
+                          justify="center"
+                          align="center"
+                          focusIndicator={false}
+                          hoverIndicator="#5A0C0F"
+                        >
+                          <Text size="18px"> Add </Text>
+                        </Box>
                       </Box>
                     </Box>
-                    {/*       
-                    <Box
-                      width="31.5%"
-                      height="250px"
-                      background="#e5e5e5"
-                      round="7.5px"
-                      pad="10px"
-                    >
-                      <Text weight="bold" size="20px" color="black">
-                        Followers
-                      </Text>
-                      <Box
-                        direction="row"
-                        wrap
-                        margin={{ top: "5px" }}
-                        gap="xsmall"
-                      >
-                        {this.state.followers.map((follower: User) => (
-                          <ChannelPageUserCircle
-                            user={follower}
-                            showRemoveButton={false}
-                          />
-                        ))}
-                      </Box>
-                    </Box>
-                    */}
                   </Box>
                 </TabPanel>
                 <TabPanel style={{width: "74.35vw"}}>
@@ -887,7 +1043,6 @@ export default class ManageChannelPage extends Component<Props, State> {
               </Tabs>
             </Box>
           </Box>
-          <ReactTooltip />
         </Box>
       ) : (
         <Redirect
