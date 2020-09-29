@@ -77,8 +77,6 @@ class InvitedUsersRepository:
         # Gather addresses of non-existing users to be invited
         invitationEmailList = emailLists.copy()
 
-        string += f"started: invitationEmailList = {invitationEmailList}"
-
         for email in emailLists:
             if email in registered_members_emails or email in registered_users_emails:
                 invitationEmailList.remove(email)
