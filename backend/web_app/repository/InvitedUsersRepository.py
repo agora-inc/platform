@@ -44,26 +44,21 @@ class InvitedUsersRepository:
             '''
         return self.db.run_query(add_member_query, delete_email_mailing_list_query)
 
-    def addInvitedMemberToChannel(self, invitationEmailList, channelId, role):
+    def addInvitedMemberToChannel(self, emailLists, channelId, role):
         # Remove all duplicates in the email_list
-        if isinstance(invitationEmailList, str):
-            invitationEmailList = [invitationEmailList]
+        if isinstance(emailLists, str):
+            emailLists = [emailLists]
 
         # A. Separate emails from users who have an agora account from from the other ones
-        if len(invitationEmailList) == 1:
-            sql_syntax_email_list = "('" + str(invitationEmailList[0]) + "')"
-        elif len(invitationEmailList) > 1:
-            sql_syntax_email_list = str(tuple(invitationEmailList))
+        if len(emailLists) == 1:
+            sql_syntax_email_list = "('" + str(emailLists[0]) + "')"
+        elif len(emailLists) > 1:
+            sql_syntax_email_list = str(tuple(emailLists))
 
-        # query emails that are registered to an account which is not already member or owner of the channel
+        # query emails from users from taht mailing list
         registered_users_email_query = f'''
-        SELECT t1.id, t1.email FROM Users t1
-        WHERE NOT EXISTS (
-            SELECT *
-            FROM ChannelUsers t2
-            WHERE t1.id = t2.user_id AND t2.channel_id = {channelId} AND t2.role in ('member', 'owner')
-            )
-            AND t1.email in {sql_syntax_email_list}
+        SELECT id, email FROM Users
+        WHERE email in {sql_syntax_email_list}
         ;
         '''
         registered_users_sql = self.db.run_query(registered_users_email_query)
@@ -71,7 +66,7 @@ class InvitedUsersRepository:
 
         # query emails from existing members or admins
         registered_members_email_query = f'''
-            SELECT t1.email FROM Users t1
+            SELECT t1.email, t1.id FROM Users t1
             INNER JOIN ChannelUsers t2
             WHERE t1.id = t2.user_id AND t2.channel_id = {channelId} AND t2.role in ('member', 'owner')
             ;
@@ -80,9 +75,15 @@ class InvitedUsersRepository:
         registered_members_emails = [i["email"] for i in registered_members_sql]
 
         # Gather addresses of non-existing users to be invited
-        for email in invitationEmailList:
-            if email in registered_users_emails or email in registered_members_emails:
+        invitationEmailList = emailLists.copy()
+
+        string += f"started: invitationEmailList = {invitationEmailList}"
+
+        for email in emailLists:
+            if email in registered_members_emails or email in registered_users_emails:
                 invitationEmailList.remove(email)
+            if email in registered_members_emails:
+                registered_users_emails.remove(email)
 
         # B. Make existing users new members (if they are some)
         if isinstance(registered_users_emails, list):
@@ -90,13 +91,14 @@ class InvitedUsersRepository:
                 if len(registered_users_emails) == 1:
                     sql_values_formatting = f'''({channelId}, {registered_users_sql[0]["id"]}, "member")'''
                 elif len(registered_users_emails) > 1:
-                    sql_values_formatting = str([tuple(channelId, i["id"], "member") for i in registered_users_sql])[1:-1]
+                    sql_values_formatting = str([tuple([channelId, i["id"], "member"]) for i in registered_users_sql])[1:-1]
 
                 add_query = f'''
                     INSERT INTO ChannelUsers (channel_id, user_id, role)
                     VALUES {sql_values_formatting};
                     '''
                 self.db.run_query(add_query)
+
 
                 # Send emails
                 channel_name = self.channels.getChannelById(channelId)["name"]
