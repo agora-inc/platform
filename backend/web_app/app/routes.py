@@ -3,22 +3,24 @@
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
 
-from app import app, db, mail
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository
+from app import app, mail
+from app.databases import agora_db
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
 from flask import jsonify, request, send_file
 from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-users = UserRepository.UserRepository(db=db)
-tags = TagRepository.TagRepository(db=db)
-topics = TopicRepository.TopicRepository(db=db)
-questions = QandARepository.QandARepository(db=db)
-streams = StreamRepository.StreamRepository(db=db)
-talks = TalkRepository.TalkRepository(db=db)
-videos = VideoRepository.VideoRepository(db=db)
-channels = ChannelRepository.ChannelRepository(db=db)
-search = SearchRepository.SearchRepository(db=db)
+users = UserRepository.UserRepository(db=agora_db, mail_sys=mail)
+tags = TagRepository.TagRepository(db=agora_db)
+topics = TopicRepository.TopicRepository(db=agora_db)
+questions = QandARepository.QandARepository(db=agora_db)
+streams = StreamRepository.StreamRepository(db=agora_db)
+talks = TalkRepository.TalkRepository(db=agora_db)
+videos = VideoRepository.VideoRepository(db=agora_db)
+channels = ChannelRepository.ChannelRepository(db=agora_db)
+search = SearchRepository.SearchRepository(db=agora_db)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
 
 # --------------------------------------------
 # HELPER FUNCTIONS
@@ -65,6 +67,9 @@ def getUser():
 
 @app.route('/users/add', methods=["POST"])
 def addUser():
+    #
+    # TODO: TEST THAT MEMBERSHIP ARE MOVED
+    #
     logRequest(request)
 
     params = request.json
@@ -74,8 +79,15 @@ def addUser():
     user = users.addUser(username, password, email)
 
     if not user:
-        app.logger.error(f"Attempted registration of new user with existing username {username}")
-        return "username is taken", 400
+        app.logger.error(f"Attempted registration of new user with existing email {email}")
+        return "Email already in use", 400
+
+    try:
+        invitations.transfertInvitedMembershipsToUser(user, email)
+    except:
+        # We need to keep trace if an error happens.
+        # TODO: add this into logs in a file called "issue to fix manually"
+        pass
 
     app.logger.error(f"Successful registration of new user with username {username} and email {email}")
 
@@ -125,12 +137,12 @@ def generateChangePasswordLink():
     username = params["username"]
     user = users.getUser(params["username"])
     code = users.encodeAuthToken(user["id"], "changePassword")
-    link = f'http://localhost:3000/changepassword?code={code.decode()}'
+    link = f'https://agora.stream:3000/changepassword?code={code.decode()}'
     
     # email link
-    msg = Message('Hello', sender = 'team@agora.stream', recipients = [user["email"]])
-    msg.body = f'Link to reset your password: {link}'
-    msg.subject = "Reset password"
+    msg = Message('Agora.stream: password reset', sender = 'team@agora.stream', recipients = [user["email"]])
+    msg.body = f'Password reset link: {link}'
+    msg.subject = "Agora.stream: password reset"
     mail.send(msg)
 
     app.logger.debug(f"User {username} requested link to change password")
@@ -163,7 +175,6 @@ def updatePublic():
     params = request.json
     updatedUser = users.updatePublic(userId, params["public"])
     return jsonify(updatedUser)
-
 
 
 # --------------------------------------------
@@ -212,21 +223,30 @@ def createChannel():
 
     return jsonify(channels.createChannel(name, description, userId))
 
-@app.route('/channels/users/add', methods=["POST", "OPTIONS"])
-def addUserToChannel():
+@app.route('/channels/invite/add', methods=["POST", "OPTIONS"])
+def addInvitedMembersToChannel():
     logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
+    #if not checkAuth(request.headers.get('Authorization')):
+    #    return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
 
-    app.logger.debug(f"User with id {params['userId']} added to agora with id {params['channelId']} in role {params['role']}")
-    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+    invitations.addInvitedMemberToChannel(params['emails'], params['channelId'], 'member')
+    for email in params['emails']:
+        app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
 
     return jsonify("Success")
+
+@app.route('/channels/invite', methods=["GET"])
+def getInvitedMembersForChannel():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(invitations.getInvitedMembersEmails(channelId))
 
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
 def removeUserForChannel():
@@ -445,10 +465,6 @@ def sendTalkApplicationEmail():
     # NOTE: we receive a list of all of admins but we only send to 1 for now; to be extended later
     administrator_emails = channels.getContactAddresses(params['channel_id'])[0]
 
-
-    with open("/home/cloud-user/weshmaggle2.txt", "w") as file:
-        file.write(str(params))
-
     # handling optional field
     if "speaker_personal_website" not in params:
         speaker_personal_website_section = ""
@@ -572,6 +588,8 @@ def serveThumbnail():
 # -------------------------------------------- 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
+    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
+    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
 
@@ -607,11 +625,6 @@ def getAllCurrentTalksForChannel():
 
 @app.route('/talks/channel/drafted', methods=["GET"])
 def getAllDraftedTalksForChannel():
-    ############################
-    #                          #
-    # TODO: Test this works    #
-    #                          #
-    ############################
     channelId = int(request.args.get("channelId"))
     return jsonify(talks.getAllDraftedTalksForChannel(channelId))
 

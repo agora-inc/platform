@@ -19,7 +19,7 @@ import admin_agora from "../assets/getting-started/admin_agora.png";
 import top_right_panel_select_agora from "../assets/getting-started/top_right_panel_select_agora.png";
 import watch_past_talk from "../assets/getting-started/watch_past_talk.png";
 import LatexInput from "../Components/Streaming/LatexInput";
-
+import ReactPlayer from "react-player"
 import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
 
@@ -120,19 +120,29 @@ export default class GettingStartedPage extends Component<Props, State> {
             pad="small"
             // gap="xsmall"
           > */}
-            {/* <Text color="black" size="18px"> */}
-            <h1><strong>Getting started! </strong></h1>
-            <p>Welcome to agora. Here is a quick overview on how to use the website.</p>
 
-            <br></br>
-            <h2><strong>1. Where to browse for talks?</strong></h2>
+            <h1><strong>Getting started! </strong></h1>
+            <p>Welcome to agora. Here is a quick overview on how to use the site.</p>
+            <div>
+              <ReactPlayer
+                url="https://www.youtube.com/embed/vlqhG3YGMUg"
+                playing={true}
+                controls
+                width="60vw"
+                height="60vh"
+              />
+            </div>
+            
+            {/* <h2><strong>1. Where to browse for talks?</strong></h2>
             <p>i) On the main page, you will be able to browse for upcoming talks given your topic of interest. Results will be shown below.&nbsp;</p>
+            <div>
             <img src={homepage} 
               width="1150vw" 
               height="auto"
               max-width="230px"
               max-height="95px"
             />
+            </div>
             <br></br>
 
             <p>ii) The link to the event (e.g. zoom or microsoft teams) will be available on the talk card 15 minutes before the starting time. Accessing it requires the user to be logged in. </p>
@@ -271,7 +281,7 @@ export default class GettingStartedPage extends Component<Props, State> {
               max-width="230px"
               max-height="95px"
             />
-            <br></br>
+            <br></br> */}
 
 
 
@@ -303,10 +313,10 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           {/* </Box> */}
 
+          <br></br>
+          <br></br>
+          <br></br>
 
-          <br></br>
-          <br></br>
-          <br></br>
           <h2><strong>Any questions? Reach out!</strong></h2>
           <p>Do you have any questions, inqueries, or feedbacks? If yes, please reach out to us using the top right-hand side button, or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our{" "} 
             <Link to={"/info/tos"}>

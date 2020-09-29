@@ -68,7 +68,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
             justify="between"
           >
             <Text size="1.4rem" weight="bold">
-              Channels you follow will appear here
+              Channels you are a member or follower of will appear here
             </Text>
             <Text size="16px" color="grey">
               Use the search bar to find channels that interest you
