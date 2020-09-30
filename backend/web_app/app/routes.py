@@ -67,9 +67,9 @@ def getUser():
 
 @app.route('/users/add', methods=["POST"])
 def addUser():
-    #
-    # TODO: TEST THAT MEMBERSHIP ARE MOVED
-    #
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
     logRequest(request)
 
     params = request.json
@@ -78,9 +78,9 @@ def addUser():
     email = params['email']
     user = users.addUser(username, password, email)
 
-    if not user:
+    if user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
-        return "Email already in use", 400
+        return user
 
     try:
         invitations.transfertInvitedMembershipsToUser(user, email)

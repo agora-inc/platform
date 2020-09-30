@@ -37,6 +37,7 @@ export default class SignUpButton extends Component<Props, State> {
       this.state.password,
       this.state.email,
       (result: string) => {
+        // console.log(result);
         if (result === "ok") {
           this.toggleModal();
           this.props.callback();
@@ -106,7 +107,7 @@ export default class SignUpButton extends Component<Props, State> {
               gap="small"
               direction="row"
             >
-              <StatusCritical />
+              <StatusCritical/>
               <Heading level={5} margin="none" color="white">
                 Error: {this.state.error}
               </Heading>

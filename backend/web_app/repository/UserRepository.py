@@ -45,7 +45,7 @@ class UserRepository:
         return result[0]
 
     def getUserByEmail(self, email):
-        query = f'SELECT * FROM Users WHERE email = {email}'
+        query = f"SELECT * FROM Users WHERE email = '{email}'"
         result = self.db.run_query(query)
         if not result:
             return None
@@ -54,9 +54,12 @@ class UserRepository:
     def addUser(self, username, password, email):
         email = str(email).lower()
 
-        # check if email exists
         if self.getUserByEmail(email):
-            return None
+            return "Email already in use", 400
+        
+        # check if username exists
+        if self.getUser(username):
+            return "Username already in use", 400
 
         passwordHash = generate_password_hash(password)
         query = f'INSERT INTO Users(username, password_hash, email) VALUES ("{username}", "{passwordHash}", "{email}")'
@@ -101,9 +104,6 @@ class UserRepository:
                             {bullet_point_html}
                         </ul>
                         '''
-
-                with open("/home/cloud-user/test/ipkiss3.txt", "w") as file:
-                    file.write(str(bullet_point_html))
 
         # send confirmation email
         msg = Message(sender = 'team@agora.stream', recipients = [email])
