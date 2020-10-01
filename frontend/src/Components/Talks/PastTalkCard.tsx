@@ -271,7 +271,6 @@ export default class PastTalkCard extends Component<Props, State> {
   };
 
   render() {
-    console.log(this.props.talk.name, "Hidden?", this.state.isRecordingLinkHidden, "Recording?", this.props.talk.recording_link)
     let [dateStr, timeStr] = this.formatDate(this.props.talk.date);
     return (
       <Box
