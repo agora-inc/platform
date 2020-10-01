@@ -471,9 +471,9 @@ export default class ManageChannelPage extends Component<Props, State> {
               <Text size="30px" color="black" weight="bold">
                 {this.state.channel?.name}
               </Text>
-              {/*<Text size="24px" color="#999999" weight="bold">
+              <Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers
-              </Text>*/}
+              </Text>
               <Box direction="row" align="center">
                 <ImageUploader
                   text="Upload avatar"
