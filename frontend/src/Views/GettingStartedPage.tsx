@@ -2,23 +2,33 @@ import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
+
+import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
+import adding_email_invitation from "../assets/getting-started/adding_members/adding_email_invitation.png";
+import email_invitation from "../assets/getting-started/adding_members/email_invitation.png";
+import registration from "../assets/getting-started/adding_members/registration.png";
+import email_registration from "../assets/getting-started/adding_members/email_registration.png";
+import member_got_added_after_registration from "../assets/getting-started/adding_members/member_got_added_after_registration.png";
+import membership_top_right from "../assets/getting-started/adding_members/membership_top_right.png";
+
+
 import accessing_link from "../assets/getting-started/accessing_link.png";
-import agora_created_done from "../assets/getting-started/agora_created_done.png";
-import create_agora from "../assets/getting-started/create_agora.png";
-import create_agora_empty_page from "../assets/getting-started/create_agora_empty_page.png";
-import create_event_done from "../assets/getting-started/create_event_done.png";
-import customize_agora_done from "../assets/getting-started/customize_agora_done.png";
-import homepage from "../assets/getting-started/homepage.png";
-import internal_calendar from "../assets/getting-started/internal_calendar.png";
-import registering from "../assets/getting-started/registering.png";
-import talk_card_registered from "../assets/getting-started/talk_card_registered.png";
-import top_right_panel from "../assets/getting-started/top_right_panel.png";
-import following_agora from "../assets/getting-started/following_agora.png";
-import homepage_following from "../assets/getting-started/homepage_following.png";
-import admin_agora from "../assets/getting-started/admin_agora.png";
-import top_right_panel_select_agora from "../assets/getting-started/top_right_panel_select_agora.png";
-import watch_past_talk from "../assets/getting-started/watch_past_talk.png";
-import LatexInput from "../Components/Streaming/LatexInput";
+// import agora_created_done from "../assets/getting-started/agora_created_done.png";
+// import create_agora from "../assets/getting-started/create_agora.png";
+// import create_agora_empty_page from "../assets/getting-started/create_agora_empty_page.png";
+// import create_event_done from "../assets/getting-started/create_event_done.png";
+// import customize_agora_done from "../assets/getting-started/customize_agora_done.png";
+// import homepage from "../assets/getting-started/homepage.png";
+// import internal_calendar from "../assets/getting-started/internal_calendar.png";
+// import registering from "../assets/getting-started/registering.png";
+// import talk_card_registered from "../assets/getting-started/talk_card_registered.png";
+// import top_right_panel from "../assets/getting-started/top_right_panel.png";
+// import following_agora from "../assets/getting-started/following_agora.png";
+// import homepage_following from "../assets/getting-started/homepage_following.png";
+// import admin_agora from "../assets/getting-started/admin_agora.png";
+// import top_right_panel_select_agora from "../assets/getting-started/top_right_panel_select_agora.png";
+// import watch_past_talk from "../assets/getting-started/watch_past_talk.png";
+// import LatexInput from "../Components/Streaming/LatexInput";
 import ReactPlayer from "react-player"
 import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
@@ -104,6 +114,7 @@ export default class GettingStartedPage extends Component<Props, State> {
 
 
   render() {
+    let path_image = "/home/cloud-user/plateform/agora/frontend/media/tutorial/adding_members/";
     return (
       <Box
         width="100vw"
@@ -132,7 +143,66 @@ export default class GettingStartedPage extends Component<Props, State> {
                 height="60vh"
               />
             </div>
+            <br></br>
+            <br></br>
+            <h2><strong>1. How to become a member of an agora?</strong></h2>
+            <p>i) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <img src={adding_email_addresses_registered}
+              width="1150vw" 
+              height="auto"
+              max-width="230px"
+              max-height="95px"
+            />
             
+            <p>i) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <img src={adding_email_invitation}
+              // width="1150vw" 
+              // height="auto"
+              max-width="230px"
+              max-height="95px"
+            />
+
+            <p>ii) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <img src={email_invitation}
+              // width="1150vw" 
+              // height="auto"
+              max-width="230px"
+              max-height="95px"
+            />
+
+            <p>iii) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <img src={registration}
+              width="1150vw" 
+              height="auto"
+              max-width="230px"
+              max-height="95px"
+            />
+
+            <p>iv) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <img src={email_registration}
+              width="1150vw" 
+              height="auto"
+              max-width="230px"
+              max-height="95px"
+            />
+
+            <p>v) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <img src={member_got_added_after_registration}
+              width="1150vw" 
+              height="auto"
+              max-width="230px"
+              max-height="95px"
+            />
+
+            <p>vi) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <img src={membership_top_right}
+              width="1150vw" 
+              height="auto"
+              max-width="230px"
+              max-height="95px"
+            />
+
+
             {/* <h2><strong>1. Where to browse for talks?</strong></h2>
             <p>i) On the main page, you will be able to browse for upcoming talks given your topic of interest. Results will be shown below.&nbsp;</p>
             <div>
