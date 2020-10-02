@@ -145,63 +145,62 @@ export default class GettingStartedPage extends Component<Props, State> {
             </div>
             <br></br>
             <br></br>
+            <h1>FAQ</h1>
             <h2><strong>1. How to become a member of an agora?</strong></h2>
-            <p>i) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <p>i) A user can become a member of an agora only if he is invited by one of its administrators. Inviting someone who already has an agora account will instantly make him member.</p>
             <img src={adding_email_addresses_registered}
-              width="1150vw" 
+              width="900vw" 
               height="auto"
               max-width="230px"
               max-height="95px"
             />
             
-            <p>i) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <p>ii) On the other side, if the person does not have an account, the invitation be shown in the 'invited members' section and the following email invitation will be sent:</p>
             <img src={adding_email_invitation}
-              // width="1150vw" 
-              // height="auto"
+              width="900vw" 
+              height="auto"
               max-width="230px"
               max-height="95px"
             />
-
-            <p>ii) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <br></br>
             <img src={email_invitation}
-              // width="1150vw" 
-              // height="auto"
+              width="650vw" 
+              height="auto"
               max-width="230px"
               max-height="95px"
             />
-
-            <p>iii) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <br></br>
+            <p>iii) If the person decides to create an agora account using the address he has been invited to, then all membership invitation will automatically be transfered to his/her new account.</p>
             <img src={registration}
-              width="1150vw" 
+              width="900vw" 
               height="auto"
               max-width="230px"
               max-height="95px"
             />
-
-            <p>iv) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <br></br>
+            <p>A list of all the newly acquired memberships will be stated in the registration email.</p>
             <img src={email_registration}
-              width="1150vw" 
+              width="550vw" 
               height="auto"
               max-width="230px"
               max-height="95px"
             />
-
-            <p>v) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
-            <img src={member_got_added_after_registration}
-              width="1150vw" 
-              height="auto"
-              max-width="230px"
-              max-height="95px"
-            />
-
-            <p>vi) Becoming a member is only on invitation. For that, the admin has to add you using the community panel.</p>
+            <br></br>
+            <p> iv) The membership status to an agora will be highlighted on the top-right hand side of the page.</p>
             <img src={membership_top_right}
-              width="1150vw" 
+              width="900vw" 
               height="auto"
               max-width="230px"
               max-height="95px"
             />
-
+            <br></br>
+            <p> v) On the administrator side, once the invited user registered, its invitation will be removed from the 'Invited members' column and he/she will be transfered to the 'Agora members' one.</p>
+            <img src={member_got_added_after_registration}
+              width="900vw" 
+              height="auto"
+              max-width="230px"
+              max-height="95px"
+            />
 
             {/* <h2><strong>1. Where to browse for talks?</strong></h2>
             <p>i) On the main page, you will be able to browse for upcoming talks given your topic of interest. Results will be shown below.&nbsp;</p>
