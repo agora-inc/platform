@@ -108,15 +108,15 @@ class UserRepository:
         # send confirmation email
         msg = Message(sender = 'team@agora.stream', recipients = [email])
         msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif;">Dear <strong>{username}</strong>,</span></p>
-                <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://agora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">agora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion for research will be driving forces for the research community.</span></p>
+                <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://agora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">agora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion will be driving forces for many research communities.</span></p>
                 
-                <p><span style="font-family: Arial, Helvetica, sans-serif;">With your new account, you have the ability to:</span></p>
+                <p><span style="font-family: Arial, Helvetica, sans-serif;">With your new account, you can:</span></p>
                 <ol>
-                    <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Become a member of an agora</strong> and have access to some of its <strong>exclusive content</strong>, such as recordings of past seminars or members-only events.</span></li>
+                    <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Become a member of an agora</strong> and have access to its <strong>exclusive content</strong>, such as recordings of past seminars and members-only events.</span></li>
                     <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Create your own agora</strong> and/or become the <strong>administrator</strong> of one, allowing you to advertise your events to the audience you desire, receive talk applications from researchers all around the world and much more!</span></li>
                 </ol>
                 {existing_invitation_paragraph}
-                <p><span style="font-family: Arial, Helvetica, sans-serif;">We can visit our <a href="https://agora.stream/info/getting-started">getting started page</a> to discover all the features of <span style="font-family: Arial, Helvetica, sans-serif;">agora.stream</span>.</span></p>
+                <p><span style="font-family: Arial, Helvetica, sans-serif;">You can visit our <a href="https://agora.stream/info/getting-started">getting started page</a> to explore all the features of agora.stream.</span></p>
                 <p><span style="font-family: Arial, Helvetica, sans-serif;">If you have any question, feedback or suggestion, please reach out to us by replying to this email.</span></p>
                 <p><span style="font-family: Arial, Helvetica, sans-serif;"><em>The agora.stream team</em></span></p>
             '''
