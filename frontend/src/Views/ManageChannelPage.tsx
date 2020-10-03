@@ -123,7 +123,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   getChannelAndCheckAccess = () => {
     ChannelService.getChannelByName(
-      decodeURIComponent(this.props.location.pathname.split("/")[1]),
+      this.props.location.pathname.split("/")[1],
       (channel: Channel) => {
         let user = UserService.getCurrentUser();
         if (user === null) {
@@ -1047,7 +1047,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       ) : (
         <Redirect
           to={{
-            pathname: `/${encodeURIComponent(this.state.channel!.name)}`,
+            pathname: `/${this.state.channel!.name}`,
           }}
         />
       );
