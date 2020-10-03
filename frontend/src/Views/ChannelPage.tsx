@@ -97,7 +97,7 @@ export default class ChannelPage extends Component<Props, State> {
   fetchChannel = () => {
     // console.log(this.props.location.pathname.split("/"));
     ChannelService.getChannelByName(
-      this.props.location.pathname.split("/")[1],
+      decodeURIComponent(this.props.location.pathname.split("/")[1]),
       (channel: Channel) => {
         let user = UserService.getCurrentUser();
         if (user === null) {
@@ -369,7 +369,7 @@ export default class ChannelPage extends Component<Props, State> {
           {this.shouldRedirect() ? (
             <Redirect
               to={{
-                pathname: this.props.location.pathname + "/manage",
+                pathname: encodeURIComponent(this.props.location.pathname) + "/manage",
                 state: { channel: this.state.channel },
               }}
             />

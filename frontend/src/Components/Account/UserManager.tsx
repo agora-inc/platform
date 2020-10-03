@@ -141,7 +141,7 @@ export default class UserManager extends Component<Props, State> {
           marginTop: 5,
           paddingBottom: 0,
           minHeight: 326,
-          width: 350,
+          width: 450,
         }}
       >
         <Box
@@ -331,7 +331,7 @@ export default class UserManager extends Component<Props, State> {
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
-        overlayStyle={{ width: 350 }}
+        overlayStyle={{ width: 450 }}
         visible={this.state.showDropdown}
         placement="bottomCenter"
       >

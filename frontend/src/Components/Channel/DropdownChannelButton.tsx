@@ -22,10 +22,12 @@ export default class DropdownChannelButton extends Component<Props, State> {
   }
 
   render() {
+    console.log("true", this.props.channel.name)
+    console.log("fadfrue", encodeURIComponent(this.props.channel.name))
     return (
       <Link
         to={{
-          pathname: `/${this.props.channel.name}/manage`,
+          pathname: `/${encodeURI(this.props.channel.name)}/manage`,
           state: { channel: this.props.channel },
         }}
         style={{ height: 40 }}
