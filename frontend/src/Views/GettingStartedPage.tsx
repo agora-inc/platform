@@ -184,7 +184,7 @@ export default class GettingStartedPage extends Component<Props, State> {
             <Text size={this.state.sizeText}>
               You can use the filters in the homepage to select the talks of interest to you. Click on the talk card to see more information,
               like the speaker's website and the abstract.
-              If you want to see the talks given by an agora, click on its name. This will redirect you to the agora's main page. (VIDEO)
+              If you want to see the talks given by an agora, click on its name. This will redirect you to the agora's main page.
             </Text>
           )}
 
@@ -210,8 +210,13 @@ export default class GettingStartedPage extends Component<Props, State> {
           {this.state.questionExtended[1] && (
             <Text size={this.state.sizeText}>
               You can register to a talk and put it in your Google or Apple calendar by click on the talk card.
-              The list of your registered talk will appear in your schedule (link).
-              The link to the streaming technology will be there as well. (VIDEO)"
+              The list of your registered talk will appear in your{" "}
+              <Link to={"/schedule"}>
+                  <Text color="brand" weight="bold" size={this.state.sizeText}>
+                    schedule
+                  </Text>
+                </Link>
+              . The link to the streaming will be there as well.
             </Text>
           )}
 
@@ -237,7 +242,7 @@ export default class GettingStartedPage extends Component<Props, State> {
           {this.state.questionExtended[2] && (
             <Text size={this.state.sizeText}>
               You can become a member of an agora only if you are invited by one of its administrators.
-              However, you can always follow an agora to never miss the content they upload.
+              However, you can always follow an agora to never miss the content uploaded.
             </Text>
           )}  
 
@@ -262,8 +267,8 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           {this.state.questionExtended[3] && (
             <Text size={this.state.sizeText}>
-              Click on the button "Apply to give a talk" on top of an agora's main page, and fill in the form with
-              all the relevant details for your talk.
+              Click on the button "Give a talk!" on the top left corner of an agora's main page, and fill in the form with
+              all the relevant details of your talk.
             </Text>
           )}  
 
@@ -294,9 +299,9 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           {this.state.questionExtended[4] && (
             <Text size={this.state.sizeText}>
-              Click on the user panel on the top right of the homepage and click on "Create an agora".
-              Enter its name and you will be redirected to the agora's main page. You are automatically an
-              administrators of the agora, meaning that you can customize it.
+              Click on the user panel on the top right corner of the homepage and click on "Create Agora".
+              Enter the name you want and you will be redirected to the agora's main page. You are automatically an
+              administrator of the agora, meaning that you can customize it.
 
             </Text>
           )}
@@ -322,7 +327,7 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           {this.state.questionExtended[5] && (
             <Text size={this.state.sizeText}>
-              You can change the banner, avatar, description and email of contact or your agora.
+              You can change the banner, the avatar, the description and the email of contact of your agora.
             </Text>
           )}
 
@@ -348,10 +353,10 @@ export default class GettingStartedPage extends Component<Props, State> {
           {this.state.questionExtended[6] && (
             <Text size={this.state.sizeText}>
               You can manage the members of your agora under the "Community" tab.
-              enter the emails of the people you want to invite.
+              Enter the emails of the people you want to invite.
               If the person already has an agora account, he/she will instantly be a member.
-              If the person does not have an account, he will feature in the 'invited members' 
-              section and an invitation will be sent to this person via email. (VIDEO)
+              If the person does not have an account, he will feature in the "Invited members" 
+              section and an invitation will be sent to this person via email.
             </Text>
           )}
 
@@ -376,9 +381,9 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           {this.state.questionExtended[7] && (
             <Text size={this.state.sizeText}>
-              You can schedule a new talk by going on the top left of your agora's main page.
-              You can save your new talk as a draft if you are missing some information and do not want it to be public yet.
-              You can choose who sees the advertisement for the upcoming talk, and who has access to the livestream.
+              You can schedule a new talk by going on the top left corner of your agora's main page.
+              You can save your new talk as a draft if some information is missing and you do not want it to be public yet.
+              You can choose who sees the advertisement for your upcoming talk, and who has access to the livestream.
             </Text>
           )}
 
@@ -403,17 +408,12 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           {this.state.questionExtended[8] && (
             <Text size={this.state.sizeText}>
-              After the talk, you can enter the link to the recording of the talk by going on the "Past talk" section and clicking on the corresponding talk.
-              Only the people that had access to the livestream will have access to the recording.
-
+              After the event, you can enter the link to the recording of the talk by going on the "Past talk" section in your agora 
+              and clicking on the corresponding talk. Only the people that had access to the livestream will have access to the recording.
             </Text>
           )}
 
-
-
-         
-
-
+          {/*
 
           <Box margin={{bottom: "500px"}}></Box>
 
@@ -666,6 +666,7 @@ export default class GettingStartedPage extends Component<Props, State> {
             {/* </Text> */}
 
           {/* </Box> */}
+
 
           <br></br>
           <br></br>
