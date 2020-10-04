@@ -99,7 +99,7 @@ class UserRepository:
                     bullet_point_html = bullet_point_html + text
 
                 existing_invitation_paragraph = f'''
-                        <p><span style="font-family: Arial, Helvetica, sans-serif;">We are happy to announce that you have been invited to be a member of:</span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">We are happy to announce that you have already been invited to be a member of:</span></p>
                         <ul>
                             {bullet_point_html}
                         </ul>

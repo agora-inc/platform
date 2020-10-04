@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
+import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules } from "grommet-icons";
 
 import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
 import adding_email_invitation from "../assets/getting-started/adding_members/adding_email_invitation.png";
@@ -41,7 +42,11 @@ interface Props {
 interface State {
   user: User;
   loading: boolean;
-  text: string
+  text: string;
+  questionExtended: boolean[];
+  sizeHeader: string;
+  sizeItem: string,
+  sizeText: string;
 }
 
 export default class GettingStartedPage extends Component<Props, State> {
@@ -52,7 +57,11 @@ export default class GettingStartedPage extends Component<Props, State> {
         ? this.props.location.state.user
         : UserService.getCurrentUser(),
       loading: true,
-      text: ""
+      text: "",
+      questionExtended: [false, false, false, false, false, false, false, false],
+      sizeHeader: "36px",
+      sizeItem: "24px",
+      sizeText: "18px",
     };
   }
 
@@ -62,6 +71,14 @@ export default class GettingStartedPage extends Component<Props, State> {
   updateText = (e: any) => {
     this.setState({
       text: e.target.value,
+    });
+  };
+
+  toggleQuestion = (n: number) => {
+    return (() => {
+      let questionExtended = this.state.questionExtended;
+      questionExtended[n] = !questionExtended[n]
+      this.setState({ questionExtended })
     });
   };
 
@@ -112,7 +129,6 @@ export default class GettingStartedPage extends Component<Props, State> {
     );
   };
 
-
   render() {
     let path_image = "/home/cloud-user/plateform/agora/frontend/media/tutorial/adding_members/";
     return (
@@ -122,7 +138,7 @@ export default class GettingStartedPage extends Component<Props, State> {
         align="center"
         margin={{ top: "140px" }}
       >
-        <Box width="75%">
+        <Box width="75%" direction="column">
           {/* <Box
             width="98.25%"
             height="950px"
@@ -131,9 +147,275 @@ export default class GettingStartedPage extends Component<Props, State> {
             pad="small"
             // gap="xsmall"
           > */}
+          <Box direction="row" gap="small" margin={{bottom: "72px"}}>
+            <Launch size="large" />
+            <Text size={this.state.sizeHeader} weight="bold" > Getting started </Text>
+          </Box>
+          <Box>
+            <Text size={this.state.sizeText} > Welcome to agora.stream, the centralized platform to share your research seminars! 
+            Here is a quick overview on how to use the site, if you are a researcher or an administrator of a research group. </Text>
+          </Box>
+
+          <Box direction="row" gap="small" margin={{top: "72px", bottom: "12px"}}>
+            <Test size="medium" />
+            <Text size={this.state.sizeItem} weight="bold"> For researchers </Text>
+          </Box>
+
+          <Box direction="row" gap="small" margin={{top: "36px", bottom: "36px"}} >
+            {this.state.questionExtended[0] ? (
+              <FormUp
+                onClick={this.toggleQuestion(0)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(0)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold" > Browse for talks and agoras </Text>
+          </Box>
+
+          {this.state.questionExtended[0] && (
+            <Text size={this.state.sizeText}>
+              You can use the filters in the homepage to select the talks of interest to you. Click on the talk card to see more information,
+              like the speaker's website and the abstract.
+              If you want to see the talks given by an agora, click on its name. This will redirect you to the agora's main page. (VIDEO)
+            </Text>
+          )}
+
+          <Box direction="row" gap="small" margin={{top: "12px", bottom: "36px"}}>
+            {this.state.questionExtended[1] ? (
+              <FormUp
+                onClick={this.toggleQuestion(1)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(1)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold" > Register and go to a talk </Text>
+          </Box>
+
+          {this.state.questionExtended[1] && (
+            <Text size={this.state.sizeText}>
+              You can register to a talk and put it in your Google or Apple calendar by click on the talk card.
+              The list of your registered talk will appear in your schedule (link).
+              The link to the streaming technology will be there as well. (VIDEO)"
+            </Text>
+          )}
+
+          <Box direction="row" gap="small" margin={{top: "12px", bottom: "36px"}}>
+            {this.state.questionExtended[2] ? (
+              <FormUp
+                onClick={this.toggleQuestion(2)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(2)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold" > Become a member of an agora </Text>
+          </Box>
+
+          {this.state.questionExtended[2] && (
+            <Text size={this.state.sizeText}>
+              You can become a member of an agora only if you are invited by one of its administrators.
+              However, you can always follow an agora to never miss the content they upload.
+            </Text>
+          )}  
+
+          <Box direction="row" gap="small" margin={{top: "12px", bottom: "36px"}}>
+            {this.state.questionExtended[3] ? (
+              <FormUp
+                onClick={this.toggleQuestion(3)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(3)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold" > Apply to give a talk </Text>
+          </Box>
+
+          {this.state.questionExtended[3] && (
+            <Text size={this.state.sizeText}>
+              Click on the button "Apply to give a talk" on top of an agora's main page, and fill in the form with
+              all the relevant details for your talk.
+            </Text>
+          )}  
+
+
+          <Box direction="row" gap="small" margin={{top: "48px", bottom: "12px"}}>
+            <Schedules size="medium" />
+            <Text size={this.state.sizeItem} weight="bold"> For administrators </Text>
+          </Box>
+
+          <Box direction="row" gap="small" margin={{top: "36px", bottom: "36px"}}>
+            {this.state.questionExtended[4] ? (
+              <FormUp
+                onClick={this.toggleQuestion(4)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(4)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold"> Create an agora </Text>
+          </Box>
+
+          {this.state.questionExtended[4] && (
+            <Text size={this.state.sizeText}>
+              Click on the user panel on the top right of the homepage and click on "Create an agora".
+              Enter its name and you will be redirected to the agora's main page. You are automatically an
+              administrators of the agora, meaning that you can customize it.
+
+            </Text>
+          )}
+
+          <Box direction="row" gap="small" margin={{top: "12px", bottom: "36px"}}>
+            {this.state.questionExtended[5] ? (
+              <FormUp
+                onClick={this.toggleQuestion(5)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(5)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold"> Customize your agora </Text>
+          </Box>
+
+          {this.state.questionExtended[5] && (
+            <Text size={this.state.sizeText}>
+              You can change the banner, avatar, description and email of contact or your agora.
+            </Text>
+          )}
+
+          <Box direction="row" gap="small" margin={{top: "12px", bottom: "36px"}}>
+            {this.state.questionExtended[6] ? (
+              <FormUp
+                onClick={this.toggleQuestion(6)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(6)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold"> Invite members to your agora </Text>
+          </Box>
+
+          {this.state.questionExtended[6] && (
+            <Text size={this.state.sizeText}>
+              You can manage the members of your agora under the "Community" tab.
+              enter the emails of the people you want to invite.
+              If the person already has an agora account, he/she will instantly be a member.
+              If the person does not have an account, he will feature in the 'invited members' 
+              section and an invitation will be sent to this person via email. (VIDEO)
+            </Text>
+          )}
+
+          <Box direction="row" gap="small" margin={{top: "12px", bottom: "36px"}}>
+            {this.state.questionExtended[7] ? (
+              <FormUp
+                onClick={this.toggleQuestion(7)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(7)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold"> Schedule a talk </Text>
+          </Box>
+
+          {this.state.questionExtended[7] && (
+            <Text size={this.state.sizeText}>
+              You can schedule a new talk by going on the top left of your agora's main page.
+              You can save your new talk as a draft if you are missing some information and do not want it to be public yet.
+            </Text>
+          )}
+
+          <Box direction="row" gap="small" margin={{top: "12px", bottom: "36px"}}>
+            {this.state.questionExtended[8] ? (
+              <FormUp
+                onClick={this.toggleQuestion(8)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <FormDown
+                onClick={this.toggleQuestion(8)}
+                size={this.state.sizeText}
+                color="black"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+            <Text size={this.state.sizeText} weight="bold"> Enter the recording of the talk </Text>
+          </Box>
+
+          {this.state.questionExtended[8] && (
+            <Text size={this.state.sizeText}>
+              After the talk, you can enter the link to the recording of the talk by going on the "Past talk" section and clicking on the corresponding talk.
+            </Text>
+          )}
+
+
+
+         
+
+
+
+          <Box margin={{bottom: "500px"}}></Box>
 
             <h1><strong>Getting started! </strong></h1>
-            <p>Welcome to agora. Here is a quick overview on how to use the site.</p>
+            <p></p>
             <div>
               <ReactPlayer
                 url="https://www.youtube.com/embed/vlqhG3YGMUg"

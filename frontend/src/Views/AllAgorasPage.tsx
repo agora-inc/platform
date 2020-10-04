@@ -17,7 +17,7 @@ const AllAgorasPage = () => {
       <span className="all-agoras-title">All agoras</span>
       <div className="all-agoras-grid">
         {agoras.map((agora) => (
-          <Link className="agora-card" to={`/${encodeURIComponent(agora.name)}`}>
+          <Link className="agora-card" to={`/${agora.name}`}>
             <div
               className="agora-card-banner"
               style={{ background: agora.colour }}
