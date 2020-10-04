@@ -1,0 +1,11 @@
+.talk_card_box_1 {
+    width: "32%";
+    height: "180px"
+}
+
+@media all and (max-width: 992px){
+    .talk_card_box_1 {
+        width: "32%";
+        height: "180px"
+    }
+}

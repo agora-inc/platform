@@ -8,6 +8,8 @@ import UserManager from "./Account/UserManager";
 import FormContainer from "./Homepage/FormContainer";
 import SiteWideSearch from "./SiteWideSearch";
 import TimeZoneInfo from "./TimeZoneInfo";
+import MediaQuery from "react-responsive";
+
 
 type State = {
   showLogin: boolean;
@@ -66,30 +68,35 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             </Box>
           </Link>
         </Box>
-        <Link
-          to={{ pathname: "/info/getting-started" }}
-          style={{ textDecoration: "none" }}
-        >
-        <Box
-            onClick={() => {}}
-            background="white"
-            round="xsmall"
-            pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-            justify="center"
-            align="center"
-            focusIndicator={false}
-            style={{
-              border: "1px solid #C2C2C2",
-            }}
-            hoverIndicator={true}
+        <MediaQuery minDeviceWidth={992}>
+          <Link
+            to={{ pathname: "/info/getting-started" }}
+            style={{ textDecoration: "none" }}
           >
-            <Text size="16px" color="grey">
-              {" "}
-              How to use me?{" "}
-            </Text>
-          </Box>
-        </Link>
-        <SiteWideSearch />
+          <Box
+              onClick={() => {}}
+              background="white"
+              round="xsmall"
+              pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              style={{
+                border: "1px solid #C2C2C2",
+              }}
+              hoverIndicator={true}
+            >
+              <Text size="16px" color="grey">
+                {" "}
+                How to use me?{" "}
+              </Text>
+            </Box>
+          </Link>
+        </MediaQuery>
+
+        <MediaQuery minDeviceWidth={992}>
+          <SiteWideSearch />
+        </MediaQuery>
         {/* <Box>
           <TextInput
             icon={<Search />}
@@ -105,9 +112,13 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           style={{ minWidth: "30%" }}
           justify="end"
         >
+        <MediaQuery minDeviceWidth={992}>
           <FormContainer />
+        </MediaQuery>
           <TimeZoneInfo />
+        <MediaQuery minDeviceWidth={992}>
           <UserManager showLogin={this.state.showLogin} />
+        </MediaQuery> 
         </Box>
       </Box>
     );

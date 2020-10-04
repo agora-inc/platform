@@ -13,6 +13,7 @@ import AddToCalendarButtons from "./AddToCalendarButtons";
 import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
+import "../../Styles/talk-card.css"; 
 
 interface Props {
   talk: Talk;
@@ -153,16 +154,20 @@ export default class TalkCard extends Component<Props, State> {
 
   render() {
     return (
-      <Box
-        width={this.props.width ? this.props.width : "32%"}
-        height="180px"
-        onClick={() => {
+      // <Box
+      //   width={this.props.width ? this.props.width : "32%"}
+      //   height="180px"
+      //   onClick={() => {
+      //     !this.state.showModal && this.toggleModal();
+      //   }}
+      //   focusIndicator={false}
+      //   style={{ position: "relative" }}
+      //   margin={{ bottom: "small" }}
+      // >
+      <div className="talk_card_box_1"
+              onClick={() => {
           !this.state.showModal && this.toggleModal();
-        }}
-        focusIndicator={false}
-        style={{ position: "relative" }}
-        margin={{ bottom: "small" }}
-      >
+        }}>
         <Box
           onMouseEnter={() => this.setState({ showShadow: true })}
           onMouseLeave={() => {
@@ -567,7 +572,8 @@ export default class TalkCard extends Component<Props, State> {
             )}
           </Layer>
         )}
-      </Box>
+      {/* </Box> */}
+      </div>
     );
   }
 }

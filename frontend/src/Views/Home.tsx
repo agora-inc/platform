@@ -14,6 +14,8 @@ import { Talk, TalkService } from "../Services/TalkService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicTalkList from "../Components/Talks/TopicTalksList";
 import TreeClassification from "../Components/Homepage/TreeClassification";
+import MediaQuery from "react-responsive";
+
 
 interface State {
   user: User | null;
@@ -40,7 +42,7 @@ export default class Home extends Component<{}, State> {
         parent_3_id: -1,
       },
     };
-  }
+}
 
   // componentWillMount() {
   //   // Limit to 1000 talks
@@ -80,7 +82,10 @@ export default class Home extends Component<{}, State> {
   render() {
     return (
       <Box direction="row">
-        <CustomSideBar user={this.state.user} />
+        {/* Only show side-bar for desktop */}
+        <MediaQuery minDeviceWidth={992}>
+          <CustomSideBar user={this.state.user} />
+        </MediaQuery>
         <Box
           width="80%"
           height="100%"
@@ -90,7 +95,9 @@ export default class Home extends Component<{}, State> {
           style={{ overflowY: "scroll" }}
           gap="25px"
         >
-          <Carousel gridArea="carousel" />
+
+        <Carousel gridArea="carousel" />
+
           {/*<TreeClassification />*/}
           <TopicTalkList
             seeMore={true}
