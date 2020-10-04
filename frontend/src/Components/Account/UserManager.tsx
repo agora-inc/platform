@@ -141,7 +141,7 @@ export default class UserManager extends Component<Props, State> {
           marginTop: 5,
           paddingBottom: 0,
           minHeight: 326,
-          width: 350,
+          width: 450,
         }}
       >
         <Box
@@ -237,12 +237,17 @@ export default class UserManager extends Component<Props, State> {
           <Text size="14px" color="grey">
             Manage your Agoras
           </Text>
-          {this.state.channels.map((channel: Channel) => (
+          <Box
+            height="200px"
+            overflow="auto"
+          >
+            {this.state.channels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
               onClick={this.toggleDropdown}
             />
-          ))}
+            ))}
+          </Box>
           <CreateChannelButton onClick={this.toggleCreateChannelCard} />
         </Box>
         <Menu.Divider />
@@ -326,8 +331,9 @@ export default class UserManager extends Component<Props, State> {
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
-        overlayStyle={{ width: 350 }}
+        overlayStyle={{ width: 450 }}
         visible={this.state.showDropdown}
+        placement="bottomCenter"
       >
         <Button
           style={{
