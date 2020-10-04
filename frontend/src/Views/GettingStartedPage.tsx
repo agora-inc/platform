@@ -138,7 +138,7 @@ export default class GettingStartedPage extends Component<Props, State> {
         align="center"
         margin={{ top: "140px" }}
       >
-        <Box width="75%" direction="column">
+        <Box width="50%" direction="column">
           {/* <Box
             width="98.25%"
             height="950px"
@@ -371,13 +371,14 @@ export default class GettingStartedPage extends Component<Props, State> {
                 style={{ cursor: "pointer" }}
               />
             )}
-            <Text size={this.state.sizeText} weight="bold"> Schedule a talk </Text>
+            <Text size={this.state.sizeText} weight="bold"> Schedule a talk and handle privacy </Text>
           </Box>
 
           {this.state.questionExtended[7] && (
             <Text size={this.state.sizeText}>
               You can schedule a new talk by going on the top left of your agora's main page.
               You can save your new talk as a draft if you are missing some information and do not want it to be public yet.
+              You can choose who sees the advertisement for the upcoming talk, and who has access to the livestream.
             </Text>
           )}
 
@@ -403,6 +404,8 @@ export default class GettingStartedPage extends Component<Props, State> {
           {this.state.questionExtended[8] && (
             <Text size={this.state.sizeText}>
               After the talk, you can enter the link to the recording of the talk by going on the "Past talk" section and clicking on the corresponding talk.
+              Only the people that had access to the livestream will have access to the recording.
+
             </Text>
           )}
 
