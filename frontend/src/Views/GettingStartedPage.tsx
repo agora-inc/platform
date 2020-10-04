@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
-import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules } from "grommet-icons";
+import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help } from "grommet-icons";
 
 import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
 import adding_email_invitation from "../assets/getting-started/adding_members/adding_email_invitation.png";
@@ -413,6 +413,28 @@ export default class GettingStartedPage extends Component<Props, State> {
             </Text>
           )}
 
+          <Box direction="row" gap="small" margin={{top: "48px", bottom: "60px"}}>
+            <CircleQuestion size="large" />
+            <Text size={this.state.sizeHeader} weight="bold"> Any questions? Reach out! </Text>
+          </Box>
+
+          <Text margin={{bottom: "60px"}}>
+            Do you have any question, inquery, or feedback? If yes, please reach out to us using the "Give feedback" button, 
+            or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our{" "} 
+            <Link to={"/info/tos"}>
+              <Text weight="bold" color="brand">
+                Term of services
+              </Text>
+            </Link>
+            {" "} and {" "} 
+            <Link to={"/info/privacy"}>
+              <Text weight="bold" color="brand">
+                data privacy policies
+              </Text>
+            </Link>
+            .
+          </Text>
+
           {/*
 
           <Box margin={{bottom: "500px"}}></Box>
@@ -667,26 +689,6 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           {/* </Box> */}
 
-
-          <br></br>
-          <br></br>
-          <br></br>
-
-          <h2><strong>Any questions? Reach out!</strong></h2>
-          <p>Do you have any questions, inqueries, or feedbacks? If yes, please reach out to us using the top right-hand side button, or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our{" "} 
-            <Link to={"/info/tos"}>
-              <Text weight="bold" color="brand">
-                Term of services
-              </Text>
-            </Link>
-            {" "} and {" "} 
-            <Link to={"/info/privacy"}>
-              <Text weight="bold" color="brand">
-                data privacy policies
-              </Text>
-            </Link>
-            .
-          </p>
         </Box>
       </Box>
     );
