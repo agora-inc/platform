@@ -11,6 +11,7 @@ import "../../Styles/topic-talks-list.css";
 import { User } from "../../Services/UserService";
 import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
+import MediaQuery from "react-responsive";
 
 interface Props {
   gridArea?: string;
@@ -176,6 +177,7 @@ export default class TopicTalkList extends Component<Props, State> {
             </Text>
           )}
           {this.props.seeMore && (
+          <MediaQuery minDeviceWidth={992}>
             <Link to="/upcoming" style={{ textDecoration: "none" }}>
               <Box
                 className="see-more-button"
@@ -191,6 +193,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 <FormNextLink color="grey" />
               </Box>
             </Link>
+          </MediaQuery>
           )}
         </Box>
 

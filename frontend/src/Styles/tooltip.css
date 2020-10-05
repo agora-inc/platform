@@ -37,3 +37,10 @@
   border-style: solid;
   border-color: transparent transparent black transparent;
 }
+
+/* For mobile */
+@media all and (max-width: 992px){
+  .tooltip {
+    text-align: right
+  }
+}

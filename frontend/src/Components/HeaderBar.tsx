@@ -64,7 +64,10 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 style={{ fontSize: 28, color: "black" }}
               >
                 Agora
-              </Heading>
+                </Heading>
+                <MediaQuery maxDeviceWidth={992}>
+                  <Text size="xsmall" color="black">mobile</Text>
+                  </MediaQuery>
             </Box>
           </Link>
         </Box>
