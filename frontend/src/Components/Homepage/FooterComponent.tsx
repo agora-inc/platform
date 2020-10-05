@@ -21,11 +21,11 @@ export default class FooterComponent extends Component {
             color: "#dadada",
             borderColor: "#dadada",
             backgroundColor: "#dadada",
-            marginBottom: 20,
+            marginBottom: 5,
           }}
         />
         <Box direction="row" justify="between">
-          <Box gap="xsmall">
+          <Box gap="xsmall" width="50%">
             <a href="/info/welcome" style={{ color: "grey" }}>
               About us
             </a>
@@ -40,8 +40,8 @@ export default class FooterComponent extends Component {
             </a>
           </Box>
           <Box gap="medium">
-            <Text size="18px"> Made by Researchers for Researchers.</Text>
-            <Text style={{ fontSize: 14 }} alignSelf="end">agora.stream © 2020</Text>
+            <Text size="18px" style={{textAlign: "right", marginRight: "5px"}}> Made by Researchers for Researchers.</Text>
+            <Text style={{ fontSize: 14, marginRight: "5px"}} alignSelf="end">agora.stream © 2020</Text>
           </Box>
         </Box>
       </Box>

@@ -163,13 +163,13 @@ export default class TopicTalkList extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="100%" margin={{"bottom": "100px"}}>
+      <Box width="100%" margin={{"bottom": "50px"}}>
         <Box
           width="100%"
           direction="row"
           gap="medium"
           align="end"
-          margin={{ bottom: "36px" }}
+          margin={{ bottom: "15px" }}
         >
           {this.props.title && (
             <Text size="26px" weight="bold" color="black" margin="none">
