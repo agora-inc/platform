@@ -1,4 +1,4 @@
-export const theme = {
+export const Theme = {
   global: {
     font: {
       family: "Arial",

@@ -156,18 +156,16 @@ export default class TalkCard extends Component<Props, State> {
     return (
       // <Box
       //   width={this.props.width ? this.props.width : "32%"}
-      //   height="180px"
       //   onClick={() => {
       //     !this.state.showModal && this.toggleModal();
       //   }}
       //   focusIndicator={false}
       //   style={{ position: "relative" }}
-      //   margin={{ bottom: "small" }}
       // >
-      <div className="talk_card_box_1"
-              onClick={() => {
-          !this.state.showModal && this.toggleModal();
-        }}>
+      <div className="talk_card_box_1" style={{"width": this.props.width ? this.props.width : "32%"}} onClick={() => {
+            !this.state.showModal && this.toggleModal();
+        }}
+        >
         <Box
           onMouseEnter={() => this.setState({ showShadow: true })}
           onMouseLeave={() => {
@@ -180,7 +178,7 @@ export default class TalkCard extends Component<Props, State> {
           background="white"
           round="xsmall"
           justify="between"
-          gap="small"
+          gap="100px"
           overflow="hidden"
         >
           <Box height="100%" pad="10px">

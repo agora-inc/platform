@@ -104,9 +104,6 @@ export default class TopicClassification extends Component<Props, State> {
 
         <div 
           className="classification_box"
-          // direction="column"
-          // gap="xsmall"
-          // align="end"
         >
         {this.state.topicBeingShown >= 0 && (
           <Select

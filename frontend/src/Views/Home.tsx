@@ -86,7 +86,14 @@ export default class Home extends Component<{}, State> {
         <MediaQuery minDeviceWidth={992}>
           <CustomSideBar user={this.state.user} />
         </MediaQuery>
-        <Box
+
+
+
+
+
+
+
+        {/* <Box
           width="80%"
           height="100%"
           overflow="hidden"
@@ -94,7 +101,20 @@ export default class Home extends Component<{}, State> {
           margin={{ top: "60px" }}
           style={{ overflowY: "scroll" }}
           gap="25px"
-        >
+        > */}
+
+
+
+        <div className="core_box_without_sidebar">
+
+
+
+
+
+
+
+
+
 
         <Carousel gridArea="carousel" />
 
@@ -105,10 +125,16 @@ export default class Home extends Component<{}, State> {
             topicSearch={true}
             user={this.state.user}
           />
-          <RecentTalksList user={this.state.user} />
+          <MediaQuery minDeviceWidth={992}>
+            <RecentTalksList user={this.state.user} />
+          </MediaQuery>
           {/* <RecommendedGrid /> */}
           <FooterComponent />
-        </Box>
+
+
+        </div>
+        {/* </Box> */}
+
       </Box>
     );
   }

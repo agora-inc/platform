@@ -1,3 +1,13 @@
+.core_box_without_sidebar {
+  width: 80%;
+  height: 100%;
+  overflow:"hidden";
+  pad: medium;
+  margin-top: 85px;
+  overflow-y: scroll;
+  margin-left: 25px;
+}
+
 .sliding-underline {
   position: relative;
 }
@@ -65,6 +75,10 @@
 @media screen and (max-width: 992px) {
   .column {
     width: 50%;
+  }
+  .core_box_without_sidebar {
+    width: 100%;
+    margin-left: 5px;
   }
 }
 
