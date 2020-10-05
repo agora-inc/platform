@@ -572,7 +572,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 )}
               </Box>
             </Box>
-            {!this.props.talk.recording_link && !this.props.admin && (
+            {this.state.recordingLink === "" && (
               <Box
                 background="#d5d5d5"
                 pad="small"
@@ -580,11 +580,11 @@ export default class PastTalkCard extends Component<Props, State> {
                 justify="center"
               >
                 <Text textAlign="center" weight="bold">
-                  Sorry, there is currently no recording available for this talk
+                  There is currently no recording available for this talk
                 </Text>
               </Box>
             )}
-            {this.state.isRecordingLinkHidden && (
+            {this.props.talk.recording_link && this.state.isRecordingLinkHidden && !this.props.admin && (
               <Box
                 background="#d5d5d5"
                 pad="small"
@@ -592,7 +592,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 justify="center"
               >
                 <Text textAlign="center" weight="bold">
-                  {`Sorry, the recording is only available to ${
+                  {`The recording is only available to ${
                     this.props.talk.visibility === "Followers and members"
                       ? "followers and members"
                       : "members"

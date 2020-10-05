@@ -53,6 +53,7 @@ export default class RecentTalksList extends Component<Props, State> {
           <Text size="26px" weight="bold" color="black" margin="none">
             Recent talks
           </Text>
+          {/*
           <Link to="/past" style={{ textDecoration: "none" }}>
             <Box
               className="see-more-button"
@@ -68,6 +69,7 @@ export default class RecentTalksList extends Component<Props, State> {
               <FormNextLink color="grey" />
             </Box>
           </Link>
+          */}
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
           {this.state.talks.map((talk: Talk) => (

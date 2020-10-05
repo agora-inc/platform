@@ -294,6 +294,7 @@ export default class ChannelPage extends Component<Props, State> {
               <Text size="30px" color="black" weight="bold">
                 {this.state.channel ?.name}
               </Text>
+              <Box height="36px"> </Box>
               {/*<Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers
                 </Text>*/}
@@ -469,7 +470,7 @@ export default class ChannelPage extends Component<Props, State> {
                         showTalkId={this.state.showTalkId}
                       />
                     </Box>
-                  )}
+                  )}  
                   {this.state.pastTalks.length !== 0 && (
                     <Text
                       size="28px"

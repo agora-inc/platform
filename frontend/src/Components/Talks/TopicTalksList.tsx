@@ -176,8 +176,7 @@ export default class TopicTalkList extends Component<Props, State> {
               Upcoming talks
             </Text>
           )}
-          {this.props.seeMore && (
-          <MediaQuery minDeviceWidth={992}>
+          {/*this.props.seeMore && (
             <Link to="/upcoming" style={{ textDecoration: "none" }}>
               <Box
                 className="see-more-button"
@@ -193,8 +192,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 <FormNextLink color="grey" />
               </Box>
             </Link>
-          </MediaQuery>
-          )}
+              )*/}
         </Box>
 
         {this.props.topicSearch && (

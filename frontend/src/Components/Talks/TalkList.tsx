@@ -37,25 +37,23 @@ export default class TalkList extends Component<Props> {
               Upcoming talks
             </Text>
           )}
-          <MediaQuery minDeviceWidth={992}>
-          {this.props.seeMore && (
-              <Link to="/upcoming" style={{ textDecoration: "none" }}>
-                <Box
-                  className="see-more-button"
-                  pad={{ vertical: "2px", horizontal: "xsmall" }}
-                  round="xsmall"
-                  style={{
-                    border: "2px solid #C2C2C2",
-                  }}
-                  direction="row"
-                  align="end"
-                >
-                  <Text color="grey">See all </Text>
-                  <FormNextLink color="grey" />
-                </Box>
-              </Link>
-          )}
-        </MediaQuery>
+          {/*this.props.seeMore && (
+            <Link to="/upcoming" style={{ textDecoration: "none" }}>
+              <Box
+                className="see-more-button"
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
+                round="xsmall"
+                style={{
+                  border: "2px solid #C2C2C2",
+                }}
+                direction="row"
+                align="end"
+              >
+                <Text color="grey">See all </Text>
+                <FormNextLink color="grey" />
+              </Box>
+            </Link>
+              )*/}
         </Box>
         <Box gap="small" direction="column" width="100%" height="100%" wrap>
           {this.props.past &&
