@@ -36,7 +36,7 @@ export default class TalkList extends Component<Props> {
               Upcoming talks
             </Text>
           )}
-          {this.props.seeMore && (
+          {/*this.props.seeMore && (
             <Link to="/upcoming" style={{ textDecoration: "none" }}>
               <Box
                 className="see-more-button"
@@ -52,7 +52,7 @@ export default class TalkList extends Component<Props> {
                 <FormNextLink color="grey" />
               </Box>
             </Link>
-          )}
+              )*/}
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
           {this.props.past &&

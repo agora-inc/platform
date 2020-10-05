@@ -172,7 +172,7 @@ export default class TopicTalkList extends Component<Props, State> {
               Upcoming talks
             </Text>
           )}
-          {this.props.seeMore && (
+          {/*this.props.seeMore && (
             <Link to="/upcoming" style={{ textDecoration: "none" }}>
               <Box
                 className="see-more-button"
@@ -188,7 +188,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 <FormNextLink color="grey" />
               </Box>
             </Link>
-          )}
+              )*/}
         </Box>
 
         {this.props.topicSearch && (
