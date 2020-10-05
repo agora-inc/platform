@@ -8,6 +8,7 @@ import { FormNextLink } from "grommet-icons";
 import "../../Styles/home.css";
 import "../../Styles/see-more-button.css";
 import { User } from "../../Services/UserService";
+import MediaQuery from "react-responsive";
 
 interface Props {
   gridArea?: string;
@@ -26,7 +27,7 @@ export default class TalkList extends Component<Props> {
       <Box width="100%">
         <Box
           width="100%"
-          direction="row"
+          direction="column"
           gap="medium"
           align="end"
           margin={{ bottom: "15px" }}
@@ -54,7 +55,7 @@ export default class TalkList extends Component<Props> {
             </Link>
               )*/}
         </Box>
-        <Box gap="small" direction="row" width="100%" height="100%" wrap>
+        <Box gap="small" direction="column" width="100%" height="100%" wrap>
           {this.props.past &&
             this.props.talks.map((talk: Talk) => (
               <PastTalkCard

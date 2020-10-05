@@ -14,6 +14,8 @@ import { Talk, TalkService } from "../Services/TalkService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicTalkList from "../Components/Talks/TopicTalksList";
 import TreeClassification from "../Components/Homepage/TreeClassification";
+import MediaQuery from "react-responsive";
+
 
 interface State {
   user: User | null;
@@ -40,7 +42,7 @@ export default class Home extends Component<{}, State> {
         parent_3_id: -1,
       },
     };
-  }
+}
 
   // componentWillMount() {
   //   // Limit to 1000 talks
@@ -80,8 +82,12 @@ export default class Home extends Component<{}, State> {
   render() {
     return (
       <Box direction="row">
-        <CustomSideBar user={this.state.user} />
-        <Box
+        {/* Only show side-bar for desktop */}
+        <MediaQuery minDeviceWidth={992}>
+          <CustomSideBar user={this.state.user} />
+        </MediaQuery>
+
+        {/* <Box
           width="80%"
           height="100%"
           overflow="hidden"
@@ -89,19 +95,24 @@ export default class Home extends Component<{}, State> {
           margin={{ top: "60px" }}
           style={{ overflowY: "scroll" }}
           gap="25px"
-        >
+        > */}
+        <div className="core_box_without_sidebar">
           <Carousel gridArea="carousel" />
-          {/*<TreeClassification />*/}
-          <TopicTalkList
-            seeMore={true}
-            title={true}
-            topicSearch={true}
-            user={this.state.user}
-          />
-          <RecentTalksList user={this.state.user} />
-          {/* <RecommendedGrid /> */}
-          <FooterComponent />
-        </Box>
+            {/*<TreeClassification />*/}
+            <TopicTalkList
+              seeMore={true}
+              title={true}
+              topicSearch={true}
+              user={this.state.user}
+            />
+            <MediaQuery minDeviceWidth={992}>
+              <RecentTalksList user={this.state.user} />
+            </MediaQuery>
+            {/* <RecommendedGrid /> */}
+            <FooterComponent />
+        </div>
+          {/* </Box> */}
+
       </Box>
     );
   }

@@ -1,0 +1,19 @@
+.talk_cards_outer_box {
+    direction: "row";
+    display: flex;  
+    flex-wrap: wrap;
+    justify-content: 'space-around';
+}
+
+.talk_cards_outer_box > * { margin: 4px 4px 4px 4px; }
+
+@media all and (max-width: 992px){
+    .talk_cards_outer_box {
+        display: flex;
+        flex-direction: "column";
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-content: flex-start;
+    }
+}

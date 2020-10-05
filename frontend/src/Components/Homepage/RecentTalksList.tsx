@@ -64,7 +64,7 @@ export default class RecentTalksList extends Component<Props, State> {
               }}
               direction="row"
               align="end"
-            >
+            >      
               <Text color="grey">See all</Text>
               <FormNextLink color="grey" />
             </Box>

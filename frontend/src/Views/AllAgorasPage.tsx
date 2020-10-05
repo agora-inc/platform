@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Identicon } from "react-identicons";
-
 import { Channel, ChannelService } from "../Services/ChannelService";
 import "../Styles/all-agoras-page.css";
 

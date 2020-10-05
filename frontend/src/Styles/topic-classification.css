@@ -1,0 +1,16 @@
+.classification_box {
+    margin-bottom: 15px;
+    direction: column;
+    width: 100%
+}
+
+@media screen and (max-width: 992px){
+    .classification_box {
+        display: flex;
+        flex-direction: "column";
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-content: flex-start;
+    }
+}

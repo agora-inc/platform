@@ -3,6 +3,8 @@ import { Box, Text, Button } from "grommet";
 import { CalendarService } from "../../Services/CalendarService";
 import { Google } from "grommet-icons";
 import { Talk } from "../../Services/TalkService";
+import MediaQuery from "react-responsive";
+
 var moment = require("moment");
 
 interface Props {
@@ -82,6 +84,7 @@ export default class CountdownAndCalendarButtons extends Component<
   render() {
     return (
       <Box gap="30px" direction="column">
+        <MediaQuery minDeviceWidth={992}>
         <Box
           direction="row"
           width="100%"
@@ -148,6 +151,7 @@ export default class CountdownAndCalendarButtons extends Component<
             </Box>
           </a>
         </Box>
+        </MediaQuery>
 
         {this.shouldShowLink() && (
           <a

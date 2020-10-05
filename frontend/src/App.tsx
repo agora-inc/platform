@@ -9,7 +9,7 @@ import TagPage from "./Views/TagPage";
 import Streaming from "./Views/Streaming";
 import AllVideosPage from "./Views/AllVideosPage";
 import HeaderBar from "./Components/HeaderBar";
-import { theme } from "./theme";
+import { Theme } from "./theme";
 import ManageChannelPage from "./Views/ManageChannelPage";
 import Preferences from "./Views/Preferences";
 import Schedule from "./Views/Schedule";
@@ -27,7 +27,7 @@ import AllSpeakersPage from "./Views/AllSpeakersPage";
 function App() {
   return (
     <BrowserRouter>
-      <Grommet theme={theme} full>
+      <Grommet theme={Theme} full>
         <HeaderBar />
         <Switch>
           <Route exact path="/" component={Home} />

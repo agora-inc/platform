@@ -1,0 +1,23 @@
+.talk_card_box_1 {
+    margin-bottom: "125px";
+    margin-top: "125px";
+    position: relative;
+}
+
+#talk_card_box_1 > * {
+    margin: 30px 0;
+}
+
+
+*:focus {
+    outline: none;
+}
+
+/* For mobile */
+@media all and (max-width: 992px){
+    .talk_card_box_1 {
+        width: 90% !important;
+        /* height: 480px; */
+        position: relative;
+    }
+}

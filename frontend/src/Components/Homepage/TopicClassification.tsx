@@ -3,6 +3,7 @@ import { Box, Select, Text } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
 // import allTopics from "../../assets/allTopics.json"
 import Button from "../Core/Button";
+import "../../Styles/topic-classification.css";
 
 
 interface Props {
@@ -88,7 +89,7 @@ export default class TopicClassification extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="100%">
+      <Box width="100%" direction="column">
         <Box
           width="100%"
           direction="row"
@@ -101,14 +102,9 @@ export default class TopicClassification extends Component<Props, State> {
           </Text>
         </Box>
 
-        <Box
-          width="100%"
-          direction="row"
-          gap="xsmall"
-          align="end"
-          margin={{ bottom: "15px" }}
+        <div 
+          className="classification_box"
         >
-
         {this.state.topicBeingShown >= 0 && (
           <Select
             options={this.getPrimitiveNodes().concat("All")}
@@ -140,7 +136,7 @@ export default class TopicClassification extends Component<Props, State> {
             }
           />
         )}
-        </Box>  
+        </div>  
       </Box>
     );
   };

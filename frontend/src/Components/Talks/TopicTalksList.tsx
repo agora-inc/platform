@@ -7,9 +7,11 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { FormNextLink } from "grommet-icons";
 import "../../Styles/home.css";
 import "../../Styles/see-more-button.css";
+import "../../Styles/topic-talks-list.css";
 import { User } from "../../Services/UserService";
 import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
+import MediaQuery from "react-responsive";
 
 interface Props {
   gridArea?: string;
@@ -112,14 +114,15 @@ export default class TopicTalkList extends Component<Props, State> {
 
   ifTalks = () => {
     return (
-      <Box
-        width="100%"
-        gap="small"
-        direction="row"
-        height="100%"
-        wrap
-        margin="none"
-      >
+      // <Box 
+      //   width="100%"
+      //   gap="small"
+      //   direction="row"
+      //   height="100%"
+      //   wrap
+      //   margin="none"
+      // >
+      <div className="talk_cards_outer_box">
         {this.props.past &&
           this.state.chosenTalks.map((talk: Talk) => (
             <PastTalkCard
@@ -133,7 +136,8 @@ export default class TopicTalkList extends Component<Props, State> {
           this.state.chosenTalks.map((talk: Talk) => (
             <TalkCard talk={talk} user={this.props.user} />
           ))}
-      </Box>
+      {/* </Box> */}
+      </div>
     );
   };
 
@@ -159,13 +163,13 @@ export default class TopicTalkList extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="100%" margin={{"bottom": "100px"}}>
+      <Box width="100%" margin={{"bottom": "50px"}}>
         <Box
           width="100%"
           direction="row"
           gap="medium"
           align="end"
-          margin={{ bottom: "36px" }}
+          margin={{ bottom: "15px" }}
         >
           {this.props.title && (
             <Text size="26px" weight="bold" color="black" margin="none">
