@@ -3,6 +3,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: 'space-around';
+    /* width: max-content; */
+    height: max-content;
 }
 
 .talk_cards_outer_box > * { margin: 4px 4px 4px 4px; }
