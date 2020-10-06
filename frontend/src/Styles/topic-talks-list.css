@@ -1,15 +1,13 @@
 .talk_cards_outer_box {
     direction: "row";
-    display: flex;
+    display: flex;  
     flex-wrap: wrap;
     justify-content: 'space-around';
-    /* width: max-content; */
-    height: max-content;
 }
 
 .talk_cards_outer_box > * { margin: 4px 4px 4px 4px; }
 
-@media screen and (max-width: 992px){
+@media all and (max-width: 992px){
     .talk_cards_outer_box {
         display: flex;
         flex-direction: "column";

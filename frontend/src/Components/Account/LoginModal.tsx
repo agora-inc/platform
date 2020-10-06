@@ -95,7 +95,6 @@ export default class LoginModal extends Component<Props, State> {
             fontSize: 17,
             fontWeight: "bold",
             padding: 0,
-            // margin: 6,
             backgroundColor: "#F2F2F2",
             border: "none",
             borderRadius: 7,

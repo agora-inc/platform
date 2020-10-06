@@ -123,8 +123,6 @@ export default class SiteWideSearch extends Component<{}, State> {
                   <Box
                     onClick={this.onSelect}
                     width="100%"
-                    // direction="row"
-                    // align="center"
                     gap="xsmall"
                     pad="xsmall"
                     focusIndicator={false}
@@ -224,7 +222,6 @@ export default class SiteWideSearch extends Component<{}, State> {
                 <Link
                   to={{
                     pathname: "/",
-                    // state: {  },
                   }}
                   style={{ textDecoration: "none" }}
                 >
@@ -287,7 +284,6 @@ export default class SiteWideSearch extends Component<{}, State> {
                 <Link
                   to={{
                     pathname: `/`,
-                    //   state: { video },
                   }}
                   style={{ textDecoration: "none" }}
                 >
