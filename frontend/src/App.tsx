@@ -27,7 +27,7 @@ import AllSpeakersPage from "./Views/AllSpeakersPage";
 function App() {
   return (
     <BrowserRouter>
-      <Grommet theme={Theme} full>
+      <Grommet>
         <HeaderBar />
         <Switch>
           <Route exact path="/" component={Home} />
