@@ -135,8 +135,7 @@ export default class TopicTalkList extends Component<Props, State> {
           this.state.chosenTalks.map((talk: Talk) => (
             <TalkCard talk={talk} user={this.props.user} />
           ))}
-      {/* </Box> */}
-      </div>
+      </Box>
     );
   };
 
