@@ -72,7 +72,7 @@
 }
 
 /* On screens that are 992px wide or less, go from four columns to two columns */
-@media (max-width: 992px) {
+@media screen and (max-width: 992px) {
   .column {
     width: 50%;
   }
@@ -80,7 +80,6 @@
     width: 100%;
     margin-left: 5px;
     margin-top: 65px;
-
   }
 }
 

@@ -39,7 +39,7 @@
 }
 
 /* For mobile */
-@media all and (max-width: 992px){
+@media screen and (max-width: 992px){
   .tooltip {
     text-align: right
   }
