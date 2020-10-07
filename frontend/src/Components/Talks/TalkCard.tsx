@@ -157,18 +157,18 @@ export default class TalkCard extends Component<Props, State> {
   render() {
     var breakpoint_width = 992;
     return (
-      // <Box
+      <div className="talk_card_box_1" style={{"width": this.props.width ? this.props.width : "32%"}} onClick={() => {
+            !this.state.showModal && this.toggleModal();
+        }}
+        >
+        {/* <Box
       //   width={this.props.width ? this.props.width : "32%"}
       //   onClick={() => {
       //     !this.state.showModal && this.toggleModal();
       //   }}
       //   focusIndicator={false}
       //   style={{ position: "relative" }}
-      // >
-      <div className="talk_card_box_1" style={{"width": this.props.width ? this.props.width : "32%"}} onClick={() => {
-            !this.state.showModal && this.toggleModal();
-        }}
-        >
+      // >  */}
         <Box
           onMouseEnter={() => this.setState({ showShadow: true })}
           onMouseLeave={() => {
