@@ -122,7 +122,6 @@ export default class TopicTalkList extends Component<Props, State> {
         wrap
         margin={{ top: "24px" }}
       >
-      {/* // <div className="talk_cards_outer_box"> */}
         {this.props.past &&
           this.state.chosenTalks.map((talk: Talk) => (
             <PastTalkCard
@@ -137,7 +136,6 @@ export default class TopicTalkList extends Component<Props, State> {
             <TalkCard talk={talk} user={this.props.user} />
           ))}
       </Box>
-      // </div>
     );
   };
 
