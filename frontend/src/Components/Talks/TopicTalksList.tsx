@@ -64,7 +64,7 @@ export default class TopicTalkList extends Component<Props, State> {
     });
     */
     
-    TalkService.getAvailableFutureTalks(1000, 0, this.props.user ? this.props.user.id : null, (allTalks: Talk[]) => {
+    TalkService.getAvailableFutureTalks(50, 0, this.props.user ? this.props.user.id : null, (allTalks: Talk[]) => {
       this.setState({
         allTalks: allTalks,
         chosenTalks: allTalks,
