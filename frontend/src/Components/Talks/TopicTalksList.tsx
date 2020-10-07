@@ -114,15 +114,15 @@ export default class TopicTalkList extends Component<Props, State> {
 
   ifTalks = () => {
     return (
-      // <Box 
-      //   width="100%"
-      //   gap="small"
-      //   direction="row"
-      //   height="100%"
-      //   wrap
-      //   margin="none"
-      // >
-      <div className="talk_cards_outer_box">
+      <Box 
+        width="100%"
+        gap="small"
+        direction="row"
+        height="100%"
+        wrap
+        margin={{ top: "24px" }}
+      >
+      {/* // <div className="talk_cards_outer_box"> */}
         {this.props.past &&
           this.state.chosenTalks.map((talk: Talk) => (
             <PastTalkCard
@@ -136,8 +136,8 @@ export default class TopicTalkList extends Component<Props, State> {
           this.state.chosenTalks.map((talk: Talk) => (
             <TalkCard talk={talk} user={this.props.user} />
           ))}
-      {/* </Box> */}
-      </div>
+      </Box>
+      // </div>
     );
   };
 

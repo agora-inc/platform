@@ -1,6 +1,6 @@
 .talk_card_box_1 {
-    margin-bottom: "125px";
-    margin-top: "125px";
+    margin-bottom: 5px;
+    margin-top: 5px;
     position: relative;
 }
 
@@ -16,7 +16,7 @@
 /* For mobile */
 @media all and (max-width: 992px){
     .talk_card_box_1 {
-        width: 90% !important;
+        width: 100% !important;
         /* height: 480px; */
         position: relative;
     }
