@@ -87,7 +87,7 @@ export default class Home extends Component<{}, State> {
           <CustomSideBar user={this.state.user} />
         </MediaQuery>
 
-        <Box
+        {/* <Box
           width="80%"
           height="100%"
           overflow="hidden"
@@ -95,8 +95,8 @@ export default class Home extends Component<{}, State> {
           margin={{ top: "60px" }}
           style={{ overflowY: "scroll" }}
           gap="25px"
-        >
-        {/* <div className="core_box_without_sidebar"> */}
+        > */}
+        <div className="core_box_without_sidebar">
           <Carousel gridArea="carousel" />
             {/*<TreeClassification />*/}
             <TopicTalkList
@@ -110,8 +110,8 @@ export default class Home extends Component<{}, State> {
             </MediaQuery>
             {/* <RecommendedGrid /> */}
             <FooterComponent />
-        {/* </div> */}
-          </Box>
+        </div>
+          {/* </Box> */}
       </Box>
     );
   }

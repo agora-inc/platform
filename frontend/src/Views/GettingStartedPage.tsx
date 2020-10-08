@@ -129,7 +129,7 @@ export default class GettingStartedPage extends Component<Props, State> {
         align="center"
         margin={{ top: "140px" }}
       >
-        <Box width="50%" direction="column">
+        <Box width="70%" direction="column">
           {/* <Box
             width="98.25%"
             height="950px"
