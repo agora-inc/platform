@@ -130,7 +130,6 @@ export default class CountdownAndCalendarButtons extends Component<
           <a
             style={{ width: "48%", textDecoration: "none" }}
             href={this.createICShref()}
-            //   target="_blank"
             download="download.ics"
           >
             <Box

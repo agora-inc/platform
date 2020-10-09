@@ -340,7 +340,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
             <Box
               height="30px"
               width="100%"
-              // background="#F3EACE"
               round="xsmall"
               pad="small"
               justify="center"
