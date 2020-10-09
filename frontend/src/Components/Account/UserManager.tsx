@@ -238,7 +238,7 @@ export default class UserManager extends Component<Props, State> {
             Manage your Agoras
           </Text>
           <Box
-            height="200px"
+            height={{max: "200px"}}
             overflow="auto"
           >
             {this.state.channels.map((channel: Channel) => (
