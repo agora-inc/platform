@@ -2,7 +2,8 @@
     direction: row;
     display: flex;  
     flex-wrap: wrap;
-    justify-content: space-around;
+    /* justify-content: space-between; */
+    align-content: flex-start;
 }
 
 .talk_cards_outer_box > * { margin: 4px 4px 4px 4px; }
