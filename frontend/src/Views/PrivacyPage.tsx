@@ -78,7 +78,7 @@ export default class PrivacyPage extends Component<Props, State> {
                 <ul>
 
                 <li> The one gathered from anonymous browsing is only seen by us and is not exchanged with anybody else. We use it consolidate or motivate 
-                  software architectural choices associated with the plateform. </li>
+                  software architectural choices associated with the platform. </li>
                 <li> The one gathered from the registered member is partly personal
                    (data associated to user actions, username, password, schedule...) and partly contributing into the content of the website (full name). 
                   For some of the data, the User can decide what is going to be public or 
