@@ -99,7 +99,7 @@ export default class FormContainer extends Component<{}, State> {
   isMissing = () => {
     let res: string[] = []
     if (this.state.user.description === "") {
-      res.push("Feedback / suggestion")
+      res.push("Feedback / Suggestion / Bug")
     }
     return res;
   }
@@ -122,7 +122,7 @@ export default class FormContainer extends Component<{}, State> {
             size="16px" 
             color="grey" 
           > 
-            Give feedback 
+            Feedback / Bug
           </Text>
         </Box>
         <Overlay
