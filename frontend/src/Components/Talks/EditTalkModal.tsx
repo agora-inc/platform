@@ -58,7 +58,7 @@ export default class EditTalkModal extends Component<Props, State> {
     super(props);
     this.state = {
       title: this.props.talk ? this.props.talk.name : "",
-      description: this.props.talk ? this.props.talk.description : "",
+      description: this.props.talk ? this.escapeDoubleQuotes(this.props.talk.description) : "",
       tags: this.props.talk ? this.props.talk.tags : [],
       loading: false,
       date: this.props.talk
@@ -166,6 +166,10 @@ export default class EditTalkModal extends Component<Props, State> {
 
   escapeSingleQuotes = (text: string) => {
     return text.replace("'", "''")
+  }
+
+  escapeDoubleQuotes = (text: string) => {
+    return text.replace("''", "'")
   }
 
   onFinish = () => {

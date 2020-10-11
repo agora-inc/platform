@@ -106,6 +106,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
 
+  escapeDoubleQuotes = (text: string) => {
+    return text.replace("''", "'")
+  }
+
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
     const now = new Date();
@@ -435,7 +439,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   }}
                   margin={{ top: "10px", bottom: "10px" }}
                 >
-                  {this.props.talk.description}
+                  {this.escapeDoubleQuotes(this.props.talk.description)}
                 </Text>
               </Box>
               <Box direction="column" gap="small">
