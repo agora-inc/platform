@@ -89,6 +89,14 @@ export default class PastTalkCard extends Component<Props, State> {
     return text.replace("''", "'")
   }
 
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return (<Text size="16px" color="black"> {text} </Text>);
+    } else {
+      return (<br></br>);
+    }
+  }
+
   toggleModal = () => {
     this.setState({
       showModal: this.state.showLinkInput ? true : !this.state.showModal,
@@ -502,18 +510,18 @@ export default class PastTalkCard extends Component<Props, State> {
                       : "TBA"}
                   </Text>
                 </Box>
-                <Text
-                  size="16px"
-                  color="black"
+                <Box
                   style={{
                     minHeight: "50px",
-                    maxHeight: "180px",
+                    maxHeight: "200px",
                     overflowY: "auto",
                   }}
-                  margin={{ bottom: "10px" }}
+                  margin={{ top: "10px", bottom: "10px" }}
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description)}
-                </Text>
+                  {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
+                    (item, i) => this.lineBreaks(item)
+                  )}
+                </Box>
               </Box>
               <Box
                 direction="column"

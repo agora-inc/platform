@@ -63,6 +63,14 @@ export default class TalkCard extends Component<Props, State> {
     return text.replace("''", "'")
   }
 
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return (<Text size="16px" color="black"> {text} </Text>);
+    } else {
+      return (<br></br>);
+    }
+  }
+
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
     const now = new Date();
@@ -445,10 +453,7 @@ export default class TalkCard extends Component<Props, State> {
                       </Text>
                     </Box>
                   )}
-
-                  <Text
-                    size="16px"
-                    color="black"
+                  <Box
                     style={{
                       minHeight: "50px",
                       maxHeight: "200px",
@@ -456,8 +461,10 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.escapeDoubleQuotes(this.props.talk.description)}
-                  </Text>
+                    {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
+                      (item, i) => this.lineBreaks(item)
+                    )}
+                  </Box>
                 </Box>
                 <Box direction="column" gap="small">
                   <Box direction="row" gap="small" height="30px">
@@ -726,10 +733,8 @@ export default class TalkCard extends Component<Props, State> {
                       </Text>
                     </Box>
                   )}
-
-                  <Text
-                    size="16px"
-                    color="black"
+                  
+                  <Box
                     style={{
                       minHeight: "50px",
                       maxHeight: "200px",
@@ -737,8 +742,10 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.escapeDoubleQuotes(this.props.talk.description)}
-                  </Text>
+                    {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
+                      (item, i) => <Text size="16px" color="black"> {item} </Text>
+                    )}
+                  </Box>
                 </Box>
                 <Box direction="column" gap="small">
                   <Box direction="row" gap="small" height="30px">

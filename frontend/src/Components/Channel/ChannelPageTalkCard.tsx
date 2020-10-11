@@ -110,6 +110,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     return text.replace("''", "'")
   }
 
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return (<Text size="16px" color="black"> {text} </Text>);
+    } else {
+      return (<br></br>);
+    }
+  }
+
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
     const now = new Date();
@@ -429,18 +437,19 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     </Text>
                   </Box>
                 )}
-                <Text
-                  size="16px"
-                  color="black"
+                <Box
                   style={{
                     minHeight: "50px",
                     maxHeight: "200px",
                     overflowY: "auto",
                   }}
                   margin={{ top: "10px", bottom: "10px" }}
+                  direction="column"
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description)}
-                </Text>
+                  {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
+                    (item, i) => this.lineBreaks(item)
+                  )}
+                </Box>
               </Box>
               <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
