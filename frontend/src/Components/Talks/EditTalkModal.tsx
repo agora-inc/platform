@@ -165,7 +165,7 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   escapeSingleQuotes = (text: string) => {
-    return text.replace("'", "''")
+    return text.replace("'", "''").replace(/"/g, "'")
   }
 
   escapeDoubleQuotes = (text: string) => {
