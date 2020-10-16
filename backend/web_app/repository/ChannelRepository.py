@@ -217,3 +217,46 @@ class ChannelRepository:
             ;
             '''
         return self.db.run_query(email_members_and_admins_query)
+
+    def applyMembership(self, channelId, userId, fullName, position, institution, email=None, personal_homepage=None):
+        #
+        # TODO: TEST
+        #
+        personal_homepage_var = "''" if personal_homepage == None else personal_homepage
+        apply_membership_insert_query = f'''
+            INSERT INTO MembershipApplications(
+                channel_id,
+                user_id, 
+                full_name,
+                position,
+                institution,
+                email,
+                personal_homepage
+                )
+
+            VALUES (
+                "{channelId}",
+                "{userId}", 
+                "{fullName}",
+                "{position}",
+                "{institution}",
+                "{email}",
+                "{personal_homepage_var}"             
+                );
+            '''
+        try:
+            res = self.db.run_query(apply_membership_insert_query)
+            return res
+        except:
+            # TODO: error handling
+            pass
+
+    def getMembershipApplications(self, channelId, userId):
+        # check if user is a owner of an agora to see that
+        membership_applications_query = f'''
+            SELECT * IN  MembershipApplications
+            WHERE channel_id = {channelId};
+            '''
+
+        res = self.db.run_query(membership_applications_query)
+        return res

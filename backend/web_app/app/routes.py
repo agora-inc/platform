@@ -525,6 +525,24 @@ def sendTalkApplicationEmail():
     mail.send(msg)
     return "ok"
 
+@app.route('/channel/apply', methods=["POST"])
+def applyMembership():
+    params = request.json
+
+    # Compulsory details
+    personal_homepage = params["personal_homepage"] if "personal_homepage" in params else None
+
+    channels.applyMembership(
+        params["id"], 
+        params["user_id"], 
+        params["full_name"],  # this will be removed later when user will have a good profile
+        params["position"],  # this will be removed later when user will have a good profile
+        params["institution"],  # this will be removed later when user will have a good profile
+        params["email"],  # this will be removed later when user will have a good profile
+        personal_homepage)
+
+    return jsonify("ok")
+
 @app.route('/channels/delete', methods=["POST"])
 def deleteChannel():
     params = request.json
