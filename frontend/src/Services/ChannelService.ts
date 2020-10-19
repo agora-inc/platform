@@ -312,6 +312,66 @@ const deleteAgora = (id: number, callback: any) => {
   post("channels/delete", { id }, callback);
 };
 
+///////////////////////
+// Membership methods
+///////////////////////
+const applyMembership = (
+  id: number,
+  userId: string,
+  fullName: string,
+  position: string,
+  institution: string,
+  email: string,
+  personalHomepage: string,
+  callback: any) => {
+    post(
+      "channel/membership/apply", 
+      {
+        id: id, 
+        userId: userId,
+        fullName: fullName,
+        position: position,
+        institution: institution,
+        email: email,
+        personalHomepage: personalHomepage
+      }, 
+    callback);
+};
+
+const cancelMembershipApplication = (
+  id: number,
+  userId: number, 
+  callback: any) => {
+  post(
+    "channel/membership/cancel", 
+    {
+      id: id,
+      userId: userId
+    }, callback);
+};
+
+const acceptMembershipApplication = (
+  id: number,
+  userId: number, 
+  callback: any) => {
+  post(
+    "channel/membership/accept", 
+    {
+      id: id,
+      userId: userId
+     }, 
+    callback);
+};
+
+const getMembershipApplications = (
+  channelId: number, 
+  userId: number,
+  callback: any) => {
+  get(
+    `channel/membership/list?channelId=${channelId}&userId=${userId}`, 
+    callback);
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -348,4 +408,11 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
+  /////////////////////
+  // membership methods
+  /////////////////////
+  applyMembership,
+  acceptMembershipApplication,
+  cancelMembershipApplication,
+  getMembershipApplications
 };
