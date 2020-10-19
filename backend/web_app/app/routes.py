@@ -457,7 +457,6 @@ def removeContactAddress():
 
 @app.route('/channel/apply/talk', methods=["POST"])
 def sendTalkApplicationEmail():
-
     # NOTE: used https://wordtohtml.net/ to easily create syntax for the body
     params = request.json
 
@@ -525,17 +524,27 @@ def sendTalkApplicationEmail():
     mail.send(msg)
     return "ok"
 
-@app.route('/channel/apply', methods=["POST"])
+@app.route('/channels/delete', methods=["POST"])
+def deleteChannel():
+    params = request.json
+    channels.deleteChannel(params["id"])
+    return jsonify("ok")
+
+
+# --------------------------------------------
+# x Membership ROUTES
+# --------------------------------------------
+@app.route('/channel/membership/apply', methods=["POST"])
 def applyMembership():
     params = request.json
 
     # Compulsory details
-    personal_homepage = params["personal_homepage"] if "personal_homepage" in params else None
+    personal_homepage = params["personalHomepage"] if "personal_homepage" in params else None
 
     channels.applyMembership(
         params["id"], 
-        params["user_id"], 
-        params["full_name"],  # this will be removed later when user will have a good profile
+        params["userId"], 
+        params["fullName"],  # this will be removed later when user will have a good profile
         params["position"],  # this will be removed later when user will have a good profile
         params["institution"],  # this will be removed later when user will have a good profile
         params["email"],  # this will be removed later when user will have a good profile
@@ -543,11 +552,36 @@ def applyMembership():
 
     return jsonify("ok")
 
-@app.route('/channels/delete', methods=["POST"])
-def deleteChannel():
+@app.route('/channel/membership/cancel', methods=["POST"])
+def cancelMembershipApplication():
     params = request.json
-    channels.deleteChannel(params["id"])
+
+    channels.cancelMembershipApplication(
+        params["id"], 
+        params["user_id"])
+
     return jsonify("ok")
+
+@app.route('/channel/membership/accept', methods=["POST"])
+def acceptMembershipApplication():
+    params = request.json
+
+    res = channels.acceptMembership(
+        params["id"], 
+        params["user_id"],
+        )
+    return jsonify(res)
+
+@app.route('/channel/membership/list', methods=["GET"])
+def getMembershipApplications():
+    channelId = int(request.args.get("channelId"))
+    userId = int(request.args.get("userId")) if "userId" in request.args else None
+
+    res = channels.getMembershipApplications(
+        channelId, 
+        userId,
+        )
+    return jsonify(res)
 
 # --------------------------------------------
 # STREAM ROUTES

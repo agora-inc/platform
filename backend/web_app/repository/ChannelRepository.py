@@ -252,11 +252,56 @@ class ChannelRepository:
             pass
 
     def getMembershipApplications(self, channelId, userId):
-        # check if user is a owner of an agora to see that
         membership_applications_query = f'''
             SELECT * IN  MembershipApplications
             WHERE channel_id = {channelId};
             '''
 
+        if userId != None:
+            membership_applications_query = membership_applications_query[:-1] + " AND user_id = {userId};"
+
         res = self.db.run_query(membership_applications_query)
         return res
+
+    def cancelMembershipApplication(self, channelId, userId):
+        withdraw_app_query = f'''
+            DELETE * IN MembershipApplications
+            WHERE channel_id = {channelId} and user_id = {userId}
+            '''
+        res = self.db.run_query(withdraw_app_query)
+        return res
+
+    def acceptMembershipApplication(self, channelId, userId):
+        # A. Check if user is already a member
+        check_membership_query = f'''
+            SELECT * FROM ChannelUsers
+            WHERE channel_id = {channelId} 
+                AND user_id = {userId}
+                AND role in ("owner", "member"); 
+            '''
+        res = self.db.run_query(check_membership_query)
+
+        # B. add membership
+        if len(res) == 0:
+            add_membership_query = f'''
+            INSERT into ChannelUsers(
+                channel_id, user_id, role
+            )
+            VALUES (
+                {channelId},
+                {userId},
+                "member"
+            )
+            '''
+            # C. remove membership request from list
+            remove_membership_request_query = f'''
+                DELETE * FROM MembershipApplications
+                WHERE channel_id = {channelId}
+                    AND user_id = {userId}
+                ;'''
+
+            self.db.run_query([add_membership_query, 
+            remove_membership_request_query])
+            
+            return "ok"
+        return "ok"
