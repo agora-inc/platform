@@ -19,6 +19,7 @@ import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
+import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
 
 interface Props {
   location: { pathname: string };
@@ -39,6 +40,14 @@ interface State {
   user: User | null;
   bannerExtended: boolean;
   showTalkId: number;
+  membershipApplicatedFetched: boolean;
+  membershipApplication: {
+    fullName: string,
+    position: string,
+    institution: string,
+    email: string,
+    personalHomepage: string
+  }
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -58,6 +67,15 @@ export default class ChannelPage extends Component<Props, State> {
       user: UserService.getCurrentUser(),
       bannerExtended: true,
       showTalkId: this.getTalkIdFromUrl(),
+      membershipApplicatedFetched: false,
+      membershipApplication:
+      {
+        fullName: "",
+        position: "",
+        institution: "",
+        email: "",
+        personalHomepage: ""
+      }
     };
   }
 
@@ -202,6 +220,41 @@ export default class ChannelPage extends Component<Props, State> {
     );
   };
 
+  checkIfMembershipRequested = () => {
+    // If user not logged in, put a log in/ register inside the box
+
+
+    // else: check the application and fill the fields with the past application
+    if (!(this.state.membershipApplicatedFetched)) {
+      ChannelService.getMembershipApplications(
+        this.state.channel!.id,
+        this.state.user!.id,
+        (
+          full_name: string,
+          position: string,
+          institution: string,
+          email: string,
+          personalHomepage: string
+        ) => {
+          this.setState({
+            membershipApplication: {
+              fullName: full_name,
+              position: position,
+              institution: institution,
+              email: email,
+              personalHomepage: personalHomepage
+            }
+          })
+        }
+      )
+    };
+    }
+
+
+
+  onApplyMembershipClicked = () => {
+  };
+
   onFollowClicked = () => {
     if (!this.state.following) {
       ChannelService.addUserToChannel(
@@ -301,6 +354,15 @@ export default class ChannelPage extends Component<Props, State> {
             </Box>
           </Box>
           <Box direction="row" gap="xsmall" align="center">
+
+            {!(this.state.role == "member" || this.state.role == "owner") && (
+            <RequestMembershipButton
+              channelId={this.state.channel!.id}
+              channelName={this.state.channel!.name}
+              user={this.state.user}
+            />
+            )}
+
             {this.state.user && (
               <Box
                 className="follow-button"
