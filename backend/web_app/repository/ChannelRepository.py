@@ -82,12 +82,15 @@ class ChannelRepository:
     def updateChannelDescription(self, channelId, newDescription):
         """TODO: Refactor this into updateShortChannelDescription with DB field as well into short_description
         """
+        with open("/home/cloud-user/test/description-encoding3.txt", "w") as file:
+            file.write(str(type(newDescription)))
+
         query = f'UPDATE Channels SET description = "{newDescription}" WHERE id = {channelId}'
         self.db.run_query(query)
         return "ok"
 
     def updateLongChannelDescription(self, channelId, newDescription):
-        query = f'UPDATE Channels SET long_description = "{newDescription}" WHERE id = {channelId}'
+        query = f'''UPDATE Channels SET long_description = '{newDescription}' WHERE id = {channelId}'''
         [insertId, rowCount] = self.db.run_query(query)
         return [insertId, rowCount]
 
