@@ -53,6 +53,10 @@ export default class CurrentTalkCard extends Component<Props, State> {
     return `Finishing in ${deltaHour}h ${remainderMin}m`;
   };
 
+  escapeDoubleQuotes = (text: string) => {
+    return text.replace("''", "'")
+  }
+
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, showShadow: true });
   };
@@ -395,7 +399,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   }}
                   margin={{ top: "10px", bottom: "10px" }}
                 >
-                  {this.props.talk.description}
+                  {this.escapeDoubleQuotes(this.props.talk.description)}
                 </Text>
               </Box>
               <Box direction="column" gap="small">

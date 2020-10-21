@@ -85,6 +85,10 @@ export default class PastTalkCard extends Component<Props, State> {
     return [dateStr, timeStr];
   };
 
+  escapeDoubleQuotes = (text: string) => {
+    return text.replace("''", "'")
+  }
+
   toggleModal = () => {
     this.setState({
       showModal: this.state.showLinkInput ? true : !this.state.showModal,
@@ -508,7 +512,7 @@ export default class PastTalkCard extends Component<Props, State> {
                   }}
                   margin={{ bottom: "10px" }}
                 >
-                  {this.props.talk.description}
+                  {this.escapeDoubleQuotes(this.props.talk.description)}
                 </Text>
               </Box>
               <Box
