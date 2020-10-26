@@ -165,7 +165,9 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   escapeSingleQuotes = (text: string) => {
-    return text.replace("'", "''").replace(/"/g, "'")
+    // We want to store backslash with \\
+    // We want to store apostrophe '
+    return text.replace(/'/g, "''").replace(/"/g, "'").replace(/\\/g, "\\\\")
   }
 
   escapeDoubleQuotes = (text: string) => {
@@ -440,7 +442,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   <Text size="14px" weight="bold" color="black" margin={{"right": "100px"}}>
                     Description
                   </Text>
-                  {/*<Switch
+                  <Switch
                     checked={this.state.latex}
                     onChange={(checked: boolean) => {
                       this.setState({ latex: checked });
@@ -448,15 +450,15 @@ export default class EditTalkModal extends Component<Props, State> {
                     size="small"
                   />
                   <InlineMath math={"{\\small \\LaTeX}"} />
-                  */}
                 </Box>
-                <TextArea
+
+                {/*<TextArea
                     style={{height: "240px"}}
                     value={this.state.description}
                     placeholder=""
                     onChange={(e) => this.setState({ description: e.target.value })}
-                  />
-                {/*!this.state.latex && (
+                />*/}
+                {!this.state.latex && (
                   <TextArea
                     style={{height: "240px"}}
                     value={this.state.description}
@@ -466,7 +468,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 )}
                 {this.state.latex && (
                   textToLatex(this.state.description, "240px")
-                )*/}
+                )}
               </Box>
             </OverlaySection>
             {/*<OverlaySection heading="Add a few relevant tags">
