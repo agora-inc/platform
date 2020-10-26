@@ -4,54 +4,11 @@ import {
   Select,
   Text,
   TextInput,
-  TextArea,
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
-import emailjs from "emailjs-com";
-import { Topic } from "../../Services/TopicService";
-import TopicSelector from "../Talks/TopicSelector";
 import { ChannelService } from "../../Services/ChannelService";
-import { Empty } from "antd";
-
-
-
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK             REMY
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
-// ON GOING WORK
+import LoginModal from "../Account/LoginModal";
+import SignUpButton from "../Account/SignUpButton";
 
 
 interface Props {
@@ -61,19 +18,14 @@ interface Props {
 }
 
 interface State {
-    user: {
-      full_name : string;
+    form: {
+      fullName : string;
       email: string;
-      personal_website: string;
-      personal_message: string;
+      title: string;
+      personalWebsite: string;
+      personalMessage: string;
       affiliation: string;
     },
-    talk: {
-      talk_title: string;
-      abstract: string;
-      topics: Topic[],
-      // date: string;
-    }
     showForm: boolean;
     contactAddresses: string
 }
@@ -82,20 +34,14 @@ export default class RequestMembershipButton extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      user: {
-        speaker_title: "",
-        speaker_name: "",
+      form: {
+        fullName: "",
         email: "",
-        personal_website: "",
-        personal_message: "",
+        title: "",
+        personalMessage: "",
+        personalWebsite: "",
         affiliation: ""
       },
-      talk: {
-        talk_title: "",
-        abstract: "",
-        topics: [],
-        // date: "",
-        },
       showForm: false,
       contactAddresses: ""
     };
@@ -114,54 +60,33 @@ export default class RequestMembershipButton extends Component<Props, State> {
   handleInput = (e: any, key: string) => {
     let value = e.target.value;
     this.setState((prevState: any) => ({
-      user: { ...prevState.user, [key]: value },
-      talk: { ...prevState.talk, [key]: value },
+      form: { ...prevState.form, [key]: value },
     }));
   };
 
   setValueAcademicTitle = (e: any) => {
     this.setState((prevState: any) => ({
-      user: {...prevState.user, speaker_title: e}
+      form: {...prevState.form, title: e}
     }));
   };
 
   handleFormSubmit = (e: any) => {
     // prevents the page from bein
-    this.fetchContactAddresses();
     e.preventDefault();
-    let userData = this.state.user;
+    let userData = this.state.form;
     this.sendApplication();
     this.setState({ showForm: false });
   };
 
   sendApplication = () => {
-    let email_topics_string = "";
-    let raw_topics;
-    let topic_str;
-    raw_topics = this.state.talk.topics;
-    for (let i = 0; i < raw_topics.length; i++) {
-      if (raw_topics[i] != null){
-        topic_str = raw_topics[i]["field"].toString();
-        if (email_topics_string != ""){
-          email_topics_string = email_topics_string.concat(", ", topic_str)}
-        else {
-          email_topics_string = email_topics_string.concat(topic_str)
-        }
-      };
-    }
-    ChannelService.sendTalkApplicationEmail(
-      // "agora_administrators_contact_email": this.state.contactAddresses,
+    ChannelService.applyMembership(
       this.props.channelId,
-      this.props.channelName,
-      this.state.user.speaker_name,
-      this.state.user.speaker_title,
-      this.state.user.affiliation,
-      this.state.user.personal_website,
-      this.state.user.email,
-      this.state.talk.talk_title,
-      this.state.talk.abstract,
-      email_topics_string,
-      this.state.user.personal_message,
+      this.props.user.id,
+      this.state.form.fullName,
+      this.state.form.title,
+      this.state.form.affiliation,
+      this.state.form.email,
+      this.state.form.personalWebsite,
       //TODO: Error handling
       (answer: any) => {
         console.log("Successful application!")
@@ -173,24 +98,24 @@ export default class RequestMembershipButton extends Component<Props, State> {
 
   handleClearForm = () => {
     // prevents the page from being refreshed on form submission
-    this.setState({
-      user:{
-        speaker_title: "",
-        speaker_name: "",
-        // speaker_position : "",
-        email: "",
-        personal_website: "",
-        personal_message: "",
-        affiliation: ""
-        },
-      talk: {
-        talk_title: "",
-        abstract: "",
-        topics: [],
-        // date: ""
-        }
-      }
-    );
+    // this.setState({
+    //   user:{
+    //     speaker_title: "",
+    //     speaker_name: "",
+    //     // speaker_position : "",
+    //     email: "",
+    //     personalWebsite: "",
+    //     personalMessage: "",
+    //     affiliation: ""
+    //     },
+    //   talk: {
+    //     talk_title: "",
+    //     abstract: "",
+    //     topics: [],
+    //     // date: ""
+    //     }
+    //   }
+    // );
   };
 
   toggleModal = () => {
@@ -199,70 +124,29 @@ export default class RequestMembershipButton extends Component<Props, State> {
 
   isComplete = () => {
     return (
-      this.state.user.speaker_title !== "" &&
-      this.state.user.speaker_name !== "" &&
+      this.state.form.fullName !== "" &&
+      this.state.form.title !== "" &&
       // this.state.user.speaker_position !== "" &&
-      // this.state.user.personal_website !== "" &&
-      // this.state.user.personal_message !== "" &&
-      this.state.user.email !== "" &&
-      this.state.user.affiliation !== "" &&
-      this.state.talk.talk_title !== "" &&
-      this.state.talk.abstract !== "" &&
-      this.state.talk.topics.length !== 0 
+      // this.state.user.personalWebsite !== "" &&
+      // this.state.user.personalMessage !== "" &&
+      this.state.form.email !== "" &&
+      this.state.form.affiliation !== ""
     );
   };
 
-  selectTopic = (topic: Topic, num: number) => {
-    let tempTopics = this.state.talk.topics;
-    tempTopics[num] = topic;
-    this.setState((prevState: any) => ({
-      talk: {
-        ...prevState.talk,
-        topics: tempTopics
-      },
-    }));
-  }
-
-  cancelTopic = (num: number) => {
-    let tempTopics = this.state.talk.topics;
-    tempTopics[num] = {
-      field: "",
-      id: 0,
-      is_primitive_node: false,
-      parent_1_id: -1,
-      parent_2_id: -1, 
-      parent_3_id: -1,
-    }
-    this.setState((prevState: any) => ({
-      talk: {
-        ...prevState.talk,
-        topics: tempTopics
-      },
-    }));
-  }
-
   isMissing = () => {
     let res: string[] = []
-    if (this.state.user.speaker_title === "") {
-      res.push("Speaker's title")
+    if (this.state.form.fullName === "") {
+      res.push("Full name")
     }
-    if (this.state.user.speaker_name === "") {
-      res.push("Name")
+    if (this.state.form.title === "") {
+      res.push("Title/position")
     }
-    if (this.state.user.email === "") {
+    if (this.state.form.email === "") {
       res.push("Email address")
     }
-    if (this.state.user.affiliation === "") {
+    if (this.state.form.affiliation === "") {
       res.push("Affiliation")
-    }
-    if (this.state.talk.talk_title === "") {
-      res.push("Talk's title")
-    }
-    if (this.state.talk.abstract === "") {
-      res.push("Abstract")
-    }
-    if (this.state.talk.topics.length === 0 ) {
-      res.push("At least one topic")
     }
     return res;
   }
@@ -272,13 +156,15 @@ export default class RequestMembershipButton extends Component<Props, State> {
       <Box>
         <Box
           focusIndicator={false}
-          width="10vw"
+          width="25vw"
           background="white"
           round="xsmall"
+          height="45px"
           pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
           onClick={() => this.setState({ showForm: true })}
           style={{
             border: "1px solid #C2C2C2",
+            minWidth: "25px"
           }}
           hoverIndicator={true}
           justify="center"   
@@ -288,9 +174,11 @@ export default class RequestMembershipButton extends Component<Props, State> {
             color="grey"
             alignSelf="center"
           >
-            Request membership
+            Become a member!
           </Text>
         </Box>
+  
+
         <Overlay
           visible={this.state.showForm}
           onEsc={this.toggleModal}
@@ -301,54 +189,65 @@ export default class RequestMembershipButton extends Component<Props, State> {
           canProceed={this.isComplete()}
           isMissing={this.isMissing()}
           width={900}
-          height={540}
-          contentHeight="1100px"
-          title="Talk Application"
+          height={400}
+          contentHeight="250px"
+          title={"Membership Application"}
         >
+  
 
-        <OverlaySection heading="1. Tell us about you!">
-          <Box width="100%" gap="2px">
-            {/* <TextInput
-              placeholder="Academic title"
-              value={this.state.user.speaker_title}
-              onChange={(e: any) => this.handleInput(e, "speaker_title")}
-              /> */}
+      {this.props.user === null && (
+        <>
+          <Box direction="row" align="center" gap="10px">
+            <LoginModal callback={() => {}} />
+            <Text size="18px"> or </Text>
+            <SignUpButton callback={() => {}} />
+            <Text size="18px"> to apply </Text>
+          </Box>
+        </>
+        )}  
+
+
+
+      {!(this.props.user === null) && (
+        <OverlaySection>
+          <Box width="100%" gap="1px">
             <TextInput
               placeholder="Full name"
-              value={this.state.user.speaker_name}
-              onChange={(e: any) => this.handleInput(e, "speaker_name")}
+              value={this.state.form.fullName}
+              onChange={(e: any) => this.handleInput(e, "fullName")}
               />
             </Box>
-          <Box width="100%" gap="2px">
+          <Box width="100%" gap="1px">
             <Select
               placeholder="Title"
               options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof', 'Mx']}
-              value={this.state.user.speaker_title}
+              value={this.state.form.title}
               onChange={({option}) => this.setValueAcademicTitle(option)}
             />
           </Box>
-          <Box width="100%" gap="2px">
+          <Box width="100%" gap="1px">
             <TextInput
               placeholder="Current affiliation"
-              value={this.state.user.affiliation}
+              value={this.state.form.affiliation}
               onChange={(e: any) => this.handleInput(e, "affiliation")}
               />
           </Box>
-          <Box width="100%" gap="2px">
+          <Box width="100%" gap="1px">
             <TextInput
               placeholder="Email address"
-              value={this.state.user.email}
+              value={this.state.form.email}
               onChange={(e: any) => this.handleInput(e, "email")}
               />
           </Box>
-          <Box width="100%" gap="2px">
+          <Box width="100%" gap="1px">
             <TextInput
               placeholder="(Personal website)"
-              value={this.state.user.personal_website}
-              onChange={(e: any) => this.handleInput(e, "personal_website")}
+              value={this.state.form.personalWebsite}
+              onChange={(e: any) => this.handleInput(e, "personalWebsite")}
               />
           </Box>
               </OverlaySection>
+        )}
         </Overlay>
       </Box>
     );

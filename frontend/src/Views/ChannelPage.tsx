@@ -368,16 +368,23 @@ export default class ChannelPage extends Component<Props, State> {
                 className="follow-button"
                 background={this.state.following ? "#e5e5e5" : "white"}
                 height="45px"
-                width="130px"
-                pad="small"
-                round="small"
-                style={{ border: "2.5px solid black" }}
+                style={{
+                  border: "1px solid #C2C2C2",
+                }}
+                width="10vw"
+                round="xsmall"
+                pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
                 align="center"
                 justify="center"
                 onClick={this.onFollowClicked}
                 focusIndicator={false}
+                hoverIndicator={true}
               >
-                <Text weight="bold" color="black">
+                <Text 
+                  size="16px" 
+                  color="grey"
+                  alignSelf="center"
+                >
                   {this.state.following ? "Following" : "Follow"}
                 </Text>
               </Box>

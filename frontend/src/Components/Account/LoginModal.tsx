@@ -183,9 +183,6 @@ export default class LoginModal extends Component<Props, State> {
               )}
 
 
-
-
-
             </Box>
           </Box>
         </Overlay>
