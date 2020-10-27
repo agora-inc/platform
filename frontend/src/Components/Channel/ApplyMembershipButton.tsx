@@ -45,17 +45,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
       showForm: false,
       contactAddresses: ""
     };
-    this.fetchContactAddresses()
   }
-
-  fetchContactAddresses = () => {
-    ChannelService.getContactAddresses(
-      this.props.channelId,
-      (contactAddresses: string) => {
-        this.setState({ contactAddresses: contactAddresses });
-      }
-    );
-  };
 
   handleInput = (e: any, key: string) => {
     let value = e.target.value;

@@ -543,7 +543,7 @@ def applyMembership():
     # Compulsory details
     personal_homepage = params["personalHomepage"] if "personal_homepage" in params else None
 
-    channels.applyMembership(
+    res = channels.applyMembership(
         params["id"], 
         params["userId"], 
         params["fullName"],  # this will be removed later when user will have a good profile
@@ -552,7 +552,7 @@ def applyMembership():
         params["email"],  # this will be removed later when user will have a good profile
         personal_homepage)
 
-    return jsonify("ok")
+    return res
 
 @app.route('/channel/membership/cancel', methods=["POST"])
 def cancelMembershipApplication():
