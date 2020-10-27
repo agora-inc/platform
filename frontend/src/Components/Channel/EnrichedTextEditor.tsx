@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import { Text } from "grommet"
-import PropTypes from "prop-types";
 import RichTextEditor from 'react-rte';
-import { OmitProps } from 'antd/lib/transfer/renderListBody';
-import { Js } from 'grommet-icons';
 
 // TODO: react-rte has not been updated in the last 4 years. Write our own using
 //draft Js. 
@@ -33,7 +30,7 @@ type GroupName =
 
 let GroupNameButton1 : GroupName = "INLINE_STYLE_BUTTONS"
 let GroupNameButton2 : GroupName = "BLOCK_TYPE_BUTTONS"
-let GroupNameButton3 : GroupName = "HISTORY_BUTTONS"
+// let GroupNameButton3 : GroupName = "HISTORY_BUTTONS"
 let GroupNameButton4 : GroupName = "LINK_BUTTONS"
 
 
@@ -44,7 +41,7 @@ export default class EnrichedTextEditor extends Component<Props, State> {
       currentText: this.props.text,
       editorValue: RichTextEditor.createValueFromString(this.props.text, 'html'),
       editing_mode: false,
-      toolbarButtonsToDisplay: [GroupNameButton1, GroupNameButton2, GroupNameButton3, GroupNameButton4]
+      toolbarButtonsToDisplay: [GroupNameButton1, GroupNameButton2, GroupNameButton4]
     };
   }
 
@@ -70,7 +67,9 @@ export default class EnrichedTextEditor extends Component<Props, State> {
       INLINE_STYLE_BUTTONS: [
         {label: 'Bold', style: 'BOLD', className: 'custom-css-class'},
         {label: 'Italic', style: 'ITALIC'},
-        {label: 'Underline', style: 'UNDERLINE'}
+        {label: 'Underline', style: 'UNDERLINE'},
+        {label: 'Link', style: 'LINK'}
+
       ],
       BLOCK_TYPE_DROPDOWN: [
         // {label: 'Normal', style: 'unstyled'},

@@ -301,6 +301,7 @@ def updateChannelColour():
 @app.route('/channels/updatedescription', methods=["POST", "OPTIONS"])
 def updateChannelDescription():
     """TODO: refact this into updateshortdescription and propagate
+    NOTE: OLD TECH.
     """
     if request.method == "OPTIONS":
         return jsonify("ok")
@@ -311,6 +312,7 @@ def updateChannelDescription():
     params = request.json 
     channelId = params["channelId"]
     newDescription = params["newDescription"]
+
     return jsonify(channels.updateChannelDescription(channelId, newDescription))
 
 @app.route('/channels/updatelongdescription', methods=["POST", "OPTIONS"])

@@ -206,7 +206,7 @@ const updateChannelDescription = (
 ) => {
   post(
     "channels/updatedescription",
-    { channelId: channelId, newDescription: newDescription },
+    { channelId: channelId, newDescription: newDescription},
     callback
   );
 };
@@ -216,9 +216,10 @@ const updateLongChannelDescription = (
   newDescription: string,
   callback: any
 ) => {
+  var newDescriptionUtf8 = unescape( encodeURIComponent(newDescription));
   post(
     "channels/updatelongdescription",
-    { channelId: channelId, newDescription: newDescription },
+    { channelId: channelId, newDescription: newDescriptionUtf8 },
     callback
   );
 };
