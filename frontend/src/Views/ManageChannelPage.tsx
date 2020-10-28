@@ -811,7 +811,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       justify="between" 
                       margin={{bottom: "30px"}}>
                       <Box
-                        width="18%"
+                        width="40%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -852,7 +852,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Box>
 
                       <Box
-                        width="80%"
+                        width="58%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -891,7 +891,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                           ))}
                         </Box>
                       </Box>
-
 
 {/* 
                       <Box
@@ -946,6 +945,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                         </Box>
                       </Box>
                       */}
+
+
                     </Box>
                     <Box 
                       direction="column"
@@ -954,7 +955,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Box 
                         direction="row"
                         gap="small"
-                        margin={{ top: "40px", bottom: "24px" }}
+                        margin={{ bottom: "24px" }}
                       >
                         <Text size="24px" weight="bold" color="black">
                           Invite members
