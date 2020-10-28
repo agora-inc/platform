@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea} from "grommet";
+import { Box, Text, TextArea, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -383,17 +383,19 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
-  getCoverBoxStyle = (): CSSProperties => {
+  getImageUrl = (): string | undefined => {
     let current_time = Math.floor(new Date().getTime() / 5000);
-    let background = this.state.channel?.id
-      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
-        current_time +
-        `)`
-      : // HACK: we add the new time at the end of the URL to avoid caching;
-        // we divide time by value such that all block of requested image have
-        // the same name (important for the name to be the same for the styling).
-        this.state.channel?.colour;
+    let imageUrl = this.state.channel?.id
+      ? `${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` + current_time
+      // HACK: we add the new time at the end of the URL to avoid caching; 
+      // we divide time by value such that all block of requested image have 
+      // the same name (important for the name to be the same for the styling).
+      : undefined;
+    return imageUrl;
+  }
 
+  getCoverBoxStyle = (): CSSProperties => {
+    let background = this.state.channel ?.colour;
     let border = "none";
 
     return {
@@ -402,7 +404,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       borderTopLeftRadius: 10,
       background: background,
       backgroundSize: "75vw 25vw",
-      padding: 20,
       border: border,
     };
   };
@@ -422,10 +423,11 @@ export default class ManageChannelPage extends Component<Props, State> {
         <Box
           direction="row"
           justify="between"
-          style={this.getCoverBoxStyle()}
+          style={{position: 'relative'}}
           height="25vw"
         >
-          <Box width="100%" direction="row" justify="end" height="50px">
+          <Image src={this.getImageUrl()} style={this.getCoverBoxStyle()} />
+          <div style={{position: 'absolute', top: 10, right: 10}}>
             <ColorPicker
               selected={this.state.colour}
               callback={this.updateColour}
@@ -434,7 +436,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 this.state.channel ? this.state.channel.has_cover : false
               }
             />
-          </Box>
+          </div>
         </Box>
         <Box
           direction="row"
