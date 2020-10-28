@@ -402,7 +402,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       borderTopLeftRadius: 10,
       background: background,
       backgroundSize: "75vw 25vw",
-      padding: 20,
       border: border,
     };
   };
@@ -426,7 +425,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           height="25vw"
         >
           <Box width="100%" direction="row" justify="end" height="50px">
-            <ColorPicker
+          <ColorPicker  
               selected={this.state.colour}
               callback={this.updateColour}
               channelId={this.state.channel?.id}
@@ -812,7 +811,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       justify="between" 
                       margin={{bottom: "30px"}}>
                       <Box
-                        width="31.5%"
+                        width="18%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -853,7 +852,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Box>
 
                       <Box
-                        width="31.5%"
+                        width="80%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -892,6 +891,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                           ))}
                         </Box>
                       </Box>
+
+
+{/* 
                       <Box
                         width="31.5%"
                         height="250px"
@@ -915,7 +917,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                             )}
                           </Box>
                         )}                        
-                      </Box>
+                      </Box> */}
+
+
                       {/*       
                       <Box
                         width="31.5%"
