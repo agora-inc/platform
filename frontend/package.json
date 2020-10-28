@@ -37,6 +37,7 @@
     "moment": "^2.26.0",
     "moment-timezone": "^0.5.31",
     "react": "^16.13.1",
+    "react-avatar": "^3.9.7",
     "react-blink-tag": "^0.1.6",
     "react-blockies": "^1.4.1",
     "react-d3-graph": "^2.4.1",

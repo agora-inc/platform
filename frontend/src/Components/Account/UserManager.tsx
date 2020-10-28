@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Box, Button, Text, TextArea } from "grommet";
+import {UserSettings} from "grommet-icons";
 import { Link } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
@@ -154,13 +155,13 @@ export default class UserManager extends Component<Props, State> {
           <Box
             height="25px"
             width="25px"
-            round="12.5px"
+            // round="12.5px"
             justify="start"
             align="start"
             overflow="hidden"
             direction="row"
           >
-            <Identicon string={this.state.user?.username} size={25} />
+            <UserSettings size="medium"/>
           </Box>
           <Text weight="bold" size="20px">
             {this.state.user?.username}
@@ -339,13 +340,13 @@ export default class UserManager extends Component<Props, State> {
           style={{
             height: 40,
             width: 40,
-            borderRadius: 20,
+            // borderRadius: 20,
             overflow: "hidden",
           }}
           focusIndicator={false}
           onClick={this.toggleDropdown}
         >
-          <Identicon string={this.state.user?.username} size={40} />
+          <UserSettings size="medium"/>
         </Button>
       </Dropdown>
     );
