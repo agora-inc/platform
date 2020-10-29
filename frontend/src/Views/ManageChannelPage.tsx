@@ -490,7 +490,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               </Text>
               {(typeof(this.state.viewerCount) == "number") &&
                 <Text size="24px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
-                  {this.state.viewerCount} visitors
+                  {this.state.viewerCount} visits
                 </Text>
               }
               <Box direction="row" align="center">
