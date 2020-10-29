@@ -70,6 +70,12 @@ export default class ChannelPage extends Component<Props, State> {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
+  storeUserData = () => {
+    ChannelService.increaseViewCountForChannel(
+      this.state.channel!.id,
+      () => {});
+  };
+
   getTalkIdFromUrl = (): number => {
     const urlParams = new URLSearchParams(window.location.search);
     const talkId = urlParams.get("talkId");
@@ -110,6 +116,7 @@ export default class ChannelPage extends Component<Props, State> {
               this.fetchFutureTalks();
               this.fetchCurrentTalks();
               this.fetchFollowerCount();
+              this.storeUserData();
               // this.fetchViewCount();
             }
           );
@@ -134,6 +141,7 @@ export default class ChannelPage extends Component<Props, State> {
             );
           }
         );
+
       }
     );
   };
@@ -155,6 +163,16 @@ export default class ChannelPage extends Component<Props, State> {
       }
     );
   };
+
+  // fetchViewCount = () => {
+  //   ChannelService.getViewCountForChannel(
+  //     this.state.channel!.id,
+  //     (viewerCount: number) => {
+  //       this.setState({ viewerCount });
+  //     }
+  //   );
+  // };
+
 
   fetchFutureTalks = () => {
     if (this.state.channel) {
