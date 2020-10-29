@@ -58,7 +58,6 @@ class ChannelRepository:
         #     "lightcoral",
         #     "pink",
         # ]
-        # colour = random.choice(colours)
         colour = "#5454A0"
 
         query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
@@ -82,9 +81,6 @@ class ChannelRepository:
     def updateChannelDescription(self, channelId, newDescription):
         """TODO: Refactor this into updateShortChannelDescription with DB field as well into short_description
         """
-        with open("/home/cloud-user/test/description-encoding3.txt", "w") as file:
-            file.write(str(type(newDescription)))
-
         query = f'UPDATE Channels SET description = "{newDescription}" WHERE id = {channelId}'
         self.db.run_query(query)
         return "ok"
@@ -121,11 +117,6 @@ class ChannelRepository:
         if not result:
             return "none"
         return result[0]["role"]
-
-    def getViewsForChannel(self, channelId):
-        query = f'SELECT views FROM Videos where channel_id = {channelId}'
-        result = self.db.run_query(query)
-        return sum([x["views"] for x in result])
 
     def getAvatarLocation(self, channelId):
         query = f'SELECT has_avatar FROM Channels WHERE id = {channelId}'
@@ -220,3 +211,33 @@ class ChannelRepository:
             ;
             '''
         return self.db.run_query(email_members_and_admins_query)
+
+    def increaseChannelViewCount(self, channelId):
+        try:
+            increase_counter_query = f'''
+                UPDATE ChannelViewCounts
+                    SET total_views = total_views + 1
+                    WHERE channel_id = {channelId};'''
+            res = self.db.run_query(increase_counter_query)
+
+            if type(res) == list:
+                if res[0] == 0 and res[1] == 0:
+                    initialise_counter_query = f'''
+                        INSERT INTO ChannelViewCounts (channel_id, total_views) 
+                            VALUES ({channelId}, 4);
+                    '''
+                    res = self.db.run_query(initialise_counter_query)
+                    return "ok" 
+
+        except Exception as e:
+            return str(e)
+
+    def getChannelViewCount(self, channelId):
+        get_counter_query = f'''
+            SELECT * FROM ChannelViewCounts 
+                WHERE channel_id = {channelId};
+            '''
+        try:
+            return self.db.run_query(get_counter_query)[0]["total_views"]
+        except Exception as e:
+            return str(e)
