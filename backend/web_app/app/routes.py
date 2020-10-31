@@ -78,7 +78,7 @@ def addUser():
     email = params['email']
     user = users.addUser(username, password, email)
 
-    if user[1] == 400:
+    if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
         return user
 
@@ -223,6 +223,12 @@ def createChannel():
 
     return jsonify(channels.createChannel(name, description, userId))
 
+@app.route('/channels/delete', methods=["POST"])
+def deleteChannel():
+    params = request.json
+    channels.deleteChannel(params["id"])
+    return jsonify("ok")
+
 @app.route('/channels/invite/add', methods=["POST", "OPTIONS"])
 def addInvitedMembersToChannel():
     logRequest(request)
@@ -281,10 +287,16 @@ def getFollowerCountForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(len(channels.getUsersForChannel(channelId, ["follower"])))
 
-@app.route('/channels/viewcount', methods=["GET"])
+@app.route('/channels/viewcount/get', methods=["GET"])
 def getViewCountForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(channels.getViewsForChannel(channelId))
+    return jsonify(channels.getChannelViewCount(channelId))
+
+@app.route('/channels/viewcount/add', methods=["POST"])
+def increaseViewCountForChannel():
+    params = request.json 
+    channelId = params["channelId"]
+    return jsonify(channels.increaseChannelViewCount(channelId))
 
 @app.route('/channels/updatecolour', methods=["POST", "OPTIONS"])
 def updateChannelColour():
@@ -301,6 +313,7 @@ def updateChannelColour():
 @app.route('/channels/updatedescription', methods=["POST", "OPTIONS"])
 def updateChannelDescription():
     """TODO: refact this into updateshortdescription and propagate
+    NOTE: OLD TECH.
     """
     if request.method == "OPTIONS":
         return jsonify("ok")
@@ -311,6 +324,7 @@ def updateChannelDescription():
     params = request.json 
     channelId = params["channelId"]
     newDescription = params["newDescription"]
+
     return jsonify(channels.updateChannelDescription(channelId, newDescription))
 
 @app.route('/channels/updatelongdescription', methods=["POST", "OPTIONS"])
@@ -524,12 +538,6 @@ def sendTalkApplicationEmail():
     msg.subject = email_subject
     mail.send(msg)
     return "ok"
-
-@app.route('/channels/delete', methods=["POST"])
-def deleteChannel():
-    params = request.json
-    channels.deleteChannel(params["id"])
-    return jsonify("ok")
 
 # --------------------------------------------
 # STREAM ROUTES

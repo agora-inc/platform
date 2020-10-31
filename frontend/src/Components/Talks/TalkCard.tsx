@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer, TextArea } from "grommet";
+import { Box, Text, Button, Layer, Image} from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
@@ -8,7 +8,6 @@ import { Tag } from "../../Services/TagService";
 import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
-import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
 import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
 import LoginModal from "../Account/LoginModal";
@@ -58,6 +57,10 @@ export default class TalkCard extends Component<Props, State> {
     const timeEndStr = end.toTimeString().slice(0, 5);
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
+
+  escapeDoubleQuotes = (text: string) => {
+    return text.replace("''", "'")
+  }
 
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
@@ -157,18 +160,18 @@ export default class TalkCard extends Component<Props, State> {
   render() {
     var breakpoint_width = 992;
     return (
-      // <Box
+      <div className="talk_card_box_1" style={{"width": this.props.width ? this.props.width : "32%"}} onClick={() => {
+            !this.state.showModal && this.toggleModal();
+        }}
+        >
+        {/* <Box
       //   width={this.props.width ? this.props.width : "32%"}
       //   onClick={() => {
       //     !this.state.showModal && this.toggleModal();
       //   }}
       //   focusIndicator={false}
       //   style={{ position: "relative" }}
-      // >
-      <div className="talk_card_box_1" style={{"width": this.props.width ? this.props.width : "32%"}} onClick={() => {
-            !this.state.showModal && this.toggleModal();
-        }}
-        >
+      // >  */}
         <Box
           onMouseEnter={() => this.setState({ showShadow: true })}
           onMouseLeave={() => {
@@ -200,17 +203,14 @@ export default class TalkCard extends Component<Props, State> {
                 align="center"
                 background="#efeff1"
                 overflow="hidden"
+                style = {{ aspectRatio : "1:1"}}
               >
-                {!this.props.talk.has_avatar && (
-                  <Identicon string={this.props.talk.channel_name} size={15} />
-                )}
-                {!!this.props.talk.has_avatar && (
-                  <img
+                  <Image
                     src={ChannelService.getAvatar(this.props.talk.channel_id)}
                     height={30}
                     width={30}
+                    fit="contain"
                   />
-                )}
               </Box>
               <Text weight="bold" size="16px" color="grey">
                 {this.props.talk.channel_name}
@@ -357,13 +357,6 @@ export default class TalkCard extends Component<Props, State> {
                             borderRadius: 15,
                           }}
                         >
-                          {!this.props.talk.has_avatar && (
-                            <Identicon
-                              string={this.props.talk.channel_name}
-                              size={30}
-                            />
-                          )}
-                          {!!this.props.talk.has_avatar && (
                             <img
                               src={ChannelService.getAvatar(
                                 this.props.talk.channel_id
@@ -371,7 +364,6 @@ export default class TalkCard extends Component<Props, State> {
                               height={30}
                               width={30}
                             />
-                          )}
                         </Box>
                         <Box justify="between">
                           <Text weight="bold" size="18px" color="grey">
@@ -452,7 +444,7 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.props.talk.description}
+                    {this.escapeDoubleQuotes(this.props.talk.description)}
                   </Text>
                 </Box>
                 <Box direction="column" gap="small">
@@ -638,13 +630,6 @@ export default class TalkCard extends Component<Props, State> {
                             borderRadius: 15,
                           }}
                         >
-                          {!this.props.talk.has_avatar && (
-                            <Identicon
-                              string={this.props.talk.channel_name}
-                              size={30}
-                            />
-                          )}
-                          {!!this.props.talk.has_avatar && (
                             <img
                               src={ChannelService.getAvatar(
                                 this.props.talk.channel_id
@@ -652,7 +637,6 @@ export default class TalkCard extends Component<Props, State> {
                               height={30}
                               width={30}
                             />
-                          )}
                         </Box>
                         <Box justify="between">
                           <Text weight="bold" size="18px" color="grey">
@@ -733,7 +717,7 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.props.talk.description}
+                    {this.escapeDoubleQuotes(this.props.talk.description)}
                   </Text>
                 </Box>
                 <Box direction="column" gap="small">

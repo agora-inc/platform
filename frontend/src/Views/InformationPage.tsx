@@ -66,12 +66,12 @@ export default class InformationPage extends Component<Props, State> {
                   broadly advertise academic research and connect research communities to potential speakers. 
                   It promotes cross-curricular collaboration through recommendation of talks related to the researcher's field of expertise. </p>
               <h2><strong> 3) How to use agora.stream?</strong></h2>
-                <p>We made the use of this plateform very intuitive.</p>
+                <p>We made the use of this platform very intuitive.</p>
                 <h3>a) Are you a researcher?&nbsp;</h3>
                   <ul>
                     <li><strong>Browse</strong> efficiently through talks aligning with your research interests.&nbsp;
                       <ul>
-                        <li>Simply use the filter by topics to <strong>browse</strong> among talks hosted every other agoras (this is how we call research groups on our plateform). Alternatively, you can also go on the agora page of your community to see the incoming events.</li>
+                        <li>Simply use the filter by topics to <strong>browse</strong> among talks hosted every other agoras (this is how we call research groups on our platform). Alternatively, you can also go on the agora page of your community to see the incoming events.</li>
                       </ul>
                     </li>
                     <li><strong>Connect</strong> with research communities and get updated about their future seminars!&nbsp;
@@ -82,7 +82,7 @@ export default class InformationPage extends Component<Props, State> {
                     </li>
                     <li><strong>Organise</strong> all your seminar schedule in a centralised way (internal calendar syncable with Google Calendar)&nbsp;
                       <ul>
-                        <li>In addition to allow you to keep track of your agora of interests, creating an account on the plateform will also allow you to add events to our internal calendar that can be synced up with your google calendar! (Creating accounts are free!)</li>
+                        <li>In addition to allow you to keep track of your agora of interests, creating an account on the platform will also allow you to add events to our internal calendar that can be synced up with your google calendar! (Creating accounts are free!)</li>
                       </ul>
                     </li>
                   </ul>

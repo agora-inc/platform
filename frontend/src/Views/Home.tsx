@@ -112,7 +112,6 @@ export default class Home extends Component<{}, State> {
             <FooterComponent />
         </div>
           {/* </Box> */}
-
       </Box>
     );
   }

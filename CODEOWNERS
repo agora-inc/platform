@@ -1,6 +1,1 @@
-*.py @remymess
-*.ts @alainrossier
-*.tsx @alainrossier
-*.js @alainrossier
-*.jsx @alainrossier
-*.css @alainrossier
+* @remymess @alainrossier

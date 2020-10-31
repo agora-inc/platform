@@ -206,7 +206,7 @@ const updateChannelDescription = (
 ) => {
   post(
     "channels/updatedescription",
-    { channelId: channelId, newDescription: newDescription },
+    { channelId: channelId, newDescription: newDescription},
     callback
   );
 };
@@ -216,9 +216,10 @@ const updateLongChannelDescription = (
   newDescription: string,
   callback: any
 ) => {
+  var newDescriptionUtf8 = unescape( encodeURIComponent(newDescription));
   post(
     "channels/updatelongdescription",
-    { channelId: channelId, newDescription: newDescription },
+    { channelId: channelId, newDescription: newDescriptionUtf8 },
     callback
   );
 };
@@ -312,6 +313,27 @@ const deleteAgora = (id: number, callback: any) => {
   post("channels/delete", { id }, callback);
 };
 
+const getViewCountForChannel = (
+  channelId: number,
+  callback: any
+) => {
+  get(
+    `channels/viewcount/get?channelId=${channelId}`,
+    callback
+  );
+};
+
+const increaseViewCountForChannel = (
+  channelId: number,
+  callback: any
+) => {
+  post(
+    "channels/viewcount/add",
+    { channelId: channelId},
+    callback
+  );
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -348,4 +370,6 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
+  getViewCountForChannel,
+  increaseViewCountForChannel
 };

@@ -45,7 +45,7 @@ export default class TermsOfService extends Component<Props, State> {
           > */}
             <Text color="black" size="18px">
             <h1><b>Terms of service</b></h1>
-            <p>Simply put, we thrive to maintain a high scientific standard of conduct on this plateform. The following paragraphs are here to set the ground guidelines of usage for you, the user, and state the rights we have to sanction any misconduct. </p>
+            <p>Simply put, we thrive to maintain a high scientific standard of conduct on this platform. The following paragraphs are here to set the ground guidelines of usage for you, the user, and state the rights we have to sanction any misconduct. </p>
 
             <h2><b>1. Use of the site</b></h2>
             <ol>
@@ -79,7 +79,7 @@ export default class TermsOfService extends Component<Props, State> {
               </ol>
             <h2><b>4. Violations</b></h2>
               <ol>
-                <li> In case of violations of term of services and code of conduct or whether it is judged inappropriate, agora.stream reserves the right to edit or delete the content hosted on the plateform. </li>
+                <li> In case of violations of term of services and code of conduct or whether it is judged inappropriate, agora.stream reserves the right to edit or delete the content hosted on the platform. </li>
                 <li> In case of misconduct, agora.stream reserves the right to temporarily or permanently disable an account or IP address. </li>
               </ol>
             <h2><b>5. General information</b></h2>

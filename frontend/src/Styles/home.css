@@ -77,9 +77,10 @@
     width: 50%;
   }
   .core_box_without_sidebar {
-    width: 100%;
-    margin-left: 5px;
+    width: 100% !important;
+    margin-left: 0px !important;
     margin-top: 65px;
+    pad: none !important;
 
   }
 }

@@ -58,7 +58,7 @@ export default class EditTalkModal extends Component<Props, State> {
     super(props);
     this.state = {
       title: this.props.talk ? this.props.talk.name : "",
-      description: this.props.talk ? this.props.talk.description : "",
+      description: this.props.talk ? this.escapeDoubleQuotes(this.props.talk.description) : "",
       tags: this.props.talk ? this.props.talk.tags : [],
       loading: false,
       date: this.props.talk
@@ -164,8 +164,12 @@ export default class EditTalkModal extends Component<Props, State> {
     }
   }
 
-  addDoubleQuotes = (text: string) => {
-    return '"'.concat(text).concat('"') 
+  escapeSingleQuotes = (text: string) => {
+    return text.replace("'", "''").replace(/"/g, "'")
+  }
+
+  escapeDoubleQuotes = (text: string) => {
+    return text.replace("''", "'")
   }
 
   onFinish = () => {
@@ -173,8 +177,8 @@ export default class EditTalkModal extends Component<Props, State> {
     if (this.props.talk) {
       TalkService.editTalk(
         this.props.talk.id,
-        this.state.title,
-        this.addDoubleQuotes(this.state.description),
+        this.escapeSingleQuotes(this.state.title),
+        this.escapeSingleQuotes(this.state.description),
         dateTimeStrs[0],
         dateTimeStrs[1],
         this.validLink(this.state.link),
@@ -183,7 +187,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.linkVisibility,
         this.state.cardVisibility,
         this.state.topics,
-        this.state.talkSpeaker,
+        this.escapeSingleQuotes(this.state.talkSpeaker),
         this.state.talkSpeakerURL,
         this.state.published,
         (talk: Talk) => {
@@ -201,8 +205,8 @@ export default class EditTalkModal extends Component<Props, State> {
       TalkService.scheduleTalk(
         this.props.channel!.id,
         this.props.channel!.name,
-        this.state.title,
-        this.state.description,
+        this.escapeSingleQuotes(this.state.title),
+        this.escapeSingleQuotes(this.state.description),
         dateTimeStrs[0],
         dateTimeStrs[1],
         this.validLink(this.state.link),
@@ -211,7 +215,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.linkVisibility,
         this.state.cardVisibility,
         this.state.topics,
-        this.state.talkSpeaker,
+        this.escapeSingleQuotes(this.state.talkSpeaker),
         this.state.talkSpeakerURL,
         this.state.published,
         (talk: Talk) => {

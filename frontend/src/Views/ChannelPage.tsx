@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import { Box, Text } from "grommet";
+import { Box, Text, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Video, VideoService } from "../Services/VideoService";
@@ -70,6 +70,12 @@ export default class ChannelPage extends Component<Props, State> {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
+  storeUserData = () => {
+    ChannelService.increaseViewCountForChannel(
+      this.state.channel!.id,
+      () => {});
+  };
+
   getTalkIdFromUrl = (): number => {
     const urlParams = new URLSearchParams(window.location.search);
     const talkId = urlParams.get("talkId");
@@ -110,6 +116,7 @@ export default class ChannelPage extends Component<Props, State> {
               this.fetchFutureTalks();
               this.fetchCurrentTalks();
               this.fetchFollowerCount();
+              this.storeUserData();
               // this.fetchViewCount();
             }
           );
@@ -134,6 +141,7 @@ export default class ChannelPage extends Component<Props, State> {
             );
           }
         );
+
       }
     );
   };
@@ -155,6 +163,16 @@ export default class ChannelPage extends Component<Props, State> {
       }
     );
   };
+
+  // fetchViewCount = () => {
+  //   ChannelService.getViewCountForChannel(
+  //     this.state.channel!.id,
+  //     (viewerCount: number) => {
+  //       this.setState({ viewerCount });
+  //     }
+  //   );
+  // };
+
 
   fetchFutureTalks = () => {
     if (this.state.channel) {
@@ -224,17 +242,19 @@ export default class ChannelPage extends Component<Props, State> {
     this.setState({ following: !this.state.following });
   };
 
-  getCoverBoxStyle = (): CSSProperties => {
+  getImageUrl = (): string | undefined => {
     let current_time = Math.floor(new Date().getTime() / 5000);
-    let background = this.state.channel ?.id
-      ? `url(${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
-      current_time +
-      `)`
+    let imageUrl = this.state.channel?.id
+      ? `${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` + current_time
       // HACK: we add the new time at the end of the URL to avoid caching; 
       // we divide time by value such that all block of requested image have 
       // the same name (important for the name to be the same for the styling).
-      : this.state.channel ?.colour;
+      : undefined;
+    return imageUrl;
+  }
 
+  getCoverBoxStyle = (): CSSProperties => {
+    let background = this.state.channel ?.colour;
     let border = "none";
 
     return {
@@ -243,7 +263,6 @@ export default class ChannelPage extends Component<Props, State> {
       borderTopLeftRadius: 10,
       background: background,
       backgroundSize: "75vw 25vw",
-      padding: 20,
       border: border,
     };
   };
@@ -258,9 +277,10 @@ export default class ChannelPage extends Component<Props, State> {
         <Box
           direction="row"
           justify="between"
-          style={this.getCoverBoxStyle()}
           height="25vw"
-        />
+        >
+          <Image src={this.getImageUrl()} style={this.getCoverBoxStyle()} />
+        </Box>
         <Box
           direction="row"
           height="133px"

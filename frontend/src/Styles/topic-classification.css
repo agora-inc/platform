@@ -1,7 +1,8 @@
 .classification_box {
     margin-bottom: 15px;
     direction: column;
-    width: 100%
+    width: 100%;
+    margin-left: 5px
 }
 
 @media screen and (max-width: 992px){
