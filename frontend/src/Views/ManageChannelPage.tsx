@@ -24,6 +24,7 @@ import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, 
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
+import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 
 interface Props {
@@ -676,6 +677,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <ContactInfo />
+                      <Text size="24px"> 
+                        Requests 
+                      </Text>
+                    </Box>
+                  </Tab>
                 </TabList>
                 
                 <TabPanel style={{width: "74.35vw"}}>
@@ -843,7 +852,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       >
                         <Box direction="row" justify="between">
                           <Text weight="bold" size="20px" color="black">
-                            Agora admin
+                            Agora admins
                           </Text>
                           {/* {this.state.role === "owner" && (
                             <AddUsersButton
@@ -1066,6 +1075,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                       onAddAddress={this.onAddContactAddress}
                       onDeleteAddress={this.onDeleteContactAddress}
                     />
+                  </Box>
+                </TabPanel>
+                <TabPanel style={{width: "74.35vw"}}>
+                  <Box direction="row" margin={{bottom: "60px"}}>
+                    <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel>
               </Tabs>

@@ -212,6 +212,125 @@ class ChannelRepository:
             '''
         return self.db.run_query(email_members_and_admins_query)
 
+    def applyMembership(self, channelId, userId, fullName, position, institution, email=None, personal_homepage=None):
+        personal_homepage_var = str() if personal_homepage == None else personal_homepage
+        email = str() if email == None else email
+
+        # check user already applied
+        check_if_membership_application = f'''
+            SELECT * FROM MembershipApplications
+                WHERE user_id = {userId}
+                    AND channel_id = {channelId};
+            '''
+
+        res_check = self.db.run_query(check_if_membership_application)
+        application_exists = True if len(res_check) > 0 else False
+
+        if application_exists:
+            apply_membership_insert_query = f'''
+                UPDATE MembershipApplications
+                    SET
+                        channel_id = {channelId},
+                        user_id = {userId}, 
+                        full_name = "{fullName}",
+                        position = "{position}",
+                        institution = "{institution}",
+                        email = "{email}",
+                        personal_homepage = "{personal_homepage_var}"           
+                    WHERE channel_id = {channelId}
+                        AND user_id = {userId};
+                '''
+
+        else:
+            apply_membership_insert_query = f'''
+                INSERT INTO MembershipApplications(
+                    channel_id,
+                    user_id, 
+                    full_name,
+                    position,
+                    institution,
+                    email,
+                    personal_homepage
+                    )
+
+                VALUES (
+                    "{channelId}",
+                    "{userId}", 
+                    "{fullName}",
+                    "{position}",
+                    "{institution}",
+                    "{email}",
+                    "{personal_homepage_var}"             
+                    );
+                '''
+
+        try:
+            self.db.run_query(apply_membership_insert_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
+
+    def getMembershipApplications(self, channelId, userId):
+        membership_applications_query = f'''
+            SELECT * FROM  MembershipApplications
+            WHERE channel_id = {channelId};
+            '''
+        if userId != None:
+            membership_applications_query = membership_applications_query[:-1] + f" AND user_id = {userId};"
+
+        res = self.db.run_query(membership_applications_query)
+        if res is not None:
+            return res
+        else:
+            return []
+
+    def cancelMembershipApplication(self, channelId, userId):
+        withdraw_app_query = f'''
+            DELETE FROM MembershipApplications
+            WHERE channel_id = {channelId} and user_id = {userId};
+            '''
+
+        try:
+            self.db.run_query(withdraw_app_query)
+            res = "ok"
+        except Exception as e:
+            res = str(e)
+        return res
+
+    def acceptMembershipApplication(self, channelId, userId):
+        # A. Check if user is already a member
+        check_membership_query = f'''
+            SELECT * FROM ChannelUsers
+            WHERE channel_id = {channelId} 
+                AND user_id = {userId}
+                AND role in ("owner", "member"); 
+            '''
+        res = self.db.run_query(check_membership_query)
+
+        # B. add membership
+        if len(res) == 0:
+            add_membership_query = f'''
+            INSERT into ChannelUsers(
+                channel_id, user_id, role
+            )
+            VALUES (
+                {channelId},
+                {userId},
+                "member"
+            )
+            '''
+            # C. remove membership request from list
+            remove_membership_request_query = f'''
+                DELETE FROM MembershipApplications
+                WHERE channel_id = {channelId}
+                    AND user_id = {userId}
+                ;'''
+
+            res = self.db.run_query([add_membership_query, 
+            remove_membership_request_query])
+
+            return "ok"
+        return "ok"
     def increaseChannelViewCount(self, channelId):
         try:
             increase_counter_query = f'''

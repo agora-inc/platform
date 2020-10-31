@@ -352,7 +352,6 @@ def avatar():
 
         channelId = request.form["channelId"]
         file = request.files["image"]
-        print(file)
         fn = f"{channelId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
         channels.addAvatar(channelId)
@@ -471,7 +470,6 @@ def removeContactAddress():
 
 @app.route('/channel/apply/talk', methods=["POST"])
 def sendTalkApplicationEmail():
-
     # NOTE: used https://wordtohtml.net/ to easily create syntax for the body
     params = request.json
 
@@ -538,6 +536,58 @@ def sendTalkApplicationEmail():
     msg.subject = email_subject
     mail.send(msg)
     return "ok"
+
+# --------------------------------------------
+# x Membership ROUTES
+# --------------------------------------------
+@app.route('/channel/membership/apply', methods=["POST"])
+def applyMembership():
+    params = request.json
+
+    # Compulsory details
+    personal_homepage = params["personalHomepage"] if "personalHomepage" in params else None
+
+    res = channels.applyMembership(
+        params["id"], 
+        params["userId"], 
+        params["fullName"],  # this will be removed later when user will have a good profile
+        params["position"],  # this will be removed later when user will have a good profile
+        params["institution"],  # this will be removed later when user will have a good profile
+        params["email"],  # this will be removed later when user will have a good profile
+        personal_homepage)
+
+    return res
+
+@app.route('/channel/membership/cancel', methods=["POST"])
+def cancelMembershipApplication():
+    params = request.json
+
+    res = channels.cancelMembershipApplication(
+        params["id"], 
+        params["userId"])
+
+    return jsonify(res)
+
+@app.route('/channel/membership/accept', methods=["POST"])
+def acceptMembershipApplication():
+    params = request.json
+
+    res = channels.acceptMembershipApplication(
+        params["id"], 
+        params["userId"],
+        )
+    return jsonify(res)
+
+@app.route('/channel/membership/list', methods=["GET"])
+def getMembershipApplications():
+    channelId = int(request.args.get("channelId"))
+    userId = int(request.args.get("userId")) if "userId" in request.args else None
+
+    res = channels.getMembershipApplications(
+        channelId, 
+        userId,
+        )
+    return jsonify(res)
 
 # --------------------------------------------
 # STREAM ROUTES
