@@ -313,6 +313,27 @@ const deleteAgora = (id: number, callback: any) => {
   post("channels/delete", { id }, callback);
 };
 
+const getViewCountForChannel = (
+  channelId: number,
+  callback: any
+) => {
+  get(
+    `channels/viewcount/get?channelId=${channelId}`,
+    callback
+  );
+};
+
+const increaseViewCountForChannel = (
+  channelId: number,
+  callback: any
+) => {
+  post(
+    "channels/viewcount/add",
+    { channelId: channelId},
+    callback
+  );
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -349,4 +370,6 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
+  getViewCountForChannel,
+  increaseViewCountForChannel
 };

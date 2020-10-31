@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer, TextArea } from "grommet";
+import { Box, Text, Button, Layer, Image} from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
@@ -8,7 +8,6 @@ import { Tag } from "../../Services/TagService";
 import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
-import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
 import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
 import LoginModal from "../Account/LoginModal";
@@ -204,17 +203,14 @@ export default class TalkCard extends Component<Props, State> {
                 align="center"
                 background="#efeff1"
                 overflow="hidden"
+                style = {{ aspectRatio : "1:1"}}
               >
-                {!this.props.talk.has_avatar && (
-                  <Identicon string={this.props.talk.channel_name} size={15} />
-                )}
-                {!!this.props.talk.has_avatar && (
-                  <img
+                  <Image
                     src={ChannelService.getAvatar(this.props.talk.channel_id)}
                     height={30}
                     width={30}
+                    fit="contain"
                   />
-                )}
               </Box>
               <Text weight="bold" size="16px" color="grey">
                 {this.props.talk.channel_name}
@@ -361,13 +357,6 @@ export default class TalkCard extends Component<Props, State> {
                             borderRadius: 15,
                           }}
                         >
-                          {!this.props.talk.has_avatar && (
-                            <Identicon
-                              string={this.props.talk.channel_name}
-                              size={30}
-                            />
-                          )}
-                          {!!this.props.talk.has_avatar && (
                             <img
                               src={ChannelService.getAvatar(
                                 this.props.talk.channel_id
@@ -375,7 +364,6 @@ export default class TalkCard extends Component<Props, State> {
                               height={30}
                               width={30}
                             />
-                          )}
                         </Box>
                         <Box justify="between">
                           <Text weight="bold" size="18px" color="grey">
@@ -642,13 +630,6 @@ export default class TalkCard extends Component<Props, State> {
                             borderRadius: 15,
                           }}
                         >
-                          {!this.props.talk.has_avatar && (
-                            <Identicon
-                              string={this.props.talk.channel_name}
-                              size={30}
-                            />
-                          )}
-                          {!!this.props.talk.has_avatar && (
                             <img
                               src={ChannelService.getAvatar(
                                 this.props.talk.channel_id
@@ -656,7 +637,6 @@ export default class TalkCard extends Component<Props, State> {
                               height={30}
                               width={30}
                             />
-                          )}
                         </Box>
                         <Box justify="between">
                           <Text weight="bold" size="18px" color="grey">
