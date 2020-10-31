@@ -313,6 +313,7 @@ const deleteAgora = (id: number, callback: any) => {
   post("channels/delete", { id }, callback);
 };
 
+///////////////////////
 // Membership methods
 ///////////////////////
 const applyMembership = (
@@ -377,7 +378,10 @@ const getMembershipApplications = (
       `channel/membership/list?channelId=${channelId}&userId=${userId}`, 
       callback);
   }
+}
+
 const getViewCountForChannel = (
+  channelId: number,
   callback: any
 ) => {
   get(
@@ -397,6 +401,7 @@ const increaseViewCountForChannel = (
   );
 };
 
+export type Channel = {
   id: number;
   name: string;
   description: string;
@@ -432,16 +437,13 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
-<<<<<<< HEAD
   /////////////////////
   // membership methods
   /////////////////////
   applyMembership,
   acceptMembershipApplication,
   cancelMembershipApplication,
-  getMembershipApplications
-=======
+  getMembershipApplications,
   getViewCountForChannel,
   increaseViewCountForChannel
->>>>>>> 31cc2413d4e1364f0036cac9dc42fb9331e62163
 };

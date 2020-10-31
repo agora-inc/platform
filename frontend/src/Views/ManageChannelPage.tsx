@@ -849,7 +849,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       >
                         <Box direction="row" justify="between">
                           <Text weight="bold" size="20px" color="black">
-                            Agora admin
+                            Agora admins
                           </Text>
                           {/* {this.state.role === "owner" && (
                             <AddUsersButton

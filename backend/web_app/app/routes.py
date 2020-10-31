@@ -537,13 +537,6 @@ def sendTalkApplicationEmail():
     mail.send(msg)
     return "ok"
 
-@app.route('/channels/delete', methods=["POST"])
-def deleteChannel():
-    params = request.json
-    channels.deleteChannel(params["id"])
-    return jsonify("ok")
-
-
 # --------------------------------------------
 # x Membership ROUTES
 # --------------------------------------------
