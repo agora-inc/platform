@@ -223,6 +223,12 @@ def createChannel():
 
     return jsonify(channels.createChannel(name, description, userId))
 
+@app.route('/channels/delete', methods=["POST"])
+def deleteChannel():
+    params = request.json
+    channels.deleteChannel(params["id"])
+    return jsonify("ok")
+
 @app.route('/channels/invite/add', methods=["POST", "OPTIONS"])
 def addInvitedMembersToChannel():
     logRequest(request)
@@ -281,10 +287,16 @@ def getFollowerCountForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(len(channels.getUsersForChannel(channelId, ["follower"])))
 
-@app.route('/channels/viewcount', methods=["GET"])
+@app.route('/channels/viewcount/get', methods=["GET"])
 def getViewCountForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(channels.getViewsForChannel(channelId))
+    return jsonify(channels.getChannelViewCount(channelId))
+
+@app.route('/channels/viewcount/add', methods=["POST"])
+def increaseViewCountForChannel():
+    params = request.json 
+    channelId = params["channelId"]
+    return jsonify(channels.increaseChannelViewCount(channelId))
 
 @app.route('/channels/updatecolour', methods=["POST", "OPTIONS"])
 def updateChannelColour():
@@ -340,7 +352,6 @@ def avatar():
 
         channelId = request.form["channelId"]
         file = request.files["image"]
-        print(file)
         fn = f"{channelId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
         channels.addAvatar(channelId)

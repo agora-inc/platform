@@ -38,6 +38,7 @@ interface State {
   user: User | null;
   role: "none" | "owner" | "member" | "follower";
   followerCount: number;
+  viewerCount: number;
   colour: string;
   editingDescription: boolean;
   editingLongDescription: boolean;
@@ -68,8 +69,9 @@ export default class ManageChannelPage extends Component<Props, State> {
       loading: true,
       user: null,
       role: "none",
-      followerCount: 0,
-      colour: "pink",
+      followerCount: 1,
+      viewerCount: NaN,
+      colour: "blue",
       editingDescription: false,
       editingLongDescription: false,
       channelOwners: [],
@@ -162,7 +164,14 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
+  storeUserData = () => {
+    ChannelService.increaseViewCountForChannel(
+      this.state.channel!.id,
+      () => {});
+  };
+
   fetchData = () => {
+    this.fetchChannelViewCount();
     this.fetchFollowerCount();
     this.fetchOwners();
     this.fetchMembers();
@@ -172,6 +181,16 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchCurrentTalks();
     this.fetchTalks();
     this.fetchDrafts();
+    this.storeUserData();
+  };
+
+  fetchChannelViewCount = () => {
+    ChannelService.getViewCountForChannel(
+      this.state.channel!.id,
+      (viewerCount: number) => {
+        this.setState({ viewerCount });
+      }
+    );
   };
 
   fetchFollowerCount = () => {
@@ -403,7 +422,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       borderTopLeftRadius: 10,
       background: background,
       backgroundSize: "75vw 25vw",
-      padding: 20,
       border: border,
     };
   };
@@ -427,7 +445,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           height="25vw"
         >
           <Box width="100%" direction="row" justify="end" height="50px">
-            <ColorPicker
+          <ColorPicker  
               selected={this.state.colour}
               callback={this.updateColour}
               channelId={this.state.channel?.id}
@@ -471,9 +489,11 @@ export default class ManageChannelPage extends Component<Props, State> {
               <Text size="30px" color="black" weight="bold" margin={{bottom: "6px"}}>
                 {this.state.channel?.name}
               </Text>
-              <Text size="24px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
-                {this.state.followerCount} followers
-              </Text>
+              {(typeof(this.state.viewerCount) == "number") &&
+                <Text size="24px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
+                  {this.state.viewerCount} visits
+                </Text>
+              }
               <Box direction="row" align="center">
                 <ImageUploader
                   text="Upload avatar"
@@ -821,7 +841,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       justify="between" 
                       margin={{bottom: "30px"}}>
                       <Box
-                        width="31.5%"
+                        width="40%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -862,7 +882,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Box>
 
                       <Box
-                        width="31.5%"
+                        width="58%"
                         height="250px"
                         background="#e5e5e5"
                         round="7.5px"
@@ -901,6 +921,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                           ))}
                         </Box>
                       </Box>
+
+{/* 
                       <Box
                         width="31.5%"
                         height="250px"
@@ -924,7 +946,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                             )}
                           </Box>
                         )}                        
-                      </Box>
+                      </Box> */}
+
+
                       {/*       
                       <Box
                         width="31.5%"
@@ -951,6 +975,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                         </Box>
                       </Box>
                       */}
+
+
                     </Box>
                     <Box 
                       direction="column"
@@ -959,7 +985,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Box 
                         direction="row"
                         gap="small"
-                        margin={{ top: "40px", bottom: "24px" }}
+                        margin={{ bottom: "24px" }}
                       >
                         <Text size="24px" weight="bold" color="black">
                           Invite members
