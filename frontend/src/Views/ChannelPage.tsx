@@ -228,7 +228,6 @@ export default class ChannelPage extends Component<Props, State> {
     if (!(this.state.membershipApplicatedFetched)) {
       ChannelService.getMembershipApplications(
         this.state.channel!.id,
-        this.state.user!.id,
         (
           full_name: string,
           position: string,
@@ -245,7 +244,8 @@ export default class ChannelPage extends Component<Props, State> {
               personalHomepage: personalHomepage
             }
           })
-        }
+        },
+      this.state.user!.id,
       )
     };
     }

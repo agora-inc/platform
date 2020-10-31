@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Box, DataTable, Text } from "grommet";
+import { ChannelService } from "../../Services/ChannelService";
 
 export const columns: any[] = [
   {
-    property: 'name',
+    property: 'full_name',
     header: <b>Name</b>,
   },
   {
@@ -28,21 +29,17 @@ export const columns: any[] = [
 
 export const data: Applicant[] = [];
 
-for (let i = 1; i < 15; i += 1) {
-  data.push({
-    name: `Name ${i}`,
-    email: `email${i * 135}@server.com`,
-    institution: `Institution ${String.fromCharCode(64 + i)}`,
-    position: `Pos`,
-    // date: `2018-07-${(i % 30) + 1}`,
-  });
-}
-
 type Applicant = {
-  name: string;
+  full_name: string;
   email: string;
   institution: string;
   position: string;
+  user_id: number;
+  personal_homepage: string;
+}
+
+interface Props {
+  channelId: number
 }
 
 interface State {
@@ -50,21 +47,47 @@ interface State {
   itemDetail?: Applicant,
 }
 
-export default class RequestsTab extends Component<{}, State> {
+export default class RequestsTab extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
       applicantList: data,
     };
+    this.fetchMembershipRequests();
   }
+
+  fetchMembershipRequests = () => {
+
+    ChannelService.getMembershipApplications(this.props.channelId, 
+      (applicantList: Applicant[]) => {
+        console.log(applicantList);
+        this.setState( {applicantList: applicantList})
+      });
+  }
+
 
   handleClickRow = (ev: any) => {
     let item: Applicant = ev.datum;
     this.setState({ itemDetail: item });
   }
 
-  accept = () => this.updateState();
-  refuse = () => this.updateState();
+  accept = () => {
+    const item = this.state.itemDetail!;
+    ChannelService.acceptMembershipApplication(
+      this.props.channelId, 
+      item.user_id,
+      () => {})
+    this.updateState();
+  }
+  
+  refuse = () => {
+    const item = this.state.itemDetail!;
+    ChannelService.cancelMembershipApplication(
+      this.props.channelId, 
+      item.user_id,
+      () => {})
+    this.updateState();
+  };
 
   updateState = () => {
     const item = this.state.itemDetail!;
@@ -98,10 +121,10 @@ export default class RequestsTab extends Component<{}, State> {
               <ul style={{ listStyle: 'none', padding: 0 }}>
                 <li>
                   <b>Name: </b>
-                  {item.name}
+                  {item.full_name}
                 </li>
                 <li>
-                  <b>Position: </b>
+                  <b>Title/Position: </b>
                   {item.position}
                 </li>
                 <li>
@@ -109,13 +132,17 @@ export default class RequestsTab extends Component<{}, State> {
                   {item.institution}
                 </li>
                 <li>
-                  <b>Email: </b>
+                  <b>Homepage: </b>
+                  {item.personal_homepage}
+                </li>
+                <li>
+                 <b>Email: </b>
                   {item.email}
                 </li>
               </ul>
               <Box direction="row" gap="small">
-                <WineButton onClick={this.refuse}>Refuse</WineButton>
                 <WineButton onClick={this.accept}>Accept</WineButton>
+                <WineButton onClick={this.refuse}>Refuse</WineButton>
               </Box>
             </Box>
           }

@@ -1050,7 +1050,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TabPanel>
                 <TabPanel style={{width: "74.35vw"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
-                    <RequestsTab />
+                    <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel>
               </Tabs>

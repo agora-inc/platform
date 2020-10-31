@@ -9,7 +9,7 @@ import { Overlay, OverlaySection } from "../Core/Overlay";
 import { ChannelService } from "../../Services/ChannelService";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
-
+import { UserService, User } from "../../Services/UserService";
 
 interface Props {
   channelId: number,
@@ -43,9 +43,19 @@ export default class RequestMembershipButton extends Component<Props, State> {
         affiliation: ""
       },
       showForm: false,
-      contactAddresses: ""
+      contactAddresses: "",
     };
+    // this.fetchUserDetails()
   }
+
+  fetchUserDetails = () => {
+    // TODO: rework UserService.getCurrentUser() to give us all the data of the user 
+    //(GOAL: prevent the user to write multiple times the same details for appilcation)
+    // var userData = UserService.getCurrentUser();
+    // console.log("hihi");
+    // console.log(userData);
+    // this.setState({user: userData})
+  };
 
   handleInput = (e: any, key: string) => {
     let value = e.target.value;
@@ -78,9 +88,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
       this.state.form.email,
       this.state.form.personalWebsite,
       //TODO: Error handling
-      (answer: any) => {
-        console.log("Successful application!")
-      }
+      () => {}
      );
     // TODO: add error handling if email is not succesffully sent.
     this.handleClearForm();

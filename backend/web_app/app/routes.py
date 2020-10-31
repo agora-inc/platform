@@ -541,7 +541,7 @@ def applyMembership():
     params = request.json
 
     # Compulsory details
-    personal_homepage = params["personalHomepage"] if "personal_homepage" in params else None
+    personal_homepage = params["personalHomepage"] if "personalHomepage" in params else None
 
     res = channels.applyMembership(
         params["id"], 
@@ -558,19 +558,19 @@ def applyMembership():
 def cancelMembershipApplication():
     params = request.json
 
-    channels.cancelMembershipApplication(
+    res = channels.cancelMembershipApplication(
         params["id"], 
-        params["user_id"])
+        params["userId"])
 
-    return jsonify("ok")
+    return jsonify(res)
 
 @app.route('/channel/membership/accept', methods=["POST"])
 def acceptMembershipApplication():
     params = request.json
 
-    res = channels.acceptMembership(
+    res = channels.acceptMembershipApplication(
         params["id"], 
-        params["user_id"],
+        params["userId"],
         )
     return jsonify(res)
 

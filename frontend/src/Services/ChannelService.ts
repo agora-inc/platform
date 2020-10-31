@@ -366,11 +366,18 @@ const acceptMembershipApplication = (
 
 const getMembershipApplications = (
   channelId: number, 
-  userId: number,
-  callback: any) => {
-  get(
-    `channel/membership/list?channelId=${channelId}&userId=${userId}`, 
-    callback);
+  callback: any,
+  userId?: number) => {
+  if (userId === undefined){
+    get(
+      `channel/membership/list?channelId=${channelId}`, 
+      callback);
+  }
+  else {
+    get(
+      `channel/membership/list?channelId=${channelId}&userId=${userId}`, 
+      callback);
+  }
 };
 
 export type Channel = {
