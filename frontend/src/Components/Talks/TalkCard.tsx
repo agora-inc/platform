@@ -333,7 +333,7 @@ export default class TalkCard extends Component<Props, State> {
                   style={{ minHeight: "200px", maxHeight: "540px" }}
                   direction="column"
                 >
-                  <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
+                  <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
                     <Link
                       className="channel"
                       to={`/${this.props.talk.channel_name}`}

@@ -391,14 +391,14 @@ export default class SiteWideSearch extends Component<{}, State> {
         // overlayStyle={{ width: 250 }}
         visible={this.state.searchString !== ""}
       >
-        <Box>
+        <Box style={{fontSize: "16px"}}>
           <TextInput
             value={this.state.searchString}
             onChange={(e) => this.search(e.target.value)}
             icon={<Search />}
             reverse
             placeholder="Search..."
-            style={{ width: "27vw", height: "4.5vh", justifySelf: "center" }}
+            style={{ width: "27vw", height: "32px", justifySelf: "center", fontWeight: "normal" }}
           />
         </Box>
       </Dropdown>
