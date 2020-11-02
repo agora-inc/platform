@@ -196,14 +196,12 @@ export default class TalkCard extends Component<Props, State> {
               margin={{ bottom: "10px" }}
             >
               <Box
-                height="30px"
-                width="30px"
                 round="15px"
                 justify="center"
                 align="center"
                 background="#efeff1"
                 overflow="hidden"
-                style = {{ aspectRatio : "1:1"}}
+                style = {{ minWidth: "30px", minHeight: "30px" }}
               >
                   <Image
                     src={ChannelService.getAvatar(this.props.talk.channel_id)}
