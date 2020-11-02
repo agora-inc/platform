@@ -134,7 +134,9 @@ export default class RequestsTab extends Component<Props, State> {
                 </li>
                 <li>
                   <b>Homepage: </b>
-                  <a href={item.personal_homepage}>{item.personal_homepage}</a>
+                  <a href={item.personal_homepage} target="_blank" rel="noopener noreferrer">
+                    {item.personal_homepage}
+                  </a>
                 </li>
                 <li>
                  <b>Email: </b>

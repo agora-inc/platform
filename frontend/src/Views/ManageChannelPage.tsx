@@ -692,7 +692,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     width="100%"
                     direction="row"
                     gap="small"
-                    margin={{ top: "40px", bottom: "24px" }}
+                    margin={{ bottom: "24px" }}
                   >
                     <Text size="24px" weight="bold" color="black">
                       {`Drafts`}
