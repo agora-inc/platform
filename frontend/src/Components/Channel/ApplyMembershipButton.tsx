@@ -11,6 +11,8 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import { UserService, User } from "../../Services/UserService";
 
+const titleOptions = ["Undergraduate", "Postgraduate", "PhD Candidate", "Dr", "Prof"];
+
 interface Props {
   channelId: number,
   channelName: string,
@@ -195,6 +197,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
 
       {this.props.user === null && (
         <>
+          <Box style={{minHeight: "40%"}} />
           <Box direction="row" align="center" gap="10px">
             <LoginModal callback={() => {}} />
             <Text size="18px"> or </Text>
@@ -217,8 +220,8 @@ export default class RequestMembershipButton extends Component<Props, State> {
             </Box>
           <Box width="100%" gap="1px">
             <Select
-              placeholder="Title"
-              options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof', 'Mx']}
+              placeholder="Education"
+              options={titleOptions}
               value={this.state.form.title}
               onChange={({option}) => this.setValueAcademicTitle(option)}
             />

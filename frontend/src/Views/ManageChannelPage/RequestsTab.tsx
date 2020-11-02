@@ -102,16 +102,17 @@ export default class RequestsTab extends Component<Props, State> {
 
     return (
       <Box direction="column">
-        <Box direction="row" gap="small" margin={{ bottom: "24px" }}>
+        <Box direction="row" gap="small" margin={{ bottom: "12px" }}>
           <Text size="24px" weight="bold" color="black">
             Applicant Details
           </Text>
         </Box>
-        <Box width="50%"
-          height="160px"
+        <Box direction="row" 
+          width="50%"
           background="#e5e5e5"
           round="7.5px"
           pad="10px" color="#5A5A5A"
+          style={{ minHeight: "160px" }}
         >
           {!showItem &&
             <Text>Please select one item from list</Text>
@@ -124,16 +125,18 @@ export default class RequestsTab extends Component<Props, State> {
                   {item.full_name}
                 </li>
                 <li>
-                  <b>Title/Position: </b>
+                  <b>Education: </b>
                   {item.position}
                 </li>
                 <li>
-                  <b>Insitution: </b>
+                  <b>Institution: </b>
                   {item.institution}
                 </li>
                 <li>
                   <b>Homepage: </b>
-                  {item.personal_homepage}
+                  <a href={item.personal_homepage} target="_blank" rel="noopener noreferrer">
+                    {item.personal_homepage}
+                  </a>
                 </li>
                 <li>
                  <b>Email: </b>
@@ -147,7 +150,7 @@ export default class RequestsTab extends Component<Props, State> {
             </Box>
           }
         </Box>
-        <Box direction="row" gap="small" margin={{ top: "12px", bottom: "24px" }}>
+        <Box direction="row" gap="small" margin={{ top: "24px", bottom: "12px" }}>
           <Text size="24px" weight="bold" color="black">
             Applicants
           </Text>
