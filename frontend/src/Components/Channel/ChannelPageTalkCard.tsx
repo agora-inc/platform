@@ -16,6 +16,7 @@ import TalkCard from "../Talks/TalkCard";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import { thisExpression } from "@babel/types";
+import { textToLatex } from "../Core/LatexRendering";
 
 interface Props {
   talk: Talk;

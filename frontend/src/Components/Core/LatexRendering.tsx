@@ -9,9 +9,9 @@ export const textToLatex = (rawText: string, height: string) => {
   return (
     <Box 
       height={height}
-      width="100%"
       style={{ border: "1px solid #C2C2C2" }}
       round="xsmall"
+      wrap
       pad="small"
       overflow={{"vertical": "scroll"}}
       direction="row"
