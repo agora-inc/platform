@@ -49,13 +49,11 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       UsercanAccessLink: false,
       UsercanViewCard: false
     };
-    this.checkIfUserCanAccessLink();
-    this.checkIfUserCanViewCard();
-    console.log("wesh ma couille");
-    console.log(this.state.UsercanAccessLink)
   }
 
   componentDidMount = () => {
+    this.checkIfUserCanAccessLink();
+    this.checkIfUserCanViewCard();
   };
 
   checkIfRegistered = () => {
@@ -71,6 +69,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
 
   checkIfUserCanAccessLink = () => {
+    console.log("didier deschamps")
+
     if (this.props.admin) {
       this.setState({UsercanAccessLink: true})
     }
@@ -81,6 +81,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       else if (this.props.talk.visibility == "Followers and members") {
         if (this.props.role === "follower" || this.props.role === "member") {
           this.setState({UsercanAccessLink: true});
+          console.log("raol")
+          console.log(this.state.UsercanAccessLink )
+
         }
         else
         this.setState({UsercanAccessLink: false})
@@ -111,8 +114,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
         else {
         this.setState({UsercanViewCard: false})
         };
-        console.log("didier deschamps");
-        console.log(this.props.role);
       }
       else if (this.props.talk.card_visibility == "Members only") {
         if (this.props.role === "member"){
@@ -303,14 +304,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   </Text>
                 )}
               </Box>
-              {this.props.talk.card_visibility === "Members only" && 
+              {this.props.talk.card_visibility === "Members only" &&
                 <Box
                   round="xsmall"
                   background="#C2C2C2"
                   pad="xsmall"
                   justify="center"
                   align="center"
-                  width="160px"                
+                  width="160px"
                 >
                   <Text size="14px">
                     Members only
