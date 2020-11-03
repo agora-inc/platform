@@ -29,6 +29,7 @@ export default class ChannelPageTalkList extends Component<Props, State> {
     };
   }
 
+
   componentWillMount() {
     // this.fetchTalks();
   }

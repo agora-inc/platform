@@ -557,7 +557,7 @@ export default class TalkCard extends Component<Props, State> {
                   justify="center"
                 >
                   <Text textAlign="center" weight="bold">
-                    {`Sorry, the link to talk is only available to ${
+                    {`Sorry, the link to the talk is only available to ${
                       this.props.talk.visibility === "Followers and members"
                         ? "followers and members"
                         : "members"
@@ -832,7 +832,7 @@ export default class TalkCard extends Component<Props, State> {
                   justify="center"
                 >
                   <Text textAlign="center" weight="bold">
-                    {`Sorry, the link to talk is only available to ${
+                    {`Sorry, the link to the talk is only available to ${
                       this.props.talk.visibility === "Followers and members"
                         ? "followers and members"
                         : "members"

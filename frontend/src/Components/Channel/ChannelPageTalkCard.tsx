@@ -69,8 +69,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
 
   checkIfUserCanAccessLink = () => {
-    console.log("didier deschamps")
-
     if (this.props.admin) {
       this.setState({UsercanAccessLink: true})
     }
@@ -81,9 +79,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       else if (this.props.talk.visibility == "Followers and members") {
         if (this.props.role === "follower" || this.props.role === "member") {
           this.setState({UsercanAccessLink: true});
-          console.log("raol")
-          console.log(this.state.UsercanAccessLink )
-
         }
         else
         this.setState({UsercanAccessLink: false})

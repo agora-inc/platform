@@ -292,6 +292,9 @@ export default class ChannelPage extends Component<Props, State> {
           this.fetchFollowerCount();
         }
       );
+      if (!(this.state.role === "member")){
+        this.setState({ role: "none" });
+      }
     }
     this.setState({ following: !this.state.following });
   };
