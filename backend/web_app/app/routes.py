@@ -254,6 +254,19 @@ def getInvitedMembersForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(invitations.getInvitedMembersEmails(channelId))
 
+@app.route('/channels/users/add', methods=["POST", "OPTIONS"])
+def addUserToChannel():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+    return jsonify("Success")
+
+
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
 def removeUserForChannel():
     if request.method == "OPTIONS":
