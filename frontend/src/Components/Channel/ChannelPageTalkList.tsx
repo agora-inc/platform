@@ -12,6 +12,7 @@ interface Props {
   admin: boolean;
   onEditCallback?: any;
   showTalkId?: number;
+  role?: string;
 }
 
 interface State {
@@ -49,6 +50,7 @@ export default class ChannelPageTalkList extends Component<Props, State> {
             width="31.5%"
             talk={talk}
             user={this.props.user}
+            role={this.props.role}
             admin={this.props.admin}
             onEditCallback={this.props.onEditCallback}
             margin={{ bottom: "medium" }}

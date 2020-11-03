@@ -21,6 +21,7 @@ interface Props {
   talk: Talk;
   user: User | null;
   admin: boolean;
+  role?: string;
   onEditCallback?: any;
   width?: any;
   margin?: any;
@@ -33,7 +34,8 @@ interface State {
   showEdit: boolean;
   registered: boolean;
   showShadow: boolean;
-  available: boolean;
+  UsercanAccessLink: boolean;
+  UsercanViewCard: boolean
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -44,9 +46,17 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       showEdit: false,
       registered: false,
       showShadow: false,
-      available: true,
+      UsercanAccessLink: false,
+      UsercanViewCard: false
     };
+    this.checkIfUserCanAccessLink();
+    this.checkIfUserCanViewCard();
+    console.log("wesh ma couille");
+    console.log(this.state.UsercanAccessLink)
   }
+
+  componentDidMount = () => {
+  };
 
   checkIfRegistered = () => {
     this.props.user &&
@@ -57,6 +67,60 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           this.setState({ registered });
         }
       );
+  };
+
+
+  checkIfUserCanAccessLink = () => {
+    if (this.props.admin) {
+      this.setState({UsercanAccessLink: true})
+    }
+    else
+      if (this.props.talk.visibility == "Everybody") {
+        this.setState({UsercanAccessLink: true})
+      }
+      else if (this.props.talk.visibility == "Followers and members") {
+        if (this.props.role === "follower" || this.props.role === "member") {
+          this.setState({UsercanAccessLink: true});
+        }
+        else
+        this.setState({UsercanAccessLink: false})
+      }
+      else if (this.props.talk.visibility == "Members only") {
+        if (this.props.role === "member"){
+          this.setState({UsercanAccessLink: true})
+        }
+        else
+        this.setState({UsercanAccessLink: false})
+      }
+  };
+
+
+
+  checkIfUserCanViewCard = () => {
+    if (this.props.admin) {
+      this.setState({UsercanViewCard: true})
+    }
+    else
+      if (this.props.talk.card_visibility == "Everybody") {
+        this.setState({UsercanViewCard: true})
+      }
+      else if (this.props.talk.card_visibility === "Followers and members") {
+        if (this.props.role === "follower" || this.props.role === "member") {
+          this.setState({UsercanViewCard: true})
+        }
+        else {
+        this.setState({UsercanViewCard: false})
+        };
+        console.log("didier deschamps");
+        console.log(this.props.role);
+      }
+      else if (this.props.talk.card_visibility == "Members only") {
+        if (this.props.role === "member"){
+          this.setState({UsercanViewCard: true})
+        }
+        else
+        this.setState({UsercanViewCard: false})
+      }
   };
 
   register = () => {
@@ -456,8 +520,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     )}
                   </Text>
                 </Box>
-                {this.state.available &&
-                  (this.props.user !== null || this.props.admin) &&
+                {(this.props.user !== null || this.props.admin) &&
                   this.state.registered && (
                     <Box margin={{ top: "10px", bottom: "20px" }}>
                       <CountdownAndCalendarButtons talk={this.props.talk} />
@@ -481,7 +544,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       </Box>
                     </Box>
                   )}
-                {this.state.available &&
+                {this.state.UsercanAccessLink &&
                   (this.props.user !== null || this.props.admin) &&
                   !this.state.registered && (
                     <Box
@@ -498,8 +561,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       <Text size="18px">Register</Text>
                     </Box>
                   )}
-                {this.state.available &&
-                  this.props.user === null &&
+                {this.props.user === null &&
                   !this.props.admin && (
                     <Box direction="row" align="center" gap="10px">
                       <LoginModal callback={() => {}} />
@@ -510,7 +572,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   )}
               </Box>
             </Box>
-            {!this.state.available && (
+            {!this.state.UsercanAccessLink
+              && (
               <Box
                 background="#d5d5d5"
                 pad="small"

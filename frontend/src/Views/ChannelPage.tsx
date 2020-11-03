@@ -283,6 +283,7 @@ export default class ChannelPage extends Component<Props, State> {
           this.fetchFollowerCount();
         }
       );
+      this.setState({ role: "follower" });
     } else {
       ChannelService.removeUserFromChannel(
         this.state.user!.id,
@@ -557,6 +558,7 @@ export default class ChannelPage extends Component<Props, State> {
                         user={this.state.user}
                         admin={false}
                         showTalkId={this.state.showTalkId}
+                        role={this.state.role}
                       />
                     </Box>
                   )}  
