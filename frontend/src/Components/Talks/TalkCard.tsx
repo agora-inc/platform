@@ -521,27 +521,10 @@ export default class TalkCard extends Component<Props, State> {
                         <Text size="18px">Register</Text>
                       </Box>
                     )}
-                  {/*
-                    <Box
-                      direction="row"
-                      width="100%"
-                      margin="none"
-                      pad="small"
-                      justify="center"
-                      round="xsmall"
-                      align="center"
-                      alignSelf="center"
-                      background="#F3EACE"
-                  >
-                    <Text size="18px" weight="bold" color="grey">
-                      Log in to register
-                    </Text>
-                  </Box>
-                    */}
                 </Box>
               </Box>
               {!this.state.available && this.props.user === null && (
-                <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px">
+                <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
                   <Text size="18px"> You need to </Text>
                   <LoginModal callback={() => {}} />
                   <Text size="18px"> or </Text>
@@ -550,7 +533,7 @@ export default class TalkCard extends Component<Props, State> {
                 </Box>
               )}
               {!this.state.available && this.props.user !== null && (
-                <Box direction="row" align="center" gap="25px" background="#d5d5d5" pad="25px">
+                <Box direction="row" align="center" gap="25px" background="#d5d5d5" pad="25px" justify="center">
                   <Text textAlign="center" weight="bold">
                   {`${this.props.talk.visibility === "Followers and members"
                         ? "Follow or become a member"

@@ -578,20 +578,11 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       <Text size="18px">Register</Text>
                     </Box>
                   )}
-                {this.props.user === null &&
-                  !this.props.admin && (
-                    <Box direction="row" align="center" gap="10px">
-                      <LoginModal callback={() => {}} />
-                      <Text size="18px"> or </Text>
-                      <SignUpButton callback={() => {}} />
-                      <Text size="18px"> to register </Text>
-                    </Box>
-                  )}
               </Box>
             </Box>
             {!this.checkIfUserCanAccessLink() && this.props.user === null
             && (
-              <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px">
+              <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
                 <Text size="18px"> You need to </Text>
                 <LoginModal callback={() => {}} />
                 <Text size="18px"> or </Text>
@@ -601,7 +592,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             )}
             {!this.checkIfUserCanAccessLink() && this.props.user !== null
               && (
-                <Box direction="row" align="center" gap="15px" background="#d5d5d5" pad="25px">
+                <Box direction="row" align="center" gap="15px" background="#d5d5d5" pad="25px" justify="center">
                   <Text> You need to </Text>
                   {this.props.talk.visibility == "Followers and members" && (
                     <Box gap="15px" direction="row" align="center">
