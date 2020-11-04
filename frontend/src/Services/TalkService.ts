@@ -2,6 +2,10 @@ import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
 
+const getTalkById = (talkId: number, callback: any) => {
+  get(`talk/info?id=${talkId}`, callback);
+};
+
 const getAllFutureTalks = (limit: number, offset: number, callback: any) => {
   get(`talks/all/future?limit=${limit}&offset=${offset}`, callback);
 };
@@ -316,6 +320,7 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
 };
 
 export const TalkService = {
+  getTalkById,
   getAllFutureTalks,
   getAllCurrentTalks,
   getAllPastTalks,
@@ -354,11 +359,11 @@ export type Talk = {
   channel_id: number;
   channel_name: string;
   channel_colour: string;
+  has_avatar: boolean;
   name: string;
   date: string;
   end_date: string;
   description: string;
-  has_avatar: boolean;
   link: string;
   recording_link: string;
   tags: Tag[];

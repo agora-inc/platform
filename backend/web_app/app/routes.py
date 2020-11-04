@@ -657,6 +657,18 @@ def serveThumbnail():
 # --------------------------------------------
 # TALK ROUTES
 # -------------------------------------------- 
+@app.route('/talk/info', methods=["GET"])
+def getTalkById():
+    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
+    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
+    talkId = int(request.args.get("id"))
+    try:
+        return jsonify(talks.getTalkById(talkId))
+    except Exception as e:
+        return jsonify(str(e))
+
+
+
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
     # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
