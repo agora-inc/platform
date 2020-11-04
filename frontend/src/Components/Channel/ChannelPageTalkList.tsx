@@ -14,6 +14,7 @@ interface Props {
   showTalkId?: number;
   role?: string;
   following?: boolean;
+  callback?: any;
 }
 
 interface State {
@@ -58,6 +59,7 @@ export default class ChannelPageTalkList extends Component<Props, State> {
             margin={{ bottom: "medium" }}
             show={this.props.showTalkId === talk.id}
             following={this.props.following ? this.props.following : false}
+            callback={this.props.callback}
           />
         ))}
       </Box>

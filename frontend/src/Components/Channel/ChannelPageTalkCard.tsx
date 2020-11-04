@@ -29,6 +29,7 @@ interface Props {
   isCurrent?: boolean;
   show?: boolean;
   following: boolean;
+  callback?: any;
 }
 
 interface State {
@@ -36,8 +37,6 @@ interface State {
   showEdit: boolean;
   registered: boolean;
   showShadow: boolean;
-  UsercanAccessLink: boolean;
-  UsercanViewCard: boolean;
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -48,8 +47,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       showEdit: false,
       registered: false,
       showShadow: false,
-      UsercanAccessLink: false,
-      UsercanViewCard: false,
     };
   }
 
@@ -72,25 +69,27 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
   checkIfUserCanAccessLink = () => {
     if (this.props.admin) {
-      this.setState({UsercanAccessLink: true})
+      return true;
     }
     else
       if (this.props.talk.visibility == "Everybody") {
-        this.setState({UsercanAccessLink: true})
+        return true;
       }
       else if (this.props.talk.visibility == "Followers and members") {
         if (this.props.following || this.props.role === "follower" || this.props.role === "member") {
-          this.setState({UsercanAccessLink: true});
+          return true;
         }
-        else
-        this.setState({UsercanAccessLink: false})
+        else {
+          return false;
+        }
       }
       else if (this.props.talk.visibility == "Members only") {
         if (this.props.role === "member"){
-          this.setState({UsercanAccessLink: true})
+          return true;
         }
-        else
-        this.setState({UsercanAccessLink: false})
+        else {
+          return false;
+        }
       }
   };
 
@@ -98,26 +97,27 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
   checkIfUserCanViewCard = () => {
     if (this.props.admin) {
-      this.setState({UsercanViewCard: true})
+      return true;
     }
     else
       if (this.props.talk.card_visibility == "Everybody") {
-        this.setState({UsercanViewCard: true})
+        return true;
       }
       else if (this.props.talk.card_visibility === "Followers and members") {
         if (this.props.role === "follower" || this.props.role === "member") {
-          this.setState({UsercanViewCard: true})
+          return true;
         }
         else {
-        this.setState({UsercanViewCard: false})
+          return false;
         };
       }
       else if (this.props.talk.card_visibility == "Members only") {
-        if (this.props.role === "member"){
-          this.setState({UsercanViewCard: true})
+        if (this.props.role === "member") {
+          return true;
         }
-        else
-        this.setState({UsercanViewCard: false})
+        else {
+          return false;
+        }
       }
   };
 
@@ -166,7 +166,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
         () => {}
       );
     }
-    
+    this.props.callback()
   };
 
   formatDate = (d: string) => {
@@ -561,7 +561,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       </Box>
                     </Box>
                   )}
-                {this.state.UsercanAccessLink &&
+                {this.checkIfUserCanAccessLink() &&
                   (this.props.user !== null || this.props.admin) &&
                   !this.state.registered && (
                     <Box
@@ -578,20 +578,11 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       <Text size="18px">Register</Text>
                     </Box>
                   )}
-                {this.props.user === null &&
-                  !this.props.admin && (
-                    <Box direction="row" align="center" gap="10px">
-                      <LoginModal callback={() => {}} />
-                      <Text size="18px"> or </Text>
-                      <SignUpButton callback={() => {}} />
-                      <Text size="18px"> to register </Text>
-                    </Box>
-                  )}
               </Box>
             </Box>
-            {!this.state.UsercanAccessLink && this.props.user === null
+            {!this.checkIfUserCanAccessLink() && this.props.user === null
             && (
-              <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px">
+              <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
                 <Text size="18px"> You need to </Text>
                 <LoginModal callback={() => {}} />
                 <Text size="18px"> or </Text>
@@ -599,9 +590,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 <Text size="18px"> to attend </Text>
               </Box>
             )}
-            {!this.state.UsercanAccessLink && this.props.user !== null
+            {!this.checkIfUserCanAccessLink() && this.props.user !== null
               && (
-                <Box direction="row" align="center" gap="15px" background="#d5d5d5" pad="25px">
+                <Box direction="row" align="center" gap="15px" background="#d5d5d5" pad="25px" justify="center">
+                  <Text> You need to </Text>
                   {this.props.talk.visibility == "Followers and members" && (
                     <Box gap="15px" direction="row" align="center">
                       <Box
@@ -611,7 +603,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                         style={{
                           border: "1px solid #C2C2C2",
                         }}
-                        width="6vw"
+                        width="100px"
                         round="xsmall"
                         pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
                         align="center"
@@ -637,7 +629,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       channelName={this.props.talk.channel_name}
                       user={this.props.user}
                       height="35px"
-                      width="10vw"
+                      width="200px"
                     />
                     )}
 

@@ -238,6 +238,10 @@ export default class ChannelPage extends Component<Props, State> {
     );
   };
 
+  toggleFollow = () => {
+    this.setState({following: !this.state.following})
+  }
+
   checkIfMembershipRequested = () => {
     // If user not logged in, put a log in/ register inside the box
 
@@ -565,6 +569,7 @@ export default class ChannelPage extends Component<Props, State> {
                         showTalkId={this.state.showTalkId}
                         role={this.state.role}
                         following={this.state.following}
+                        callback={this.toggleFollow}
                       />
                     </Box>
                   )}  
