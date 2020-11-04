@@ -39,7 +39,7 @@ function App() {
           <Route path="/stream" component={StreamPage} />
           <Route path={`/:name/manage`} component={ManageChannelPage} />
           <Route path="/tag" component={TagPage} />
-          <Route path="/event/" component={TalkSharingPage}/>
+          <Route path="/event/:name" component={TalkSharingPage}/>
           <Route path="/streaming" component={Streaming} />
           <Route path="/preferences" component={Preferences} />
           <Route path="/schedule" component={Schedule} />

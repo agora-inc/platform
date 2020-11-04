@@ -6,6 +6,7 @@ import { Channel, ChannelService } from "../Services/ChannelService";
 import { Video, VideoService } from "../Services/VideoService";
 import { Stream, StreamService } from "../Services/StreamService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { Link } from "react-router-dom";
 import Identicon from "react-identicons";
 import Loading from "../Components/Core/Loading";
 import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
@@ -16,10 +17,16 @@ import "../Styles/channel-page.css";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import AboutUs from "../Components/Channel/AboutUs";
 import { baseApiUrl } from "../config";
+import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
+import TalkCard from "../Components/Talks/TalkCard";
+import LoginModal from "../Components/Account/LoginModal";
+import SignUpButton from "../Components/Account/SignUpButton";
+import CountdownAndCalendarButtons from "../Components/Talks/CountdownAndCalendarButtons";
+
 
 interface Props {
   location: { pathname: string };
@@ -28,6 +35,18 @@ interface Props {
 
 interface State {
   channel: Channel | null;
+
+
+
+  talk: Talk;
+
+
+
+
+
+
+
+
   role: "none" | "owner" | "member" | "follower";
   loading: boolean;
   streams: Stream[];
@@ -58,6 +77,28 @@ export default class ChannelPage extends Component<Props, State> {
       role: "none",
       loading: true,
       streams: [],
+      talk: {
+        id: NaN,
+        channel_id: NaN,
+        channel_name: "",
+        channel_colour: "",
+        has_avatar: false,
+        name: "",
+        date: "",
+        end_date: "",
+        description: "",
+        link: "",
+        recording_link: "",
+        tags: [],
+        show_link_offset: NaN,
+        visibility: "",
+        card_visibility: "",
+        topics: [],
+        talk_speaker: "",
+        talk_speaker_url: "",
+        published: 0
+      },
+      
       talks: [],
       currentTalks: [],
       pastTalks: [],
@@ -77,26 +118,15 @@ export default class ChannelPage extends Component<Props, State> {
         personalHomepage: ""
       }
     };
+    this.fetchTalk();
   }
 
   componentWillMount() {
-    window.addEventListener("scroll", this.handleScroll, true);
-    this.fetchChannel();
+    this.fetchTalk();
   }
-
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
-  }
-
-  storeUserData = () => {
-    ChannelService.increaseViewCountForChannel(
-      this.state.channel!.id,
-      () => {});
-  };
 
   getTalkIdFromUrl = (): number => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const talkId = urlParams.get("talkId");
+    let talkId = Number(this.props.location.pathname.split("/")[2]);
     if (!talkId) {
       return -1;
     }
@@ -107,140 +137,16 @@ export default class ChannelPage extends Component<Props, State> {
     return this.state.role === "owner";
   };
 
-  handleScroll = (e: any) => {
-    const bottom =
-      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (
-      bottom &&
-      this.state.pastTalks.length !== this.state.totalNumberOfpastTalks
-    ) {
-      this.fetchPastTalks();
-    }
-  };
-
-
   fetchTalk = () => {
-    let talkId = this.props.location.pathname.split("/")[2];
-    
+    let talkId = this.getTalkIdFromUrl();
+    TalkService.getTalkById(talkId, (talk: Talk) => {
+        this.setState({talk: talk})
+    });
   }
 
 
 
-
-
-
-
-
-  fetchChannel = () => {
-    // console.log(this.props.location.pathname.split("/"));
-    ChannelService.getChannelByName(
-      this.props.location.pathname.split("/")[1],
-      (channel: Channel) => {
-        let user = UserService.getCurrentUser();
-        if (user === null) {
-          this.setState(
-            { channel: channel, role: "none", loading: false },
-            () => {
-              this.fetchStreams();
-              this.fetchPastTalks();
-              // this.fetchVideos();
-              this.fetchFutureTalks();
-              this.fetchCurrentTalks();
-              this.fetchFollowerCount();
-              this.storeUserData();
-              // this.fetchViewCount();
-            }
-          );
-          return;
-        }
-        ChannelService.getRoleInChannel(
-          user.id,
-          channel.id,
-          (role: "none" | "owner" | "member" | "follower") => {
-            this.setState(
-              { channel: channel, role: role, loading: false },
-              () => {
-                this.fetchStreams();
-                this.fetchPastTalks();
-                // this.fetchVideos();
-                this.fetchFutureTalks();
-                this.fetchCurrentTalks();
-                this.fetchFollowerCount();
-                // this.fetchViewCount();
-                this.checkIfFollowing();
-              }
-            );
-          }
-        );
-
-      }
-    );
-  };
-
-  fetchStreams = () => {
-    StreamService.getStreamsForChannel(
-      this.state.channel!.id,
-      (streams: Stream[]) => {
-        this.setState({ streams });
-      }
-    );
-  };
-
-  fetchFollowerCount = () => {
-    ChannelService.getFollowerCountForChannel(
-      this.state.channel!.id,
-      (followerCount: number) => {
-        this.setState({ followerCount });
-      }
-    );
-  };
-
-  // fetchViewCount = () => {
-  //   ChannelService.getViewCountForChannel(
-  //     this.state.channel!.id,
-  //     (viewerCount: number) => {
-  //       this.setState({ viewerCount });
-  //     }
-  //   );
-  // };
-
-
-  fetchFutureTalks = () => {
-    if (this.state.channel) {
-      TalkService.getAvailableFutureTalksForChannel(
-        this.state.channel!.id,
-        this.state.user ? this.state.user.id : null,
-        (talks: Talk[]) => {
-          this.setState({ talks });
-        }
-      );
-    }
-  };
-
-  fetchCurrentTalks = () => {
-    if (this.state.channel) {
-      TalkService.getAvailableCurrentTalksForChannel(
-        this.state.channel!.id,
-        this.state.user ? this.state.user.id : null,
-        (currentTalks: Talk[]) => {
-          this.setState({ currentTalks });
-        }
-      );
-    }
-  };
-
-  fetchPastTalks = () => {
-    if (this.state.channel) {
-      TalkService.getAvailablePastTalksForChannel(
-        this.state.channel!.id,
-        this.state.user ? this.state.user.id : null,
-        (pastTalks: Talk[]) => {
-          this.setState({ pastTalks });
-        }
-      );
-    }
-  };
-
+  
   checkIfFollowing = () => {
     ChannelService.getRoleInChannel(
       this.state.user!.id,
@@ -293,7 +199,6 @@ export default class ChannelPage extends Component<Props, State> {
         this.state.channel!.id,
         "follower",
         () => {
-          this.fetchFollowerCount();
         }
       );
       this.setState({ role: "follower" });
@@ -302,7 +207,6 @@ export default class ChannelPage extends Component<Props, State> {
         this.state.user!.id,
         this.state.channel!.id,
         () => {
-          this.fetchFollowerCount();
         }
       );
       if (!(this.state.role === "member")){
@@ -339,6 +243,20 @@ export default class ChannelPage extends Component<Props, State> {
 
   toggleBanner = () => {
     this.setState({ bannerExtended: !this.state.bannerExtended });
+  };
+
+  escapeDoubleQuotes = (text: string) => {
+    return text.replace("''", "'")
+  }
+
+  formatDateFull = (s: string, e: string) => {
+    const start = new Date(s);
+    const dateStartStr = start.toDateString().slice(0, -4);
+    const timeStartStr = start.toTimeString().slice(0, 5);
+    const end = new Date(e);
+    const dateEndStr = end.toDateString().slice(0, -4);
+    const timeEndStr = end.toTimeString().slice(0, 5);
+    return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
 
   banner = () => {
@@ -464,7 +382,271 @@ export default class ChannelPage extends Component<Props, State> {
 
   render() { 
       return(
-          <p>"hi"</p>
-        )
+        <Box
+            margin={{top: "100px"}}
+            align="center">
+            <Box
+                width="55vw"
+
+                >
+                <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
+                <Link
+                className="channel"
+                to={`/${this.state.talk.channel_name}`}
+                style={{ textDecoration: "none" }}
+                >
+                <Box
+                    direction="row"
+                    gap="xsmall"
+                    align="center"
+                    round="xsmall"
+                    pad={{ vertical: "6px", horizontal: "6px" }}
+                >
+                    <Box
+                    justify="center"
+                    align="center"
+                    background="#efeff1"
+                    overflow="hidden"
+                    style={{
+                        minHeight: 30,
+                        minWidth: 30,
+                        borderRadius: 15,
+                    }}
+                    >
+                        <img
+                        src={ChannelService.getAvatar(
+                            this.state.talk.channel_id
+                        )}
+                        height={30}
+                        width={30}
+                        />
+                    </Box>
+                    <Box justify="between">
+                    <Text weight="bold" size="18px" color="grey">
+                        {this.state.talk.channel_name}
+                    </Text>
+                    </Box>
+                </Box>
+                </Link>
+            </Box>
+            <Text
+                      weight="bold"
+                      size="21px"
+                      color="black"
+                      style={{
+                        minHeight: "50px",
+                        maxHeight: "120px",
+                        overflowY: "auto",
+                      }}
+                      margin={{ bottom: "5px", top: "10px" }}
+                    >
+                      {this.state.talk.name}
+            </Text> 
+
+            {this.state.talk.talk_speaker_url && (
+                      <a href={this.state.talk.talk_speaker_url} target="_blank">
+                        <Box
+                          direction="row"
+                          gap="small"
+                          onClick={() => {}}
+                          hoverIndicator={true}
+                          pad={{ left: "6px", top: "4px" }}
+                        >
+                          <UserExpert size="18px" />
+                          <Text
+                            size="18px"
+                            color="black"
+                            style={{
+                              height: "24px",
+                              overflow: "auto",
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {this.state.talk.talk_speaker
+                              ? this.state.talk.talk_speaker
+                              : "TBA"}
+                          </Text>
+                        </Box>
+                      </a>
+                    )}
+
+            {!this.state.talk.talk_speaker_url && (
+                      <Box direction="row" gap="small">
+                        <UserExpert size="18px" />
+                        <Text
+                          size="18px"
+                          color="black"
+                          style={{
+                            height: "30px",
+                            overflow: "auto",
+                            fontStyle: "italic",
+                          }}
+                          margin={{ bottom: "10px" }}
+                        >
+                          {this.state.talk.talk_speaker
+                            ? this.state.talk.talk_speaker
+                            : "TBA"}
+                        </Text>
+                      </Box>
+                    )}
+
+            <Text
+                      size="16px"
+                      color="black"
+                      style={{
+                        minHeight: "50px",
+                        // maxHeight: "200px",
+                        // overflowY: "auto",
+                      }}
+                      margin={{ top: "10px", bottom: "10px" }}
+                    >
+                      {this.escapeDoubleQuotes(this.state.talk.description)}
+                    </Text>
+
+                    <Box direction="column" gap="small">
+                    <Box direction="row" gap="small" height="30px">
+                      <Box 
+                        direction="row" 
+                        gap="small" 
+                        alignSelf="center"
+                        width="100%"
+                      >
+                        <Calendar size="18px"  />
+                        <Text
+                          size="18px"
+                          color="black"
+                        >
+                          {this.formatDateFull(
+                            this.state.talk.date,
+                            this.state.talk.end_date
+                          )}
+                        </Text>
+                      </Box>
+                      {/*this.props.talk.card_visibility === "Members only" && 
+                        <Box
+                          round="xsmall"
+                          background="#C2C2C2"
+                          pad="small"
+                          justify="center"
+                          align="center"
+                          width="33%"                
+                        >
+                          <Text size="14px">
+                            Members only
+                          </Text>
+                        </Box>
+                          */}
+                    </Box>
+                    {
+                    // this.state.available && 
+                    (
+                      <Box margin={{ top: "10px", bottom: "20px" }}>
+                        <CountdownAndCalendarButtons talk={this.state.talk} />
+                        {/* this.props.user !== null && this.state.registered && 
+                        {
+                        (
+                        <Box
+                          focusIndicator={false}
+                          background="#FF4040"
+                          round="xsmall"
+                          pad="xsmall"
+                          justify="center"
+                          align="center"
+                          width="20%"
+                          height="35px"
+                        //   onClick={this.onClick}
+                          margin={{ top: "-35px" }}
+                          alignSelf="end"
+                          hoverIndicator={true}
+                        >
+                          <Text size="14px" weight="bold">
+                            Unregister
+                          </Text>
+                        </Box>
+                        )}
+                        */}
+                      </Box>
+                    )}
+
+                    
+                    {/* {
+                    // {this.state.available &&
+                    //   this.props.user !== null &&
+                    //   !this.state.registered && 
+                      (
+                        <Box
+                        //   onClick={this.onClick}
+                          background="#7E1115"
+                          round="xsmall"
+                          pad="xsmall"
+                          height="40px"
+                          justify="center"
+                          align="center"
+                          focusIndicator={false}
+                          hoverIndicator="#5A0C0F"
+                        >
+                          <Text size="18px">Register</Text>
+                        </Box>
+                      )} */}
+                      
+                    {/* {
+                    // !this.state.available && this.props.user === null && 
+                    (
+                      <Box direction="row" align="center" gap="10px">
+                        <LoginModal callback={() => {}} />
+                        <Text size="18px"> or </Text>
+                        <SignUpButton callback={() => {}} />
+                        <Text size="18px"> to register </Text>
+                      </Box>
+                    )} */}
+
+                    {/*
+                      <Box
+                        direction="row"
+                        width="100%"
+                        margin="none"
+                        pad="small"
+                        justify="center"
+                        round="xsmall"
+                        align="center"
+                        alignSelf="center"
+                        background="#F3EACE"
+                    >
+                      <Text size="18px" weight="bold" color="grey">
+                        Log in to register
+                      </Text>
+                    </Box>
+                */}
+                  </Box>
+                </Box>
+{/*                 
+                {
+                // !this.state.available && 
+                (
+                  <Box
+                    background="#d5d5d5"
+                    pad="small"
+                    align="center"
+                    justify="center"
+                  >
+                    <Text textAlign="center" weight="bold">
+                      {`Sorry, the link to the talk is only available to ${
+                        this.state.talk.visibility === "Followers and members"
+                          ? "followers and members"
+                          : "members"
+                      }
+                      of ${this.state.talk.channel_name}`}
+                    </Text>
+                </Box>
+                )} */}
+
+
+
+
+
+
+
+            </Box>
+      )
     }
 }
