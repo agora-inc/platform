@@ -757,6 +757,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           width="31.5%" 
                           isCurrent={true}
                           onEditCallback={this.fetchAllTalks}
+                          following={false}
                         />
                       ))}
                     </Box>

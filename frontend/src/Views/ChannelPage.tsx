@@ -238,6 +238,10 @@ export default class ChannelPage extends Component<Props, State> {
     );
   };
 
+  toggleFollow = () => {
+    this.setState({following: !this.state.following})
+  }
+
   checkIfMembershipRequested = () => {
     // If user not logged in, put a log in/ register inside the box
 
@@ -283,6 +287,7 @@ export default class ChannelPage extends Component<Props, State> {
           this.fetchFollowerCount();
         }
       );
+      this.setState({ role: "follower" });
     } else {
       ChannelService.removeUserFromChannel(
         this.state.user!.id,
@@ -291,6 +296,9 @@ export default class ChannelPage extends Component<Props, State> {
           this.fetchFollowerCount();
         }
       );
+      if (!(this.state.role === "member")){
+        this.setState({ role: "none" });
+      }
     }
     this.setState({ following: !this.state.following });
   };
@@ -446,6 +454,7 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   render() {
+    console.log("FOLLLLOW", this.state.following)
     if (this.state.loading) {
       return (
         <Box width="100~%" height="100%" justify="center" align="center">
@@ -517,6 +526,7 @@ export default class ChannelPage extends Component<Props, State> {
                           admin={false}
                           width="31.5%"
                           isCurrent={true}
+                          following={this.state.following}
                         />
                       ))}
                     </Box>
@@ -557,6 +567,9 @@ export default class ChannelPage extends Component<Props, State> {
                         user={this.state.user}
                         admin={false}
                         showTalkId={this.state.showTalkId}
+                        role={this.state.role}
+                        following={this.state.following}
+                        callback={this.toggleFollow}
                       />
                     </Box>
                   )}  

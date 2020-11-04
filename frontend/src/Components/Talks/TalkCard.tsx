@@ -6,7 +6,7 @@ import { User } from "../../Services/UserService";
 import { Link } from "react-router-dom";
 import { Tag } from "../../Services/TagService";
 import AsyncButton from "../Core/AsyncButton";
-import { Calendar, Workshop, UserExpert } from "grommet-icons";
+import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
 import AddToCalendarButtons from "./AddToCalendarButtons";
 import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
@@ -521,35 +521,45 @@ export default class TalkCard extends Component<Props, State> {
                         <Text size="18px">Register</Text>
                       </Box>
                     )}
-                  {!this.state.available && this.props.user === null && (
-                    <Box direction="row" align="center" gap="10px">
-                      <LoginModal callback={() => {}} />
-                      <Text size="18px"> or </Text>
-                      <SignUpButton callback={() => {}} />
-                      <Text size="18px"> to register </Text>
-                    </Box>
-                  )}
-
-                  {/*
-                    <Box
-                      direction="row"
-                      width="100%"
-                      margin="none"
-                      pad="small"
-                      justify="center"
-                      round="xsmall"
-                      align="center"
-                      alignSelf="center"
-                      background="#F3EACE"
-                  >
-                    <Text size="18px" weight="bold" color="grey">
-                      Log in to register
-                    </Text>
-                  </Box>
-                    */}
                 </Box>
               </Box>
-              {!this.state.available && (
+              {!this.state.available && this.props.user === null && (
+                <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
+                  <Text size="18px"> You need to </Text>
+                  <LoginModal callback={() => {}} />
+                  <Text size="18px"> or </Text>
+                  <SignUpButton callback={() => {}} />
+                  <Text size="18px"> to attend </Text>
+                </Box>
+              )}
+              {!this.state.available && this.props.user !== null && (
+                <Box direction="row" align="center" gap="25px" background="#d5d5d5" pad="25px" justify="center">
+                  <Text textAlign="center" weight="bold">
+                  {`${this.props.talk.visibility === "Followers and members"
+                        ? "Follow or become a member"
+                        : "Become a member"
+                      } 
+                    of ${this.props.talk.channel_name} to attend`
+                  }
+                  </Text>
+                  <Link to={`/${this.props.talk.channel_name}`} style={{ textDecoration: "none" }}>
+                    <Box
+                      className="see-more-button"
+                      pad={{ vertical: "2px", horizontal: "xsmall" }}
+                      round="xsmall"
+                      style={{
+                        border: "2px solid #C2C2C2",
+                      }}
+                      direction="row"
+                      align="end"
+                    >      
+                      <FormNextLink color="grey" />
+                    </Box>
+                  </Link>
+
+                </Box>
+              )}
+              {/*!this.state.available && (
                 <Box
                   background="#d5d5d5"
                   pad="small"
@@ -557,7 +567,7 @@ export default class TalkCard extends Component<Props, State> {
                   justify="center"
                 >
                   <Text textAlign="center" weight="bold">
-                    {`Sorry, the link to talk is only available to ${
+                    {`Sorry, the link to the talk is only available to ${
                       this.props.talk.visibility === "Followers and members"
                         ? "followers and members"
                         : "members"
@@ -565,7 +575,7 @@ export default class TalkCard extends Component<Props, State> {
                     of ${this.props.talk.channel_name}`}
                   </Text>
                 </Box>
-              )}
+                  )*/}
             </Layer>
           </MediaQuery>
 
@@ -832,7 +842,7 @@ export default class TalkCard extends Component<Props, State> {
                   justify="center"
                 >
                   <Text textAlign="center" weight="bold">
-                    {`Sorry, the link to talk is only available to ${
+                    {`Sorry, the link to the talk is only available to ${
                       this.props.talk.visibility === "Followers and members"
                         ? "followers and members"
                         : "members"

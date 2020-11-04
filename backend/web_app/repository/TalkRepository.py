@@ -402,12 +402,15 @@ class TalkRepository:
         return talks
 
     def getTalkById(self, talkId):
-        query = f'SELECT * FROM Talks WHERE id = {talkId}'
-        talk = self.db.run_query(query)[0]
+        query = f'SELECT * FROM Talks WHERE id = {talkId};'
+        try:
+            talk = self.db.run_query(query)[0]
+            # talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            # talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+            return talk
+        except:
+            return
 
-        talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
-        talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
-        return talk
 
     def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
         query = f'INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, card_visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", {showLinkOffset}, "{visibility}", "{cardVisibility}", "{topic_1_id}", "{topic_2_id}", "{topic_3_id}", "{talk_speaker}", "{talk_speaker_url}", {published});'        

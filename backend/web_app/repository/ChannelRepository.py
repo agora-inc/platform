@@ -95,6 +95,15 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
+    def addUserToChannel(self, userId, channelId, role):
+        if role not in ["follower", "owner", "member"]:
+            return "500", "Invalid role" 
+        query = f'''
+            INSERT INTO ChannelUsers(user_id, channel_id, role) 
+            VALUES ({userId},{channelId},"{role}");
+            '''
+        self.db.run_query(query)
+
     def removeUserFromChannel(self, userId, channelId):
         query = f'DELETE FROM ChannelUsers WHERE user_id = {userId} AND channel_id = {channelId}'
         self.db.run_query(query)

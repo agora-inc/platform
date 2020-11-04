@@ -16,7 +16,9 @@ const titleOptions = ["Undergraduate", "Postgraduate", "PhD Candidate", "Dr", "P
 interface Props {
   channelId: number,
   channelName: string,
-  user: any
+  user: any,
+  height?: string,
+  width?: string,
 }
 
 interface State {
@@ -156,10 +158,10 @@ export default class RequestMembershipButton extends Component<Props, State> {
       <Box>
         <Box
           focusIndicator={false}
-          width="25vw"
+          width={this.props.width ? this.props.width : "25vw"}
           background="white"
           round="xsmall"
-          height="45px"
+          height={this.props.height ? this.props.height : "45px"}
           pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
           onClick={() => this.setState({ showForm: true })}
           style={{

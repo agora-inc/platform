@@ -254,6 +254,19 @@ def getInvitedMembersForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(invitations.getInvitedMembersEmails(channelId))
 
+@app.route('/channels/users/add', methods=["POST", "OPTIONS"])
+def addUserToChannel():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+    return jsonify("Success")
+
+
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
 def removeUserForChannel():
     if request.method == "OPTIONS":
@@ -644,6 +657,18 @@ def serveThumbnail():
 # --------------------------------------------
 # TALK ROUTES
 # -------------------------------------------- 
+@app.route('/talk/info', methods=["GET"])
+def getTalkById():
+    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
+    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
+    talkId = int(request.args.get("id"))
+    try:
+        return jsonify(talks.getTalkById(talkId))
+    except Exception as e:
+        return jsonify(str(e))
+
+
+
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
     # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
