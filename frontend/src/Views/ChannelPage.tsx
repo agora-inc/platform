@@ -450,6 +450,7 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   render() {
+    console.log("FOLLLLOW", this.state.following)
     if (this.state.loading) {
       return (
         <Box width="100~%" height="100%" justify="center" align="center">
@@ -521,6 +522,7 @@ export default class ChannelPage extends Component<Props, State> {
                           admin={false}
                           width="31.5%"
                           isCurrent={true}
+                          following={this.state.following}
                         />
                       ))}
                     </Box>
@@ -562,6 +564,7 @@ export default class ChannelPage extends Component<Props, State> {
                         admin={false}
                         showTalkId={this.state.showTalkId}
                         role={this.state.role}
+                        following={this.state.following}
                       />
                     </Box>
                   )}  

@@ -13,6 +13,7 @@ interface Props {
   onEditCallback?: any;
   showTalkId?: number;
   role?: string;
+  following?: boolean;
 }
 
 interface State {
@@ -56,6 +57,7 @@ export default class ChannelPageTalkList extends Component<Props, State> {
             onEditCallback={this.props.onEditCallback}
             margin={{ bottom: "medium" }}
             show={this.props.showTalkId === talk.id}
+            following={this.props.following ? this.props.following : false}
           />
         ))}
       </Box>
