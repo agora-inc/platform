@@ -14,6 +14,7 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
+import TalkCardFooter from "./Talkcard/TalkCardFooter";
 
 
 interface Props {
@@ -40,6 +41,10 @@ export default class TalkCard extends Component<Props, State> {
       available: true,
     };
   }
+  
+  escapeDoubleQuotes = (text: string) => {
+    return text.replace("''", "'")
+  }
 
   formatDate = (d: string) => {
     const date = new Date(d);
@@ -58,9 +63,6 @@ export default class TalkCard extends Component<Props, State> {
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
 
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
 
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
@@ -445,154 +447,11 @@ export default class TalkCard extends Component<Props, State> {
                     {this.escapeDoubleQuotes(this.props.talk.description)}
                   </Text>
                 </Box>
-                <Box direction="column" gap="small">
-                  <Box direction="row" gap="small" height="30px">
-                    <Box 
-                      direction="row" 
-                      gap="small" 
-                      alignSelf="center"
-                      width="100%"
-                    >
-                      <Calendar size="18px"  />
-                      <Text
-                        size="18px"
-                        color="black"
-                      >
-                        {this.formatDateFull(
-                          this.props.talk.date,
-                          this.props.talk.end_date
-                        )}
-                      </Text>
-                    </Box>
-                    {/*this.props.talk.card_visibility === "Members only" && 
-                      <Box
-                        round="xsmall"
-                        background="#C2C2C2"
-                        pad="small"
-                        justify="center"
-                        align="center"
-                        width="33%"                
-                      >
-                        <Text size="14px">
-                          Members only
-                        </Text>
-                      </Box>
-                        */}
-                  </Box>
-                  {this.state.available && (
-                    <Box margin={{ top: "10px", bottom: "20px" }}>
-                      <CountdownAndCalendarButtons talk={this.props.talk} />
-                      {this.props.user !== null && this.state.registered && (
-                      <Box
-                        focusIndicator={false}
-                        background="#FF4040"
-                        round="xsmall"
-                        pad="xsmall"
-                        justify="center"
-                        align="center"
-                        width="20%"
-                        height="35px"
-                        onClick={this.onClick}
-                        margin={{ top: "-35px" }}
-                        alignSelf="end"
-                        hoverIndicator={true}
-                      >
-                        <Text size="14px" weight="bold">
-                          Unregister
-                        </Text>
-                      </Box>
-                      )}
-                    </Box>
-                  )}
-                  {this.state.available &&
-                    this.props.user !== null &&
-                    !this.state.registered && (
-                      <Box
-                        onClick={this.onClick}
-                        background="#7E1115"
-                        round="xsmall"
-                        pad="xsmall"
-                        height="40px"
-                        justify="center"
-                        align="center"
-                        focusIndicator={false}
-                        hoverIndicator="#5A0C0F"
-                      >
-                        <Text size="18px">Register</Text>
-                      </Box>
-                    )}
-                  {/*
-                    <Box
-                      direction="row"
-                      width="100%"
-                      margin="none"
-                      pad="small"
-                      justify="center"
-                      round="xsmall"
-                      align="center"
-                      alignSelf="center"
-                      background="#F3EACE"
-                  >
-                    <Text size="18px" weight="bold" color="grey">
-                      Log in to register
-                    </Text>
-                  </Box>
-                    */}
-                </Box>
               </Box>
-              {!this.state.available && this.props.user === null && (
-                <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px">
-                  <Text size="18px"> You need to </Text>
-                  <LoginModal callback={() => {}} />
-                  <Text size="18px"> or </Text>
-                  <SignUpButton callback={() => {}} />
-                  <Text size="18px"> to attend </Text>
-                </Box>
-              )}
-              {!this.state.available && this.props.user !== null && (
-                <Box direction="row" align="center" gap="25px" background="#d5d5d5" pad="25px">
-                  <Text textAlign="center" weight="bold">
-                  {`${this.props.talk.visibility === "Followers and members"
-                        ? "Follow or become a member"
-                        : "Become a member"
-                      } 
-                    of ${this.props.talk.channel_name} to attend`
-                  }
-                  </Text>
-                  <Link to={`/${this.props.talk.channel_name}`} style={{ textDecoration: "none" }}>
-                    <Box
-                      className="see-more-button"
-                      pad={{ vertical: "2px", horizontal: "xsmall" }}
-                      round="xsmall"
-                      style={{
-                        border: "2px solid #C2C2C2",
-                      }}
-                      direction="row"
-                      align="end"
-                    >      
-                      <FormNextLink color="grey" />
-                    </Box>
-                  </Link>
-
-                </Box>
-              )}
-              {/*!this.state.available && (
-                <Box
-                  background="#d5d5d5"
-                  pad="small"
-                  align="center"
-                  justify="center"
-                >
-                  <Text textAlign="center" weight="bold">
-                    {`Sorry, the link to the talk is only available to ${
-                      this.props.talk.visibility === "Followers and members"
-                        ? "followers and members"
-                        : "members"
-                    }
-                    of ${this.props.talk.channel_name}`}
-                  </Text>
-                </Box>
-                  )*/}
+              <TalkCardFooter
+                talk={this.props.talk}
+                user={this.props.user}
+              />
             </Layer>
           </MediaQuery>
 

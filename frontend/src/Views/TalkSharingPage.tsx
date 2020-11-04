@@ -619,7 +619,7 @@ export default class ChannelPage extends Component<Props, State> {
                 */}
                   </Box>
                 </Box>
-{/*                 
+                {/*                 
                 {
                 // !this.state.available && 
                 (
