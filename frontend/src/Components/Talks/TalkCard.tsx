@@ -42,7 +42,7 @@ export default class TalkCard extends Component<Props, State> {
       available: true,
       role: "none"
     };
-    this.fetchRoleInChannel()
+    this.fetchRoleInChannel();
   }
   
   fetchRoleInChannel = () => {
@@ -56,9 +56,7 @@ export default class TalkCard extends Component<Props, State> {
         })
       }
     }
-
-
-
+    
   escapeDoubleQuotes = (text: string) => {
     return text.replace("''", "'")
   }

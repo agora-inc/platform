@@ -59,11 +59,39 @@ export default class CountdownAndCalendarButtons extends Component<
     return this.state.now > this.state.showLinkAt;
   };
 
+  // Daylight Saving Time
+  // Taken from:
+  // https://stackoverflow.com/questions/11887934/how-to-check-if-dst-daylight-saving-time-is-in-effect-and-if-so-the-2
+  // NOTE: -"The getTimezoneOffset() method returns the time zone difference, 
+  //        in minutes, from current locale (host system settings) to UTC."
+  //       - Therefore, standard time > daylight time for DST countries
+  getStandardTimezoneOffset = () => {
+    var year = new Date();
+    var jan = new Date(year.getFullYear(), 0, 1);
+    var jul = new Date(year.getFullYear(), 6, 1);
+    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+  }
+
+  // if there is a diff with now and max of above, then DST holds now
+  DstAppliesInbetween = (month: number, day: number, year: number) => {
+    var date = new Date(year, month, day);
+    return date.getTimezoneOffset() < this.getStandardTimezoneOffset()
+  }
+
+  extractDateNumberFromString = (d: string) => {
+    // to implement
+  };
+
   showTimeUntil = () => {
     let message = "Link available here in ";
     let minutesUntil =
       (this.state.showLinkAt.getTime() - this.state.now.getTime()) /
       (1000 * 60);
+
+    // Check if 
+    // if (this.DstAppliesInbetween()){
+    //   minutesUntil = minutesUntil + 60
+    // }
 
     if (minutesUntil < 60) {
       message += `${Math.floor(minutesUntil)} minutes`;
@@ -163,9 +191,6 @@ export default class CountdownAndCalendarButtons extends Component<
           >
             <Box
               onClick={() => {}}
-
-
-
               background="white"
               round="xsmall"
               pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
@@ -176,22 +201,7 @@ export default class CountdownAndCalendarButtons extends Component<
                 border: "1px solid #C2C2C2",
               }}
               hoverIndicator={true}
-
-
-
-
-
-
-
               height="45px"
-
-              // background="#7E1115"
-              // round="xsmall"
-              // pad="xsmall"
-              // justify="center"
-              // align="center"
-              // focusIndicator={false}
-              // hoverIndicator="#5A0C0F"
             >
               <Text size="14px" weight="bold">
                 Link to talk
@@ -203,16 +213,11 @@ export default class CountdownAndCalendarButtons extends Component<
 
         {!this.shouldShowLink() && (
             <Button 
-              // height="45px"
-              // color="#7E1115"
-              alignSelf="center"
+               alignSelf="center"
               hoverIndicator={false}
               style={{
-                // width: 90,
-                // height: 35,
                 fontSize: 17,
                 fontWeight: "bold",
-                // color: "white",
                 padding: 10,
                 backgroundColor: "#d5d5d5",
                 border: "none",
