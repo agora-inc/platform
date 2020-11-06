@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Box, Text } from "grommet";
+import { Box, Button, Text } from "grommet";
 import TalkCard from "./TalkCard";
 import PastTalkCard from "./PastTalkCard";
 import { Talk, TalkService } from "../../Services/TalkService";
@@ -29,6 +29,7 @@ interface State {
   chosenTalks: Talk[];
   allTopics: Topic[];
   chosenTopic: Topic;
+  audienceLevel: string
 }
 
 export default class TopicTalkList extends Component<Props, State> {
@@ -46,6 +47,7 @@ export default class TopicTalkList extends Component<Props, State> {
         parent_2_id: -1,
         parent_3_id: -1,
       },
+      audienceLevel: "All"
     };
   }
 
@@ -174,9 +176,57 @@ export default class TopicTalkList extends Component<Props, State> {
           margin={{ bottom: "15px" }}
         >
           {this.props.title && (
-            <Text size="26px" weight="bold" color="black" margin="5px">
-              Upcoming talks
-            </Text>
+            <Box direction="row" width="100%">
+              <Box width="50%">
+                <Text size="26px" weight="bold" color="black" margin="5px">
+                  Upcoming talks
+                </Text>
+              </Box>
+              <Box direction="row" width="50%" align="end">
+                <Box
+                  onClick={() => {this.setState({audienceLevel: "Bachelor/Master"})}}
+                  background="white"
+                  round="xsmall"
+                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}>
+                    Bachelor/Master
+                  </Box>
+                <Box
+                  onClick={() => {this.setState({audienceLevel: "PhD+"})}}
+                  background="white"
+                  round="xsmall"
+                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}>
+                    PhD+
+                  </Box>
+                <Box
+                  onClick={() => {this.setState({audienceLevel: "All"})}}
+                  background="white"
+                  round="xsmall"
+                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}>
+                    All
+                  </Box>
+                </Box>
+              </Box>
           )}
           {/*this.props.seeMore && (
             <Link to="/upcoming" style={{ textDecoration: "none" }}>
@@ -198,7 +248,9 @@ export default class TopicTalkList extends Component<Props, State> {
         </Box>
 
         {this.props.topicSearch && (
-          <TopicClassification topicCallback={this.selectTopic} />
+          <TopicClassification 
+            topicCallback={this.selectTopic} 
+            audienceLevel={this.state.audienceLevel}/>
         )}
 
         {this.state.chosenTalks.length === 0

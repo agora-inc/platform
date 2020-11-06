@@ -7,7 +7,8 @@ import "../../Styles/topic-classification.css";
 
 
 interface Props {
-  topicCallback: any
+  topicCallback: any,
+  audienceLevel: string
 }
 
 interface State {
