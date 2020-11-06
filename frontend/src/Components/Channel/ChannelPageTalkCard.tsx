@@ -23,12 +23,12 @@ interface Props {
   user: User | null;
   admin: boolean;
   role?: string;
-  onEditCallback?: any;
   width?: any;
   margin?: any;
   isCurrent?: boolean;
   show?: boolean;
   following: boolean;
+  onEditCallback?: any;
   callback?: any;
 }
 
@@ -523,6 +523,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   {this.escapeDoubleQuotes(this.props.talk.description)}
                 </Text>
               </Box>
+
+
+
               <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
                   <Calendar size="18px" />
@@ -638,6 +641,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
                 </Box>
             )}
+
+            
           </Layer>
         )}
         {this.props.admin && this.state.showEdit && (
