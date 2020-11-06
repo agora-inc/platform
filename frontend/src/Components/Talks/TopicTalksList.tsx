@@ -71,8 +71,7 @@ export default class TopicTalkList extends Component<Props, State> {
     TalkService.getAvailableFutureTalks(
       50, 
       0, 
-      this.props.user ? this.props.user.id : null, 
-      this.state.audienceLevel, 
+      this.props.user ? this.props.user.id : null,  
       (allTalks: Talk[]) => {
       this.setState({
         allTalks: allTalks,
@@ -80,6 +79,18 @@ export default class TopicTalkList extends Component<Props, State> {
       });
     });
   }
+
+  filterChosenTalksByAudience = () => {
+    if (this.state.audienceLevel !== "All"){
+      let filteredTopics = []
+      for (let talk of this.state.chosenTalks){
+        if (talk.audience_level === this.state.audienceLevel){
+          filteredTopics.push(talk);
+        }
+      };
+      this.setState({chosenTalks: filteredTopics});
+    }
+  };
 
   getTalksByTopics = (talks: Talk[], topicsId: number[]): Talk[] => {
     let res: Talk[] = [];
@@ -110,6 +121,7 @@ export default class TopicTalkList extends Component<Props, State> {
         chosenTalks: this.state.allTalks,
       });
     }
+    this.filterChosenTalksByAudience()
   };
 
   selectTopic = (temp: Topic) => {
@@ -189,27 +201,30 @@ export default class TopicTalkList extends Component<Props, State> {
               </Box>
               <Box direction="row" width="50%" align="end">
                 <Box
-                  onClick={() => {this.setState({audienceLevel: "Bachelor/Master"})}}
+                  onClick={() => {
+                    this.setState({audienceLevel: "Bachelor/Master"}, this.filterChosenTalksByAudience)}}
                   background="white"
                   round="xsmall"
                   pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
                   justify="center"
                   align="center"
-                  focusIndicator={false}
+                  focusIndicator={true}
                   style={{
                     border: "1px solid #C2C2C2",
                   }}
-                  hoverIndicator={true}>
+                  hoverIndicator={true}
+                  >
                     Bachelor/Master
                   </Box>
                 <Box
-                  onClick={() => {this.setState({audienceLevel: "PhD+"})}}
+                  onClick={() => {
+                    this.setState({audienceLevel: "PhD+"}, this.filterChosenTalksByAudience)}}
                   background="white"
                   round="xsmall"
                   pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
                   justify="center"
                   align="center"
-                  focusIndicator={false}
+                  focusIndicator={true}
                   style={{
                     border: "1px solid #C2C2C2",
                   }}
@@ -217,13 +232,14 @@ export default class TopicTalkList extends Component<Props, State> {
                     PhD+
                   </Box>
                 <Box
-                  onClick={() => {this.setState({audienceLevel: "All"})}}
+                  onClick={() => {
+                    this.setState({audienceLevel: "All"}, this.filterChosenTalksByAudience)}}
                   background="white"
                   round="xsmall"
                   pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
                   justify="center"
                   align="center"
-                  focusIndicator={false}
+                  focusIndicator={true}
                   style={{
                     border: "1px solid #C2C2C2",
                   }}

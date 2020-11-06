@@ -85,7 +85,8 @@ export default class ChannelPage extends Component<Props, State> {
         topics: [],
         talk_speaker: "",
         talk_speaker_url: "",
-        published: 0
+        published: 0,
+        audience_level: "All"
       },
       
       talks: [],

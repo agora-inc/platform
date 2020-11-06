@@ -70,11 +70,10 @@ const getAvailableFutureTalks = (
   limit: number,
   offset: number,
   userId: number | null,
-  audienceLevel: string,
   callback: any,
 ) => {
   get(
-    `talks/available/future?userId=${userId}&limit=${limit}&offset=${offset}&audienceLevel=${audienceLevel}`,
+    `talks/available/future?userId=${userId}&limit=${limit}&offset=${offset}`,
     callback
   );
 };
@@ -375,4 +374,5 @@ export type Talk = {
   talk_speaker: string;
   talk_speaker_url: string;
   published: number;
+  audience_level: string
 };
