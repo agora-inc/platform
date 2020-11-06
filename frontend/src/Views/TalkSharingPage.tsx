@@ -26,7 +26,7 @@ import TalkCard from "../Components/Talks/TalkCard";
 import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
 import CountdownAndCalendarButtons from "../Components/Talks/CountdownAndCalendarButtons";
-
+import OverlayFooter from "../Components/Talks/Talkcard/OverlayFooter";
 
 interface Props {
   location: { pathname: string };
@@ -35,18 +35,7 @@ interface Props {
 
 interface State {
   channel: Channel | null;
-
-
-
   talk: Talk;
-
-
-
-
-
-
-
-
   role: "none" | "owner" | "member" | "follower";
   loading: boolean;
   streams: Stream[];
@@ -383,12 +372,11 @@ export default class ChannelPage extends Component<Props, State> {
   render() { 
       return(
         <Box
-            margin={{top: "100px"}}
+            margin={{top: "100px", left: "20px", right: "20px"}}
             align="center">
             <Box
                 width="55vw"
-
-                >
+                margin={{left: "20px", right: "20px"}}>
                 <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
                 <Link
                 className="channel"
@@ -502,151 +490,13 @@ export default class ChannelPage extends Component<Props, State> {
                     >
                       {this.escapeDoubleQuotes(this.state.talk.description)}
                     </Text>
-
-                    <Box direction="column" gap="small">
-                    <Box direction="row" gap="small" height="30px">
-                      <Box 
-                        direction="row" 
-                        gap="small" 
-                        alignSelf="center"
-                        width="100%"
-                      >
-                        <Calendar size="18px"  />
-                        <Text
-                          size="18px"
-                          color="black"
-                        >
-                          {this.formatDateFull(
-                            this.state.talk.date,
-                            this.state.talk.end_date
-                          )}
-                        </Text>
-                      </Box>
-                      {/*this.props.talk.card_visibility === "Members only" && 
-                        <Box
-                          round="xsmall"
-                          background="#C2C2C2"
-                          pad="small"
-                          justify="center"
-                          align="center"
-                          width="33%"                
-                        >
-                          <Text size="14px">
-                            Members only
-                          </Text>
-                        </Box>
-                          */}
-                    </Box>
-                    {
-                    // this.state.available && 
-                    (
-                      <Box margin={{ top: "10px", bottom: "20px" }}>
-                        <CountdownAndCalendarButtons talk={this.state.talk} />
-                        {/* this.props.user !== null && this.state.registered && 
-                        {
-                        (
-                        <Box
-                          focusIndicator={false}
-                          background="#FF4040"
-                          round="xsmall"
-                          pad="xsmall"
-                          justify="center"
-                          align="center"
-                          width="20%"
-                          height="35px"
-                        //   onClick={this.onClick}
-                          margin={{ top: "-35px" }}
-                          alignSelf="end"
-                          hoverIndicator={true}
-                        >
-                          <Text size="14px" weight="bold">
-                            Unregister
-                          </Text>
-                        </Box>
-                        )}
-                        */}
-                      </Box>
-                    )}
-
-                    
-                    {/* {
-                    // {this.state.available &&
-                    //   this.props.user !== null &&
-                    //   !this.state.registered && 
-                      (
-                        <Box
-                        //   onClick={this.onClick}
-                          background="#7E1115"
-                          round="xsmall"
-                          pad="xsmall"
-                          height="40px"
-                          justify="center"
-                          align="center"
-                          focusIndicator={false}
-                          hoverIndicator="#5A0C0F"
-                        >
-                          <Text size="18px">Register</Text>
-                        </Box>
-                      )} */}
-                      
-                    {/* {
-                    // !this.state.available && this.props.user === null && 
-                    (
-                      <Box direction="row" align="center" gap="10px">
-                        <LoginModal callback={() => {}} />
-                        <Text size="18px"> or </Text>
-                        <SignUpButton callback={() => {}} />
-                        <Text size="18px"> to register </Text>
-                      </Box>
-                    )} */}
-
-                    {/*
-                      <Box
-                        direction="row"
-                        width="100%"
-                        margin="none"
-                        pad="small"
-                        justify="center"
-                        round="xsmall"
-                        align="center"
-                        alignSelf="center"
-                        background="#F3EACE"
-                    >
-                      <Text size="18px" weight="bold" color="grey">
-                        Log in to register
-                      </Text>
-                    </Box>
-                */}
-                  </Box>
-                </Box>
-                {/*                 
-                {
-                // !this.state.available && 
-                (
-                  <Box
-                    background="#d5d5d5"
-                    pad="small"
-                    align="center"
-                    justify="center"
-                  >
-                    <Text textAlign="center" weight="bold">
-                      {`Sorry, the link to the talk is only available to ${
-                        this.state.talk.visibility === "Followers and members"
-                          ? "followers and members"
-                          : "members"
-                      }
-                      of ${this.state.talk.channel_name}`}
-                    </Text>
-                </Box>
-                )} */}
-
-
-
-
-
-
-
-            </Box>
+          <OverlayFooter
+              talk={this.state.talk}
+              user={this.state.user}
+              role={this.state.role}
+              />
+          </Box>
+        </Box>
       )
     }
 }

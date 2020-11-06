@@ -29,6 +29,7 @@ interface State {
   showShadow: boolean;
   registered: boolean;
   available: boolean;
+  role: string
 }
 
 export default class TalkCard extends Component<Props, State> {
@@ -39,9 +40,25 @@ export default class TalkCard extends Component<Props, State> {
       showShadow: false,
       registered: false,
       available: true,
+      role: "none"
     };
+    this.fetchRoleInChannel()
   }
   
+  fetchRoleInChannel = () => {
+    if (this.props.user !== null){
+    ChannelService.getRoleInChannel(
+      this.props.user?.id, 
+      this.props.talk.channel_id, 
+      (role: "none" | "owner" | "member" | "follower") => {
+        this.setState(
+          {role: role})
+        })
+      }
+    }
+
+
+
   escapeDoubleQuotes = (text: string) => {
     return text.replace("''", "'")
   }
@@ -88,6 +105,8 @@ export default class TalkCard extends Component<Props, State> {
     this.checkIfAvailableAndRegistered();
   }
 
+
+  // method here for mobile
   checkIfAvailableAndRegistered = () => {
     if (this.props.user) {
       TalkService.isAvailableToUser(
@@ -110,6 +129,7 @@ export default class TalkCard extends Component<Props, State> {
     }
   };
 
+  // method here for mobile
   checkIfRegistered = () => {
     this.props.user &&
       TalkService.isRegisteredForTalk(
@@ -121,6 +141,7 @@ export default class TalkCard extends Component<Props, State> {
       );
   };
 
+  // method here for mobile
   register = () => {
     this.props.user &&
       TalkService.registerForTalk(
@@ -136,6 +157,7 @@ export default class TalkCard extends Component<Props, State> {
       );
   };
 
+  // method here for mobile
   unregister = () => {
     this.props.user &&
       TalkService.unRegisterForTalk(
@@ -151,6 +173,7 @@ export default class TalkCard extends Component<Props, State> {
       );
   };
 
+  // method here for mobile
   onClick = () => {
     if (this.state.registered) {
       this.unregister();
@@ -325,7 +348,7 @@ export default class TalkCard extends Component<Props, State> {
                 //align="center"
                 pad="25px"
                 // width="100%"
-                height="100%"
+                height="80%"
                 justify="between"
                 gap="xsmall"
               >
@@ -448,12 +471,12 @@ export default class TalkCard extends Component<Props, State> {
                   </Text>
                 </Box>
 
+                </Box> 
                 <OverlayFooter
                   talk={this.props.talk}
                   user={this.props.user}
+                  role={this.state.role}
                 />
-               </Box> 
-
             </Layer>
           </MediaQuery>
 
