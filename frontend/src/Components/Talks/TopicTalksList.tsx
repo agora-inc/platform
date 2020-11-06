@@ -68,7 +68,12 @@ export default class TopicTalkList extends Component<Props, State> {
     });
     */
     
-    TalkService.getAvailableFutureTalks(50, 0, this.props.user ? this.props.user.id : null, (allTalks: Talk[]) => {
+    TalkService.getAvailableFutureTalks(
+      50, 
+      0, 
+      this.props.user ? this.props.user.id : null, 
+      this.state.audienceLevel, 
+      (allTalks: Talk[]) => {
       this.setState({
         allTalks: allTalks,
         chosenTalks: allTalks,
@@ -250,7 +255,7 @@ export default class TopicTalkList extends Component<Props, State> {
         {this.props.topicSearch && (
           <TopicClassification 
             topicCallback={this.selectTopic} 
-            audienceLevel={this.state.audienceLevel}/>
+            />
         )}
 
         {this.state.chosenTalks.length === 0

@@ -750,7 +750,8 @@ def getAvailableFutureTalks():
     offset = int(request.args.get("offset"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    return jsonify(talks.getAvailableFutureTalks(limit, offset, user_id))
+    audience_level = request.args.get("audienceLevel")
+    return jsonify(talks.getAvailableFutureTalks(limit, offset, user_id, audience_level))
 
 @app.route('/talks/available/current', methods=["GET"])
 def getAvailableCurrentTalks():

@@ -2,13 +2,11 @@ import React, { Component } from "react";
 import { Box, Select, Text } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
 // import allTopics from "../../assets/allTopics.json"
-import Button from "../Core/Button";
 import "../../Styles/topic-classification.css";
 
 
 interface Props {
-  topicCallback: any,
-  audienceLevel: string
+  topicCallback: any
 }
 
 interface State {

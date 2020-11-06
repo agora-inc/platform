@@ -70,10 +70,11 @@ const getAvailableFutureTalks = (
   limit: number,
   offset: number,
   userId: number | null,
+  audienceLevel: string,
   callback: any,
 ) => {
   get(
-    `talks/available/future?userId=${userId}&limit=${limit}&offset=${offset}`,
+    `talks/available/future?userId=${userId}&limit=${limit}&offset=${offset}&audienceLevel=${audienceLevel}`,
     callback
   );
 };
