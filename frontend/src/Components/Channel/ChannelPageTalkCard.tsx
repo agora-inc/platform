@@ -215,7 +215,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   render() {
-    console.log("Talk card ", this.props.following)
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
