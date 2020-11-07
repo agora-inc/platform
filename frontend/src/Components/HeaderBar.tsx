@@ -73,7 +73,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             <MediaQuery minDeviceWidth={992}>
               <Text 
                 size="14px"
-                // color="grey"
+                color="grey"
                 style={{
                   // height: "30px",
                   overflow: "auto",
