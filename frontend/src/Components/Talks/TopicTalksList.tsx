@@ -29,7 +29,12 @@ interface State {
   chosenTalks: Talk[];
   allTopics: Topic[];
   chosenTopic: Topic;
-  audienceLevel: string
+  audienceLevel: {
+    GeneralAudience: boolean,
+    BachelorMaster: boolean,
+    Phdplus: boolean,
+    all: boolean
+  }
 }
 
 export default class TopicTalkList extends Component<Props, State> {
@@ -47,7 +52,12 @@ export default class TopicTalkList extends Component<Props, State> {
         parent_2_id: -1,
         parent_3_id: -1,
       },
-      audienceLevel: "All"
+      audienceLevel: {
+        GeneralAudience: true,
+        BachelorMaster: true,
+        Phdplus: true,
+        all: true
+      }
     };
   }
 
@@ -81,28 +91,48 @@ export default class TopicTalkList extends Component<Props, State> {
   }
 
   filterChosenTalksByAudience = () => {
-    if (this.state.audienceLevel !== "All"){
-      let filteredTopics = []
-      for (let talk of this.state.chosenTalks){
-        if (talk.audience_level === this.state.audienceLevel){
-          filteredTopics.push(talk);
-        }
-      };
-      this.setState({chosenTalks: filteredTopics});
+    let filteredTopics = []
+    if (!(this.state.audienceLevel.all)){
+    for (let talk of this.state.allTalks){
+      if ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
+        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
+        (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+") 
+      )
+        {
+        filteredTopics.push(talk);
+      }
+    };
+    this.setState({chosenTalks: filteredTopics});
     }
   };
 
-  getTalksByTopics = (talks: Talk[], topicsId: number[]): Talk[] => {
+  getTalksByTopicsAndAudience = (talks: Talk[], topicsId: number[]): Talk[] => {
     let res: Talk[] = [];
     for (let talk of talks) {
       let isIn: boolean = false;
       for (let topic of talk.topics) {
-        if (!isIn && topicsId.includes(topic.id)) {
+        if ((!isIn && topicsId.includes(topic.id)) &&
+        ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
+        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
+        (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+")))  {
           isIn = true;
           res.push(talk);
         }
       }
     }
+    return res;
+  };
+
+  getTalksByAudience = (talks: Talk[]): Talk[] => {
+    let res: Talk[] = [];
+    for (let talk of talks) {
+      let isIn: boolean = false;
+      if ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
+        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
+        (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+"))  {
+          res.push(talk);
+        }
+      } 
     return res;
   };
 
@@ -114,14 +144,14 @@ export default class TopicTalkList extends Component<Props, State> {
       );
       childrenId.push(topic.id);
       this.setState({
-        chosenTalks: this.getTalksByTopics(this.state.allTalks, childrenId),
+        chosenTalks: this.getTalksByTopicsAndAudience(this.state.allTalks, childrenId),
       });
     } else {
       this.setState({
-        chosenTalks: this.state.allTalks,
+        chosenTalks: this.getTalksByAudience(this.state.allTalks)
       });
     }
-    this.filterChosenTalksByAudience()
+    // this.filterChosenTalksByAudience();
   };
 
   selectTopic = (temp: Topic) => {
@@ -202,52 +232,112 @@ export default class TopicTalkList extends Component<Props, State> {
               <Box direction="row" width="50%" align="end">
                 <Box
                   onClick={() => {
-                    this.setState({audienceLevel: "Bachelor/Master"}, this.filterChosenTalksByAudience)}}
+                    this.setState({audienceLevel: 
+                      {...this.state.audienceLevel, GeneralAudience: !this.state.audienceLevel.GeneralAudience, all: false}}, () => {
+                        this.selectTopic(this.state.chosenTopic);
+                      console.log("value of the chosenTopic:", this.state.chosenTopic)})}}
+                  background={this.state.audienceLevel.GeneralAudience ? "#E0E0E0" : "white"} 
+                  round="xsmall"
+                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={false}
+                  >
+                    {this.state.audienceLevel.GeneralAudience && (
+                      <Text weight="bold">
+                        General Audience
+                      </Text>)
+                    }
+                    {!this.state.audienceLevel.GeneralAudience && (
+                      <Text>
+                        General Audience
+                      </Text>)
+                    }
+                  </Box>
+                <Box
+                  onClick={() => {
+                    this.setState({audienceLevel: 
+                      {...this.state.audienceLevel, BachelorMaster: !this.state.audienceLevel.BachelorMaster, all: false}}, () => {
+                    this.selectTopic(this.state.chosenTopic)})}}
+                  background={this.state.audienceLevel.BachelorMaster ? "#E0E0E0" : "white"} 
+                  round="xsmall"
+                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={false}
+                  >
+                    {this.state.audienceLevel.BachelorMaster && (
+                      <Text weight="bold">
+                        Bachelor/Master
+                      </Text>)
+                    }
+                    {!this.state.audienceLevel.BachelorMaster && (
+                      <Text>
+                        Bachelor/Master
+                      </Text>)
+                    }
+                  </Box>
+                <Box
+                  onClick={() => {
+                    this.setState({audienceLevel: {...this.state.audienceLevel, Phdplus: !this.state.audienceLevel.Phdplus, all: false}}, () => {
+                      this.selectTopic(this.state.chosenTopic)})}}
+                  background={this.state.audienceLevel.Phdplus ? "#E0E0E0" : "white"} 
+                  round="xsmall"
+                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={false}>
+                  {this.state.audienceLevel.Phdplus && (
+                    <Text weight="bold">
+                      PhD+
+                    </Text>)
+                  }
+                  {!this.state.audienceLevel.Phdplus && (
+                    <Text>
+                      PhD+
+                    </Text>)
+                  }
+                  </Box>
+                  <Box
+                  onClick={() => {
+                    this.setState({audienceLevel: 
+                      {
+                        all: true, 
+                        GeneralAudience: true,
+                        BachelorMaster: true,
+                        Phdplus: true
+                      }}, () => {
+                        this.selectTopic(this.state.chosenTopic)
+                      })}}
                   background="white"
                   round="xsmall"
                   pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
                   justify="center"
                   align="center"
-                  focusIndicator={true}
+                  focusIndicator={false}
                   style={{
                     border: "1px solid #C2C2C2",
                   }}
                   hoverIndicator={true}
                   >
-                    Bachelor/Master
-                  </Box>
-                <Box
-                  onClick={() => {
-                    this.setState({audienceLevel: "PhD+"}, this.filterChosenTalksByAudience)}}
-                  background="white"
-                  round="xsmall"
-                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-                  justify="center"
-                  align="center"
-                  focusIndicator={true}
-                  style={{
-                    border: "1px solid #C2C2C2",
-                  }}
-                  hoverIndicator={true}>
-                    PhD+
-                  </Box>
-                <Box
-                  onClick={() => {
-                    this.setState({audienceLevel: "All"}, this.filterChosenTalksByAudience)}}
-                  background="white"
-                  round="xsmall"
-                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-                  justify="center"
-                  align="center"
-                  focusIndicator={true}
-                  style={{
-                    border: "1px solid #C2C2C2",
-                  }}
-                  hoverIndicator={true}>
-                    All
+                    <Text>
+                      All
+                    </Text>
                   </Box>
                 </Box>
-              </Box>
+                </Box>
           )}
           {/*this.props.seeMore && (
             <Link to="/upcoming" style={{ textDecoration: "none" }}>

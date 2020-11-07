@@ -70,6 +70,19 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                   </MediaQuery>
             </Box>
           </Link>
+            <MediaQuery minDeviceWidth={992}>
+              <Text 
+                size="14px"
+                // color="grey"
+                style={{
+                  // height: "30px",
+                  overflow: "auto",
+                  fontStyle: "italic",
+                }}
+                >
+                Connecting academic communities.
+              </Text>
+            </MediaQuery>
         </Box>
         <MediaQuery minDeviceWidth={992}>
           <Link

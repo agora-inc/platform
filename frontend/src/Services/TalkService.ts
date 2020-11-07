@@ -150,6 +150,7 @@ const editTalk = (
   talkSpeaker: string,
   talkSpeakerURL: string,
   published: number,
+  audienceLevel: string,
   callback: any
 ) => {
   post(
@@ -171,6 +172,7 @@ const editTalk = (
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
+      audienceLevel: audienceLevel
     },
     callback
   );
@@ -192,6 +194,7 @@ const scheduleTalk = (
   talkSpeaker: string,
   talkSpeakerURL: string,
   published: number,
+  audienceLevel: string,
   callback: any
 ) => {
   post(
@@ -214,6 +217,7 @@ const scheduleTalk = (
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
+      audienceLevel: audienceLevel
     },
     callback
   );

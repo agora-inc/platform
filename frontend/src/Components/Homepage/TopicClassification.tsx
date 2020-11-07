@@ -124,6 +124,8 @@ export default class TopicClassification extends Component<Props, State> {
             }
           />
         )}
+        {/* 
+        // NOTE: this code is the third selector (sub-sub-topics)
         {this.state.topicBeingShown >= 2 && (
           <Select
             options={this.getChildren(
@@ -134,7 +136,7 @@ export default class TopicClassification extends Component<Props, State> {
               this.onFieldChoose(this.nameToTopic(option), 2)
             }
           />
-        )}
+        )} */}
         </div>  
       </Box>
     );

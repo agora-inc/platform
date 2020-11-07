@@ -218,7 +218,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
         >
           <Box gap="xsmall">
             <Text size="1.7rem" weight="bold">
-              Join the{" "}
+              Join your{" "}
               {
                 <Text size="1.7rem" weight="bold" color="brand">
                   Agora
@@ -227,7 +227,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
               Community
             </Text>
             <Text size="16px" color="grey">
-              Discover the best talks on every topic
+              Get a priviledged access to events, talk recordings and many more!
             </Text>
           </Box>
           <SignUpButton callback={() => {}} />

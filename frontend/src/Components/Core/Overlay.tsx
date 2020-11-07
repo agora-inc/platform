@@ -99,7 +99,7 @@ export class Overlay extends Component<OverlayProps> {
                 zIndex: 10,
               }}
             >
-              <Box fill={true} pad="30px"> {this.props.deleteButton} </Box>
+              <Box fill={true} pad="10px"> {this.props.deleteButton} </Box>
               <Box > {this.props.saveDraftButton} </Box>
               <Box data-tip data-for='submitbutton' margin={{right: "32px"}}   > 
                 <Button
