@@ -60,7 +60,6 @@ export default class RequestsTab extends Component<Props, State> {
 
     ChannelService.getMembershipApplications(this.props.channelId, 
       (applicantList: Applicant[]) => {
-        console.log(applicantList);
         this.setState( {applicantList: applicantList})
       });
   }
