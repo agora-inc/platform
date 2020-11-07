@@ -229,7 +229,7 @@ export default class TopicTalkList extends Component<Props, State> {
                   Upcoming talks
                 </Text>
               </Box>
-              <Box direction="row" width="50%" align="end">
+              <Box direction="row" width="50%">
                 <Box
                   onClick={() => {
                     this.setState({audienceLevel: 
@@ -238,7 +238,7 @@ export default class TopicTalkList extends Component<Props, State> {
                       console.log("value of the chosenTopic:", this.state.chosenTopic)})}}
                   background={this.state.audienceLevel.GeneralAudience ? "#E0E0E0" : "white"} 
                   round="xsmall"
-                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                  pad={{ bottom: "4px", top: "4px", left: "18px", right: "18px" }}
                   justify="center"
                   align="center"
                   focusIndicator={false}
@@ -248,12 +248,12 @@ export default class TopicTalkList extends Component<Props, State> {
                   hoverIndicator={false}
                   >
                     {this.state.audienceLevel.GeneralAudience && (
-                      <Text weight="bold">
+                      <Text weight="bold" size="small">
                         General Audience
                       </Text>)
                     }
                     {!this.state.audienceLevel.GeneralAudience && (
-                      <Text>
+                      <Text size="small">
                         General Audience
                       </Text>)
                     }
@@ -275,12 +275,12 @@ export default class TopicTalkList extends Component<Props, State> {
                   hoverIndicator={false}
                   >
                     {this.state.audienceLevel.BachelorMaster && (
-                      <Text weight="bold">
+                      <Text weight="bold" size="small">
                         Bachelor/Master
                       </Text>)
                     }
                     {!this.state.audienceLevel.BachelorMaster && (
-                      <Text>
+                      <Text size="small">
                         Bachelor/Master
                       </Text>)
                     }
@@ -300,12 +300,12 @@ export default class TopicTalkList extends Component<Props, State> {
                   }}
                   hoverIndicator={false}>
                   {this.state.audienceLevel.Phdplus && (
-                    <Text weight="bold">
+                    <Text weight="bold" size="small">
                       PhD+
                     </Text>)
                   }
                   {!this.state.audienceLevel.Phdplus && (
-                    <Text>
+                    <Text size="small">
                       PhD+
                     </Text>)
                   }
@@ -332,7 +332,7 @@ export default class TopicTalkList extends Component<Props, State> {
                   }}
                   hoverIndicator={true}
                   >
-                    <Text>
+                    <Text size="small">
                       All
                     </Text>
                   </Box>
