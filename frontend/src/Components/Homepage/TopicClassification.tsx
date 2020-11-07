@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Box, Select, Text } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
 // import allTopics from "../../assets/allTopics.json"
-import Button from "../Core/Button";
 import "../../Styles/topic-classification.css";
 
 
@@ -125,6 +124,8 @@ export default class TopicClassification extends Component<Props, State> {
             }
           />
         )}
+        {/* 
+        // NOTE: this code is the third selector (sub-sub-topics)
         {this.state.topicBeingShown >= 2 && (
           <Select
             options={this.getChildren(
@@ -135,7 +136,7 @@ export default class TopicClassification extends Component<Props, State> {
               this.onFieldChoose(this.nameToTopic(option), 2)
             }
           />
-        )}
+        )} */}
         </div>  
       </Box>
     );
