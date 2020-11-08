@@ -119,8 +119,8 @@ def authenticate():
 
 @app.route('/refreshtoken', methods=["POST"])
 def refreshAccessToken():
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
     if "userId" not in params:

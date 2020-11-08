@@ -44,7 +44,7 @@ export default class CreateChannelButton extends Component<Props, State> {
       >
         {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
         <Text size="22.5px">🚀</Text>
-        <Text size="18px" color="grey"> Create Agora </Text>
+        <Text size="14px" color="grey"> Create an Agora </Text>
         
       </Box>
     );

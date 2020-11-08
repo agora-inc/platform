@@ -267,12 +267,12 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   />
                 )}
               </Box>
-              <Text weight="bold" size="16px" color="grey">
+              <Text weight="bold" size="14px" color="grey">
                 {this.props.talk.channel_name}
               </Text>
             </Box>
             <Text
-              size="18px"
+              size="14px"
               color="black"
               weight="bold"
               style={{ minHeight: "75px", overflow: "auto" }}
@@ -282,7 +282,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             <Box direction="row" gap="small">
               <UserExpert size="18px" />
               <Text
-                size="18px"
+                size="14px"
                 color="black"
                 style={{
                   height: "30px",
@@ -297,7 +297,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               </Text>
             </Box>
             <Box direction="row" gap="small">
-              <Calendar size="18px" />
+              <Calendar size="14px" />
               <Box direction="row" width="100%">
                 {this.props.isCurrent && (
                   <Text
@@ -311,7 +311,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 )}
                 {!this.props.isCurrent && (
                   <Text
-                    size="18px"
+                    size="14px"
                     color="black"
                     style={{ height: "30px", fontStyle: "normal" }}
                   >
@@ -451,7 +451,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 </Box>
                 <Text
                   weight="bold"
-                  size="21px"
+                  size="18px"
                   color="black"
                   style={{
                     minHeight: "50px",
@@ -472,9 +472,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       hoverIndicator={true}
                       pad={{ left: "6px", top: "4px" }}
                     >
-                      <UserExpert size="18px" />
+                      <UserExpert size="14px" />
                       <Text
-                        size="18px"
+                        size="14px"
                         color="black"
                         style={{
                           height: "24px",
@@ -492,9 +492,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
                 {!this.props.talk.talk_speaker_url && (
                   <Box direction="row" gap="small">
-                    <UserExpert size="18px" />
+                    <UserExpert size="14px" />
                     <Text
-                      size="18px"
+                      size="14px"
                       color="black"
                       style={{
                         height: "30px",
@@ -510,7 +510,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   </Box>
                 )}
                 <Text
-                  size="16px"
+                  size="14px"
                   color="black"
                   style={{
                     minHeight: "50px",
@@ -527,9 +527,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
               <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
-                  <Calendar size="18px" />
+                  <Calendar size="14px" />
                   <Text
-                    size="18px"
+                    size="14px"
                     color="black"
                     style={{ height: "20px", fontStyle: "normal" }}
                   >
@@ -577,7 +577,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       focusIndicator={false}
                       hoverIndicator="#5A0C0F"
                     >
-                      <Text size="18px">Register</Text>
+                      <Text size="14px">Register</Text>
                     </Box>
                   )}
               </Box>

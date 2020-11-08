@@ -22,7 +22,6 @@ import { Switch } from "antd";
 import { InlineMath } from "react-katex";
 import { StatusInfo } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
-import { Checkbox } from '@material-ui/core';
 
 interface Props {
   channel: Channel | null;
@@ -354,7 +353,7 @@ export default class EditTalkModal extends Component<Props, State> {
         title={this.props.talk ? "Edit talk" : "New talk"}
         submitButtonText="Publish"
         onSubmitClick={this.onFinishClicked}
-        contentHeight="600px"
+        contentHeight="550px"
         canProceed={this.isComplete()}
         isMissing={this.isMissing()}
         onCancelClick={this.props.onCanceledCallback}
@@ -619,33 +618,16 @@ export default class EditTalkModal extends Component<Props, State> {
 
 
 
+                      {/* NOTE: This is the selector to set release time of the link.
                   <Box width="100%" gap="5px" margin={{top: "13px"}}>
-
                     <Box width="100%" gap="5px" margin={{top: "10px"}}>
-                    <Box direction="row" gap="small">
+                    <Box direction="row" gap="small"> */}
                       {/* <StatusInfo size="small" data-tip data-for='linkinfo'/>
                       <ReactTooltip id='linkinfo' place="right" effect="solid">
                         Decide who has access to the link. The same people will also have access to the recording if there is one.
                       </ReactTooltip> */}
-                    </Box>
-
-
-
-
-                    {/* <Checkbox
-                        // label={option}
-                        // isSelected={this.state.checkboxes[option]}
-                        // onCheckboxChange={this.handleCheckboxChange}
-                        // key={option}
-                      /> */}
-
-
-
-
-
+                    {/* </Box>
                   </Box>
-                    {/* 
-                    NOTE: This is the selector to set release time of the
                     <Select
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
@@ -665,9 +647,9 @@ export default class EditTalkModal extends Component<Props, State> {
                         console.log("OPTION: ", option);
                         this.setState({ releaseLinkOffset: option.value });
                       }}
-                    /> */}
+                    />
+                  </Box> */}
 
-                  </Box>
                 </OverlaySection>
               </Box>
             </Box>

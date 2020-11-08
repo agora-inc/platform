@@ -225,7 +225,7 @@ export default class TopicTalkList extends Component<Props, State> {
           {this.props.title && (
             <Box direction="row" width="100%">
               <Box width="50%">
-                <Text size="26px" weight="bold" color="black" margin="5px">
+                <Text size="24px" weight="bold" color="black" margin="5px">
                   Upcoming talks
                 </Text>
               </Box>

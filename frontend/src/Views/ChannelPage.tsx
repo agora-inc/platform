@@ -372,7 +372,7 @@ export default class ChannelPage extends Component<Props, State> {
               )}
             </Box>
             <Box>
-              <Text size="30px" color="black" weight="bold">
+              <Text size="26px" color="black" weight="bold">
                 {this.state.channel ?.name}
               </Text>
               <Box height="36px"> </Box>
@@ -394,14 +394,14 @@ export default class ChannelPage extends Component<Props, State> {
             {this.state.user && (
               <Box
                 className="follow-button"
+                pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
                 background={this.state.following ? "#e5e5e5" : "white"}
-                height="45px"
+                height="30px"
                 style={{
                   border: "1px solid #C2C2C2",
                 }}
                 width="10vw"
                 round="xsmall"
-                pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
                 align="center"
                 justify="center"
                 onClick={this.onFollowClicked}
@@ -409,7 +409,7 @@ export default class ChannelPage extends Component<Props, State> {
                 hoverIndicator={true}
               >
                 <Text 
-                  size="16px" 
+                  size="14px" 
                   color="grey"
                   alignSelf="center"
                 >
@@ -436,7 +436,7 @@ export default class ChannelPage extends Component<Props, State> {
         </Box>
         {this.state.bannerExtended && (
           <Text
-            size="20px"
+            size="14px"
             style={{ textAlign: "justify", fontWeight: 450 }}
             margin={{ horizontal: "16px", bottom: "16px" }}
           >
@@ -499,7 +499,7 @@ export default class ChannelPage extends Component<Props, State> {
                         round="xsmall"
                         background="#F3EACE"
                       >
-                        <Text size="18px" weight="bold" color="grey">
+                        <Text size="16px" weight="bold" color="grey">
                           You are a member
                         </Text>
                       </Box>
@@ -511,7 +511,7 @@ export default class ChannelPage extends Component<Props, State> {
                   {this.state.currentTalks.length > 0 && (
                     <Box width="100%">
                       <Text
-                        size="28px"
+                        size="26px"
                         weight="bold"
                         color="black"
                         margin={{ top: "40px", bottom: "24px" }}
@@ -531,7 +531,7 @@ export default class ChannelPage extends Component<Props, State> {
                     </Box>
                   )}
                   <Text
-                    size="28px"
+                    size="26px"
                     weight="bold"
                     color="black"
                     margin={{ bottom: "10px" }}
@@ -550,7 +550,7 @@ export default class ChannelPage extends Component<Props, State> {
                       background="#F3EACE"
                       margin={{ bottom: "36px" }}
                     >
-                      <Text size="18px" weight="bold" color="grey">
+                      <Text size="14px" weight="bold" color="grey">
                         There are no upcoming talks in{" "}
                         {this.state.channel
                           ? this.state.channel.name
@@ -574,7 +574,7 @@ export default class ChannelPage extends Component<Props, State> {
                   )}  
                   {this.state.pastTalks.length !== 0 && (
                     <Text
-                      size="28px"
+                      size="26px"
                       weight="bold"
                       color="black"
                       margin={{ top: "40px" }}

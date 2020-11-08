@@ -183,7 +183,9 @@ export default class TalkCard extends Component<Props, State> {
   render() {
     var breakpoint_width = 992;
     return (
-      <div className="talk_card_box_1" style={{"width": this.props.width ? this.props.width : "32%"}} onClick={() => {
+      <div className="talk_card_box_1" style={
+        {"width": this.props.width ? this.props.width : "32%",
+      "height": "180px"}} onClick={() => {
             !this.state.showModal && this.toggleModal();
         }}
         >
@@ -207,16 +209,16 @@ export default class TalkCard extends Component<Props, State> {
           background="white"
           round="xsmall"
           justify="between"
-          gap="100px"
+          gap="10px"
           overflow="hidden"
         >
-          <Box height="100%" pad="10px">
+          <Box height="90%" pad="10px">
             <Box
               direction="row"
               gap="xsmall"
               align="center"
               style={{ height: "40px" }}
-              margin={{ bottom: "10px" }}
+              margin={{ bottom: "15px", top: "15px" }}
             >
               <Box
                 round="15px"
@@ -233,22 +235,24 @@ export default class TalkCard extends Component<Props, State> {
                     fit="contain"
                   />
               </Box>
-              <Text weight="bold" size="16px" color="grey">
+              <Text weight="bold" size="14px" color="grey">
                 {this.props.talk.channel_name}
               </Text>
             </Box>
-            <Text
-              size="18px"
-              color="black"
-              weight="bold"
-              style={{ minHeight: "75px", overflow: "auto" }}
-            >
-              {this.props.talk.name}
-            </Text>
-            <Box direction="row" gap="small">
-              <UserExpert size="18px" />
+            <Box height="170px">
               <Text
-                size="18px"
+                size="14px"
+                color="black"
+                weight="bold"
+                style={{ minHeight: "75px", overflow: "auto", marginBottom: "10px"}}
+              >
+                {this.props.talk.name}
+              </Text>
+            </Box>
+            <Box direction="row" gap="small">
+              <UserExpert size="14px" />
+              <Text
+                size="14px"
                 color="black"
                 style={{
                   height: "30px",
@@ -263,11 +267,11 @@ export default class TalkCard extends Component<Props, State> {
               </Text>
             </Box>
             <Box direction="row" gap="small">
-              <Calendar size="18px" />
+              <Calendar size="14px" />
               <Box direction="row" width="100%">
                 {this.props.isCurrent && (
                   <Text
-                    size="18px"
+                    size="14px"
                     color="#5454A0"
                     weight="bold"
                     style={{ height: "20px", fontStyle: "normal" }}
@@ -277,7 +281,7 @@ export default class TalkCard extends Component<Props, State> {
                 )}
                 {!this.props.isCurrent && (
                   <Text
-                    size="18px"
+                    size="14px"
                     color="black"
                     style={{ height: "30px", fontStyle: "normal" }}
                   >
@@ -387,7 +391,7 @@ export default class TalkCard extends Component<Props, State> {
                             />
                         </Box>
                         <Box justify="between">
-                          <Text weight="bold" size="18px" color="grey">
+                          <Text weight="bold" size="16px" color="grey">
                             {this.props.talk.channel_name}
                           </Text>
                         </Box>
@@ -396,7 +400,7 @@ export default class TalkCard extends Component<Props, State> {
                   </Box>
                   <Text
                     weight="bold"
-                    size="21px"
+                    size="18px"
                     color="black"
                     style={{
                       minHeight: "50px",
@@ -412,14 +416,11 @@ export default class TalkCard extends Component<Props, State> {
                     <a href={this.props.talk.talk_speaker_url} target="_blank">
                       <Box
                         direction="row"
-                        gap="small"
-                        onClick={() => {}}
-                        hoverIndicator={true}
                         pad={{ left: "6px", top: "4px" }}
                       >
-                        <UserExpert size="18px" />
+                        <UserExpert size="16px" />
                         <Text
-                          size="18px"
+                          size="16px"
                           color="black"
                           style={{
                             height: "24px",
@@ -437,9 +438,9 @@ export default class TalkCard extends Component<Props, State> {
 
                   {!this.props.talk.talk_speaker_url && (
                     <Box direction="row" gap="small">
-                      <UserExpert size="18px" />
+                      <UserExpert size="16px" />
                       <Text
-                        size="18px"
+                        size="16px"
                         color="black"
                         style={{
                           height: "30px",
@@ -456,7 +457,7 @@ export default class TalkCard extends Component<Props, State> {
                   )}
 
                   <Text
-                    size="16px"
+                    size="14px"
                     color="black"
                     style={{
                       minHeight: "50px",

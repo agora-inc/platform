@@ -3,6 +3,8 @@ import { Box, DropButton, Text } from "grommet";
 import { FormDown, FormUp } from "grommet-icons";
 import ImageUploader from "../Core/ImageUploader";
 import { ChannelService } from "../../Services/ChannelService";
+import ReactTooltip from "react-tooltip";
+import { StatusInfo } from "grommet-icons";
 
 interface Props {
   callback: any;
@@ -143,12 +145,20 @@ export default class ColorPicker extends Component<Props, State> {
         pad={{ left: "10px", vertical: "10px" }}
       >
         <Box
-          width="30px"
+          width="50px"
           height="30px"
           round="xsmall"
           // background={this.state.selected}
-          style={{ zIndex: 100 }}
-        ><b>Header</b></Box>
+          // style={{ zIndex: 100 }}
+        >
+          <Text weight="bold" size="14">
+            Header
+             <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
+                      <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
+                       <p>Recommended dim: 1500x500px</p>
+                      </ReactTooltip>
+          </Text>
+        </Box>
         <DropButton
           reverse
           // label={this.state.selected}

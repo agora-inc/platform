@@ -225,7 +225,7 @@ export default class CountdownAndCalendarButtons extends Component<
               }}
               margin={{bottom: "5px"}}
               >
-              <Text size="16px" weight="bold" margin={{ top: "1px" }}>
+              <Text size="14px" weight="bold" margin={{ top: "1px" }}>
                 {this.showTimeUntil()}
               </Text>
             </Button>
