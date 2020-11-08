@@ -31,7 +31,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
   }
   render() {
     return (
-      <Box height="263px">
+      <Box height="100%">
         <Box direction="row">
           <Text
             size="14px"
@@ -53,8 +53,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
               direction="row"
               align="end"
             >
-              <Text color="grey" size="14px"> See all </Text>
-              <FormNextLink color="grey" size="14px" />
+              <Text color="grey" size="12px"> See all </Text>
             </Box>
           </Link>
 
@@ -96,13 +95,13 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   {!!channel.has_avatar && (
                     <img
                       src={ChannelService.getAvatar(channel.id)}
-                      height={40}
-                      width={40}
+                      height={30}
+                      width={30}
                     />
                   )}
                 </Box>
                 <Box justify="center">
-                  <Text size="16px" weight="bold" color="black">
+                  <Text size="14px" color="black" weight="bold">
                     {channel.name}
                   </Text>
                 </Box>

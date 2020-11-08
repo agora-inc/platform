@@ -158,11 +158,11 @@ export default class RequestMembershipButton extends Component<Props, State> {
       <Box>
         <Box
           focusIndicator={false}
-          width={this.props.width ? this.props.width : "25vw"}
+          width={this.props.width ? this.props.width : "15vw"}
           background="white"
           round="xsmall"
-          height={this.props.height ? this.props.height : "45px"}
-          pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
+          height={this.props.height ? this.props.height : "30px"}
+          pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
           onClick={() => this.setState({ showForm: true })}
           style={{
             border: "1px solid #C2C2C2",
@@ -172,7 +172,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
           justify="center"   
         >
           <Text 
-            size="16px" 
+            size="14px" 
             color="grey"
             alignSelf="center"
           >
@@ -193,7 +193,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
           width={900}
           height={400}
           contentHeight="250px"
-          title={"Membership Application"}
+          title={"Membership application"}
         >
   
 
@@ -202,9 +202,9 @@ export default class RequestMembershipButton extends Component<Props, State> {
           <Box style={{minHeight: "40%"}} />
           <Box direction="row" align="center" gap="10px">
             <LoginModal callback={() => {}} />
-            <Text size="18px"> or </Text>
+            <Text size="14px"> or </Text>
             <SignUpButton callback={() => {}} />
-            <Text size="18px"> to apply </Text>
+            <Text size="14px"> to apply </Text>
           </Box>
         </>
         )}  

@@ -119,7 +119,7 @@ export default class FormContainer extends Component<{}, State> {
           hoverIndicator={true}   
         >
           <Text 
-            size="16px" 
+            size="14px" 
             color="grey" 
           > 
             Feedback / Bug

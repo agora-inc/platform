@@ -102,7 +102,7 @@ export default class RequestsTab extends Component<Props, State> {
     return (
       <Box direction="column">
         <Box direction="row" gap="small" margin={{ bottom: "12px" }}>
-          <Text size="24px" weight="bold" color="black">
+          <Text size="14px" weight="bold" color="black">
             Applicant Details
           </Text>
         </Box>
@@ -114,11 +114,11 @@ export default class RequestsTab extends Component<Props, State> {
           style={{ minHeight: "160px" }}
         >
           {!showItem &&
-            <Text>Please select one item from list</Text>
+            <Text size="14px">Please select one item from list</Text>
           }
           {showItem &&
             <Box>
-              <ul style={{ listStyle: 'none', padding: 0 }}>
+              <ul style={{ listStyle: 'none', padding: 0, fontSize: "14px"}}>
                 <li>
                   <b>Name: </b>
                   {item.full_name}
@@ -150,7 +150,7 @@ export default class RequestsTab extends Component<Props, State> {
           }
         </Box>
         <Box direction="row" gap="small" margin={{ top: "24px", bottom: "12px" }}>
-          <Text size="24px" weight="bold" color="black">
+          <Text size="14px" weight="bold" color="black">
             Applicants
           </Text>
         </Box>
@@ -158,7 +158,8 @@ export default class RequestsTab extends Component<Props, State> {
           columns={columns}
           data={this.state.applicantList}
           step={10}
-          size="small"
+          style={{fontSize: "14px"}}
+          // size="xsmall"
           onClickRow={this.handleClickRow}
         />
       </Box>
@@ -180,7 +181,7 @@ const WineButton: React.FC<any> = (props) => {
       focusIndicator={false}
       hoverIndicator="#5A0C0F"
     >
-      <Text size="18px">{props.children}</Text>
+      <Text size="14px">{props.children}</Text>
     </Box>
   )
 }

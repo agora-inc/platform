@@ -58,12 +58,12 @@ export class Overlay extends Component<OverlayProps> {
                 borderTopRightRadius: "15px",
                 position: "sticky",
                 top: 0,
-                minHeight: "45px",
+                minHeight: "35px",
                 zIndex: 10,
               }}
             >
               <Box pad="30px" alignSelf="center" fill={true}>
-                <Text size="24px" color="black" weight="bold"  >
+                <Text size="16px" color="black" weight="bold"  >
                   {this.props.title}
                 </Text>
               </Box>
@@ -142,7 +142,7 @@ export class OverlaySection extends Component<OverlaySectionProps> {
             pad="small"
             justify="center"
           >
-            <Text size="16px" weight="bold" color="black">
+            <Text size="14px" weight="bold" color="black">
               {this.props.heading}
             </Text>
           </Box>

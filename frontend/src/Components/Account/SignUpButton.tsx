@@ -68,7 +68,7 @@ export default class SignUpButton extends Component<Props, State> {
 
   render() {
     return (
-      <Box>
+      <Box style={{maxHeight: "30px"}}>
         <Button
           label="Sign up"
           onClick={this.toggleModal}
@@ -76,7 +76,7 @@ export default class SignUpButton extends Component<Props, State> {
           style={{
             width: 90,
             height: 35,
-            fontSize: 17,
+            fontSize: 16,
             fontWeight: "bold",
             color: "white",
             padding: 0,

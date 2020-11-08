@@ -236,7 +236,7 @@ render() {
               >
                 <Calendar size="18px" />
                 <Text
-                  size="18px"
+                  size="16px"
                   color="black"
                   margin={{left:"5px"}}
                   style={{ height: "20px", fontStyle: "normal" }}
@@ -333,17 +333,17 @@ render() {
           {!this.checkIfUserCanAccessLink() && this.props.user === null
           && (
             <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
-              <Text size="18px"> You need to </Text>
+              <Text size="16px"> You need to </Text>
               <LoginModal callback={() => {}} />
-              <Text size="18px"> or </Text>
+              <Text size="16px"> or </Text>
               <SignUpButton callback={() => {}} />
-              <Text size="18px"> to attend </Text>
+              <Text size="16px"> to attend </Text>
             </Box>
           )}
           {!this.checkIfUserCanAccessLink() && this.props.user !== null
           && (
             <Box direction="row" align="center" gap="25px" pad="25px" justify="center" background="#d5d5d5">
-            <Text textAlign="center" weight="bold">
+            <Text textAlign="center" weight="bold" size="16px">
             {`${this.props.talk.visibility === "Followers and members"
                   ? "Follow or become a member"
                   : "Become a member"

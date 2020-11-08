@@ -85,7 +85,7 @@ export default class ChannelPageUserCircle extends Component<Props, State> {
           align="center"
           margin={{ top: this.state.hover ? "-23px" : "none" }}
         >
-          <Avatar name={this.props.user.username} size="40" round={true}/>
+          <Avatar name={this.props.user.username} size="30" round={true}/>
         </Box>
       </Box>
     );

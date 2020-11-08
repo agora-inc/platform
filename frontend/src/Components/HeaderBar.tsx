@@ -72,7 +72,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           </Link>
             <MediaQuery minDeviceWidth={992}>
               <Text 
-                size="14px"
+                size="12px"
                 color="grey"
                 style={{
                   // height: "30px",
@@ -102,7 +102,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
               }}
               hoverIndicator={true}
             >
-              <Text size="16px" color="grey">
+              <Text size="14px" color="grey">
                 {" "}
                 How to use me?{" "}
               </Text>
@@ -123,9 +123,9 @@ class HeaderBar extends Component<RouteComponentProps, State> {
         </Box> */}
         <Box
           direction="row"
-          gap="medium"
+          gap="small"
           align="center"
-          style={{ minWidth: "30%" }}
+          style={{ minWidth: "30%", maxHeight: "20px" }}
           justify="end"
         >
         <MediaQuery minDeviceWidth={992}>

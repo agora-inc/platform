@@ -233,10 +233,10 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       <Box>
         <Box
           focusIndicator={false}
-          width="10vw"
+          width="12vw"
           background="white"
           round="xsmall"
-          pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
+          pad={{bottom: "3px", top: "3px", left: "18px", right: "18px"}}
           onClick={() => this.setState({ showForm: true })}
           style={{
             border: "1px solid #C2C2C2",
@@ -245,7 +245,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           justify="center"   
         >
           <Text 
-            size="16px" 
+            size="14px" 
             color="grey"
             alignSelf="center"
           >
@@ -264,7 +264,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           width={900}
           height={540}
           contentHeight="1100px"
-          title="Talk Application"
+          title="Talk application"
         >
 
         <OverlaySection heading="1. Tell us about you!">

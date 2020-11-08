@@ -97,7 +97,7 @@ export default class TopicClassification extends Component<Props, State> {
           margin={{ bottom: "15px" }}
         >
           <Text size="14px" color="grey" margin="5px" weight="bold">
-            Filter by topic
+            Filter by topics
           </Text>
         </Box>
 
@@ -108,6 +108,7 @@ export default class TopicClassification extends Component<Props, State> {
           <Select
             options={this.getPrimitiveNodes().concat("All")}
             placeholder={"Field"}
+            dropHeight="medium"
             onChange={({ option }) =>
               this.onFieldChoose(this.nameToTopic(option), 0)
             }

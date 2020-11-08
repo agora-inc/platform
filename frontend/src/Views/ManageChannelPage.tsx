@@ -493,7 +493,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {this.state.channel?.name}
               </Text>
               {(typeof(this.state.viewerCount) == "number") &&
-                <Text size="24px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
+                <Text size="16px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
                   {this.state.viewerCount} visits
                 </Text>
               }
@@ -576,7 +576,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     round="xsmall"
                     background="#F3EACE"
                   >
-                    <Text size="18px" weight="bold" color="grey">
+                    <Text size="14px" weight="bold" color="grey">
                       You are an administrator
                     </Text>
                   </Box>
@@ -594,7 +594,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   border: "1px solid #C2C2C2",
                 }}
               >
-                <Text color="#5A5A5A">
+                <Text color="#5A5A5A" size="14px">
                   <p>
                     {<UserAdmin />}
                     <big>
@@ -648,7 +648,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <Workshop />
-                      <Text size="24px"> 
+                      <Text size="14px"> 
                         Talks 
                       </Text>
                     </Box>
@@ -656,7 +656,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <Group />
-                      <Text size="24px"> 
+                      <Text size="14px"> 
                         Community 
                       </Text>
                     </Box>
@@ -672,15 +672,15 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <ContactInfo />
-                      <Text size="24px"> 
+                      <Text size="14px"> 
                         Contact 
                       </Text>
                     </Box>
                   </Tab>
                   <Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                    <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <ContactInfo />
-                      <Text size="24px"> 
+                      <Text size="14px"> 
                         Requests 
                       </Text>
                     </Box>
@@ -724,7 +724,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       background="#F3EACE"
                       margin={{ bottom: "36px" }}
                     >
-                      <Text size="18px" weight="bold" color="grey">
+                      <Text size="14px" weight="bold" color="grey">
                         No draft saved in{" "}
                         {this.state.channel
                           ? this.state.channel.name
@@ -742,7 +742,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   {this.state.currentTalks.length > 0 && (
                     <Box width="100%">
                       <Text
-                        size="28px"
+                        size="26px"
                         weight="bold"
                         color="black"
                         margin={{ top: "40px", bottom: "24px" }}
@@ -852,7 +852,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         pad="10px"
                       >
                         <Box direction="row" justify="between">
-                          <Text weight="bold" size="20px" color="black">
+                          <Text weight="bold" size="16px" color="black">
                             Agora admins
                           </Text>
                           {/* {this.state.role === "owner" && (
@@ -893,7 +893,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         pad="10px"
                       >
                         <Box direction="row" justify="between">
-                          <Text weight="bold" size="20px" color="black">
+                          <Text weight="bold" size="14px" color="black">
                             Agora members
                           </Text>
                           {/* {this.state.role === "owner" && (
@@ -991,7 +991,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         gap="small"
                         margin={{ bottom: "24px" }}
                       >
-                        <Text size="24px" weight="bold" color="black">
+                        <Text size="16px" weight="bold" color="black">
                           Invite members
                         </Text>
                         <StatusInfo
@@ -1022,7 +1022,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Box direction="row" width="100%" margin={{top: "20px"}}>
                         <Box width="100%"> 
                           {this.state.listEmailCorrect.length > 0 && (
-                            <Text color="green">
+                            <Text color="green" size="14px">
                               Emails successfully extracted from text.
                             </Text>
                           )}
