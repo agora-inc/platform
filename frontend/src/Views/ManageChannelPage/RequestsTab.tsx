@@ -103,11 +103,11 @@ export default class RequestsTab extends Component<Props, State> {
       <Box direction="column">
         <Box direction="row" gap="small" margin={{ bottom: "12px" }}>
           <Text size="14px" weight="bold" color="black">
-            Applicant Details
+            Applicant details
           </Text>
         </Box>
         <Box direction="row" 
-          width="50%"
+          width="60%"
           background="#e5e5e5"
           round="7.5px"
           pad="10px" color="#5A5A5A"
@@ -158,8 +158,9 @@ export default class RequestsTab extends Component<Props, State> {
           columns={columns}
           data={this.state.applicantList}
           step={10}
-          style={{fontSize: "14px"}}
-          // size="xsmall"
+          // style={{fontSize: "14px"}}
+          size="small"
+          // resizeable={true}
           onClickRow={this.handleClickRow}
         />
       </Box>
@@ -174,8 +175,8 @@ const WineButton: React.FC<any> = (props) => {
       background="#7E1115"
       round="xsmall"
       pad="xsmall"
-      height="40px"
-      width="100px"
+      height="30px"
+      width="70px"
       justify="center"
       align="center"
       focusIndicator={false}

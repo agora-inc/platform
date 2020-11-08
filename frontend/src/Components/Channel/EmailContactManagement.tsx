@@ -97,7 +97,7 @@ export default class EmailContactManagement extends Component<Props, State> {
             <Text
             weight="bold"
             //   color={this.props.fill ? "white" : "black"}
-            size="16px"
+            size="14px"
             >Current contact email: <i>{this.state.currentAddress}</i></Text>
           </>
         )}

@@ -82,11 +82,11 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   align="center"
                   overflow="hidden"
                   style={{
-                    minHeight: 40,
-                    minWidth: 40,
-                    maxHeight: 40,
-                    maxWidth: 40,
-                    borderRadius: 20,
+                    minHeight: 30,
+                    minWidth: 30,
+                    maxHeight: 30,
+                    maxWidth: 30,
+                    borderRadius: 15,
                   }}
                 >
                   {!channel.has_avatar && (

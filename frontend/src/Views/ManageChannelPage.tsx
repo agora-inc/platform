@@ -321,7 +321,6 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   parseMailingList = () => {
     let listEmailCorrect = [];
-
     // get all emails constructed using non-alphanumerical characters except "@", ".", "_", and "-"
     let regExtraction = this.state.mailingList.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
     if (regExtraction === null){
@@ -336,6 +335,9 @@ export default class ManageChannelPage extends Component<Props, State> {
       strEmailWrong = strEmailWrong.replace(email, "");
     }
     
+    console.log("step2 mailinglist state", this.state.listEmailCorrect)
+
+
     // clean box if empty
     strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
     if (strEmailWrong.replace(/[\s]/g, "") === ""){
@@ -786,7 +788,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       background="#F3EACE"
                       margin={{ bottom: "36px" }}
                     >
-                      <Text size="18px" weight="bold" color="grey">
+                      <Text size="14px" weight="bold" color="grey">
                         There are no upcoming talks in{" "}
                         {this.state.channel
                           ? this.state.channel.name
@@ -846,13 +848,13 @@ export default class ManageChannelPage extends Component<Props, State> {
                       margin={{bottom: "30px"}}>
                       <Box
                         width="40%"
-                        height="250px"
+                        height="180px"
                         background="#e5e5e5"
                         round="7.5px"
                         pad="10px"
                       >
                         <Box direction="row" justify="between">
-                          <Text weight="bold" size="16px" color="black">
+                          <Text weight="bold" size="14px" color="black">
                             Agora admins
                           </Text>
                           {/* {this.state.role === "owner" && (
@@ -887,7 +889,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
                       <Box
                         width="58%"
-                        height="250px"
+                        height="180px"
                         background="#e5e5e5"
                         round="7.5px"
                         pad="10px"
@@ -991,7 +993,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         gap="small"
                         margin={{ bottom: "24px" }}
                       >
-                        <Text size="16px" weight="bold" color="black">
+                        <Text size="14px" weight="bold" color="black">
                           Invite members
                         </Text>
                         <StatusInfo
@@ -1036,15 +1038,15 @@ export default class ManageChannelPage extends Component<Props, State> {
                           onClick={this.parseMailingList}
                           background="#7E1115"
                           round="xsmall"
-                          pad="xsmall"
-                          height="40px"
+                          // pad="xsmall"
+                          height="30px"
                           width="18%"
                           justify="center"
                           align="center"
                           focusIndicator={false}
                           hoverIndicator="#5A0C0F"
                         >
-                          <Text size="18px"> Add </Text>
+                          <Text size="14px"> Add </Text>
                         </Box>
                       </Box>
                     </Box>

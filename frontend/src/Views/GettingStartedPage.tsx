@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
-import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help } from "grommet-icons";
+import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help, Channel, PersonalComputer} from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
@@ -58,9 +58,9 @@ export default class GettingStartedPage extends Component<Props, State> {
         : UserService.getCurrentUser(),
       loading: true,
       text: "",
-      sizeHeader: "36px",
-      sizeItem: "24px",
-      sizeText: "18px",
+      sizeHeader: "28px",
+      sizeItem: "16px",
+      sizeText: "14px",
     };
   }
 
@@ -140,44 +140,47 @@ export default class GettingStartedPage extends Component<Props, State> {
           > */}
           <Box direction="row" gap="small" margin={{bottom: "72px"}}>
             <Launch size="large" />
-            <Text size={this.state.sizeHeader} weight="bold" > Getting started </Text>
+            <Text size={this.state.sizeHeader} weight="bold"> Getting started </Text>
           </Box>
-          <Box>
-            <Text size={this.state.sizeText} > Welcome to agora.stream, the centralized platform to share your research seminars! 
-            Here is a quick overview on how to use the site, if you are a researcher or an administrator of a research group. </Text>
+          <Box margin={{bottom: "32px"}}>
+            <Text size={this.state.sizeText} > Welcome to <b>agora.stream</b>, the centralized platform to advertise and attend academic seminars!
+             </Text>
+          <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
+            PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
+          </Text>
           </Box>
 
           <Box direction="row" gap="small" margin={{top: "72px", bottom: "48px"}}>
-            <Test size="medium" />
-            <Text size={this.state.sizeItem} weight="bold"> For researchers </Text>
+            <PersonalComputer size="medium"/>
+            <Text size={this.state.sizeItem} weight="bold"> For talk participants </Text>
           </Box>
 
           <Tabs>
             <TabList style={{marginBottom: "24px"}}>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Browse the site
                   </Text>
                 </Box>
               </Tab>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Register and go to a talk
                   </Text>
                 </Box>
               </Tab>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Become a member of an agora
                   </Text>
                 </Box>
               </Tab>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Apply to give a talk
                   </Text>
                 </Box>
@@ -207,8 +210,10 @@ export default class GettingStartedPage extends Component<Props, State> {
 
             <TabPanel>
               <Text size={this.state.sizeText}>
-                You can become a member of an agora only if you are invited by one of its administrators.
-                However, you can always follow an agora to never miss the content uploaded.
+                You can become a member of an agora in two ways: either (1) you log on your account, 
+                go on the agora you want to be a member of and apply using the form; an administrator of the agora will review your application and accept/refuse you. 
+                (2) the administrator of an agora can directly invit you using your email address. 
+                If this email is associated to an agora account, the membership will be automatically granted. Else, you will have to create an account with that address to claim the membership that was given to you.
               </Text>
             </TabPanel>
 
@@ -223,42 +228,42 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           <Box direction="row" gap="small" margin={{top: "48px", bottom: "48px"}}>
             <Schedules size="medium" />
-            <Text size={this.state.sizeItem} weight="bold"> For administrators </Text>
+            <Text size={this.state.sizeItem} weight="bold"> For talk organisers </Text>
           </Box>
 
           <Tabs>
             <TabList style={{marginBottom: "24px"}}>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Create an agora
                   </Text>
                 </Box>
               </Tab>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Customize
                   </Text>
                 </Box>
               </Tab>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Invite members
                   </Text>
                 </Box>
               </Tab>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Talk scheduling and privacy 
                   </Text>
                 </Box>
               </Tab>
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText} style={{fontStyle: "italic"}}> 
+                  <Text size={this.state.sizeText}> 
                     Manage recordings 
                   </Text>
                 </Box>
@@ -352,17 +357,17 @@ export default class GettingStartedPage extends Component<Props, State> {
             <Text size={this.state.sizeHeader} weight="bold"> Any questions? Reach out! </Text>
           </Box>
 
-          <Text margin={{bottom: "60px"}}>
+          <Text margin={{bottom: "60px"}} size={this.state.sizeText}>
             Do you have any question, inquery, or feedback? If yes, please reach out to us using the "Give feedback" button, 
             or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our{" "} 
             <Link to={"/info/tos"}>
-              <Text weight="bold" color="brand">
+              <Text weight="bold" color="brand" size={this.state.sizeText}>
                 Term of services
               </Text>
             </Link>
             {" "} and {" "} 
             <Link to={"/info/privacy"}>
-              <Text weight="bold" color="brand">
+              <Text weight="bold" color="brand" size={this.state.sizeText}>
                 data privacy policies
               </Text>
             </Link>

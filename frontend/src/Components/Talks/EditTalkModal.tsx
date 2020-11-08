@@ -353,7 +353,7 @@ export default class EditTalkModal extends Component<Props, State> {
         title={this.props.talk ? "Edit talk" : "New talk"}
         submitButtonText="Publish"
         onSubmitClick={this.onFinishClicked}
-        contentHeight="600px"
+        contentHeight="550px"
         canProceed={this.isComplete()}
         isMissing={this.isMissing()}
         onCancelClick={this.props.onCanceledCallback}

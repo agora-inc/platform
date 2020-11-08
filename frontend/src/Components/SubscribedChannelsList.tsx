@@ -77,14 +77,14 @@ export default class SubscribedChannelsList extends Component<Props, State> {
         )
       } else {
         return (
-          <Box direction="column" gap="50px" margin={{top: "25px"}}>
+          <Box direction="column" gap="50px" margin={{top: "15px"}}>
             {this.state.memberChannels.length !== 0 && (
               <Box>
                 <Text
                   size="14px"
                   weight="bold"
                   color="grey"
-                  margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
+                  margin={{ left: "small", top: "xsmall" }}
                 >
                   Your Agoras
                 </Text>
@@ -114,6 +114,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                           justify="center"
                           align="center"
                           overflow="hidden"
+                          style = {{ minWidth: "30px", minHeight: "30px" }}
                         >
                           {!channel.has_avatar && (
                             <Identicon string={channel.name} size={30} />
@@ -127,7 +128,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                           )}
                         </Box>
                         <Box justify="between">
-                          <Text size="16px" weight="bold" color="black">
+                          <Text size="14px" weight="bold" color="black">
                             {channel.name}
                           </Text>
                           {/* <Text size="12px" weight="bold" color="#6B6A6A">
@@ -146,7 +147,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                   size="14px"
                   weight="bold"
                   color="grey"
-                  margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
+                  margin={{ left: "small", top: "xsmall" }}
                 >
                   Following
                 </Text>
@@ -176,6 +177,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                           justify="center"
                           align="center"
                           overflow="hidden"
+                          style = {{ minWidth: "30px", minHeight: "30px" }}
                         >
                           {!channel.has_avatar && (
                             <Identicon string={channel.name} size={30} />
@@ -189,7 +191,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                           )}
                         </Box>
                         <Box justify="between">
-                          <Text size="16px" weight="bold" color="black">
+                          <Text size="14px" weight="bold" color="black">
                             {channel.name}
                           </Text>
                           {/* <Text size="12px" weight="bold" color="#6B6A6A">
