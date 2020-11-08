@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
+import { StatusInfo } from "grommet-icons";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   text: string;
@@ -16,7 +18,7 @@ export default class ImageUploader extends Component<Props> {
           className="input-hidden"
           onChange={this.props.onUpload}
         ></input>
-        <Box
+        <Box 
           width={this.props.width || "100px"}
           height="25px"
           background="white"

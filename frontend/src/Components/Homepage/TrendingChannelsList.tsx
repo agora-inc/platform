@@ -31,7 +31,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
   }
   render() {
     return (
-      <Box height="100%">
+      <Box height="240px">
         <Box direction="row">
           <Text
             size="14px"

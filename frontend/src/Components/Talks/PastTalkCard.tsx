@@ -4,7 +4,7 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { Link } from "react-router-dom";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
-import { Calendar, Workshop, UserExpert } from "grommet-icons";
+import { Calendar, Workshop, UserExpert, FormNextLink } from "grommet-icons";
 import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
 import { default as CoreButton } from "../Core/Button";
@@ -604,6 +604,20 @@ export default class PastTalkCard extends Component<Props, State> {
                     }
                   of ${this.props.talk.channel_name}`}
                 </Text>
+                <Link to={`/${this.props.talk.channel_name}`} style={{ textDecoration: "none" }}>
+              <Box
+                className="see-more-button"
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
+                round="xsmall"
+                style={{
+                  border: "2px solid #C2C2C2",
+                }}
+                direction="row"
+                align="end"
+              >      
+                <FormNextLink color="grey" />
+              </Box>
+            </Link>
               </Box>
             )}
           </Layer>

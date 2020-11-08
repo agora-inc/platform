@@ -491,7 +491,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               </Box>
             </Box>
             <Box>
-              <Text size="30px" color="black" weight="bold" margin={{bottom: "6px"}}>
+              <Text size="24px" color="black" weight="bold" margin={{bottom: "6px"}}>
                 {this.state.channel?.name}
               </Text>
               {(typeof(this.state.viewerCount) == "number") &&
@@ -504,6 +504,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                   text="Upload avatar"
                   onUpload={this.onFileChosen}
                 />
+                <StatusInfo size="small" data-tip data-for='avatar_info'/>
+                      <ReactTooltip id='avatar_info' place="right" effect="solid">
+                       <p>Recommended avatar dim: 400x400px</p>
+                      </ReactTooltip>
                 <DeleteAgoraButton
                   name={this.state.channel!.name}
                   id={this.state.channel!.id}
@@ -584,66 +588,27 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </Box>
               )}
+              {this.banner()}
 
-              <Box
-                width="100%"
-                height="100%"
-                pad="10px"
-                background="white"
-                round="xsmall"
-                justify="center"
-                style={{
-                  border: "1px solid #C2C2C2",
-                }}
-              >
-                <Text color="#5A5A5A" size="14px">
-                  <p>
-                    {<UserAdmin />}
-                    <big>
-                      <b> Agora administrator page </b>
-                    </big>
-                  </p>
-                  <p>As an administrator, you can:</p>
-                  <ul>
-                    <li>
-                      <b>Create and edit events</b>
-                    </li>
-                    <li>
-                      <b>Customize header</b>{" "}
-                      <i>(recommended dim: 1500x500px)</i>
-                    </li>
-                    <li>
-                      <b>Customize avatar </b>
-                      <i>(recommended dim: 400x400px)</i>
-                    </li>
-                    <li>
-                      <b>Edit Agora description</b>{" "}
-                    </li>
-                    <li>
-                      <b>Promote users</b> to administrator/member.
-                    </li>
-                    <li>
-                      <b>Link recordings</b> to your previous Agora events.
-                    </li>
-                  </ul>
-                  <p>
-                    For more general information, visit our
-                    <Link to={"/info/getting-started"}>
-                      <Text weight="bold" color="brand">
-                        {" "}
-                        getting-started{" "}
+
+              <Box margin={{ top: "10px", bottom: "20px" }}>
+                <Text
+                    size="24px"
+                    weight="bold"
+                    color="black"
+                    margin={{ top: "10px", bottom: "10px" }}
+                  >
+                    {<UserAdmin />} {`Administrator panel`}{" "}
+                  </Text>
+                  <Text size="14">
+                    For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="brand">
+                      <Text color="brand" weight="bold" size="14px">
+                      getting-started page.
                       </Text>
                     </Link>
-                    page.
-                  </p>
-                  <i>
-                    <b>NB:</b> This help box and customisation options are only
-                    visible to admins.
-                  </i>
-                </Text>
-              </Box>
+                    </Text>
+                </Box>
 
-              {this.banner()}
 
               <Tabs>
                 <TabList>
@@ -696,7 +661,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="small"
                     margin={{ bottom: "24px" }}
                   >
-                    <Text size="24px" weight="bold" color="black">
+                    <Text size="20px" weight="bold" color="black">
                       {`Drafts`}
                     </Text>
                     <StatusInfo
@@ -766,10 +731,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                   )}
                   <Box
                     width="100%"
-                    margin={{top: "12px", bottom: "24px" }}
+                    margin={{top: "12px", bottom: "12px" }}
                   >
                     <Text
-                      size="24px"
+                      size="20px"
                       weight="bold"
                       color="black"
                     >
@@ -809,7 +774,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       margin={{top: "12px", bottom: "24px" }}
                     >
                       <Text
-                        size="24px"
+                        size="20px"
                         weight="bold"
                         color="black"
                         margin={{ top: "40px" }}
@@ -1052,17 +1017,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>
-                  {/*
-                  <Text
-                    size="28px"
-                    weight="bold"
-                    color="black"
-                    margin={{ top: "10px" }}
-                  >
-                    {<UserAdmin />} {`Administrator panel`}{" "}
-                  </Text>
-                  */}
+                <TabPanel style={{width: "74.35vw"}}>             
 
                   <Box
                     direction="row"

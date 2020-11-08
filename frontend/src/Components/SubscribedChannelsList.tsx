@@ -229,7 +229,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
               Community
             </Text>
             <Text size="14px" color="grey" weight="bold">
-              Access private events, talk recordings and many more!
+              Get access to members' only events, talk recordings and many more!
             </Text>
           </Box>
           <SignUpButton callback={() => {}} />
