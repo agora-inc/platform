@@ -195,13 +195,13 @@ export default class CountdownAndCalendarButtons extends Component<
               round="xsmall"
               pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
               justify="center"
-              align="end"
+              align="center"
               focusIndicator={false}
               style={{
                 border: "1px solid #C2C2C2",
               }}
               hoverIndicator={true}
-              height="45px"
+              height="40px"
             >
               <Text size="14px" weight="bold">
                 Link to talk
