@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, DropButton, Text } from "grommet";
 import { FormDown, FormUp } from "grommet-icons";
-import ImageUploader from "../Core/ImageUploader";
+import ImageCropUploader from "./ImageCropUploader";
 import { ChannelService } from "../../Services/ChannelService";
 import ReactTooltip from "react-tooltip";
 import { StatusInfo } from "grommet-icons";
@@ -48,11 +48,11 @@ export default class ColorPicker extends Component<Props, State> {
     this.setState({ open: !this.state.open });
   };
 
-  onCoverUpload = (e: any) => {
+  onCoverUpload = (file: File) => {
     this.props.channelId &&
       ChannelService.uploadCover(
         this.props.channelId,
-        e.target.files[0],
+        file,
         () => {
           window.location.reload();
         }
@@ -111,7 +111,7 @@ export default class ColorPicker extends Component<Props, State> {
           ))}
         </Box>
         <Box gap="4px">
-          <ImageUploader
+          <ImageCropUploader
             text="Upload header"
             onUpload={this.onCoverUpload}
             width="100%"
@@ -124,6 +124,7 @@ export default class ColorPicker extends Component<Props, State> {
 
   render() {
     return (
+      <>
       <Box
         width={this.state.open ? "139px" : "120px"}
         background="#f2f2f2"
@@ -178,6 +179,15 @@ export default class ColorPicker extends Component<Props, State> {
           onClose={this.toggle}
         />
       </Box>
+      {/* This is a workaround because Modal don't work with DropButton */}
+      <Box direction="row">
+        <ImageCropUploader
+          text="Upload header"
+          onUpload={this.onCoverUpload}
+          width="100%"
+        />
+      </Box>
+      </>
     );
   }
 }
