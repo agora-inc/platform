@@ -81,7 +81,7 @@ export default class CropImageModal extends Component<Props, State> {
   }
 
   dataURLtoFile(dataurl: string, filename: string) {
-    debugger;
+    // debugger;
     const arr = dataurl.split(',');
     const match = arr[0].match(/:(.*?);/);
     const mime = (match && match[1]) || '';

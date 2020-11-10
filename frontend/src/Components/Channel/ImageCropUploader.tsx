@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import CropImageModal from "./CropImageModal";
+import ReactTooltip from "react-tooltip";
+import { StatusInfo } from "grommet-icons";
 
 interface Props {
   text: string;
@@ -47,16 +49,20 @@ export default class ImageCropUploader extends Component<Props, State> {
           onChange={this.onFileChange}
         ></input>
         <Box 
-          width={this.props.width || "100px"}
-          height="25px"
+          width={this.props.width || "200px"}
+          height="30px"
           background="white"
           round="xsmall"
           style={{ border: "solid black 2px", cursor: "pointer" }}
           align="center"
           justify="center"
         >
-          <Text size="13px" weight="bold" color="black">
-            {this.props.text}
+          <Text size="14px" weight="bold" color="black">
+            {this.props.text} 
+              <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
+            <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
+              <p>Recommended dim: 1500x500px</p>
+            </ReactTooltip>
           </Text>
         </Box>
         <CropImageModal
