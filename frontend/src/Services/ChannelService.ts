@@ -220,7 +220,7 @@ const updateLongChannelDescription = (
   var newDescriptionUtf8withoutDoubleQuote = newDescriptionUtf8.replace("\"", "\'")
   post(
     "channels/updatelongdescription",
-    { channelId: channelId, newDescription: newDescriptionUtf8 },
+    { channelId: channelId, newDescription: newDescriptionUtf8withoutDoubleQuote },
     callback
   );
 };
