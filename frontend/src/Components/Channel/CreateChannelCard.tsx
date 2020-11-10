@@ -75,8 +75,8 @@ export default class CreateChannelCard extends Component<Props, State> {
           >
             <Previous color="black" />
           </Box>
-          <Text weight="bold" color="black">
-            Create Agora
+          <Text weight="bold" color="black" size="14px">
+            Create an Agora
           </Text>
         </Box>
 

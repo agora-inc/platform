@@ -24,6 +24,7 @@ import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, 
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
+import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 
 interface Props {
@@ -320,7 +321,6 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   parseMailingList = () => {
     let listEmailCorrect = [];
-
     // get all emails constructed using non-alphanumerical characters except "@", ".", "_", and "-"
     let regExtraction = this.state.mailingList.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
     if (regExtraction === null){
@@ -335,6 +335,9 @@ export default class ManageChannelPage extends Component<Props, State> {
       strEmailWrong = strEmailWrong.replace(email, "");
     }
     
+    console.log("step2 mailinglist state", this.state.listEmailCorrect)
+
+
     // clean box if empty
     strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
     if (strEmailWrong.replace(/[\s]/g, "") === ""){
@@ -488,11 +491,11 @@ export default class ManageChannelPage extends Component<Props, State> {
               </Box>
             </Box>
             <Box>
-              <Text size="30px" color="black" weight="bold" margin={{bottom: "6px"}}>
+              <Text size="24px" color="black" weight="bold" margin={{bottom: "6px"}}>
                 {this.state.channel?.name}
               </Text>
               {(typeof(this.state.viewerCount) == "number") &&
-                <Text size="24px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
+                <Text size="16px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
                   {this.state.viewerCount} visits
                 </Text>
               }
@@ -501,6 +504,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                   text="Upload avatar"
                   onUpload={this.onFileChosen}
                 />
+                <StatusInfo size="small" data-tip data-for='avatar_info'/>
+                      <ReactTooltip id='avatar_info' place="right" effect="solid">
+                       <p>Recommended avatar dim: 400x400px</p>
+                      </ReactTooltip>
                 <DeleteAgoraButton
                   name={this.state.channel!.name}
                   id={this.state.channel!.id}
@@ -575,79 +582,40 @@ export default class ManageChannelPage extends Component<Props, State> {
                     round="xsmall"
                     background="#F3EACE"
                   >
-                    <Text size="18px" weight="bold" color="grey">
+                    <Text size="14px" weight="bold" color="grey">
                       You are an administrator
                     </Text>
                   </Box>
                 </Box>
               )}
+              {this.banner()}
 
-              <Box
-                width="100%"
-                height="100%"
-                pad="10px"
-                background="white"
-                round="xsmall"
-                justify="center"
-                style={{
-                  border: "1px solid #C2C2C2",
-                }}
-              >
-                <Text color="#5A5A5A">
-                  <p>
-                    {<UserAdmin />}
-                    <big>
-                      <b> Agora administrator page </b>
-                    </big>
-                  </p>
-                  <p>As an administrator, you can:</p>
-                  <ul>
-                    <li>
-                      <b>Create and edit events</b>
-                    </li>
-                    <li>
-                      <b>Customize header</b>{" "}
-                      <i>(recommended dim: 1500x500px)</i>
-                    </li>
-                    <li>
-                      <b>Customize avatar </b>
-                      <i>(recommended dim: 400x400px)</i>
-                    </li>
-                    <li>
-                      <b>Edit Agora description</b>{" "}
-                    </li>
-                    <li>
-                      <b>Promote users</b> to administrator/member.
-                    </li>
-                    <li>
-                      <b>Link recordings</b> to your previous Agora events.
-                    </li>
-                  </ul>
-                  <p>
-                    For more general information, visit our
-                    <Link to={"/info/getting-started"}>
-                      <Text weight="bold" color="brand">
-                        {" "}
-                        getting-started{" "}
+
+              <Box margin={{ top: "10px", bottom: "20px" }}>
+                <Text
+                    size="24px"
+                    weight="bold"
+                    color="black"
+                    margin={{ top: "10px", bottom: "10px" }}
+                  >
+                    {<UserAdmin />} {`Administrator panel`}{" "}
+                  </Text>
+                  <Text size="14">
+                    For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="brand">
+                      <Text color="brand" weight="bold" size="14px">
+                      getting-started page.
                       </Text>
                     </Link>
-                    page.
-                  </p>
-                  <i>
-                    <b>NB:</b> This help box and customisation options are only
-                    visible to admins.
-                  </i>
-                </Text>
-              </Box>
+                    </Text>
+                </Box>
 
-              {this.banner()}
 
               <Tabs>
                 <TabList>
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <Workshop />
-                      <Text size="24px"> 
+                      <Text size="14px"> 
                         Talks 
                       </Text>
                     </Box>
@@ -655,7 +623,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <Group />
-                      <Text size="24px"> 
+                      <Text size="14px"> 
                         Community 
                       </Text>
                     </Box>
@@ -671,8 +639,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <ContactInfo />
-                      <Text size="24px"> 
+                      <Text size="14px"> 
                         Contact 
+                      </Text>
+                    </Box>
+                  </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
+                      <ContactInfo />
+                      <Text size="14px"> 
+                        Requests 
                       </Text>
                     </Box>
                   </Tab>
@@ -683,9 +659,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                     width="100%"
                     direction="row"
                     gap="small"
-                    margin={{ top: "40px", bottom: "24px" }}
+                    margin={{ bottom: "24px" }}
                   >
-                    <Text size="24px" weight="bold" color="black">
+                    <Text size="20px" weight="bold" color="black">
                       {`Drafts`}
                     </Text>
                     <StatusInfo
@@ -715,7 +691,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       background="#F3EACE"
                       margin={{ bottom: "36px" }}
                     >
-                      <Text size="18px" weight="bold" color="grey">
+                      <Text size="14px" weight="bold" color="grey">
                         No draft saved in{" "}
                         {this.state.channel
                           ? this.state.channel.name
@@ -733,7 +709,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   {this.state.currentTalks.length > 0 && (
                     <Box width="100%">
                       <Text
-                        size="28px"
+                        size="26px"
                         weight="bold"
                         color="black"
                         margin={{ top: "40px", bottom: "24px" }}
@@ -748,16 +724,17 @@ export default class ManageChannelPage extends Component<Props, State> {
                           width="31.5%" 
                           isCurrent={true}
                           onEditCallback={this.fetchAllTalks}
+                          following={false}
                         />
                       ))}
                     </Box>
                   )}
                   <Box
                     width="100%"
-                    margin={{top: "12px", bottom: "24px" }}
+                    margin={{top: "12px", bottom: "12px" }}
                   >
                     <Text
-                      size="24px"
+                      size="20px"
                       weight="bold"
                       color="black"
                     >
@@ -776,7 +753,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       background="#F3EACE"
                       margin={{ bottom: "36px" }}
                     >
-                      <Text size="18px" weight="bold" color="grey">
+                      <Text size="14px" weight="bold" color="grey">
                         There are no upcoming talks in{" "}
                         {this.state.channel
                           ? this.state.channel.name
@@ -797,7 +774,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       margin={{top: "12px", bottom: "24px" }}
                     >
                       <Text
-                        size="24px"
+                        size="20px"
                         weight="bold"
                         color="black"
                         margin={{ top: "40px" }}
@@ -836,14 +813,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       margin={{bottom: "30px"}}>
                       <Box
                         width="40%"
-                        height="250px"
+                        height="180px"
                         background="#e5e5e5"
                         round="7.5px"
                         pad="10px"
                       >
                         <Box direction="row" justify="between">
-                          <Text weight="bold" size="20px" color="black">
-                            Agora admin
+                          <Text weight="bold" size="14px" color="black">
+                            Agora admins
                           </Text>
                           {/* {this.state.role === "owner" && (
                             <AddUsersButton
@@ -877,13 +854,13 @@ export default class ManageChannelPage extends Component<Props, State> {
 
                       <Box
                         width="58%"
-                        height="250px"
+                        height="180px"
                         background="#e5e5e5"
                         round="7.5px"
                         pad="10px"
                       >
                         <Box direction="row" justify="between">
-                          <Text weight="bold" size="20px" color="black">
+                          <Text weight="bold" size="14px" color="black">
                             Agora members
                           </Text>
                           {/* {this.state.role === "owner" && (
@@ -981,7 +958,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         gap="small"
                         margin={{ bottom: "24px" }}
                       >
-                        <Text size="24px" weight="bold" color="black">
+                        <Text size="14px" weight="bold" color="black">
                           Invite members
                         </Text>
                         <StatusInfo
@@ -1012,7 +989,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Box direction="row" width="100%" margin={{top: "20px"}}>
                         <Box width="100%"> 
                           {this.state.listEmailCorrect.length > 0 && (
-                            <Text color="green">
+                            <Text color="green" size="14px">
                               Emails successfully extracted from text.
                             </Text>
                           )}
@@ -1026,31 +1003,21 @@ export default class ManageChannelPage extends Component<Props, State> {
                           onClick={this.parseMailingList}
                           background="#7E1115"
                           round="xsmall"
-                          pad="xsmall"
-                          height="40px"
+                          // pad="xsmall"
+                          height="30px"
                           width="18%"
                           justify="center"
                           align="center"
                           focusIndicator={false}
                           hoverIndicator="#5A0C0F"
                         >
-                          <Text size="18px"> Add </Text>
+                          <Text size="14px"> Add </Text>
                         </Box>
                       </Box>
                     </Box>
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>
-                  {/*
-                  <Text
-                    size="28px"
-                    weight="bold"
-                    color="black"
-                    margin={{ top: "10px" }}
-                  >
-                    {<UserAdmin />} {`Administrator panel`}{" "}
-                  </Text>
-                  */}
+                <TabPanel style={{width: "74.35vw"}}>             
 
                   <Box
                     direction="row"
@@ -1066,6 +1033,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                       onAddAddress={this.onAddContactAddress}
                       onDeleteAddress={this.onDeleteContactAddress}
                     />
+                  </Box>
+                </TabPanel>
+                <TabPanel style={{width: "74.35vw"}}>
+                  <Box direction="row" margin={{bottom: "60px"}}>
+                    <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel>
               </Tabs>

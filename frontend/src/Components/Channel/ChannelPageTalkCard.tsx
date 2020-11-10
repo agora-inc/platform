@@ -15,17 +15,21 @@ import AsyncButton from "../Core/AsyncButton";
 import TalkCard from "../Talks/TalkCard";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
+import RequestMembershipButton from "./ApplyMembershipButton";
 import { thisExpression } from "@babel/types";
 
 interface Props {
   talk: Talk;
   user: User | null;
   admin: boolean;
-  onEditCallback?: any;
+  role?: string;
   width?: any;
   margin?: any;
   isCurrent?: boolean;
   show?: boolean;
+  following: boolean;
+  onEditCallback?: any;
+  callback?: any;
 }
 
 interface State {
@@ -33,7 +37,6 @@ interface State {
   showEdit: boolean;
   registered: boolean;
   showShadow: boolean;
-  available: boolean;
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -44,9 +47,13 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       showEdit: false,
       registered: false,
       showShadow: false,
-      available: true,
     };
   }
+
+  componentDidMount = () => {
+    this.checkIfUserCanAccessLink();
+    this.checkIfUserCanViewCard();
+  };
 
   checkIfRegistered = () => {
     this.props.user &&
@@ -57,6 +64,61 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           this.setState({ registered });
         }
       );
+  };
+
+
+  checkIfUserCanAccessLink = () => {
+    if (this.props.admin) {
+      return true;
+    }
+    else
+      if (this.props.talk.visibility == "Everybody") {
+        return true;
+      }
+      else if (this.props.talk.visibility == "Followers and members") {
+        if (this.props.following || this.props.role === "follower" || this.props.role === "member") {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+      else if (this.props.talk.visibility == "Members only") {
+        if (this.props.role === "member"){
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+  };
+
+
+
+  checkIfUserCanViewCard = () => {
+    if (this.props.admin) {
+      return true;
+    }
+    else
+      if (this.props.talk.card_visibility == "Everybody") {
+        return true;
+      }
+      else if (this.props.talk.card_visibility === "Followers and members") {
+        if (this.props.role === "follower" || this.props.role === "member") {
+          return true;
+        }
+        else {
+          return false;
+        };
+      }
+      else if (this.props.talk.card_visibility == "Members only") {
+        if (this.props.role === "member") {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
   };
 
   register = () => {
@@ -87,6 +149,24 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     } else {
       this.register();
     }
+  };
+
+  onFollowClicked = () => {
+    if (!this.props.following) {
+      ChannelService.addUserToChannel(
+        this.props.user!.id,
+        this.props.talk.channel_id,
+        "follower",
+        () => {}
+      );
+    } else {
+      ChannelService.removeUserFromChannel(
+        this.props.user!.id,
+        this.props.talk.channel_id,
+        () => {}
+      );
+    }
+    this.props.callback()
   };
 
   formatDate = (d: string) => {
@@ -187,12 +267,12 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   />
                 )}
               </Box>
-              <Text weight="bold" size="16px" color="grey">
+              <Text weight="bold" size="14px" color="grey">
                 {this.props.talk.channel_name}
               </Text>
             </Box>
             <Text
-              size="18px"
+              size="14px"
               color="black"
               weight="bold"
               style={{ minHeight: "75px", overflow: "auto" }}
@@ -202,7 +282,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             <Box direction="row" gap="small">
               <UserExpert size="18px" />
               <Text
-                size="18px"
+                size="14px"
                 color="black"
                 style={{
                   height: "30px",
@@ -217,7 +297,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               </Text>
             </Box>
             <Box direction="row" gap="small">
-              <Calendar size="18px" />
+              <Calendar size="14px" />
               <Box direction="row" width="100%">
                 {this.props.isCurrent && (
                   <Text
@@ -231,7 +311,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 )}
                 {!this.props.isCurrent && (
                   <Text
-                    size="18px"
+                    size="14px"
                     color="black"
                     style={{ height: "30px", fontStyle: "normal" }}
                   >
@@ -239,14 +319,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   </Text>
                 )}
               </Box>
-              {this.props.talk.card_visibility === "Members only" && 
+              {this.props.talk.card_visibility === "Members only" &&
                 <Box
                   round="xsmall"
                   background="#C2C2C2"
                   pad="xsmall"
                   justify="center"
                   align="center"
-                  width="160px"                
+                  width="160px"
                 >
                   <Text size="14px">
                     Members only
@@ -371,7 +451,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 </Box>
                 <Text
                   weight="bold"
-                  size="21px"
+                  size="18px"
                   color="black"
                   style={{
                     minHeight: "50px",
@@ -392,9 +472,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       hoverIndicator={true}
                       pad={{ left: "6px", top: "4px" }}
                     >
-                      <UserExpert size="18px" />
+                      <UserExpert size="14px" />
                       <Text
-                        size="18px"
+                        size="14px"
                         color="black"
                         style={{
                           height: "24px",
@@ -412,9 +492,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
                 {!this.props.talk.talk_speaker_url && (
                   <Box direction="row" gap="small">
-                    <UserExpert size="18px" />
+                    <UserExpert size="14px" />
                     <Text
-                      size="18px"
+                      size="14px"
                       color="black"
                       style={{
                         height: "30px",
@@ -430,7 +510,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   </Box>
                 )}
                 <Text
-                  size="16px"
+                  size="14px"
                   color="black"
                   style={{
                     minHeight: "50px",
@@ -442,11 +522,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   {this.escapeDoubleQuotes(this.props.talk.description)}
                 </Text>
               </Box>
+
+
+
               <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
-                  <Calendar size="18px" />
+                  <Calendar size="14px" />
                   <Text
-                    size="18px"
+                    size="14px"
                     color="black"
                     style={{ height: "20px", fontStyle: "normal" }}
                   >
@@ -456,8 +539,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     )}
                   </Text>
                 </Box>
-                {this.state.available &&
-                  (this.props.user !== null || this.props.admin) &&
+                {(this.props.user !== null || this.props.admin) &&
                   this.state.registered && (
                     <Box margin={{ top: "10px", bottom: "20px" }}>
                       <CountdownAndCalendarButtons talk={this.props.talk} />
@@ -481,7 +563,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       </Box>
                     </Box>
                   )}
-                {this.state.available &&
+                {this.checkIfUserCanAccessLink() &&
                   (this.props.user !== null || this.props.admin) &&
                   !this.state.registered && (
                     <Box
@@ -495,38 +577,71 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       focusIndicator={false}
                       hoverIndicator="#5A0C0F"
                     >
-                      <Text size="18px">Register</Text>
-                    </Box>
-                  )}
-                {this.state.available &&
-                  this.props.user === null &&
-                  !this.props.admin && (
-                    <Box direction="row" align="center" gap="10px">
-                      <LoginModal callback={() => {}} />
-                      <Text size="18px"> or </Text>
-                      <SignUpButton callback={() => {}} />
-                      <Text size="18px"> to register </Text>
+                      <Text size="14px">Register</Text>
                     </Box>
                   )}
               </Box>
             </Box>
-            {!this.state.available && (
-              <Box
-                background="#d5d5d5"
-                pad="small"
-                align="center"
-                justify="center"
-              >
-                <Text textAlign="center" weight="bold">
-                  {`Sorry, this talk is only available to ${
-                    this.props.talk.visibility === "Followers and members"
-                      ? "followers and members"
-                      : "members"
-                  }
-                  of ${this.props.talk.channel_name}`}
-                </Text>
+            {!this.checkIfUserCanAccessLink() && this.props.user === null
+            && (
+              <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
+                <Text size="18px"> You need to </Text>
+                <LoginModal callback={() => {}} />
+                <Text size="18px"> or </Text>
+                <SignUpButton callback={() => {}} />
+                <Text size="18px"> to attend </Text>
               </Box>
             )}
+            {!this.checkIfUserCanAccessLink() && this.props.user !== null
+              && (
+                <Box direction="row" align="center" gap="15px" background="#d5d5d5" pad="25px" justify="center">
+                  <Text> You need to </Text>
+                  {this.props.talk.visibility == "Followers and members" && (
+                    <Box gap="15px" direction="row" align="center">
+                      <Box
+                        className="follow-button"
+                        background={this.props.following ? "#e5e5e5": "white"}
+                        height="35px"
+                        style={{
+                          border: "1px solid #C2C2C2",
+                        }}
+                        width="100px"
+                        round="xsmall"
+                        pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
+                        align="center"
+                        justify="center"
+                        onClick={this.onFollowClicked}
+                        focusIndicator={false}
+                        hoverIndicator={true}
+                      >
+                        <Text 
+                          size="16px" 
+                          color="grey"
+                          alignSelf="center"
+                        >
+                          Follow
+                        </Text>
+                      </Box>
+                      <Text> or </Text>
+                    </Box>
+                  )}
+                  {this.props.role !== "member" && this.props.role !== "owner" && (
+                    <RequestMembershipButton
+                      channelId={this.props.talk.channel_id}
+                      channelName={this.props.talk.channel_name}
+                      user={this.props.user}
+                      height="35px"
+                      width="200px"
+                    />
+                    )}
+
+                  <Text> to attend </Text>
+
+
+                </Box>
+            )}
+
+            
           </Layer>
         )}
         {this.props.admin && this.state.showEdit && (

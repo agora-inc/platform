@@ -183,7 +183,7 @@ class TalkRepository:
 
     def getAvailablePastTalks(self, limit, offset, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 
@@ -295,7 +295,7 @@ class TalkRepository:
 
     def getAvailablePastTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER DESC BY date"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
@@ -402,15 +402,56 @@ class TalkRepository:
         return talks
 
     def getTalkById(self, talkId):
-        query = f'SELECT * FROM Talks WHERE id = {talkId}'
-        talk = self.db.run_query(query)[0]
+        query = f'SELECT * FROM Talks WHERE id = {talkId};'
+        try:
+            talk = self.db.run_query(query)[0]
+            # talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            # talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+            return talk
+        except:
+            return
 
-        talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
-        talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
-        return talk
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
-        query = f'INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, card_visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", {showLinkOffset}, "{visibility}", "{cardVisibility}", "{topic_1_id}", "{topic_2_id}", "{topic_3_id}", "{talk_speaker}", "{talk_speaker_url}", {published});'        
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
+        query = f'''
+            INSERT INTO Talks (
+                channel_id, 
+                channel_name, 
+                name, 
+                date, 
+                end_date, 
+                description, 
+                link, 
+                show_link_offset, 
+                visibility, 
+                card_visibility, 
+                topic_1_id, 
+                topic_2_id, 
+                topic_3_id, 
+                talk_speaker, 
+                talk_speaker_url, 
+                published,
+                audience_level) 
+            VALUES (
+                {channelId}, 
+                "{channelName}", 
+                "{talkName}", 
+                "{startDate}", 
+                "{endDate}", 
+                "{talkDescription}", 
+                "{talkLink}", 
+                {showLinkOffset}, 
+                "{visibility}", 
+                "{cardVisibility}", 
+                "{topic_1_id}", 
+                "{topic_2_id}", 
+                "{topic_3_id}", 
+                "{talk_speaker}", 
+                "{talk_speaker_url}", 
+                {published},
+                "{audience_level}"
+                );
+            '''        
         insertId = self.db.run_query(query)[0]
 
         if not isinstance(insertId, int):
@@ -421,9 +462,27 @@ class TalkRepository:
 
         return self.getTalkById(insertId)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
-        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset={showLinkOffset}, visibility="{visibility}", card_visibility="{cardVisibility}", topic_1_id="{topic_1_id}", topic_2_id="{topic_2_id}", topic_3_id="{topic_3_id}", talk_speaker="{talk_speaker}", talk_speaker_url="{talk_speaker_url}", published={published} WHERE id = {talkId};'
-        self.db.run_query(query)
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
+        query = f'''
+            UPDATE Talks 
+                SET name="{talkName}", 
+                description="{talkDescription}", 
+                date="{startDate}", 
+                end_date="{endDate}", 
+                link="{talkLink}", 
+                show_link_offset={showLinkOffset}, 
+                visibility="{visibility}", 
+                card_visibility="{cardVisibility}", 
+                topic_1_id="{topic_1_id}", 
+                topic_2_id="{topic_2_id}", 
+                topic_3_id="{topic_3_id}", 
+                talk_speaker="{talk_speaker}", 
+                talk_speaker_url="{talk_speaker_url}", 
+                published={published},
+                audience_level="{audience_level}"
+            WHERE id = {talkId};'''
+        
+        res = self.db.run_query(query)
 
         tagIds = [t["id"] for t in talkTags]
         self.tags.tagTalk(talkId, tagIds)

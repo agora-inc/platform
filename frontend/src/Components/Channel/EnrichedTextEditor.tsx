@@ -99,7 +99,7 @@ export default class EnrichedTextEditor extends Component<Props, State> {
               cursor: "pointer",
               color: "blue",
             }}
-            size="20px"
+            size="14px"
             onClick={this.onClick}
             contentEditable={false}
           >
@@ -111,7 +111,7 @@ export default class EnrichedTextEditor extends Component<Props, State> {
       {!this.state.editing_mode && (
         <> 
           <Text
-            size="20px"
+            size="14px"
             style={{ textAlign: "justify", fontWeight: 450 }}
             margin={{ horizontal: "16px", bottom: "16px" }}
           >
@@ -125,7 +125,7 @@ export default class EnrichedTextEditor extends Component<Props, State> {
             cursor: "pointer",
             color: "blue",
           }}
-          size="20px"
+          size="14px"
           onClick={this.onClick}
           contentEditable={false}
         >

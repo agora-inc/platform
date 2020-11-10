@@ -131,7 +131,12 @@ const updatePublic = (userId: number, _public: boolean, callback: any) => {
 export type User = {
   id: number;
   username: string;
-  bio: string;
+  verified_academic?: boolean;
+  email?: string;
+  bio?: string | undefined;
+  institution?: string | undefined;
+  personal_homepage?: string | undefined;
+  position?: string | undefined;
 };
 
 export const UserService = {

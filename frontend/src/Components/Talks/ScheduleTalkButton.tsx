@@ -33,8 +33,7 @@ export default class ScheduleTalkButton extends Component<Props, State> {
           onClick={this.toggleModal}
           background="#7E1115"
           round="xsmall"
-          margin={{bottom: "medium"}}
-          pad={{bottom: "small", top: "small", left: "medium", right: "medium"}}
+          pad={{bottom: "small", top: "small", left: "small", right: "small"}}
           height="40px"
           width="15vw"
           justify="center"
@@ -43,7 +42,7 @@ export default class ScheduleTalkButton extends Component<Props, State> {
           // hoverIndicator="#2433b5"
           hoverIndicator="#5A0C0F"
         >
-          <Text size="20px"> Schedule talk </Text>
+          <Text size="14px" weight="bold"> Schedule talk </Text>
         </Box>
         <EditTalkModal
           visible={this.state.showModal}

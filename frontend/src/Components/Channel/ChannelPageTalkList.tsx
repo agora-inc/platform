@@ -12,6 +12,9 @@ interface Props {
   admin: boolean;
   onEditCallback?: any;
   showTalkId?: number;
+  role?: string;
+  following?: boolean;
+  callback?: any;
 }
 
 interface State {
@@ -27,6 +30,7 @@ export default class ChannelPageTalkList extends Component<Props, State> {
       loading: true,
     };
   }
+
 
   componentWillMount() {
     // this.fetchTalks();
@@ -49,10 +53,13 @@ export default class ChannelPageTalkList extends Component<Props, State> {
             width="31.5%"
             talk={talk}
             user={this.props.user}
+            role={this.props.role}
             admin={this.props.admin}
             onEditCallback={this.props.onEditCallback}
             margin={{ bottom: "medium" }}
             show={this.props.showTalkId === talk.id}
+            following={this.props.following ? this.props.following : false}
+            callback={this.props.callback}
           />
         ))}
       </Box>

@@ -119,8 +119,8 @@ def authenticate():
 
 @app.route('/refreshtoken', methods=["POST"])
 def refreshAccessToken():
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
     if "userId" not in params:
@@ -254,6 +254,19 @@ def getInvitedMembersForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(invitations.getInvitedMembersEmails(channelId))
 
+@app.route('/channels/users/add', methods=["POST", "OPTIONS"])
+def addUserToChannel():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+    return jsonify("Success")
+
+
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
 def removeUserForChannel():
     if request.method == "OPTIONS":
@@ -352,7 +365,6 @@ def avatar():
 
         channelId = request.form["channelId"]
         file = request.files["image"]
-        print(file)
         fn = f"{channelId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
         channels.addAvatar(channelId)
@@ -471,7 +483,6 @@ def removeContactAddress():
 
 @app.route('/channel/apply/talk', methods=["POST"])
 def sendTalkApplicationEmail():
-
     # NOTE: used https://wordtohtml.net/ to easily create syntax for the body
     params = request.json
 
@@ -540,6 +551,58 @@ def sendTalkApplicationEmail():
     return "ok"
 
 # --------------------------------------------
+# x Membership ROUTES
+# --------------------------------------------
+@app.route('/channel/membership/apply', methods=["POST"])
+def applyMembership():
+    params = request.json
+
+    # Compulsory details
+    personal_homepage = params["personalHomepage"] if "personalHomepage" in params else None
+
+    res = channels.applyMembership(
+        params["id"], 
+        params["userId"], 
+        params["fullName"],  # this will be removed later when user will have a good profile
+        params["position"],  # this will be removed later when user will have a good profile
+        params["institution"],  # this will be removed later when user will have a good profile
+        params["email"],  # this will be removed later when user will have a good profile
+        personal_homepage)
+
+    return res
+
+@app.route('/channel/membership/cancel', methods=["POST"])
+def cancelMembershipApplication():
+    params = request.json
+
+    res = channels.cancelMembershipApplication(
+        params["id"], 
+        params["userId"])
+
+    return jsonify(res)
+
+@app.route('/channel/membership/accept', methods=["POST"])
+def acceptMembershipApplication():
+    params = request.json
+
+    res = channels.acceptMembershipApplication(
+        params["id"], 
+        params["userId"],
+        )
+    return jsonify(res)
+
+@app.route('/channel/membership/list', methods=["GET"])
+def getMembershipApplications():
+    channelId = int(request.args.get("channelId"))
+    userId = int(request.args.get("userId")) if "userId" in request.args else None
+
+    res = channels.getMembershipApplications(
+        channelId, 
+        userId,
+        )
+    return jsonify(res)
+
+# --------------------------------------------
 # STREAM ROUTES
 # --------------------------------------------
 @app.route('/streams/all', methods=["GET"])
@@ -594,6 +657,18 @@ def serveThumbnail():
 # --------------------------------------------
 # TALK ROUTES
 # -------------------------------------------- 
+@app.route('/talk/info', methods=["GET"])
+def getTalkById():
+    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
+    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
+    talkId = int(request.args.get("id"))
+    try:
+        return jsonify(talks.getTalkById(talkId))
+    except Exception as e:
+        return jsonify(str(e))
+
+
+
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
     # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
@@ -732,7 +807,7 @@ def scheduleTalk():
             params[topic_key] = "NULL" 
 
     app.logger.debug(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
-    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"]))
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 def editTalk():
@@ -746,7 +821,7 @@ def editTalk():
     params = request.json
 
     app.logger.debug(f"Talk with id {params['talkId']} edited")
-    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"]))
+    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"]))
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():

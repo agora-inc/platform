@@ -23,6 +23,7 @@ import PrivacyPage from "./Views/PrivacyPage";
 import ChangePasswordPage from "./Views/ChangePasswordPage";
 import AllAgorasPage from "./Views/AllAgorasPage";
 import AllSpeakersPage from "./Views/AllSpeakersPage";
+import TalkSharingPage from "./Views/TalkSharingPage";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/stream" component={StreamPage} />
           <Route path={`/:name/manage`} component={ManageChannelPage} />
           <Route path="/tag" component={TagPage} />
+          <Route path="/event/:name" component={TalkSharingPage}/>
           <Route path="/streaming" component={Streaming} />
           <Route path="/preferences" component={Preferences} />
           <Route path="/schedule" component={Schedule} />

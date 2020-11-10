@@ -219,7 +219,7 @@ export default class UserManager extends Component<Props, State> {
               // hoverIndicator="#2433b5"
               hoverIndicator="#5A0C0F"
             >
-              <Text size="18px"> My schedule </Text>
+              <Text size="14px"> My schedule </Text>
             </Box>
           </Link>
         </Box>

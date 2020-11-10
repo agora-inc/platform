@@ -19,6 +19,7 @@ import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
+import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
 
 interface Props {
   location: { pathname: string };
@@ -39,6 +40,14 @@ interface State {
   user: User | null;
   bannerExtended: boolean;
   showTalkId: number;
+  membershipApplicatedFetched: boolean;
+  membershipApplication: {
+    fullName: string,
+    position: string,
+    institution: string,
+    email: string,
+    personalHomepage: string
+  }
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -58,6 +67,15 @@ export default class ChannelPage extends Component<Props, State> {
       user: UserService.getCurrentUser(),
       bannerExtended: true,
       showTalkId: this.getTalkIdFromUrl(),
+      membershipApplicatedFetched: false,
+      membershipApplication:
+      {
+        fullName: "",
+        position: "",
+        institution: "",
+        email: "",
+        personalHomepage: ""
+      }
     };
   }
 
@@ -220,6 +238,45 @@ export default class ChannelPage extends Component<Props, State> {
     );
   };
 
+  toggleFollow = () => {
+    this.setState({following: !this.state.following})
+  }
+
+  checkIfMembershipRequested = () => {
+    // If user not logged in, put a log in/ register inside the box
+
+
+    // else: check the application and fill the fields with the past application
+    if (!(this.state.membershipApplicatedFetched)) {
+      ChannelService.getMembershipApplications(
+        this.state.channel!.id,
+        (
+          full_name: string,
+          position: string,
+          institution: string,
+          email: string,
+          personalHomepage: string
+        ) => {
+          this.setState({
+            membershipApplication: {
+              fullName: full_name,
+              position: position,
+              institution: institution,
+              email: email,
+              personalHomepage: personalHomepage
+            }
+          })
+        },
+      this.state.user!.id,
+      )
+    };
+    }
+
+
+
+  onApplyMembershipClicked = () => {
+  };
+
   onFollowClicked = () => {
     if (!this.state.following) {
       ChannelService.addUserToChannel(
@@ -230,6 +287,7 @@ export default class ChannelPage extends Component<Props, State> {
           this.fetchFollowerCount();
         }
       );
+      this.setState({ role: "follower" });
     } else {
       ChannelService.removeUserFromChannel(
         this.state.user!.id,
@@ -238,6 +296,9 @@ export default class ChannelPage extends Component<Props, State> {
           this.fetchFollowerCount();
         }
       );
+      if (!(this.state.role === "member")){
+        this.setState({ role: "none" });
+      }
     }
     this.setState({ following: !this.state.following });
   };
@@ -311,7 +372,7 @@ export default class ChannelPage extends Component<Props, State> {
               )}
             </Box>
             <Box>
-              <Text size="30px" color="black" weight="bold">
+              <Text size="26px" color="black" weight="bold">
                 {this.state.channel ?.name}
               </Text>
               <Box height="36px"> </Box>
@@ -321,21 +382,37 @@ export default class ChannelPage extends Component<Props, State> {
             </Box>
           </Box>
           <Box direction="row" gap="xsmall" align="center">
+
+            {!(this.state.role == "member" || this.state.role == "owner") && (
+            <RequestMembershipButton
+              channelId={this.state.channel!.id}
+              channelName={this.state.channel!.name}
+              user={this.state.user}
+            />
+            )}
+
             {this.state.user && (
               <Box
                 className="follow-button"
+                pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
                 background={this.state.following ? "#e5e5e5" : "white"}
-                height="45px"
-                width="130px"
-                pad="small"
-                round="small"
-                style={{ border: "2.5px solid black" }}
+                height="30px"
+                style={{
+                  border: "1px solid #C2C2C2",
+                }}
+                width="10vw"
+                round="xsmall"
                 align="center"
                 justify="center"
                 onClick={this.onFollowClicked}
                 focusIndicator={false}
+                hoverIndicator={true}
               >
-                <Text weight="bold" color="black">
+                <Text 
+                  size="14px" 
+                  color="grey"
+                  alignSelf="center"
+                >
                   {this.state.following ? "Following" : "Follow"}
                 </Text>
               </Box>
@@ -359,7 +436,7 @@ export default class ChannelPage extends Component<Props, State> {
         </Box>
         {this.state.bannerExtended && (
           <Text
-            size="20px"
+            size="14px"
             style={{ textAlign: "justify", fontWeight: 450 }}
             margin={{ horizontal: "16px", bottom: "16px" }}
           >
@@ -422,7 +499,7 @@ export default class ChannelPage extends Component<Props, State> {
                         round="xsmall"
                         background="#F3EACE"
                       >
-                        <Text size="18px" weight="bold" color="grey">
+                        <Text size="16px" weight="bold" color="grey">
                           You are a member
                         </Text>
                       </Box>
@@ -434,7 +511,7 @@ export default class ChannelPage extends Component<Props, State> {
                   {this.state.currentTalks.length > 0 && (
                     <Box width="100%">
                       <Text
-                        size="28px"
+                        size="26px"
                         weight="bold"
                         color="black"
                         margin={{ top: "40px", bottom: "24px" }}
@@ -448,12 +525,13 @@ export default class ChannelPage extends Component<Props, State> {
                           admin={false}
                           width="31.5%"
                           isCurrent={true}
+                          following={this.state.following}
                         />
                       ))}
                     </Box>
                   )}
                   <Text
-                    size="28px"
+                    size="26px"
                     weight="bold"
                     color="black"
                     margin={{ bottom: "10px" }}
@@ -472,7 +550,7 @@ export default class ChannelPage extends Component<Props, State> {
                       background="#F3EACE"
                       margin={{ bottom: "36px" }}
                     >
-                      <Text size="18px" weight="bold" color="grey">
+                      <Text size="14px" weight="bold" color="grey">
                         There are no upcoming talks in{" "}
                         {this.state.channel
                           ? this.state.channel.name
@@ -488,12 +566,15 @@ export default class ChannelPage extends Component<Props, State> {
                         user={this.state.user}
                         admin={false}
                         showTalkId={this.state.showTalkId}
+                        role={this.state.role}
+                        following={this.state.following}
+                        callback={this.toggleFollow}
                       />
                     </Box>
                   )}  
                   {this.state.pastTalks.length !== 0 && (
                     <Text
-                      size="28px"
+                      size="26px"
                       weight="bold"
                       color="black"
                       margin={{ top: "40px" }}

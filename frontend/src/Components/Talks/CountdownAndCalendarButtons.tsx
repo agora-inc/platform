@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
 import { CalendarService } from "../../Services/CalendarService";
-import { Google } from "grommet-icons";
+import { Google} from "grommet-icons";
 import { Talk } from "../../Services/TalkService";
 import MediaQuery from "react-responsive";
 
@@ -59,11 +59,39 @@ export default class CountdownAndCalendarButtons extends Component<
     return this.state.now > this.state.showLinkAt;
   };
 
+  // Daylight Saving Time
+  // Taken from:
+  // https://stackoverflow.com/questions/11887934/how-to-check-if-dst-daylight-saving-time-is-in-effect-and-if-so-the-2
+  // NOTE: -"The getTimezoneOffset() method returns the time zone difference, 
+  //        in minutes, from current locale (host system settings) to UTC."
+  //       - Therefore, standard time > daylight time for DST countries
+  getStandardTimezoneOffset = () => {
+    var year = new Date();
+    var jan = new Date(year.getFullYear(), 0, 1);
+    var jul = new Date(year.getFullYear(), 6, 1);
+    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+  }
+
+  // if there is a diff with now and max of above, then DST holds now
+  DstAppliesInbetween = (month: number, day: number, year: number) => {
+    var date = new Date(year, month, day);
+    return date.getTimezoneOffset() < this.getStandardTimezoneOffset()
+  }
+
+  extractDateNumberFromString = (d: string) => {
+    // to implement
+  };
+
   showTimeUntil = () => {
-    let message = "Link available in ";
+    let message = "Link available here in ";
     let minutesUntil =
       (this.state.showLinkAt.getTime() - this.state.now.getTime()) /
       (1000 * 60);
+
+    // Check if 
+    // if (this.DstAppliesInbetween()){
+    //   minutesUntil = minutesUntil + 60
+    // }
 
     if (minutesUntil < 60) {
       message += `${Math.floor(minutesUntil)} minutes`;
@@ -83,7 +111,7 @@ export default class CountdownAndCalendarButtons extends Component<
 
   render() {
     return (
-      <Box gap="30px" direction="column">
+      <Box direction="column">
         <MediaQuery minDeviceWidth={992}>
         <Box
           direction="row"
@@ -106,21 +134,20 @@ export default class CountdownAndCalendarButtons extends Component<
           >
             <Box
               width="100%"
-              height="35px"
+              height="25px"
               round="xsmall"
               background="white"
-              style={{ border: "2px solid #C2C2C2" }}
+              style={{
+                border: "1px solid #C2C2C2",
+              }}
               align="center"
               justify="center"
               direction="row"
-              gap="4px"
+              // gap="4px"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={() => {}}
               hoverIndicator={true}
             >
-              <Text size="14px" weight="bold" color="grey">
-                Add to
-              </Text>
               <Google size="14px" color="plain" />
               <Text size="14px" weight="bold" color="grey">
                 Calendar
@@ -134,10 +161,12 @@ export default class CountdownAndCalendarButtons extends Component<
           >
             <Box
               width="100%"
-              height="35px"
+              height="25px"
               round="xsmall"
               background="white"
-              style={{ border: "2px solid #C2C2C2" }}
+              style={{
+                border: "1px solid #C2C2C2",
+              }}
               align="center"
               justify="center"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
@@ -145,43 +174,61 @@ export default class CountdownAndCalendarButtons extends Component<
               hoverIndicator={true}
             >
               <Text size="14px" weight="bold" color="grey">
-                Download .ics file
+                ics Calendar
               </Text>
             </Box>
           </a>
         </Box>
         </MediaQuery>
 
+
         {this.shouldShowLink() && (
+          <Box>
           <a
-            style={{ width: "48%", textDecoration: "none" }}
+            style={{ width: "100%", textDecoration: "none" }}
             href={this.props.talk.link}
             target="_blank"
           >
             <Box
               onClick={() => {}}
-              background="#7E1115"
+              background="white"
               round="xsmall"
-              pad="xsmall"
-              height="35px"
+              pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              style={{
+                border: "1px solid #C2C2C2",
+              }}
+              hoverIndicator={true}
+              height="40px"
             >
               <Text size="14px" weight="bold">
                 Link to talk
               </Text>
             </Box>
           </a>
+          </Box>
         )}
 
         {!this.shouldShowLink() && (
-          <Box height="35px">
-            <Text size="14px" weight="bold" margin={{ top: "10px" }}>
-              {this.showTimeUntil()}
-            </Text>
-          </Box>
+            <Button 
+               alignSelf="center"
+              hoverIndicator={false}
+              style={{
+                fontSize: 17,
+                fontWeight: "bold",
+                padding: 10,
+                backgroundColor: "#d5d5d5",
+                border: "none",
+                borderRadius: 5,
+              }}
+              margin={{bottom: "5px"}}
+              >
+              <Text size="14px" weight="bold" margin={{ top: "1px" }}>
+                {this.showTimeUntil()}
+              </Text>
+            </Button>
         )}
       </Box>
     );
