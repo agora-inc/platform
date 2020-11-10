@@ -86,10 +86,17 @@ class ChannelRepository:
         return "ok"
 
     def updateLongChannelDescription(self, channelId, newDescription):
-        query = f'''UPDATE Channels SET long_description = "{newDescription}" WHERE id = {channelId}'''
-        [insertId, rowCount] = self.db.run_query(query)
-        return [insertId, rowCount]
-
+        # HACK: escaping double quotes in insertion
+        self.db.open_connection()
+        try:
+            with self.db.con.cursor() as cur:
+                cur.execute('''UPDATE Channels SET long_description = "%s" WHERE id = %s;''', [newDescription, str(channelId)])
+                self.db.con.commit()
+                cur.close()
+            return "ok"
+        except Exception as e:
+            return str(e)
+        
     def getChannelsForUser(self, userId, roles):
         query = f'SELECT Channels.id, Channels.name, Channels.description, Channels.colour, Channels.has_avatar FROM Channels INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id WHERE ChannelUsers.user_id = {userId} AND ChannelUsers.role IN {tuple(roles)}'.replace(",)", ")")
         result = self.db.run_query(query)

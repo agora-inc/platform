@@ -235,7 +235,7 @@ export default class UserManager extends Component<Props, State> {
           // style={{ pointerEvents: "none" }}
           gap="xsmall"
         >
-          <Text size="14px" color="grey">
+          <Text size="16px" color="grey">
             Manage your Agoras
           </Text>
           <Box
@@ -304,7 +304,7 @@ export default class UserManager extends Component<Props, State> {
             style={{ textDecoration: "none" }}
             onClick={this.toggleDropdown}
           >
-            <Text size="18px"> Bookmarks </Text>
+            <Text size="14px"> Bookmarks </Text>
           </Link>
         </Menu.Item>
         <Menu.Item
@@ -321,7 +321,7 @@ export default class UserManager extends Component<Props, State> {
             paddingTop: 3,
           }}
         >
-          <Text size="18px"> Log out </Text>
+          <Text size="14px"> Log out </Text>
         </Menu.Item>
       </Menu>
     );
