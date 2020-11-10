@@ -86,7 +86,7 @@ class ChannelRepository:
         return "ok"
 
     def updateLongChannelDescription(self, channelId, newDescription):
-        query = f'''UPDATE Channels SET long_description = '{newDescription}' WHERE id = {channelId}'''
+        query = f'''UPDATE Channels SET long_description = "{newDescription}" WHERE id = {channelId}'''
         [insertId, rowCount] = self.db.run_query(query)
         return [insertId, rowCount]
 
