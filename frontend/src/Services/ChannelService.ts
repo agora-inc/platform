@@ -218,13 +218,11 @@ const updateLongChannelDescription = (
 ) => {
   var newDescriptionUtf8 = unescape( encodeURIComponent(newDescription));
   var newDescriptionUtf8withoutDoubleQuote = newDescriptionUtf8.replace("\"", "\'")
-  console.log("coltrane");
-  console.log(newDescriptionUtf8withoutDoubleQuote);
-  // post(
-  //   "channels/updatelongdescription",
-  //   { channelId: channelId, newDescription: newDescriptionUtf8 },
-  //   callback
-  // );
+  post(
+    "channels/updatelongdescription",
+    { channelId: channelId, newDescription: newDescriptionUtf8 },
+    callback
+  );
 };
 
 const updateChannelColour = (
