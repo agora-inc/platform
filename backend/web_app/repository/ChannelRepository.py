@@ -90,7 +90,7 @@ class ChannelRepository:
         self.db.open_connection()
         try:
             with self.db.con.cursor() as cur:
-                cur.execute('''UPDATE Channels SET long_description = "%s" WHERE id = %s;''', [newDescription, str(channelId)])
+                cur.execute('UPDATE Channels SET long_description = %s WHERE id = %s;', [newDescription, str(channelId)])
                 self.db.con.commit()
                 cur.close()
             return "ok"
