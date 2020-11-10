@@ -217,10 +217,10 @@ const updateLongChannelDescription = (
   callback: any
 ) => {
   var newDescriptionUtf8 = unescape( encodeURIComponent(newDescription));
-  var newDescriptionUtf8withoutDoubleQuote = newDescriptionUtf8.replace("\"", "\'")
+  // var newDescriptionUtf8withoutDoubleQuote = newDescriptionUtf8.replace("\"", "\'")
   post(
     "channels/updatelongdescription",
-    { channelId: channelId, newDescription: newDescriptionUtf8withoutDoubleQuote },
+    { channelId: channelId, newDescription: newDescriptionUtf8 },
     callback
   );
 };
