@@ -15,13 +15,15 @@ import SignUpButton from "../../Account/SignUpButton";
 import MediaQuery from "react-responsive";
 import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
 import ReactTooltip from "react-tooltip";
+import EditTalkModal from "../../Talks/EditTalkModal";
+
 
 interface Props {
     talk: Talk;
     user: User | null;
     admin?: boolean;
     width?: string;
-    isCurrent?: boolean;
+    // isCurrent?: boolean;
     following?: boolean;
     role?: string;
     onEditCallback?: any;
@@ -33,6 +35,7 @@ interface Props {
     showShadow: boolean;
     registered: boolean;
     available: boolean;
+    showEdit: boolean
   }
   
   export default class OverlayFooter extends Component<Props, State> {
@@ -43,6 +46,7 @@ interface Props {
         showShadow: false,
         registered: false,
         available: true,
+        showEdit: false
       };
     }
   
@@ -207,7 +211,6 @@ interface Props {
         }
     };
   
-
     formatDateFull = (s: string, e: string) => {
       const start = new Date(s);
       const dateStartStr = start.toDateString().slice(0, -4);
@@ -224,6 +227,10 @@ interface Props {
       } else {
         this.register();
       }
+    };
+
+    toggleEdit = () => {
+      this.setState({ showEdit: !this.state.showEdit });
     };
 
 render() {
@@ -368,6 +375,7 @@ render() {
           </Box>
         )}
       </Box>
+      
     )
   }
 }

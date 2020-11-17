@@ -295,7 +295,7 @@ class TalkRepository:
 
     def getAvailablePastTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER DESC BY date"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC;"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
@@ -318,10 +318,11 @@ class TalkRepository:
                                     )
                             )
                         AND Talks.end_date < CURRENT_TIMESTAMP 
-                    ORDER BY Talks.date
+                    ORDER BY Talks.date DESC;
                     '''
-
+        
         talks = self.db.run_query(query)
+
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
             talk["channel_colour"] = channel["colour"]
@@ -353,7 +354,7 @@ class TalkRepository:
         return (talks, self.getNumberOfPastTalks())
 
     def getAllFutureTalksForChannel(self, channelId):
-        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP AND published = 1"
+        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP AND published = 1 ORDER BY date ASC;"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])

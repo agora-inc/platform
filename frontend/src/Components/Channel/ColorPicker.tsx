@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, DropButton, Text } from "grommet";
 import { FormDown, FormUp } from "grommet-icons";
-import ImageUploader from "../Core/ImageUploader";
+import ImageCropUploader from "./ImageCropUploader";
 import { ChannelService } from "../../Services/ChannelService";
 import ReactTooltip from "react-tooltip";
 import { StatusInfo } from "grommet-icons";
@@ -48,11 +48,11 @@ export default class ColorPicker extends Component<Props, State> {
     this.setState({ open: !this.state.open });
   };
 
-  onCoverUpload = (e: any) => {
+  onCoverUpload = (file: File) => {
     this.props.channelId &&
       ChannelService.uploadCover(
         this.props.channelId,
-        e.target.files[0],
+        file,
         () => {
           window.location.reload();
         }
@@ -111,11 +111,11 @@ export default class ColorPicker extends Component<Props, State> {
           ))}
         </Box>
         <Box gap="4px">
-          <ImageUploader
+          {/* <ImageCropUploader
             text="Upload header"
             onUpload={this.onCoverUpload}
             width="100%"
-          />
+          /> */}
           {remove_button}
         </Box>
       </Box>
@@ -123,8 +123,27 @@ export default class ColorPicker extends Component<Props, State> {
   };
 
   render() {
-    return (
+        let remove_button;
+    if (this.props.hasCover){
+    remove_button =
       <Box
+        width="100%"
+        height="25px"
+        background="#FF4040"
+        round="xsmall"
+        style={{ cursor: "pointer" }}
+        align="center"
+        justify="center"
+        onClick={this.onDeleteCoverClicked}
+      >
+        <Text size="13px" weight="bold" color="white">
+          Remove header
+        </Text>
+      </Box>
+    }
+    return (
+      <>
+      {/* <Box
         width={this.state.open ? "139px" : "120px"}
         background="#f2f2f2"
         direction="row"
@@ -177,7 +196,18 @@ export default class ColorPicker extends Component<Props, State> {
           onOpen={this.toggle}
           onClose={this.toggle}
         />
+      </Box> */}
+      {/* This is a workaround because Modal don't work with DropButton */}
+      <Box direction="row">
+        <ImageCropUploader
+          text="Upload header"
+          onUpload={this.onCoverUpload}
+          width="200px"
+        />
+        {remove_button}
+
       </Box>
+      </>
     );
   }
 }

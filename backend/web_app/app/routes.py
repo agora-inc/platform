@@ -788,7 +788,12 @@ def getAvailableCurrentTalksForChannel():
 def getAvailablePastTalksForChannel():
     channel_id = int(request.args.get("channelId"))
     user_id = request.args.get("userId")
-    user_id = int(user_id) if user_id != 'null' else None
+
+    try:
+        user_id = int(user_id)
+    except:
+        user_id = None
+
     return jsonify(talks.getAvailablePastTalksForChannel(channel_id, user_id))
 
 @app.route('/talks/create', methods=["POST", "OPTIONS"])
