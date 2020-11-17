@@ -354,7 +354,7 @@ class TalkRepository:
         return (talks, self.getNumberOfPastTalks())
 
     def getAllFutureTalksForChannel(self, channelId):
-        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP AND published = 1"
+        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP AND published = 1 ORDER BY date ASC;"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])

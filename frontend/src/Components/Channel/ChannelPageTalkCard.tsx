@@ -17,6 +17,7 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import RequestMembershipButton from "./ApplyMembershipButton";
 import { thisExpression } from "@babel/types";
+import OverlayFooter from "../Talks/Talkcard/OverlayFooter";
 
 interface Props {
   talk: Talk;
@@ -522,126 +523,19 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   {this.escapeDoubleQuotes(this.props.talk.description)}
                 </Text>
               </Box>
-
-
-
-              <Box direction="column" gap="small">
-                <Box direction="row" gap="small">
-                  <Calendar size="14px" />
-                  <Text
-                    size="14px"
-                    color="black"
-                    style={{ height: "20px", fontStyle: "normal" }}
-                  >
-                    {this.formatDateFull(
-                      this.props.talk.date,
-                      this.props.talk.end_date
-                    )}
-                  </Text>
-                </Box>
-                {(this.props.user !== null || this.props.admin) &&
-                  this.state.registered && (
-                    <Box margin={{ top: "10px", bottom: "20px" }}>
-                      <CountdownAndCalendarButtons talk={this.props.talk} />
-                      <Box
-                        focusIndicator={false}
-                        background="#FF4040"
-                        round="xsmall"
-                        pad="xsmall"
-                        justify="center"
-                        align="center"
-                        width="20%"
-                        height="35px"
-                        onClick={this.onClick}
-                        margin={{ top: "-35px" }}
-                        alignSelf="end"
-                        hoverIndicator={true}
-                      >
-                        <Text size="14px" weight="bold">
-                          Unregister
-                        </Text>
-                      </Box>
-                    </Box>
-                  )}
-                {this.checkIfUserCanAccessLink() &&
-                  (this.props.user !== null || this.props.admin) &&
-                  !this.state.registered && (
-                    <Box
-                      onClick={this.onClick}
-                      background="#7E1115"
-                      round="xsmall"
-                      pad="xsmall"
-                      height="40px"
-                      justify="center"
-                      align="center"
-                      focusIndicator={false}
-                      hoverIndicator="#5A0C0F"
-                    >
-                      <Text size="14px">Register</Text>
-                    </Box>
-                  )}
-              </Box>
+              <OverlayFooter
+                talk={this.props.talk}
+                user={this.props.user}
+                admin={this.props.admin}
+                role={this.props.role}
+                width={this.props.width}
+                // isCurrent?: boolean;
+                // show?: boolean;
+                following={this.props.following}
+                onEditCallback={this.props.onEditCallback}
+                callback={this.props.callback}
+              />
             </Box>
-            {!this.checkIfUserCanAccessLink() && this.props.user === null
-            && (
-              <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
-                <Text size="18px"> You need to </Text>
-                <LoginModal callback={() => {}} />
-                <Text size="18px"> or </Text>
-                <SignUpButton callback={() => {}} />
-                <Text size="18px"> to attend </Text>
-              </Box>
-            )}
-            {!this.checkIfUserCanAccessLink() && this.props.user !== null
-              && (
-                <Box direction="row" align="center" gap="15px" background="#d5d5d5" pad="25px" justify="center">
-                  <Text> You need to </Text>
-                  {this.props.talk.visibility == "Followers and members" && (
-                    <Box gap="15px" direction="row" align="center">
-                      <Box
-                        className="follow-button"
-                        background={this.props.following ? "#e5e5e5": "white"}
-                        height="35px"
-                        style={{
-                          border: "1px solid #C2C2C2",
-                        }}
-                        width="100px"
-                        round="xsmall"
-                        pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
-                        align="center"
-                        justify="center"
-                        onClick={this.onFollowClicked}
-                        focusIndicator={false}
-                        hoverIndicator={true}
-                      >
-                        <Text 
-                          size="16px" 
-                          color="grey"
-                          alignSelf="center"
-                        >
-                          Follow
-                        </Text>
-                      </Box>
-                      <Text> or </Text>
-                    </Box>
-                  )}
-                  {this.props.role !== "member" && this.props.role !== "owner" && (
-                    <RequestMembershipButton
-                      channelId={this.props.talk.channel_id}
-                      channelName={this.props.talk.channel_name}
-                      user={this.props.user}
-                      height="35px"
-                      width="200px"
-                    />
-                    )}
-
-                  <Text> to attend </Text>
-
-
-                </Box>
-            )}
-
-            
           </Layer>
         )}
         {this.props.admin && this.state.showEdit && (
