@@ -239,7 +239,7 @@ render() {
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
             <Box 
-              width="35%" 
+              width="40%" 
               direction="row"
               >
                 <Calendar size="18px" />
@@ -256,7 +256,7 @@ render() {
                 </Text>
             </Box>
             <Box
-                width="65%"
+                width="60%"
                 align="end"
                 >
               <ShareButtons 
