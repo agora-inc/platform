@@ -49,6 +49,7 @@
     "react-scripts": "^3.4.1",
     "react-tabs": "^3.1.1",
     "react-tooltip": "^4.2.9",
+    "sharethis-reactjs": "^1.6.0",
     "sockette": "^2.0.6",
     "styled-components": "^5.1.0",
     "video.js": "^7.7.6",
