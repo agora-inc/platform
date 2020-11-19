@@ -388,7 +388,7 @@ export default class ChannelPage extends Component<Props, State> {
               <meta name="twitter:description" content={talk.description} />
             </Helmet>
             <Box
-                width="55vw"
+                width="60vw"
                 margin={{left: "20px", right: "20px"}}>
                 <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
                 <Link
