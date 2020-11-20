@@ -80,7 +80,7 @@ interface Props {
                   padding: 8,          // padding within buttons (INTEGER)
                   radius: 4,            // the corner radius on each button (INTEGER)
                   show_total: false,
-                  size: 40,             // the size of each button (INTEGER)
+                  size: 36,             // the size of each button (INTEGER)
 
                   // OPTIONAL PARAMETERS
                   url: this.urlTalk(), // (defaults to current url)
@@ -95,20 +95,19 @@ interface Props {
           <Box
                 onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
                 data-tip data-for='save_url_event'
-                background="white"
+                background="#5AAB61"
                 round="xsmall"
-                pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                width="50px" height="36px"
+                margin={{left: "8px"}}
                 justify="center"
-                align="end"
+                align="center"
                 focusIndicator={true}
-                style={{
-                  border: "1px solid #C2C2C2",
-                }}
-                hoverIndicator={true}>
-                <LinkIcon size="medium"/>
+                hoverIndicator={{color: "#62DB69"}}
+                >
+                <LinkIcon style={{width: 20, height: 20, stroke: "white"}} />
             </Box>
             <ReactTooltip id="save_url_event" effect="solid">
-              Click to copy Event URL!
+              Click to copy URL!
             </ReactTooltip>
         </Box>
       )
