@@ -95,18 +95,19 @@ interface Props {
           <Box
                 onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
                 data-tip data-for='save_url_event'
-                background="#61ec9f"
+                background="#5AAB61"
                 round="xsmall"
                 width="50px" height="36px"
                 margin={{left: "8px"}}
                 justify="center"
                 align="center"
                 focusIndicator={true}
-                hoverIndicator={true}>
+                hoverIndicator={{color: "#62DB69"}}
+                >
                 <LinkIcon style={{width: 20, height: 20, stroke: "white"}} />
             </Box>
             <ReactTooltip id="save_url_event" effect="solid">
-              Click to copy Event URL!
+              Click to copy URL!
             </ReactTooltip>
         </Box>
       )
