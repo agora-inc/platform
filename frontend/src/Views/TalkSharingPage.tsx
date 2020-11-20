@@ -374,19 +374,20 @@ export default class ChannelPage extends Component<Props, State> {
   render() { 
     const talk = this.state.talk;
       return(
+        <>
+        <Helmet>
+          <meta property="og:title" content={talk.name} />
+          <meta property="og:description" content={talk.description} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={document.location.href} />
+          <meta property="og:image" content={ChannelService.getAvatar(talk.channel_id)} />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content={talk.name} />
+          <meta name="twitter:description" content={talk.description} />
+        </Helmet>
         <Box
             margin={{top: "100px", left: "20px", right: "20px"}}
             align="center">
-            <Helmet>
-              <meta property="og:title" content={talk.name} />
-              <meta property="og:description" content={talk.description} />
-              <meta property="og:type" content="article" />
-              <meta property="og:url" content={document.location.href} />
-              <meta property="og:image" content={ChannelService.getAvatar(talk.channel_id)} />
-              <meta name="twitter:card" content="summary" />
-              <meta name="twitter:title" content={talk.name} />
-              <meta name="twitter:description" content={talk.description} />
-            </Helmet>
             <Box
                 width="60vw"
                 margin={{left: "20px", right: "20px"}}>
@@ -510,6 +511,7 @@ export default class ChannelPage extends Component<Props, State> {
               />
           </Box>
         </Box>
+      </>
       )
     }
 }
