@@ -373,6 +373,8 @@ export default class ChannelPage extends Component<Props, State> {
 
   render() { 
     const talk = this.state.talk;
+    console.log("sadnwich")
+    console.log(document.location.href)
       return(
         <>
         <Helmet>
