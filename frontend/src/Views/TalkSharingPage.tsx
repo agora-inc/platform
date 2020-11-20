@@ -380,7 +380,7 @@ export default class ChannelPage extends Component<Props, State> {
           <meta property="og:description" content={talk.description} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={document.location.href} />
-          <meta property="og:image" content={ChannelService.getAvatar(talk.channel_id)} />
+          {/* <meta property="og:image" content={ChannelService.getAvatar(talk.channel_id)} /> */}
           <meta name="twitter:card" content="summary" />
           <meta name="twitter:title" content={talk.name} />
           <meta name="twitter:description" content={talk.description} />
