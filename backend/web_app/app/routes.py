@@ -953,6 +953,33 @@ def isAvailable():
     return jsonify(talks.isTalkAvailableToUser(talkId, userId))
 
 # --------------------------------------------
+# TALK ACCESS REQUESTS ROUTES
+# --------------------------------------------
+@app.route('/talks/requestaccess')
+def requestTalkAccess():
+    pass
+
+@app.route('talks/requestaccess/refuse')
+def refuseTalkAccess():
+    pass
+
+@app.route('talks/requestaccess/accept')
+def acceptTalkAccess():
+    pass
+
+@app.route('talks/requestaccess/all')
+def getTalkAccessRequestsForChannel():
+    pass
+
+
+
+
+
+
+
+
+
+# --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------
 @app.route('/videos/all', methods=["GET"])
