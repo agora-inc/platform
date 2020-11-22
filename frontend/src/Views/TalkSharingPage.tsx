@@ -376,6 +376,8 @@ export default class ChannelPage extends Component<Props, State> {
       return(
         <>
         <Helmet>
+          <title>{talk.name}</title>
+          <meta name="description" content={talk.description}/>
           <meta property="og:title" content={talk.name} />
           <meta property="og:description" content={talk.description} />
           <meta property="og:type" content="article" />
