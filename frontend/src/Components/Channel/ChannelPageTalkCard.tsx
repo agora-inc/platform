@@ -394,7 +394,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               //align="center"
               pad="25px"
               // width="100%"
-              height="100%"
+              height="80%"
               justify="between"
               gap="xsmall"
             >
@@ -523,6 +523,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   {this.escapeDoubleQuotes(this.props.talk.description)}
                 </Text>
               </Box>
+              </Box>
               <OverlayFooter
                 talk={this.props.talk}
                 user={this.props.user}
@@ -535,7 +536,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 onEditCallback={this.props.onEditCallback}
                 callback={this.props.callback}
               />
-            </Box>
           </Layer>
         )}
         {this.props.admin && this.state.showEdit && (
