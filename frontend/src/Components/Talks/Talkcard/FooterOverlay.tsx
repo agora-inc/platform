@@ -169,7 +169,7 @@ interface Props {
           return true;
         }
         else if (this.props.talk.card_visibility === "Followers and members") {
-          if (this.props.role === "follower" || this.props.role === "member") {
+          if (this.props.role === "follower" || this.props.role === "member" || this.props.role === "owner") {
             return true;
           }
           else {
@@ -195,7 +195,7 @@ interface Props {
           return true;
         }
         else if (this.props.talk.visibility == "Followers and members") {
-          if (this.props.following || this.props.role === "follower" || this.props.role === "member") {
+          if (this.props.following || this.props.role === "follower" || this.props.role === "member" || this.props.role === "owner") {
             return true;
           }
           else {
