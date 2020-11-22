@@ -14,7 +14,7 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
-import OverlayFooter from "./Talkcard/OverlayFooter";
+import FooterOverlay from "./Talkcard/FooterOverlay";
 
 
 interface Props {
@@ -471,7 +471,7 @@ export default class TalkCard extends Component<Props, State> {
                 </Box>
 
                 </Box> 
-                <OverlayFooter
+                <FooterOverlay
                   talk={this.props.talk}
                   user={this.props.user}
                   role={this.state.role}

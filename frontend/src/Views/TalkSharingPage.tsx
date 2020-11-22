@@ -26,7 +26,7 @@ import TalkCard from "../Components/Talks/TalkCard";
 import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
 import CountdownAndCalendarButtons from "../Components/Talks/CountdownAndCalendarButtons";
-import OverlayFooter from "../Components/Talks/Talkcard/OverlayFooter";
+import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
 import { Helmet } from "react-helmet";
 
 interface Props {
@@ -506,7 +506,7 @@ export default class ChannelPage extends Component<Props, State> {
                     >
                       {this.escapeDoubleQuotes(this.state.talk.description)}
                     </Text>
-          <OverlayFooter
+          <FooterOverlay
               talk={this.state.talk}
               user={this.state.user}
               role={this.state.role}

@@ -17,7 +17,7 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import RequestMembershipButton from "./ApplyMembershipButton";
 import { thisExpression } from "@babel/types";
-import OverlayFooter from "../Talks/Talkcard/OverlayFooter";
+import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 
 interface Props {
   talk: Talk;
@@ -524,7 +524,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 </Text>
               </Box>
               </Box>
-              <OverlayFooter
+              <FooterOverlay
                 talk={this.props.talk}
                 user={this.props.user}
                 admin={this.props.admin}

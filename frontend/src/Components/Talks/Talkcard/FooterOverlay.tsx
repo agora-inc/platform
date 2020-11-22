@@ -15,9 +15,9 @@ import SignUpButton from "../../Account/SignUpButton";
 import MediaQuery from "react-responsive";
 import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
 import ReactTooltip from "react-tooltip";
-import EditTalkModal from "../../Talks/EditTalkModal";
+import EditTalkModal from "../EditTalkModal";
 import ShareButtons from "./ShareButtons";
-
+import TalkRegistrationButton from "../TalkRegistrationButton";
 
 interface Props {
     talk: Talk;
@@ -39,7 +39,7 @@ interface Props {
     showEdit: boolean
   }
   
-  export default class OverlayFooter extends Component<Props, State> {
+  export default class FooterOverlay extends Component<Props, State> {
     constructor(props: Props) {
       super(props);
       this.state = {
@@ -346,10 +346,11 @@ render() {
           {!this.checkIfUserCanAccessLink() && this.props.user === null
           && (
             <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
-              <Text size="16px"> You need to </Text>
-              <LoginModal callback={() => {}} />
+              <TalkRegistrationButton
+                talk={this.props.talk}
+              />
               <Text size="16px"> or </Text>
-              <SignUpButton callback={() => {}} />
+              <LoginModal callback={() => {}} />
               <Text size="16px"> to attend </Text>
             </Box>
           )}
