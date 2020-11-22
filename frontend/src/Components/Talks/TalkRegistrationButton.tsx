@@ -308,13 +308,20 @@ export default class TalkRegistrationButton extends Component<Props, State> {
               />
           </Box>
           <Box width="100%" gap="2px">
+            <TextInput
+              placeholder="(Webpage)"
+              value={this.state.user.email}
+              onChange={(e: any) => this.handleInput(e, "homepage")}
+              />
+          </Box>
+          {/* <Box width="100%" gap="2px">
             <Select
               placeholder="Education level"
               options={['Bachelor/Master', 'PhD+', 'Else']}
               value={this.state.user.speaker_title}
               onChange={({option}) => this.setValueAcademicTitle(option)}
             />
-          </Box>
+          </Box> */}
           {/* <Box width="100%" gap="2px">
             <TextInput
               placeholder="Position / level of education"

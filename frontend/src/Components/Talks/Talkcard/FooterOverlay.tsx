@@ -18,6 +18,7 @@ import ReactTooltip from "react-tooltip";
 import EditTalkModal from "../EditTalkModal";
 import ShareButtons from "./ShareButtons";
 import TalkRegistrationButton from "../TalkRegistrationButton";
+import CalendarButtons from "../CalendarButtons";
 
 interface Props {
     talk: Talk;
@@ -239,10 +240,10 @@ render() {
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
             <Box 
-              width="40%" 
+              width="50%" 
               direction="row"
               >
-                <Calendar size="18px" />
+                <Calendar size="16px" />
                 <Text
                   size="16px"
                   color="black"
@@ -252,11 +253,14 @@ render() {
                   {this.formatDateFull(
                     this.props.talk.date,
                     this.props.talk.end_date
-                  )}
+                    )}
                 </Text>
+                <Box margin={{left: "5px"}}>
+                  <CalendarButtons talk={this.props.talk}/>
+                </Box>
             </Box>
             <Box
-                width="60%"
+                width="50%"
                 align="end"
                 >
               <ShareButtons 
@@ -345,6 +349,7 @@ render() {
           )}
           {!this.checkIfUserCanAccessLink() && this.props.user === null
           && (
+            
             <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
               <TalkRegistrationButton
                 talk={this.props.talk}

@@ -15,7 +15,7 @@ import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
 import FooterOverlay from "./Talkcard/FooterOverlay";
-
+import CalendarButtons from "./CalendarButtons";
 
 interface Props {
   talk: Talk;
