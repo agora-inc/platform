@@ -16,6 +16,7 @@ import MediaQuery from "react-responsive";
 import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
 import ReactTooltip from "react-tooltip";
 import EditTalkModal from "../../Talks/EditTalkModal";
+import ShareButtons from "./ShareButtons";
 
 
 interface Props {
@@ -238,7 +239,7 @@ render() {
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
             <Box 
-              width="50%" 
+              width="40%" 
               direction="row"
               >
                 <Calendar size="18px" />
@@ -255,27 +256,32 @@ render() {
                 </Text>
             </Box>
             <Box
-                width="50%"
+                width="60%"
                 align="end"
                 >
-                  <Box
-                      onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
-                      data-tip data-for='save_url_event'
-                      background="white"
-                      round="xsmall"
-                      pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-                      justify="center"
-                      align="end"
-                      focusIndicator={true}
-                      style={{
-                        border: "1px solid #C2C2C2",
-                      }}
-                      hoverIndicator={true}>
-                      <LinkIcon size="medium"/>
-                  </Box>
-                  <ReactTooltip id="save_url_event" effect="solid">
-                    Click to copy Event URL!
-                  </ReactTooltip>
+              <ShareButtons 
+                talk={this.props.talk}
+              />
+
+              {/* <Box
+                  onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
+                  data-tip data-for='save_url_event'
+                  background="white"
+                  round="xsmall"
+                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                  justify="center"
+                  align="end"
+                  focusIndicator={true}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}>
+                  <LinkIcon size="medium"/>
+              </Box>
+              <ReactTooltip id="save_url_event" effect="solid">
+                Click to copy Event URL!
+              </ReactTooltip> */}
+
             </Box>
           </Box>
           {this.checkIfUserCanAccessLink() &&
