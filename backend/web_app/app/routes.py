@@ -952,7 +952,7 @@ def unregisterTalk():
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/refuse', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/refuse', methods=["POST", "OPTIONS"])
 def refuseTalkRegistration():
     #TODO: test
     logRequest(request)
@@ -971,7 +971,7 @@ def refuseTalkRegistration():
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/accept', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/accept', methods=["POST", "OPTIONS"])
 def acceptTalkRegistration():
     #TODO: test
     logRequest(request)
@@ -990,7 +990,7 @@ def acceptTalkRegistration():
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/all', methods=["GET", "OPTIONS"])
+@app.route('/talks/requestaccess/all', methods=["GET", "OPTIONS"])
 def getTalkRegistrations():
     if request.method == "OPTIONS":
         return jsonify("ok")
