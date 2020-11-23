@@ -9,7 +9,7 @@ import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
 import Identicon from "react-identicons";
 import AddToCalendarButtons from "./AddToCalendarButtons";
-import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
+import Countdown from "./Countdown";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 
@@ -416,7 +416,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
                 </Box>
                 {this.state.registered && (
                   <Box margin={{ top: "10px", bottom: "20px" }}>
-                    <CountdownAndCalendarButtons talk={this.props.talk} />
+                    <Countdown talk={this.props.talk} />
                     <Box
                       focusIndicator={false}
                       background="#FF4040"

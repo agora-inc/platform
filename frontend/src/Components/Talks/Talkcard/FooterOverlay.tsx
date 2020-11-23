@@ -9,7 +9,7 @@ import AsyncButton from "../../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
 import AddToCalendarButtons from "../AddToCalendarButtons";
-import CountdownAndCalendarButtons from "../CountdownAndCalendarButtons";
+import Countdown from "../Countdown";
 import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
 import MediaQuery from "react-responsive";
@@ -292,7 +292,7 @@ render() {
             this.props.user !== null &&
             this.state.registered && (
               <Box margin={{ top: "10px", bottom: "5px", left: "20px", right: "20px" }} background="#d5d5d5">
-                <CountdownAndCalendarButtons talk={this.props.talk} />
+                <Countdown talk={this.props.talk} />
                 <Box
                   focusIndicator={false}
                   background="#FF4040"
@@ -319,7 +319,7 @@ render() {
               <Box 
               margin={{ top: "5px", bottom: "5px", left: "20px", right: "20px" }}>
                 <Box>
-                  <CountdownAndCalendarButtons talk={this.props.talk} />
+                  <Countdown talk={this.props.talk} />
                 </Box>
                 {/* <Box
                   onClick={this.onClick}
@@ -343,7 +343,7 @@ render() {
               <Box 
               margin={{ top: "5px", bottom: "5px", left: "20px", right: "20px" }}>
                 <Box>
-                  <CountdownAndCalendarButtons talk={this.props.talk} />
+                  <Countdown talk={this.props.talk} />
                 </Box>
               </Box>
           )}

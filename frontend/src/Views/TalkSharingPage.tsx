@@ -25,7 +25,7 @@ import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton
 import TalkCard from "../Components/Talks/TalkCard";
 import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
-import CountdownAndCalendarButtons from "../Components/Talks/CountdownAndCalendarButtons";
+import Countdown from "../Components/Talks/Countdown";
 import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
 import { Helmet } from "react-helmet";
 

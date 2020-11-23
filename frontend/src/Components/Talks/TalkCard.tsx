@@ -9,7 +9,7 @@ import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
 import AddToCalendarButtons from "./AddToCalendarButtons";
-import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
+import Countdown from "./Countdown";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
@@ -664,7 +664,7 @@ export default class TalkCard extends Component<Props, State> {
                   </Box>
                   {this.state.available && (
                     <Box margin={{ top: "10px", bottom: "20px" }}>
-                      <CountdownAndCalendarButtons talk={this.props.talk} />
+                      <Countdown talk={this.props.talk} />
                       {/* {this.props.user !== null && this.state.registered && (
                       <Box
                         focusIndicator={false}

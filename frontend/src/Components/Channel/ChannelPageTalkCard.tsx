@@ -10,7 +10,7 @@ import EditTalkModal from "../Talks/EditTalkModal";
 import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
 import { default as TagComponent } from "../Core/Tag";
 import { ChannelService } from "../../Services/ChannelService";
-import CountdownAndCalendarButtons from "../Talks/CountdownAndCalendarButtons";
+import Countdown from "../Talks/Countdown";
 import AsyncButton from "../Core/AsyncButton";
 import TalkCard from "../Talks/TalkCard";
 import LoginModal from "../Account/LoginModal";
