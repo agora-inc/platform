@@ -132,33 +132,33 @@ interface Props {
     };
 
     register = () => {
-      this.props.user &&
-        TalkService.registerForTalk(
-          this.props.talk.id,
-          this.props.user.id,
-          () => {
-            // this.toggleModal();
-            this.checkIfRegistered();
-            this.setState({
-              showShadow: false,
-            });
-          }
-        );
+      // this.props.user &&
+      //   TalkService.registerForTalk(
+      //     this.props.talk.id,
+      //     this.props.user.id,
+      //     () => {
+      //       // this.toggleModal();
+      //       this.checkIfRegistered();
+      //       this.setState({
+      //         showShadow: false,
+      //       });
+      //     }
+      //   );
     };
   
     unregister = () => {
-      this.props.user &&
-        TalkService.unRegisterForTalk(
-          this.props.talk.id,
-          this.props.user.id,
-          () => {
-            // this.toggleModal();
-            this.checkIfRegistered();
-            this.setState({
-              showShadow: false,
-            });
-          }
-        );
+      // this.props.user &&
+      //   TalkService.unRegisterForTalk(
+      //     this.props.talk.id,
+      //     this.props.user.id,
+      //     () => {
+      //       // this.toggleModal();
+      //       this.checkIfRegistered();
+      //       this.setState({
+      //         showShadow: false,
+      //       });
+      //     }
+      //   );
     };
 
     checkIfUserCanViewCard = () => {

@@ -141,34 +141,34 @@ export default class TalkCard extends Component<Props, State> {
 
   // method here for mobile
   register = () => {
-    this.props.user &&
-      TalkService.registerForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          // this.toggleModal();
-          this.checkIfRegistered();
-          this.setState({
-            showShadow: false,
-          });
-        }
-      );
+    // this.props.user &&
+    //   TalkService.registerForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       // this.toggleModal();
+    //       this.checkIfRegistered();
+    //       this.setState({
+    //         showShadow: false,
+    //       });
+    //     }
+    //   );
   };
 
   // method here for mobile
   unregister = () => {
-    this.props.user &&
-      TalkService.unRegisterForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          // this.toggleModal();
-          this.checkIfRegistered();
-          this.setState({
-            showShadow: false,
-          });
-        }
-      );
+    // this.props.user &&
+    //   TalkService.unRegisterForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       // this.toggleModal();
+    //       this.checkIfRegistered();
+    //       this.setState({
+    //         showShadow: false,
+    //       });
+    //     }
+    //   );
   };
 
   // method here for mobile

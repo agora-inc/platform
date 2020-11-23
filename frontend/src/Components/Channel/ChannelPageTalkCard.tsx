@@ -123,25 +123,25 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   register = () => {
-    this.props.user &&
-      TalkService.registerForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          this.checkIfRegistered();
-        }
-      );
+    // this.props.user &&
+    //   TalkService.registerForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       this.checkIfRegistered();
+    //     }
+    //   );
   };
 
   unregister = () => {
-    this.props.user &&
-      TalkService.unRegisterForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          this.checkIfRegistered();
-        }
-      );
+    // this.props.user &&
+    //   TalkService.unRegisterForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       this.checkIfRegistered();
+    //     }
+    //   );
   };
 
   onClick = () => {

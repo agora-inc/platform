@@ -852,52 +852,6 @@ def addRecordingLink():
     params = request.json
     return jsonify(talks.addRecordingLink(params["talkId"], params["link"]))
 
-@app.route('/talks/isregistered', methods=["GET"])
-def isRegisteredForTalk():
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    talkId = int(request.args.get("talkId"))
-    userId = int(request.args.get("userId"))
-        
-    return jsonify(talks.isUserRegisteredForTalk(talkId, userId))
-
-@app.route('/talks/register', methods=["POST", "OPTIONS"])
-def registerForTalk():
-    logRequest(request)
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-        
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    params = request.json
-    talks.registerForTalk(params["talkId"], params["userId"])
-    app.logger.debug(f"User with id {params['userId']} registered for talk with id {params['talkId']}")
-    return jsonify("success")
-
-@app.route('/talks/unregister', methods=["POST", "OPTIONS"])
-def unRegisterForTalk():
-    logRequest(request)
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-        
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    params = request.json
-    talks.unRegisterForTalk(params["talkId"], params["userId"])
-    app.logger.debug(f"User with id {params['userId']} unregistered for talk with id {params['talkId']}")
-    return jsonify("success")
-
-@app.route('/talks/registered', methods=["GET"])
-def getTalksForUser():
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    userId = int(request.args.get("userId"))
-    return jsonify(talks.getFutureTalksForUser(userId))
-
 @app.route('/talks/saved', methods=["GET"])
 def getSavedTalks():
     if not checkAuth(request.headers.get('Authorization')):
@@ -955,30 +909,121 @@ def isAvailable():
 # --------------------------------------------
 # TALK ACCESS REQUESTS ROUTES
 # --------------------------------------------
-@app.route('/talks/requestaccess')
-def requestTalkAccess():
-    pass
+@app.route('/talks/requestaccess/register', methods=["POST", "OPTIONS"])
+def registerTalk():
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
-@app.route('talks/requestaccess/refuse')
-def refuseTalkAccess():
-    pass
+    params = request.json
+    try:
+        talkId = params["talkId"]
+        userId = params["userId"] if "userId" in params else ""
+        name = params["name"]
+        email = params["email"]
+        website = params["website"] if "website" in params else ""
+        institution = params["institution"] if "institution" in params else ""
+        talks.registerTalk(talkId, userId, name, email, website, institution)
 
-@app.route('talks/requestaccess/accept')
-def acceptTalkAccess():
-    pass
+        return jsonify("success")
 
-@app.route('talks/requestaccess/all')
-def getTalkAccessRequestsForChannel():
-    pass
+    except Exception as e:
+        return jsonify(str(e))
 
+@app.route('/talks/requestaccess/unregister', methods=["POST", "OPTIONS"])
+def unregisterTalk():
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
+    params = request.json
+    try:
+        requestRegistrationId = params["requestRegistrationId"]
+        userId = params["userId"] if "userId" in params else None 
+        talks.unregisterTalk(requestRegistrationId, userId)
+        return jsonify("success")
 
+    except Exception as e:
+        return jsonify(400, str(e))
 
+@app.route('talks/requestaccess/refuse', methods=["POST", "OPTIONS"])
+def refuseTalkRegistration():
+    #TODO: test
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
+    params = request.json
+    try:
+        requestRegistrationId = params["requestRegistrationId"]
+        talks.refuseTalkRegistration(requestRegistrationId)
+        return jsonify("success")
 
+    except Exception as e:
+        return jsonify(400, str(e))
 
+@app.route('talks/requestaccess/accept', methods=["POST", "OPTIONS"])
+def acceptTalkRegistration():
+    #TODO: test
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
+    params = request.json
+    try:
+        requestRegistrationId = params["requestRegistrationId"]
+        talks.acceptTalkRegistration(requestRegistrationId)
+        return jsonify("success")
 
+    except Exception as e:
+        return jsonify(400, str(e))
+
+@app.route('talks/requestaccess/all', methods=["GET", "OPTIONS"])
+def getTalkRegistrations():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    channelId = request.args.get("channelId") if "channelId" in request.args else None
+    talkId = request.args.get("talkId") if "talkId" in request.args else None
+    userId = request.args.get("userId") if "userId" in request.args else None
+    try:
+        if channelId != None:
+            res = talks.getTalkRegistrationsForChannel(channelId)
+            return jsonify({"registrations": res, "channelId": channelId})
+        elif talkId != None:
+            res = talks.getTalkRegistrationsForTalk(talkId)
+            return jsonify({"registrations": res, "talkId": talkId})
+        elif userId != None:
+            res = talks.getTalkRegistrationsForUser(talkId)
+            return jsonify({"registrations": res, "talkId": talkId})
+
+    except Exception as e:
+        return jsonify(400, str(e))
+
+@app.route('/talks/isregistered', methods=["GET"])
+def isRegisteredForTalk():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    talkId = int(request.args.get("talkId"))
+    userId = int(request.args.get("userId"))
+        
+    return jsonify(talks.isUserRegisteredForTalk(talkId, userId))
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------

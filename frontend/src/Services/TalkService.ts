@@ -1,6 +1,7 @@
 import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
+import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 
 const getTalkById = (talkId: number, callback: any) => {
   get(`talk/info?id=${talkId}`, callback);
@@ -244,24 +245,31 @@ const addRecordingLink = (id: number, link: string, callback: any) => {
   );
 };
 
-const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
-  get(`talks/isregistered?talkId=${talkId}&userId=${userId}`, callback);
-};
-
-const registerForTalk = (talkId: number, userId: number, callback: any) => {
+const registerForTalk = (
+  talkId: number, 
+  userId: any,
+  name: string, 
+  email: string,
+  website: any, 
+  institution: string, 
+  callback: any) => {
   post(
-    "talks/register",
+    "talks/requestaccess/register",
     {
       talkId: talkId,
       userId: userId,
+      name: name,
+      email: email,
+      website: website,
+      institution: institution
     },
     callback
   );
 };
 
-const unRegisterForTalk = (talkId: number, userId: number, callback: any) => {
+const unRegisterForTalk = (talkId: number, userId: any, callback: any) => {
   post(
-    "talks/unregister",
+    "talks/requestaccess/unregister",
     {
       talkId: talkId,
       userId: userId,
@@ -273,6 +281,12 @@ const unRegisterForTalk = (talkId: number, userId: number, callback: any) => {
 const getRegisteredTalksForUser = (userId: number, callback: any) => {
   get(`talks/registered?userId=${userId}`, callback);
 };
+              
+              
+const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
+  get(`talks/isregistered?talkId=${talkId}&userId=${userId}`, callback);
+};
+
 
 const saveTalk = (userId: number, talkId: number, callback: any) => {
   post(
@@ -356,6 +370,7 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  
 };
 
 export type Talk = {
