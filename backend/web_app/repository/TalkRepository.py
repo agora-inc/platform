@@ -668,7 +668,7 @@ class TalkRepository:
         except Exception as e:
             return str(e)
 
-    def getTalkRegistrationsForUser(self):
+    def getTalkRegistrationsForUser(self, userId):
         raise NotImplementedError
 
     def isUserRegisteredForTalk(self, talkId, userId):

@@ -1009,7 +1009,7 @@ def getTalkRegistrations():
             res = talks.getTalkRegistrationsForTalk(talkId)
             return jsonify({"registrations": res, "talkId": talkId})
         elif userId != None:
-            res = talks.getTalkRegistrationsForUser(talkId)
+            res = talks.getTalkRegistrationsForUser(userId)
             return jsonify({"registrations": res, "talkId": talkId})
 
     except Exception as e:
@@ -1301,3 +1301,24 @@ def fullTextSearch():
     searchString = params["searchString"]
     results = {objectType: search.searchTable(objectType, searchString) for objectType in objectTypes}
     return jsonify(results)
+
+# --------------------------------------------
+# METATAG ROUTES (this is a hack)
+# --------------------------------------------
+@app.route('/event-link', methods=["GET"])
+def eventLinkRedirect():
+    try:
+        eventId = request.args.get("eventId")
+        
+        res_string = f'''
+            <html>
+
+                DELETE THIS LINE AND ADD THE STUFF YOU NEED INSIDE GERARDO.
+
+            window.location.href = 'https://agora.stream/event/{eventId}'
+            </html>
+        '''
+        return res_string
+
+    except Exception as e:
+        return str(e)
