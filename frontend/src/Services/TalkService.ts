@@ -279,9 +279,9 @@ const unRegisterForTalk = (talkId: number, userId: any, callback: any) => {
   );
 };
 
-// const getRegisteredTalksForUser = (userId: number, callback: any) => {
-//   get(`talks/registered?userId=${userId}`, callback);
-// };
+const getRegisteredTalksForUser = (userId: number, callback: any) => {
+  get(`talks/registered?userId=${userId}`, callback);
+};
               
               
 const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
@@ -405,8 +405,8 @@ export const TalkService = {
   registerForTalk,
   unRegisterForTalk,
   isRegisteredForTalk,
-  getTalkRegistrations
-  // getRegisteredTalksForUser,
+  getTalkRegistrations,
+  getRegisteredTalksForUser,
 };
 
 export type Talk = {
