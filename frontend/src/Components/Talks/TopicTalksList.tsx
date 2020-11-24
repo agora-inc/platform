@@ -230,6 +230,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 </Text>
               </Box>
               <Box direction="row" width="50%">
+              <MediaQuery minDeviceWidth={992}>
                 <Box
                   onClick={() => {
                     this.setState({audienceLevel: 
@@ -258,6 +259,7 @@ export default class TopicTalkList extends Component<Props, State> {
                       </Text>)
                     }
                   </Box>
+                  </MediaQuery>
                 <Box
                   onClick={() => {
                     this.setState({audienceLevel: 
@@ -274,6 +276,7 @@ export default class TopicTalkList extends Component<Props, State> {
                   }}
                   hoverIndicator={false}
                   >
+                    <MediaQuery minDeviceWidth={992}>
                     {this.state.audienceLevel.BachelorMaster && (
                       <Text weight="bold" size="small">
                         Bachelor/Master
@@ -284,6 +287,21 @@ export default class TopicTalkList extends Component<Props, State> {
                         Bachelor/Master
                       </Text>)
                     }
+                    </MediaQuery>
+                    <MediaQuery maxDeviceWidth={992}>
+                    {this.state.audienceLevel.BachelorMaster && (
+                      <Text weight="bold" size="small">
+                        Bachelor/
+                        Master
+                      </Text>)
+                    }
+                    {!this.state.audienceLevel.BachelorMaster && (
+                      <Text size="small">
+                        Bachelor/
+                        Master
+                      </Text>)
+                    }
+                    </MediaQuery>
                   </Box>
                 <Box
                   onClick={() => {
