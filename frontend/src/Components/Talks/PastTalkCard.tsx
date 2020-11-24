@@ -263,7 +263,7 @@ export default class PastTalkCard extends Component<Props, State> {
               hoverIndicator={true}
             >
               <Text alignSelf="center" color="grey" size="14px">
-                {this.state.saved ? "Remove from saved" : "Save talk"}
+                {this.state.saved ? "Save talk": "Remove from saved"}
               </Text>
             </Box>
           )}
