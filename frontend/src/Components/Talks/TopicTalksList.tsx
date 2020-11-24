@@ -229,7 +229,8 @@ export default class TopicTalkList extends Component<Props, State> {
                   Upcoming talks
                 </Text>
               </Box>
-              <Box direction="row" width="50%">
+              <Box direction="row-reverse" width="50%">
+                <Box direction="row">
                 <Box
                   onClick={() => {
                     this.setState({audienceLevel: 
@@ -338,6 +339,7 @@ export default class TopicTalkList extends Component<Props, State> {
                   </Box>
                 </Box>
                 </Box>
+              </Box>
           )}
           {/*this.props.seeMore && (
             <Link to="/upcoming" style={{ textDecoration: "none" }}>
