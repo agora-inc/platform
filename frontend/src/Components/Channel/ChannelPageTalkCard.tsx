@@ -10,14 +10,14 @@ import EditTalkModal from "../Talks/EditTalkModal";
 import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
 import { default as TagComponent } from "../Core/Tag";
 import { ChannelService } from "../../Services/ChannelService";
-import CountdownAndCalendarButtons from "../Talks/CountdownAndCalendarButtons";
+import Countdown from "../Talks/Countdown";
 import AsyncButton from "../Core/AsyncButton";
 import TalkCard from "../Talks/TalkCard";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import RequestMembershipButton from "./ApplyMembershipButton";
 import { thisExpression } from "@babel/types";
-import OverlayFooter from "../Talks/Talkcard/OverlayFooter";
+import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 
 interface Props {
   talk: Talk;
@@ -123,25 +123,25 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   register = () => {
-    this.props.user &&
-      TalkService.registerForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          this.checkIfRegistered();
-        }
-      );
+    // this.props.user &&
+    //   TalkService.registerForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       this.checkIfRegistered();
+    //     }
+    //   );
   };
 
   unregister = () => {
-    this.props.user &&
-      TalkService.unRegisterForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          this.checkIfRegistered();
-        }
-      );
+    // this.props.user &&
+    //   TalkService.unRegisterForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       this.checkIfRegistered();
+    //     }
+    //   );
   };
 
   onClick = () => {
@@ -394,7 +394,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               //align="center"
               pad="25px"
               // width="100%"
-              height="100%"
+              height="80%"
               justify="between"
               gap="xsmall"
             >
@@ -523,7 +523,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   {this.escapeDoubleQuotes(this.props.talk.description)}
                 </Text>
               </Box>
-              <OverlayFooter
+              </Box>
+              <FooterOverlay
                 talk={this.props.talk}
                 user={this.props.user}
                 admin={this.props.admin}
@@ -535,7 +536,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 onEditCallback={this.props.onEditCallback}
                 callback={this.props.callback}
               />
-            </Box>
           </Layer>
         )}
         {this.props.admin && this.state.showEdit && (

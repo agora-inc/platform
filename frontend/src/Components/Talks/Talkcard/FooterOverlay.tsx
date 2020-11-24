@@ -9,15 +9,16 @@ import AsyncButton from "../../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
 import AddToCalendarButtons from "../AddToCalendarButtons";
-import CountdownAndCalendarButtons from "../CountdownAndCalendarButtons";
+import Countdown from "../Countdown";
 import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
 import MediaQuery from "react-responsive";
 import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
 import ReactTooltip from "react-tooltip";
-import EditTalkModal from "../../Talks/EditTalkModal";
+import EditTalkModal from "../EditTalkModal";
 import ShareButtons from "./ShareButtons";
-
+import TalkRegistrationButton from "../TalkRegistrationButton";
+import CalendarButtons from "../CalendarButtons";
 
 interface Props {
     talk: Talk;
@@ -39,7 +40,7 @@ interface Props {
     showEdit: boolean
   }
   
-  export default class OverlayFooter extends Component<Props, State> {
+  export default class FooterOverlay extends Component<Props, State> {
     constructor(props: Props) {
       super(props);
       this.state = {
@@ -131,33 +132,33 @@ interface Props {
     };
 
     register = () => {
-      this.props.user &&
-        TalkService.registerForTalk(
-          this.props.talk.id,
-          this.props.user.id,
-          () => {
-            // this.toggleModal();
-            this.checkIfRegistered();
-            this.setState({
-              showShadow: false,
-            });
-          }
-        );
+      // this.props.user &&
+      //   TalkService.registerForTalk(
+      //     this.props.talk.id,
+      //     this.props.user.id,
+      //     () => {
+      //       // this.toggleModal();
+      //       this.checkIfRegistered();
+      //       this.setState({
+      //         showShadow: false,
+      //       });
+      //     }
+      //   );
     };
   
     unregister = () => {
-      this.props.user &&
-        TalkService.unRegisterForTalk(
-          this.props.talk.id,
-          this.props.user.id,
-          () => {
-            // this.toggleModal();
-            this.checkIfRegistered();
-            this.setState({
-              showShadow: false,
-            });
-          }
-        );
+      // this.props.user &&
+      //   TalkService.unRegisterForTalk(
+      //     this.props.talk.id,
+      //     this.props.user.id,
+      //     () => {
+      //       // this.toggleModal();
+      //       this.checkIfRegistered();
+      //       this.setState({
+      //         showShadow: false,
+      //       });
+      //     }
+      //   );
     };
 
     checkIfUserCanViewCard = () => {
@@ -169,7 +170,7 @@ interface Props {
           return true;
         }
         else if (this.props.talk.card_visibility === "Followers and members") {
-          if (this.props.role === "follower" || this.props.role === "member") {
+          if (this.props.role === "follower" || this.props.role === "member" || this.props.role === "owner") {
             return true;
           }
           else {
@@ -195,7 +196,7 @@ interface Props {
           return true;
         }
         else if (this.props.talk.visibility == "Followers and members") {
-          if (this.props.following || this.props.role === "follower" || this.props.role === "member") {
+          if (this.props.following || this.props.role === "follower" || this.props.role === "member" || this.props.role === "owner") {
             return true;
           }
           else {
@@ -239,10 +240,10 @@ render() {
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
             <Box 
-              width="40%" 
+              width="50%" 
               direction="row"
               >
-                <Calendar size="18px" />
+                <Calendar size="16px" />
                 <Text
                   size="16px"
                   color="black"
@@ -252,11 +253,14 @@ render() {
                   {this.formatDateFull(
                     this.props.talk.date,
                     this.props.talk.end_date
-                  )}
+                    )}
                 </Text>
+                <Box margin={{left: "5px"}}>
+                  <CalendarButtons talk={this.props.talk}/>
+                </Box>
             </Box>
             <Box
-                width="60%"
+                width="50%"
                 align="end"
                 >
               <ShareButtons 
@@ -288,7 +292,7 @@ render() {
             this.props.user !== null &&
             this.state.registered && (
               <Box margin={{ top: "10px", bottom: "5px", left: "20px", right: "20px" }} background="#d5d5d5">
-                <CountdownAndCalendarButtons talk={this.props.talk} />
+                <Countdown talk={this.props.talk} />
                 <Box
                   focusIndicator={false}
                   background="#FF4040"
@@ -315,7 +319,7 @@ render() {
               <Box 
               margin={{ top: "5px", bottom: "5px", left: "20px", right: "20px" }}>
                 <Box>
-                  <CountdownAndCalendarButtons talk={this.props.talk} />
+                  <Countdown talk={this.props.talk} />
                 </Box>
                 {/* <Box
                   onClick={this.onClick}
@@ -339,17 +343,19 @@ render() {
               <Box 
               margin={{ top: "5px", bottom: "5px", left: "20px", right: "20px" }}>
                 <Box>
-                  <CountdownAndCalendarButtons talk={this.props.talk} />
+                  <Countdown talk={this.props.talk} />
                 </Box>
               </Box>
           )}
           {!this.checkIfUserCanAccessLink() && this.props.user === null
           && (
+            
             <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
-              <Text size="16px"> You need to </Text>
-              <LoginModal callback={() => {}} />
+              <TalkRegistrationButton
+                talk={this.props.talk}
+              />
               <Text size="16px"> or </Text>
-              <SignUpButton callback={() => {}} />
+              <LoginModal callback={() => {}} />
               <Text size="16px"> to attend </Text>
             </Box>
           )}

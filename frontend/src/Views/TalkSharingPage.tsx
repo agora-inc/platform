@@ -25,8 +25,9 @@ import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton
 import TalkCard from "../Components/Talks/TalkCard";
 import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
-import CountdownAndCalendarButtons from "../Components/Talks/CountdownAndCalendarButtons";
-import OverlayFooter from "../Components/Talks/Talkcard/OverlayFooter";
+import Countdown from "../Components/Talks/Countdown";
+import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
+import { Helmet } from "react-helmet";
 
 interface Props {
   location: { pathname: string };
@@ -371,12 +372,26 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   render() { 
+    const talk = this.state.talk;
       return(
+        <>
+        <Helmet>
+          <title>{talk.name}</title>
+          <meta name="description" content={talk.description}/>
+          <meta property="og:title" content={talk.name} />
+          <meta property="og:description" content={talk.description} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={document.location.href} />
+          {/* <meta property="og:image" content={ChannelService.getAvatar(talk.channel_id)} /> */}
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:title" content={talk.name} />
+          <meta name="twitter:description" content={talk.description} />
+        </Helmet>
         <Box
             margin={{top: "100px", left: "20px", right: "20px"}}
             align="center">
             <Box
-                width="55vw"
+                width="60vw"
                 margin={{left: "20px", right: "20px"}}>
                 <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
                 <Link
@@ -491,13 +506,14 @@ export default class ChannelPage extends Component<Props, State> {
                     >
                       {this.escapeDoubleQuotes(this.state.talk.description)}
                     </Text>
-          <OverlayFooter
+          <FooterOverlay
               talk={this.state.talk}
               user={this.state.user}
               role={this.state.role}
               />
           </Box>
         </Box>
+      </>
       )
     }
 }

@@ -80,7 +80,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                   fontStyle: "italic",
                 }}
                 >
-                Connecting academic communities.
+                Automating the academic seminar organisation pipeline.
               </Text>
             </MediaQuery>
         </Box>
