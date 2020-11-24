@@ -109,7 +109,9 @@ export default class SignUpButton extends Component<Props, State> {
             >
               <StatusCritical/>
               <Heading level={5} margin="none" color="white">
-                Error: {this.state.error}
+                {/*Error: {this.state.error}*/}
+                Error: The email address entered is already associated 
+                with an account.
               </Heading>
             </Box>
           )}
