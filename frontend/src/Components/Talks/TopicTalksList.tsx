@@ -229,6 +229,7 @@ export default class TopicTalkList extends Component<Props, State> {
                   Upcoming talks
                 </Text>
               </Box>
+            <MediaQuery minDeviceWidth={992}>
               <Box direction="row-reverse" width="50%">
                 <Box direction="row">
                 <Box
@@ -263,18 +264,19 @@ export default class TopicTalkList extends Component<Props, State> {
                   onClick={() => {
                     this.setState({audienceLevel: 
                       {...this.state.audienceLevel, BachelorMaster: !this.state.audienceLevel.BachelorMaster, all: false}}, () => {
-                    this.selectTopic(this.state.chosenTopic)})}}
-                  background={this.state.audienceLevel.BachelorMaster ? "#E0E0E0" : "white"} 
-                  round="xsmall"
-                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-                  justify="center"
-                  align="center"
-                  focusIndicator={false}
-                  style={{
-                    border: "1px solid #C2C2C2",
-                  }}
-                  hoverIndicator={false}
-                  >
+                        this.selectTopic(this.state.chosenTopic)})}}
+                        background={this.state.audienceLevel.BachelorMaster ? "#E0E0E0" : "white"} 
+                        round="xsmall"
+                        pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                        justify="center"
+                        align="center"
+                        focusIndicator={false}
+                        style={{
+                          border: "1px solid #C2C2C2",
+                        }}
+                        hoverIndicator={false}
+                        >
+                    <MediaQuery minDeviceWidth={992}>
                     {this.state.audienceLevel.BachelorMaster && (
                       <Text weight="bold" size="small">
                         Bachelor/Master
@@ -285,21 +287,36 @@ export default class TopicTalkList extends Component<Props, State> {
                         Bachelor/Master
                       </Text>)
                     }
+                    </MediaQuery>
+                    <MediaQuery maxDeviceWidth={992}>
+                    {this.state.audienceLevel.BachelorMaster && (
+                      <Text weight="bold" size="small">
+                        Bachelor/
+                        Master
+                      </Text>)
+                    }
+                    {!this.state.audienceLevel.BachelorMaster && (
+                      <Text size="small">
+                        Bachelor/
+                        Master
+                      </Text>)
+                    }
+                    </MediaQuery>
                   </Box>
                 <Box
                   onClick={() => {
                     this.setState({audienceLevel: {...this.state.audienceLevel, Phdplus: !this.state.audienceLevel.Phdplus, all: false}}, () => {
                       this.selectTopic(this.state.chosenTopic)})}}
-                  background={this.state.audienceLevel.Phdplus ? "#E0E0E0" : "white"} 
-                  round="xsmall"
-                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-                  justify="center"
-                  align="center"
-                  focusIndicator={false}
-                  style={{
-                    border: "1px solid #C2C2C2",
-                  }}
-                  hoverIndicator={false}>
+                      background={this.state.audienceLevel.Phdplus ? "#E0E0E0" : "white"} 
+                      round="xsmall"
+                      pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                      justify="center"
+                      align="center"
+                      focusIndicator={false}
+                      style={{
+                        border: "1px solid #C2C2C2",
+                      }}
+                      hoverIndicator={false}>
                   {this.state.audienceLevel.Phdplus && (
                     <Text weight="bold" size="small">
                       PhD+
@@ -322,23 +339,24 @@ export default class TopicTalkList extends Component<Props, State> {
                       }}, () => {
                         this.selectTopic(this.state.chosenTopic)
                       })}}
-                  background="white"
-                  round="xsmall"
-                  pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-                  justify="center"
-                  align="center"
-                  focusIndicator={false}
-                  style={{
-                    border: "1px solid #C2C2C2",
-                  }}
-                  hoverIndicator={true}
-                  >
+                      background="white"
+                      round="xsmall"
+                      pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+                      justify="center"
+                      align="center"
+                      focusIndicator={false}
+                      style={{
+                        border: "1px solid #C2C2C2",
+                      }}
+                      hoverIndicator={true}
+                      >
                     <Text size="small">
                       All
                     </Text>
                   </Box>
                 </Box>
                 </Box>
+            </MediaQuery>
               </Box>
           )}
           {/*this.props.seeMore && (
