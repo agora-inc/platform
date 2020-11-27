@@ -109,7 +109,8 @@ export default class SignUpButton extends Component<Props, State> {
             >
               <StatusCritical/>
               <Heading level={5} margin="none" color="white">
-                Error: {this.state.error}
+                {/*Error: {this.state.error}*/}
+                Error: Username or email already taken.
               </Heading>
             </Box>
           )}
