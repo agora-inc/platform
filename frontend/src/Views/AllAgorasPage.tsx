@@ -18,12 +18,13 @@ const AllAgorasPage = () => {
       <div className="all-agoras-grid"
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
           alignSelf: 'center'
         }}
       >
         {agoras.map((agora) => (
-            <Link className="agora-card" to={`/${agora.name}`}>
+            <Link className="agora-card" to={`/${agora.name}`}
+              style={{width: '100%'}}
+            >
               <div
                 className="agora-card-banner"
                 style={{ background: agora.colour }}
