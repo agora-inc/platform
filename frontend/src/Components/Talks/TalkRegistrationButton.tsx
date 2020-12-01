@@ -117,9 +117,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             height: 35,
             fontSize: 15,
             fontWeight: "bold",
-            padding: 0,
-            // margin: 6,
-            backgroundColor: "#F2F2F2",
+            padding: 0,accepted
             border: "none",
             borderRadius: 7,
           }}
