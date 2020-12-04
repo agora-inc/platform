@@ -909,16 +909,37 @@ def isAvailable():
 # --------------------------------------------
 # TALK ACCESS REQUESTS ROUTES
 # --------------------------------------------
-@app.route('/talks/requestaccess/register', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/register', methods=["POST"])
 def registerTalk():
-    logRequest(request)
-    if request.method == "OPTIONS":
-        return jsonify("ok")
+    with open("/home/cloud-user/test/wowarena1.txt", "w") as file:
+        file.write("in")
+
+    # # logRequest(request)
+    # if request.method == "OPTIONS":
+    #     with open("/home/cloud-user/test/wowarena101.txt", "w") as file:
+    #         file.write("in")
+    #     return jsonify("ok")
         
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
+
+    with open("/home/cloud-user/test/wowarena11.txt", "w") as file:
+        file.write("in")
+
+
+
+
     params = request.json
+
+
+
+    with open("/home/cloud-user/test/wowarena111.txt", "w") as file:
+        file.write("in")
+
+
+
+
     try:
         talkId = params["talkId"]
         userId = params["userId"] if "userId" in params else ""
@@ -931,6 +952,10 @@ def registerTalk():
         return jsonify("success")
 
     except Exception as e:
+
+        with open("/home/cloud-user/test/wowarena2.txt", "w") as file:
+            file.write(str(e))
+
         return jsonify(str(e))
 
 @app.route('/talks/requestaccess/unregister', methods=["POST", "OPTIONS"])

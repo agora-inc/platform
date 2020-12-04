@@ -620,7 +620,23 @@ class TalkRepository:
 
     def registerTalk(self, talkId, userId, name, email, website, institution):
         #TODO: TO TEST
+
+
+
+        with open("/home/cloud-user/test/wowarena3.txt", "w") as file:
+            file.write("in")
+
+
+
         self.db.open_connection()
+
+
+        with open("/home/cloud-user/test/wowarena4.txt", "w") as file:
+            file.write("in")
+
+
+
+
         try:
             with self.db.con.cursor() as cur:
                 cur.execute(
@@ -629,6 +645,10 @@ class TalkRepository:
                 self.db.con.commit()
                 cur.close()
         except Exception as e:
+
+            with open("/home/cloud-user/test/wowarena5.txt", "w") as file:
+                file.write(str(e))
+
             return str(e)
 
     def unregisterTalk(self, requestRegistrationId, userId):
