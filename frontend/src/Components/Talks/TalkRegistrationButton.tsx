@@ -7,100 +7,105 @@ import {
   Layer,
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
-import { Talk } from "../../Services/TalkService";
+import { Talk, TalkService } from "../../Services/TalkService";
+import { User } from "../../Services/UserService";
 
 
 // NOTE: most of this code has been copy/pasted from another overlay.  To be cleaned.
 
 interface Props {
-  talk: Talk
+  talk: Talk,
+  user?: User
 }
 
 interface State {
-    user: {
-      full_name : string;
+    form: {
+      fullName : string;
       institution: string;
       email: string;
+      homepage: string
     },
-    talk: {
-      talk_title: string;
-      abstract: string;
-      // topics: Topic[],
-      // date: string;
+    feedbackMsg: {
+      confirmationMsg: string;
+      errorMsg: string
     }
     showForm: boolean;
-    thankModal: boolean;
-    contactAddresses: string
+    feedbackModal: boolean;
 }
 
 export default class TalkRegistrationButton extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      user: {
-        full_name: "",
+      form: {
+        fullName: "",
         institution: "",
         email: "",
+        homepage: ""
       },
-      talk: {
-        talk_title: "",
-        abstract: "",
+      feedbackMsg: {
+        confirmationMsg: "Successful registration. You will automatically receive the information regarding that event by email as soon as an administrator treated your request.",
+        errorMsg: ""
       },
       showForm: false,
-      thankModal: false,
-      contactAddresses: ""
+      feedbackModal: false,
     };
-    // this.fetchContactAddresses()
   }
 
-  handleInput = (e: any) => {
+  handleInput = (e: any, key: string) => {
     let value = e.target.value;
-    let key = e.target.name;
     this.setState((prevState: any) => ({
-      user: { ...prevState.user, [key]: value },
-      talk: { ...prevState.talk, [key]: value },
-    }));
-  };
-
-  setValueAcademicTitle = (e: any) => {
-    this.setState((prevState: any) => ({
-      user: {...prevState.user, speaker_title: e}
+      form: { ...prevState.form, [key]: value },
     }));
   };
 
   handleFormSubmit = (e: any) => {
     e.preventDefault();
-    // prevents the page from bein
-    // this.fetchContactAddresses();
-    // let userData = this.state.user;
-    // this.sendApplication();
-    // this.setState({ showForm: false });
-    this.setState({thankModal: true});
+    TalkService.registerForTalk(
+      this.props.talk.id,
+      this.props.user?.id,
+      this.state.form.fullName,
+      this.state.form.email,
+      this.state.form.homepage, 
+      this.state.form.institution,
+      (res: any) => {
+        // display error received from method
+        if (res !== "ok"){
+          this.setState((prevState: any) => ({
+          feedbackMsg: {...prevState.feedbackMsg, errorMsg: res}
+          }));
+        };
+      }
+    );
+    this.toggleFeedbackModal();
   };
-
+  
   toggleModal = () => {
     this.setState({ showForm: !this.state.showForm });
   };
 
-  toggleThankModal = () => {
-    this.setState({ thankModal: !this.state.thankModal });
+  toggleFeedbackModal = () => {
+    this.setState({ feedbackModal: !this.state.feedbackModal });
     this.setState({ showForm: false });
   };
 
   isComplete = () => {
-    return ( true
+    return (
+      this.state.form.fullName !== "" &&
+      this.state.form.email !== "" &&
+      this.state.form.institution !== ""
     );
   };
 
   isMissing = () => {
     let res: string[] = []
-    if (this.state.user.full_name === "") {
+    if (this.state.form.fullName !== "") {
       res.push("Name")
     }
-    if (this.state.user.email === "") {
+    if (this.state.form.email !== "") {
       res.push("Email address")
     }
-    if (this.state.user.institution === "") {
+    if (this.state.form.institution !== "") {
       res.push("Institution")
     }
     return res;
@@ -117,7 +122,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             height: 35,
             fontSize: 15,
             fontWeight: "bold",
-            padding: 0,accepted
+            padding: 0,
             border: "none",
             borderRadius: 7,
           }}
@@ -132,54 +137,74 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           canProceed={this.isComplete()}
           isMissing={this.isMissing()}
           width={500}
-          height={300}
+          height={350}
           contentHeight="200px"
           title={"Registration"}
         >
-
         <OverlaySection>
           <Box width="100%" gap="2px">
             <TextInput
               placeholder="Full name"
-              value={this.state.user.full_name}
-              onChange={this.handleInput}
+              value={this.state.form.fullName}
+              onChange={(e: any) => this.handleInput(e, "fullName")}
               />
             </Box>
           <Box width="100%" gap="2px">
             <TextInput
               placeholder="Current institution"
-              value={this.state.user.institution}
-              onChange={this.handleInput}
+              value={this.state.form.institution}
+              onChange={(e: any) => this.handleInput(e, "institution")}
               />
           </Box>
           <Box width="100%" gap="2px">
             <TextInput
               placeholder="Email address"
-              value={this.state.user.email}
-              onChange={this.handleInput}
+              value={this.state.form.email}
+              onChange={(e: any) => this.handleInput(e, "email")}
+              />
+          </Box>
+          <Box width="100%" gap="2px">
+            <TextInput
+              placeholder="(Homepage)"
+              value={this.state.form.homepage}
+              onChange={(e: any) => this.handleInput(e, "homepage")}
               />
           </Box>
           </OverlaySection>
         </Overlay>
-        {this.state.thankModal && (
+        {this.state.feedbackModal && (
           <Layer
-            onEsc={this.toggleThankModal}
-            onClickOutside={this.toggleThankModal}
+            onEsc={this.toggleFeedbackModal}
+            onClickOutside={this.toggleFeedbackModal}
             style={{
-              width: 300,
+              width: 350,
               height: 200,
               borderRadius: 15,
               border: "3.5px solid black",
               padding: 10,
             }}
           >
-            <Box>
+            <Box height="200px"
+            >
+              {(this.state.feedbackMsg.errorMsg == "") && (
               <Text margin="20px">
                 Thank you for registering! If accepted, you will receive an email by 
                 the organisers with a link to attend.
               </Text>
+              )}
+              {(this.state.feedbackMsg.errorMsg !== "") && (
+                <>
+                  <Text margin={{left: "15px", right: "15px"}}>
+                    Something went wrong. Please signal issue using the "Feedback/bug" button.
+                  </Text>
+                  <Text margin={{left: "15px", right: "15px", top: "5px"}} color="red">
+                    Error: {this.state.feedbackMsg.errorMsg}
+                    </Text>
+                </>
+              )}
+
             </Box>
-            <Button label="Ok" onClick={this.toggleThankModal} />
+            <Button label="Ok" onClick={this.toggleFeedbackModal} alignSelf="center"/>
           </Layer>
         )}
       </Box>
