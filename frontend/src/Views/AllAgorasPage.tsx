@@ -22,18 +22,16 @@ const AllAgorasPage = () => {
         }}
       >
         {agoras.map((agora) => (
-            <Link className="agora-card" to={`/${agora.name}`}
-              style={{width: '100%'}}
-            >
+            <Link className="agora-card" to={`/${agora.name}`}>
               <div
                 className="agora-card-banner"
                 style={{ background: agora.colour }}
               >
                 {
-                  <img
+                  <img className="agora-image"
                     src={ChannelService.getCover(agora.id, Math.floor(new Date().getTime() / 45000))}
-                    width={420}
-                    height={140}
+                    //width={420}
+                    //height={140}
                   />
                 }
               </div>
