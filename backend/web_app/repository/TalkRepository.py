@@ -600,7 +600,7 @@ class TalkRepository:
     ###############################
     def acceptTalkRegistration(self, requestRegistrationId):
         #TODO: TO TEST
-        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestId};'''
+        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
         try:
             self.db.run_query(accept_query)
             return "ok"
@@ -610,7 +610,7 @@ class TalkRepository:
     def refuseTalkRegistration(self, requestRegistrationId):
         #TODO: TO TEST
         refuse_query = f'''
-            UPDATE TalkRegistrationsVisitors 
+            UPDATE TalkRegistrations 
             SET status='refused' WHERE id = {requestRegistrationId};'''
         try:
             self.db.run_query(refuse_query)
@@ -620,35 +620,15 @@ class TalkRepository:
 
     def registerTalk(self, talkId, userId, name, email, website, institution):
         #TODO: TO TEST
-
-
-
-        with open("/home/cloud-user/test/wowarena3.txt", "w") as file:
-            file.write("in")
-
-
-
-        self.db.open_connection()
-
-
-        with open("/home/cloud-user/test/wowarena4.txt", "w") as file:
-            file.write("in")
-
-
-
-
         try:
             with self.db.con.cursor() as cur:
                 cur.execute(
-                    'INSERT INTO TalkRegistrationsVisitors(talk_id, user_id, name, email, website, institution) VALUES (%s, %s, %s, %s, %s, %s)',
+                    'INSERT INTO TalkRegistrations(talk_id, user_id, name, email, website, institution) VALUES (%s, %s, %s, %s, %s, %s)',
                     [str(talkId), str(userId), name, email, website, institution])
                 self.db.con.commit()
                 cur.close()
+            return "ok"
         except Exception as e:
-
-            with open("/home/cloud-user/test/wowarena5.txt", "w") as file:
-                file.write(str(e))
-
             return str(e)
 
     def unregisterTalk(self, requestRegistrationId, userId):
@@ -656,19 +636,19 @@ class TalkRepository:
         self.db.open_connection()
         if userId == None:
             try:
-                unregister_talk = f'''DELETE FROM TalkRegistrationsVisitors WHERE id = {requestRegistrationId};'''
+                unregister_talk = f'''DELETE FROM TalkRegistrations WHERE id = {requestRegistrationId};'''
                 self.db.run_query(unregister_talk)
             except Exception as e:
                 return str(e)
         else:
             try:
-                unregister_talk = f'''DELETE FROM TalkRegistrationsVisitors WHERE id = {requestRegistrationId} AND user_id = {userId};'''
+                unregister_talk = f'''DELETE FROM TalkRegistrations WHERE id = {requestRegistrationId} AND user_id = {userId};'''
                 self.db.run_query(unregister_talk)
             except Exception as e:
                 return str(e)
 
     def getTalkRegistrationsForTalk(self, talk_id):
-        get_query_talk = f'SELECT * FROM TalkRegistrationsVisitors WHERE talk_id = {talk_id}'
+        get_query_talk = f'SELECT * FROM TalkRegistrations WHERE talk_id = {talk_id}'
         try:
             res = self.db.run_query(get_query_talk)
             return res
@@ -677,11 +657,21 @@ class TalkRepository:
 
     def getTalkRegistrationsForChannel(self, channel_id):
         get_query_channel = f'''
-            SELECT * FROM TalkRegistrationsVisitors
+            SELECT 
+                TalkRegistrations.talk_id, 
+                TalkRegistrations.name, 
+                TalkRegistrations.email, 
+                TalkRegistrations.website, 
+                TalkRegistrations.id, 
+                TalkRegistrations.status, 
+                TalkRegistrations.institution, 
+                TalkRegistrations.user_id 
+            FROM TalkRegistrations
             INNER JOIN Talks
-                WHERE Talks.channel_id = {channel_id}
-            WHERE talk;
+                ON Talks.channel_id = {channel_id}
+            WHERE TalkRegistrations.talk_id = Talks.id;
             '''
+
         try:
             res = self.db.run_query(get_query_channel)
             return res

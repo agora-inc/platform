@@ -244,7 +244,7 @@ def addInvitedMembersToChannel():
     for email in params['emails']:
         app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
 
-    return jsonify("Success")
+    return jsonify("ok")
 
 @app.route('/channels/invite', methods=["GET"])
 def getInvitedMembersForChannel():
@@ -264,7 +264,7 @@ def addUserToChannel():
 
     params = request.json
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
-    return jsonify("Success")
+    return jsonify("ok")
 
 
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
@@ -277,7 +277,7 @@ def removeUserForChannel():
 
     params = request.json
     channels.removeUserFromChannel(params["userId"], params["channelId"])
-    return jsonify("Success")
+    return jsonify("ok")
 
 @app.route('/channels/users', methods=["GET"])
 def getUsersForChannel():
@@ -915,31 +915,15 @@ def registerTalk():
         file.write("in")
 
     # # logRequest(request)
-    # if request.method == "OPTIONS":
-    #     with open("/home/cloud-user/test/wowarena101.txt", "w") as file:
-    #         file.write("in")
-    #     return jsonify("ok")
+    if request.method == "OPTIONS":
+        with open("/home/cloud-user/test/wowarena101.txt", "w") as file:
+            file.write("in")
+        return jsonify("ok")
         
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-
-    with open("/home/cloud-user/test/wowarena11.txt", "w") as file:
-        file.write("in")
-
-
-
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-
-
-
-    with open("/home/cloud-user/test/wowarena111.txt", "w") as file:
-        file.write("in")
-
-
-
-
     try:
         talkId = params["talkId"]
         userId = params["userId"] if "userId" in params else ""
@@ -947,15 +931,10 @@ def registerTalk():
         email = params["email"]
         website = params["website"] if "website" in params else ""
         institution = params["institution"] if "institution" in params else ""
-        talks.registerTalk(talkId, userId, name, email, website, institution)
-
-        return jsonify("success")
+        res = talks.registerTalk(talkId, userId, name, email, website, institution)
+        return jsonify(str(res))
 
     except Exception as e:
-
-        with open("/home/cloud-user/test/wowarena2.txt", "w") as file:
-            file.write(str(e))
-
         return jsonify(str(e))
 
 @app.route('/talks/requestaccess/unregister', methods=["POST", "OPTIONS"])
@@ -972,7 +951,7 @@ def unregisterTalk():
         requestRegistrationId = params["requestRegistrationId"]
         userId = params["userId"] if "userId" in params else None 
         talks.unregisterTalk(requestRegistrationId, userId)
-        return jsonify("success")
+        return jsonify("ok")
 
     except Exception as e:
         return jsonify(400, str(e))
@@ -991,7 +970,7 @@ def refuseTalkRegistration():
     try:
         requestRegistrationId = params["requestRegistrationId"]
         talks.refuseTalkRegistration(requestRegistrationId)
-        return jsonify("success")
+        return jsonify("ok")
 
     except Exception as e:
         return jsonify(400, str(e))
@@ -1010,7 +989,7 @@ def acceptTalkRegistration():
     try:
         requestRegistrationId = params["requestRegistrationId"]
         talks.acceptTalkRegistration(requestRegistrationId)
-        return jsonify("success")
+        return jsonify("ok")
 
     except Exception as e:
         return jsonify(400, str(e))
