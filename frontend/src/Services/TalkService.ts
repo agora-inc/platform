@@ -312,11 +312,11 @@ const refuseTalkRegistration = (requestRegistrationId: number, callback: any) =>
     // method must be called with either talkId OR channelId OR userId (only one of them). 
     let url = "";
     if (talkId !== null){
-      url = `talks/isregistered?talkId=${talkId}`;
+      url = `/talks/requestaccess/all?talkId=${talkId}`;
     } else if (channelId !== null){
-      url = `talks/isregistered?channelId=${channelId}`;
+      url = `/talks/requestaccess/all?channelId=${channelId}`;
     } else if (userId !== null){
-      url = `talks/isregistered?userId=${userId}`;
+      url = `/talks/requestaccess/all?userId=${userId}`;
     }
     get(url, callback);
   }
