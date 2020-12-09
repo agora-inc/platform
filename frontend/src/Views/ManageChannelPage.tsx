@@ -650,7 +650,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <Resources />
                       <Text size="14px"> 
-                        Requests 
+                        Memberships
                       </Text>
                     </Box>
                   </Tab>

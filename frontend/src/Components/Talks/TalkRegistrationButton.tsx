@@ -11,8 +11,6 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { User } from "../../Services/UserService";
 
 
-// NOTE: most of this code has been copy/pasted from another overlay.  To be cleaned.
-
 interface Props {
   talk: Talk,
   user?: User
@@ -113,7 +111,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
 
   render() {
     return (
-      <Box>
+      <Box style={{maxHeight: "30px"}}>
         <Button
           label="Register"
           onClick={this.toggleModal}
@@ -123,6 +121,8 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             fontSize: 15,
             fontWeight: "bold",
             padding: 0,
+            // margin: 6,
+            backgroundColor: "#F2F2F2",
             border: "none",
             borderRadius: 7,
           }}
@@ -188,8 +188,8 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             >
               {(this.state.feedbackMsg.errorMsg == "") && (
               <Text margin="20px">
-                Thank you for registering! If accepted, you will receive an email by 
-                the organisers with a link to attend.
+                <p><b>Thank you for registering!</b></p> 
+                <p>You will receive a conference URL by email after review by the organisers.</p>
               </Text>
               )}
               {(this.state.feedbackMsg.errorMsg !== "") && (

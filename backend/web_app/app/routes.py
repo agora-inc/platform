@@ -911,15 +911,6 @@ def isAvailable():
 # --------------------------------------------
 @app.route('/talks/requestaccess/register', methods=["POST"])
 def registerTalk():
-    with open("/home/cloud-user/test/wowarena1.txt", "w") as file:
-        file.write("in")
-
-    # # logRequest(request)
-    if request.method == "OPTIONS":
-        with open("/home/cloud-user/test/wowarena101.txt", "w") as file:
-            file.write("in")
-        return jsonify("ok")
-        
     # if not checkAuth(request.headers.get('Authorization')):
     #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
@@ -969,8 +960,11 @@ def refuseTalkRegistration():
     params = request.json
     try:
         requestRegistrationId = params["requestRegistrationId"]
-        talks.refuseTalkRegistration(requestRegistrationId)
-        return jsonify("ok")
+        res = talks.refuseTalkRegistration(requestRegistrationId)
+        if res == "ok":
+            return jsonify("ok")
+        else:
+            return jsonify(500, str(res))
 
     except Exception as e:
         return jsonify(400, str(e))
@@ -988,8 +982,8 @@ def acceptTalkRegistration():
     params = request.json
     try:
         requestRegistrationId = params["requestRegistrationId"]
-        talks.acceptTalkRegistration(requestRegistrationId)
-        return jsonify("ok")
+        res = talks.acceptTalkRegistration(requestRegistrationId)
+        return jsonify(str(res))
 
     except Exception as e:
         return jsonify(400, str(e))
@@ -1008,13 +1002,13 @@ def getTalkRegistrations():
     try:
         if channelId != None:
             res = talks.getTalkRegistrationsForChannel(channelId)
-            return jsonify({"registrations": res, "channelId": channelId})
+            return jsonify(res)
         elif talkId != None:
             res = talks.getTalkRegistrationsForTalk(talkId)
-            return jsonify({"registrations": res, "talkId": talkId})
+            return jsonify(res)
         elif userId != None:
             res = talks.getTalkRegistrationsForUser(userId)
-            return jsonify({"registrations": res, "talkId": talkId})
+            return jsonify(res)
 
     except Exception as e:
         return jsonify(400, str(e))

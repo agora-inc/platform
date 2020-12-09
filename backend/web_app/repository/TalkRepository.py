@@ -1,10 +1,12 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
+from datetime import datetime
+
+# NOTE: times are in the format: "2020-12-31 23:59"
 """
     TODO: All methods involving the "state" field must be tested.
 """
-
 
 class TalkRepository:
     def __init__(self, db):
@@ -608,7 +610,6 @@ class TalkRepository:
             return str(e)
 
     def refuseTalkRegistration(self, requestRegistrationId):
-        #TODO: TO TEST
         refuse_query = f'''
             UPDATE TalkRegistrations 
             SET status='refused' WHERE id = {requestRegistrationId};'''
@@ -619,15 +620,18 @@ class TalkRepository:
             return str(e)
 
     def registerTalk(self, talkId, userId, name, email, website, institution):
-        #TODO: TO TEST
+        # get today's time GMT in format: "2020-12-31 23:59"
+        dateTimeObj = datetime.now()
+        timestampStr = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
         try:
+            self.db.open_connection()
             with self.db.con.cursor() as cur:
                 cur.execute(
-                    'INSERT INTO TalkRegistrations(talk_id, user_id, name, email, website, institution) VALUES (%s, %s, %s, %s, %s, %s)',
-                    [str(talkId), str(userId), name, email, website, institution])
+                    'INSERT INTO TalkRegistrations(talk_id, user_id, applicant_name, email, website, institution, registration_date) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    [str(talkId), str(userId), name, email, website, institution, timestampStr])
                 self.db.con.commit()
                 cur.close()
-            return "ok"
+            return "ok"     
         except Exception as e:
             return str(e)
 
@@ -659,13 +663,15 @@ class TalkRepository:
         get_query_channel = f'''
             SELECT 
                 TalkRegistrations.talk_id, 
-                TalkRegistrations.name, 
+                Talks.name,
+                TalkRegistrations.applicant_name, 
                 TalkRegistrations.email, 
                 TalkRegistrations.website, 
                 TalkRegistrations.id, 
                 TalkRegistrations.status, 
                 TalkRegistrations.institution, 
-                TalkRegistrations.user_id 
+                TalkRegistrations.user_id,
+                TalkRegistrations.status
             FROM TalkRegistrations
             INNER JOIN Talks
                 ON Talks.channel_id = {channel_id}

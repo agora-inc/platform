@@ -158,9 +158,7 @@ export default class RequestsTab extends Component<Props, State> {
           columns={columns}
           data={this.state.applicantList}
           step={10}
-          // style={{fontSize: "14px"}}
-          size="small"
-          // resizeable={true}
+          size="medium"
           onClickRow={this.handleClickRow}
         />
       </Box>
