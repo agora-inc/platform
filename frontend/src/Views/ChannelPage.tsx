@@ -26,6 +26,8 @@ interface Props {
   streamId: number;
 }
 
+// NOTE: "following" feature globally disabled
+
 interface State {
   channel: Channel | null;
   role: "none" | "owner" | "member" | "follower";

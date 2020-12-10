@@ -368,12 +368,17 @@ render() {
           {!this.checkIfUserCanAccessLink() && this.props.user !== null
           && (
             <Box direction="row" align="center" gap="25px" pad="25px" justify="center" background="#d5d5d5">
-            <Text textAlign="center" weight="bold" size="16px">
-            {`${this.props.talk.visibility === "Followers and members"
-                  ? "Follow or become a member"
-                  : "Become a member"
+              
+            <TalkRegistrationButton
+              talk={this.props.talk}
+              user={this.props.user}
+            />
+            <Text textAlign="center" weight="bold" size="16px"> 
+            {`${this.props.talk.visibility === "Members only"
+                  ? ` or become a member`
+                  : ""
                 } 
-              of ${this.props.talk.channel_name} to attend`
+                to attend`
             }
             </Text>
             <Link to={`/${this.props.talk.channel_name}`} style={{ textDecoration: "none" }}>

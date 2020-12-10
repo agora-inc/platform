@@ -142,6 +142,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
               </Box>
             )} 
             {this.state.followerChannels.length !== 0 && (
+              // NOTE: following feature has been globally disabled for now
               <Box>
                 <Text
                   size="14px"
