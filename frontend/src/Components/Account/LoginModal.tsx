@@ -162,7 +162,7 @@ export default class LoginModal extends Component<Props, State> {
                 onClick={this.onForgotPasswordClicked}
                 style={{
                   color: "black",
-                  fontSize: 16,
+                  fontSize: 14,
                   cursor:
                     this.state.forgotPasswordText === "Forgot password?"
                       ? "pointer"

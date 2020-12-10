@@ -9,13 +9,13 @@ import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
 import AddToCalendarButtons from "./AddToCalendarButtons";
-import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
+import Countdown from "./Countdown";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
-import OverlayFooter from "./Talkcard/OverlayFooter";
-
+import FooterOverlay from "./Talkcard/FooterOverlay";
+import CalendarButtons from "./CalendarButtons";
 
 interface Props {
   talk: Talk;
@@ -141,34 +141,34 @@ export default class TalkCard extends Component<Props, State> {
 
   // method here for mobile
   register = () => {
-    this.props.user &&
-      TalkService.registerForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          // this.toggleModal();
-          this.checkIfRegistered();
-          this.setState({
-            showShadow: false,
-          });
-        }
-      );
+    // this.props.user &&
+    //   TalkService.registerForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       // this.toggleModal();
+    //       this.checkIfRegistered();
+    //       this.setState({
+    //         showShadow: false,
+    //       });
+    //     }
+    //   );
   };
 
   // method here for mobile
   unregister = () => {
-    this.props.user &&
-      TalkService.unRegisterForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          // this.toggleModal();
-          this.checkIfRegistered();
-          this.setState({
-            showShadow: false,
-          });
-        }
-      );
+    // this.props.user &&
+    //   TalkService.unRegisterForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       // this.toggleModal();
+    //       this.checkIfRegistered();
+    //       this.setState({
+    //         showShadow: false,
+    //       });
+    //     }
+    //   );
   };
 
   // method here for mobile
@@ -471,7 +471,7 @@ export default class TalkCard extends Component<Props, State> {
                 </Box>
 
                 </Box> 
-                <OverlayFooter
+                <FooterOverlay
                   talk={this.props.talk}
                   user={this.props.user}
                   role={this.state.role}
@@ -664,7 +664,7 @@ export default class TalkCard extends Component<Props, State> {
                   </Box>
                   {this.state.available && (
                     <Box margin={{ top: "10px", bottom: "20px" }}>
-                      <CountdownAndCalendarButtons talk={this.props.talk} />
+                      <Countdown talk={this.props.talk} />
                       {/* {this.props.user !== null && this.state.registered && (
                       <Box
                         focusIndicator={false}

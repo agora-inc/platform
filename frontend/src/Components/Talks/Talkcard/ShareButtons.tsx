@@ -77,7 +77,7 @@ interface Props {
                     'reddit',
                     // 'whatsapp',
                   ],
-                  padding: 8,          // padding within buttons (INTEGER)
+                  padding: 2,          // padding within buttons (INTEGER)
                   radius: 4,            // the corner radius on each button (INTEGER)
                   show_total: false,
                   size: 36,             // the size of each button (INTEGER)
@@ -98,7 +98,7 @@ interface Props {
                 background="#5AAB61"
                 round="xsmall"
                 width="50px" height="36px"
-                margin={{left: "8px"}}
+                margin={{left: "2px"}}
                 justify="center"
                 align="center"
                 focusIndicator={true}

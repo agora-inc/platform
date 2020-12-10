@@ -499,19 +499,6 @@ class TalkRepository:
         query = f'DELETE FROM Talks where id = {talkId}'
         self.db.run_query(query)
 
-    def isUserRegisteredForTalk(self, talkId, userId):
-        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
-        result = self.db.run_query(query)
-        return result[0]["COUNT(*)"] != 0
-
-    def registerForTalk(self, talkId, userId):
-        query = f'INSERT INTO TalkRegistrations(talk_id, user_id) VALUES ({talkId}, {userId})'
-        self.db.run_query(query)
-
-    def unRegisterForTalk(self, talkId, userId):
-        query = f'DELETE FROM TalkRegistrations WHERE talk_id={talkId} AND user_id={userId}'
-        self.db.run_query(query)
-
     def getFutureTalksForUser(self, userId):
         query = f"SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link, Talks.show_link_offset, Talks.visibility FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP AND Talks.published = 1"
         talks = self.db.run_query(query)
@@ -607,3 +594,84 @@ class TalkRepository:
             return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
         
         return True
+
+    ###############################
+    # Talk 
+    ###############################
+    def acceptTalkRegistration(self, requestRegistrationId):
+        #TODO: TO TEST
+        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestId};'''
+        try:
+            self.db.run_query(accept_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
+
+    def refuseTalkRegistration(self, requestRegistrationId):
+        #TODO: TO TEST
+        refuse_query = f'''
+            UPDATE TalkRegistrationsVisitors 
+            SET status='refused' WHERE id = {requestRegistrationId};'''
+        try:
+            self.db.run_query(refuse_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
+
+    def registerTalk(self, talkId, userId, name, email, website, institution):
+        #TODO: TO TEST
+        self.db.open_connection()
+        try:
+            with self.db.con.cursor() as cur:
+                cur.execute(
+                    'INSERT INTO TalkRegistrationsVisitors(talk_id, user_id, name, email, website, institution) VALUES (%s, %s, %s, %s, %s, %s)',
+                    [str(talkId), str(userId), name, email, website, institution])
+                self.db.con.commit()
+                cur.close()
+        except Exception as e:
+            return str(e)
+
+    def unregisterTalk(self, requestRegistrationId, userId):
+        #TODO: TO TEST
+        self.db.open_connection()
+        if userId == None:
+            try:
+                unregister_talk = f'''DELETE FROM TalkRegistrationsVisitors WHERE id = {requestRegistrationId};'''
+                self.db.run_query(unregister_talk)
+            except Exception as e:
+                return str(e)
+        else:
+            try:
+                unregister_talk = f'''DELETE FROM TalkRegistrationsVisitors WHERE id = {requestRegistrationId} AND user_id = {userId};'''
+                self.db.run_query(unregister_talk)
+            except Exception as e:
+                return str(e)
+
+    def getTalkRegistrationsForTalk(self, talk_id):
+        get_query_talk = f'SELECT * FROM TalkRegistrationsVisitors WHERE talk_id = {talk_id}'
+        try:
+            res = self.db.run_query(get_query_talk)
+            return res
+        except Exception as e:
+            return str(e)
+
+    def getTalkRegistrationsForChannel(self, channel_id):
+        get_query_channel = f'''
+            SELECT * FROM TalkRegistrationsVisitors
+            INNER JOIN Talks
+                WHERE Talks.channel_id = {channel_id}
+            WHERE talk;
+            '''
+        try:
+            res = self.db.run_query(get_query_channel)
+            return res
+        except Exception as e:
+            return str(e)
+
+    def getTalkRegistrationsForUser(self):
+        raise NotImplementedError
+
+   def isUserRegisteredForTalk(self, talkId, userId):
+        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
+        result = self.db.run_query(query)
+        return result[0]["COUNT(*)"] != 0
