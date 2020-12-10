@@ -562,10 +562,10 @@ export default class EditTalkModal extends Component<Props, State> {
                     alignSelf="start"
                     margin={{top: "10px", bottom: "10px"}}
                   >
-                    No need to put a password, you choose the users you want to show the link to. 
+                    No need to put a password, link visibility is handled below. 
                     <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
                       <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
-                       <p>Your selected audience will be able to see the link 15 minutes befoe the start of your eventr.</p>
+                       <p>Your selected audience will be able to see the link 30 minutes before the start of your event.</p>
                       </ReactTooltip>
                   </Text>
                 </OverlaySection>
@@ -574,18 +574,19 @@ export default class EditTalkModal extends Component<Props, State> {
                   <Box width="100%" gap="5px" margin={{top: "10px"}}>
                     <Box direction="row" gap="small">
                       <Text size="14px" weight="bold" color="black">
-                        URL accessible by...
+                        URL visible without registration by...
                       </Text>
                       <StatusInfo size="small" data-tip data-for='linkinfo'/>
                       <ReactTooltip id='linkinfo' place="right" effect="solid">
-                        Decide who has access to the link. The same people will also have access to the recording if there is one.
+                        Decide who does not need to manually register to attend the talk. The same people will also have access to the recording if there is one.
                       </ReactTooltip>
                     </Box>
                     <Select
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
                       id="link-visibility-select"
-                      options={["Everybody", "Followers and members", "Members only"]}
+                      // options={["Everybody", "Followers and members", "Members only"]} // NOTE: WE STOPPED USING FOLLOWERS ATM
+                      options={["Everybody", "Members only"]}
                       value={this.state.linkVisibility}
                       onChange={({ option }) =>
                         this.setState({ linkVisibility: option })
@@ -593,7 +594,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     />
                   </Box>
 
-                  <Box width="100%" gap="5px" margin={{top: "5px"}}>
+              <Box width="100%" gap="5px" margin={{top: "5px"}}>
                 <Box direction="row" gap="small">
                   <Text size="14px" weight="bold" color="black">
                     Talk card visible by...
@@ -608,15 +609,14 @@ export default class EditTalkModal extends Component<Props, State> {
                   dropAlign={{ bottom: "top" }}
                   focusIndicator={false}
                   id="card-visibility-select"
-                  options={["Everybody", "Followers and members", "Members only"]}
+                  // options={["Everybody", "Followers and members", "Members only"]} // NOTE: WE STOPPED USING FOLLOWERS ATM
+                  options={["Everybody", "Members only"]}
                   value={this.state.cardVisibility}
                   onChange={({ option }) =>
                     this.setState({ cardVisibility: option })
                   }
                 />
               </Box>
-
-
 
                       {/* NOTE: This is the selector to set release time of the link.
                   <Box width="100%" gap="5px" margin={{top: "13px"}}>

@@ -94,7 +94,7 @@ export default class ChannelPage extends Component<Props, State> {
       currentTalks: [],
       pastTalks: [],
       totalNumberOfpastTalks: 0,
-      followerCount: 0,
+      followerCount: 0,  // NOTE: WE STOPPED USING FOLLOWERS ATM
       following: false,
       user: UserService.getCurrentUser(),
       bannerExtended: true,
@@ -184,6 +184,7 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   onFollowClicked = () => {
+    // NOTE: DISABLED
     if (!this.state.following) {
       ChannelService.addUserToChannel(
         this.state.user!.id,

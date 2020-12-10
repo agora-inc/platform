@@ -176,7 +176,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchFollowerCount();
     this.fetchOwners();
     this.fetchMembers();
-    this.fetchFollowers();
+    // this.fetchFollowers(); // NOTE: follower tech globally disabled atm
     this.fetchInvitedMembers();
     this.fetchPastTalks();
     this.fetchCurrentTalks();
