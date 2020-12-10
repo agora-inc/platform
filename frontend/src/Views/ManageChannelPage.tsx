@@ -20,12 +20,13 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, MailOption } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, DocumentText, Resources } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
+import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
 
 interface Props {
   location: any;
@@ -549,6 +550,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   render() {
+    const { channel } = this.state;
     // console.log(this.state.listEmailCorrect)
     if (this.state.loading) {
       return (
@@ -646,9 +648,17 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Tab>
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
-                      <ContactInfo />
+                      <Resources />
                       <Text size="14px"> 
-                        Requests 
+                        Memberships
+                      </Text>
+                    </Box>
+                  </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
+                      <DocumentText />
+                      <Text size="14px"> 
+                        Registrations 
                       </Text>
                     </Box>
                   </Tab>
@@ -1038,6 +1048,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <TabPanel style={{width: "74.35vw"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RequestsTab channelId={this.state.channel!.id}/>
+                  </Box>
+                </TabPanel>
+                <TabPanel style={{width: "74.35vw"}}>
+                  <Box direction="row" margin={{bottom: "60px"}}>
+                    <RegistrationsTab channelId={channel!.id} />
                   </Box>
                 </TabPanel>
               </Tabs>

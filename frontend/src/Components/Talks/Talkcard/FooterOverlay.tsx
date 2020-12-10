@@ -356,6 +356,12 @@ render() {
               />
               <Text size="16px"> or </Text>
               <LoginModal callback={() => {}} />
+              {/* <RequestMembershipButton
+                channelId={this.props.talk.channel_id}
+                channelName={this.props.talk.channel_name}
+                user={this.props.user}
+              /> */}
+              {/* <SignUpButton callback={() => {}} /> */}
               <Text size="16px"> to attend </Text>
             </Box>
           )}

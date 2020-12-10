@@ -1,10 +1,12 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
+from datetime import datetime
+
+# NOTE: times are in the format: "2020-12-31 23:59"
 """
     TODO: All methods involving the "state" field must be tested.
 """
-
 
 class TalkRepository:
     def __init__(self, db):
@@ -600,7 +602,7 @@ class TalkRepository:
     ###############################
     def acceptTalkRegistration(self, requestRegistrationId):
         #TODO: TO TEST
-        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestId};'''
+        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
         try:
             self.db.run_query(accept_query)
             return "ok"
@@ -608,9 +610,8 @@ class TalkRepository:
             return str(e)
 
     def refuseTalkRegistration(self, requestRegistrationId):
-        #TODO: TO TEST
         refuse_query = f'''
-            UPDATE TalkRegistrationsVisitors 
+            UPDATE TalkRegistrations 
             SET status='refused' WHERE id = {requestRegistrationId};'''
         try:
             self.db.run_query(refuse_query)
@@ -619,15 +620,18 @@ class TalkRepository:
             return str(e)
 
     def registerTalk(self, talkId, userId, name, email, website, institution):
-        #TODO: TO TEST
-        self.db.open_connection()
+        # get today's time GMT in format: "2020-12-31 23:59"
+        dateTimeObj = datetime.now()
+        timestampStr = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
         try:
+            self.db.open_connection()
             with self.db.con.cursor() as cur:
                 cur.execute(
-                    'INSERT INTO TalkRegistrationsVisitors(talk_id, user_id, name, email, website, institution) VALUES (%s, %s, %s, %s, %s, %s)',
-                    [str(talkId), str(userId), name, email, website, institution])
+                    'INSERT INTO TalkRegistrations(talk_id, user_id, applicant_name, email, website, institution, registration_date) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    [str(talkId), str(userId), name, email, website, institution, timestampStr])
                 self.db.con.commit()
                 cur.close()
+            return "ok"     
         except Exception as e:
             return str(e)
 
@@ -636,19 +640,19 @@ class TalkRepository:
         self.db.open_connection()
         if userId == None:
             try:
-                unregister_talk = f'''DELETE FROM TalkRegistrationsVisitors WHERE id = {requestRegistrationId};'''
+                unregister_talk = f'''DELETE FROM TalkRegistrations WHERE id = {requestRegistrationId};'''
                 self.db.run_query(unregister_talk)
             except Exception as e:
                 return str(e)
         else:
             try:
-                unregister_talk = f'''DELETE FROM TalkRegistrationsVisitors WHERE id = {requestRegistrationId} AND user_id = {userId};'''
+                unregister_talk = f'''DELETE FROM TalkRegistrations WHERE id = {requestRegistrationId} AND user_id = {userId};'''
                 self.db.run_query(unregister_talk)
             except Exception as e:
                 return str(e)
 
     def getTalkRegistrationsForTalk(self, talk_id):
-        get_query_talk = f'SELECT * FROM TalkRegistrationsVisitors WHERE talk_id = {talk_id}'
+        get_query_talk = f'SELECT * FROM TalkRegistrations WHERE talk_id = {talk_id}'
         try:
             res = self.db.run_query(get_query_talk)
             return res
@@ -657,21 +661,33 @@ class TalkRepository:
 
     def getTalkRegistrationsForChannel(self, channel_id):
         get_query_channel = f'''
-            SELECT * FROM TalkRegistrationsVisitors
+            SELECT 
+                TalkRegistrations.talk_id, 
+                Talks.name,
+                TalkRegistrations.applicant_name, 
+                TalkRegistrations.email, 
+                TalkRegistrations.website, 
+                TalkRegistrations.id, 
+                TalkRegistrations.status, 
+                TalkRegistrations.institution, 
+                TalkRegistrations.user_id,
+                TalkRegistrations.status
+            FROM TalkRegistrations
             INNER JOIN Talks
-                WHERE Talks.channel_id = {channel_id}
-            WHERE talk;
+                ON Talks.channel_id = {channel_id}
+            WHERE TalkRegistrations.talk_id = Talks.id;
             '''
+
         try:
             res = self.db.run_query(get_query_channel)
             return res
         except Exception as e:
             return str(e)
 
-    def getTalkRegistrationsForUser(self):
+    def getTalkRegistrationsForUser(self, userId):
         raise NotImplementedError
 
-   def isUserRegisteredForTalk(self, talkId, userId):
+    def isUserRegisteredForTalk(self, talkId, userId):
         query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"] != 0

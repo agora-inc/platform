@@ -2,6 +2,7 @@ import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
+import Identicon from "@polkadot/react-identicon/icons/Polkadot";
 
 const getTalkById = (talkId: number, callback: any) => {
   get(`talk/info?id=${talkId}`, callback);
@@ -287,6 +288,38 @@ const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
   get(`talks/isregistered?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+const acceptTalkRegistration = (requestRegistrationId: number, callback: any) => {
+  post(
+    "talks/requestaccess/accept",
+    {
+      requestRegistrationId: requestRegistrationId,
+    },
+    callback
+    );
+  };
+  
+const refuseTalkRegistration = (requestRegistrationId: number, callback: any) => {
+  post(
+    "talks/requestaccess/refuse",
+    {
+      requestRegistrationId: requestRegistrationId,
+    },
+    callback
+    );
+  };
+
+  const getTalkRegistrations = (talkId: any, channelId: any, userId: any, callback:any) => {
+    // method must be called with either talkId OR channelId OR userId (only one of them). 
+    let url = "";
+    if (talkId !== null){
+      url = `/talks/requestaccess/all?talkId=${talkId}`;
+    } else if (channelId !== null){
+      url = `/talks/requestaccess/all?channelId=${channelId}`;
+    } else if (userId !== null){
+      url = `/talks/requestaccess/all?userId=${userId}`;
+    }
+    get(url, callback);
+  }
 
 const saveTalk = (userId: number, talkId: number, callback: any) => {
   post(
@@ -360,17 +393,20 @@ export const TalkService = {
   scheduleTalk,
   deleteTalk,
   addRecordingLink,
-  isRegisteredForTalk,
-  registerForTalk,
-  unRegisterForTalk,
-  getRegisteredTalksForUser,
   saveTalk,
   unsaveTalk,
   getSavedTalksForUser,
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
-  
+  // talk registration management
+  acceptTalkRegistration,
+  refuseTalkRegistration,
+  registerForTalk,
+  unRegisterForTalk,
+  isRegisteredForTalk,
+  getTalkRegistrations,
+  getRegisteredTalksForUser,
 };
 
 export type Talk = {

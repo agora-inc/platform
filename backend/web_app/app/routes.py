@@ -244,7 +244,7 @@ def addInvitedMembersToChannel():
     for email in params['emails']:
         app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
 
-    return jsonify("Success")
+    return jsonify("ok")
 
 @app.route('/channels/invite', methods=["GET"])
 def getInvitedMembersForChannel():
@@ -264,7 +264,7 @@ def addUserToChannel():
 
     params = request.json
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
-    return jsonify("Success")
+    return jsonify("ok")
 
 
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
@@ -277,7 +277,7 @@ def removeUserForChannel():
 
     params = request.json
     channels.removeUserFromChannel(params["userId"], params["channelId"])
-    return jsonify("Success")
+    return jsonify("ok")
 
 @app.route('/channels/users', methods=["GET"])
 def getUsersForChannel():
@@ -909,14 +909,10 @@ def isAvailable():
 # --------------------------------------------
 # TALK ACCESS REQUESTS ROUTES
 # --------------------------------------------
-@app.route('/talks/requestaccess/register', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/register', methods=["POST"])
 def registerTalk():
-    logRequest(request)
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-        
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
     try:
@@ -926,9 +922,8 @@ def registerTalk():
         email = params["email"]
         website = params["website"] if "website" in params else ""
         institution = params["institution"] if "institution" in params else ""
-        talks.registerTalk(talkId, userId, name, email, website, institution)
-
-        return jsonify("success")
+        res = talks.registerTalk(talkId, userId, name, email, website, institution)
+        return jsonify(str(res))
 
     except Exception as e:
         return jsonify(str(e))
@@ -947,12 +942,12 @@ def unregisterTalk():
         requestRegistrationId = params["requestRegistrationId"]
         userId = params["userId"] if "userId" in params else None 
         talks.unregisterTalk(requestRegistrationId, userId)
-        return jsonify("success")
+        return jsonify("ok")
 
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/refuse', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/refuse', methods=["POST", "OPTIONS"])
 def refuseTalkRegistration():
     #TODO: test
     logRequest(request)
@@ -965,13 +960,16 @@ def refuseTalkRegistration():
     params = request.json
     try:
         requestRegistrationId = params["requestRegistrationId"]
-        talks.refuseTalkRegistration(requestRegistrationId)
-        return jsonify("success")
+        res = talks.refuseTalkRegistration(requestRegistrationId)
+        if res == "ok":
+            return jsonify("ok")
+        else:
+            return jsonify(500, str(res))
 
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/accept', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/accept', methods=["POST", "OPTIONS"])
 def acceptTalkRegistration():
     #TODO: test
     logRequest(request)
@@ -984,13 +982,13 @@ def acceptTalkRegistration():
     params = request.json
     try:
         requestRegistrationId = params["requestRegistrationId"]
-        talks.acceptTalkRegistration(requestRegistrationId)
-        return jsonify("success")
+        res = talks.acceptTalkRegistration(requestRegistrationId)
+        return jsonify(str(res))
 
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/all', methods=["GET", "OPTIONS"])
+@app.route('/talks/requestaccess/all', methods=["GET", "OPTIONS"])
 def getTalkRegistrations():
     if request.method == "OPTIONS":
         return jsonify("ok")
@@ -1004,13 +1002,13 @@ def getTalkRegistrations():
     try:
         if channelId != None:
             res = talks.getTalkRegistrationsForChannel(channelId)
-            return jsonify({"registrations": res, "channelId": channelId})
+            return jsonify(res)
         elif talkId != None:
             res = talks.getTalkRegistrationsForTalk(talkId)
-            return jsonify({"registrations": res, "talkId": talkId})
+            return jsonify(res)
         elif userId != None:
-            res = talks.getTalkRegistrationsForUser(talkId)
-            return jsonify({"registrations": res, "talkId": talkId})
+            res = talks.getTalkRegistrationsForUser(userId)
+            return jsonify(res)
 
     except Exception as e:
         return jsonify(400, str(e))
@@ -1301,3 +1299,24 @@ def fullTextSearch():
     searchString = params["searchString"]
     results = {objectType: search.searchTable(objectType, searchString) for objectType in objectTypes}
     return jsonify(results)
+
+# --------------------------------------------
+# METATAG ROUTES (this is a hack)
+# --------------------------------------------
+@app.route('/event-link', methods=["GET"])
+def eventLinkRedirect():
+    try:
+        eventId = request.args.get("eventId")
+        
+        res_string = f'''
+            <html>
+
+                DELETE THIS LINE AND ADD THE STUFF YOU NEED INSIDE GERARDO.
+
+            window.location.href = 'https://agora.stream/event/{eventId}'
+            </html>
+        '''
+        return res_string
+
+    except Exception as e:
+        return str(e)
