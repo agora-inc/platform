@@ -263,7 +263,7 @@ export default class PastTalkCard extends Component<Props, State> {
               hoverIndicator={true}
             >
               <Text alignSelf="center" color="grey" size="14px">
-                {this.state.saved ? "Remove from saved" : "Save talk"}
+                {this.state.saved ? "Save talk": "Remove from saved"}
               </Text>
             </Box>
           )}
@@ -309,7 +309,9 @@ export default class PastTalkCard extends Component<Props, State> {
                 this.props.talk.recording_link,
                 this.props.talk.id
               )}
-              style={{ height: "60%" }}
+              style={{ height: "60%", 
+              maxWidth: '640px',
+              alignSelf: 'center'}}
             />
           )}
           {!this.props.talk.recording_link && (
