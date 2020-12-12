@@ -296,7 +296,7 @@ export default class TalkCard extends Component<Props, State> {
                   pad="xsmall"
                   justify="center"
                   align="center"
-                  width="160px"                
+                  width="250px"             
                 >
                   <Text size="14px">
                     Members only
