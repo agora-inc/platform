@@ -296,9 +296,9 @@ export default class TalkCard extends Component<Props, State> {
                   pad="small"
                   justify="center"
                   align="center"
-                  width="250px"             
+                  style={{ minHeight:"30px", minWidth:"120px"}}         
                 >
-                  <Text size="14px">
+                  <Text size="14px" textAlign="center">
                     Members only
                   </Text>
                 </Box>
