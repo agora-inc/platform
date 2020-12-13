@@ -11,18 +11,7 @@ const AllAgorasPage = () => {
   useEffect(() => {
     ChannelService.getAllChannels(100, 0, setAgoras);
   }, []);
-  /*
-  imageSize() {
-    var mq = window.matchMedia( 'maxwidth: 1300px' )
-    if (mq.matches) {
-      width: 420;
-      height:140;
-    } else {
-      width: 210;
-      height: 70;
-    }
-  };*/
-
+  
   return (
     <div className="all-agoras-page">
       <span className="all-agoras-title">All agoras</span>
@@ -44,7 +33,6 @@ const AllAgorasPage = () => {
                     src={ChannelService.getCover(agora.id, Math.floor(new Date().getTime() / 45000))}
                     //width={420}
                     //height={140}
-                    //style={{ imageSize() }}
                   />
                 }
               </div>
