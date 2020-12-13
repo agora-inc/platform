@@ -19,6 +19,15 @@
   grid-gap: 30px;
 }
 
+.agora-image {
+  /*width: 420;
+  height: 140px;*/
+  width: inherit;
+  max-width: 420px;
+  height: calc(width / 3);
+  max-height: 140px;
+}
+
 .agora-card {
   /*width: 420px;*/
   width: 100%;
@@ -52,9 +61,4 @@
   border-radius: 15px;
   margin-right: 5px;
   overflow: hidden;
-}
-
-.agora-image {
-  width: 100%;
-  height: 100%;
 }

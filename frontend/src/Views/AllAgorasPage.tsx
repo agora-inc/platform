@@ -11,6 +11,17 @@ const AllAgorasPage = () => {
   useEffect(() => {
     ChannelService.getAllChannels(100, 0, setAgoras);
   }, []);
+  /*
+  imageSize() {
+    var mq = window.matchMedia( 'maxwidth: 1300px' )
+    if (mq.matches) {
+      width: 420;
+      height:140;
+    } else {
+      width: 210;
+      height: 70;
+    }
+  };*/
 
   return (
     <div className="all-agoras-page">
@@ -25,13 +36,15 @@ const AllAgorasPage = () => {
             <Link className="agora-card" to={`/${agora.name}`}>
               <div
                 className="agora-card-banner"
-                style={{ background: agora.colour }}
+                //style={{ background: agora.colour }}
+                style={{ background: "white" }}
               >
                 {
                   <img className="agora-image"
                     src={ChannelService.getCover(agora.id, Math.floor(new Date().getTime() / 45000))}
                     //width={420}
                     //height={140}
+                    //style={{ imageSize() }}
                   />
                 }
               </div>
