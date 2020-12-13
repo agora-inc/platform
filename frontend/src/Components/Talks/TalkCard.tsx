@@ -293,10 +293,10 @@ export default class TalkCard extends Component<Props, State> {
                 <Box
                   round="xsmall"
                   background="#C2C2C2"
-                  pad="xsmall"
+                  pad="small"
                   justify="center"
                   align="center"
-                  width="160px"                
+                  width="250px"             
                 >
                   <Text size="14px">
                     Members only
