@@ -68,7 +68,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
             justify="between"
           >
             <Text size="1.4rem" weight="bold" style={{"font": "italic"}}>
-              Agoras you follow or are a member of will appear here
+              Agoras you are a member of will appear here
             </Text>
             {/* <Text size="16px" color="grey">
               Use the search bar to find channels that interest you

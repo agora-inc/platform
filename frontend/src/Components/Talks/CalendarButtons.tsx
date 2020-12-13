@@ -63,7 +63,7 @@ export default class CalendarButtons extends Component<
               this.props.talk.end_date,
               this.props.talk.name,
               this.props.talk.description,
-              `https://agora.stream/${this.props.talk.channel_name.toLowerCase()}?talkId=${
+              `https://agora.stream/event/${
                 this.props.talk.id
               }`
             )}
