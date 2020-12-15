@@ -9,11 +9,11 @@ export const textToLatex = (rawText: string, height: string) => {
   return (
     <Box 
       height={height}
-      style={{ border: "1px solid #C2C2C2" }}
+      //style={{ border: "1px solid #C2C2C2" }}
       round="xsmall"
       wrap
       pad="small"
-      overflow={{"vertical": "scroll"}}
+      //overflow={{"vertical": "scroll"}}
       direction="row"
     >
       {textArr.map((textElement: string, index) => {
@@ -21,14 +21,14 @@ export const textToLatex = (rawText: string, height: string) => {
           return (
             <Text
               color="black"
-              style={{
-                marginLeft: 3,
-                marginRight: 3,
-                whiteSpace: "pre",
-                overflowWrap: "break-word",
-                wordBreak: "break-all",
-              }}
-              size="18px"
+              //style={{
+              //  marginLeft: 3,
+              //  marginRight: 3,
+              //  whiteSpace: "pre",
+              //  overflowWrap: "break-word",
+              //  wordBreak: "break-all",
+              //}}
+              size="14px"
             >
               {textElement}
             </Text>
