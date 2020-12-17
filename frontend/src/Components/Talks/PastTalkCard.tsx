@@ -11,6 +11,7 @@ import { default as CoreButton } from "../Core/Button";
 import Identicon from "react-identicons";
 import "../../Styles/past-talk-card.css";
 import EditTalkModal from "../Talks/EditTalkModal";
+import { textToLatex } from "../Core/LatexRendering";
 
 interface Props {
   talk: Talk;
@@ -91,7 +92,7 @@ export default class PastTalkCard extends Component<Props, State> {
 
   lineBreaks = (text: string) => { 
     if (text && text.trim()) {
-      return (<Text size="16px" color="black"> {text} </Text>);
+      return textToLatex(text);
     } else {
       return (<br></br>);
     }
