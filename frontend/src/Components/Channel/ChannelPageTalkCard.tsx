@@ -113,7 +113,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
   lineBreaks = (text: string) => { 
     if (text && text.trim()) {
-      return (<Text size="16px" color="black"> {textToLatex(text, "inherit")} </Text>);
+      return textToLatex(text);
     } else {
       return (<br></br>);
     }

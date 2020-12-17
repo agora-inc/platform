@@ -4,30 +4,22 @@ import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
 
 
-export const textToLatex = (rawText: string, height: string) => {
+export const textToLatex = (rawText: string) => {
   const textArr = rawText.split("$");
   return (
-    <Box 
-      height={height}
-      //style={{ border: "1px solid #C2C2C2" }}
-      round="xsmall"
-      wrap
-      pad="small"
-      //overflow={{"vertical": "scroll"}}
-      direction="row"
-    >
+    <div>
       {textArr.map((textElement: string, index) => {
         if (index % 2 == 0) {
           return (
             <Text
               color="black"
-              //style={{
+              style={{
               //  marginLeft: 3,
               //  marginRight: 3,
-              //  whiteSpace: "pre",
+                whiteSpace: "initial",
               //  overflowWrap: "break-word",
-              //  wordBreak: "break-all",
-              //}}
+              //  wordWrap: "break-word"
+              }}
               size="14px"
             >
               {textElement}
@@ -39,6 +31,6 @@ export const textToLatex = (rawText: string, height: string) => {
           }
         }
       })}
-    </Box>
+    </div>
   );
 };

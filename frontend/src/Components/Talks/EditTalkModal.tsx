@@ -467,7 +467,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                 )}
                 {this.state.latex && (
-                  textToLatex(this.state.description, "240px")
+                  textToLatex(this.state.description)
                 )}
               </Box>
             </OverlaySection>
