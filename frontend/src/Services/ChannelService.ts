@@ -1,5 +1,6 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
+import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
 
 const getAllChannels = (limit: number, offset: number, callback: any) => {
@@ -410,6 +411,7 @@ export type Channel = {
   colour: string;
   has_avatar: boolean;
   has_cover: boolean;
+  topics: Topic[];
 };
 
 export const ChannelService = {
