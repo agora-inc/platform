@@ -1,6 +1,7 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
+from mailing.sendgridApi import sendgridApi
 from datetime import datetime
 
 # NOTE: times are in the format: "2020-12-31 23:59"
@@ -11,6 +12,7 @@ from datetime import datetime
 class TalkRepository:
     def __init__(self, db):
         self.db = db
+        self.mailing_api = sendgridApi()
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)
         self.topics = TopicRepository(db=self.db) 
@@ -601,8 +603,20 @@ class TalkRepository:
     # Talk 
     ###############################
     def acceptTalkRegistration(self, requestRegistrationId):
-        #TODO: TO TEST
         accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
+        
+        #
+        #
+        #
+        # INTEGRATE EMAIL SENDING HERE
+        #    todo: 
+        # ADD INFORMATIONS FROM ACCEPTTALKREGISTRATION 
+        #
+        #
+        #
+        #
+        #
+
         try:
             self.db.run_query(accept_query)
             return "ok"

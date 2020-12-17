@@ -6,6 +6,7 @@
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from mailing import sendgridApi
 from flask import jsonify, request, send_file
 from flask_mail import Message
 from werkzeug import exceptions
@@ -21,6 +22,8 @@ videos = VideoRepository.VideoRepository(db=agora_db)
 channels = ChannelRepository.ChannelRepository(db=agora_db)
 search = SearchRepository.SearchRepository(db=agora_db)
 invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
+sendgridApi = sendgridApi()
+
 
 # --------------------------------------------
 # HELPER FUNCTIONS
