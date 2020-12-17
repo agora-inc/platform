@@ -15,6 +15,7 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
+import { textToLatex } from "../Core/LatexRendering";
 
 
 interface Props {
@@ -65,7 +66,7 @@ export default class TalkCard extends Component<Props, State> {
 
   lineBreaks = (text: string) => { 
     if (text && text.trim()) {
-      return (<Text size="16px" color="black"> {text} </Text>);
+      return textToLatex(text);
     } else {
       return (<br></br>);
     }
