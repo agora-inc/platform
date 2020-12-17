@@ -12,6 +12,8 @@ import AddToCalendarButtons from "./AddToCalendarButtons";
 import CountdownAndCalendarButtons from "./CountdownAndCalendarButtons";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
+import { textToLatex } from "../Core/LatexRendering";
+import "../Styles/all-agoras-page.css";
 
 interface Props {
   talk: Talk;
@@ -59,7 +61,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
 
   lineBreaks = (text: string) => { 
     if (text && text.trim()) {
-      return (<Text size="16px" color="black"> {text} </Text>);
+      return textToLatex(text);
     } else {
       return (<br></br>);
     }
