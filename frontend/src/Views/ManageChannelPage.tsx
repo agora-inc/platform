@@ -27,10 +27,13 @@ import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
+import { Topic } from "../Services/TopicService";
 
 interface Props {
   location: any;
   match: any;
+  channel?: Channel;
 }
 
 interface State {
@@ -60,6 +63,8 @@ interface State {
   contactAddresses: string;
   showDraftInfo: boolean;
   showMemberEmailInfo: boolean;
+  topics: Topic[];
+  isPrevTopics: boolean[];
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -92,6 +97,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       contactAddresses: "",
       showDraftInfo: false,
       showMemberEmailInfo: false,
+      topics: this.props.channel ? this.props.channel.topics : [],
+      isPrevTopics: this.props.channel ? this.topicExists(this.props.channel.topics) : [false, false, false]
     };
   }
 
@@ -435,6 +442,41 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  topicExists = (topics: Topic[]) => {
+    let res = [];
+    for (let topic in topics) {
+      if (topic) {
+        res.push(true)
+      } else {
+        res.push(false)
+      }
+    }
+    return res;
+  }
+
+  selectTopic = (topic: Topic, num: number) => {
+    let tempTopics = this.state.topics;
+    tempTopics[num] = topic;
+    this.setState({
+      topics: tempTopics
+    });
+  }
+
+  cancelTopic = (num: number) => {
+    let tempTopics = this.state.topics;
+    tempTopics[num] = {
+      field: "",
+      id: 0,
+      is_primitive_node: false,
+      parent_1_id: -1,
+      parent_2_id: -1, 
+      parent_3_id: -1,
+    }
+    this.setState({
+      topics: tempTopics
+    });
+  }
+
   banner = () => {
     return (
       <Box
@@ -512,6 +554,15 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <DeleteAgoraButton
                   name={this.state.channel!.name}
                   id={this.state.channel!.id}
+                />
+              </Box>
+              <Box width="50%">
+                <ChannelTopicSelector 
+                  onSelectedCallback={this.selectTopic}
+                  onCanceledCallback={this.cancelTopic}
+                  isPrevTopics={this.state.isPrevTopics}
+                  prevTopics={this.props.channel ? this.props.channel.topics : []} 
+                  size="medium"
                 />
               </Box>
             </Box>
