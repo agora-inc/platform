@@ -413,9 +413,15 @@ export default class EditTalkModal extends Component<Props, State> {
 
               <Box width="100%" gap="5px" margin={{top: "15px"}}>
                 <Box direction="row" gap="small">
-                  <Text size="14px" weight="bold" color="black" margin={{"right": "100px"}}>
-                    Description
-                  </Text>
+                  <Box margin={{"right": "70px"}}>
+                    <Text size="14px" weight="bold" color="black">
+                      Description
+                      <StatusInfo size="small" data-tip data-for='description_latex_info'/>
+                        <ReactTooltip id='description_latex_info' place="right" effect="solid">
+                        <InlineMath math={"{\\small \\LaTeX}"} /> supported (e.g. $\log(a)+\log(b)=\log(ab)$).
+                        </ReactTooltip>
+                    </Text>
+                  </Box>
                   <Switch
                     checked={this.state.latex}
                     onChange={(checked: boolean) => {
@@ -423,7 +429,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     }}
                     size="small"
                   />
-                  <InlineMath math={"{\\small \\LaTeX}"} />
+                  Preview <InlineMath math={"{\\small \\LaTeX}"} />
                 </Box>
 
                 {/*<TextArea
