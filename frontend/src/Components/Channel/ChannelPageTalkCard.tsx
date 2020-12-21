@@ -10,23 +10,28 @@ import EditTalkModal from "../Talks/EditTalkModal";
 import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
 import { default as TagComponent } from "../Core/Tag";
 import { ChannelService } from "../../Services/ChannelService";
-import CountdownAndCalendarButtons from "../Talks/CountdownAndCalendarButtons";
+import Countdown from "../Talks/Countdown";
 import AsyncButton from "../Core/AsyncButton";
 import TalkCard from "../Talks/TalkCard";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
+import RequestMembershipButton from "./ApplyMembershipButton";
 import { thisExpression } from "@babel/types";
 import { textToLatex } from "../Core/LatexRendering";
+import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 
 interface Props {
   talk: Talk;
   user: User | null;
   admin: boolean;
-  onEditCallback?: any;
+  role?: string;
   width?: any;
   margin?: any;
   isCurrent?: boolean;
   show?: boolean;
+  following: boolean;
+  onEditCallback?: any;
+  callback?: any;
 }
 
 interface State {
@@ -34,7 +39,6 @@ interface State {
   showEdit: boolean;
   registered: boolean;
   showShadow: boolean;
-  available: boolean;
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -45,9 +49,13 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       showEdit: false,
       registered: false,
       showShadow: false,
-      available: true,
     };
   }
+
+  componentDidMount = () => {
+    this.checkIfUserCanAccessLink();
+    this.checkIfUserCanViewCard();
+  };
 
   checkIfRegistered = () => {
     this.props.user &&
@@ -60,26 +68,81 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       );
   };
 
-  register = () => {
-    this.props.user &&
-      TalkService.registerForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          this.checkIfRegistered();
+
+  checkIfUserCanAccessLink = () => {
+    if (this.props.admin) {
+      return true;
+    }
+    else
+      if (this.props.talk.visibility == "Everybody") {
+        return true;
+      }
+      else if (this.props.talk.visibility == "Followers and members") {
+        if (this.props.following || this.props.role === "follower" || this.props.role === "member") {
+          return true;
         }
-      );
+        else {
+          return false;
+        }
+      }
+      else if (this.props.talk.visibility == "Members only") {
+        if (this.props.role === "member"){
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+  };
+
+
+
+  checkIfUserCanViewCard = () => {
+    if (this.props.admin) {
+      return true;
+    }
+    else
+      if (this.props.talk.card_visibility == "Everybody") {
+        return true;
+      }
+      else if (this.props.talk.card_visibility === "Followers and members") {
+        if (this.props.role === "follower" || this.props.role === "member") {
+          return true;
+        }
+        else {
+          return false;
+        };
+      }
+      else if (this.props.talk.card_visibility == "Members only") {
+        if (this.props.role === "member") {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+  };
+
+  register = () => {
+    // this.props.user &&
+    //   TalkService.registerForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       this.checkIfRegistered();
+    //     }
+    //   );
   };
 
   unregister = () => {
-    this.props.user &&
-      TalkService.unRegisterForTalk(
-        this.props.talk.id,
-        this.props.user.id,
-        () => {
-          this.checkIfRegistered();
-        }
-      );
+    // this.props.user &&
+    //   TalkService.unRegisterForTalk(
+    //     this.props.talk.id,
+    //     this.props.user.id,
+    //     () => {
+    //       this.checkIfRegistered();
+    //     }
+    //   );
   };
 
   onClick = () => {
@@ -88,6 +151,24 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     } else {
       this.register();
     }
+  };
+
+  onFollowClicked = () => {
+    if (!this.props.following) {
+      ChannelService.addUserToChannel(
+        this.props.user!.id,
+        this.props.talk.channel_id,
+        "follower",
+        () => {}
+      );
+    } else {
+      ChannelService.removeUserFromChannel(
+        this.props.user!.id,
+        this.props.talk.channel_id,
+        () => {}
+      );
+    }
+    this.props.callback()
   };
 
   formatDate = (d: string) => {
@@ -196,12 +277,12 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   />
                 )}
               </Box>
-              <Text weight="bold" size="16px" color="grey">
+              <Text weight="bold" size="14px" color="grey">
                 {this.props.talk.channel_name}
               </Text>
             </Box>
             <Text
-              size="18px"
+              size="14px"
               color="black"
               weight="bold"
               style={{ minHeight: "75px", overflow: "auto" }}
@@ -211,7 +292,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             <Box direction="row" gap="small">
               <UserExpert size="18px" />
               <Text
-                size="18px"
+                size="14px"
                 color="black"
                 style={{
                   height: "30px",
@@ -226,7 +307,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               </Text>
             </Box>
             <Box direction="row" gap="small">
-              <Calendar size="18px" />
+              <Calendar size="14px" />
               <Box direction="row" width="100%">
                 {this.props.isCurrent && (
                   <Text
@@ -240,7 +321,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 )}
                 {!this.props.isCurrent && (
                   <Text
-                    size="18px"
+                    size="14px"
                     color="black"
                     style={{ height: "30px", fontStyle: "normal" }}
                   >
@@ -248,14 +329,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   </Text>
                 )}
               </Box>
-              {this.props.talk.card_visibility === "Members only" && 
+              {this.props.talk.card_visibility === "Members only" &&
                 <Box
                   round="xsmall"
                   background="#C2C2C2"
                   pad="xsmall"
                   justify="center"
                   align="center"
-                  width="160px"                
+                  width="160px"
                 >
                   <Text size="14px">
                     Members only
@@ -322,7 +403,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               //align="center"
               pad="25px"
               // width="100%"
-              height="100%"
+              height="80%"
               justify="between"
               gap="xsmall"
             >
@@ -380,7 +461,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 </Box>
                 <Text
                   weight="bold"
-                  size="21px"
+                  size="18px"
                   color="black"
                   style={{
                     minHeight: "50px",
@@ -401,9 +482,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                       hoverIndicator={true}
                       pad={{ left: "6px", top: "4px" }}
                     >
-                      <UserExpert size="18px" />
+                      <UserExpert size="14px" />
                       <Text
-                        size="18px"
+                        size="14px"
                         color="black"
                         style={{
                           height: "24px",
@@ -421,9 +502,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
                 {!this.props.talk.talk_speaker_url && (
                   <Box direction="row" gap="small">
-                    <UserExpert size="18px" />
+                    <UserExpert size="14px" />
                     <Text
-                      size="18px"
+                      size="14px"
                       color="black"
                       style={{
                         height: "30px",
@@ -452,91 +533,19 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   )}
                 </Box>
               </Box>
-              <Box direction="column" gap="small">
-                <Box direction="row" gap="small">
-                  <Calendar size="18px" />
-                  <Text
-                    size="18px"
-                    color="black"
-                    style={{ height: "20px", fontStyle: "normal" }}
-                  >
-                    {this.formatDateFull(
-                      this.props.talk.date,
-                      this.props.talk.end_date
-                    )}
-                  </Text>
-                </Box>
-                {this.state.available &&
-                  (this.props.user !== null || this.props.admin) &&
-                  this.state.registered && (
-                    <Box margin={{ top: "10px", bottom: "20px" }}>
-                      <CountdownAndCalendarButtons talk={this.props.talk} />
-                      <Box
-                        focusIndicator={false}
-                        background="#FF4040"
-                        round="xsmall"
-                        pad="xsmall"
-                        justify="center"
-                        align="center"
-                        width="20%"
-                        height="35px"
-                        onClick={this.onClick}
-                        margin={{ top: "-35px" }}
-                        alignSelf="end"
-                        hoverIndicator={true}
-                      >
-                        <Text size="14px" weight="bold">
-                          Unregister
-                        </Text>
-                      </Box>
-                    </Box>
-                  )}
-                {this.state.available &&
-                  (this.props.user !== null || this.props.admin) &&
-                  !this.state.registered && (
-                    <Box
-                      onClick={this.onClick}
-                      background="#7E1115"
-                      round="xsmall"
-                      pad="xsmall"
-                      height="40px"
-                      justify="center"
-                      align="center"
-                      focusIndicator={false}
-                      hoverIndicator="#5A0C0F"
-                    >
-                      <Text size="18px">Register</Text>
-                    </Box>
-                  )}
-                {this.state.available &&
-                  this.props.user === null &&
-                  !this.props.admin && (
-                    <Box direction="row" align="center" gap="10px">
-                      <LoginModal callback={() => {}} />
-                      <Text size="18px"> or </Text>
-                      <SignUpButton callback={() => {}} />
-                      <Text size="18px"> to register </Text>
-                    </Box>
-                  )}
               </Box>
-            </Box>
-            {!this.state.available && (
-              <Box
-                background="#d5d5d5"
-                pad="small"
-                align="center"
-                justify="center"
-              >
-                <Text textAlign="center" weight="bold">
-                  {`Sorry, this talk is only available to ${
-                    this.props.talk.visibility === "Followers and members"
-                      ? "followers and members"
-                      : "members"
-                  }
-                  of ${this.props.talk.channel_name}`}
-                </Text>
-              </Box>
-            )}
+              <FooterOverlay
+                talk={this.props.talk}
+                user={this.props.user}
+                admin={this.props.admin}
+                role={this.props.role}
+                width={this.props.width}
+                // isCurrent?: boolean;
+                // show?: boolean;
+                following={this.props.following}
+                onEditCallback={this.props.onEditCallback}
+                callback={this.props.callback}
+              />
           </Layer>
         )}
         {this.props.admin && this.state.showEdit && (

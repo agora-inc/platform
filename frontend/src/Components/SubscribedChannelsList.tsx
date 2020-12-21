@@ -61,30 +61,30 @@ export default class SubscribedChannelsList extends Component<Props, State> {
           <Box
             background="white"
             round="xsmall"
-            height="180px"
+            height="12.4rem"
             margin={{ horizontal: "small", bottom: "10px" }}
             pad="medium"
             gap="small"
             justify="between"
           >
-            <Text size="1.4rem" weight="bold">
-              Channels you are a member or follower of will appear here
+            <Text size="1.4rem" weight="bold" style={{"font": "italic"}}>
+              Agoras you are a member of will appear here
             </Text>
-            <Text size="16px" color="grey">
+            {/* <Text size="16px" color="grey">
               Use the search bar to find channels that interest you
-            </Text>
+            </Text> */}
           </Box>
         )
       } else {
         return (
-          <Box direction="column" gap="50px" margin={{top: "25px"}}>
+          <Box direction="column" gap="50px" margin={{top: "15px"}}>
             {this.state.memberChannels.length !== 0 && (
               <Box>
                 <Text
                   size="14px"
                   weight="bold"
                   color="grey"
-                  margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
+                  margin={{ left: "small", top: "xsmall" }}
                 >
                   Your Agoras
                 </Text>
@@ -114,6 +114,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                           justify="center"
                           align="center"
                           overflow="hidden"
+                          style = {{ minWidth: "30px", minHeight: "30px" }}
                         >
                           {!channel.has_avatar && (
                             <Identicon string={channel.name} size={30} />
@@ -127,7 +128,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                           )}
                         </Box>
                         <Box justify="between">
-                          <Text size="16px" weight="bold" color="black">
+                          <Text size="14px" weight="bold" color="black">
                             {channel.name}
                           </Text>
                           {/* <Text size="12px" weight="bold" color="#6B6A6A">
@@ -141,12 +142,13 @@ export default class SubscribedChannelsList extends Component<Props, State> {
               </Box>
             )} 
             {this.state.followerChannels.length !== 0 && (
+              // NOTE: following feature has been globally disabled for now
               <Box>
                 <Text
                   size="14px"
                   weight="bold"
                   color="grey"
-                  margin={{ left: "small", top: "xsmall", bottom: "xsmall" }}
+                  margin={{ left: "small", top: "xsmall" }}
                 >
                   Following
                 </Text>
@@ -176,6 +178,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                           justify="center"
                           align="center"
                           overflow="hidden"
+                          style = {{ minWidth: "30px", minHeight: "30px" }}
                         >
                           {!channel.has_avatar && (
                             <Identicon string={channel.name} size={30} />
@@ -189,7 +192,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                           )}
                         </Box>
                         <Box justify="between">
-                          <Text size="16px" weight="bold" color="black">
+                          <Text size="14px" weight="bold" color="black">
                             {channel.name}
                           </Text>
                           {/* <Text size="12px" weight="bold" color="#6B6A6A">
@@ -210,24 +213,24 @@ export default class SubscribedChannelsList extends Component<Props, State> {
         <Box
           background="white"
           round="xsmall"
-          height="215px"
+          height="225px"
           margin={{ horizontal: "small", bottom: "10px" }}
           pad="medium"
           gap="small"
           justify="between"
         >
           <Box gap="xsmall">
-            <Text size="1.7rem" weight="bold">
-              Join the{" "}
+            <Text size="1.2rem" weight="bold" margin={{bottom: "5px"}}>
+              Join your{" "}
               {
-                <Text size="1.7rem" weight="bold" color="brand">
+                <Text size="1.2rem" weight="bold" color="brand">
                   Agora
                 </Text>
               }{" "}
               Community
             </Text>
-            <Text size="16px" color="grey">
-              Discover the best talks on every topic
+            <Text size="14px" color="grey" weight="bold">
+              Get access to members' only events, talk recordings and many more!
             </Text>
           </Box>
           <SignUpButton callback={() => {}} />

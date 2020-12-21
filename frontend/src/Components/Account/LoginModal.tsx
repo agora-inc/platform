@@ -85,14 +85,14 @@ export default class LoginModal extends Component<Props, State> {
 
   render() {
     return (
-      <Box>
+      <Box style={{maxHeight: "30px"}}>
         <Button
           label="Log in"
           onClick={this.toggleModal}
           style={{
             width: 90,
             height: 35,
-            fontSize: 17,
+            fontSize: 15,
             fontWeight: "bold",
             padding: 0,
             // margin: 6,
@@ -113,7 +113,7 @@ export default class LoginModal extends Component<Props, State> {
           onSubmitClick={this.onSubmit}
           canProceed={this.isMissing().length === 0}
           isMissing={this.isMissing()}
-          contentHeight={this.state.failed ? "300px" : "170px"}
+          contentHeight={this.state.failed ? "255px" : "170px"}
         >
           {this.state.failed && (
             <Box
@@ -162,7 +162,7 @@ export default class LoginModal extends Component<Props, State> {
                 onClick={this.onForgotPasswordClicked}
                 style={{
                   color: "black",
-                  fontSize: 16,
+                  fontSize: 14,
                   cursor:
                     this.state.forgotPasswordText === "Forgot password?"
                       ? "pointer"
@@ -181,9 +181,6 @@ export default class LoginModal extends Component<Props, State> {
               {this.state.forgotPasswordText === "Email sent!" && (
                 <StatusGood size="16px" color="status-ok" />
               )}
-
-
-
 
 
             </Box>

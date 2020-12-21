@@ -57,7 +57,7 @@ export default class SavedTalksPage extends Component<Props, State> {
         <Box margin={{bottom: "30px"}}>
           <Heading
             color="black"
-            size="24px"
+            size="16px"
             margin="none"
             style={{ height: "20px" }}
           >
@@ -74,7 +74,7 @@ export default class SavedTalksPage extends Component<Props, State> {
             // gap="xsmall"
           >
             <Box direction="row" align="center" gap="xsmall">
-              <Text>You have</Text>
+              <Text size="14px">You have</Text>
               <Box
                 height="25px"
                 width="25px"
@@ -83,9 +83,9 @@ export default class SavedTalksPage extends Component<Props, State> {
                 align="center"
                 background="lightgray"
               >
-                <Text weight="bold">{this.state.talks.length}</Text>
+                <Text weight="bold" size="14px">{this.state.talks.length}</Text>
               </Box>
-              <Text>saved talks</Text>
+              <Text size="14px">saved talks</Text>
             </Box>
           </Box>
           {this.state.loading && (

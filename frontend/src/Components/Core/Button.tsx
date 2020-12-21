@@ -40,7 +40,7 @@ export default class Button extends Component<Props> {
         <Text
           weight="bold"
           color={this.props.fill ? "white" : "black"}
-          size="16px"
+          size="14px"
         >
           {this.props.text}
         </Text>

@@ -44,7 +44,7 @@ export default class InformationPage extends Component<Props, State> {
             pad="small"
             // gap="xsmall"
           > */}
-          <Text color="black" size="18px">
+          <Text size="14px">
             <h1> <b>Welcome to agora.stream!</b> </h1> 
               <h2><strong>1) What do we believe in?</strong></h2>
                 <p> In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
@@ -62,9 +62,7 @@ export default class InformationPage extends Component<Props, State> {
                 </p>
                 {/* <p>Founded in 2020 by a team of researchers at Imperial College London and the University of Oxford, Agora believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.</p> */}
               <h2><strong> 2) What is agora.stream? </strong></h2>
-                <p> Built for researchers and by researchers, agora.stream is a centralised research platform to share talks, 
-                  broadly advertise academic research and connect research communities to potential speakers. 
-                  It promotes cross-curricular collaboration through recommendation of talks related to the researcher's field of expertise. </p>
+                <p> agora.stream is a centralised platform for academics to share their online events and manage their audience, as well as browse across a large selection of seminars in a smooth, easy and efficient way.</p>
               <h2><strong> 3) How to use agora.stream?</strong></h2>
                 <p>We made the use of this platform very intuitive.</p>
                 <h3>a) Are you a researcher?&nbsp;</h3>
@@ -103,18 +101,18 @@ export default class InformationPage extends Component<Props, State> {
                   </ul>
 
                 <h2><strong>4) Who are we?</strong></h2>
-                  <p>Founded in 2020 by a team of three researchers at Imperial College London and the University of Oxford, Agora believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.</p>
+                  <p>Founded in 2020 by a team of researchers at Imperial College London and the University of Oxford, Agora believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.</p>
 
                 <h2><strong>5) Any questions? Reach out!</strong></h2>
                   <p>Do you have any questions, inqueries, or suggestions? If yes, please reach out to us using the top right-hand side button, or drop us a message at <em>agora.stream.inquiries(.at.)gmail.com</em>. For more information, check our{" "}
                     <Link to={"/info/tos"} color="brand">
-                      <Text color="brand" weight="bold">
+                      <Text color="brand" weight="bold" size="14px">
                         Term of services
                       </Text>
                     </Link>
                     {" "} and {"  "} 
                     <Link to={"/info/privacy"} color="brand">
-                      <Text color="brand" weight="bold">
+                      <Text color="brand" weight="bold" size="14px">
                       data privacy policies
                       </Text>
                     </Link>

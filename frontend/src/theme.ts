@@ -2,8 +2,8 @@ export const Theme = {
   global: {
     font: {
       family: "Arial",
-      size: "18px",
-      height: "20px",
+      size: "14px",
+      height: "16px",
     },
     size: {
       xxsmall: "48px",

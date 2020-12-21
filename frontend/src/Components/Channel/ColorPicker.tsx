@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Box, DropButton, Text } from "grommet";
 import { FormDown, FormUp } from "grommet-icons";
-import ImageUploader from "../Core/ImageUploader";
+import ImageCropUploader from "./ImageCropUploader";
 import { ChannelService } from "../../Services/ChannelService";
+import ReactTooltip from "react-tooltip";
+import { StatusInfo } from "grommet-icons";
 
 interface Props {
   callback: any;
@@ -46,11 +48,11 @@ export default class ColorPicker extends Component<Props, State> {
     this.setState({ open: !this.state.open });
   };
 
-  onCoverUpload = (e: any) => {
+  onCoverUpload = (file: File) => {
     this.props.channelId &&
       ChannelService.uploadCover(
         this.props.channelId,
-        e.target.files[0],
+        file,
         () => {
           window.location.reload();
         }
@@ -109,11 +111,11 @@ export default class ColorPicker extends Component<Props, State> {
           ))}
         </Box>
         <Box gap="4px">
-          <ImageUploader
+          {/* <ImageCropUploader
             text="Upload header"
             onUpload={this.onCoverUpload}
             width="100%"
-          />
+          /> */}
           {remove_button}
         </Box>
       </Box>
@@ -121,8 +123,27 @@ export default class ColorPicker extends Component<Props, State> {
   };
 
   render() {
-    return (
+        let remove_button;
+    if (this.props.hasCover){
+    remove_button =
       <Box
+        width="100%"
+        height="25px"
+        background="#FF4040"
+        round="xsmall"
+        style={{ cursor: "pointer" }}
+        align="center"
+        justify="center"
+        onClick={this.onDeleteCoverClicked}
+      >
+        <Text size="13px" weight="bold" color="white">
+          Remove header
+        </Text>
+      </Box>
+    }
+    return (
+      <>
+      {/* <Box
         width={this.state.open ? "139px" : "120px"}
         background="#f2f2f2"
         direction="row"
@@ -143,12 +164,20 @@ export default class ColorPicker extends Component<Props, State> {
         pad={{ left: "10px", vertical: "10px" }}
       >
         <Box
-          width="30px"
+          width="50px"
           height="30px"
           round="xsmall"
           // background={this.state.selected}
-          style={{ zIndex: 100 }}
-        ><b>Header</b></Box>
+          // style={{ zIndex: 100 }}
+        >
+          <Text weight="bold" size="14">
+            Header
+             <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
+                      <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
+                       <p>Recommended dim: 1500x500px</p>
+                      </ReactTooltip>
+          </Text>
+        </Box>
         <DropButton
           reverse
           // label={this.state.selected}
@@ -167,7 +196,18 @@ export default class ColorPicker extends Component<Props, State> {
           onOpen={this.toggle}
           onClose={this.toggle}
         />
+      </Box> */}
+      {/* This is a workaround because Modal don't work with DropButton */}
+      <Box direction="row">
+        <ImageCropUploader
+          text="Upload header"
+          onUpload={this.onCoverUpload}
+          width="200px"
+        />
+        {remove_button}
+
       </Box>
+      </>
     );
   }
 }

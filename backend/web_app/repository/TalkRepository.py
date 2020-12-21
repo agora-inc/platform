@@ -1,10 +1,12 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
+from datetime import datetime
+
+# NOTE: times are in the format: "2020-12-31 23:59"
 """
     TODO: All methods involving the "state" field must be tested.
 """
-
 
 class TalkRepository:
     def __init__(self, db):
@@ -183,7 +185,7 @@ class TalkRepository:
 
     def getAvailablePastTalks(self, limit, offset, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 
@@ -295,7 +297,7 @@ class TalkRepository:
 
     def getAvailablePastTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC;"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
@@ -318,10 +320,11 @@ class TalkRepository:
                                     )
                             )
                         AND Talks.end_date < CURRENT_TIMESTAMP 
-                    ORDER BY Talks.date
+                    ORDER BY Talks.date DESC;
                     '''
-
+        
         talks = self.db.run_query(query)
+
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
             talk["channel_colour"] = channel["colour"]
@@ -353,7 +356,7 @@ class TalkRepository:
         return (talks, self.getNumberOfPastTalks())
 
     def getAllFutureTalksForChannel(self, channelId):
-        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP AND published = 1"
+        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP AND published = 1 ORDER BY date ASC;"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -402,15 +405,56 @@ class TalkRepository:
         return talks
 
     def getTalkById(self, talkId):
-        query = f'SELECT * FROM Talks WHERE id = {talkId}'
-        talk = self.db.run_query(query)[0]
+        query = f'SELECT * FROM Talks WHERE id = {talkId};'
+        try:
+            talk = self.db.run_query(query)[0]
+            # talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            # talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+            return talk
+        except:
+            return
 
-        talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
-        talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
-        return talk
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
-        query = f'INSERT INTO Talks (channel_id, channel_name, name, date, end_date, description, link, show_link_offset, visibility, card_visibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published) VALUES ({channelId}, "{channelName}", "{talkName}", "{startDate}", "{endDate}", "{talkDescription}", "{talkLink}", {showLinkOffset}, "{visibility}", "{cardVisibility}", "{topic_1_id}", "{topic_2_id}", "{topic_3_id}", "{talk_speaker}", "{talk_speaker_url}", {published});'        
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
+        query = f'''
+            INSERT INTO Talks (
+                channel_id, 
+                channel_name, 
+                name, 
+                date, 
+                end_date, 
+                description, 
+                link, 
+                show_link_offset, 
+                visibility, 
+                card_visibility, 
+                topic_1_id, 
+                topic_2_id, 
+                topic_3_id, 
+                talk_speaker, 
+                talk_speaker_url, 
+                published,
+                audience_level) 
+            VALUES (
+                {channelId}, 
+                "{channelName}", 
+                "{talkName}", 
+                "{startDate}", 
+                "{endDate}", 
+                "{talkDescription}", 
+                "{talkLink}", 
+                {showLinkOffset}, 
+                "{visibility}", 
+                "{cardVisibility}", 
+                "{topic_1_id}", 
+                "{topic_2_id}", 
+                "{topic_3_id}", 
+                "{talk_speaker}", 
+                "{talk_speaker_url}", 
+                {published},
+                "{audience_level}"
+                );
+            '''        
         insertId = self.db.run_query(query)[0]
 
         if not isinstance(insertId, int):
@@ -421,9 +465,27 @@ class TalkRepository:
 
         return self.getTalkById(insertId)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published):
-        query = f'UPDATE Talks SET name="{talkName}", description="{talkDescription}", date="{startDate}", end_date="{endDate}", link="{talkLink}", show_link_offset={showLinkOffset}, visibility="{visibility}", card_visibility="{cardVisibility}", topic_1_id="{topic_1_id}", topic_2_id="{topic_2_id}", topic_3_id="{topic_3_id}", talk_speaker="{talk_speaker}", talk_speaker_url="{talk_speaker_url}", published={published} WHERE id = {talkId};'
-        self.db.run_query(query)
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
+        query = f'''
+            UPDATE Talks 
+                SET name="{talkName}", 
+                description="{talkDescription}", 
+                date="{startDate}", 
+                end_date="{endDate}", 
+                link="{talkLink}", 
+                show_link_offset={showLinkOffset}, 
+                visibility="{visibility}", 
+                card_visibility="{cardVisibility}", 
+                topic_1_id="{topic_1_id}", 
+                topic_2_id="{topic_2_id}", 
+                topic_3_id="{topic_3_id}", 
+                talk_speaker="{talk_speaker}", 
+                talk_speaker_url="{talk_speaker_url}", 
+                published={published},
+                audience_level="{audience_level}"
+            WHERE id = {talkId};'''
+        
+        res = self.db.run_query(query)
 
         tagIds = [t["id"] for t in talkTags]
         self.tags.tagTalk(talkId, tagIds)
@@ -437,19 +499,6 @@ class TalkRepository:
 
     def deleteTalk(self, talkId):
         query = f'DELETE FROM Talks where id = {talkId}'
-        self.db.run_query(query)
-
-    def isUserRegisteredForTalk(self, talkId, userId):
-        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
-        result = self.db.run_query(query)
-        return result[0]["COUNT(*)"] != 0
-
-    def registerForTalk(self, talkId, userId):
-        query = f'INSERT INTO TalkRegistrations(talk_id, user_id) VALUES ({talkId}, {userId})'
-        self.db.run_query(query)
-
-    def unRegisterForTalk(self, talkId, userId):
-        query = f'DELETE FROM TalkRegistrations WHERE talk_id={talkId} AND user_id={userId}'
         self.db.run_query(query)
 
     def getFutureTalksForUser(self, userId):
@@ -547,3 +596,98 @@ class TalkRepository:
             return self.channels.isUserInChannel(result[0]["channel_id"], userId, ["member", "owner"])
         
         return True
+
+    ###############################
+    # Talk 
+    ###############################
+    def acceptTalkRegistration(self, requestRegistrationId):
+        #TODO: TO TEST
+        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
+        try:
+            self.db.run_query(accept_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
+
+    def refuseTalkRegistration(self, requestRegistrationId):
+        refuse_query = f'''
+            UPDATE TalkRegistrations 
+            SET status='refused' WHERE id = {requestRegistrationId};'''
+        try:
+            self.db.run_query(refuse_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
+
+    def registerTalk(self, talkId, userId, name, email, website, institution):
+        # get today's time GMT in format: "2020-12-31 23:59"
+        dateTimeObj = datetime.now()
+        timestampStr = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            self.db.open_connection()
+            with self.db.con.cursor() as cur:
+                cur.execute(
+                    'INSERT INTO TalkRegistrations(talk_id, user_id, applicant_name, email, website, institution, registration_date) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    [str(talkId), str(userId), name, email, website, institution, timestampStr])
+                self.db.con.commit()
+                cur.close()
+            return "ok"     
+        except Exception as e:
+            return str(e)
+
+    def unregisterTalk(self, requestRegistrationId, userId):
+        #TODO: TO TEST
+        self.db.open_connection()
+        if userId == None:
+            try:
+                unregister_talk = f'''DELETE FROM TalkRegistrations WHERE id = {requestRegistrationId};'''
+                self.db.run_query(unregister_talk)
+            except Exception as e:
+                return str(e)
+        else:
+            try:
+                unregister_talk = f'''DELETE FROM TalkRegistrations WHERE id = {requestRegistrationId} AND user_id = {userId};'''
+                self.db.run_query(unregister_talk)
+            except Exception as e:
+                return str(e)
+
+    def getTalkRegistrationsForTalk(self, talk_id):
+        get_query_talk = f'SELECT * FROM TalkRegistrations WHERE talk_id = {talk_id}'
+        try:
+            res = self.db.run_query(get_query_talk)
+            return res
+        except Exception as e:
+            return str(e)
+
+    def getTalkRegistrationsForChannel(self, channel_id):
+        get_query_channel = f'''
+            SELECT 
+                TalkRegistrations.talk_id, 
+                Talks.name,
+                TalkRegistrations.applicant_name, 
+                TalkRegistrations.email, 
+                TalkRegistrations.website, 
+                TalkRegistrations.id, 
+                TalkRegistrations.status, 
+                TalkRegistrations.institution, 
+                TalkRegistrations.user_id,
+                TalkRegistrations.status
+            FROM TalkRegistrations
+            INNER JOIN Talks
+                ON Talks.channel_id = {channel_id}
+            WHERE TalkRegistrations.talk_id = Talks.id;
+            '''
+
+        try:
+            res = self.db.run_query(get_query_channel)
+            return res
+        except Exception as e:
+            return str(e)
+
+    def getTalkRegistrationsForUser(self, userId):
+        raise NotImplementedError
+
+    def isUserRegisteredForTalk(self, talkId, userId):
+        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
+        result = self.db.run_query(query)
+        return result[0]["COUNT(*)"] != 0

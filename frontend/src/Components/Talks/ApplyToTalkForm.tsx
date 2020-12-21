@@ -233,10 +233,10 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       <Box>
         <Box
           focusIndicator={false}
-          width="10vw"
+          width="12vw"
           background="white"
           round="xsmall"
-          pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
+          pad={{bottom: "3px", top: "3px", left: "18px", right: "18px"}}
           onClick={() => this.setState({ showForm: true })}
           style={{
             border: "1px solid #C2C2C2",
@@ -245,7 +245,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           justify="center"   
         >
           <Text 
-            size="16px" 
+            size="14px" 
             color="grey"
             alignSelf="center"
           >
@@ -262,12 +262,12 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           canProceed={this.isComplete()}
           isMissing={this.isMissing()}
           width={900}
-          height={540}
-          contentHeight="1100px"
-          title="Talk Application"
+          height={500}
+          contentHeight="800px"
+          title="Talk application"
         >
 
-        <OverlaySection heading="1. Tell us about you!">
+        <OverlaySection>
           <Box width="100%" gap="2px">
             {/* <TextInput
               placeholder="Academic title"
@@ -282,8 +282,8 @@ export default class ApplyToTalkForm extends Component<Props, State> {
             </Box>
           <Box width="100%" gap="2px">
             <Select
-              placeholder="Title"
-              options={['Mr', 'Ms', 'Bachelor', 'Master', 'Dr', 'Prof', 'Mx']}
+              placeholder="Education level"
+              options={['Bachelor', 'Master', 'PhD Candidate', 'Postdoc+', 'Prof', 'Else']}
               value={this.state.user.speaker_title}
               onChange={({option}) => this.setValueAcademicTitle(option)}
             />
@@ -316,12 +316,9 @@ export default class ApplyToTalkForm extends Component<Props, State> {
               onChange={(e: any) => this.handleInput(e, "personal_website")}
               />
           </Box>
-              </OverlaySection>
-        
-          <OverlaySection heading="2. Tell us about your talk!"/>
           <Box width="100%" gap="2px">
               <TextInput
-                placeholder="Title"
+                placeholder="Talk title"
                 value={this.state.talk.talk_title}
                 onChange={(e: any) => this.handleInput(e, "talk_title")}
               />
@@ -329,7 +326,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
 
             <Box width="100%" gap="2px">
               <TextArea
-                placeholder="Abstract"
+                placeholder="Talk Abstract"
                 value={this.state.talk.abstract}
                 onChange={(e: any) => this.handleInput(e, "abstract")}
                 rows={8}
@@ -338,7 +335,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
 
             <Box width="100%" align="center" gap="xsmall">
             <Box
-              height="30px"
               width="100%"
               round="xsmall"
               pad="small"
@@ -357,16 +353,15 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           />
         </Box>
 
-        <OverlaySection heading="3. Personal message to us!">
           <Box width="100%" gap="2px" margin={{bottom: "20px"}}>
             <TextArea
-              placeholder="Personal message to us!"
+              placeholder="(Message to us)"
               value={this.state.user.personal_message}
               onChange={(e: any) => this.handleInput(e, "personal_message")}
               rows={8}
             />
           </Box>
-        </OverlaySection>
+          </OverlaySection>
         </Overlay>
       </Box>
     );

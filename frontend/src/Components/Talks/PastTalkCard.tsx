@@ -4,7 +4,7 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { Link } from "react-router-dom";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
-import { Calendar, Workshop, UserExpert } from "grommet-icons";
+import { Calendar, Workshop, UserExpert, FormNextLink } from "grommet-icons";
 import { Tag } from "../../Services/TagService";
 import { default as TagComponent } from "../Core/Tag";
 import { default as CoreButton } from "../Core/Button";
@@ -206,7 +206,7 @@ export default class PastTalkCard extends Component<Props, State> {
               focusIndicator={false}
               hoverIndicator="#5A0C0F"
             >
-              <Text alignSelf="center" size="18px">
+              <Text alignSelf="center" size="16px">
                 Watch talk
               </Text>
             </Box>
@@ -225,7 +225,7 @@ export default class PastTalkCard extends Component<Props, State> {
               border: "1px solid #C2C2C2",
             }}
           >
-            <Text alignSelf="center" size="18px">
+            <Text alignSelf="center" size="16px">
               {this.state.showLinkInput
                 ? "Save link recording"
                 : "Enter link recording"}
@@ -251,7 +251,7 @@ export default class PastTalkCard extends Component<Props, State> {
               focusIndicator={false}
               hoverIndicator="#5A0C0F"
             >
-              <Text alignSelf="center" size="18px">
+              <Text alignSelf="center" size="14px">
                 Watch talk
               </Text>
             </Box>
@@ -271,8 +271,8 @@ export default class PastTalkCard extends Component<Props, State> {
               focusIndicator={false}
               hoverIndicator={true}
             >
-              <Text alignSelf="center" color="grey" size="18px">
-                {this.state.saved ? "Remove from saved" : "Save talk"}
+              <Text alignSelf="center" color="grey" size="14px">
+                {this.state.saved ? "Save talk": "Remove from saved"}
               </Text>
             </Box>
           )}
@@ -318,7 +318,9 @@ export default class PastTalkCard extends Component<Props, State> {
                 this.props.talk.recording_link,
                 this.props.talk.id
               )}
-              style={{ height: "60%" }}
+              style={{ height: "60%", 
+              maxWidth: '640px',
+              alignSelf: 'center'}}
             />
           )}
           {!this.props.talk.recording_link && (
@@ -357,16 +359,17 @@ export default class PastTalkCard extends Component<Props, State> {
               </Box>
               <Text
                 weight="bold"
-                size="18px"
+                size="14px"
                 color={this.props.talk.channel_colour}
               >
                 {this.props.talk.channel_name}
               </Text>
             </Box>
             <Text
-              className={this.props.talk.name.length > 40 ? "fade" : "nvm"}
+              // className={this.props.talk.name.length > 100 ? "fade" : "nvm"}
+              className="nvm"
               weight="bold"
-              size="20px"
+              size="14px"
               color="black"
               style={{
                 // whiteSpace: "nowrap",
@@ -474,7 +477,7 @@ export default class PastTalkCard extends Component<Props, State> {
                         )}
                       </Box>
                       <Box justify="between">
-                        <Text weight="bold" size="18px" color="grey">
+                        <Text weight="bold" size="14px" color="grey">
                           {this.props.talk.channel_name}
                         </Text>
                       </Box>
@@ -483,7 +486,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 </Box>
                 <Text
                   weight="bold"
-                  size="21px"
+                  size="18px"
                   color="black"
                   style={{
                     minHeight: "50px",
@@ -495,9 +498,9 @@ export default class PastTalkCard extends Component<Props, State> {
                   {this.props.talk.name}
                 </Text>
                 <Box direction="row" gap="small">
-                  <UserExpert size="18px" />
+                  <UserExpert size="14px" />
                   <Text
-                    size="18px"
+                    size="14px"
                     color="black"
                     style={{
                       height: "30px",
@@ -531,9 +534,9 @@ export default class PastTalkCard extends Component<Props, State> {
               //style={{ minHeight: "90px", maxHeight: "150px" }}
               >
                 <Box direction="row" gap="small">
-                  <Calendar size="18px" />
+                  <Calendar size="14px" />
                   <Text
-                    size="18px"
+                    size="14px"
                     color="black"
                     style={{ height: "20px", fontStyle: "normal" }}
                   >
@@ -612,6 +615,20 @@ export default class PastTalkCard extends Component<Props, State> {
                     }
                   of ${this.props.talk.channel_name}`}
                 </Text>
+                <Link to={`/${this.props.talk.channel_name}`} style={{ textDecoration: "none" }}>
+              <Box
+                className="see-more-button"
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
+                round="xsmall"
+                style={{
+                  border: "2px solid #C2C2C2",
+                }}
+                direction="row"
+                align="end"
+              >      
+                <FormNextLink color="grey" />
+              </Box>
+            </Link>
               </Box>
             )}
           </Layer>

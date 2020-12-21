@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
 import { CalendarService } from "../../Services/CalendarService";
-import { Google } from "grommet-icons";
+import { Google} from "grommet-icons";
 import { Talk } from "../../Services/TalkService";
 import MediaQuery from "react-responsive";
 
@@ -12,18 +12,16 @@ interface Props {
 }
 
 interface State {
-  showLinkAt: Date;
   now: Date;
 }
 
-export default class CountdownAndCalendarButtons extends Component<
+export default class CalendarButtons extends Component<
   Props,
   State
 > {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showLinkAt: this.computeShowLinkTime(),
       now: new Date(),
     };
   }
@@ -42,48 +40,15 @@ export default class CountdownAndCalendarButtons extends Component<
     return window.URL.createObjectURL(blob);
   };
 
-  computeShowLinkTime = () => {
-    let d = new Date(this.props.talk.date);
-    return moment(d)
-      .subtract(this.props.talk.show_link_offset, "minutes")
-      .toDate();
-  };
-
   componentWillMount() {
     setInterval(() => {
       this.setState({ now: new Date() });
     }, 1000);
   }
 
-  shouldShowLink = () => {
-    return this.state.now > this.state.showLinkAt;
-  };
-
-  showTimeUntil = () => {
-    let message = "Link available in ";
-    let minutesUntil =
-      (this.state.showLinkAt.getTime() - this.state.now.getTime()) /
-      (1000 * 60);
-
-    if (minutesUntil < 60) {
-      message += `${Math.floor(minutesUntil)} minutes`;
-    } else if (minutesUntil < 1440) {
-      let hoursUntil = Math.floor(minutesUntil / 60);
-      let minutesRemainder = Math.floor(minutesUntil % 60);
-      message += `${hoursUntil} hours ${minutesRemainder} minutes`;
-    } else {
-      let daysUntil = Math.floor(minutesUntil / 1440);
-      let hoursRemainder = Math.floor((minutesUntil % 1440) / 60);
-      let minutesRemainder = Math.floor((minutesUntil % 1440) % 60);
-      message += `${daysUntil} days ${hoursRemainder} hours ${minutesRemainder} minutes`;
-    }
-
-    return message;
-  };
-
   render() {
     return (
-      <Box gap="30px" direction="column">
+      <Box direction="column">
         <MediaQuery minDeviceWidth={992}>
         <Box
           direction="row"
@@ -98,7 +63,7 @@ export default class CountdownAndCalendarButtons extends Component<
               this.props.talk.end_date,
               this.props.talk.name,
               this.props.talk.description,
-              `https://agora.stream/${this.props.talk.channel_name.toLowerCase()}?talkId=${
+              `https://agora.stream/event/${
                 this.props.talk.id
               }`
             )}
@@ -106,25 +71,21 @@ export default class CountdownAndCalendarButtons extends Component<
           >
             <Box
               width="100%"
-              height="35px"
+              height="25px"
               round="xsmall"
               background="white"
-              style={{ border: "2px solid #C2C2C2" }}
+              style={{
+                border: "1px solid #C2C2C2",
+              }}
               align="center"
               justify="center"
               direction="row"
-              gap="4px"
+              // gap="4px"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={() => {}}
               hoverIndicator={true}
             >
-              <Text size="14px" weight="bold" color="grey">
-                Add to
-              </Text>
               <Google size="14px" color="plain" />
-              <Text size="14px" weight="bold" color="grey">
-                Calendar
-              </Text>
             </Box>
           </a>
           <a
@@ -134,10 +95,12 @@ export default class CountdownAndCalendarButtons extends Component<
           >
             <Box
               width="100%"
-              height="35px"
+              height="25px"
               round="xsmall"
               background="white"
-              style={{ border: "2px solid #C2C2C2" }}
+              style={{
+                border: "1px solid #C2C2C2",
+              }}
               align="center"
               justify="center"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
@@ -145,44 +108,12 @@ export default class CountdownAndCalendarButtons extends Component<
               hoverIndicator={true}
             >
               <Text size="14px" weight="bold" color="grey">
-                Download .ics file
+                ics
               </Text>
             </Box>
           </a>
         </Box>
         </MediaQuery>
-
-        {this.shouldShowLink() && (
-          <a
-            style={{ width: "48%", textDecoration: "none" }}
-            href={this.props.talk.link}
-            target="_blank"
-          >
-            <Box
-              onClick={() => {}}
-              background="#7E1115"
-              round="xsmall"
-              pad="xsmall"
-              height="35px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#5A0C0F"
-            >
-              <Text size="14px" weight="bold">
-                Link to talk
-              </Text>
-            </Box>
-          </a>
-        )}
-
-        {!this.shouldShowLink() && (
-          <Box height="35px">
-            <Text size="14px" weight="bold" margin={{ top: "10px" }}>
-              {this.showTimeUntil()}
-            </Text>
-          </Box>
-        )}
       </Box>
     );
   }
