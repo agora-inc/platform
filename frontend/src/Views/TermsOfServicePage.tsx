@@ -32,7 +32,7 @@ export default class TermsOfService extends Component<Props, State> {
         width="100vw"
         height="100vh"
         align="center"
-        margin={{ top: "140px" }}
+        margin={{ top: "100px" }}
       >
         <Box width="75%">
           {/* <Box
@@ -43,13 +43,13 @@ export default class TermsOfService extends Component<Props, State> {
             pad="small"
             // gap="xsmall"
           > */}
-            <Text color="black" size="18px">
+            <Text size="14px">
             <h1><b>Terms of service</b></h1>
             <p>Simply put, we thrive to maintain a high scientific standard of conduct on this platform. The following paragraphs are here to set the ground guidelines of usage for you, the user, and state the rights we have to sanction any misconduct. </p>
 
             <h2><b>1. Use of the site</b></h2>
             <ol>
-              <li> All added content to agora.stream must be research-related.</li>
+              <li> All added content to agora.stream must be academic-related.</li>
               <li> The Users should not attempt to use the site for any purpose other than browsing through past and future events, connecting with communities, organizing, and publicizing events on research.</li>
             </ol>
 

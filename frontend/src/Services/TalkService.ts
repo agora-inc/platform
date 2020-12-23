@@ -1,6 +1,12 @@
 import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
+import EmailContactManagement from "../Components/Channel/EmailContactManagement";
+import Identicon from "@polkadot/react-identicon/icons/Polkadot";
+
+const getTalkById = (talkId: number, callback: any) => {
+  get(`talk/info?id=${talkId}`, callback);
+};
 
 const getAllFutureTalks = (limit: number, offset: number, callback: any) => {
   get(`talks/all/future?limit=${limit}&offset=${offset}`, callback);
@@ -146,6 +152,7 @@ const editTalk = (
   talkSpeaker: string,
   talkSpeakerURL: string,
   published: number,
+  audienceLevel: string,
   callback: any
 ) => {
   post(
@@ -167,6 +174,7 @@ const editTalk = (
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
+      audienceLevel: audienceLevel
     },
     callback
   );
@@ -188,6 +196,7 @@ const scheduleTalk = (
   talkSpeaker: string,
   talkSpeakerURL: string,
   published: number,
+  audienceLevel: string,
   callback: any
 ) => {
   post(
@@ -210,6 +219,7 @@ const scheduleTalk = (
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
+      audienceLevel: audienceLevel
     },
     callback
   );
@@ -236,24 +246,31 @@ const addRecordingLink = (id: number, link: string, callback: any) => {
   );
 };
 
-const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
-  get(`talks/isregistered?talkId=${talkId}&userId=${userId}`, callback);
-};
-
-const registerForTalk = (talkId: number, userId: number, callback: any) => {
+const registerForTalk = (
+  talkId: number, 
+  userId: any,
+  name: string, 
+  email: string,
+  website: any, 
+  institution: string, 
+  callback: any) => {
   post(
-    "talks/register",
+    "talks/requestaccess/register",
     {
       talkId: talkId,
       userId: userId,
+      name: name,
+      email: email,
+      website: website,
+      institution: institution
     },
     callback
   );
 };
 
-const unRegisterForTalk = (talkId: number, userId: number, callback: any) => {
+const unRegisterForTalk = (talkId: number, userId: any, callback: any) => {
   post(
-    "talks/unregister",
+    "talks/requestaccess/unregister",
     {
       talkId: talkId,
       userId: userId,
@@ -265,6 +282,44 @@ const unRegisterForTalk = (talkId: number, userId: number, callback: any) => {
 const getRegisteredTalksForUser = (userId: number, callback: any) => {
   get(`talks/registered?userId=${userId}`, callback);
 };
+              
+              
+const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
+  get(`talks/isregistered?talkId=${talkId}&userId=${userId}`, callback);
+};
+
+const acceptTalkRegistration = (requestRegistrationId: number, callback: any) => {
+  post(
+    "talks/requestaccess/accept",
+    {
+      requestRegistrationId: requestRegistrationId,
+    },
+    callback
+    );
+  };
+  
+const refuseTalkRegistration = (requestRegistrationId: number, callback: any) => {
+  post(
+    "talks/requestaccess/refuse",
+    {
+      requestRegistrationId: requestRegistrationId,
+    },
+    callback
+    );
+  };
+
+  const getTalkRegistrations = (talkId: any, channelId: any, userId: any, callback:any) => {
+    // method must be called with either talkId OR channelId OR userId (only one of them). 
+    let url = "";
+    if (talkId !== null){
+      url = `/talks/requestaccess/all?talkId=${talkId}`;
+    } else if (channelId !== null){
+      url = `/talks/requestaccess/all?channelId=${channelId}`;
+    } else if (userId !== null){
+      url = `/talks/requestaccess/all?userId=${userId}`;
+    }
+    get(url, callback);
+  }
 
 const saveTalk = (userId: number, talkId: number, callback: any) => {
   post(
@@ -316,6 +371,7 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
 };
 
 export const TalkService = {
+  getTalkById,
   getAllFutureTalks,
   getAllCurrentTalks,
   getAllPastTalks,
@@ -337,16 +393,20 @@ export const TalkService = {
   scheduleTalk,
   deleteTalk,
   addRecordingLink,
-  isRegisteredForTalk,
-  registerForTalk,
-  unRegisterForTalk,
-  getRegisteredTalksForUser,
   saveTalk,
   unsaveTalk,
   getSavedTalksForUser,
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  // talk registration management
+  acceptTalkRegistration,
+  refuseTalkRegistration,
+  registerForTalk,
+  unRegisterForTalk,
+  isRegisteredForTalk,
+  getTalkRegistrations,
+  getRegisteredTalksForUser,
 };
 
 export type Talk = {
@@ -354,11 +414,11 @@ export type Talk = {
   channel_id: number;
   channel_name: string;
   channel_colour: string;
+  has_avatar: boolean;
   name: string;
   date: string;
   end_date: string;
   description: string;
-  has_avatar: boolean;
   link: string;
   recording_link: string;
   tags: Tag[];
@@ -369,4 +429,5 @@ export type Talk = {
   talk_speaker: string;
   talk_speaker_url: string;
   published: number;
+  audience_level: string
 };

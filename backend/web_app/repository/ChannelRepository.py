@@ -58,8 +58,7 @@ class ChannelRepository:
         #     "lightcoral",
         #     "pink",
         # ]
-        # colour = random.choice(colours)
-        colour = "white"
+        colour = "#5454A0"
 
         query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
         insertId = self.db.run_query(query)[0]
@@ -82,22 +81,35 @@ class ChannelRepository:
     def updateChannelDescription(self, channelId, newDescription):
         """TODO: Refactor this into updateShortChannelDescription with DB field as well into short_description
         """
-        with open("/home/cloud-user/test/description-encoding3.txt", "w") as file:
-            file.write(str(type(newDescription)))
-
         query = f'UPDATE Channels SET description = "{newDescription}" WHERE id = {channelId}'
         self.db.run_query(query)
         return "ok"
 
     def updateLongChannelDescription(self, channelId, newDescription):
-        query = f'''UPDATE Channels SET long_description = '{newDescription}' WHERE id = {channelId}'''
-        [insertId, rowCount] = self.db.run_query(query)
-        return [insertId, rowCount]
-
+        # HACK: escaping double quotes in insertion
+        self.db.open_connection()
+        try:
+            with self.db.con.cursor() as cur:
+                cur.execute('UPDATE Channels SET long_description = %s WHERE id = %s;', [newDescription, str(channelId)])
+                self.db.con.commit()
+                cur.close()
+            return "ok"
+        except Exception as e:
+            return str(e)
+        
     def getChannelsForUser(self, userId, roles):
         query = f'SELECT Channels.id, Channels.name, Channels.description, Channels.colour, Channels.has_avatar FROM Channels INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id WHERE ChannelUsers.user_id = {userId} AND ChannelUsers.role IN {tuple(roles)}'.replace(",)", ")")
         result = self.db.run_query(query)
         return result
+
+    def addUserToChannel(self, userId, channelId, role):
+        if role not in ["follower", "owner", "member"]:
+            return "500", "Invalid role" 
+        query = f'''
+            INSERT INTO ChannelUsers(user_id, channel_id, role) 
+            VALUES ({userId},{channelId},"{role}");
+            '''
+        self.db.run_query(query)
 
     def removeUserFromChannel(self, userId, channelId):
         query = f'DELETE FROM ChannelUsers WHERE user_id = {userId} AND channel_id = {channelId}'
@@ -121,11 +133,6 @@ class ChannelRepository:
         if not result:
             return "none"
         return result[0]["role"]
-
-    def getViewsForChannel(self, channelId):
-        query = f'SELECT views FROM Videos where channel_id = {channelId}'
-        result = self.db.run_query(query)
-        return sum([x["views"] for x in result])
 
     def getAvatarLocation(self, channelId):
         query = f'SELECT has_avatar FROM Channels WHERE id = {channelId}'
@@ -220,3 +227,152 @@ class ChannelRepository:
             ;
             '''
         return self.db.run_query(email_members_and_admins_query)
+
+    def applyMembership(self, channelId, userId, fullName, position, institution, email=None, personal_homepage=None):
+        personal_homepage_var = str() if personal_homepage == None else personal_homepage
+        email = str() if email == None else email
+
+        # check user already applied
+        check_if_membership_application = f'''
+            SELECT * FROM MembershipApplications
+                WHERE user_id = {userId}
+                    AND channel_id = {channelId};
+            '''
+
+        res_check = self.db.run_query(check_if_membership_application)
+        application_exists = True if len(res_check) > 0 else False
+
+        if application_exists:
+            apply_membership_insert_query = f'''
+                UPDATE MembershipApplications
+                    SET
+                        channel_id = {channelId},
+                        user_id = {userId}, 
+                        full_name = "{fullName}",
+                        position = "{position}",
+                        institution = "{institution}",
+                        email = "{email}",
+                        personal_homepage = "{personal_homepage_var}"           
+                    WHERE channel_id = {channelId}
+                        AND user_id = {userId};
+                '''
+
+        else:
+            apply_membership_insert_query = f'''
+                INSERT INTO MembershipApplications(
+                    channel_id,
+                    user_id, 
+                    full_name,
+                    position,
+                    institution,
+                    email,
+                    personal_homepage
+                    )
+
+                VALUES (
+                    "{channelId}",
+                    "{userId}", 
+                    "{fullName}",
+                    "{position}",
+                    "{institution}",
+                    "{email}",
+                    "{personal_homepage_var}"             
+                    );
+                '''
+
+        try:
+            self.db.run_query(apply_membership_insert_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
+
+    def getMembershipApplications(self, channelId, userId):
+        membership_applications_query = f'''
+            SELECT * FROM  MembershipApplications
+            WHERE channel_id = {channelId};
+            '''
+        if userId != None:
+            membership_applications_query = membership_applications_query[:-1] + f" AND user_id = {userId};"
+
+        res = self.db.run_query(membership_applications_query)
+        if res is not None:
+            return res
+        else:
+            return []
+
+    def cancelMembershipApplication(self, channelId, userId):
+        withdraw_app_query = f'''
+            DELETE FROM MembershipApplications
+            WHERE channel_id = {channelId} and user_id = {userId};
+            '''
+
+        try:
+            self.db.run_query(withdraw_app_query)
+            res = "ok"
+        except Exception as e:
+            res = str(e)
+        return res
+
+    def acceptMembershipApplication(self, channelId, userId):
+        # A. Check if user is already a member
+        check_membership_query = f'''
+            SELECT * FROM ChannelUsers
+            WHERE channel_id = {channelId} 
+                AND user_id = {userId}
+                AND role in ("owner", "member"); 
+            '''
+        res = self.db.run_query(check_membership_query)
+
+        # B. add membership
+        if len(res) == 0:
+            add_membership_query = f'''
+            INSERT into ChannelUsers(
+                channel_id, user_id, role
+            )
+            VALUES (
+                {channelId},
+                {userId},
+                "member"
+            )
+            '''
+            # C. remove membership request from list
+            remove_membership_request_query = f'''
+                DELETE FROM MembershipApplications
+                WHERE channel_id = {channelId}
+                    AND user_id = {userId}
+                ;'''
+
+            res = self.db.run_query([add_membership_query, 
+            remove_membership_request_query])
+
+            return "ok"
+        return "ok"
+    def increaseChannelViewCount(self, channelId):
+        try:
+            increase_counter_query = f'''
+                UPDATE ChannelViewCounts
+                    SET total_views = total_views + 1
+                    WHERE channel_id = {channelId};'''
+            res = self.db.run_query(increase_counter_query)
+
+            if type(res) == list:
+                if res[0] == 0 and res[1] == 0:
+                    initialise_counter_query = f'''
+                        INSERT INTO ChannelViewCounts (channel_id, total_views) 
+                            VALUES ({channelId}, 4);
+                    '''
+                    res = self.db.run_query(initialise_counter_query)
+                    return "ok" 
+
+        except Exception as e:
+            return str(e)
+
+    def getChannelViewCount(self, channelId):
+        get_counter_query = f'''
+            SELECT * FROM ChannelViewCounts 
+                WHERE channel_id = {channelId};
+            '''
+        try:
+            return self.db.run_query(get_counter_query)[0]["total_views"]
+        except Exception as e:
+            return str(e)

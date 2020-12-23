@@ -16,7 +16,6 @@ import TopicTalkList from "../Components/Talks/TopicTalksList";
 import TreeClassification from "../Components/Homepage/TreeClassification";
 import MediaQuery from "react-responsive";
 
-
 interface State {
   user: User | null;
   allTalks: Talk[];
@@ -78,6 +77,7 @@ export default class Home extends Component<{}, State> {
   //     });
   //   }
   // };
+
 
   render() {
     return (

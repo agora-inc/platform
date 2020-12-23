@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Box, Button, Text, TextArea } from "grommet";
+import {UserSettings} from "grommet-icons";
 import { Link } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
@@ -154,13 +155,13 @@ export default class UserManager extends Component<Props, State> {
           <Box
             height="25px"
             width="25px"
-            round="12.5px"
+            // round="12.5px"
             justify="start"
             align="start"
             overflow="hidden"
             direction="row"
           >
-            <Identicon string={this.state.user?.username} size={25} />
+            <UserSettings size="medium"/>
           </Box>
           <Text weight="bold" size="20px">
             {this.state.user?.username}
@@ -218,7 +219,7 @@ export default class UserManager extends Component<Props, State> {
               // hoverIndicator="#2433b5"
               hoverIndicator="#5A0C0F"
             >
-              <Text size="18px"> My schedule </Text>
+              <Text size="14px"> My schedule </Text>
             </Box>
           </Link>
         </Box>
@@ -234,7 +235,7 @@ export default class UserManager extends Component<Props, State> {
           // style={{ pointerEvents: "none" }}
           gap="xsmall"
         >
-          <Text size="14px" color="grey">
+          <Text size="16px" color="grey">
             Manage your Agoras
           </Text>
           <Box
@@ -303,7 +304,7 @@ export default class UserManager extends Component<Props, State> {
             style={{ textDecoration: "none" }}
             onClick={this.toggleDropdown}
           >
-            <Text size="18px"> Bookmarks </Text>
+            <Text size="14px"> Bookmarks </Text>
           </Link>
         </Menu.Item>
         <Menu.Item
@@ -320,7 +321,7 @@ export default class UserManager extends Component<Props, State> {
             paddingTop: 3,
           }}
         >
-          <Text size="18px"> Log out </Text>
+          <Text size="14px"> Log out </Text>
         </Menu.Item>
       </Menu>
     );
@@ -339,13 +340,13 @@ export default class UserManager extends Component<Props, State> {
           style={{
             height: 40,
             width: 40,
-            borderRadius: 20,
+            // borderRadius: 20,
             overflow: "hidden",
           }}
           focusIndicator={false}
           onClick={this.toggleDropdown}
         >
-          <Identicon string={this.state.user?.username} size={40} />
+          <UserSettings size="medium"/>
         </Button>
       </Dropdown>
     );

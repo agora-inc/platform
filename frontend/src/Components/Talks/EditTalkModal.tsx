@@ -51,6 +51,7 @@ interface State {
   published: number,
   showCardVisibilityInfo: boolean,
   isPrevTopics: boolean[];
+  audienceLevel: string
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -71,7 +72,7 @@ export default class EditTalkModal extends Component<Props, State> {
         ? new Date(this.props.talk.end_date).toTimeString().slice(0, 5)
         : "",
       link: this.props.talk ? this.props.talk.link : "",
-      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 0,
+      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 45,
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
         : "Everybody",
@@ -84,7 +85,8 @@ export default class EditTalkModal extends Component<Props, State> {
       latex: false,
       published: this.props.talk ? this.props.talk.published : 0,
       showCardVisibilityInfo: false,
-      isPrevTopics: this.props.talk ? this.topicExists(this.props.talk.topics) : [false, false, false]
+      isPrevTopics: this.props.talk ? this.topicExists(this.props.talk.topics) : [false, false, false],
+      audienceLevel: this.props.talk?.audience_level || "General audience"
     };
   }
 
@@ -200,6 +202,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.escapeSingleQuotes(this.state.talkSpeaker),
         this.state.talkSpeakerURL,
         this.state.published,
+        this.state.audienceLevel,
         (talk: Talk) => {
           this.setState(
             {
@@ -228,6 +231,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.escapeSingleQuotes(this.state.talkSpeaker),
         this.state.talkSpeakerURL,
         this.state.published,
+        this.state.audienceLevel,
         (talk: Talk) => {
           this.setState(
             {
@@ -359,7 +363,7 @@ export default class EditTalkModal extends Component<Props, State> {
         title={this.props.talk ? "Edit talk" : "New talk"}
         submitButtonText="Publish"
         onSubmitClick={this.onFinishClicked}
-        contentHeight="600px"
+        contentHeight="550px"
         canProceed={this.isComplete()}
         isMissing={this.isMissing()}
         onCancelClick={this.props.onCanceledCallback}
@@ -394,62 +398,38 @@ export default class EditTalkModal extends Component<Props, State> {
           > 
             <OverlaySection> {/* heading="Add a title and a short description"> */}
               <Box width="100%" gap="5px">
-                <Text size="14px" weight="bold" color="black">
-                  Title
-                </Text>
                 <TextInput
-                  placeholder=""
+                  placeholder="Title"
                   value={this.state.title}
                   onChange={(e) => this.setState({ title: e.target.value })}
                 />
               </Box>
               <Box width="100%" gap="5px">
-                <Text size="14px" weight="bold" color="black">
-                  Speaker
-                </Text>
                 <TextInput
-                  placeholder=""
+                  placeholder="Speaker name"
                   value={this.state.talkSpeaker}
                   onChange={(e) => this.setState({ talkSpeaker: e.target.value })}
                 />
               </Box>
               <Box width="100%" gap="5px">
-                <Text size="14px" weight="bold" color="black">
-                  Speaker website
-                </Text>
                 <TextInput
-                  placeholder="Enter a valid URL"
+                  placeholder="Speaker homepage"
                   value={this.state.talkSpeakerURL}
                   onChange={(e) => this.setState({ talkSpeakerURL: e.target.value })}
                 />
               </Box>
-              <Box width="100%" gap="5px">
-                <Box direction="row" gap="small">
-                  <Text size="14px" weight="bold" color="black">
-                    Talk card visible by...
-                  </Text>
-                  <StatusInfo size="small" data-tip data-for='talkcardinfo'/>
-                  <ReactTooltip id='talkcardinfo' place="right" effect="solid">
-                    Decide who is able to see the talk information. It will be hidden to everyone else.
-                  </ReactTooltip>
-                </Box>
 
-                <Select
-                  dropAlign={{ bottom: "top" }}
-                  focusIndicator={false}
-                  id="card-visibility-select"
-                  options={["Everybody", "Followers and members", "Members only"]}
-                  value={this.state.cardVisibility}
-                  onChange={({ option }) =>
-                    this.setState({ cardVisibility: option })
-                  }
-                />
-              </Box>
               <Box width="100%" gap="5px" margin={{top: "15px"}}>
                 <Box direction="row" gap="small">
-                  <Text size="14px" weight="bold" color="black" margin={{"right": "100px"}}>
-                    Description
-                  </Text>
+                  <Box margin={{"right": "70px"}}>
+                    <Text size="14px" weight="bold" color="black">
+                      Description
+                      <StatusInfo size="small" data-tip data-for='description_latex_info'/>
+                        <ReactTooltip id='description_latex_info' place="right" effect="solid">
+                        <InlineMath math={"{\\small \\LaTeX}"} /> supported (e.g. $\log(a)+\log(b)=\log(ab)$).
+                        </ReactTooltip>
+                    </Text>
+                  </Box>
                   <Switch
                     checked={this.state.latex}
                     onChange={(checked: boolean) => {
@@ -457,7 +437,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     }}
                     size="small"
                   />
-                  <InlineMath math={"{\\small \\LaTeX}"} />
+                  Preview <InlineMath math={"{\\small \\LaTeX}"} />
                 </Box>
 
                 {/*<TextArea
@@ -480,6 +460,25 @@ export default class EditTalkModal extends Component<Props, State> {
                   )
                 )}
               </Box>
+
+              <Box width="100%" gap="5px">
+                <Text size="14px" weight="bold" color="black">
+                    Target audience
+                  </Text>
+              <Select
+                      dropAlign={{ bottom: "top" }}
+                      focusIndicator={false}
+                      id="link-visibility-select"
+                      options={["General audience", "Bachelor/Master", "PhD+"]}
+                      value={this.state.audienceLevel}
+                      onChange={({ option }) =>
+                        this.setState({ audienceLevel: option })
+                      }
+                    />
+              </Box>
+
+
+
             </OverlaySection>
             {/*<OverlaySection heading="Add a few relevant tags">
               <TagSelector
@@ -566,27 +565,87 @@ export default class EditTalkModal extends Component<Props, State> {
               <Box 
                 direction="column" 
                 width="50%"
-                margin={{left: "large", right: "xsmall", top:"6px"}}
+                margin={{left: "large", right: "xsmall", top:"6px", bottom: "10px"}}
               > 
-                <OverlaySection heading="Link to talk ">
+                <OverlaySection heading="Link to event">
+                <TextInput
+                    value={this.state.link}
+                    placeholder="https://zoom.us/1234"
+                    onChange={(e) => this.setState({ link: e.target.value })}
+                  />
                   <Text
                     size="14px" 
                     weight="bold" 
                     color="grey" 
                     alignSelf="start"
-                    margin={{top: "10px", bottom: "21px"}}
+                    margin={{top: "10px", bottom: "10px"}}
                   >
-                    Enter here a link towards a meeting room. No need to put a password, you choose the users you want to show the link to!
+                    No need to put a password, link visibility is handled below. 
+                    <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
+                      <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
+                       <p>Your selected audience will be able to see the link 30 minutes before the start of your event.</p>
+                      </ReactTooltip>
                   </Text>
-                  <TextInput
-                    value={this.state.link}
-                    placeholder="e.g. https://zoom.us/"
-                    onChange={(e) => this.setState({ link: e.target.value })}
-                  />
-                  <Box width="100%" gap="5px" margin={{top: "24px"}}>
-                    <Text size="14px" weight="bold" color="black">
-                      Visible...
-                    </Text>
+                </OverlaySection>
+
+                <OverlaySection heading="Access and visibility">
+                  <Box width="100%" gap="5px" margin={{top: "10px"}}>
+                    <Box direction="row" gap="small">
+                      <Text size="14px" weight="bold" color="black">
+                        URL visible without registration by...
+                      </Text>
+                      <StatusInfo size="small" data-tip data-for='linkinfo'/>
+                      <ReactTooltip id='linkinfo' place="right" effect="solid">
+                        Decide who does not need to manually register to attend the talk. The same people will also have access to the recording if there is one.
+                      </ReactTooltip>
+                    </Box>
+                    <Select
+                      dropAlign={{ bottom: "top" }}
+                      focusIndicator={false}
+                      id="link-visibility-select"
+                      // options={["Everybody", "Followers and members", "Members only"]} // NOTE: WE STOPPED USING FOLLOWERS ATM
+                      options={["Everybody", "Members only"]}
+                      value={this.state.linkVisibility}
+                      onChange={({ option }) =>
+                        this.setState({ linkVisibility: option })
+                      }
+                    />
+                  </Box>
+
+              <Box width="100%" gap="5px" margin={{top: "5px"}}>
+                <Box direction="row" gap="small">
+                  <Text size="14px" weight="bold" color="black">
+                    Talk card visible by...
+                  </Text>
+                  <StatusInfo size="small" data-tip data-for='talkcardinfo'/>
+                  <ReactTooltip id='talkcardinfo' place="right" effect="solid">
+                    Decide who is able to see the talk information. It will be hidden to everyone else.
+                  </ReactTooltip>
+                </Box>
+
+                <Select
+                  dropAlign={{ bottom: "top" }}
+                  focusIndicator={false}
+                  id="card-visibility-select"
+                  // options={["Everybody", "Followers and members", "Members only"]} // NOTE: WE STOPPED USING FOLLOWERS ATM
+                  options={["Everybody", "Members only"]}
+                  value={this.state.cardVisibility}
+                  onChange={({ option }) =>
+                    this.setState({ cardVisibility: option })
+                  }
+                />
+              </Box>
+
+                      {/* NOTE: This is the selector to set release time of the link.
+                  <Box width="100%" gap="5px" margin={{top: "13px"}}>
+                    <Box width="100%" gap="5px" margin={{top: "10px"}}>
+                    <Box direction="row" gap="small"> */}
+                      {/* <StatusInfo size="small" data-tip data-for='linkinfo'/>
+                      <ReactTooltip id='linkinfo' place="right" effect="solid">
+                        Decide who has access to the link. The same people will also have access to the recording if there is one.
+                      </ReactTooltip> */}
+                    {/* </Box>
+                  </Box>
                     <Select
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
@@ -607,43 +666,23 @@ export default class EditTalkModal extends Component<Props, State> {
                         this.setState({ releaseLinkOffset: option.value });
                       }}
                     />
-                  </Box>
-                  <Box width="100%" gap="5px">
-                    <Box direction="row" gap="small">
-                      <Text size="14px" weight="bold" color="black">
-                        By...
-                      </Text>
-                      <StatusInfo size="small" data-tip data-for='linkinfo'/>
-                      <ReactTooltip id='linkinfo' place="right" effect="solid">
-                        Decide who has access to the link. The same people, and only them, will also have access to the recording if there is one.
-                      </ReactTooltip>
-                    </Box>
-                    <Select
-                      dropAlign={{ bottom: "top" }}
-                      focusIndicator={false}
-                      id="link-visibility-select"
-                      options={["Everybody", "Followers and members", "Members only"]}
-                      value={this.state.linkVisibility}
-                      onChange={({ option }) =>
-                        this.setState({ linkVisibility: option })
-                      }
-                    />
-                  </Box>
+                  </Box> */}
+
                 </OverlaySection>
               </Box>
             </Box>
             <Box 
               // width="100%" 
               direction="row" 
-              margin={{top: "20px", left: "47px"}}
+              margin={{top: "5px", left: "47px"}}
             >
-              <OverlaySection heading="Related topics">
+              <OverlaySection heading="Topics">
                 <TopicSelector 
                   onSelectedCallback={this.selectTopic}
                   onCanceledCallback={this.cancelTopic}
                   isPrevTopics={this.state.isPrevTopics}
                   prevTopics={this.props.talk ? this.props.talk.topics : []} 
-                  size="small" 
+                  size="medium" 
                 />
               </OverlaySection>  
             </Box>

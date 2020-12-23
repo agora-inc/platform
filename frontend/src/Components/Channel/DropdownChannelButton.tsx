@@ -70,7 +70,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
           </Box>
           <Text
             alignSelf="center"
-            size="18px"
+            size="14px"
             style={{
               whiteSpace: "nowrap",
               overflow: "hidden",

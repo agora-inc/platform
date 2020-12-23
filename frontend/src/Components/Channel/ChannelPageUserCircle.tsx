@@ -3,6 +3,7 @@ import { Box, Text } from "grommet";
 import { User } from "../../Services/UserService";
 import { ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
+import Avatar from 'react-avatar';
 
 interface Props {
   user: User;
@@ -76,15 +77,15 @@ export default class ChannelPageUserCircle extends Component<Props, State> {
         <Box
           onMouseEnter={() => this.setState({ hover: true })}
           onMouseLeave={() => this.setState({ hover: false })}
-          background="white"
-          height="50px"
-          width="50px"
-          round="25px"
+          // background="white"
+          height="40px"
+          width="40px"
+          // round="25px"
           justify="center"
           align="center"
           margin={{ top: this.state.hover ? "-23px" : "none" }}
         >
-          <Identicon string={this.props.user.username} size={30} />
+          <Avatar name={this.props.user.username} size="33" round={true}/>
         </Box>
       </Box>
     );

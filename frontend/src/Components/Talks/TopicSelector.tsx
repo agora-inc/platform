@@ -192,7 +192,7 @@ export default class TopicSelector extends Component<Props, State> {
               size={this.props.size}
             />
           )}
-          {this.state.topicsShown[choice] > 2 && (
+          {/* {this.state.topicsShown[choice] > 2 && (
             <Select
               options={this.getChildren(
                 this.state.topics[choice][1]
@@ -202,7 +202,7 @@ export default class TopicSelector extends Component<Props, State> {
               }
               size={this.props.size}
             />
-          )}
+          )} */}
           {this.state.topicsShown[choice] > 0 && (
             <Box margin={{left: "10px"}}>
             <Close onClick={this.onCancelTopicShown(choice)} />
