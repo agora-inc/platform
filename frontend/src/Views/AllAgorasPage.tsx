@@ -6,7 +6,7 @@ import { Channel, ChannelService } from "../Services/ChannelService";
 import { User } from "../Services/UserService";
 import { Talk, TalkService } from "../Services/TalkService";
 import { Topic, TopicService } from "../Services/TopicService";
-import ChannelTopicClassification from "../Components/Channel/ChannelTopicClassification";
+import TopicClassification from "../Components/Homepage/TopicClassification";
 import MediaQuery from "react-responsive";
 import "../Styles/all-agoras-page.css";
 
@@ -193,8 +193,9 @@ export default class AllAgorasPage extends Component<Props, State> {
         <div className="all-agoras-grid"></div>
         
         
-          <ChannelTopicClassification 
-            topicCallback={this.selectTopic} 
+          <TopicClassification 
+            topicCallback={this.selectTopic}
+            searchType="Agoras"
             />
         
         

@@ -3,10 +3,12 @@ import { Box, Select, Text } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
 // import allTopics from "../../assets/allTopics.json"
 import "../../Styles/topic-classification.css";
+import { Talk } from "../../Services/TalkService";
 
 
 interface Props {
   topicCallback: any
+  searchType: any
 }
 
 interface State {
@@ -114,7 +116,8 @@ export default class TopicClassification extends Component<Props, State> {
             }
           />
         )}
-        {this.state.topicBeingShown >= 1 && (
+        {this.props.searchType == "Talks"  &&
+        this.state.topicBeingShown >= 1 && (
           <Select
             options={this.getChildren(
               this.state.topics[0]
