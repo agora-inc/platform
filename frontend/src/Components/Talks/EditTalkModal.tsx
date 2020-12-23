@@ -174,6 +174,14 @@ export default class EditTalkModal extends Component<Props, State> {
     return text.replace("''", "'")
   }
 
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return textToLatex(text);
+    } else {
+      return (<br></br>);
+    }
+  }
+
   onFinish = () => {
     const dateTimeStrs = this.combineDateAndTimeStrings();
     if (this.props.talk) {
@@ -467,7 +475,9 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                 )}
                 {this.state.latex && (
-                  textToLatex(this.state.description)
+                  this.escapeDoubleQuotes(this.state.description).split('\n').map(
+                    (item, i) => this.lineBreaks(item)
+                  )
                 )}
               </Box>
             </OverlaySection>
