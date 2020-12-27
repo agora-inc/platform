@@ -555,7 +555,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   name={this.state.channel!.name}
                   id={this.state.channel!.id}
                 />
-                <Box width="50%" margin="xsmall">
+                <Box width="50%" margin={{ left: "xsmall" }}>
                 <ChannelTopicSelector 
                   onSelectedCallback={this.selectTopic}
                   onCanceledCallback={this.cancelTopic}
