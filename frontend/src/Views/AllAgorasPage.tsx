@@ -90,11 +90,11 @@ export default class AllAgorasPage extends Component<Props, State> {
   }
 
   componentWillMount() {
-    if (this.props.topicSearch) {
+    
       TopicService.getAll((allTopics: Topic[]) => {
         this.setState({ allTopics: allTopics });
       });
-    }
+    
 
     // Limit to 1000 talks
     /*
@@ -117,10 +117,38 @@ export default class AllAgorasPage extends Component<Props, State> {
     });
   }
 
+  getAgorasByTopics = (channels: Channel[], topicsId: number[]): Channel[] => {
+    let res: Channel[] = [];
+    for (let channel of channels) {
+      let isIn: boolean = false;
+      for (let topic of channel.topics) {
+        if (!isIn && topicsId.includes(topic.id))  {
+          isIn = true;
+          res.push(channel);
+        }
+      }
+    }
+    return res;
+  };
+
+  fetchAgorasByTopic = (topic: Topic) => {
+    if (topic.id >= 0) {
+      let childrenId = TopicService.getDescendenceId(
+        topic,
+        this.state.allTopics
+      );
+      childrenId.push(topic.id);
+      this.setState({
+        chosenAgoras: this.getAgorasByTopics(this.state.allAgoras, childrenId),
+      });
+    }
+  };
+
   selectTopic = (temp: Topic) => {
     this.setState({
       chosenTopic: temp,
     });
+    this.fetchAgorasByTopic(temp);
   };
 
   ifTalks = () => {
