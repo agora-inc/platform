@@ -555,15 +555,15 @@ export default class ManageChannelPage extends Component<Props, State> {
                   name={this.state.channel!.name}
                   id={this.state.channel!.id}
                 />
-              </Box>
-              <Box width="50%">
+                <Box width="50%" margin="xsmall">
                 <ChannelTopicSelector 
                   onSelectedCallback={this.selectTopic}
                   onCanceledCallback={this.cancelTopic}
                   isPrevTopics={this.state.isPrevTopics}
                   prevTopics={this.props.channel ? this.props.channel.topics : []} 
-                  size="medium"
+                  size="small"
                 />
+                </Box>
               </Box>
             </Box>
           </Box>
