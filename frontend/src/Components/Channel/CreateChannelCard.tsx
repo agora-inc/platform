@@ -133,14 +133,15 @@ export default class CreateChannelCard extends Component<Props, State> {
               this.setState({ newChannelDescription: e.target.value })
             }
           /> */}
-          
-          <ChannelTopicSelector 
-            onSelectedCallback={this.selectTopic}
-            onCanceledCallback={this.cancelTopic}
-            isPrevTopics={this.state.isPrevTopics}
-            prevTopics={this.props.channel ? this.props.channel.topics : []} 
-            size="medium" 
-          />
+          <Box margin={{ bottom: "small" }}>
+            <ChannelTopicSelector 
+              onSelectedCallback={this.selectTopic}
+              onCanceledCallback={this.cancelTopic}
+              isPrevTopics={this.state.isPrevTopics}
+              prevTopics={this.props.channel ? this.props.channel.topics : []} 
+              size="medium"
+            />
+          </Box>
 
           <AsyncButton
             color="#7E1115"
