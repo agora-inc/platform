@@ -20,6 +20,7 @@ import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
+import {InlineFollowButtons} from 'sharethis-reactjs';
 
 interface Props {
   location: { pathname: string };
@@ -377,7 +378,55 @@ export default class ChannelPage extends Component<Props, State> {
               <Text size="26px" color="black" weight="bold">
                 {this.state.channel ?.name}
               </Text>
-              <Box height="36px"> </Box>
+              <Box height="36px"> 
+              <InlineFollowButtons
+                config={{
+                  action: '', // call to action (STRING)
+                  action_enabled: true,  // show/hide call to action (true, false)
+                  action_pos: 'bottom', // position of call to action (left, top, right)
+                  alignment: 'left',  // alignment of buttons (left, center, right)
+                  color: 'white',       // set the color of buttons (social, white)
+                  enabled: true,        // show/hide buttons (true, false)
+                  networks: [           // which networks to include (see FOLLOW NETWORKS)
+                    'blogger',
+                    'twitter',
+                    'facebook',
+                    'linkedin',
+                  ],
+                  padding: 8,           // padding within buttons (INTEGER)
+                  profiles: {           // social profile links for buttons. Requires all values
+                    blogger: "sharethis",
+                    digg: "",
+                    facebook: "sharethis",
+                    flipboard: "",
+                    github: "",
+                    instagram: "",
+                    medium: "",
+                    messenger: "",
+                    linkedin: "",
+                    oknoklassniki: "",
+                    patreon: "",
+                    pinterest: "",
+                    quora: "",
+                    reddit: "",
+                    snapchat: "",
+                    soundcloudm: "",
+                    spotify: "",
+                    telegram: "",
+                    tumblr: "",
+                    twitch: "",
+                    twitter: "sharethis",
+                    vk: "",
+                    wechat: "",
+                    weibo: "",
+                    yelp: "",
+                    youtube: "",
+                  },
+                  radius: 9,            // the corner radius on each button (INTEGER)
+                  size: 32,             // the size of each button (INTEGER)
+                }}
+              />
+              </Box>
               {/*<Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers
                 </Text>*/}
