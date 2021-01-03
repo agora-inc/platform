@@ -27,6 +27,7 @@ import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import SocialMediaButton from "../Components/Channel/SocialMediaButton";
 
 interface Props {
   location: any;
@@ -466,7 +467,8 @@ export default class ManageChannelPage extends Component<Props, State> {
           height="133px"
           align="center"
           justify="between"
-          pad="16px"
+          //pad="16px"
+          margin={{ left:'16px', right: "16px", top: "16px"}}
         >
           <Box direction="row" align="center" gap="small">
             <Box>
@@ -531,6 +533,12 @@ export default class ManageChannelPage extends Component<Props, State> {
               style={{ cursor: "pointer" }}
             />
           )}
+        </Box>
+        <Box margin={{ left:'125px', bottom:'small'}}>
+            <SocialMediaButton
+              name={this.state.channel!.name}
+              id={this.state.channel!.id}
+            />
         </Box>
         {this.state.bannerExtended && (
           <>
