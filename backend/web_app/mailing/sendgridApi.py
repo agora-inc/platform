@@ -28,8 +28,8 @@ class sendgridApi:
         except Exception as e:
             print(e)
 
-    def send_confirmation_email_request(self, target_email, talk_name, username, talk_id, agora_name, conference_url):
-        """Use sendgrid api
+    def send_confirmation_talk_registration_request(self, target_email, talk_name, username, talk_id, agora_name, channel_id, conference_url):
+        """Email send to confirm user successfully requested the registration to a talk and admin will get back to him/her.
 
         Args:
             target_email (str): email
@@ -51,14 +51,101 @@ class sendgridApi:
                     "username": username,
                     "talk_id": talk_id,
                     "agora_name": agora_name,
-                    "conference_url": conference_url
+                    "conference_url": conference_url,
+                    "channel_id": channel_id
                 },
             template_id=template_id
         )
         return response
 
-    def send_access_information_future_talk(self, target_email, dynamic_template_data):
-        pass
+    def send_confirmation_talk_registration_acceptance(self, target_email, talk_name, username, talk_id, agora_name, channel_id, conference_url=None):
+        """Email send to confirm user got accepted to a talk. 
+        Info are either already available or will follow up shortly in a subsequent email.
+
+        Args:
+            target_email (str): email
+            dynamic_template_data (dictionary): Must have the form:
+                {
+                    "talk_name": "Lightspeed fluid",
+                    "username": "Mike Tyson",
+                    "talk_id": 123,
+                    "agora_name": "Malliavin calculus",
+                    "conference_url": "google.com"
+                }
+        """ 
+        if conference_url is not None:
+            template_id = "d-e2791dbf94084474b5dd50b15a8ea372"
+            response = self.post_sendgrid_request(
+                target_email=target_email,
+                dynamic_template_data={
+                        "talk_name": talk_name,
+                        "username": username,
+                        "talk_id": talk_id,
+                        "agora_name": agora_name,
+                        "conference_url": conference_url,
+                        "channel_id": channel_id
+                    },
+                template_id=template_id
+            )
+            return response
+        else:
+            template_id = "d-a80355cc932842909900d630c30c8c90"
+            response = self.post_sendgrid_request(
+                target_email=target_email,
+                dynamic_template_data={
+                        "talk_name": talk_name,
+                        "username": username,
+                        "talk_id": talk_id,
+                        "agora_name": agora_name,
+                        "channel_id": channel_id
+                    },
+                template_id=template_id
+            )
+            return response
+
+    def send_talk_details(self, target_email, talk_name, username, talk_id, agora_name, conference_url, initial_release: bool):
+        """Follow-up email to acceptance where info are now available.
+        Args:
+            target_email (str): email
+            dynamic_template_data (dictionary): Must have the form:
+                {
+                    "talk_name": "Lightspeed fluid",
+                    "username": "Mike Tyson",
+                    "talk_id": 123,
+                    "agora_name": "Malliavin calculus",
+                    "conference_url": "google.com"
+                }
+            initial_release (bool): "True" if this is the first time information is released. 
+            Else, this will follow a "modification to previous shared info" template.
+        """
+        if initial_release:
+            template_id = "d-d789a156a6f94442851b056ca5d7b620"
+            response = self.post_sendgrid_request(
+                target_email=target_email,
+                dynamic_template_data={
+                        "talk_name": talk_name,
+                        "username": username,
+                        "talk_id": talk_id,
+                        "agora_name": agora_name,
+                        "conference_url": conference_url
+                    },
+                template_id=template_id
+            )
+            return response
+        else:
+            template_id = "d-712e04b993df4855ab7903bd35600f4"
+            response = self.post_sendgrid_request(
+                target_email=target_email,
+                dynamic_template_data={
+                        "talk_name": talk_name,
+                        "username": username,
+                        "talk_id": talk_id,
+                        "agora_name": agora_name,
+                        "conference_url": conference_url
+                    },
+                template_id=template_id
+            )
+            return response
 
     def send_update_future_talk(self):
         pass

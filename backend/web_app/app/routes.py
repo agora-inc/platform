@@ -22,7 +22,7 @@ videos = VideoRepository.VideoRepository(db=agora_db)
 channels = ChannelRepository.ChannelRepository(db=agora_db)
 search = SearchRepository.SearchRepository(db=agora_db)
 invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
-sendgridApi = sendgridApi()
+sendgridApi = sendgridApi.sendgridApi()
 
 
 # --------------------------------------------
@@ -1322,4 +1322,4 @@ def eventLinkRedirect():
         return res_string
 
     except Exception as e:
-        return str(e)
+        return jsonify(str(e))
