@@ -550,6 +550,32 @@ export default class EditTalkModal extends Component<Props, State> {
                 margin={{left: "large", right: "xsmall", top:"6px", bottom: "10px"}}
               > 
                 <OverlaySection heading="Link to event">
+
+                        {/* PLACEHOLDER 
+                        FOR A MULTI BOX TICKER 
+                        TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
+                        Remy
+ */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <TextInput
                     value={this.state.link}
                     placeholder="https://zoom.us/1234"
@@ -568,6 +594,15 @@ export default class EditTalkModal extends Component<Props, State> {
                        <p>Your selected audience will be able to see the link 30 minutes before the start of your event.</p>
                       </ReactTooltip>
                   </Text>
+
+
+
+
+
+
+
+
+
                 </OverlaySection>
 
                 <OverlaySection heading="Access and visibility">
@@ -578,7 +613,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       </Text>
                       <StatusInfo size="small" data-tip data-for='linkinfo'/>
                       <ReactTooltip id='linkinfo' place="right" effect="solid">
-                        Decide who does not need to manually register to attend the talk. The same people will also have access to the recording if there is one.
+                        Decide who does not need to manually fill the registration request form to attend the talk. The same people will also automatically have access to the recording if there is one.
                       </ReactTooltip>
                     </Box>
                     <Select

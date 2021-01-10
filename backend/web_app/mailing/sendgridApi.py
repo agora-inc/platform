@@ -42,7 +42,7 @@ class sendgridApi:
                     "conference_url": "google.com"
                 }
         """ 
-        template_id = "d-e2791dbf94084474b5dd50b15a8ea372"
+        template_id = "d-7778766bf8764d379f19bf2822aa38c2"
 
         response = self.post_sendgrid_request(
             target_email=target_email,
