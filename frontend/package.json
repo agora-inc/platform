@@ -22,7 +22,7 @@
     "d3": "^5.16.0",
     "emailjs-com": "^2.4.1",
     "emoji-mart": "^3.0.0",
-    "grommet": "^2.13.0",
+    "grommet": "2.14.0",
     "grommet-icons": "^4.4.0",
     "howler": "^2.2.0",
     "html-react-parser": "^0.13.0",
