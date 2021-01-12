@@ -20,7 +20,7 @@ import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
-import ChannelShareButtons from ".././Components/Channel/ChannelShareButtons";
+import ShareButtons from ".././Components/Core/ShareButtons";
 
 interface Props {
   location: { pathname: string };
@@ -378,10 +378,10 @@ export default class ChannelPage extends Component<Props, State> {
               <Text size="26px" color="black" weight="bold">
                 {this.state.channel ?.name}
               </Text>
-              <span style={{marginBottom: "6px", textSizeAdjust:"14px"}}>Share this Agora:</span>
+              <Text size="14px" style={{marginBottom: "6px"}}>Share this Agora:</Text>
               <Box height="36px" style={{width: "300px"}}> 
-                  <ChannelShareButtons
-                    channel={this.state.channel!}
+                  <ShareButtons
+                    sharedContent={this.state.channel!}
                   />
               </Box>
               {/*<Text size="24px" color="#999999" weight="bold">

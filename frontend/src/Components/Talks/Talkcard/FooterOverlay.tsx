@@ -264,7 +264,7 @@ render() {
                 align="end"
                 >
               <ShareButtons 
-                talk={this.props.talk}
+                sharedContent={this.props.talk}
               />
 
               {/* <Box

@@ -3,11 +3,11 @@ import { Box, Text, Button, Layer, Image} from "grommet";
 import {InlineShareButtons} from 'sharethis-reactjs';
 import ReactTooltip from "react-tooltip";
 import {Talk} from "../../Services/TalkService";
-import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
+import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon, Channel} from "grommet-icons";
 
 
 interface Props {
-    talk: Talk;
+    sharedContent: any;
   }
   
   interface State {
@@ -31,31 +31,43 @@ interface Props {
       };
     }
   
-    urlTalk = () => {
-      return `https://agora.stream/event/${this.props.talk.id}`
+    //True if talk, therefore false if channel.
+    isTalk = (variableToCheck: any): variableToCheck is Talk => {
+      return (variableToCheck as Talk).talk_speaker !== undefined;
+    }
+
+    urlLink = () => {
+      if(this.isTalk(this.props.sharedContent)) {
+      return `https://agora.stream/event/${this.props.sharedContent.id}`
+      } else {
+        const name = this.props.sharedContent.name.replace(/\s/g, '%20')
+        return `https://agora.stream/${name}`
+      }
     }
 
     emailTitle = () => {
-      return `Talk that might be of interest to you`
+      if(this.isTalk(this.props.sharedContent)) {
+        return `Talk that might be of interest to you`
+      } else {
+        return `An Agora that might be of interest to you`
+      }
     }
 
     emailMessage = () => {
-      return `Hey, check this out: ${this.urlTalk()}
-      `
+      return `Hey, check this out: ${this.urlLink()}`
     }
 
-    eventDescription = () => {
+    Description = () => {
       // TODO: ADD DATE, ADD URL, RENDER LATEX
-      return this.props.talk.description
+      return this.props.sharedContent.description
     }
 
-    eventTitle = () => {
-      return this.props.talk.name
+    Title = () => {
+      return this.props.sharedContent.name
     }
 
     agoraLogoUrl = () => {
-      return `https://agora.stream/api/channels/avatar?channelId=${this.props.talk.channel_id}&ts=2`
-    
+        return `https://agora.stream/api/channels/avatar?channelId=${this.props.sharedContent.channel_id}&ts=2`
     }
 
     render () {
@@ -80,31 +92,31 @@ interface Props {
                   padding: 2,          // padding within buttons (INTEGER)
                   radius: 4,            // the corner radius on each button (INTEGER)
                   show_total: false,
-                  size: 36,             // the size of each button (INTEGER)
+                  size: 24,             // the size of each button (INTEGER)
 
                   // OPTIONAL PARAMETERS
-                  url: this.urlTalk(), // (defaults to current url)
+                  url: this.urlLink(), // (defaults to current url)
                   image: this.agoraLogoUrl(),  // (defaults to og:image or twitter:image)
-                  description: this.eventDescription(),       // (defaults to og:description or twitter:description)
-                  title: this.eventTitle(),            // (defaults to og:title or twitter:title)
+                  description: this.Description(),       // (defaults to og:description or twitter:description)
+                  title: this.Title(),            // (defaults to og:title or twitter:title)
                   message: this.emailMessage(),     // (only for email sharing)
                   subject: this.emailTitle(),  // (only for email sharing)
                   username: 'agora.stream' // (only for twitter sharing)
                   }}
           />
           <Box
-                onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
+                onClick={() => {navigator.clipboard.writeText(this.urlLink()); }}
                 data-tip data-for='save_url_event'
                 background="#5AAB61"
                 round="xsmall"
-                width="50px" height="36px"
+                width="50px" height="24px"
                 margin={{left: "2px"}}
                 justify="center"
                 align="center"
                 focusIndicator={true}
                 hoverIndicator={{color: "#62DB69"}}
                 >
-                <LinkIcon style={{width: 20, height: 20, stroke: "white"}} />
+                <LinkIcon style={{width: 18, height: 18, stroke: "white"}} />
             </Box>
             <ReactTooltip id="save_url_event" effect="solid">
               Click to copy URL!
