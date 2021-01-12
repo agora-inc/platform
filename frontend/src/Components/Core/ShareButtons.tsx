@@ -72,7 +72,10 @@ interface Props {
 
     render () {
       return (
-        <Box direction="row">
+        <Box 
+          direction="row"
+          style = {{ zIndex: 0 }}
+        >
           <InlineShareButtons
                   config={{
                   alignment: 'center',  // alignment of buttons (left, center, right)
