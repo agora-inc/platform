@@ -11,6 +11,7 @@ import { default as CoreButton } from "../Core/Button";
 import Identicon from "react-identicons";
 import "../../Styles/past-talk-card.css";
 import EditTalkModal from "../Talks/EditTalkModal";
+import { textToLatex } from "../Core/LatexRendering";
 
 interface Props {
   talk: Talk;
@@ -87,6 +88,14 @@ export default class PastTalkCard extends Component<Props, State> {
 
   escapeDoubleQuotes = (text: string) => {
     return text.replace("''", "'")
+  }
+
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return textToLatex(text);
+    } else {
+      return (<br></br>);
+    }
   }
 
   toggleModal = () => {
@@ -505,18 +514,18 @@ export default class PastTalkCard extends Component<Props, State> {
                       : "TBA"}
                   </Text>
                 </Box>
-                <Text
-                  size="14px"
-                  color="black"
+                <Box
                   style={{
                     minHeight: "50px",
-                    maxHeight: "220px",
+                    maxHeight: "200px",
                     overflowY: "auto",
                   }}
-                  margin={{ bottom: "10px" }}
+                  margin={{ top: "10px", bottom: "10px" }}
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description)}
-                </Text>
+                  {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
+                    (item, i) => this.lineBreaks(item)
+                  )}
+                </Box>
               </Box>
               <Box
                 direction="column"

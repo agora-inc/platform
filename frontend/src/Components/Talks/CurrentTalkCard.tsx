@@ -12,6 +12,8 @@ import AddToCalendarButtons from "./AddToCalendarButtons";
 import Countdown from "./Countdown";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
+import { textToLatex } from "../Core/LatexRendering";
+import "../Styles/all-agoras-page.css";
 
 interface Props {
   talk: Talk;
@@ -55,6 +57,14 @@ export default class CurrentTalkCard extends Component<Props, State> {
 
   escapeDoubleQuotes = (text: string) => {
     return text.replace("''", "'")
+  }
+
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return textToLatex(text);
+    } else {
+      return (<br></br>);
+    }
   }
 
   toggleModal = () => {
@@ -388,10 +398,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
                     </Text>
                   </Box>
                 )}
-
-                <Text
-                  size="16px"
-                  color="black"
+                <Box
                   style={{
                     minHeight: "50px",
                     maxHeight: "200px",
@@ -399,8 +406,10 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   }}
                   margin={{ top: "10px", bottom: "10px" }}
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description)}
-                </Text>
+                  {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
+                    (item, i) => this.lineBreaks(item)
+                  )}
+                </Box>
               </Box>
               <Box direction="column" gap="small">
                 <Box direction="row" gap="small">
