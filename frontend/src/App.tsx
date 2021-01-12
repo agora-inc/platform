@@ -25,6 +25,8 @@ import AllAgorasPage from "./Views/AllAgorasPage";
 import AllSpeakersPage from "./Views/AllSpeakersPage";
 import TalkSharingPage from "./Views/TalkSharingPage";
 import AvatarPage from "./Views/AvatarPage";
+import AgoraStreamPage from "./Views/AgoraStreamPage";
+import AgoraStreamAudiencePage from "./Views/AgoraStreamAudiencePage";
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
           <Route exact path="/agoras" component={AllAgorasPage} />
           {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
+          <Route path="/agora/" component={AgoraStreamPage} />
+          <Route path="/audience/" component={AgoraStreamAudiencePage} />
 
           <Route path="/video" component={VideoPage} />
           <Route path="/stream" component={StreamPage} />
