@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text, Button, Layer, Image} from "grommet";
 import {InlineShareButtons} from 'sharethis-reactjs';
 import ReactTooltip from "react-tooltip";
-import {Talk} from "../../../Services/TalkService";
+import {Talk} from "../../Services/TalkService";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
 
 

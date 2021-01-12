@@ -16,7 +16,7 @@ import MediaQuery from "react-responsive";
 import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
 import ReactTooltip from "react-tooltip";
 import EditTalkModal from "../EditTalkModal";
-import ShareButtons from "./ShareButtons";
+import ShareButtons from "../../Core/ShareButtons";
 import TalkRegistrationButton from "../TalkRegistrationButton";
 import CalendarButtons from "../CalendarButtons";
 
