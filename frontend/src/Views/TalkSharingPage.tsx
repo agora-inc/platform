@@ -27,6 +27,7 @@ import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
 import Countdown from "../Components/Talks/Countdown";
 import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
+import { textToLatex } from "../Components/Core/LatexRendering";
 import { Helmet } from "react-helmet";
 
 interface Props {
@@ -239,6 +240,14 @@ export default class ChannelPage extends Component<Props, State> {
 
   escapeDoubleQuotes = (text: string) => {
     return text.replace("''", "'")
+  }
+
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return textToLatex(text);
+    } else {
+      return (<br></br>);
+    }
   }
 
   formatDateFull = (s: string, e: string) => {
@@ -505,7 +514,9 @@ export default class ChannelPage extends Component<Props, State> {
                       }}
                       margin={{ top: "10px", bottom: "10px" }}
                     >
-                      {this.escapeDoubleQuotes(this.state.talk.description)}
+                      {this.escapeDoubleQuotes(this.state.talk.description).split('\n').map(
+                        (item, i) => this.lineBreaks(item)
+                      )}
                     </Text>
           <FooterOverlay
               talk={this.state.talk}
