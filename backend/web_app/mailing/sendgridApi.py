@@ -28,7 +28,7 @@ class sendgridApi:
         except Exception as e:
             print(e)
 
-    def send_confirmation_talk_registration_request(self, target_email, talk_name, username, talk_id, agora_name, channel_id, conference_url):
+    def send_confirmation_talk_registration_request(self, target_email, talk_name, recipient_name, talk_id, agora_name, channel_id, conference_url):
         """Email send to confirm user successfully requested the registration to a talk and admin will get back to him/her.
 
         Args:
@@ -36,7 +36,7 @@ class sendgridApi:
             dynamic_template_data (dictionary): Must have the form:
                 {
                     "talk_name": "Lightspeed fluid",
-                    "username": "Mike Tyson",
+                    "recipient_name": "Mike Tyson",
                     "talk_id": 123,
                     "agora_name": "Malliavin calculus",
                     "conference_url": "google.com"
@@ -48,7 +48,7 @@ class sendgridApi:
             target_email=target_email,
             dynamic_template_data={
                     "talk_name": talk_name,
-                    "username": username,
+                    "recipient_name": recipient_name,
                     "talk_id": talk_id,
                     "agora_name": agora_name,
                     "conference_url": conference_url,
@@ -58,7 +58,7 @@ class sendgridApi:
         )
         return response
 
-    def send_confirmation_talk_registration_acceptance(self, target_email, talk_name, username, talk_id, agora_name, channel_id, conference_url=None):
+    def send_confirmation_talk_registration_acceptance(self, target_email, talk_name, recipient_name, talk_id, agora_name, channel_id, conference_url=None):
         """Email send to confirm user got accepted to a talk. 
         Info are either already available or will follow up shortly in a subsequent email.
 
@@ -67,7 +67,7 @@ class sendgridApi:
             dynamic_template_data (dictionary): Must have the form:
                 {
                     "talk_name": "Lightspeed fluid",
-                    "username": "Mike Tyson",
+                    "recipient_name": "Mike Tyson",
                     "talk_id": 123,
                     "agora_name": "Malliavin calculus",
                     "conference_url": "google.com"
@@ -79,7 +79,7 @@ class sendgridApi:
                 target_email=target_email,
                 dynamic_template_data={
                         "talk_name": talk_name,
-                        "username": username,
+                        "recipient_name": recipient_name,
                         "talk_id": talk_id,
                         "agora_name": agora_name,
                         "conference_url": conference_url,
@@ -94,7 +94,7 @@ class sendgridApi:
                 target_email=target_email,
                 dynamic_template_data={
                         "talk_name": talk_name,
-                        "username": username,
+                        "recipient_name": recipient_name,
                         "talk_id": talk_id,
                         "agora_name": agora_name,
                         "channel_id": channel_id
@@ -103,14 +103,14 @@ class sendgridApi:
             )
             return response
 
-    def send_talk_details(self, target_email, talk_name, username, talk_id, agora_name, conference_url, initial_release: bool):
+    def send_talk_details(self, target_email, talk_name, recipient_name, talk_id, agora_name, conference_url, initial_release: bool):
         """Follow-up email to acceptance where info are now available.
         Args:
             target_email (str): email
             dynamic_template_data (dictionary): Must have the form:
                 {
                     "talk_name": "Lightspeed fluid",
-                    "username": "Mike Tyson",
+                    "recipient_name": "Mike Tyson",
                     "talk_id": 123,
                     "agora_name": "Malliavin calculus",
                     "conference_url": "google.com"
@@ -124,7 +124,7 @@ class sendgridApi:
                 target_email=target_email,
                 dynamic_template_data={
                         "talk_name": talk_name,
-                        "username": username,
+                        "recipient_name": recipient_name,
                         "talk_id": talk_id,
                         "agora_name": agora_name,
                         "conference_url": conference_url
@@ -138,7 +138,7 @@ class sendgridApi:
                 target_email=target_email,
                 dynamic_template_data={
                         "talk_name": talk_name,
-                        "username": username,
+                        "recipient_name": recipient_name,
                         "talk_id": talk_id,
                         "agora_name": agora_name,
                         "conference_url": conference_url
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     client = sendgridApi()
     dynamic_template_data = {
             "talk_name": "Quantum fluids on manifolds",
-            "username": "Mike Tyson",
+            "recipient_name": "Mike Tyson",
             "talk_id": "123",
             "agora_name": "Malliavin calculus",
             "conference_url": "google.com"

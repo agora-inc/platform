@@ -602,22 +602,57 @@ class TalkRepository:
     ###############################
     # Talk 
     ###############################
-    def acceptTalkRegistration(self, requestRegistrationId):
-        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
-        
-        #
-        #
-        #
-        # INTEGRATE EMAIL SENDING HERE
-        #    todo: 
-        # ADD INFORMATIONS FROM ACCEPTTALKREGISTRATION 
-        #
-        #
-        #
-        #
-        #
-
+    def acceptTalkRegistration(self, requestRegistrationId,):
         try:
+            # 1. get talk infos for email
+            extra_email_info_query = f'''
+                SELECT 
+                    Talks.link,
+                    Talks.id,
+                    Talks.name,
+                    Talks.channel_name,
+                    Talks.channel_id,
+                    TalkRegistrations.applicant_name,
+                    TalkRegistrations.email
+                FROM Talks
+                INNER JOIN TalkRegistrations
+                    ON TalkRegistrations.id = {requestRegistrationId}
+                WHERE TalkRegistrations.talk_id = Talks.id;
+            '''
+            extra_email_info = self.db.run_query(extra_email_info_query)[0]
+
+            target_email = extra_email_info["email"]
+            talk_name = extra_email_info["name"]
+            recipient_name = extra_email_info["applicant_name"]
+            talk_id = extra_email_info["id"]
+            agora_name = extra_email_info["channel_name"]
+            channel_id = extra_email_info["channel_id"]
+            conference_url = extra_email_info["link"]
+
+            # ## DO THE CHECK OF CONFERENCE LINK HERE TO SEE IF THERE IS ONE OR NOT!
+            # #
+            # #
+            # #
+            talk_has_conference_url = True
+            # # if conference_url == "https://SD"
+
+            
+            # # 2. Send email
+            if talk_has_conference_url:
+                self.mailing_api.send_confirmation_talk_registration_acceptance(
+                    target_email,
+                    talk_name,
+                    recipient_name,
+                    talk_id,
+                    agora_name,
+                    channel_id,
+                    conference_url
+                )
+            else:
+                pass
+
+            # 3. Flag user as registered in DB
+            accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
             self.db.run_query(accept_query)
             return "ok"
         except Exception as e:

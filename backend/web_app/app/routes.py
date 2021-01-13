@@ -670,8 +670,6 @@ def getTalkById():
     except Exception as e:
         return jsonify(str(e))
 
-
-
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
     # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
