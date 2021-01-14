@@ -6,6 +6,7 @@
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from streaming.agora_io.tokengenerators import tokengenerators
 from flask import jsonify, request, send_file
 from flask_mail import Message
 from werkzeug import exceptions
@@ -42,6 +43,31 @@ def logRequest(request):
         app.logger.debug(f"request made to {request.path} with args {request.args} {f'by user with id {userId}' if userId else ''}")
     elif request.method == "POST":
         app.logger.debug(f"request made to {request.path} with body {request.data} {f'by user with id {userId}' if userId else ''}")
+
+# --------------------------------------------
+# HELPER FUNCTIONS
+# --------------------------------------------
+@app.route('tokens/streaming/', methods=['POST'])
+def generateStreamingToken():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    channel_name = params['channel_name']
+    role_attendee = params['role_attendee'] # Either 1) speaker, 2) host, 3) audience
+    expire_time_in_sec = params['expire_time_in_sec']
+    user_account = params['user_account'] if 'user_account' in params else None
+    uid = params['uid'] if 'uid' in params else None
+
+    token = tokengenerators.generate_rtc_token(
+        channel_name,
+        role_attendee,
+        expire_time_in_sec,
+        user_account,
+        uid
+    )
+
+    return jsonify(token)
 
 # --------------------------------------------
 # USER ROUTES
