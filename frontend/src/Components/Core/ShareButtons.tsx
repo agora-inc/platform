@@ -4,6 +4,7 @@ import {InlineShareButtons} from 'sharethis-reactjs';
 import ReactTooltip from "react-tooltip";
 import {Talk} from "../../Services/TalkService";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon, Channel} from "grommet-icons";
+import { Helmet } from "react-helmet";
 
 
 interface Props {
@@ -70,12 +71,31 @@ interface Props {
         return `https://agora.stream/api/channels/avatar?channelId=${this.props.sharedContent.channel_id}&ts=2`
     }
 
+    twitterUsername = () => {
+      if(this.isTalk(this.props.sharedContent)) {
+        return this.props.sharedContent.channel_name;
+      } else {
+        return "agora.stream";
+      }
+    }
+
     render () {
       return (
         <Box 
           direction="row"
           style = {{ zIndex: 0 }}
         >
+          <Helmet>
+            <title>{this.Title()}</title>
+            <meta property="url" content={this.urlLink()} />
+            <meta property="title" content={this.Title()} />
+            <meta name="description" content={this.Description()} />
+            <meta property="image" content={this.agoraLogoUrl()} />
+            <meta property="og:title" content={this.Title()} />
+            <meta property="og:image" content={this.agoraLogoUrl()} />
+            <meta property="og:url" content={this.urlLink()} />
+            <meta property="og:description" content={this.Description()} />
+          </Helmet>
           <InlineShareButtons
                   config={{
                   alignment: 'center',  // alignment of buttons (left, center, right)
@@ -104,7 +124,7 @@ interface Props {
                   title: this.Title(),            // (defaults to og:title or twitter:title)
                   message: this.emailMessage(),     // (only for email sharing)
                   subject: this.emailTitle(),  // (only for email sharing)
-                  username: 'agora.stream' // (only for twitter sharing)
+                  username: this.twitterUsername() // (only for twitter sharing)
                   }}
           />
           <Box
