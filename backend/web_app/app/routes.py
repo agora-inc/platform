@@ -6,7 +6,18 @@
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
-from streaming.agora_io.tokengenerators import tokengenerators
+from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
+
+# from connectivity.streaming.agora_io.tokengenerators import agoraIOtokenGenerators
+
+
+try:
+    from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
+except Exception as e:
+    with open("/home/cloud-user/test/shaERROR.txt", "w") as file:
+        file.write(str(e))
+
+
 from flask import jsonify, request, send_file
 from flask_mail import Message
 from werkzeug import exceptions
@@ -45,21 +56,34 @@ def logRequest(request):
         app.logger.debug(f"request made to {request.path} with body {request.data} {f'by user with id {userId}' if userId else ''}")
 
 # --------------------------------------------
-# HELPER FUNCTIONS
+# TOKENS
 # --------------------------------------------
-@app.route('tokens/streaming/', methods=['POST'])
+@app.route('/tokens/streaming', methods=['GET', 'OPTIONS'])
 def generateStreamingToken():
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
+    if request.method == "OPTIONS":
+        return jsonify("ok")
 
-    params = request.json
-    channel_name = params['channel_name']
-    role_attendee = params['role_attendee'] # Either 1) speaker, 2) host, 3) audience
-    expire_time_in_sec = params['expire_time_in_sec']
-    user_account = params['user_account'] if 'user_account' in params else None
-    uid = params['uid'] if 'uid' in params else None
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
-    token = tokengenerators.generate_rtc_token(
+    try:
+        channel_name = request.args.get('channel_name')
+        role_attendee = request.args.get('role_attendee') # Either 1) speaker, 2) host, 3) audience
+        expire_time_in_sec = request.args.get('expire_time_in_sec')
+        try:
+            user_account = request.args.get('user_account')
+        except:
+            user_account = None
+        try:
+            uid = request.args.get('uid')
+        except:
+            uid = None
+
+    except Exception as e:
+        with open("/home/cloud-user/test/shaq2.txt", "w") as file:
+            file.write(str(e))
+
+    token = generate_rtc_token(
         channel_name,
         role_attendee,
         expire_time_in_sec,

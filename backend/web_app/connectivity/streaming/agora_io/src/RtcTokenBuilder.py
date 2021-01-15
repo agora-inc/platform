@@ -5,7 +5,12 @@ import sys
 from collections import OrderedDict
 
 # sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
-from streaming.agora_io.src.AccessToken import *
+try:
+    from connectivity.streaming.agora_io.src.AccessToken import AccessToken, kJoinChannel, kPublishVideoStream, kPublishAudioStream, kPublishDataStream
+except Exception as e:
+    with open("/home/cloud-user/test/shaqERROR2.txt", "w") as file:
+        file.write(str(e))
+
 
 Role_Attendee = 0 # depreated, same as publisher
 Role_Publisher = 1 # for live broadcaster
@@ -46,10 +51,19 @@ class RtcTokenBuilder:
     #                    generated, set expireTimestamp as the current 
     @staticmethod
     def buildTokenWithAccount(appId, appCertificate, channelName, account, role, privilegeExpiredTs):
-        token = AccessToken(appId, appCertificate, channelName, account)
-        token.addPrivilege(kJoinChannel, privilegeExpiredTs)
-        if (role == Role_Attendee) | (role == Role_Admin) | (role == Role_Publisher):
-            token.addPrivilege(kPublishVideoStream, privilegeExpiredTs)
-            token.addPrivilege(kPublishAudioStream, privilegeExpiredTs)
-            token.addPrivilege(kPublishDataStream, privilegeExpiredTs)
-        return token.build()
+        try:
+            token = AccessToken(appId, appCertificate, channelName, account)
+            token.addPrivilege(kJoinChannel, privilegeExpiredTs)
+
+            if (int(role) == Role_Attendee) | (int(role) == Role_Admin) | (int(role) == Role_Publisher):
+                token.addPrivilege(kPublishVideoStream, privilegeExpiredTs)
+                token.addPrivilege(kPublishAudioStream, privilegeExpiredTs)
+                token.addPrivilege(kPublishDataStream, privilegeExpiredTs)
+                # with open("/home/cloud-user/test/shaq69.txt", "w") as file:
+                #     file.write(str(type(token)) + " " + str(token))
+            
+                return token.build()
+
+        except Exception as e:
+            with open("/home/cloud-user/test/inside1.txt", "w") as file:
+                file.write(str(e))
