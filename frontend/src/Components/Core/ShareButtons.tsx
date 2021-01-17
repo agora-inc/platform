@@ -4,8 +4,6 @@ import {InlineShareButtons} from 'sharethis-reactjs';
 import ReactTooltip from "react-tooltip";
 import {Talk} from "../../Services/TalkService";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon, Channel} from "grommet-icons";
-import { Helmet } from "react-helmet";
-
 
 interface Props {
     sharedContent: any;
@@ -85,17 +83,6 @@ interface Props {
           direction="row"
           style = {{ zIndex: 0 }}
         >
-          <Helmet>
-            <title>{this.Title()}</title>
-            <meta property="url" content={this.urlLink()} />
-            <meta property="title" content={this.Title()} />
-            <meta name="description" content={this.Description()} />
-            <meta property="image" content={this.agoraLogoUrl()} />
-            <meta property="og:title" content={this.Title()} />
-            <meta property="og:image" content={this.agoraLogoUrl()} />
-            <meta property="og:url" content={this.urlLink()} />
-            <meta property="og:description" content={this.Description()} />
-          </Helmet>
           <InlineShareButtons
                   config={{
                   alignment: 'center',  // alignment of buttons (left, center, right)
