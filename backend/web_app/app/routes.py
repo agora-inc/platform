@@ -1305,15 +1305,22 @@ def fullTextSearch():
 # --------------------------------------------
 @app.route('/event-link', methods=["GET"])
 def eventLinkRedirect():
+    params = request.json
+    title = params["title"]
+    description = params["description"]
     try:
         eventId = request.args.get("eventId")
         
         res_string = f'''
             <html>
 
-                DELETE THIS LINE AND ADD THE STUFF YOU NEED INSIDE GERARDO.
+                <title>{title}</title>
+                <meta property="title" content={title} />
+                <meta name="description" content={description} />
+                <meta property="og:title" content={title} />
+                <meta property="og:description" content={description} />
 
-            window.location.href = 'https://agora.stream/event/{eventId}'
+                window.location.href = 'https://agora.stream/event/{eventId}'
             </html>
         '''
         return res_string
