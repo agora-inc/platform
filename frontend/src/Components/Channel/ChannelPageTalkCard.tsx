@@ -17,6 +17,7 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import RequestMembershipButton from "./ApplyMembershipButton";
 import { thisExpression } from "@babel/types";
+import { textToLatex } from "../Core/LatexRendering";
 import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 
 interface Props {
@@ -189,6 +190,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
   escapeDoubleQuotes = (text: string) => {
     return text.replace("''", "'")
+  }
+
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return textToLatex(text);
+    } else {
+      return (<br></br>);
+    }
   }
 
   getTimeRemaining = (): string => {
@@ -510,18 +519,19 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     </Text>
                   </Box>
                 )}
-                <Text
-                  size="14px"
-                  color="black"
+                <Box
                   style={{
                     minHeight: "50px",
                     maxHeight: "200px",
                     overflowY: "auto",
                   }}
                   margin={{ top: "10px", bottom: "10px" }}
+                  direction="column"
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description)}
-                </Text>
+                  {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
+                    (item, i) => this.lineBreaks(item)
+                  )}
+                </Box>
               </Box>
               </Box>
               <FooterOverlay

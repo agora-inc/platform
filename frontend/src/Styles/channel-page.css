@@ -1,3 +1,5 @@
 .follow-button:active {
   background-color: #e5e5e5;
 }
+
+.katex { font-size: 1em !important;}

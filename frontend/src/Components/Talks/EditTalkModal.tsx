@@ -167,11 +167,21 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   escapeSingleQuotes = (text: string) => {
-    return text.replace("'", "''").replace(/"/g, "'")
+    // We want to store backslash with \\
+    // We want to store apostrophe '
+    return text.replace(/'/g, "''").replace(/"/g, "'").replace(/\\/g, "\\\\")
   }
 
   escapeDoubleQuotes = (text: string) => {
     return text.replace("''", "'")
+  }
+
+  lineBreaks = (text: string) => { 
+    if (text && text.trim()) {
+      return textToLatex(text);
+    } else {
+      return (<br></br>);
+    }
   }
 
   onFinish = () => {
@@ -411,26 +421,32 @@ export default class EditTalkModal extends Component<Props, State> {
 
               <Box width="100%" gap="5px" margin={{top: "15px"}}>
                 <Box direction="row" gap="small">
-                  <Text size="14px" weight="bold" color="black" margin={{"right": "100px"}}>
-                    Description
-                  </Text>
-                  {/*<Switch
+                  <Box margin={{"right": "70px"}}>
+                    <Text size="14px" weight="bold" color="black">
+                      Description
+                      <StatusInfo size="small" data-tip data-for='description_latex_info'/>
+                        <ReactTooltip id='description_latex_info' place="right" effect="solid">
+                        <InlineMath math={"{\\small \\LaTeX}"} /> supported (e.g. $\log(a)+\log(b)=\log(ab)$).
+                        </ReactTooltip>
+                    </Text>
+                  </Box>
+                  <Switch
                     checked={this.state.latex}
                     onChange={(checked: boolean) => {
                       this.setState({ latex: checked });
                     }}
                     size="small"
                   />
-                  <InlineMath math={"{\\small \\LaTeX}"} />
-                  */}
+                  Preview <InlineMath math={"{\\small \\LaTeX}"} />
                 </Box>
-                <TextArea
+
+                {/*<TextArea
                     style={{height: "240px"}}
                     value={this.state.description}
                     placeholder=""
                     onChange={(e) => this.setState({ description: e.target.value })}
-                  />
-                {/*!this.state.latex && (
+                />*/}
+                {!this.state.latex && (
                   <TextArea
                     style={{height: "240px"}}
                     value={this.state.description}
@@ -439,8 +455,10 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                 )}
                 {this.state.latex && (
-                  textToLatex(this.state.description, "240px")
-                )*/}
+                  this.escapeDoubleQuotes(this.state.description).split('\n').map(
+                    (item, i) => this.lineBreaks(item)
+                  )
+                )}
               </Box>
 
               <Box width="100%" gap="5px">
