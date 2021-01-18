@@ -2887,6 +2887,11 @@ agora-rtc-sdk-ng@^4.2.1:
   resolved "https://registry.yarnpkg.com/agora-rtc-sdk-ng/-/agora-rtc-sdk-ng-4.2.1.tgz#2cca0acc4cce07c347e10eed3470851552be9469"
   integrity sha512-c8LJMd7jeUhtqT7Mr/MHfblVVcZAzPge+IJ1Lkl08VsFPIAcdiNZah7gdvFvYmO97QreODkRQjVFNwqW283S+w==
 
+agora-rtm-sdk@^1.4.1-201:
+  version "1.4.1-201"
+  resolved "https://registry.yarnpkg.com/agora-rtm-sdk/-/agora-rtm-sdk-1.4.1-201.tgz#082af9159d124b9ae1bf7918186318fa1b8a1381"
+  integrity sha512-FBBC54VCegrNoycjArscghJ+li4vMYfmdnxFYjbJmH/b7KSVDP/9FGnxffpk1hF2BLkxGWwhAiCA+NLNMzEoAg==
+
 ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
