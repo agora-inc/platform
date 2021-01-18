@@ -420,6 +420,7 @@ export type Talk = {
   end_date: string;
   description: string;
   link: string;
+  link_available?: boolean;
   recording_link: string;
   tags: Tag[];
   show_link_offset: number;

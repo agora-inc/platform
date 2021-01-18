@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   Box,
+  CheckBox,
   Text,
   TextInput,
   TextArea,
@@ -40,6 +41,7 @@ interface State {
   date: string;
   startTime: string;
   endTime: string;
+  linkAvailable: boolean | undefined;
   link: string;
   releaseLinkOffset: number;
   linkVisibility: string;
@@ -72,6 +74,7 @@ export default class EditTalkModal extends Component<Props, State> {
         ? new Date(this.props.talk.end_date).toTimeString().slice(0, 5)
         : "",
       link: this.props.talk ? this.props.talk.link : "",
+      linkAvailable: this.props.talk ? this.props.talk.link_available : false,
       releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 45,
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
@@ -573,17 +576,13 @@ export default class EditTalkModal extends Component<Props, State> {
                         FOR A MULTI BOX TICKER 
                         TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
                         Remy
- */}
+                        */}
 
-
-
-
-
-
-
-
-
-
+                      <CheckBox
+                          checked={this.state.linkAvailable}
+                          label="interested?"
+                          onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
+                        />
 
 
 
