@@ -94,7 +94,7 @@ export default class CreateChannelCard extends Component<Props, State> {
         
         <Box gap="small">
           <TextInput
-            style={{ width: 300 }}
+            style={{ width: 300, height: 40 }}
             placeholder="Your Agora name"
             onChange={(e) => this.setState({ newChannelName: e.target.value })}
           />
