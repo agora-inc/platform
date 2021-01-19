@@ -238,18 +238,6 @@ export default class ChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
-
-  lineBreaks = (text: string) => { 
-    if (text && text.trim()) {
-      return textToLatex(text);
-    } else {
-      return (<br></br>);
-    }
-  }
-
   formatDateFull = (s: string, e: string) => {
     const start = new Date(s);
     const dateStartStr = start.toDateString().slice(0, -4);
@@ -514,8 +502,8 @@ export default class ChannelPage extends Component<Props, State> {
                       }}
                       margin={{ top: "10px", bottom: "10px" }}
                     >
-                      {this.escapeDoubleQuotes(this.state.talk.description).split('\n').map(
-                        (item, i) => this.lineBreaks(item)
+                      {this.state.talk.description.split('\n').map(
+                        (item, i) => textToLatex(item)
                       )}
                     </Text>
           <FooterOverlay
