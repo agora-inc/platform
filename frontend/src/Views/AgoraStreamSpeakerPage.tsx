@@ -85,10 +85,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });
     agoraClient.setClientRole(localUser.role);
-    // StreamService.getToken(roomId, 1, Math.floor(Date.now()/1000 + 600 ), null, localUser.uid, (a:any)=>{
-    //   console.log(111, a)
-    // })
-    // return
     join()
   }
 
