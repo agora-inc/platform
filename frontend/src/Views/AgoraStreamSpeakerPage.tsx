@@ -7,6 +7,7 @@ import Tag from "../Components/Core/Tag";
 import Loading from "../Components/Core/Loading";
 import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
+import { StreamService } from "../Services/StreamService";
 import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
@@ -30,6 +31,17 @@ interface Message{
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
 const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
 
+function getUserId(talkId:string, userId?:string){
+  let key = userId || talkId
+  let uid = window.localStorage.getItem(key)
+  if(!uid) {
+    uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
+    window.localStorage.setItem(key, uid)
+  }
+
+  return uid
+}
+
 
 const AgoraStream:FunctionComponent<Props> = (props) => {
   const [agoraClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
@@ -41,7 +53,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         token: '006f68f8f99e18d4c76b7e03b2505f08ee3IABpOfC4oGQL6yjRYJ0mrE9AKao79dSPOMHQtvvKvX5tl1t/ioMAAAAAEABXvn0Ft0wCYAEAAQC3TAJg',
         role: 'host',
         name: 'Prof. Patric',
-        uid: 'abc-55441-u1'
+        uid: getUserId(props.match.params.room_id, 'my_user_id')
       } as any)
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
   const [localVideoTrack, setLocalVideoTrack] = useState(null as any)
@@ -67,17 +79,29 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       overlay: false,
   })
 
-  function setup() {
+  async function setup() {
+    const roomId = props.match.params.room_id
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
       console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });
     agoraClient.setClientRole(localUser.role);
+    // StreamService.getToken(roomId, 1, Math.floor(Date.now()/1000 + 600 ), null, localUser.uid, (a:any)=>{
+    //   console.log(111, a)
+    // })
+    // return
     join()
   }
 
   async function get_token_for_room(roomId: string) {
     // TODO: make api call to get token
-    return localUser.token
+    return new Promise((res:any, rej:any)=>{
+      StreamService.getToken(roomId, 1, Math.floor(Date.now()/1000 + 600 ), null, localUser.uid, (tk:string)=>{
+        if(tk)
+          return res(tk)
+        rej()
+      })
+
+    })
   }
 
   async function join(){
@@ -86,7 +110,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     let roomId = props.match.params.room_id
     let token = await get_token_for_room(roomId)
 
+    console.log(token)
+
     try{
+      // @ts-ignore
       await agoraClient.join(appId, roomId, token, uid)
 
       await agoraMessageClient.login({ uid })
@@ -122,7 +149,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       console.log('error sending message')
     }
   }
-
 
   useEffect(()=>{
     setup()
