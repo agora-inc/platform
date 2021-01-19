@@ -51,6 +51,16 @@ export default class CreateChannelCard extends Component<Props, State> {
     );
   };
 
+  containsSpecialCharacter = (name: string) => {
+    let check = /[`~!@£$%^&*()-_=+{}\[\]'"\\\|\/?<>]/;
+    let test = name.toLowerCase().replace(/[0-9]/g, " ");
+    if(test.match(check)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   render() {
     return this.state.redirect ? (
       <Redirect to={`/${this.state.newChannelName}`} />
@@ -84,7 +94,7 @@ export default class CreateChannelCard extends Component<Props, State> {
         
         <Box gap="small">
           <TextInput
-            style={{ width: 300 }}
+            style={{ width: 300, height: 40 }}
             placeholder="Your Agora name"
             onChange={(e) => this.setState({ newChannelName: e.target.value })}
           />
@@ -95,13 +105,22 @@ export default class CreateChannelCard extends Component<Props, State> {
               this.setState({ newChannelDescription: e.target.value })
             }
           /> */}
+          {this.containsSpecialCharacter(this.state.newChannelName) ? (
+            <Text
+            color="red"
+            size="12px"
+            >
+              Agora name cannot contain special characters!
+            </Text>
+          ) : (null)}
 
           <AsyncButton
             color="#7E1115"
             fontColor="white"
             label="Create"
             disabled={
-              this.state.newChannelName === ""
+              this.state.newChannelName === "" ||
+              this.containsSpecialCharacter(this.state.newChannelName)
             }
             onClick={this.onCreateClicked}
             width="300px"
