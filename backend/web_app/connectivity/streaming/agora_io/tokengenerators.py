@@ -57,8 +57,8 @@ def generate_rtc_token(channel_name, role_attendee, expire_time_in_sec, user_acc
                 role_attendee, 
                 privilege_expired_ts)
 
-        with open("/home/cloud-user/test/token_test.txt", "w") as file:
-            file.write(str(token))
+        # with open("/home/cloud-user/test/token_test.txt", "w") as file:
+        #     file.write(str(token))
 
         return token
 

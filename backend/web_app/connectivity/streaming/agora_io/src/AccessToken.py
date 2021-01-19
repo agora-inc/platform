@@ -1,3 +1,4 @@
+# COPIED FROM https://github.com/AgoraIO/Tools/blob/master/DynamicKey/AgoraDynamicKey/python3/src/AccessToken.py
 import hmac
 from hashlib import sha256
 import ctypes
@@ -5,7 +6,6 @@ import base64
 import struct
 from zlib import crc32
 import random
-import re
 import time
 from collections import OrderedDict
 
@@ -49,15 +49,15 @@ def packString(string):
 
 
 def packMap(m):
-    ret = packUint16(len(m.items()))
-    for k, v in m.items():
+    ret = packUint16(len(list(m.items())))
+    for k, v in list(m.items()):
         ret += packUint16(k) + packString(v)
     return ret
 
 
 def packMapUint32(m):
-    ret = packUint16(len(m.items()))
-    for k, v in m.items():
+    ret = packUint16(len(list(m.items())))
+    for k, v in list(m.items()):
         ret += packUint16(k) + packUint32(v)
     return ret
 
@@ -119,21 +119,9 @@ def unPackMessages(buff):
     return salt, ts, messages
 
 
-def decode_base64(data, altchars=b'+/'):
-    """Decode base64, padding being optional.
-
-    :param data: Base64 data as an ASCII byte string
-    :returns: The decoded byte string.
-
-    """
-    data = re.sub(rb'[^a-zA-Z0-9%s]+' % altchars, b'', data)  # normalize
-    missing_padding = len(data) % 4
-    if missing_padding:
-        data += b'='* (4 - missing_padding)
-    return base64.b64decode(data, altchars)
-
 class AccessToken:
-    def __init__(self, appID="", appCertificate="", channelName="", uid=""):
+
+    def __init__(self, appID='', appCertificate='', channelName='', uid=''):
         random.seed(time.time())
         self.appID = appID
         self.appCertificate = appCertificate
@@ -164,80 +152,29 @@ class AccessToken:
             self.salt, self.ts, self.messages = unPackMessages(m)
 
         except Exception as e:
-            print(f"error: {e}")
+            print("error:", str(e))
             return False
 
         return True
 
     def build(self):
-        # with open("/home/cloud-user/test/messi1.txt", "w") as file:
-        #     file.write("ok")
 
-        self.messages = OrderedDict(sorted(self.messages.items(), key=lambda x: int(x[0])))
+        self.messages = OrderedDict(sorted(iter(self.messages.items()), key=lambda x: int(x[0])))
 
-        # with open("/home/cloud-user/test/messi2.txt", "w") as file:
-        #     file.write("ok")
+        m = packUint32(self.salt) + packUint32(self.ts) \
+            + packMapUint32(self.messages)
 
-        try:
-            m = packUint32(self.salt) + packUint32(self.ts) \
-                + packMapUint32(self.messages)
+        val = self.appID.encode('utf-8') + self.channelName.encode('utf-8') + self.uidStr.encode('utf-8') + m
 
-        except Exception as e:
-            # pass
-            with open("/home/cloud-user/test/messi3.txt", "w") as file:
-                file.write(str(e) + " " + str(type(self.appID)) + " " + str(type(self.channelName)) + " " + str(type(m)))
+        signature = hmac.new(self.appCertificate.encode('utf-8'), val, sha256).digest()
+        crc_channel_name = crc32(self.channelName.encode('utf-8')) & 0xffffffff
+        crc_uid = crc32(self.uidStr.encode('utf-8')) & 0xffffffff
 
-        try:
-            test = str(m, "latin1")
-            val = self.appID + self.channelName + self.uidStr + str(m, "latin1")
-            val = bytes(val, "latin1")
-        except Exception as e:
-            with open("/home/cloud-user/test/messi4.txt", "w") as file:
-                file.write(str(e))
-                #  + " " + str(type(test)) + " " + str(test))
-
-        # with open("/home/cloud-user/test/messi5.txt", "w") as file:
-        #     file.write("ok")
-
-        try:
-            signature = hmac.new(bytes(self.appCertificate, "latin1"), val, sha256).digest()
-        except Exception as e:
-            with open("/home/cloud-user/test/messi5.txt", "w") as file:
-                file.write(str(type(self.appCertificate)) + " " + str(type(val)) + " " + str(type(hmac.new(self.appCertificate, val, sha256))))
-
-
-        try:
-            crc_channel_name = crc32(self.channelName.encode("latin1")) & 0xffffffff
-            crc_uid = crc32(self.uidStr.encode("latin1")) & 0xffffffff
-            content = packString(signature) \
-                    + packUint32(crc_channel_name) \
-                    + packUint32(crc_uid) \
-                    + packString(m)
-        except Exception as e:  
-            with open("/home/cloud-user/test/messi6.txt", "w") as file:
-                file.write(str(packString(m)))
-
-        
-        # with open("/home/cloud-user/test/messi7.txt", "w") as file:
-        #     file.write("ok")
-
-        # with open("/home/cloud-user/test/messi8.txt", "w") as file:
-        #     file.write("ok")
+        content = packString(signature) \
+                  + packUint32(crc_channel_name) \
+                  + packUint32(crc_uid) \
+                  + packString(m)
 
         version = getVersion()
-
-        # with open("/home/cloud-user/test/messi9.txt", "w") as file:
-        #     file.write(str(type(version)))
-
-        try:
-            bytes_string = decode_base64(content)
-            ret = version + self.appID + str(bytes_string, 'latin1')
-
-        except Exception as e:
-            with open("/home/cloud-user/test/messi91.txt", "w") as file:
-                file.write(str(e))
-
-        # with open("/home/cloud-user/test/messi92.txt", "w") as file:
-        #     file.write(ret)
-
+        ret = version + self.appID + base64.b64encode(content).decode('utf-8')
         return ret
