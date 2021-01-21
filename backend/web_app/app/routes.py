@@ -8,15 +8,6 @@ from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
-# from connectivity.streaming.agora_io.tokengenerators import agoraIOtokenGenerators
-
-
-try:
-    from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
-except Exception as e:
-    with open("/home/cloud-user/test/shaERROR.txt", "w") as file:
-        file.write(str(e))
-
 
 from flask import jsonify, request, send_file
 from flask_mail import Message
@@ -78,10 +69,8 @@ def generateStreamingToken():
             uid = request.args.get('uid')
         except:
             uid = None
-
     except Exception as e:
-        with open("/home/cloud-user/test/shaq2.txt", "w") as file:
-            file.write(str(e))
+        return jsonify(str(e))
 
     token = generate_rtc_token(
         channel_name,

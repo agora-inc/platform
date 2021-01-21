@@ -90,11 +90,11 @@ const getToken = (
     uid: any,
     callback: any) => {
       let url = "";
-      if (userAccount){
-        url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&user_account=${userAccount}`
-      }
-      else if (uid){
+      if (uid){
         url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&uid=${uid}`
+      }
+      else if (userAccount){
+        url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&user_account=${userAccount}`
       }
       get(url, callback);
 };
