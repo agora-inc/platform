@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch} from "react-router-dom";
 import { Grommet } from "grommet";
 import Home from "./Views/Home";
 import ChannelPage from "./Views/ChannelPage";
@@ -27,10 +27,13 @@ import TalkSharingPage from "./Views/TalkSharingPage";
 import AvatarPage from "./Views/AvatarPage";
 import AgoraStreamSpeakerPage from "./Views/AgoraStreamSpeakerPage";
 import AgoraStreamAudiencePage from "./Views/AgoraStreamAudiencePage";
+import {useTracking} from './Components/Core/Analytics/useTracking';
 
 function App() {
+  // // Initialize google analytics page view tracking
+  useTracking("G-J8FEQBCS4H");
+  
   return (
-    <BrowserRouter>
       <Grommet theme={Theme} full>
         <HeaderBar />
         <Switch>
@@ -41,7 +44,6 @@ function App() {
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
           <Route path="/agora/:room_id/speaker/" component={AgoraStreamSpeakerPage} />
           <Route path="/agora/:room_id/" component={AgoraStreamAudiencePage} />
-
           <Route path="/video" component={VideoPage} />
           <Route path="/stream" component={StreamPage} />
           <Route path={`/:name/manage`} component={ManageChannelPage} />
@@ -61,8 +63,12 @@ function App() {
           <Route path="*" component={ChannelPage} />
         </Switch>
       </Grommet>
-    </BrowserRouter>
   );
 }
 
-export default App;
+export default () => (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+
+)
