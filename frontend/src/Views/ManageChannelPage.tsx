@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image } from "grommet";
+import { Box, Text, TextArea, Image, Button } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -477,6 +477,23 @@ export default class ManageChannelPage extends Component<Props, State> {
     });
   }
 
+  updateTopic = () => {
+    ChannelService.editChannelTopic(
+      this.props.channel!.id,
+      this.state.topics,
+      (channel: Channel) => {
+        this.setState(
+          {
+            loading: true,
+          },
+          () => {
+            console.log("saved");
+          }
+        );
+      }
+    );
+  }
+
   banner = () => {
     return (
       <Box
@@ -555,7 +572,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   name={this.state.channel!.name}
                   id={this.state.channel!.id}
                 />
-                <Box width="50%" margin={{ left: "xsmall" }}>
+                <Box width="50%" margin={{ left: "xsmall", right: "xsmall" }}>
                 <ChannelTopicSelector 
                   onSelectedCallback={this.selectTopic}
                   onCanceledCallback={this.cancelTopic}
@@ -563,6 +580,20 @@ export default class ManageChannelPage extends Component<Props, State> {
                   prevTopics={this.props.channel ? this.props.channel.topics : []} 
                   size="small"
                 />
+                </Box>
+                <Box
+                  width="15%" 
+                  height="25px"
+                  background="white"
+                  round="xsmall"
+                  style={{ border: "solid black 2px", cursor: "pointer" }}
+                  align="center"
+                  justify="center"
+                  //onClick={this.updateTopic()}
+                >
+                  <Text size="13px" weight="bold" color="black">
+                    Save Topic
+                  </Text>
                 </Box>
               </Box>
             </Box>

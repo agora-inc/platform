@@ -376,3 +376,16 @@ class ChannelRepository:
             return self.db.run_query(get_counter_query)[0]["total_views"]
         except Exception as e:
             return str(e)
+
+    def editChannelTopic(self, channelId, topic_1_id, topic_2_id, topic_3_id):
+        topicsQuery = f'''
+            UPDATE Channels
+                topic_1_id="{topic_1_id}", 
+                topic_2_id="{topic_2_id}", 
+                topic_3_id="{topic_3_id}"
+            WHERE id = {channelId};
+            '''
+        try:
+            return self.db.run_query(topicsQuery)
+        except Exception as e:
+            return str(e)

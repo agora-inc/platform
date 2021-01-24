@@ -550,6 +550,21 @@ def sendTalkApplicationEmail():
     mail.send(msg)
     return "ok"
 
+@app.route('/channel/edit/topic', methods=["POST", "OPTIONS"])
+def editChannelTopic():
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+
+    app.logger.debug(f"channel with id {params['channelId']} edited")
+    return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
+
+
 # --------------------------------------------
 # x Membership ROUTES
 # --------------------------------------------

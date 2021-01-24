@@ -141,6 +141,10 @@ export default class AllAgorasPage extends Component<Props, State> {
       this.setState({
         chosenAgoras: this.getAgorasByTopics(this.state.allAgoras, childrenId),
       });
+    } else {
+      this.setState({
+        chosenAgoras: this.state.allAgoras,
+      });
     }
   };
 

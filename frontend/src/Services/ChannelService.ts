@@ -315,6 +315,23 @@ const deleteAgora = (id: number, callback: any) => {
   post("channels/delete", { id }, callback);
 };
 
+const editChannelTopic = (
+  channelId: Number,
+  topics: Topic[],
+  callback: any
+) => {
+  post(
+    '/channel/edit/topic',
+    {
+    channelId: channelId,
+    topic1Id: topics[0] ? topics[0].id : 0,
+    topic2Id: topics[1] ? topics[1].id : 0,
+    topic3Id: topics[2] ? topics[2].id : 0,
+    },
+    callback
+  );
+};
+
 ///////////////////////
 // Membership methods
 ///////////////////////
@@ -440,6 +457,7 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
+  editChannelTopic,
   /////////////////////
   // membership methods
   /////////////////////
