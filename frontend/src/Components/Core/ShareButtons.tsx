@@ -4,6 +4,7 @@ import {InlineShareButtons} from 'sharethis-reactjs';
 import ReactTooltip from "react-tooltip";
 import {Talk} from "../../Services/TalkService";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon, Channel} from "grommet-icons";
+import { threadId } from "worker_threads";
 
 interface Props {
     sharedContent: any;
@@ -37,10 +38,29 @@ interface Props {
 
     urlLink = () => {
       if(this.isTalk(this.props.sharedContent)) {
-      return `https://agora.stream/event/${this.props.sharedContent.id}`
+        return `https://agora.stream/event/${this.props.sharedContent.id}`
       } else {
         const name = this.props.sharedContent.name.replace(/\s/g, '%20')
         return `https://agora.stream/${name}`
+      }
+    }
+
+    apiUrlLink = () => {
+      if(this.isTalk(this.props.sharedContent)) {
+        return `https://agora.stream/api/event-link?
+                eventId=${this.props.sharedContent.id}&
+                title=${this.Title()}&
+                description=${this.Description()}&
+                url=${this.urlLink()}&
+                image=${this.agoraLogoUrl()}`
+      } else {
+        const name = this.props.sharedContent.name.replace(/\s/g, '%20')
+        return `https://agora.stream/api/channel-link?
+                channelName=${name}&
+                title=${this.Title()}&
+                description=${this.Description()}&
+                url=${this.urlLink()}&
+                image=${this.agoraLogoUrl()}`
       }
     }
 
@@ -66,7 +86,11 @@ interface Props {
     }
 
     agoraLogoUrl = () => {
+      if(this.isTalk(this.props.sharedContent)) {
         return `https://agora.stream/api/channels/avatar?channelId=${this.props.sharedContent.channel_id}&ts=2`
+      } else {
+        return `https://agora.stream/api/channels/avatar?channelId=${this.props.sharedContent.id}&ts=2`
+      }
     }
 
     twitterUsername = () => {
@@ -105,7 +129,7 @@ interface Props {
                   size: 24,             // the size of each button (INTEGER)
 
                   // OPTIONAL PARAMETERS
-                  url: this.urlLink(), // (defaults to current url)
+                  url: this.apiUrlLink(), // (defaults to current url)
                   image: this.agoraLogoUrl(),  // (defaults to og:image or twitter:image)
                   description: this.Description(),       // (defaults to og:description or twitter:description)
                   title: this.Title(),            // (defaults to og:title or twitter:title)

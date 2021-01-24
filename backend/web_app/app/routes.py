@@ -1305,25 +1305,56 @@ def fullTextSearch():
 # --------------------------------------------
 @app.route('/event-link', methods=["GET"])
 def eventLinkRedirect():
-    params = request.json
-    title = params["title"]
-    description = params["description"]
     try:
-        eventId = request.args.get("eventId")
-        
+        eventId = request.args("eventId")
+        title = request.args.get("title")
+        description = request.args.get("description")
+        url = request.args.get("url")
+        image = request.args.get("image")
+
         res_string = f'''
             <html>
-
-                <title>{title}</title>
-                <meta property="title" content={title} />
-                <meta name="description" content={description} />
-                <meta property="og:title" content={title} />
-                <meta property="og:description" content={description} />
-
+                <head>
+                    <title>{title}</title>
+                    <meta property="title" content={title} />
+                    <meta name="description" content={description} />
+                    <meta property="og:title" content={title} />
+                    <meta property="og:description" content={description} />
+                    <meta property="og:url" content={url} />
+                    <meta property="og:image" content={image} />
+                    <meta property="og:type" content="article" />
+                </head>
                 window.location.href = 'https://agora.stream/event/{eventId}'
             </html>
         '''
-        return res_string
+        return res_string.format(eventId, title, description, url, image)
+    except Exception as e:
+        return str(e)
 
+@app.route('/channel-link', methods=["GET"])
+def channelLinkRedirect():
+    try:
+        channelName = request.args("channelName")
+        title = request.args.get("title")
+        description = request.args.get("description")
+        url = request.args.get("url")
+        image = request.args.get("image")
+
+        res_string = f'''
+            <html>
+                <head>
+                    <title>{title}</title>
+                    <meta property="title" content={title} />
+                    <meta name="description" content={description} />
+                    <meta property="og:title" content={title} />
+                    <meta property="og:description" content={description} />
+                    <meta property="og:url" content={url} />
+                    <meta property="og:image" content={image} />
+                    <meta property="og:type" content="article" />
+                </head>
+                window.location.href = 'https://agora.stream/{channelName}'
+            </html>
+        '''
+        return res_string.format(channelName, title, description, url, image)
     except Exception as e:
         return str(e)
