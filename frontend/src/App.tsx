@@ -39,8 +39,8 @@ function App() {
           <Route exact path="/agoras" component={AllAgorasPage} />
           {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
-          <Route path="/agora/:room_id/speaker/" component={AgoraStreamSpeakerPage} />
-          <Route path="/agora/:room_id/" component={AgoraStreamAudiencePage} />
+          <Route path="/agora/:talk_id/speaker/" component={AgoraStreamSpeakerPage} />
+          <Route path="/agora/:talk_id/" component={AgoraStreamAudiencePage} />
 
           <Route path="/video" component={VideoPage} />
           <Route path="/stream" component={StreamPage} />
