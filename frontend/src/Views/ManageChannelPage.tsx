@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image, Button } from "grommet";
+import { Box, Text, TextArea, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -29,6 +29,7 @@ import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic } from "../Services/TopicService";
+import ConfirmationButton from "../Components/Core/ConfirmationButton";
 
 interface Props {
   location: any;
@@ -65,6 +66,7 @@ interface State {
   showMemberEmailInfo: boolean;
   topics: Topic[];
   isPrevTopics: boolean[];
+  topicSaved: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -98,7 +100,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       showDraftInfo: false,
       showMemberEmailInfo: false,
       topics: this.props.channel ? this.props.channel.topics : [],
-      isPrevTopics: this.props.channel ? this.topicExists(this.props.channel.topics) : [false, false, false]
+      isPrevTopics: this.props.channel ? this.topicExists(this.props.channel.topics) : [false, false, false],
+      topicSaved: false
     };
   }
 
@@ -479,19 +482,11 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   updateTopic = () => {
     ChannelService.editChannelTopic(
-      this.props.channel!.id,
+      this.state.channel!.id,
       this.state.topics,
-      (channel: Channel) => {
-        this.setState(
-          {
-            loading: true,
-          },
-          () => {
-            console.log("saved");
-          }
-        );
-      }
+      () => {console.log("channel topic saved");}
     );
+    return true;
   }
 
   banner = () => {
@@ -581,20 +576,13 @@ export default class ManageChannelPage extends Component<Props, State> {
                   size="small"
                 />
                 </Box>
-                <Box
-                  width="15%" 
-                  height="25px"
-                  background="white"
-                  round="xsmall"
-                  style={{ border: "solid black 2px", cursor: "pointer" }}
-                  align="center"
-                  justify="center"
-                  //onClick={this.updateTopic()}
+                <ConfirmationButton
+                  actionTitle="Topic saved"
+                  confirmationMessage="You have saved the topic!"
+                  buttonMessage="Save Topic"
+                  action={this.updateTopic()}
                 >
-                  <Text size="13px" weight="bold" color="black">
-                    Save Topic
-                  </Text>
-                </Box>
+                </ConfirmationButton>
               </Box>
             </Box>
           </Box>
