@@ -1307,10 +1307,13 @@ def fullTextSearch():
 def eventLinkRedirect():
     try:
         eventId = request.args("eventId")
-        title = request.args.get("title")
-        description = request.args.get("description")
-        url = request.args.get("url")
-        image = request.args.get("image")
+        talk_info = talks.getTalkById(eventId)
+
+        title = talk_info["title"]
+        description = talk_info["description"]
+        channel_id = talk_info["channel_name"]
+        url = f"https://agora.stream/event/{eventId}"
+        image = f"https://agora.stream/api/channels/avatar?ChannelId={channel_id}"
 
         res_string = f'''
             <html>
@@ -1334,27 +1337,28 @@ def eventLinkRedirect():
 @app.route('/channel-link', methods=["GET"])
 def channelLinkRedirect():
     try:
-        channelName = request.args("channelName")
-        title = request.args.get("title")
-        description = request.args.get("description")
-        url = request.args.get("url")
-        image = request.args.get("image")
+        channel_id = request.args("channel_id")
+        channel_info = channels.getChannelById(channel_id)
+        name = channel_info["name"]
+        long_description = channel_info["long_description"]
+        url = f"https://agora.stream/{name}"
+        image = f"https://agora.stream/api/channels/avatar?ChannelId={channel_id}"
 
         res_string = f'''
             <html>
                 <head>
-                    <title>{title}</title>
-                    <meta property="title" content={title} />
-                    <meta name="description" content={description} />
-                    <meta property="og:title" content={title} />
-                    <meta property="og:description" content={description} />
+                    <title>{name}</title>
+                    <meta property="title" content={name} />
+                    <meta name="description" content={long_description} />
+                    <meta property="og:title" content={name} />
+                    <meta property="og:description" content={long_description} />
                     <meta property="og:url" content={url} />
                     <meta property="og:image" content={image} />
                     <meta property="og:type" content="article" />
                 </head>
-                window.location.href = 'https://agora.stream/{channelName}'
+                window.location.href = 'https://agora.stream/{name}'
             </html>
         '''
-        return res_string.format(channelName, title, description, url, image)
+        return res_string.format(name, name, long_description, url, image)
     except Exception as e:
         return str(e)
