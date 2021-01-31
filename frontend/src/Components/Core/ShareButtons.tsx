@@ -51,7 +51,7 @@ interface Props {
     apiUrlLink = () => {
       if(this.props.talk) {
         let url = baseApiUrl + `/event-link?
-                eventId=${this.props.talk.id}`
+        eventId=${this.props.talk.id}`
         console.log("wesh")
         console.log(url)
         return url
@@ -93,9 +93,9 @@ interface Props {
 
     agoraLogoUrl = () => {
       if (this.props.talk) {
-        return `https://agora.stream/api/ChannelIcons/avatar?ChannelId=${this.props.talk.ChannelIcon_id}&ts=2`
+        return `https://agora.stream/api/Channels/avatar?ChannelId=${this.props.talk.ChannelIcon_id}&ts=2`
       } else if (this.props.channel) {
-        return `https://agora.stream/api/ChannelIcons/avatar?ChannelId=${this.props.talk.id}&ts=2`
+        return `https://agora.stream/api/Channels/avatar?ChannelId=${this.props.talk.id}&ts=2`
       }
     }
 

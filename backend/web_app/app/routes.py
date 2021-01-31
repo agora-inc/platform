@@ -1323,7 +1323,7 @@ def eventLinkRedirect():
                 <head>
                     <title>"{title}"</title>
                     <meta property="title" content="{title}" />
-                    <meta name="description" content="{description} />
+                    <meta name="description" content="{description}" />
                     <meta property="og:title" content="{title}" />
                     <meta property="og:description" content="{description}" />
                     <meta property="og:url" content="{hack_url}" />
