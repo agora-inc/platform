@@ -1,13 +1,10 @@
 import React, { useState, useEffect,Component } from "react";
 import { Box, Button, Text } from "grommet";
 import { Link } from "react-router-dom";
-import { Identicon } from "react-identicons";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { User } from "../Services/UserService";
-import { Talk, TalkService } from "../Services/TalkService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicClassification from "../Components/Homepage/TopicClassification";
-import MediaQuery from "react-responsive";
 import "../Styles/all-agoras-page.css";
 
 /*const AllAgorasPage = () => {
@@ -95,17 +92,6 @@ export default class AllAgorasPage extends Component<Props, State> {
         this.setState({ allTopics: allTopics });
       });
     
-
-    // Limit to 1000 talks
-    /*
-    TalkService.getAllFutureTalks(1000, 0, (allTalks: Talk[]) => {
-      this.setState({
-        allTalks: allTalks,
-        chosenTalks: allTalks,
-      });
-    });
-    */
-    
    ChannelService.getAllChannels(
       100, 
       0, 
@@ -157,10 +143,10 @@ export default class AllAgorasPage extends Component<Props, State> {
     this.fetchAgorasByTopic(temp);
   };
 
-  ifTalks = () => {
+  ifAgoras = () => {
     
     return (
-      <div className="talk_cards_outer_box">
+      <div className="all-agoras-grid">
         {/* <Box 
         width="100%"
         gap="small"
@@ -199,7 +185,7 @@ export default class AllAgorasPage extends Component<Props, State> {
     );
   };
 
-  ifNoTalks = () => {
+  ifNoAgoras = () => {
     return (
       <Box
         direction="row"
@@ -224,21 +210,16 @@ export default class AllAgorasPage extends Component<Props, State> {
     return (
       <div className="all-agoras-page">
         <span className="all-agoras-title">Agoras</span>
-        <div className="all-agoras-grid"></div>
-        
         
           <TopicClassification 
             topicCallback={this.selectTopic}
             searchType="Agoras"
             />
         
-        
-
         {this.state.chosenAgoras.length === 0
           
-          
-          ? this.ifNoTalks()
-          : this.ifTalks()}
+          ? this.ifNoAgoras()
+          : this.ifAgoras()}
       </div>
     );
   }
