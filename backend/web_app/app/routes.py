@@ -1347,7 +1347,7 @@ def channelLinkRedirect():
         name = channel_info["name"]
         long_description = channel_info["long_description"]
         real_url = f"https://agora.stream/{name}"
-        hack_url = f"{BASE_API_URL}/channel-link?channelId={name}"
+        hack_url = f"{BASE_API_URL}/channel-link?channelId={channel_id}"
         image = f"https://agora.stream/api/channels/avatar?channelId={channel_id}"
 
         res_string = f'''
@@ -1361,10 +1361,10 @@ def channelLinkRedirect():
                     <meta property="og:url" content="{hack_url}" />
                     <meta property="og:image" content="{image}" />
                     <meta property="og:type" content="article" />
-                    <meta http-equiv="refresh" content="0; URL='{real_url}'" />
                 </head>
             </html>
         '''
+                    # <meta http-equiv="refresh" content="0; URL='{real_url}'" />
         return render_template(res_string)
     except Exception as e:
         return str(e)
