@@ -1342,7 +1342,7 @@ def eventLinkRedirect():
 @app.route('/channel-link', methods=["GET"])
 def channelLinkRedirect():
     try:
-        channel_id = request.args("channelId")
+        channel_id = request.args.get("channelId")
         channel_info = channels.getChannelById(channel_id)
         name = channel_info["name"]
         long_description = channel_info["long_description"]
@@ -1365,6 +1365,6 @@ def channelLinkRedirect():
                 </head>
             </html>
         '''
-        return res_string.format(name, name, long_description, url, image)
+        return render_template(res_string)
     except Exception as e:
         return str(e)
