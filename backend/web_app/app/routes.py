@@ -2,11 +2,10 @@
     TODO: 
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
-
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
-from flask import jsonify, request, send_file
+from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
@@ -21,6 +20,10 @@ videos = VideoRepository.VideoRepository(db=agora_db)
 channels = ChannelRepository.ChannelRepository(db=agora_db)
 search = SearchRepository.SearchRepository(db=agora_db)
 invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
+
+BASE_API_URL = "http://localhost:8000"
+# BASE_API_URL = "https://agora.stream/api"
+
 
 # --------------------------------------------
 # HELPER FUNCTIONS
@@ -1306,43 +1309,44 @@ def fullTextSearch():
 @app.route('/event-link', methods=["GET"])
 def eventLinkRedirect():
     try:
-        eventId = request.args("eventId")
+        eventId = request.args.get("eventId")
         talk_info = talks.getTalkById(eventId)
-
-        title = talk_info["title"]
+        title = talk_info["name"]
         description = talk_info["description"]
         channel_id = talk_info["channel_name"]
-        url = f"https://agora.stream/event/{eventId}"
-        image = f"https://agora.stream/api/channels/avatar?ChannelId={channel_id}"
+        real_url = f"https://agora.stream/event/{eventId}"
+        hack_url = f"{BASE_API_URL}/event-link?eventId={eventId}"
+        image = f"{BASE_API_URL}/channels/avatar?ChannelId={channel_id}"
 
         res_string = f'''
             <html>
                 <head>
-                    <title>{title}</title>
-                    <meta property="title" content={title} />
-                    <meta name="description" content={description} />
-                    <meta property="og:title" content={title} />
-                    <meta property="og:description" content={description} />
-                    <meta property="og:url" content={url} />
-                    <meta property="og:image" content={image} />
+                    <title>"{title}"</title>
+                    <meta property="title" content="{title}" />
+                    <meta name="description" content="{description} />
+                    <meta property="og:title" content="{title}" />
+                    <meta property="og:description" content="{description}" />
+                    <meta property="og:url" content="{hack_url}" />
+                    <meta property="og:image" content="{image}" />
                     <meta property="og:type" content="article" />
                 </head>
-                window.location.href = 'https://agora.stream/event/{eventId}'
             </html>
         '''
-        return res_string.format(eventId, title, description, url, image)
+        # <meta http-equiv="refresh" content="1; URL='{real_url}'" />
+        return render_template(res_string)
     except Exception as e:
         return str(e)
 
 @app.route('/channel-link', methods=["GET"])
 def channelLinkRedirect():
     try:
-        channel_id = request.args("channel_id")
+        channel_id = request.args("channelId")
         channel_info = channels.getChannelById(channel_id)
         name = channel_info["name"]
         long_description = channel_info["long_description"]
-        url = f"https://agora.stream/{name}"
-        image = f"https://agora.stream/api/channels/avatar?ChannelId={channel_id}"
+        real_url = f"https://agora.stream/{name}"
+        hack_url = f"{BASE_API_URL}/channel-link?channelId={name}"
+        image = f"https://agora.stream/api/channels/avatar?channelId={channel_id}"
 
         res_string = f'''
             <html>
@@ -1352,11 +1356,11 @@ def channelLinkRedirect():
                     <meta name="description" content={long_description} />
                     <meta property="og:title" content={name} />
                     <meta property="og:description" content={long_description} />
-                    <meta property="og:url" content={url} />
+                    <meta property="og:url" content={hack_url} />
                     <meta property="og:image" content={image} />
                     <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="0; URL='{real_url}'" />
                 </head>
-                window.location.href = 'https://agora.stream/{name}'
             </html>
         '''
         return res_string.format(name, name, long_description, url, image)

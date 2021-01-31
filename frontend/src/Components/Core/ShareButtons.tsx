@@ -58,7 +58,7 @@ interface Props {
       } else if (this.props.channel){
         const name = this.props.talk.name.replace(/\s/g, '%20')
         return baseApiUrl + `/Channel/
-                ChannelId=${this.props.channel.id}`
+                channelId=${this.props.channel.id}`
       }
     }
 
@@ -93,9 +93,9 @@ interface Props {
 
     agoraLogoUrl = () => {
       if (this.props.talk) {
-        return `https://agora.stream/api/ChannelIcons/avatar?ChannelIconId=${this.props.talk.ChannelIcon_id}&ts=2`
+        return `https://agora.stream/api/ChannelIcons/avatar?ChannelId=${this.props.talk.ChannelIcon_id}&ts=2`
       } else if (this.props.channel) {
-        return `https://agora.stream/api/ChannelIcons/avatar?ChannelIconId=${this.props.talk.id}&ts=2`
+        return `https://agora.stream/api/ChannelIcons/avatar?ChannelId=${this.props.talk.id}&ts=2`
       }
     }
 
