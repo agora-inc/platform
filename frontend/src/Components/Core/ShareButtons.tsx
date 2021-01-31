@@ -3,11 +3,14 @@ import { Box, Text, Button, Layer, Image} from "grommet";
 import {InlineShareButtons} from 'sharethis-reactjs';
 import ReactTooltip from "react-tooltip";
 import {Talk} from "../../Services/TalkService";
-import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon, Channel} from "grommet-icons";
+import {Channel} from "../../Services/ChannelService";
+import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon, Channel as ChannelIcon} from "grommet-icons";
 import { threadId } from "worker_threads";
+import { baseApiUrl } from "../../config";
 
 interface Props {
-    sharedContent: any;
+    talk?: Talk | any;
+    channel?: Channel | any;
   }
   
   interface State {
@@ -30,73 +33,76 @@ interface Props {
         imageUrl: ""
       };
     }
-  
-    //True if talk, therefore false if channel.
-    isTalk = (variableToCheck: any): variableToCheck is Talk => {
-      return (variableToCheck as Talk).talk_speaker !== undefined;
-    }
+
+    // //True if talk, therefore false if Channel.
+    // isTalk = (variableToCheck: any): variableToCheck is Talk => {
+    //   return (variableToCheck as Talk).talk_speaker !== undefined;
+    // }
 
     urlLink = () => {
-      if(this.isTalk(this.props.sharedContent)) {
-        return `https://agora.stream/event/${this.props.sharedContent.id}`
+      if (this.props.talk) {
+        return `https://agora.stream/event/${this.props.talk.id}`
       } else {
-        const name = this.props.sharedContent.name.replace(/\s/g, '%20')
+        const name = this.props.talk.name.replace(/\s/g, '%20')
         return `https://agora.stream/${name}`
       }
     }
 
     apiUrlLink = () => {
-      if(this.isTalk(this.props.sharedContent)) {
-        return `https://agora.stream/api/event-link?
-                eventId=${this.props.sharedContent.id}&
-                title=${this.Title()}&
-                description=${this.Description()}&
-                url=${this.urlLink()}&
-                image=${this.agoraLogoUrl()}`
-      } else {
-        const name = this.props.sharedContent.name.replace(/\s/g, '%20')
-        return `https://agora.stream/api/channel-link?
-                channelName=${name}&
-                title=${this.Title()}&
-                description=${this.Description()}&
-                url=${this.urlLink()}&
-                image=${this.agoraLogoUrl()}`
+      if(this.props.talk) {
+        let url = baseApiUrl + `/event-link?
+                eventId=${this.props.talk.id}`
+        console.log("wesh")
+        console.log(url)
+        return url
+      } else if (this.props.channel){
+        const name = this.props.talk.name.replace(/\s/g, '%20')
+        return baseApiUrl + `/Channel/
+                ChannelId=${this.props.channel.id}`
       }
     }
 
     emailTitle = () => {
-      if(this.isTalk(this.props.sharedContent)) {
+      if (this.props.talk) {
         return `Talk that might be of interest to you`
-      } else {
+      } else if (this.props.channel) {
         return `An Agora that might be of interest to you`
       }
     }
 
     emailMessage = () => {
-      return `Hey, check this out: ${this.urlLink()}`
+      if (this.props.talk) {
+        return `Hey, check this out: ${this.urlLink()}`
+      } else if (this.props.channel) {
+        return `Hey, check this out: ${this.urlLink()}`
+      }
     }
 
     Description = () => {
       // TODO: ADD DATE, ADD URL, RENDER LATEX
-      return this.props.sharedContent.description
+      if (this.props.talk) {
+        return this.props.talk.description
+      } else if (this.props.channel) {
+        return this.props.channel.description
+      }
     }
 
     Title = () => {
-      return this.props.sharedContent.name
+      return this.props.talk.name
     }
 
     agoraLogoUrl = () => {
-      if(this.isTalk(this.props.sharedContent)) {
-        return `https://agora.stream/api/channels/avatar?channelId=${this.props.sharedContent.channel_id}&ts=2`
-      } else {
-        return `https://agora.stream/api/channels/avatar?channelId=${this.props.sharedContent.id}&ts=2`
+      if (this.props.talk) {
+        return `https://agora.stream/api/ChannelIcons/avatar?ChannelIconId=${this.props.talk.ChannelIcon_id}&ts=2`
+      } else if (this.props.channel) {
+        return `https://agora.stream/api/ChannelIcons/avatar?ChannelIconId=${this.props.talk.id}&ts=2`
       }
     }
 
     twitterUsername = () => {
-      if(this.isTalk(this.props.sharedContent)) {
-        return this.props.sharedContent.channel_name;
-      } else {
+      if (this.props.talk) {
+        return this.props.talk.channel_name;
+      } else if (this.props.channel) {
         return "agora.stream";
       }
     }
