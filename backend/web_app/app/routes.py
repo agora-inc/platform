@@ -21,8 +21,8 @@ channels = ChannelRepository.ChannelRepository(db=agora_db)
 search = SearchRepository.SearchRepository(db=agora_db)
 invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
 
-BASE_API_URL = "http://localhost:8000"
-# BASE_API_URL = "https://agora.stream/api"
+# BASE_API_URL = "http://localhost:8000"
+BASE_API_URL = "https://agora.stream/api"
 
 
 # --------------------------------------------
