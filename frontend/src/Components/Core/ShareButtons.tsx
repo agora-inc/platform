@@ -50,10 +50,7 @@ interface Props {
 
     apiUrlLink = () => {
       if(this.props.talk) {
-        let url = baseApiUrl + `/event-link?
-        eventId=${this.props.talk.id}`
-        console.log("wesh")
-        console.log(url)
+        let url = baseApiUrl + `/event-link?eventId=${this.props.talk.id}`
         return url
       } else if (this.props.channel){
         const name = this.props.talk.name.replace(/\s/g, '%20')
@@ -136,9 +133,9 @@ interface Props {
 
                   // OPTIONAL PARAMETERS
                   url: this.apiUrlLink(), // (defaults to current url)
-                  image: this.agoraLogoUrl(),  // (defaults to og:image or twitter:image)
-                  description: this.Description(),       // (defaults to og:description or twitter:description)
-                  title: this.Title(),            // (defaults to og:title or twitter:title)
+                  // image: this.agoraLogoUrl(),  // (defaults to og:image or twitter:image)
+                  // description: this.Description(),       // (defaults to og:description or twitter:description)
+                  // title: this.Title(),            // (defaults to og:title or twitter:title)
                   message: this.emailMessage(),     // (only for email sharing)
                   subject: this.emailTitle(),  // (only for email sharing)
                   username: this.twitterUsername() // (only for twitter sharing)
