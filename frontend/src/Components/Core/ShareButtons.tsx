@@ -53,8 +53,8 @@ interface Props {
         let url = baseApiUrl + `/event-link?eventId=${this.props.talk.id}`
         return url
       } else if (this.props.channel){
-        const name = this.props.channel.name.replace(/\s/g, '%20')
-        return baseApiUrl + `/channel-link?channelId=${name}`
+        let url = baseApiUrl + `/channel-link?channelId=${this.props.channel.id}`
+        return url
       }
     }
 

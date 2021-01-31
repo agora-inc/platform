@@ -381,7 +381,7 @@ export default class ChannelPage extends Component<Props, State> {
               <Text size="14px" style={{marginBottom: "6px"}}>Share this Agora:</Text>
               <Box height="36px" style={{width: "300px"}}> 
                   <ShareButtons
-                    channel={this.state.channel!}
+                    channel={this.state.channel}
                   />
               </Box>
               {/*<Text size="24px" color="#999999" weight="bold">

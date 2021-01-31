@@ -1323,7 +1323,7 @@ def eventLinkRedirect():
         res_string = f'''
             <html>
                 <head>
-                    <title>"{title}"</title>
+                    <title>{title}</title>
                     <meta property="title" content="{title}" />
                     <meta name="description" content="{description}" />
                     <meta property="og:title" content="{title}" />
@@ -1353,7 +1353,7 @@ def channelLinkRedirect():
         res_string = f'''
             <html>
                 <head>
-                    <title>"{name}"</title>
+                    <title>{name}</title>
                     <meta property="title" content="{name}" />
                     <meta name="description" content="{long_description}" />
                     <meta property="og:title" content="{name}" />
