@@ -132,6 +132,7 @@ export default class UserManager extends Component<Props, State> {
             this.toggleCreateChannelCard();
             this.toggleDropdown();
           }}
+          visible={true}
           user={this.state.user}
         />
       </Menu>

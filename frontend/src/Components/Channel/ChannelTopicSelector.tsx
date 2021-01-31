@@ -181,7 +181,7 @@ export default class ChannelTopicSelector extends Component<Props, State> {
               size={this.props.size}
             />
           )}
-          {this.state.topicsShown[choice] > 1 && (
+          {/*this.state.topicsShown[choice] > 1 && (
             <Select
               options={this.getChildren(
                 this.state.topics[choice][0]
@@ -192,7 +192,7 @@ export default class ChannelTopicSelector extends Component<Props, State> {
               size={this.props.size}
             />
           )}
-          {/* {this.state.topicsShown[choice] > 2 && (
+          { {this.state.topicsShown[choice] > 2 && (
             <Select
               options={this.getChildren(
                 this.state.topics[choice][1]
@@ -218,7 +218,7 @@ export default class ChannelTopicSelector extends Component<Props, State> {
             placeholder={"Field"}
             dropHeight="medium"
             onChange={({ option }) =>
-            this.onAddTopicShown(choice)
+            this.onFieldChoose(choice, this.nameToTopic(option), 1)
             }
         />
       );

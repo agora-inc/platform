@@ -7,9 +7,8 @@ import { Previous } from "grommet-icons";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import ChannelTopicSelector from "../Channel/ChannelTopicSelector";
 import { Topic } from "../../Services/TopicService";
-
-
-import RichTextEditor from 'react-rte';
+import { Overlay, OverlaySection } from "../Core/Overlay";
+import TopicSelector from "../Talks/TopicSelector";
 
 
 interface Props {
@@ -17,6 +16,7 @@ interface Props {
   onBackClicked: any;
   onComplete: any;
   channel?: Channel;
+  visible: boolean;
 }
 
 interface State {
@@ -88,7 +88,14 @@ export default class CreateChannelCard extends Component<Props, State> {
     });
   }
 
-  render() {
+  isComplete = () => {
+    return (
+      this.state.newChannelName !== "" &&
+      this.state.topics.length > 0
+    );
+  };
+
+  /*render() {
     return this.state.redirect ? (
       <Redirect to={`/${this.state.newChannelName}`} />
     ) : (
@@ -126,13 +133,13 @@ export default class CreateChannelCard extends Component<Props, State> {
             placeholder="Your Agora name"
             onChange={(e) => this.setState({ newChannelName: e.target.value })}
           />
-          {/* <TextArea
+          { <TextArea
             style={{ width: 300, height: 100 }}
             placeholder="Description"
             onChange={(e) =>
               this.setState({ newChannelDescription: e.target.value })
             }
-          /> */}
+          /> }
           <Box margin={{ bottom: "small" }}>
             <ChannelTopicSelector 
               onSelectedCallback={this.selectTopic}
@@ -157,6 +164,43 @@ export default class CreateChannelCard extends Component<Props, State> {
           />
         </Box>
       </Box>
+    );
+  }*/
+
+  render() {
+    return this.state.redirect ? (
+      <Redirect to={`/${this.state.newChannelName}`} />
+    ) : (
+      <Overlay
+      width={500}
+      height={300}
+      visible={this.props.visible}
+      title={"Create an Agora"}
+      submitButtonText="Create"
+      onSubmitClick={this.onCreateClicked}
+      contentHeight="150px"
+      canProceed={this.isComplete()}
+      onCancelClick={this.props.onBackClicked}
+      onClickOutside={this.props.onBackClicked}
+      onEsc={this.props.onBackClicked}
+      >
+        <OverlaySection>
+          <TextInput
+            style={{ width: "100%" }}
+            placeholder="Your Agora name"
+            onChange={(e) => this.setState({ newChannelName: e.target.value })}
+          />
+        </OverlaySection>
+        <OverlaySection>
+          <ChannelTopicSelector 
+            onSelectedCallback={this.selectTopic}
+            onCanceledCallback={this.cancelTopic}
+            isPrevTopics={this.state.isPrevTopics}
+            prevTopics={this.props.channel ? this.props.channel.topics : []} 
+            size="medium"
+          />
+        </OverlaySection>
+      </Overlay>
     );
   }
 }
