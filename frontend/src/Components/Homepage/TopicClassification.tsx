@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Box, Select, Text } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
-// import allTopics from "../../assets/allTopics.json"
 import "../../Styles/topic-classification.css";
-import { Talk } from "../../Services/TalkService";
 
 
 interface Props {
@@ -47,8 +45,6 @@ export default class TopicClassification extends Component<Props, State> {
       topics: tempTopics,
       topicBeingShown: temp,
     });
-
-    
   };
 
   nameToTopic = (name: string): Topic => {
