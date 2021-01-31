@@ -54,7 +54,7 @@ interface Props {
         return url
       } else if (this.props.channel){
         const name = this.props.channel.name.replace(/\s/g, '%20')
-        return baseApiUrl + `/Channel/channelId=${name}`
+        return baseApiUrl + `/channel-link?channelId=${name}`
       }
     }
 
