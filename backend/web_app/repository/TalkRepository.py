@@ -208,7 +208,7 @@ class TalkRepository:
                                     )
                             )
                         AND Talks.end_date < CURRENT_TIMESTAMP 
-                    ORDER BY Talks.date ASC LIMIT {limit}
+                    ORDER BY Talks.date DESC LIMIT {limit}
                     OFFSET {offset}
                     '''
 
