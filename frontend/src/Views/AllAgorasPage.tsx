@@ -121,10 +121,12 @@ export default class AllAgorasPage extends Component<Props, State> {
     let res: Channel[] = [];
     for (let channel of channels) {
       let isIn: boolean = false;
-      for (let topic of channel.topics) {
-        if (!isIn && topicsId.includes(topic.id))  {
-          isIn = true;
-          res.push(channel);
+      if(channel.topics) {
+        for (let topic of channel.topics) {
+          if (!isIn && topicsId.includes(topic.id))  {
+            isIn = true;
+            res.push(channel);
+          }
         }
       }
     }
