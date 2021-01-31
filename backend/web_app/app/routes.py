@@ -1354,12 +1354,12 @@ def channelLinkRedirect():
             <html>
                 <head>
                     <title>{name}</title>
-                    <meta property="title" content={name} />
-                    <meta name="description" content={long_description} />
-                    <meta property="og:title" content={name} />
-                    <meta property="og:description" content={long_description} />
-                    <meta property="og:url" content={hack_url} />
-                    <meta property="og:image" content={image} />
+                    <meta property="title" content="{name}" />
+                    <meta name="description" content="{long_description}" />
+                    <meta property="og:title" content="{name}" />
+                    <meta property="og:description" content="{long_description}" />
+                    <meta property="og:url" content="{hack_url}" />
+                    <meta property="og:image" content="{image}" />
                     <meta property="og:type" content="article" />
                     <meta http-equiv="refresh" content="0; URL='{real_url}'" />
                 </head>
