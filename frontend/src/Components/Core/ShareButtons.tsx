@@ -43,7 +43,7 @@ interface Props {
       if (this.props.talk) {
         return `https://agora.stream/event/${this.props.talk.id}`
       } else {
-        const name = this.props.talk.name.replace(/\s/g, '%20')
+        const name = this.props.channel.name.replace(/\s/g, '%20')
         return `https://agora.stream/${name}`
       }
     }
@@ -53,9 +53,8 @@ interface Props {
         let url = baseApiUrl + `/event-link?eventId=${this.props.talk.id}`
         return url
       } else if (this.props.channel){
-        const name = this.props.talk.name.replace(/\s/g, '%20')
-        return baseApiUrl + `/Channel/
-                channelId=${this.props.channel.id}`
+        const name = this.props.channel.name.replace(/\s/g, '%20')
+        return baseApiUrl + `/Channel/channelId=${name}`
       }
     }
 

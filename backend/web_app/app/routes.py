@@ -1318,7 +1318,7 @@ def eventLinkRedirect():
 
         real_url = f"https://agora.stream/event/{eventId}"
         hack_url = f"{BASE_API_URL}/event-link?eventId={eventId}"
-        image = f"{BASE_API_URL}/channels/avatar?ChannelId={channel_id}"
+        image = f"{BASE_API_URL}/channels/avatar?channelId={channel_id}"
 
         res_string = f'''
             <html>
