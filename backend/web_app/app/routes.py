@@ -1313,7 +1313,9 @@ def eventLinkRedirect():
         talk_info = talks.getTalkById(eventId)
         title = talk_info["name"]
         description = talk_info["description"]
-        channel_id = talk_info["channel_name"]
+        channel_name = talk_info["channel_name"]
+        channel_id = channels.getChannelByName(channel_name)["id"]
+
         real_url = f"https://agora.stream/event/{eventId}"
         hack_url = f"{BASE_API_URL}/event-link?eventId={eventId}"
         image = f"{BASE_API_URL}/channels/avatar?ChannelId={channel_id}"
@@ -1329,10 +1331,10 @@ def eventLinkRedirect():
                     <meta property="og:url" content="{hack_url}" />
                     <meta property="og:image" content="{image}" />
                     <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
                 </head>
             </html>
         '''
-        # <meta http-equiv="refresh" content="1; URL='{real_url}'" />
         return render_template(res_string)
     except Exception as e:
         return str(e)
