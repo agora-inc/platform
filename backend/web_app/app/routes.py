@@ -1360,11 +1360,11 @@ def channelLinkRedirect():
                     <meta property="og:description" content="{long_description}" />
                     <meta property="og:url" content="{hack_url}" />
                     <meta property="og:image" content="{image}" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
                     <meta property="og:type" content="article" />
                 </head>
             </html>
         '''
-                    # <meta http-equiv="refresh" content="0; URL='{real_url}'" />
         return render_template(res_string)
     except Exception as e:
         return str(e)
