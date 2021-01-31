@@ -6,9 +6,6 @@ import {
   TextInput,
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
-import { ChannelService } from "../../Services/ChannelService";
-
-const titleOptions = ["Undergraduate", "Postgraduate", "PhD Candidate", "Dr", "Prof"];
 
 interface Props {
   height?: string,
@@ -83,14 +80,16 @@ export default class ConfirmationButton extends Component<Props, State> {
           submitButtonText="close"
           canProceed={true}
           isMissing={[]}
-          width={900}
-          height={400}
-          contentHeight="250px"
+          width={500}
+          height={250}
+          contentHeight="100px"
           title={this.props.actionTitle}
         >
+          <OverlaySection>
             <Text>
                 {this.props.confirmationMessage}
             </Text>
+          </OverlaySection>
         </Overlay>
       </Box>
     );
