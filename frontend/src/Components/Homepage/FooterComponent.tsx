@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Anchor, Heading } from "grommet";
 import "../../Styles/footer.css";
+import FormContainer from "./FormContainer";
 
 export default class FooterComponent extends Component {
   render() {
@@ -32,6 +33,7 @@ export default class FooterComponent extends Component {
             <a href="/info/getting-started" style={{ color: "grey" }}>
               Getting started
             </a>
+            <FormContainer />
             <a href="/info/tos" style={{ color: "grey" }}>
               Terms of service
             </a>
@@ -39,7 +41,7 @@ export default class FooterComponent extends Component {
               Data privacy
             </a>
           </Box>
-          <Box gap="medium">
+          <Box gap="medium" width="50%">
             <Text size="14px" style={{textAlign: "right", marginRight: "5px"}}> Connecting academic communities.</Text>
             <Text style={{ fontSize: 14, marginRight: "5px"}} alignSelf="end">agora.stream © 2020</Text>
           </Box>
