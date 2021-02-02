@@ -128,9 +128,6 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           style={{ minWidth: "30%", maxHeight: "20px" }}
           justify="end"
         >
-        <MediaQuery minDeviceWidth={992}>
-          <FormContainer />
-        </MediaQuery>
           <TimeZoneInfo />
         <MediaQuery minDeviceWidth={992}>
           <UserManager showLogin={this.state.showLogin} />
