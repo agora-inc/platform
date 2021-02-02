@@ -124,7 +124,7 @@ export default class FormContainer extends Component<{}, State> {
           canProceed={this.isMissing().length === 0}
           isMissing={this.isMissing()}
           width={500}
-          height={640}
+          height={650}
           contentHeight="500px"
           title="Submit feedback"
         >
