@@ -32,7 +32,7 @@ export default class PrivacyPage extends Component<Props, State> {
         width="100vw"
         height="100vh"
         align="center"
-        margin={{ top: "80px" }}
+        margin={{ top: "20vh" }}
       >
         <Box width="75%">
           {/* <Box

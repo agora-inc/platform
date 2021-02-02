@@ -20,12 +20,12 @@ export default class CustomSideBar extends Component<Props> {
         margin="none"
       >
         <Box
-          margin={{ top: "60px" }}
+          margin={{ top: "12vh" }}
           pad={{ top: "3px" }}
-          style={{ position: "sticky", top: 83 }}
+          style={{ position: "sticky"}}
           gap="small"
         >
-          <Box height="40">
+          <Box>
             <TrendingChannelsList />
           </Box>
           <Box height="50%">

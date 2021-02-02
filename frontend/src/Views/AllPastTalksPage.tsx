@@ -78,7 +78,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
   render() {
     return (
       <Box
-        pad={{ top: "7.5%", bottom: "100px" }}
+        pad={{ top: "14vh", bottom: "100px" }}
         align="center"
         style={{ overflowY: "scroll" }}
         onScroll={this.handleScroll}

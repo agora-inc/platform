@@ -44,7 +44,7 @@ export default class SavedTalksPage extends Component<Props, State> {
       <Redirect to="/" />
     ) : (
       <Box
-        pad={{ top: "7.5%", bottom: "100px" }}
+        pad={{ top: "14vh", bottom: "100px" }}
         width="100vw"
         height="100vh"
         align="center"
