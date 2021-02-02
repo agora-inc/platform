@@ -33,7 +33,9 @@ export default class FooterComponent extends Component {
             <a href="/info/getting-started" style={{ color: "grey" }}>
               Getting started
             </a>
-            <FormContainer />
+            <a>
+              <FormContainer />
+            </a>
             <a href="/info/tos" style={{ color: "grey" }}>
               Terms of service
             </a>
