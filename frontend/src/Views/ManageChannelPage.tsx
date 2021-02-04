@@ -664,7 +664,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Tab>
                 </TabList>
                 
-                <TabPanel style={{width: "74.35vw"}}>
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box
                     width="100%"
                     direction="row"
@@ -814,7 +814,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     ))}
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="column">
                     <Box 
                       direction="row" 
@@ -1027,7 +1027,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>             
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
 
                   <Box
                     direction="row"
@@ -1045,12 +1045,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                     />
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RegistrationsTab channelId={channel!.id} />
                   </Box>
