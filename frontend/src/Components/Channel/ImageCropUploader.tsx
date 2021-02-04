@@ -49,7 +49,7 @@ export default class ImageCropUploader extends Component<Props, State> {
           onChange={this.onFileChange}
         ></input>
         <Box 
-          width={this.props.width || "200px"}
+          width={this.props.width || "150px"}
           height="30px"
           background="white"
           round="xsmall"
@@ -58,7 +58,7 @@ export default class ImageCropUploader extends Component<Props, State> {
           justify="center"
         >
           <Text size="14px" weight="bold" color="black">
-            {this.props.text} 
+            {this.props.text + " "} 
               <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
             <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
               <p>Recommended dim: 1500x500px</p>
