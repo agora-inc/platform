@@ -404,7 +404,7 @@ export default class ChannelPage extends Component<Props, State> {
             />
             )}
 
-            {this.state.user && (
+            {/*this.state.user && (
               <Box
                 className="follow-button"
                 pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
@@ -429,7 +429,7 @@ export default class ChannelPage extends Component<Props, State> {
                   {this.state.following ? "Following" : "Follow"}
                 </Text>
               </Box>
-            )}
+              )*/}
             {this.state.bannerExtended ? (
               <FormUp
                 onClick={this.toggleBanner}
