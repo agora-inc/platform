@@ -59,7 +59,7 @@ export default class EditTalkModal extends Component<Props, State> {
     super(props);
     this.state = {
       title: this.props.talk ? this.props.talk.name : "",
-      description: this.props.talk ? this.escapeDoubleQuotes(this.props.talk.description) : "",
+      description: this.props.talk ? this.props.talk.description.replace("''", "'") : "", //replace is escapeDoubleQuotes
       tags: this.props.talk ? this.props.talk.tags : [],
       loading: false,
       date: this.props.talk
@@ -170,18 +170,6 @@ export default class EditTalkModal extends Component<Props, State> {
     // We want to store backslash with \\
     // We want to store apostrophe '
     return text.replace(/'/g, "''").replace(/"/g, "'").replace(/\\/g, "\\\\")
-  }
-
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
-
-  lineBreaks = (text: string) => { 
-    if (text && text.trim()) {
-      return textToLatex(text);
-    } else {
-      return (<br></br>);
-    }
   }
 
   onFinish = () => {
@@ -455,8 +443,8 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                 )}
                 {this.state.latex && (
-                  this.escapeDoubleQuotes(this.state.description).split('\n').map(
-                    (item, i) => this.lineBreaks(item)
+                  this.state.description.split('\n').map(
+                    (item, i) => textToLatex(item)
                   )
                 )}
               </Box>
