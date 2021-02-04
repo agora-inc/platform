@@ -5,6 +5,9 @@
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
+
+
 from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
@@ -45,6 +48,42 @@ def logRequest(request):
         app.logger.debug(f"request made to {request.path} with args {request.args} {f'by user with id {userId}' if userId else ''}")
     elif request.method == "POST":
         app.logger.debug(f"request made to {request.path} with body {request.data} {f'by user with id {userId}' if userId else ''}")
+
+# --------------------------------------------
+# TOKENS
+# --------------------------------------------
+@app.route('/tokens/streaming', methods=['GET', 'OPTIONS'])
+def generateStreamingToken():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    try:
+        channel_name = request.args.get('channel_name')
+        role_attendee = request.args.get('role_attendee') # Either 1) speaker, 2) host, 3) audience
+        expire_time_in_sec = request.args.get('expire_time_in_sec')
+        try:
+            user_account = request.args.get('user_account')
+        except:
+            user_account = None
+        try:
+            uid = request.args.get('uid')
+        except:
+            uid = None
+    except Exception as e:
+        return jsonify(str(e))
+
+    token = generate_rtc_token(
+        channel_name,
+        role_attendee,
+        expire_time_in_sec,
+        user_account,
+        uid
+    )
+
+    return jsonify(token)
 
 # --------------------------------------------
 # USER ROUTES
@@ -1348,7 +1387,7 @@ def channelLinkRedirect():
         long_description = channel_info["long_description"]
         real_url = f"https://agora.stream/{name}"
         hack_url = f"{BASE_API_URL}/channel-link?channelId={channel_id}"
-        image = f"https://agora.stream/api/channels/avatar?channelId={channel_id}"
+        image = f"{BASE_API_URL}/api/channels/avatar?channelId={channel_id}"
 
         res_string = f'''
             <html>
@@ -1360,8 +1399,8 @@ def channelLinkRedirect():
                     <meta property="og:description" content="{long_description}" />
                     <meta property="og:url" content="{hack_url}" />
                     <meta property="og:image" content="{image}" />
-                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
                     <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
                 </head>
             </html>
         '''

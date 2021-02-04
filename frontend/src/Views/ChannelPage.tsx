@@ -22,6 +22,7 @@ import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
 import ShareButtons from ".././Components/Core/ShareButtons";
 
+
 interface Props {
   location: { pathname: string };
   streamId: number;
@@ -80,6 +81,10 @@ export default class ChannelPage extends Component<Props, State> {
         personalHomepage: ""
       }
     };
+    // TEST: DELETE THE BELOW LINE ONCE AGORA.IO TOKEN SERVER WORKS
+    var token = StreamService.getToken("xyz", 1, 1611010057, "", "abc-55441-u1", ()=>{})
+    console.log("TOKEN TEST");
+    
   }
 
   componentWillMount() {
