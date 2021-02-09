@@ -27,6 +27,7 @@ import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import ShareButtons from "../Components/Core/ShareButtons";
 
 interface Props {
   location: any;
@@ -466,7 +467,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           height="133px"
           align="center"
           justify="between"
-          pad="16px"
+          pad={{ top: "16px", right: "16px", left: "16px" }}
         >
           <Box direction="row" align="center" gap="small">
             <Box>
@@ -532,6 +533,15 @@ export default class ManageChannelPage extends Component<Props, State> {
             />
           )}
         </Box>
+        <Box 
+          margin={{ left: "16px" }}
+          height="36px"
+          style={{width: "300px"}}
+          >
+            <ShareButtons
+              channel={this.state.channel}
+            />
+          </Box>
         {this.state.bannerExtended && (
           <>
             <EnrichedTextEditor
