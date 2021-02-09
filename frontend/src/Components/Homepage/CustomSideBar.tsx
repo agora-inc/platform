@@ -20,7 +20,7 @@ export default class CustomSideBar extends Component<Props> {
         margin="none"
       >
         <Box
-          margin={{ top: "10vh" }}
+          margin={{ top: "9vh" }}
           pad={{ top: "3px" }}
           style={{ position: "sticky"}}
           gap="small"
