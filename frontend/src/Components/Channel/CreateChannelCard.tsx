@@ -52,7 +52,7 @@ export default class CreateChannelCard extends Component<Props, State> {
   };
 
   containsSpecialCharacter = (name: string) => {
-    let check = /[`~!@£$%^&*()-_=+{}\[\]'"\\\|\/?<>]/;
+    let check = /[`~@£$%^&*=+{}\[\]'"\\\|\/?<>]/;
     let test = name.toLowerCase().replace(/[0-9]/g, " ");
     if(test.match(check)) {
       return true;
