@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import { Box, Text, Select } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
 
-// import allTopics from "../../assets/allTopics.json"
-import Button from "../Core/Button";
-import Icon from "@ant-design/icons";
-
 interface State {
   all: Topic[],
   topics: Topic[][];
@@ -107,7 +103,6 @@ export default class ChannelTopicSelector extends Component<Props, State> {
     }
   };
 
-  /*
   nameToId = (name: string) => {
     if (name == "All") {
       return -1;
@@ -119,7 +114,6 @@ export default class ChannelTopicSelector extends Component<Props, State> {
         .map((topic: any) => topic.id)[0];
     }
   };
-  */
 
   getPrimitiveNodes = () => {
     return this.state.all
@@ -158,14 +152,7 @@ export default class ChannelTopicSelector extends Component<Props, State> {
       );
     } else if (this.state.topicsShown[choice] > 0) {
       return (
-        <Box
-          width="100%"
-          direction="row"
-          gap="xsmall"
-          align="center"
-          margin={{ bottom: "15px" }}
-        >
-          {this.state.topicsShown[choice] > 0 && (
+          this.state.topicsShown[choice] > 0 && (
             <Select
               searchPlaceholder={"All"}
               options={this.getPrimitiveNodes().concat("All")}
@@ -173,45 +160,10 @@ export default class ChannelTopicSelector extends Component<Props, State> {
                 this.onFieldChoose(choice, this.nameToTopic(option), 1)
               }
             />
-          )}
-          {/*this.state.topicsShown[choice] > 1 && (
-            <Select
-              options={this.getChildren(
-                this.state.topics[choice][0]
-              ).concat("All")}
-              onChange={({ option }) =>
-                this.onFieldChoose(choice, this.nameToTopic(option), 2)
-              }
-              size={this.props.size}
-            />
-          )}
-          { {this.state.topicsShown[choice] > 2 && (
-            <Select
-              options={this.getChildren(
-                this.state.topics[choice][1]
-              ).concat("All")}
-              onChange={({ option }) =>
-                this.onFieldChoose(choice, this.nameToTopic(option), 2)
-              }
-              size={this.props.size}
-            />
-          )} 
-          {this.state.topicsShown[choice] > 0 && (
-            <Box margin={{left: "10px"}}>
-            <Close onClick={this.onCancelTopicShown(choice)} />
-            </Box>
-          )} */}
-        </Box>
+          )
       );
     } else {
       return (
-        <Box
-          width="100%"
-          direction="row"
-          gap="xsmall"
-          align="center"
-          margin={{ bottom: "15px" }}
-        >
           <Select
             options={this.getPrimitiveNodes().concat("All")}
             placeholder={"Field"}
@@ -219,14 +171,13 @@ export default class ChannelTopicSelector extends Component<Props, State> {
               this.onFieldChoose(choice, this.nameToTopic(option), 1)
             }
           />
-        </Box>
       );
     }
   };
 
   render() {
     return (
-      <Box width="100%" direction="column" margin={{top: "12px"}}>
+      <Box width="100%" direction="column" margin={{top: "12px", bottom: "12px"}}>
         {this.renderTopicChoice(0)}
       </Box>
     );
