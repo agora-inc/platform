@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Box, Text, Select } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
-import { Close } from "grommet-icons";
 
 // import allTopics from "../../assets/allTopics.json"
 import Button from "../Core/Button";
@@ -142,8 +141,6 @@ export default class ChannelTopicSelector extends Component<Props, State> {
       .map((temp: Topic) => temp.field);
   };
 
-
-
   renderTopicChoice = (choice: number) => {
     if (this.state.isFilledTopics[choice]) {
       return (
@@ -157,9 +154,6 @@ export default class ChannelTopicSelector extends Component<Props, State> {
           <Text size={this.props.size} weight="bold">
             {this.props.prevTopics[choice].field}
           </Text>
-          <Box margin={{left: "10px"}}>
-            <Close onClick={this.onCancelTopicShown(choice)} />
-          </Box>
         </Box>
       );
     } else if (this.state.topicsShown[choice] > 0) {
@@ -178,7 +172,6 @@ export default class ChannelTopicSelector extends Component<Props, State> {
               onChange={({ option }) =>
                 this.onFieldChoose(choice, this.nameToTopic(option), 1)
               }
-              size={this.props.size}
             />
           )}
           {/*this.state.topicsShown[choice] > 1 && (
@@ -202,25 +195,31 @@ export default class ChannelTopicSelector extends Component<Props, State> {
               }
               size={this.props.size}
             />
-          )} */}
+          )} 
           {this.state.topicsShown[choice] > 0 && (
             <Box margin={{left: "10px"}}>
             <Close onClick={this.onCancelTopicShown(choice)} />
             </Box>
-          )}
+          )} */}
         </Box>
       );
     } else {
       return (
-        
-        <Select
+        <Box
+          width="100%"
+          direction="row"
+          gap="xsmall"
+          align="center"
+          margin={{ bottom: "15px" }}
+        >
+          <Select
             options={this.getPrimitiveNodes().concat("All")}
             placeholder={"Field"}
-            dropHeight="medium"
             onChange={({ option }) =>
-            this.onFieldChoose(choice, this.nameToTopic(option), 1)
+              this.onFieldChoose(choice, this.nameToTopic(option), 1)
             }
-        />
+          />
+        </Box>
       );
     }
   };
