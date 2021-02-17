@@ -3,6 +3,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading } from "grommet";
 import { ReactComponent as Logo } from "../apollo.svg";
 import { User, UserService } from "../Services/UserService";
+import { Search, Channel, ScheduleNew, Multiple } from "grommet-icons";
 import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import MediaQuery from "react-responsive";
@@ -36,6 +37,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <Box 
         direction="column"
         align="center"
+        
       >
         <Box
           direction="row"
@@ -47,6 +49,133 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         >
           <UserManager showLogin={this.state.showLogin} />
         </Box>
+        
+        { /* Column version */ }
+
+        <Box direction="column" justify="center" margin={{right: "60px"}} >
+          <Box direction="row" justify="center" margin={{top: "70px"}}>
+            <Logo style={{ height: "60px", width: "60px"}} />
+            <Heading
+              level="1"
+              margin={{ top: "13px" }}
+              style={{ fontSize: "48px", color: "black" }}
+            >
+              gora.stream
+            </Heading>
+          </Box>
+
+          <Box direction="column" justify="center" margin={{top: "-15px"}}> 
+            <Text size="16px" weight="bold"> 
+              Live stream seminars from the best academics in the world - for FREE!
+            </Text>
+          </Box>
+        </Box>
+
+        <Box 
+          direction="row" 
+          gap="50px" 
+          focusIndicator={false}
+          margin={{top: "80px"}}
+        >
+          <Link
+            to={{ pathname: "/browse" }}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              background="#F2F2F2"
+              round="xsmall"
+              margin={{ horizontal: "small" }}
+              pad="xsmall"
+              height="100px"
+              width="176px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+            >
+              <Search size="30px"/>
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Find future seminars </Text>
+            </Box>
+          </Link>
+          <Link
+            to={{ pathname: "/past" }}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              background="#F2F2F2"
+              round="xsmall"
+              margin={{ horizontal: "small" }}
+              pad="xsmall"
+              height="100px"
+              width="176px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator={true}
+            >
+              <Channel size="30px" />
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch past seminars </Text>
+            </Box>
+          </Link>
+          <Link
+            to={{ pathname: "/browse" }}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              background="#F2F2F2"
+              round="xsmall"
+              margin={{ horizontal: "small" }}
+              pad="xsmall"
+              height="100px"
+              width="176px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+            >
+              <ScheduleNew size="30px" />
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Create an Agora </Text>
+            </Box>
+          </Link>
+          <Link
+            to={{ pathname: "/agoras" }}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              background="#F2F2F2"
+              round="xsmall"
+              margin={{ horizontal: "small" }}
+              pad="xsmall"
+              height="100px"
+              width="176px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+            >
+              <Multiple size="30px" />
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover all Agoras </Text>
+            </Box>
+          </Link>
+        </Box>
+
+        <Box 
+          direction="row" 
+          gap="200px"
+          margin={{top: "150px", left:"-290px"}}
+        >
+          <Box direction="column" justify="start" style={{minWidth: "50%"}}>
+            <Text size="21px"> What do we believe in? </Text>
+            <Text size="14px" margin={{top: "10px"}}> Values </Text>
+          </Box>
+          <Box direction="column" justify="start" style={{minWidth: "50%"}}>
+            <Text size="21px"> What is an agora? </Text>
+            <Text size="14px" margin={{top: "10px"}}> An agora is like a youtube channel </Text>
+          </Box>
+        </Box>
+
+
+        { /*
 
         <Box direction="row" gap="50px">
 
@@ -184,7 +313,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Box>
         </Box>
 
-        <Box width="870px">
+        */}
+
+        <Box width="920px" align="center">
           <FooterComponent />
         </Box>
 
