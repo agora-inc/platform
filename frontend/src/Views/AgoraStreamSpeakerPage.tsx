@@ -50,7 +50,7 @@ function useQuery(){
 
 
 const AgoraStream:FunctionComponent<Props> = (props) => {
-  const [agoraClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
+  const [agoraClient] = useState(AgoraRTC.createClient({ mode: "rtc", codec: "vp8" }))
   const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
   const [messageChannel, setMessageChannel] = useState(null as any)
   const [localUser, setLocalUser] = useState({
@@ -148,6 +148,45 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       console.log(e)
     }
   }
+
+  // async function stop_sharing_video(){
+  //   //PLACEHOLDER
+  // }
+
+  // async function stop_sharing_screen(){
+  //   //PLACEHOLDER
+  // }
+
+  // async function share_screen_and_audio(){
+  //   // Check if the browser supports screen sharing without an extension.
+  //   // Number.tem = ua.match(/(Chrome(?=\/))\/?(\d+)/i);
+  //   // if(parseInt(tem[2]) >= 72  && navigator.mediaDevices.getUserMedia ) {
+  //   // // Create the stream for screen sharing.
+  //   //     screenStream = AgoraRTC.createStream({
+  //   //         streamID: uid,
+  //   //         audio: false,
+  //   //         video: false,
+  //   //         screen: true,
+  //   //     });
+  //   // }
+
+  //   try{
+  //     var screenStream = AgoraRTC.createScreenVideoTrack({}, "enable");
+  //     await agoraClient.publish([screenStream]);
+
+  //   }catch(e) {
+  //     console.log(e)
+  //   }
+
+
+
+
+  // }
+
+  // async function stop_share_screen_and_audio(){
+  //   //PLACEHOLDER
+  // }
+
   async function on_message(msg:any, senderId:string){
     setMessages((m)=>[...m, {senderId, text: msg.text}])
   }
@@ -243,6 +282,21 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
           </Box>
         </Grid>
+        <Button
+          label="Share screen"
+          onClick={()=>{}}
+          style={{
+            width: 90,
+            height: 35,
+            fontSize: 15,
+            fontWeight: "bold",
+            padding: 0,
+            // margin: 6,
+            backgroundColor: "#F2F2F2",
+            border: "none",
+            borderRadius: 7,
+          }}
+        />
         <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}
