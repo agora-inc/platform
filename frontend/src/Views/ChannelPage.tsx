@@ -20,10 +20,12 @@ import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
+import { Topic } from "../Services/TopicService";
 
 interface Props {
   location: { pathname: string };
   streamId: number;
+  channel?: Channel;
 }
 
 // NOTE: "following" feature globally disabled
@@ -50,6 +52,7 @@ interface State {
     email: string,
     personalHomepage: string
   }
+  topics: Topic[];
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -77,7 +80,8 @@ export default class ChannelPage extends Component<Props, State> {
         institution: "",
         email: "",
         personalHomepage: ""
-      }
+      },
+      topics: this.props.channel ? this.props.channel.topics : [],
     };
   }
 
@@ -377,7 +381,11 @@ export default class ChannelPage extends Component<Props, State> {
               <Text size="26px" color="black" weight="bold">
                 {this.state.channel ?.name}
               </Text>
-              <Box height="36px"> </Box>
+              <Box height="36px"> 
+                  <Text color="grey" weight="bold">
+                    Topic: {this.state.topics[0]}
+                  </Text>
+              </Box>
               {/*<Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers
                 </Text>*/}
