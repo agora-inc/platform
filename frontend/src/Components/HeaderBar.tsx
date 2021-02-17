@@ -136,8 +136,10 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           </Box>
         </Box>
       );
+    } else {
+      return null;
     }
-  }
+  } 
 }
 
 export default withRouter(HeaderBar);
