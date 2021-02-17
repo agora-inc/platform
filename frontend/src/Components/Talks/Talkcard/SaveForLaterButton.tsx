@@ -6,9 +6,12 @@ import {
   TextInput,
   Layer,
 } from "grommet";
-import { Overlay, OverlaySection } from "../Core/Overlay";
-import { Talk, TalkService } from "../../Services/TalkService";
-import { User } from "../../Services/UserService";
+import { Overlay, OverlaySection } from "../../Core/Overlay";
+import { Talk, TalkService } from "../../../Services/TalkService";
+import { User } from "../../../Services/UserService";
+import LoginModal from "../../Account/LoginModal";
+import SignUpButton from "../../Account/SignUpButton";
+import AddToCalendarButtons from "../AddToCalendarButtons";
 
 
 interface Props {
@@ -113,10 +116,10 @@ export default class TalkRegistrationButton extends Component<Props, State> {
     return (
       <Box style={{maxHeight: "30px"}}>
         <Button
-          label="Register"
+          label="Save for later"
           onClick={this.toggleModal}
           style={{
-            width: 90,
+            width: 140,
             height: 35,
             fontSize: 15,
             fontWeight: "bold",
@@ -139,39 +142,36 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           width={500}
           height={350}
           contentHeight="200px"
-          title={"Registration"}
+          title={"Save talk for later"}
         >
         <OverlaySection>
-          <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="Full name"
-              value={this.state.form.fullName}
-              onChange={(e: any) => this.handleInput(e, "fullName")}
-              />
-            </Box>
-          <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="Current institution"
-              value={this.state.form.institution}
-              onChange={(e: any) => this.handleInput(e, "institution")}
-              />
-          </Box>
-          <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="Email address"
-              value={this.state.form.email}
-              onChange={(e: any) => this.handleInput(e, "email")}
-              />
-          </Box>
-          <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="(Homepage)"
-              value={this.state.form.homepage}
-              onChange={(e: any) => this.handleInput(e, "homepage")}
-              />
-          </Box>
+            <ol>
+                <li>Add this event in your calendar: 
+                    {<AddToCalendarButtons
+                        talk={this.props.talk}
+                    />}</li>
+                <li>Be reminded by email</li>
+                <li>{      
+                    <LoginModal
+                        // open={this.props.showLogin}
+                        callback={() => {
+                        // this.setState(
+                        //     {
+                        //     isLoggedIn: UserService.isLoggedIn(),
+                        //     user: UserService.getCurrentUser(),
+                        //     },
+                        //     () => {
+                        //     this.fetchChannels();
+                        //     }
+                        // );
+                        }}
+                    />} or
+                    <SignUpButton callback={() => {}} />                  
+                    and save this talk for later!</li>
+            </ol>
           </OverlaySection>
         </Overlay>
+
         {this.state.feedbackModal && (
           <Layer
             onEsc={this.toggleFeedbackModal}
