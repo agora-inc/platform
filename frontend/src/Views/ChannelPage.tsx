@@ -488,7 +488,7 @@ export default class ChannelPage extends Component<Props, State> {
                 width="100%"
                 height="100%"
                 align="center"
-                margin={{ top: "100px" }}
+                margin={{ top: "10vh" }}
               >
                 {this.state.streams.length !== 0 && (
                   <ChannelLiveNowCard
