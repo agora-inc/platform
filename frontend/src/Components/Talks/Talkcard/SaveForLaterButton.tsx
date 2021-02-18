@@ -4,115 +4,41 @@ import {
   Button,
   Text,
   TextInput,
+  Grid,
   Layer,
 } from "grommet";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
-import { Talk, TalkService } from "../../../Services/TalkService";
+import { Talk } from "../../../Services/TalkService";
 import { User } from "../../../Services/UserService";
 import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
-import AddToCalendarButtons from "../AddToCalendarButtons";
-
+import CalendarButtons from "../CalendarButtons";
+import ShareButtons from "../../Core/ShareButtons";
 
 interface Props {
   talk: Talk,
-  user?: User
+  user: User | null;
 }
 
 interface State {
-    form: {
-      fullName : string;
-      institution: string;
-      email: string;
-      homepage: string
-    },
-    feedbackMsg: {
-      confirmationMsg: string;
-      errorMsg: string
-    }
     showForm: boolean;
-    feedbackModal: boolean;
 }
 
 export default class TalkRegistrationButton extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      form: {
-        fullName: "",
-        institution: "",
-        email: "",
-        homepage: ""
-      },
-      feedbackMsg: {
-        confirmationMsg: "Successful registration. You will automatically receive the information regarding that event by email as soon as an administrator treated your request.",
-        errorMsg: ""
-      },
       showForm: false,
-      feedbackModal: false,
     };
   }
 
-  handleInput = (e: any, key: string) => {
-    let value = e.target.value;
-    this.setState((prevState: any) => ({
-      form: { ...prevState.form, [key]: value },
-    }));
-  };
-
-  handleFormSubmit = (e: any) => {
-    e.preventDefault();
-    TalkService.registerForTalk(
-      this.props.talk.id,
-      this.props.user?.id,
-      this.state.form.fullName,
-      this.state.form.email,
-      this.state.form.homepage, 
-      this.state.form.institution,
-      (res: any) => {
-        // display error received from method
-        if (res !== "ok"){
-          this.setState((prevState: any) => ({
-          feedbackMsg: {...prevState.feedbackMsg, errorMsg: res}
-          }));
-        };
-      }
-    );
-    this.toggleFeedbackModal();
-  };
   
   toggleModal = () => {
     this.setState({ showForm: !this.state.showForm });
   };
 
-  toggleFeedbackModal = () => {
-    this.setState({ feedbackModal: !this.state.feedbackModal });
-    this.setState({ showForm: false });
-  };
-
-  isComplete = () => {
-    return (
-      this.state.form.fullName !== "" &&
-      this.state.form.email !== "" &&
-      this.state.form.institution !== ""
-    );
-  };
-
-  isMissing = () => {
-    let res: string[] = []
-    if (this.state.form.fullName !== "") {
-      res.push("Name")
-    }
-    if (this.state.form.email !== "") {
-      res.push("Email address")
-    }
-    if (this.state.form.institution !== "") {
-      res.push("Institution")
-    }
-    return res;
-  }
-
   render() {
+    // TO ADD: logic if user is already registered and event is already added
     return (
       <Box style={{maxHeight: "30px"}}>
         <Button
@@ -135,24 +61,25 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           onEsc={this.toggleModal}
           onCancelClick={this.toggleModal}
           onClickOutside={this.toggleModal}
-          onSubmitClick={this.handleFormSubmit}
-          submitButtonText="Register"
-          canProceed={this.isComplete()}
-          isMissing={this.isMissing()}
+          onSubmitClick={false}
+          disableSubmitButton={true}
+          submitButtonText=""
+          canProceed={false}
+          isMissing={[]}
           width={500}
-          height={350}
+          height={380}
           contentHeight="200px"
-          title={"Save talk for later"}
+          title={"Keep track of this event"}
         >
         <OverlaySection>
-            <ol>
-                <li>Add this event in your calendar: 
-                    {<AddToCalendarButtons
+            <Box direction="column" align="center">
+                <Box height="90px" direction="row">1. Add to calendar!
+                <CalendarButtons
                         talk={this.props.talk}
-                    />}</li>
-                <li>Be reminded by email</li>
-                <li>{      
-                    <LoginModal
+                    />
+                    </Box>
+                <Box direction="row" height="90px">2.                  
+                  <LoginModal
                         // open={this.props.showLogin}
                         callback={() => {
                         // this.setState(
@@ -165,48 +92,14 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                         //     }
                         // );
                         }}
-                    />} or
-                    <SignUpButton callback={() => {}} />                  
-                    and save this talk for later!</li>
-            </ol>
+                    />  or  <SignUpButton callback={() => {}} />                    
+                        to bookmark this event!
+                </Box>            
+                <Box height="90px">3. Share this talk with your friends or colleagues! <ShareButtons talk={this.props.talk}/>
+                  </Box>
+            </Box>
           </OverlaySection>
         </Overlay>
-
-        {this.state.feedbackModal && (
-          <Layer
-            onEsc={this.toggleFeedbackModal}
-            onClickOutside={this.toggleFeedbackModal}
-            style={{
-              width: 350,
-              height: 200,
-              borderRadius: 15,
-              border: "3.5px solid black",
-              padding: 10,
-            }}
-          >
-            <Box height="200px"
-            >
-              {(this.state.feedbackMsg.errorMsg == "") && (
-              <Text margin="20px">
-                <p><b>Thank you for registering!</b></p> 
-                <p>You will receive a conference URL by email after review by the organisers.</p>
-              </Text>
-              )}
-              {(this.state.feedbackMsg.errorMsg !== "") && (
-                <>
-                  <Text margin={{left: "15px", right: "15px"}}>
-                    Something went wrong. Please signal issue using the "Feedback/bug" button.
-                  </Text>
-                  <Text margin={{left: "15px", right: "15px", top: "5px"}} color="red">
-                    Error: {this.state.feedbackMsg.errorMsg}
-                    </Text>
-                </>
-              )}
-
-            </Box>
-            <Button label="Ok" onClick={this.toggleFeedbackModal} alignSelf="center"/>
-          </Layer>
-        )}
       </Box>
     );
   }

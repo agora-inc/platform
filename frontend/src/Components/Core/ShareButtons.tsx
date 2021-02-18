@@ -108,6 +108,7 @@ interface Props {
         <Box 
           direction="row"
           style = {{ zIndex: 0 }}
+          width="300px"
         >
           <InlineShareButtons
                   config={{

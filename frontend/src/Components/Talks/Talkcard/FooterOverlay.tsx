@@ -8,7 +8,6 @@ import { Tag } from "../../../Services/TagService";
 import AsyncButton from "../../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
-import AddToCalendarButtons from "../AddToCalendarButtons";
 import Countdown from "../Countdown";
 import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
@@ -293,9 +292,11 @@ render() {
           <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
               <SaveForLaterButton
                 talk={this.props.talk}
+                user={this.props.user}
               />
               <TalkRegistrationButton
                 talk={this.props.talk}
+                user={this.props.user}
               />
             </Box>
 

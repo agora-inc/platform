@@ -59,13 +59,13 @@ export default class AddToCalendarButtons extends Component<Props> {
             onClick={() => {}}
             hoverIndicator={true}
           >
-            <Text size="14px" weight="bold" color="black">
+            {/* <Text size="14px" weight="bold" color="black">
               Add to
-            </Text>
+            </Text> */}
             <Google size="14px" color="plain" />
-            <Text size="14px" weight="bold" color="black">
+            {/* <Text size="14px" weight="bold" color="black">
               Calendar
-            </Text>
+            </Text> */}
           </Box>
         </a>
         <a
@@ -85,9 +85,9 @@ export default class AddToCalendarButtons extends Component<Props> {
             onClick={() => {}}
             hoverIndicator={true}
           >
-            <Text size="14px" weight="bold" color="black">
+            {/* <Text size="14px" weight="bold" color="black">
               Download .ics file
-            </Text>
+            </Text> */}
           </Box>
         </a>
       </Box>

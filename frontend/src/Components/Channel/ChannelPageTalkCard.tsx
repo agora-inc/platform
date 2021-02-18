@@ -7,7 +7,6 @@ import { Tag } from "../../Services/TagService";
 import { Link } from "react-router-dom";
 import { Talk, TalkService } from "../../Services/TalkService";
 import EditTalkModal from "../Talks/EditTalkModal";
-import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
 import { default as TagComponent } from "../Core/Tag";
 import { ChannelService } from "../../Services/ChannelService";
 import Countdown from "../Talks/Countdown";
