@@ -69,16 +69,18 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           width={500}
           height={380}
           contentHeight="200px"
-          title={"Keep track of this event"}
+          title={"How to keep track of this event?"}
         >
         <OverlaySection>
             <Box direction="column" align="center">
-                <Box height="90px" direction="row">1. Add to calendar!
+                <Box height="60px" direction="row" gap="xsmall">
+                  1. Add this to your calendar!
                 <CalendarButtons
                         talk={this.props.talk}
                     />
                     </Box>
-                <Box direction="row" height="90px">2.                  
+                <Box direction="row" height="60px" gap="xsmall">
+                  2.                  
                   <LoginModal
                         // open={this.props.showLogin}
                         callback={() => {
@@ -92,10 +94,10 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                         //     }
                         // );
                         }}
-                    />  or  <SignUpButton callback={() => {}} />                    
-                        to bookmark this event!
+                    />  /  <SignUpButton callback={() => {}} />                    
+                        to add this in your "Saved talks"!
                 </Box>            
-                <Box height="90px">3. Share this talk with your friends or colleagues! <ShareButtons talk={this.props.talk}/>
+                <Box height="60px" gap="xsmall">3. Share this event with your friends and colleagues! <ShareButtons talk={this.props.talk}/>
                   </Box>
             </Box>
           </OverlaySection>

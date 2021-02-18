@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import {
   Box,
   Button,
-  Text
+  Text,
+  Grid
 } from "grommet";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { Talk, TalkService } from "../../../Services/TalkService";
@@ -44,6 +45,11 @@ export default class TalkRegistrationButton extends Component<Props, State> {
     this.setState({ showForm: !this.state.showForm });
   };
 
+  computeEventUrl = () => {
+    var url = `https://agora.stream/event/${this.props.talk.id}`;
+    return url
+  }
+
   render() {
     return (
       <Box style={{maxHeight: "30px"}}>
@@ -73,64 +79,192 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           disableSubmitButton={true}
           isMissing={[]}
           width={500}
-          height={350}
-          contentHeight="200px"
-          title={"Registration"}
+          height={450}
+          contentHeight="300px"
+          title={"How to attend?"}
         >
         <OverlaySection>
         {!(this.props.talk.visibility == "Everybody") || (
             <>
-                <Text> 
-                    This event is public
-                </Text>
-                <Box direction="column" align="center">
-                    <Box height="90px" direction="row">1. Add it to calendar!
-                        <CalendarButtons
-                                talk={this.props.talk}
-                            />
+                <Grid
+                    rows={['60px', '30px', '30px', '30px', '30px']}
+                    columns={['430px']}
+                    gap="small"
+                    areas={[
+                        { name: 'info', start: [0, 0], end: [0, 0] },
+                        { name: 'you_can_also', start: [0, 1], end: [0, 1] },
+                        { name: 'calendar', start: [0, 2], end: [0, 2] },
+                        { name: 'share', start: [0, 3], end: [0, 3] },
+                        { name: 'register_suggestion', start: [0, 4], end: [0, 4] },
+
+                    ]}
+                    >
+                    <Box gridArea="info" direction="column" align="center">
+                        <Text weight="bold"> 
+                            This event is public!
+                        </Text>
+                        Event URL: <a href={this.computeEventUrl()}>{this.computeEventUrl()}</a>
                     </Box>
-                    <Box direction="row" height="90px">2.                  
-                        <LoginModal
-                                // open={this.props.showLogin}
-                                callback={() => {
-                                // this.setState(
-                                //     {
-                                //     isLoggedIn: UserService.isLoggedIn(),
-                                //     user: UserService.getCurrentUser(),
-                                //     },
-                                //     () => {
-                                //     this.fetchChannels();
-                                //     }
-                                // );
-                                }}
-                            />  or  <SignUpButton callback={() => {}} />                    
-                                to save it in your bookmark!
-                    </Box>            
-                    <Box height="90px">
-                        3. Share this talk with your friends or colleagues! <ShareButtons talk={this.props.talk}/>
+                    <hr
+                        style={{
+                            color: "grey",
+                            backgroundColor: "grey",
+                            height: 5
+                        }}
+                    />
+                    <Box gridArea="you_can_also" pad="xsmall" align="center">
+                        <Text
+                            weight="bold"
+                            // size="14px"
+                            // color="black"
+                            style={{
+                            // height: "30px",
+                            // overflow: "auto",
+                            fontStyle: "italic",
+                            }}
+                            // margin={{ bottom: "10px" }}
+                        >
+                            Next steps?
+                            </Text>
                     </Box>
-                </Box>
+                    <Box gridArea="calendar" pad="xsmall" direction="row">
+                            1. Add this event to your calendar!
+                                <CalendarButtons
+                                        talk={this.props.talk}
+                                    />
+                        </Box>
+                    <Box gridArea="share" direction="column" pad="xsmall">
+                        2. Share this event with your friends and colleagues! <ShareButtons talk={this.props.talk}/>
+                    </Box>
+                    <Box gridArea="register_suggestion" direction="row" pad="xsmall">
+                        3. <LoginModal
+                                    // open={this.props.showLogin}
+                                    callback={() => {
+                                    // this.setState(
+                                    //     {
+                                    //     isLoggedIn: UserService.isLoggedIn(),
+                                    //     user: UserService.getCurrentUser(),
+                                    //     },
+                                    //     () => {
+                                    //     this.fetchChannels();
+                                    //     }
+                                    // );
+                                    }}
+                                /> / <SignUpButton callback={() => {}} />                    
+                                to save it in your "Saved talks!
+                        
+                    </Box>
+                </Grid>
             </>
         )}
 
         {(this.props.talk.visibility == "Everybody") || (
+            // <>
+            //     <Text> 
+            //         This event has a restricted audience.
+            //     </Text>
+            //     <Text> 
+                //     To receive the seminar URL, you need to
+                // </Text>
+                // <TalkRegistrationFormButton
+                //     talk={this.props.talk}
+                //     user={this.props.user}
+                // /> 
+            //     <Box direction="column" align="center">
+            //         <Box height="90px" direction="row">You can enjoy a free access to all the seminars of by 
+            //             becoming a member of !
+            //         </Box>
+            //     </Box>
+            // </>
             <>
-                <Text> 
-                    This event has a restricted audience.
-                </Text>
-                <Text> 
-                    To receive the seminar URL, you need to
-                </Text>
-                <TalkRegistrationFormButton
-                    talk={this.props.talk}
-                    user={this.props.user}
-                /> 
-                <Box direction="column" align="center">
-                    <Box height="90px" direction="row">You can enjoy a free access to all the seminars of by 
-                        becoming a member of !
+                <Grid
+                    rows={['80px', '30px', '30px', '50px', '50px']}
+                    columns={['430px']}
+                    gap="small"
+                    areas={[
+                        { name: 'info', start: [0, 0], end: [0, 0] },
+                        { name: 'you_can_also', start: [0, 1], end: [0, 1] },
+                        { name: 'calendar', start: [0, 2], end: [0, 2] },
+                        { name: 'share', start: [0, 3], end: [0, 3] },
+                        { name: 'register_suggestion', start: [0, 4], end: [0, 4] },
+
+                    ]}
+                    >
+                    <Box gridArea="info" direction="column" align="center">
+                        <Text weight="bold"> 
+                        This event has a restricted audience.
+                        </Text>
+                        To receive the seminar URL, you need to
+                        <Box pad="xsmall">
+                            <TalkRegistrationFormButton
+                                talk={this.props.talk}
+                                user={this.props.user}
+                            />
+                        </Box>
                     </Box>
-                </Box>
+                    <hr
+                        style={{
+                            color: "grey",
+                            backgroundColor: "grey",
+                            height: 5
+                        }}
+                    />
+                    <Box gridArea="you_can_also" pad="xsmall" align="center">
+                        <Text
+                            weight="bold"
+                            // size="14px"
+                            // color="black"
+                            style={{
+                            // height: "30px",
+                            // overflow: "auto",
+                            fontStyle: "italic",
+                            }}
+                            // margin={{ bottom: "10px" }}
+                        >
+                            Next steps?
+                        </Text>
+                    </Box>
+                    <Box gridArea="calendar" pad="xsmall" direction="row">
+                            1. Add this event to your calendar!
+                            <Box pad="xsmall">
+                                <CalendarButtons
+                                        talk={this.props.talk}
+                                    />
+                            </Box>
+                    </Box>
+                    <Box gridArea="share" direction="column" pad="xsmall">
+                        2. Share this event with your friends and colleagues! 
+                        <Box align="center" pad="xsmall">
+                            <ShareButtons talk={this.props.talk}/>
+                        </Box>
+                    </Box>
+                    <Box gridArea="register_suggestion" direction="row" pad="xsmall">
+                        3. 
+                        <Box pad="xsmall" direction="row">
+                            <LoginModal
+                                    // open={this.props.showLogin}
+                                    callback={() => {
+                                    // this.setState(
+                                    //     {
+                                    //     isLoggedIn: UserService.isLoggedIn(),
+                                    //     user: UserService.getCurrentUser(),
+                                    //     },
+                                    //     () => {
+                                    //     this.fetchChannels();
+                                    //     }
+                                    // );
+                                    }}
+                                /> / <SignUpButton callback={() => {}} />                    
+                        </Box>
+                                to save it in your "Saved talks"!
+                        
+                    </Box>
+                </Grid>        
             </>
+        
+        
+        
+        
         )}
           </OverlaySection>
         </Overlay>
