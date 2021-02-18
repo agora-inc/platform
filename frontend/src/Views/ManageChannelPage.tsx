@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image } from "grommet";
+import { Box, Text, TextArea, Image, Button } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -67,6 +67,7 @@ interface State {
   topics: Topic[];
   isPrevTopics: boolean[];
   topicSaved: boolean;
+  saveButtonFade: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -101,7 +102,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       showMemberEmailInfo: false,
       topics: this.props.channel ? this.props.channel.topics : [],
       isPrevTopics: this.props.channel ? this.topicExists(this.props.channel.topics) : [false, false, false],
-      topicSaved: false
+      topicSaved: false,
+      saveButtonFade: false,
     };
   }
 
@@ -445,6 +447,26 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  SavedButtonClicked = () => {
+    this.setState({ topicSaved: true });
+    this.setState({ saveButtonFade: true});
+    ChannelService.editChannelTopic(
+      this.state.channel!.id,
+      this.state.topics,
+      () => {console.log("channel topic saved");}
+    );
+    return (
+      <Box></Box>
+    );
+  };
+
+  endOfAnimation = () => {
+    this.setState({ saveButtonFade: false});
+    return (
+      <Box></Box>
+    );
+  }
+
   topicExists = (topics: Topic[]) => {
     let res = [];
     for (let topic in topics) {
@@ -478,15 +500,6 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({
       topics: tempTopics
     });
-  }
-
-  updateTopic = () => {
-    ChannelService.editChannelTopic(
-      this.state.channel!.id,
-      this.state.topics,
-      () => {console.log("channel topic saved");}
-    );
-    return true;
   }
 
   banner = () => {
@@ -576,13 +589,46 @@ export default class ManageChannelPage extends Component<Props, State> {
                   size="small"
                 />
                 </Box>
-                <ConfirmationButton
+                {/*<ConfirmationButton
+                  overlayWidth={400}
+                  overlayheight={200}
                   actionTitle="Topic saved"
                   confirmationMessage="You have saved the topic!"
                   buttonMessage="Save Topic"
                   action={this.updateTopic()}
                 >
-                </ConfirmationButton>
+                </ConfirmationButton>*/}
+                <Box
+                  className={"save_Button"}
+                  focusIndicator={false}
+                  width={"10vw"}
+                  background="white"
+                  round="xsmall"
+                  height={"30px"}
+                  pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
+                  onClick={this.SavedButtonClicked}
+                  onAnimationEnd={this.endOfAnimation}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                    minWidth: "25px"
+                  }}
+                  hoverIndicator={true}
+                  justify="center"
+                >
+                  <Text 
+                    size="14px" 
+                    color="grey"
+                    alignSelf="center"
+                  >
+
+                {this.state.topicSaved == false && (
+                    "Save Topic"
+                )}
+                {this.state.topicSaved == true && (
+                    "Topic Saved"
+                )}
+                  </Text>
+                </Box>
               </Box>
             </Box>
           </Box>

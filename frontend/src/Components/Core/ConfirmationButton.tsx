@@ -10,7 +10,9 @@ import { Overlay, OverlaySection } from "../Core/Overlay";
 interface Props {
   height?: string,
   width?: string,
-  actionTitle:string,
+  overlayheight: number,
+  overlayWidth: number,
+  actionTitle: string,
   confirmationMessage:string,
   buttonMessage: string,
   action: boolean,
@@ -80,8 +82,8 @@ export default class ConfirmationButton extends Component<Props, State> {
           submitButtonText="close"
           canProceed={true}
           isMissing={[]}
-          width={500}
-          height={250}
+          width={this.props.overlayWidth}
+          height={this.props.overlayheight}
           contentHeight="100px"
           title={this.props.actionTitle}
         >
