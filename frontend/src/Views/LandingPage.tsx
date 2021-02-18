@@ -63,6 +63,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           
           <Box direction="row" justify="center" margin={{top: "50px"}}>
             <Logo style={{ height: "60px", width: "60px"}} />
+            {/* <img src="/home/cloud-user/plateform/agora/images/logo.jpg" /> */}
             <Heading
               level="1"
               margin={{ top: "13px" }}
@@ -128,7 +129,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Box>
           </Link>
           <Link
-            to={{ pathname: "/browse" }}
+            to={{ pathname: "/" }}
             style={{ textDecoration: "none" }}
           >
             <Box
