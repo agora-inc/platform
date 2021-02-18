@@ -6,6 +6,7 @@ import { User, UserService } from "../Services/UserService";
 import { Search, Channel, ScheduleNew, Multiple } from "grommet-icons";
 import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
+import "../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 
 interface State {
@@ -37,7 +38,6 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <Box 
         direction="column"
         align="center"
-        
       >
         <Box
           direction="row"
@@ -52,8 +52,16 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         
         { /* Column version */ }
 
+        <video 
+          autoPlay loop muted id="background-landing" 
+          style={{ width: "100%", top: "0px" }}
+        >
+          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4" /> 
+        </video>
+
         <Box direction="column" justify="center" margin={{right: "60px"}} >
-          <Box direction="row" justify="center" margin={{top: "70px"}}>
+          
+          <Box direction="row" justify="center" margin={{top: "50px"}}>
             <Logo style={{ height: "60px", width: "60px"}} />
             <Heading
               level="1"
@@ -64,11 +72,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Heading>
           </Box>
 
+
           <Box direction="column" justify="center" margin={{top: "-15px"}}> 
             <Text size="16px" weight="bold"> 
               Live stream seminars from the best academics in the world - for FREE!
             </Text>
           </Box>
+
         </Box>
 
         <Box 
@@ -159,19 +169,29 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Link>
         </Box>
 
+
+
         <Box 
           direction="row" 
-          gap="200px"
-          margin={{top: "150px", left:"-290px"}}
+          gap="150px"
+          margin={{top: "150px", left:"-50px"}}
         >
           <Box direction="column" justify="start" style={{minWidth: "50%"}}>
-            <Text size="21px"> What do we believe in? </Text>
-            <Text size="14px" margin={{top: "10px"}}> Values </Text>
+            <Text size="21px" margin={{bottom: "10px"}}> What is an agora? </Text>
+            <Text size="14px"> An agora is like a youtube channel </Text>
+            <Text size="14px" weight="bold"> It is the place where you post future seminars and past recordings </Text>
+            <Text size="14px"> Invite people from your research groups </Text>
+            <Text size="14px" weight="bold"> Follow some Agoras to never miss out on their awesome events!   </Text>
+
           </Box>
           <Box direction="column" justify="start" style={{minWidth: "50%"}}>
-            <Text size="21px"> What is an agora? </Text>
-            <Text size="14px" margin={{top: "10px"}}> An agora is like a youtube channel </Text>
+            <Text size="21px" margin={{bottom: "10px"}}> Our values </Text>
+            <Text size="14px" weight="bold"> Democratizing access to world-class research </Text>
+            <Text size="14px"> Find a social and interactive solution to online seminars </Text>
+            <Text size="14px" weight="bold"> Help researchers reach out and network with their peers </Text>
+            <Text size="14px"> Cut global travel of academics and fight climate change </Text>
           </Box>
+ 
         </Box>
 
 
@@ -315,7 +335,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         */}
 
-        <Box width="920px" align="center">
+        <Box width="1024px" align="center">
           <FooterComponent />
         </Box>
 
