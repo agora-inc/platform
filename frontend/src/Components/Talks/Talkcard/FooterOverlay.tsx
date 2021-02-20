@@ -4,7 +4,6 @@ import { Talk, TalkService } from "../../../Services/TalkService";
 import { ChannelService } from "../../../Services/ChannelService";
 import { User } from "../../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Tag } from "../../../Services/TagService";
 import AsyncButton from "../../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
@@ -290,10 +289,10 @@ render() {
           </Box>
 
           <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
-              <SaveForLaterButton
+              {/* <SaveForLaterButton
                 talk={this.props.talk}
                 user={this.props.user}
-              />
+              /> */}
               <TalkRegistrationButton
                 talk={this.props.talk}
                 user={this.props.user}

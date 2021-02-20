@@ -85,7 +85,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 </Text>
               </MediaQuery>
           </Box>
-          <MediaQuery minDeviceWidth={992}>
+          {/* <MediaQuery minDeviceWidth={992}>
             <Link
               to={{ pathname: "/info/getting-started" }}
               style={{ textDecoration: "none" }}
@@ -95,8 +95,8 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 background="white"
                 round="xsmall"
                 pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-                justify="center"
-                align="center"
+                justify="start"
+                align="start"
                 focusIndicator={false}
                 style={{
                   border: "1px solid #C2C2C2",
@@ -109,11 +109,11 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 </Text>
               </Box>
             </Link>
-          </MediaQuery>
+          </MediaQuery> */}
 
-          <MediaQuery minDeviceWidth={992}>
+          {/* <MediaQuery minDeviceWidth={992}>
             <SiteWideSearch />
-          </MediaQuery>
+          </MediaQuery> */}
           {/* <Box>
             <TextInput
               icon={<Search />}

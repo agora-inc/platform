@@ -13,6 +13,7 @@ import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
 import CalendarButtons from "../CalendarButtons";
 import ShareButtons from "../../Core/ShareButtons";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   talk: Talk,
@@ -54,10 +55,11 @@ export default class TalkRegistrationButton extends Component<Props, State> {
     return (
       <Box style={{maxHeight: "30px"}}>
         <Button
-          label="Attend"
+          data-tip data-for='apply_give_talk'
+          label="Register"
           onClick={this.toggleModal}
           style={{
-            width: 140,
+            width: 160,
             height: 35,
             fontSize: 15,
             fontWeight: "bold",
@@ -68,6 +70,9 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             borderRadius: 7,
           }}
         />
+        <ReactTooltip id="apply_give_talk" effect="solid">
+            Click to get access
+          </ReactTooltip>
         <Overlay
           visible={this.state.showForm}
           onEsc={this.toggleModal}
@@ -134,7 +139,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                                     />
                         </Box>
                     <Box gridArea="share" direction="column" pad="xsmall">
-                        2. Share this event with your friends and colleagues! <ShareButtons talk={this.props.talk}/>
+                        2. Apply to become a member to enjoy a frictionless access to all future seminars and talk recordings! <ShareButtons talk={this.props.talk}/>
                     </Box>
                     <Box gridArea="register_suggestion" direction="row" pad="xsmall">
                         3. <LoginModal
