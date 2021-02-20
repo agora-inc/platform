@@ -4,11 +4,9 @@ import { Talk, TalkService } from "../../../Services/TalkService";
 import { ChannelService } from "../../../Services/ChannelService";
 import { User } from "../../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Tag } from "../../../Services/TagService";
 import AsyncButton from "../../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
-import AddToCalendarButtons from "../AddToCalendarButtons";
 import Countdown from "../Countdown";
 import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
@@ -17,7 +15,8 @@ import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
 import ReactTooltip from "react-tooltip";
 import EditTalkModal from "../EditTalkModal";
 import ShareButtons from "../../Core/ShareButtons";
-import TalkRegistrationButton from "../TalkRegistrationButton";
+import TalkRegistrationButton from "./TalkRegistrationButton";
+import SaveForLaterButton  from "./SaveForLaterButton";
 import CalendarButtons from "../CalendarButtons";
 
 interface Props {
@@ -288,7 +287,32 @@ render() {
 
             </Box>
           </Box>
-          {this.checkIfUserCanAccessLink() &&
+
+          <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
+              {/* <SaveForLaterButton
+                talk={this.props.talk}
+                user={this.props.user}
+              /> */}
+              <TalkRegistrationButton
+                talk={this.props.talk}
+                user={this.props.user}
+              />
+            </Box>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          {/* {this.checkIfUserCanAccessLink() &&
             this.props.user !== null &&
             this.state.registered && (
               <Box margin={{ top: "10px", bottom: "5px", left: "20px", right: "20px" }} background="#d5d5d5">
@@ -321,20 +345,7 @@ render() {
                 <Box>
                   <Countdown talk={this.props.talk} />
                 </Box>
-                {/* <Box
-                  onClick={this.onClick}
-                  background="#7E1115"
-                  round="xsmall"
-                  // pad="xsmall"
-                  height="30px"
-                  justify="center"
-                  align="center"
-                  focusIndicator={false}
-                  hoverIndicator="#5A0C0F"
-                  margin={{top: "10px"}}
-                >
-                  <Text size="18px">Register</Text>
-                </Box> */}
+
               </Box>
           )}
           {this.checkIfUserCanAccessLink() &&
@@ -351,18 +362,12 @@ render() {
           && (
             
             <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
+              <SaveForLaterButton
+                talk={this.props.talk}
+              />
               <TalkRegistrationButton
                 talk={this.props.talk}
               />
-              <Text size="16px"> or </Text>
-              <LoginModal callback={() => {}} />
-              {/* <RequestMembershipButton
-                channelId={this.props.talk.channel_id}
-                channelName={this.props.talk.channel_name}
-                user={this.props.user}
-              /> */}
-              {/* <SignUpButton callback={() => {}} /> */}
-              <Text size="16px"> to attend </Text>
             </Box>
           )}
           {!this.checkIfUserCanAccessLink() && this.props.user !== null
@@ -397,6 +402,7 @@ render() {
             </Link>
           </Box>
         )}
+        */}
       </Box>
       
     )

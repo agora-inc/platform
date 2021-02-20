@@ -395,7 +395,10 @@ export default class ChannelPage extends Component<Props, State> {
             </Box>
           </Box>
           <Box direction="row" gap="xsmall" align="center">
-
+          <ApplyToTalkForm
+                      channelId={this.state.channel!.id}
+                      channelName={this.state.channel!.name}
+                    />
             {!(this.state.role == "member" || this.state.role == "owner") && (
             <RequestMembershipButton
               channelId={this.state.channel!.id}
@@ -404,7 +407,7 @@ export default class ChannelPage extends Component<Props, State> {
             />
             )}
 
-            {this.state.user && (
+            {/*this.state.user && (
               <Box
                 className="follow-button"
                 pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
@@ -429,7 +432,7 @@ export default class ChannelPage extends Component<Props, State> {
                   {this.state.following ? "Following" : "Follow"}
                 </Text>
               </Box>
-            )}
+              )*/}
             {this.state.bannerExtended ? (
               <FormUp
                 onClick={this.toggleBanner}
@@ -488,7 +491,7 @@ export default class ChannelPage extends Component<Props, State> {
                 width="100%"
                 height="100%"
                 align="center"
-                margin={{ top: "100px" }}
+                margin={{ top: "10vh" }}
               >
                 {this.state.streams.length !== 0 && (
                   <ChannelLiveNowCard
@@ -498,10 +501,6 @@ export default class ChannelPage extends Component<Props, State> {
                 )}
                 <Box width="75%" align="start" gap="20px">
                   <Box direction="row" gap="45vw">
-                    <ApplyToTalkForm
-                      channelId={this.state.channel!.id}
-                      channelName={this.state.channel!.name}
-                    />
                     {this.state.role == "member" && (
                       <Box
                         width="20vw"

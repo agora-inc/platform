@@ -4,20 +4,15 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Tag } from "../../Services/TagService";
 import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
-import AddToCalendarButtons from "./AddToCalendarButtons";
 import Countdown from "./Countdown";
-import LoginModal from "../Account/LoginModal";
-import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
 import { textToLatex } from "../Core/LatexRendering";
 
 import FooterOverlay from "./Talkcard/FooterOverlay";
-import CalendarButtons from "./CalendarButtons";
 
 interface Props {
   talk: Talk;
