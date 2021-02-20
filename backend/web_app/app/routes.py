@@ -562,7 +562,7 @@ def editChannelTopic():
 
     params = request.json
 
-    app.logger.debug(f"channel with id {params['channelId']} edited")
+    #app.logger.debug(f"channel with id {params['channelId']} edited")
     return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
 
 

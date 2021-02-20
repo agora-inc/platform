@@ -380,7 +380,7 @@ class ChannelRepository:
     def editChannelTopic(self, channelId, topic_1_id, topic_2_id, topic_3_id):
         topicsQuery = f'''
             UPDATE Channels
-                topic_1_id="{topic_1_id}", 
+                set topic_1_id="{topic_1_id}", 
                 topic_2_id="{topic_2_id}", 
                 topic_3_id="{topic_3_id}"
             WHERE id = {channelId};

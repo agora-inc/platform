@@ -29,7 +29,6 @@ import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic } from "../Services/TopicService";
-import ConfirmationButton from "../Components/Core/ConfirmationButton";
 
 interface Props {
   location: any;
