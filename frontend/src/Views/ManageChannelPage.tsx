@@ -470,53 +470,70 @@ export default class ManageChannelPage extends Component<Props, State> {
           pad={{ top: "16px", right: "16px", left: "16px" }}
         >
           <Box direction="row" align="center" gap="small">
-            <Box>
-              <Box
-                width="100px"
-                height="100px"
-                round="50px"
-                background="white"
-                justify="center"
-                align="center"
-                style={{ minWidth: 100, minHeight: 100 }}
-                overflow="hidden"
-              >
-                {
-                  <img
-                    src={
-                      ChannelService.getAvatar(this.state.channel!.id, 1)
-                    }
-                    height={100}
-                    width={100}
-                  />
-                }
-              </Box>
-            </Box>
-            <Box>
-              <Text size="24px" color="black" weight="bold" margin={{bottom: "6px"}}>
-                {this.state.channel?.name}
-              </Text>
-              {(typeof(this.state.viewerCount) == "number") &&
-                <Text size="16px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
-                  {this.state.viewerCount} visits
-                </Text>
+            <Box
+              width="100px"
+              height="100px"
+              round="50px"
+              background="white"
+              justify="center"
+              align="center"
+              style={{ minWidth: 100, minHeight: 100 }}
+              overflow="hidden"
+            >
+              {
+                <img
+                  src={
+                    ChannelService.getAvatar(this.state.channel!.id, 1)
+                  }
+                  height={100}
+                  width={100}
+                />
               }
-              <Box direction="row" align="center">
-                <ImageUploader
-                  text="Upload avatar"
-                  onUpload={this.onFileChosen}
-                />
-                <StatusInfo size="small" data-tip data-for='avatar_info'/>
-                      <ReactTooltip id='avatar_info' place="right" effect="solid">
-                       <p>Recommended avatar dim: 400x400px</p>
-                      </ReactTooltip>
-                <DeleteAgoraButton
-                  name={this.state.channel!.name}
-                  id={this.state.channel!.id}
-                />
+            </Box>
+
+
+            <Box>
+              <Text size="26px" color="black" weight="bold">
+                {this.state.channel ?.name}
+              </Text>
+              <Text size="14px" style={{marginBottom: "6px"}}>Share this Agora:</Text>
+              <Box height="36px" style={{width: "300px"}}> 
+                  <ShareButtons
+                    channel={this.state.channel}
+                  />
               </Box>
+              {/*<Text size="24px" color="#999999" weight="bold">
+                {this.state.followerCount} followers
+                </Text>*/}
             </Box>
           </Box>
+
+
+          
+          <Box direction="column" gap="xsmall" align="end" width="auto">
+                {(typeof(this.state.viewerCount) == "number") &&
+                  <Text size="16px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
+                    {this.state.viewerCount} visits
+                  </Text>
+                }
+                <Box direction="row" align="end" data-tip data-for="avatar_info">
+                  <ImageUploader
+                    text="Upload avatar"
+                    onUpload={this.onFileChosen}
+                    />
+                      <ReactTooltip id='avatar_info' place="top" effect="solid">
+                        <p>Recommended avatar dim: 400x400px</p>
+                      </ReactTooltip>
+                  <DeleteAgoraButton
+                    name={this.state.channel!.name}
+                    id={this.state.channel!.id}
+                    />
+          </Box>
+        </Box>
+
+
+
+
           {this.state.bannerExtended ? (
             <FormUp
               onClick={this.toggleBanner}
@@ -533,15 +550,6 @@ export default class ManageChannelPage extends Component<Props, State> {
             />
           )}
         </Box>
-        <Box 
-          margin={{ left: "16px" }}
-          height="36px"
-          style={{width: "300px"}}
-          >
-            <ShareButtons
-              channel={this.state.channel}
-            />
-          </Box>
         {this.state.bannerExtended && (
           <>
             <EnrichedTextEditor
