@@ -49,7 +49,8 @@ export default class CreateChannelCard extends Component<Props, State> {
         this.setState({ redirect: true }, () => {
           this.props.onComplete();
         });
-      }
+      },
+      this.state.topics
     );
   };
 

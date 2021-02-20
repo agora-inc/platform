@@ -218,10 +218,11 @@ def createChannel():
     name = params["name"]
     description = params["description"]
     userId = params["userId"]
+    topic1Id = params["topic1Id"]
 
-    app.logger.debug(f"New agora '{name}' created by user with id {userId}")
+    #app.logger.debug(f"New agora '{name}' created by user with id {userId}")
 
-    return jsonify(channels.createChannel(name, description, userId))
+    return jsonify(channels.createChannel(name, description, userId, topic1Id))
 
 @app.route('/channels/delete', methods=["POST"])
 def deleteChannel():

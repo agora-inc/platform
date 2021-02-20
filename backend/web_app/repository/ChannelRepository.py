@@ -46,7 +46,7 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
-    def createChannel(self, channelName, channelDescription, userId):
+    def createChannel(self, channelName, channelDescription, userId, topic_1_id):
         # colours = [
         #     "orange",
         #     "goldenrod",
@@ -60,7 +60,7 @@ class ChannelRepository:
         # ]
         colour = "#5454A0"
 
-        query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
+        query = f'INSERT INTO Channels(name, long_description, colour, topic_1_id) VALUES ("{channelName}", "{channelDescription}", "{colour}", "{topic_1_id}")'
         insertId = self.db.run_query(query)[0]
     
         query = f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {insertId}, "owner")'

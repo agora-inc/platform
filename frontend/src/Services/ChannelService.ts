@@ -19,7 +19,8 @@ const createChannel = (
   name: string,
   description: string,
   userId: number,
-  callback: any
+  callback: any,
+  topics: Topic[],
 ) => {
   // default description if none
   if (description == "") {
@@ -31,7 +32,11 @@ const createChannel = (
 
   post(
     `channels/create`,
-    { name: name, description: description, userId: userId },
+    { name: name,
+      description: description,
+      userId: userId,
+      topic1Id: topics.length > 0 ? topics[0].id : null,
+    },
     callback
   );
 };
