@@ -469,7 +469,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           justify="between"
           pad={{ top: "16px", right: "16px", left: "16px" }}
         >
-          <Box direction="row" align="center" gap="small">
+          <Box direction="row" align="center" gap="small" width="75vw">
             <Box
               width="100px"
               height="100px"
@@ -493,10 +493,16 @@ export default class ManageChannelPage extends Component<Props, State> {
 
 
             <Box>
-              <Text size="26px" color="black" weight="bold">
+              <Text 
+                size="26px"
+                color="black"
+                weight="bold"
+              >
                 {this.state.channel ?.name}
               </Text>
-              <Text size="14px" style={{marginBottom: "6px"}}>Share this Agora:</Text>
+              <Text size="14px" style={{marginBottom: "6px"}}>
+                Share this Agora:
+              </Text>
               <Box height="36px" style={{width: "300px"}}> 
                   <ShareButtons
                     channel={this.state.channel}
@@ -508,30 +514,36 @@ export default class ManageChannelPage extends Component<Props, State> {
             </Box>
           </Box>
 
-
           
-          <Box direction="column" gap="xsmall" align="end" width="auto">
-                {(typeof(this.state.viewerCount) == "number") &&
-                  <Text size="16px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
-                    {this.state.viewerCount} visits
-                  </Text>
-                }
-                <Box direction="row" align="end" data-tip data-for="avatar_info">
-                  <ImageUploader
-                    text="Upload avatar"
-                    onUpload={this.onFileChosen}
-                    />
-                      <ReactTooltip id='avatar_info' place="top" effect="solid">
-                        <p>Recommended avatar dim: 400x400px</p>
-                      </ReactTooltip>
-                  <DeleteAgoraButton
-                    name={this.state.channel!.name}
-                    id={this.state.channel!.id}
-                    />
+          <Box direction="column" gap="xsmall" align="end" width="22vw">
+            {(typeof(this.state.viewerCount) == "number") &&
+              <Text 
+                size="16px"
+                color="#999999"
+                weight="bold"
+                margin={{bottom: "6px"}}
+              >
+                {this.state.viewerCount} visits
+              </Text>
+            }
+            <Box 
+              direction="row"
+              align="end"
+              data-tip data-for="avatar_info"
+            >
+              <ImageUploader
+                text="Upload avatar"
+                onUpload={this.onFileChosen}
+                />
+                  <ReactTooltip id='avatar_info' place="top" effect="solid">
+                    <p>Recommended avatar dim: 400x400px</p>
+                  </ReactTooltip>
+              <DeleteAgoraButton
+                name={this.state.channel!.name}
+                id={this.state.channel!.id}
+                />
+            </Box>
           </Box>
-        </Box>
-
-
 
 
           {this.state.bannerExtended ? (
