@@ -370,6 +370,15 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
   get(`talks/isavailable?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+const getFilteredTalks = (
+  visibility: string,
+  topic1Id: number,
+  topic2Id: number,
+  audienceLevel: string, 
+  callback: any) => {
+  get(`/topic/filter/talks?visibilty=${visibility}&topic1Id=${topic1Id}&topic2Id=${topic2Id}&audienceLevel=${audienceLevel}`, callback);
+};
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -399,6 +408,7 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  getFilteredTalks,
   // talk registration management
   acceptTalkRegistration,
   refuseTalkRegistration,

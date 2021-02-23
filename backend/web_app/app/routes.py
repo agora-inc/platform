@@ -1329,6 +1329,20 @@ def getTopicsOnStream():
     # return jsonify(tags.getTagsOnStream(streamId))
     raise NotImplementedError
 
+@app.route('/topic/filter/talks', methods=["GET"])
+def getFilteredTalks():
+    visibility = int(request.args.get("visibility"))
+    topic1Id = int(request.args.get("topic1Id"))
+    topic2Id = int(request.args.get("topic2Id"))
+    audienceLevel = int(request.args.get("audienceLevel"))
+    return jsonify(talks.getFilteredTalks(visibility, topic1Id, topic2Id, audienceLevel))
+
+#@app.route('/topic/filter/channels', methods=["GET"])
+#def getFilteredChannels():
+#    topic1Id = int(request.args.get("topic1Id"))
+#    topic2Id = int(request.args.get("topic2Id"))
+#    return jsonify(channels.getFilteredChannels(topic1Id, topic2Id))
+
 # --------------------------------------------
 # SEARCH ROUTES
 # --------------------------------------------

@@ -691,3 +691,19 @@ class TalkRepository:
         query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"] != 0
+
+    def getFilteredTalks(self, visibility, topic1Id, topic2Id, audienceLevel):
+        query = f'''
+            SELECT  
+                Talks.channel_id,
+                Talks.Visibility,
+                Talks.topic_1_id,
+                Talks.topic_2_id,
+                Talks.audience_level
+            FROM Talks 
+            WHERE Talks.Visibility = {visibility} 
+                AND Talks.topic_1_id = {topic1Id} 
+                AND Talks.topic_2_id, = {topic2Id} 
+                AND Talks.audience_level = {audienceLevel}
+            '''
+        return self.db.run_query(query)
