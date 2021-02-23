@@ -12,6 +12,7 @@ import { User } from "../../Services/UserService";
 import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
 import MediaQuery from "react-responsive";
+import TalkClassificationBar from "../Core/talkClassificationBar";
 
 interface Props {
   gridArea?: string;
@@ -379,7 +380,12 @@ export default class TopicTalkList extends Component<Props, State> {
         </Box>
 
         {this.props.topicSearch && (
-          <TopicClassification 
+          <TalkClassificationBar
+            seeMore={true}
+            title={true}
+            topicSearch={true}
+            user={this.props.user}
+            talkPast={false}
             topicCallback={this.selectTopic} 
             />
         )}
