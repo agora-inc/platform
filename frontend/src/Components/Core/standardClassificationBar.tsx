@@ -87,49 +87,43 @@ export default class StandardClassificationBar extends Component<Props, State> {
   
     render() {
       return (
-        <Box 
-          width="100%"
-          direction="column"
+        <Box direction="row"
         >
-          <Box direction="row" 
-            className="classification_box"
-          >
-          {this.state.topicBeingShown >= 0 && (
-            <Select
-              options={this.getPrimitiveNodes().concat("All")}
-              placeholder={"Field"}
-              dropHeight="medium"
-              onChange={({ option }) =>
-                this.onFieldChoose(this.nameToTopic(option), 0)
-              }
-            />
-          )}
-          {this.state.topicBeingShown >= 1 && (
-            <Select
-              options={this.getChildren(
-                this.state.topics[0]
-              ).concat("All")}
-              dropHeight="medium"
-              placeholder={"Topic"}
-              onChange={({ option }) =>
-                this.onFieldChoose(this.nameToTopic(option), 1)
-              }
-            />
-          )}
-          {/* 
-          // NOTE: this code is the third selector (sub-sub-topics)
-          {this.state.topicBeingShown >= 2 && (
-            <Select
-              options={this.getChildren(
-                this.state.topics[1]
-              ).concat("All")}
-              placeholder={"Subject"}
-              onChange={({ option }) =>
-                this.onFieldChoose(this.nameToTopic(option), 2)
-              }
-            />
-          )} */}
-          </Box>  
+        {this.state.topicBeingShown >= 0 && (
+          <Select
+            options={this.getPrimitiveNodes().concat("All")}
+            placeholder={"Topic"}
+            dropHeight="medium"
+            onChange={({ option }) =>
+              this.onFieldChoose(this.nameToTopic(option), 0)
+            }
+          />
+        )}
+        {this.state.topicBeingShown >= 1 && (
+          <Select
+            options={this.getChildren(
+              this.state.topics[0]
+            ).concat("All")}
+            dropHeight="medium"
+            placeholder={"Sub Topic"}
+            onChange={({ option }) =>
+              this.onFieldChoose(this.nameToTopic(option), 1)
+            }
+          />
+        )}
+        {/* 
+        // NOTE: this code is the third selector (sub-sub-topics)
+        {this.state.topicBeingShown >= 2 && (
+          <Select
+            options={this.getChildren(
+              this.state.topics[1]
+            ).concat("All")}
+            placeholder={"Subject"}
+            onChange={({ option }) =>
+              this.onFieldChoose(this.nameToTopic(option), 2)
+            }
+          />
+        )} */}
         </Box>
       );
     };
