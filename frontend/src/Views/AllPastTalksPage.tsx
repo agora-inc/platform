@@ -91,9 +91,14 @@ export default class AllPastTalksPage extends Component<{}, State> {
             align="end"
             margin={{ bottom: "medium" }}
           >
-            <Text size="14px" color="grey" margin="5px" weight="bold">
+            <Heading
+              color="black"
+              size="24px"
+              margin="none"
+              style={{ height: "20px" }}
+            >
               All Previous Talks
-            </Text>
+            </Heading>
             {/* <Box direction="row" align="center" gap="xsmall">
               <Text color="black" weight="bold">
                 Filter by
