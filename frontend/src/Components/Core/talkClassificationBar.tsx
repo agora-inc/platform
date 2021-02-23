@@ -190,7 +190,7 @@ export default class TopicTalkList extends Component<Props, State> {
             topicCallback={this.props.topicCallback}
           />
 
-          {!this.props.talkPast && (
+          {this.props.talkPast && (
             <Select
               options={ ["Public", "Private", "All"] }
               placeholder={"Visibility"}

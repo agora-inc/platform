@@ -218,7 +218,7 @@ export default class TopicTalkList extends Component<Props, State> {
       <Box width="100%" margin={{"bottom": "50px"}}>
         
         <Text size="24px" weight="bold" color="black" margin="5px">
-          Upcoming talks
+          Upcoming Talks
         </Text>
 
         {this.props.topicSearch && (
