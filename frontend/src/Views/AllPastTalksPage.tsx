@@ -3,6 +3,7 @@ import { Box, Heading, Text, DropButton } from "grommet";
 import Loading from "../Components/Core/Loading";
 import SmallSelector from "../Components/Core/SmallSelector";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
+import TalkClassificationBar from "../Components/Core/talkClassificationBar";
 import { Talk, TalkService } from "../Services/TalkService";
 import { User, UserService } from "../Services/UserService";
 
@@ -84,21 +85,32 @@ export default class AllPastTalksPage extends Component<{}, State> {
         onScroll={this.handleScroll}
       >
         <Box width="90%" margin={{ left: "2.5%" }}>
-          <Box
-            direction="row"
-            width="100%"
-            justify="between"
-            align="end"
-            margin={{ bottom: "medium" }}
+          <Heading
+            color="black"
+            size="24px"
+            margin="none"
+            style={{ height: "20px" }}
           >
-            <Heading
-              color="black"
-              size="24px"
-              margin="none"
-              style={{ height: "20px" }}
-            >
-              All Previous Talks
-            </Heading>
+            All Previous Talks
+          </Heading>
+          
+          <Box
+          direction="row"
+          width="100%"
+          justify="between"
+          align="end"
+          margin={{ top: "small", bottom: "small" }}
+          >
+
+            <TalkClassificationBar
+              seeMore={true}
+              title={true}
+              topicSearch={true}
+              user={this.state.user}
+              talkPast={true}
+              topicCallback={""} 
+            />
+
             {/* <Box direction="row" align="center" gap="xsmall">
               <Text color="black" weight="bold">
                 Filter by
@@ -127,7 +139,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
             gap="1%"
             wrap
             // justify="center"
-            margin={{ top: "20px" }}
+            //margin={{ top: "20px" }}
           >
             {this.state.talks.map((talk: Talk, index: number) => (
               <PastTalkCard talk={talk} width="24%" user={this.state.user} />
