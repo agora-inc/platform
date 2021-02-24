@@ -107,24 +107,13 @@ export default class FormContainer extends Component<{}, State> {
   render() {
     return (
       <Box>
-        <Box
-          focusIndicator={false}
-          background="white"
-          round="xsmall"
-          pad={{bottom: "6px", top: "6px", left: "18px", right: "18px"}}
-          onClick={() => this.setState({ showForm: true })}
-          style={{
-            border: "1px solid #C2C2C2",
-          }}
-          hoverIndicator={true}   
-        >
           <Text 
             size="14px" 
-            color="grey" 
+            color="grey"
+            onClick={() => this.setState({ showForm: true })}
           > 
-            Feedback / Bug
+            Feedback/ Bug
           </Text>
-        </Box>
         <Overlay
           visible={this.state.showForm}
           onEsc={this.toggleModal}
@@ -135,7 +124,7 @@ export default class FormContainer extends Component<{}, State> {
           canProceed={this.isMissing().length === 0}
           isMissing={this.isMissing()}
           width={500}
-          height={640}
+          height={650}
           contentHeight="500px"
           title="Submit feedback"
         >

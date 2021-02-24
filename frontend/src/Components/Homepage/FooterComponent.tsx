@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Anchor, Heading } from "grommet";
 import "../../Styles/footer.css";
+import FormContainer from "./FormContainer";
 
 export default class FooterComponent extends Component {
   render() {
@@ -31,6 +32,9 @@ export default class FooterComponent extends Component {
             </a>
             <a href="/info/getting-started" style={{ color: "grey" }}>
               Getting started
+            </a>
+            <a>
+              <FormContainer />
             </a>
             <a href="/info/tos" style={{ color: "grey" }}>
               Terms of service

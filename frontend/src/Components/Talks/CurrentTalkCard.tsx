@@ -5,10 +5,7 @@ import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { Link } from "react-router-dom";
-import { Tag } from "../../Services/TagService";
-import { default as TagComponent } from "../Core/Tag";
 import Identicon from "react-identicons";
-import AddToCalendarButtons from "./AddToCalendarButtons";
 import Countdown from "./Countdown";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
@@ -54,18 +51,6 @@ export default class CurrentTalkCard extends Component<Props, State> {
     let remainderMin = Math.floor((deltaSec % 3600) / 60);
     return `Finishing in ${deltaHour}h ${remainderMin}m`;
   };
-
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
-
-  lineBreaks = (text: string) => { 
-    if (text && text.trim()) {
-      return textToLatex(text);
-    } else {
-      return (<br></br>);
-    }
-  }
 
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, showShadow: true });
@@ -406,8 +391,8 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   }}
                   margin={{ top: "10px", bottom: "10px" }}
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
-                    (item, i) => this.lineBreaks(item)
+                  {this.props.talk.description.split('\n').map(
+                    (item, i) => textToLatex(item)
                   )}
                 </Box>
               </Box>

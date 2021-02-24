@@ -7,7 +7,6 @@ import { Tag } from "../../Services/TagService";
 import { Link } from "react-router-dom";
 import { Talk, TalkService } from "../../Services/TalkService";
 import EditTalkModal from "../Talks/EditTalkModal";
-import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
 import { default as TagComponent } from "../Core/Tag";
 import { ChannelService } from "../../Services/ChannelService";
 import Countdown from "../Talks/Countdown";
@@ -187,18 +186,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     const timeEndStr = end.toTimeString().slice(0, 5);
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
-
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
-
-  lineBreaks = (text: string) => { 
-    if (text && text.trim()) {
-      return textToLatex(text);
-    } else {
-      return (<br></br>);
-    }
-  }
 
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
@@ -528,8 +515,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   margin={{ top: "10px", bottom: "10px" }}
                   direction="column"
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
-                    (item, i) => this.lineBreaks(item)
+                  {this.props.talk.description.split('\n').map(
+                    (item, i) => textToLatex(item)
                   )}
                 </Box>
               </Box>

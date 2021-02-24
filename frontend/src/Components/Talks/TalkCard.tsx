@@ -4,20 +4,15 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Tag } from "../../Services/TagService";
 import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
-import AddToCalendarButtons from "./AddToCalendarButtons";
 import Countdown from "./Countdown";
-import LoginModal from "../Account/LoginModal";
-import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
 import { textToLatex } from "../Core/LatexRendering";
 
 import FooterOverlay from "./Talkcard/FooterOverlay";
-import CalendarButtons from "./CalendarButtons";
 
 interface Props {
   talk: Talk;
@@ -58,10 +53,6 @@ export default class TalkCard extends Component<Props, State> {
         })
       }
     }
-    
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
 
   formatDate = (d: string) => {
     const date = new Date(d);
@@ -79,15 +70,6 @@ export default class TalkCard extends Component<Props, State> {
     const timeEndStr = end.toTimeString().slice(0, 5);
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
-
-
-  lineBreaks = (text: string) => { 
-    if (text && text.trim()) {
-      return textToLatex(text);
-    } else {
-      return (<br></br>);
-    }
-  }
 
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
@@ -473,8 +455,8 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
-                      (item, i) => this.lineBreaks(item)
+                    {this.props.talk.description.split('\n').map(
+                      (item, i) => textToLatex(item)
                     )}
                   </Box>
                 </Box>
@@ -632,8 +614,8 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
-                      (item, i) => <Text size="16px" color="black"> {item} </Text>
+                    {this.props.talk.description.split('\n').map(
+                      (item, i) => textToLatex(item)
                     )}
                   </Box>
                 </Box>

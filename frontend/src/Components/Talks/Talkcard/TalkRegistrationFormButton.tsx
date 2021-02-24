@@ -6,14 +6,14 @@ import {
   TextInput,
   Layer,
 } from "grommet";
-import { Overlay, OverlaySection } from "../Core/Overlay";
-import { Talk, TalkService } from "../../Services/TalkService";
-import { User } from "../../Services/UserService";
+import { Overlay, OverlaySection } from "../../Core/Overlay";
+import { Talk, TalkService } from "../../../Services/TalkService";
+import { User } from "../../../Services/UserService";
 
 
 interface Props {
   talk: Talk,
-  user?: User
+  user: User | null;
 }
 
 interface State {
@@ -31,7 +31,7 @@ interface State {
     feedbackModal: boolean;
 }
 
-export default class TalkRegistrationButton extends Component<Props, State> {
+export default class TalkRegistrationFormButton extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -116,7 +116,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           label="Register"
           onClick={this.toggleModal}
           style={{
-            width: 90,
+            width: 140,
             height: 35,
             fontSize: 15,
             fontWeight: "bold",

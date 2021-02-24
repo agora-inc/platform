@@ -1,7 +1,8 @@
-import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import React, { Component, Fragment } from "react";
+import { BrowserRouter, Route, Switch, withRouter } from "react-router-dom";
 import { Grommet } from "grommet";
 import Home from "./Views/Home";
+import LandingPage from "./Views/LandingPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
 import StreamPage from "./Views/StreamPage";
@@ -24,17 +25,25 @@ import ChangePasswordPage from "./Views/ChangePasswordPage";
 import AllAgorasPage from "./Views/AllAgorasPage";
 import AllSpeakersPage from "./Views/AllSpeakersPage";
 import TalkSharingPage from "./Views/TalkSharingPage";
+import AvatarPage from "./Views/AvatarPage";
+import AgoraStreamSpeakerPage from "./Views/AgoraStreamSpeakerPage";
+import AgoraStreamAudiencePage from "./Views/AgoraStreamAudiencePage";
 
 function App() {
   return (
     <BrowserRouter>
       <Grommet theme={Theme} full>
-        <HeaderBar />
+      <HeaderBar />
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/" component={LandingPage} />
+          <Route exact path="/browse" component={Home} />
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
           {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
+          <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
+          <Route path="/agora/:room_id/speaker/" component={AgoraStreamSpeakerPage} />
+          <Route path="/agora/:room_id/" component={AgoraStreamAudiencePage} />
+
           <Route path="/video" component={VideoPage} />
           <Route path="/stream" component={StreamPage} />
           <Route path={`/:name/manage`} component={ManageChannelPage} />

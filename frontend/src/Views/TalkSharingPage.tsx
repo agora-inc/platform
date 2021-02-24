@@ -27,6 +27,7 @@ import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
 import Countdown from "../Components/Talks/Countdown";
 import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
+import { textToLatex } from "../Components/Core/LatexRendering";
 import { Helmet } from "react-helmet";
 
 interface Props {
@@ -237,10 +238,6 @@ export default class ChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
-
   formatDateFull = (s: string, e: string) => {
     const start = new Date(s);
     const dateStartStr = start.toDateString().slice(0, -4);
@@ -389,7 +386,7 @@ export default class ChannelPage extends Component<Props, State> {
           <meta name="twitter:description" content={talk.description} />
         </Helmet>
         <Box
-            margin={{top: "100px", left: "20px", right: "20px"}}
+            margin={{top: "10vh", left: "20px", right: "20px"}}
             align="center">
             <Box
                 width="60vw"
@@ -505,7 +502,9 @@ export default class ChannelPage extends Component<Props, State> {
                       }}
                       margin={{ top: "10px", bottom: "10px" }}
                     >
-                      {this.escapeDoubleQuotes(this.state.talk.description)}
+                      {this.state.talk.description.split('\n').map(
+                        (item, i) => textToLatex(item)
+                      )}
                     </Text>
           <FooterOverlay
               talk={this.state.talk}

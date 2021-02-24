@@ -2,12 +2,15 @@
     TODO: 
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
-
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
 from mailing import sendgridApi
 from flask import jsonify, request, send_file
+from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
+
+
+from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
@@ -23,6 +26,10 @@ channels = ChannelRepository.ChannelRepository(db=agora_db)
 search = SearchRepository.SearchRepository(db=agora_db)
 invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
 sendgridApi = sendgridApi.sendgridApi()
+
+
+# BASE_API_URL = "http://localhost:8000"
+BASE_API_URL = "https://agora.stream/api"
 
 
 # --------------------------------------------
@@ -45,6 +52,42 @@ def logRequest(request):
         app.logger.debug(f"request made to {request.path} with args {request.args} {f'by user with id {userId}' if userId else ''}")
     elif request.method == "POST":
         app.logger.debug(f"request made to {request.path} with body {request.data} {f'by user with id {userId}' if userId else ''}")
+
+# --------------------------------------------
+# TOKENS
+# --------------------------------------------
+@app.route('/tokens/streaming', methods=['GET', 'OPTIONS'])
+def generateStreamingToken():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    try:
+        channel_name = request.args.get('channel_name')
+        role_attendee = request.args.get('role_attendee') # Either 1) speaker, 2) host, 3) audience
+        expire_time_in_sec = request.args.get('expire_time_in_sec')
+        try:
+            user_account = request.args.get('user_account')
+        except:
+            user_account = None
+        try:
+            uid = request.args.get('uid')
+        except:
+            uid = None
+    except Exception as e:
+        return jsonify(str(e))
+
+    token = generate_rtc_token(
+        channel_name,
+        role_attendee,
+        expire_time_in_sec,
+        user_account,
+        uid
+    )
+
+    return jsonify(token)
 
 # --------------------------------------------
 # USER ROUTES
@@ -1308,16 +1351,61 @@ def fullTextSearch():
 def eventLinkRedirect():
     try:
         eventId = request.args.get("eventId")
-        
+        talk_info = talks.getTalkById(eventId)
+        title = talk_info["name"]
+        description = talk_info["description"]
+        channel_name = talk_info["channel_name"]
+        channel_id = channels.getChannelByName(channel_name)["id"]
+
+        real_url = f"https://agora.stream/event/{eventId}"
+        hack_url = f"{BASE_API_URL}/event-link?eventId={eventId}"
+        image = f"{BASE_API_URL}/channels/avatar?channelId={channel_id}"
+
         res_string = f'''
             <html>
-
-                DELETE THIS LINE AND ADD THE STUFF YOU NEED INSIDE GERARDO.
-
-            window.location.href = 'https://agora.stream/event/{eventId}'
+                <head>
+                    <title>{title}</title>
+                    <meta property="title" content="{title}" />
+                    <meta name="description" content="{description}" />
+                    <meta property="og:title" content="{title}" />
+                    <meta property="og:description" content="{description}" />
+                    <meta property="og:url" content="{hack_url}" />
+                    <meta property="og:image" content="{image}" />
+                    <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
+                </head>
             </html>
         '''
-        return res_string
+        return render_template(res_string)
+    except Exception as e:
+        return str(e)
 
+@app.route('/channel-link', methods=["GET"])
+def channelLinkRedirect():
+    try:
+        channel_id = request.args.get("channelId")
+        channel_info = channels.getChannelById(channel_id)
+        name = channel_info["name"]
+        long_description = channel_info["long_description"]
+        real_url = f"https://agora.stream/{name}"
+        hack_url = f"{BASE_API_URL}/channel-link?channelId={channel_id}"
+        image = f"{BASE_API_URL}/api/channels/avatar?channelId={channel_id}"
+
+        res_string = f'''
+            <html>
+                <head>
+                    <title>{name}</title>
+                    <meta property="title" content="{name}" />
+                    <meta name="description" content="{long_description}" />
+                    <meta property="og:title" content="{name}" />
+                    <meta property="og:description" content="{long_description}" />
+                    <meta property="og:url" content="{hack_url}" />
+                    <meta property="og:image" content="{image}" />
+                    <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
+                </head>
+            </html>
+        '''
+        return render_template(res_string)
     except Exception as e:
         return jsonify(str(e))
