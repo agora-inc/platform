@@ -55,6 +55,7 @@ export default class CalendarButtons extends Component<
           width="100%"
           justify="between"
           style={{ minHeight: "35px" }}
+          gap="10px"
         >
           <a
             style={{ width: "48%", textDecoration: "none" }}
@@ -70,20 +71,17 @@ export default class CalendarButtons extends Component<
             target="_blank"
           >
             <Box
-              width="100%"
-              height="25px"
+              width="50px"
+              height="35px"
               round="xsmall"
-              background="white"
-              style={{
-                border: "1px solid #C2C2C2",
-              }}
+              background="#F2F2F2"
               align="center"
               justify="center"
               direction="row"
               // gap="4px"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={() => {}}
-              hoverIndicator={true}
+              hoverIndicator="#DDDDDD"
             >
               <Google size="14px" color="plain" />
             </Box>
@@ -94,20 +92,17 @@ export default class CalendarButtons extends Component<
             download="download.ics"
           >
             <Box
-              width="100%"
-              height="25px"
+              width="50px"
+              height="35px"
               round="xsmall"
-              background="white"
-              style={{
-                border: "1px solid #C2C2C2",
-              }}
+              background="#F2F2F2"
               align="center"
               justify="center"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={() => {}}
-              hoverIndicator={true}
+              hoverIndicator="#DDDDDD"
             >
-              <Text size="14px" weight="bold" color="grey">
+              <Text size="15px" weight="bold">
                 ics
               </Text>
             </Box>

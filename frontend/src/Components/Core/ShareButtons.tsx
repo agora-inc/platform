@@ -119,28 +119,48 @@ interface Props {
         <Box 
           direction="row"
           style = {{ zIndex: 0 }}
-          width="300px"
+          width="250px"
           alignSelf="end"
+          gap="10px"
         >
-          <Button
-          data-tip data-for='share_social'
-          label="Share"
-          onClick={this.displayShareButtons}
-          style={{
-            width: 140,
-            height: 35,
-            fontSize: 15,
-            fontWeight: "bold",
-            padding: 0,
-            // margin: 6,
-            backgroundColor: "#F2F2F2",
-            border: "none",
-            borderRadius: 7,
-          }}
-        />
-            <ReactTooltip id="share_social" effect="solid">
-              Share with friends and colleagues
-            </ReactTooltip>
+          <CopyUrlButton url={this.urlLink()}/>
+          {/*<Button
+            data-tip data-for='share_social'
+            label="Share"
+            onClick={this.displayShareButtons}
+            style={{
+              width: 140,
+              height: 35,
+              fontSize: 15,
+              fontWeight: "bold",
+              padding: 0,
+              // margin: 6,
+              backgroundColor: "#F2F2F2",
+              border: "none",
+              borderRadius: 7,
+            }}
+          />*/}
+          <Box
+            data-tip data-for='share_social'
+            onClick={this.displayShareButtons}
+            background="#F2F2F2"
+            round="xsmall"
+            width="100px" height="35px"
+            // margin={{left: "2px"}}
+            justify="center"
+            align="center"
+            focusIndicator={true}
+            hoverIndicator="#DDDDDD"
+          >
+            <Text weight="bold" size="15px">
+              Share 
+            </Text>
+          </Box> 
+          <ReactTooltip id="share_social" effect="solid">
+            Share with friends and colleagues
+          </ReactTooltip>
+
+
 
           {(this.state.showShareButtons && (this.props.talk !== null)) || (
             <StickyShareButtons
@@ -180,7 +200,7 @@ interface Props {
             />
           )}
 
-          <CopyUrlButton url={this.urlLink()}/>
+          
 
         </Box>
       )

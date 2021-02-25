@@ -16,7 +16,7 @@ export default class CopyUrlButton extends Component<Props, {}> {
         data-tip data-for='save_url_event'
         background="#5AAB61"
         round="xsmall"
-        width="140px" height="35px"
+        width="100px" height="35px"
         margin={{left: "2px"}}
         justify="center"
         align="center"

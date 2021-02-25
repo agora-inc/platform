@@ -238,33 +238,36 @@ render() {
     return (
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
-            <Box 
-              width="50%" 
-              direction="row"
-              >
-                <Calendar size="16px" />
-                <Text
-                  size="16px"
-                  color="black"
-                  margin={{left:"5px"}}
-                  style={{ height: "20px", fontStyle: "normal" }}
-                >
-                  {this.formatDateFull(
-                    this.props.talk.date,
-                    this.props.talk.end_date
-                    )}
-                </Text>
-                <Box margin={{left: "5px"}}>
-                  <CalendarButtons talk={this.props.talk}/>
-                </Box>
-            </Box>
             <Box
-                width="50%"
+              direction="row"
+              align="center"
+              gap="10px"
+            >
+              <Calendar size="16px" />
+              <Text
+                size="16px"
+                color="black"
+                margin={{left:"5px"}}
+                style={{ height: "20px", fontStyle: "normal" }}
+              >
+                {this.formatDateFull(
+                  this.props.talk.date,
+                  this.props.talk.end_date
+                )}
+              </Text>
+              <Box margin={{left: "5px"}}>
+                <CalendarButtons talk={this.props.talk}/>
+              </Box>
+              <Box
                 align="end"
-                >
-              <ShareButtons 
-                talk={this.props.talk}
-              />
+                // margin={{left: "10px"}}
+              >
+                <ShareButtons 
+                  talk={this.props.talk}
+                />
+              </Box>
+            </Box>
+
 
               {/* <Box
                   onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
@@ -285,7 +288,7 @@ render() {
                 Click to copy Event URL!
               </ReactTooltip> */}
 
-            </Box>
+            
           </Box>
 
           <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
