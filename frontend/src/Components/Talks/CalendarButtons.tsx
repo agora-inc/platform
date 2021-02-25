@@ -4,6 +4,7 @@ import { CalendarService } from "../../Services/CalendarService";
 import { Google} from "grommet-icons";
 import { Talk } from "../../Services/TalkService";
 import MediaQuery from "react-responsive";
+import ReactTooltip from "react-tooltip";
 
 var moment = require("moment");
 
@@ -71,6 +72,7 @@ export default class CalendarButtons extends Component<
             target="_blank"
           >
             <Box
+              data-tip data-for='google_cal'
               width="50px"
               height="35px"
               round="xsmall"
@@ -85,6 +87,9 @@ export default class CalendarButtons extends Component<
             >
               <Google size="14px" color="plain" />
             </Box>
+            <ReactTooltip id="google_cal" effect="solid">
+              Save in Google Calendar
+            </ReactTooltip>
           </a>
           <a
             style={{ width: "48%", textDecoration: "none" }}
@@ -92,6 +97,7 @@ export default class CalendarButtons extends Component<
             download="download.ics"
           >
             <Box
+              data-tip data-for='ics'
               width="50px"
               height="35px"
               round="xsmall"
@@ -106,6 +112,9 @@ export default class CalendarButtons extends Component<
                 ics
               </Text>
             </Box>
+            <ReactTooltip id="ics" effect="solid">
+              Download .ics file
+            </ReactTooltip>
           </a>
         </Box>
         </MediaQuery>

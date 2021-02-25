@@ -292,15 +292,15 @@ render() {
           </Box>
 
           <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
-              {/* <SaveForLaterButton
-                talk={this.props.talk}
-                user={this.props.user}
-              /> */}
-              <TalkRegistrationButton
-                talk={this.props.talk}
-                user={this.props.user}
-              />
-            </Box>
+            {/* <SaveForLaterButton
+              talk={this.props.talk}
+              user={this.props.user}
+            /> */}
+            <TalkRegistrationButton
+              talk={this.props.talk}
+              user={this.props.user}
+            />
+          </Box>
 
 
 

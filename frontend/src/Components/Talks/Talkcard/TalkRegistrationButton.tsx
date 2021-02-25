@@ -53,8 +53,8 @@ export default class TalkRegistrationButton extends Component<Props, State> {
 
   render() {
     return (
-      <Box style={{maxHeight: "30px"}}>
-        <Button
+      <Box style={{maxHeight: "35px"}}>
+        {/*<Button
           data-tip data-for='apply_give_talk'
           label="Register"
           onClick={this.toggleModal}
@@ -69,7 +69,22 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             border: "none",
             borderRadius: 7,
           }}
-        />
+        />*/}
+        <Box
+          data-tip data-for='apply_give_talk'
+          onClick={this.toggleModal}
+          background="white"
+          round="xsmall"
+          width="160px" height="35px"
+          justify="center"
+          align="center"
+          focusIndicator={true}
+          hoverIndicator="#EEEEEE"
+        >
+          <Text weight="bold" size="15px">
+            Register 
+          </Text>
+        </Box> 
         <ReactTooltip id="apply_give_talk" effect="solid">
             Click to get access
           </ReactTooltip>

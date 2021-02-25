@@ -120,7 +120,7 @@ interface Props {
           direction="row"
           style = {{ zIndex: 0 }}
           width="250px"
-          alignSelf="end"
+          // alignSelf="end"
           gap="10px"
         >
           <CopyUrlButton url={this.urlLink()}/>
@@ -156,9 +156,11 @@ interface Props {
               Share 
             </Text>
           </Box> 
+
           <ReactTooltip id="share_social" effect="solid">
             Share with friends and colleagues
           </ReactTooltip>
+          
 
 
 
