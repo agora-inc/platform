@@ -80,9 +80,10 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                     overflow: "auto",
                     fontStyle: "italic",
                   }}
-                  >
-                  Automating the academic seminar organisation pipeline.
+                >
+                  Live stream from the best academics  
                 </Text>
+                {/* Automating the academic seminar organisation pipeline. */}
               </MediaQuery>
           </Box>
           {/* <MediaQuery minDeviceWidth={992}>

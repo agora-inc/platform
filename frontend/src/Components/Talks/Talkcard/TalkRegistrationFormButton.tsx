@@ -195,7 +195,7 @@ export default class TalkRegistrationFormButton extends Component<Props, State> 
               {(this.state.feedbackMsg.errorMsg !== "") && (
                 <>
                   <Text margin={{left: "15px", right: "15px"}}>
-                    Something went wrong. Please signal issue using the "Feedback/bug" button.
+                    Something went wrong. Please signal issue using the "Feedback / bug" button.
                   </Text>
                   <Text margin={{left: "15px", right: "15px", top: "5px"}} color="red">
                     Error: {this.state.feedbackMsg.errorMsg}

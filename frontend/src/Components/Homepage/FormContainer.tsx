@@ -112,7 +112,7 @@ export default class FormContainer extends Component<{}, State> {
             color="grey"
             onClick={() => this.setState({ showForm: true })}
           > 
-            Feedback/ Bug
+            Feedback / Report a bug
           </Text>
         <Overlay
           visible={this.state.showForm}
