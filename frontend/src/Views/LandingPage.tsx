@@ -3,7 +3,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading } from "grommet";
 import { ReactComponent as Logo } from "../apollo.svg";
 import { User, UserService } from "../Services/UserService";
-import { Search, Channel, ScheduleNew, Multiple } from "grommet-icons";
+import { Search, Play, Add, Channel, ScheduleNew, Multiple } from "grommet-icons";
 import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
@@ -93,7 +93,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             style={{ textDecoration: "none" }}
           >
             <Box
-              background="#F2F2F2"
+              onClick={() => ({})}
+              background="#EEEEEE"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -102,7 +103,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#DDDDDD"
             >
               <Search size="30px"/>
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Find future seminars </Text>
@@ -113,7 +114,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             style={{ textDecoration: "none" }}
           >
             <Box
-              background="#F2F2F2"
+              onClick={() => ({})}
+              background="#EEEEEE"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -122,9 +124,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator={true}
+              hoverIndicator="#DDDDDD"
             >
-              <Channel size="30px" />
+              <Play size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch past seminars </Text>
             </Box>
           </Link>
@@ -133,7 +135,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             style={{ textDecoration: "none" }}
           >
             <Box
-              background="#F2F2F2"
+              onClick={() => ({})}
+              background="#EEEEEE"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -142,9 +145,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
-            >
-              <ScheduleNew size="30px" />
+              hoverIndicator="#DDDDDD"
+            > 
+              <Add size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Create an Agora </Text>
             </Box>
           </Link>
@@ -153,7 +156,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             style={{ textDecoration: "none" }}
           >
             <Box
-              background="#F2F2F2"
+              onClick={() => ({})}
+              background="#EEEEEE"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -162,7 +166,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#DDDDDD"
             >
               <Multiple size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover all Agoras </Text>
