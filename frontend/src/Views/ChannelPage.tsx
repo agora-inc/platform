@@ -53,6 +53,7 @@ interface State {
     personalHomepage: string
   }
   topics: Topic[];
+  topicId: number;
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -82,6 +83,7 @@ export default class ChannelPage extends Component<Props, State> {
         personalHomepage: ""
       },
       topics: this.props.channel ? this.props.channel.topics : [],
+      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0
     };
   }
 
@@ -338,6 +340,18 @@ export default class ChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  fetchChannelTopic = () => {
+    if (this.state.topics) {
+      ChannelService.getChannelTopic(
+        this.state.channel!.id,
+        (topicId: number) => {
+          this.setState({ topicId });
+        }
+      );
+    return this.state.topicId
+    }
+  };
+
   banner = () => {
     return (
       <Box width="75vw" background="white" round="10px">
@@ -381,10 +395,12 @@ export default class ChannelPage extends Component<Props, State> {
               <Text size="26px" color="black" weight="bold">
                 {this.state.channel ?.name}
               </Text>
-              <Box height="36px"> 
-                  <Text color="grey" weight="bold">
-                    Topic: {this.state.topics[0]}
+              <Box height="36px">
+                  {this.fetchChannelTopic() && (
+                  <Text size="14px" color="grey" weight="bold">
+                    This Agora Topic is: {this.state.topicId}
                   </Text>
+                  )}
               </Box>
               {/*<Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers

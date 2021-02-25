@@ -565,6 +565,14 @@ def editChannelTopic():
     #app.logger.debug(f"channel with id {params['channelId']} edited")
     return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
 
+@app.route('/channel/topics/fetch', methods=["GET"])
+def getChannelTopic():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    channelId = request.args.get("channelId")
+    return jsonify(channels.getChannelTopic(channelId))
+
 
 # --------------------------------------------
 # x Membership ROUTES

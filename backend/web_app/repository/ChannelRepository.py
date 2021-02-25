@@ -389,3 +389,8 @@ class ChannelRepository:
             return self.db.run_query(topicsQuery)
         except Exception as e:
             return str(e)
+
+    def getChannelTopic(self, channelId):
+        query = f'SELECT topic_1_id FROM Channels WHERE id = {channelId}'
+        result = self.db.run_query(query)
+        return result

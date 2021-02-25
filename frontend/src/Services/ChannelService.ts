@@ -320,6 +320,10 @@ const deleteAgora = (id: number, callback: any) => {
   post("channels/delete", { id }, callback);
 };
 
+////////////////////////
+// Channel Topic methods
+////////////////////////
+
 const editChannelTopic = (
   channelId: Number,
   topics: Topic[],
@@ -336,6 +340,20 @@ const editChannelTopic = (
     callback
   );
 };
+
+const getChannelTopic = (
+  channelId: Number,
+  callback: any
+) => {
+  get(
+    `channels/topics/fetch?channelId=${channelId}`,
+    callback
+  );
+};
+
+/*const getChannelTopic = (channelId: number) => {
+  return baseApiUrl + `channels/topics/fetch?channelId=${channelId}`;
+};*/
 
 ///////////////////////
 // Membership methods
@@ -462,7 +480,11 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
+  ////////////////////////
+  // Channel Topic methods
+  ////////////////////////
   editChannelTopic,
+  getChannelTopic,
   /////////////////////
   // membership methods
   /////////////////////
