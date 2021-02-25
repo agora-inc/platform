@@ -10,6 +10,7 @@ var moment = require("moment");
 
 interface Props {
   talk: Talk;
+  height?: string;
 }
 
 interface State {
@@ -55,7 +56,7 @@ export default class CalendarButtons extends Component<
           direction="row"
           width="100%"
           justify="between"
-          style={{ minHeight: "35px" }}
+          // style={{ minHeight: "35px" }}
           gap="10px"
         >
           <a
@@ -74,7 +75,7 @@ export default class CalendarButtons extends Component<
             <Box
               data-tip data-for='google_cal'
               width="50px"
-              height="35px"
+              height={this.props.height ? this.props.height : "35px"}
               round="xsmall"
               background="#F2F2F2"
               align="center"
@@ -99,7 +100,7 @@ export default class CalendarButtons extends Component<
             <Box
               data-tip data-for='ics'
               width="50px"
-              height="35px"
+              height={this.props.height ? this.props.height : "35px"}
               round="xsmall"
               background="#F2F2F2"
               align="center"

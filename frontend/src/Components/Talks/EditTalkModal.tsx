@@ -457,7 +457,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
                       id="link-visibility-select"
-                      options={["General audience", "Bachelor/Master", "PhD+"]}
+                      options={["General audience", "Bachelor / Master", "PhD+"]}
                       value={this.state.audienceLevel}
                       onChange={({ option }) =>
                         this.setState({ audienceLevel: option })

@@ -44,7 +44,7 @@ export class Overlay extends Component<OverlayProps> {
             width: this.props.width,
             height: this.props.height > 700 ? "82%" : this.props.height,
             borderRadius: 15,
-            border: "3.5px solid black",
+            // border: "3.5px solid black",
             padding: 0,
           }}
         >

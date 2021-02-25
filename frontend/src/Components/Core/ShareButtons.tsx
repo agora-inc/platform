@@ -12,6 +12,7 @@ import CopyUrlButton from "./ShareButtons/CopyUrlButton";
 interface Props {
     talk?: Talk | any;
     channel?: Channel | any;
+    height?: string
   }
   
   interface State {
@@ -123,7 +124,7 @@ interface Props {
           // alignSelf="end"
           gap="10px"
         >
-          <CopyUrlButton url={this.urlLink()}/>
+          <CopyUrlButton url={this.urlLink()} height={this.props.height ? this.props.height : "35px"}/>
           {/*<Button
             data-tip data-for='share_social'
             label="Share"
@@ -145,8 +146,8 @@ interface Props {
             onClick={this.displayShareButtons}
             background="#F2F2F2"
             round="xsmall"
-            width="100px" height="35px"
-            // margin={{left: "2px"}}
+            width="100px" 
+            height={this.props.height ? this.props.height : "35px"}
             justify="center"
             align="center"
             focusIndicator={true}

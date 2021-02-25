@@ -12,6 +12,7 @@ import { User } from "../../../Services/UserService";
 
 
 interface Props {
+  text?: string,
   talk: Talk,
   user: User | null;
 }
@@ -111,9 +112,9 @@ export default class TalkRegistrationFormButton extends Component<Props, State> 
 
   render() {
     return (
-      <Box style={{maxHeight: "30px"}}>
-        <Button
-          label="Register"
+      <Box style={{maxHeight: "35px"}}>
+        {/*<Button
+          label={this.props.text ? this.props.text : "Register"}
           onClick={this.toggleModal}
           style={{
             width: 140,
@@ -126,7 +127,21 @@ export default class TalkRegistrationFormButton extends Component<Props, State> 
             border: "none",
             borderRadius: 7,
           }}
-        />
+        />*/}
+        <Box
+          onClick={this.toggleModal}
+          background="#F2F2F2"
+          round="xsmall"
+          width="140px" height="35px"
+          justify="center"
+          align="center"
+          focusIndicator={true}
+          hoverIndicator="#DDDDDD"
+        >
+          <Text weight="bold" size="15px">
+            {this.props.text ? this.props.text : "Register"}
+          </Text>
+        </Box> 
         <Overlay
           visible={this.state.showForm}
           onEsc={this.toggleModal}
