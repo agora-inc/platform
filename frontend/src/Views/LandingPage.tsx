@@ -179,22 +179,22 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box 
           direction="row" 
           gap="150px"
-          margin={{top: "150px", left:"-50px"}}
+          margin={{top: "120px", left:"-50px"}}
         >
           <Box direction="column" justify="start" style={{minWidth: "50%"}}>
-            <Text size="21px" margin={{bottom: "10px"}}> What is an agora? </Text>
-            <Text size="14px"> An agora is like a youtube channel </Text>
-            <Text size="14px" weight="bold"> It is the place where you post future seminars and past recordings </Text>
-            <Text size="14px"> Invite people from your research groups </Text>
-            <Text size="14px" weight="bold"> Follow some Agoras to never miss out on their awesome events!   </Text>
+            <Text size="21px" margin={{bottom: "12px"}}> What is an agora? </Text>
+            <Text size="14px" margin={{bottom: "6px"}}> An agora is like a youtube channel </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> It is the place where you post future seminars and past recordings </Text>
+            <Text size="14px" margin={{bottom: "6px"}}> Invite people from your research groups </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Follow some Agoras to never miss out on their awesome events!   </Text>
 
           </Box>
           <Box direction="column" justify="start" style={{minWidth: "50%"}}>
-            <Text size="21px" margin={{bottom: "10px"}}> Our values </Text>
-            <Text size="14px" weight="bold"> Democratizing access to world-class research </Text>
-            <Text size="14px"> Find a social and interactive solution to online seminars </Text>
-            <Text size="14px" weight="bold"> Help researchers reach out and network with their peers </Text>
-            <Text size="14px"> Cut global travel of academics and fight climate change </Text>
+            <Text size="21px" margin={{bottom: "12px"}}> Our values </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Democratizing access to world-class research </Text>
+            <Text size="14px" margin={{bottom: "6px"}}> Find a social and interactive solution to online seminars </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Help researchers reach out and network with their peers </Text>
+            <Text size="14px" margin={{bottom: "6px"}}> Cut global travel of academics and fight climate change </Text>
           </Box>
  
         </Box>
