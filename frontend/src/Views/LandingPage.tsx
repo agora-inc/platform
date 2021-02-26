@@ -62,8 +62,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box direction="column" justify="center" margin={{right: "60px"}} >
           
           <Box direction="row" justify="center" margin={{top: "50px"}}>
-            <Logo style={{ height: "60px", width: "60px"}} />
-            {/* <img src="/home/cloud-user/plateform/agora/images/logo.jpg" /> */}
+            {/* <Logo style={{ height: "60px", width: "60px"}} /> */}
+            <img src="/images/logo.jpg" />
             <Heading
               level="1"
               margin={{ top: "13px" }}
@@ -74,9 +74,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Box>
 
 
-          <Box direction="column" justify="center" margin={{top: "-15px"}}> 
+          <Box direction="column" justify="center" margin={{top: "5px"}}> 
             <Text size="16px" weight="bold"> 
-              Live stream seminars from the best academics in the world - for FREE!
+              Live stream seminars from the best academics in the world!
             </Text>
           </Box>
 
@@ -94,7 +94,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           >
             <Box
               onClick={() => ({})}
-              background="#EEEEEE"
+              background="#DDDDDD"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -103,7 +103,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#DDDDDD"
+              hoverIndicator="#CCCCCC"
             >
               <Search size="30px"/>
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Find future seminars </Text>
@@ -115,7 +115,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           >
             <Box
               onClick={() => ({})}
-              background="#EEEEEE"
+              background="#DDDDDD"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -124,7 +124,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#DDDDDD"
+              hoverIndicator="#CCCCCC"
             >
               <Play size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch past seminars </Text>
@@ -136,7 +136,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           >
             <Box
               onClick={() => ({})}
-              background="#EEEEEE"
+              background="#DDDDDD"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -145,7 +145,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#DDDDDD"
+              hoverIndicator="#CCCCCC"
             > 
               <Add size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Create an Agora </Text>
@@ -157,7 +157,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           >
             <Box
               onClick={() => ({})}
-              background="#EEEEEE"
+              background="#DDDDDD"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -166,7 +166,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#DDDDDD"
+              hoverIndicator="#CCCCCC"
             >
               <Multiple size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover all Agoras </Text>
@@ -179,7 +179,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box 
           direction="row" 
           gap="150px"
-          margin={{top: "120px", left:"-50px"}}
+          margin={{top: "100px", left:"-50px"}}
         >
           <Box direction="column" justify="start" style={{minWidth: "50%"}}>
             <Text size="21px" margin={{bottom: "12px"}}> What is an agora? </Text>

@@ -182,7 +182,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
         {this.props.talk.visibility !== "Everybody" && (
           <>
           <Grid
-            rows={['90px', '20px', '35px', '35px', '35px']}
+            rows={['90px', '20px', '40px', '40px', '40px']}
             columns={['430px']}
             gap="small"
             areas={[
@@ -191,15 +191,16 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                 { name: 'calendar', start: [0, 2], end: [0, 2] },
                 { name: 'share', start: [0, 3], end: [0, 3] },
                 { name: 'register_suggestion', start: [0, 4], end: [0, 4] }
-
             ]}
           >
-            <Box gridArea="info" direction="column" align="start" gap="10px">
+            <Box gridArea="info" direction="column" align="start" gap="10px" >
+              
               <Text weight="bold" size="20px"> 
                 This event has a restricted audience
               </Text>
-              <Box direction="row" align="center" gap="5px">
-                <Text size="14px">  To receive the seminar URL, you need to </Text>
+              <Box direction="row" align="center" pad="xsmall">
+                <FormNext size="20px" />
+                <Text size="14px">  To receive the link to the seminar </Text>
                 <Box pad="xsmall">
                   <TalkRegistrationFormButton
                       text="Fill in this form"
@@ -209,13 +210,6 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                 </Box>
               </Box>
             </Box>
-            <hr
-              style={{
-                  color: "grey",
-                  backgroundColor: "grey",
-                  height: 5
-              }}
-            />
             <Box gridArea="you_can_also" align="start">
               <Text
                 weight="bold"
@@ -256,7 +250,9 @@ export default class TalkRegistrationButton extends Component<Props, State> {
               /> 
               <Text size="14px" margin={{left: "8px", right: "8px"}}> or </Text> 
               <SignUpButton callback={() => {}} />
-              <Text size="14px" margin={{left: "8px"}}> to put it in your "Saved talks" </Text>   
+              <Text size="14px" margin={{left: "8px", right: "4px"}}> to put it in your </Text>   
+              <Text size="14px" style={{fontStyle: "italic"}}> Saved talks </Text>  
+              
             </Box>
           </Grid>        
           </>
