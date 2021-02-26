@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import {
-  Box,
-  Button,
-  Text,
-  Grid
-} from "grommet";
+import { Box, Button, Text, Grid } from "grommet";
 import { FormNext } from "grommet-icons";
+import { Link } from "react-router-dom";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import { User } from "../../../Services/UserService";
@@ -46,11 +42,6 @@ export default class TalkRegistrationButton extends Component<Props, State> {
   toggleModal = () => {
     this.setState({ showForm: !this.state.showForm });
   };
-
-  computeEventUrl = () => {
-    var url = `https://agora.stream/event/${this.props.talk.id}`;
-    return url
-  }
 
   render() {
     return (
@@ -106,77 +97,83 @@ export default class TalkRegistrationButton extends Component<Props, State> {
         >
         <OverlaySection>
         {this.props.talk.visibility === "Everybody" && (
-            <>
-                <Grid
-                    rows={['60px', '30px', '30px', '30px', '30px']}
-                    columns={['430px']}
-                    gap="small"
-                    areas={[
-                        { name: 'info', start: [0, 0], end: [0, 0] },
-                        { name: 'you_can_also', start: [0, 1], end: [0, 1] },
-                        { name: 'calendar', start: [0, 2], end: [0, 2] },
-                        { name: 'share', start: [0, 3], end: [0, 3] },
-                        { name: 'register_suggestion', start: [0, 4], end: [0, 4] },
+          <>
+          <Grid
+            rows={['90px', '20px', '40px', '40px', '40px']}
+            columns={['430px']}
+            gap="small"
+            areas={[
+                { name: 'info', start: [0, 0], end: [0, 0] },
+                { name: 'you_can_also', start: [0, 1], end: [0, 1] },
+                { name: 'calendar', start: [0, 2], end: [0, 2] },
+                { name: 'share', start: [0, 3], end: [0, 3] },
+                { name: 'register_suggestion', start: [0, 4], end: [0, 4] },
+            ]}
+          >
+            <Box gridArea="info" direction="column" align="start" gap="10px" >  
+              <Text weight="bold" size="20px"> 
+                This event is public
+              </Text>
+              <Box direction="row" align="center" pad="xsmall">
+                <FormNext size="20px" />
+                <Text size="14px"> The link will be displayed </Text>
+                <Box pad="xsmall">
+                  <Link to={`event/${this.props.talk.id}`} target="_blank">
+                    <Text size="14px" weight="bold" color="#7E1115"> here </Text>
+                  </Link>
+                </Box>
+                <Text size="14px"> shortly before the event starts </Text>
+              </Box>
+            </Box>
 
-                    ]}
-                    >
-                    <Box gridArea="info" direction="column" align="center">
-                        <Text weight="bold"> 
-                            This event is public!
-                        </Text>
-                        Event URL: <a href={this.computeEventUrl()}>{this.computeEventUrl()}</a>
-                    </Box>
-                    <hr
-                        style={{
-                            color: "grey",
-                            backgroundColor: "grey",
-                            height: 5
-                        }}
-                    />
-                    <Box gridArea="you_can_also" pad="xsmall" align="center">
-                        <Text
-                            weight="bold"
-                            // size="14px"
-                            // color="black"
-                            style={{
-                            // height: "30px",
-                            // overflow: "auto",
-                            fontStyle: "italic",
-                            }}
-                            // margin={{ bottom: "10px" }}
-                        >
-                            Next steps?
-                            </Text>
-                    </Box>
-                    <Box gridArea="calendar" pad="xsmall" direction="row">
-                            1. Add this event to your calendar!
-                                <CalendarButtons
-                                        talk={this.props.talk}
-                                    />
-                        </Box>
-                    <Box gridArea="share" direction="column" pad="xsmall">
-                        2. Apply to become a member to enjoy a frictionless access to all future seminars and talk recordings! <ShareButtons talk={this.props.talk}/>
-                    </Box>
-                    <Box gridArea="register_suggestion" direction="row" pad="xsmall">
-                        3. <LoginModal
-                                    // open={this.props.showLogin}
-                                    callback={() => {
-                                    // this.setState(
-                                    //     {
-                                    //     isLoggedIn: UserService.isLoggedIn(),
-                                    //     user: UserService.getCurrentUser(),
-                                    //     },
-                                    //     () => {
-                                    //     this.fetchChannels();
-                                    //     }
-                                    // );
-                                    }}
-                                /> / <SignUpButton callback={() => {}} />                    
-                                to save it in your "Saved talks!
-                        
-                    </Box>
-                </Grid>
-            </>
+            <Box gridArea="you_can_also" align="start">
+              <Text
+                weight="bold"
+                size="20px"
+              >
+                Next steps
+              </Text>
+            </Box>
+
+            <Box gridArea="calendar" pad="xsmall" direction="row" align="center">
+              <FormNext size="20px" />
+              <Text size="14px"> Add this event to your calendar </Text>
+              <Box pad="xsmall">
+                <CalendarButtons talk={this.props.talk} height="30px" />
+              </Box>
+            </Box>
+
+            <Box gridArea="share" direction="row" pad="xsmall" align="center">
+              <FormNext size="20px" />
+              <Text size="14px"> Share this event </Text> 
+              <Box align="center" pad="xsmall">
+                <ShareButtons talk={this.props.talk} height="30px"/>
+              </Box>
+            </Box>
+
+            <Box gridArea="register_suggestion" direction="row" pad="xsmall" align="center">
+              <FormNext size="20px" />
+              <LoginModal
+                // open={this.props.showLogin}
+                callback={() => {
+                // this.setState(
+                //     {
+                //     isLoggedIn: UserService.isLoggedIn(),
+                //     user: UserService.getCurrentUser(),
+                //     },
+                //     () => {
+                //     this.fetchChannels();
+                //     }
+                // );
+                }}
+              /> 
+              <Text size="14px" margin={{left: "8px", right: "8px"}}> or </Text> 
+              <SignUpButton callback={() => {}} />
+              <Text size="14px" margin={{left: "8px", right: "4px"}}> to put it in your </Text>   
+              <Text size="14px" style={{fontStyle: "italic"}}> Saved talks </Text> 
+            </Box>
+          </Grid>
+          </>
         )}
 
         {this.props.talk.visibility !== "Everybody" && (
@@ -251,8 +248,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
               <Text size="14px" margin={{left: "8px", right: "8px"}}> or </Text> 
               <SignUpButton callback={() => {}} />
               <Text size="14px" margin={{left: "8px", right: "4px"}}> to put it in your </Text>   
-              <Text size="14px" style={{fontStyle: "italic"}}> Saved talks </Text>  
-              
+              <Text size="14px" style={{fontStyle: "italic"}}> Saved talks </Text>
             </Box>
           </Grid>        
           </>
