@@ -10,12 +10,13 @@ from datetime import datetime
 """
 
 class TalkRepository:
-    def __init__(self, db):
+    def __init__(self, db, mail_sys):
         self.db = db
         self.mailing_api = sendgridApi()
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)
-        self.topics = TopicRepository(db=self.db) 
+        self.topics = TopicRepository(db=self.db)
+        self.mail_sys = mail_sys
 
     def getNumberOfCurrentTalks(self):
         query = "SELECT COUNT(*) FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP"
@@ -668,7 +669,7 @@ class TalkRepository:
         except Exception as e:
             return str(e)
 
-    def registerTalk(self, talkId, userId, name, email, website, institution):
+    def registerTalk(self, talkId, userId, applicant_name, email, website, institution, user_hour_offset):
         # get today's time GMT in format: "2020-12-31 23:59"
         dateTimeObj = datetime.now()
         timestampStr = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
@@ -677,9 +678,46 @@ class TalkRepository:
             with self.db.con.cursor() as cur:
                 cur.execute(
                     'INSERT INTO TalkRegistrations(talk_id, user_id, applicant_name, email, website, institution, registration_date) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                    [str(talkId), str(userId), name, email, website, institution, timestampStr])
+                    [str(talkId), str(userId), applicant_name, email, website, institution, timestampStr])
                 self.db.con.commit()
                 cur.close()
+
+            # A. send confirmation email to user
+            # 1) query talk info
+            talk_info = self.getTalkById(talkId)
+            talk_name = talk_info["name"]
+            agora_name = talk_info["channel_name"]
+            date_str = talk_info["date"]
+            conference_url = talk_info["link"]
+            channel_id = talk_info["channel_id"]
+
+            # 2) check userId GMT:
+            human_date_str = self.mail_sys._convert_gmt_into_human_date_str(str(date_str), float(user_hour_offset))
+
+            # 3) send email
+            self.mail_sys.send_confirmation_talk_registration_request(
+                email,
+                talk_name,
+                applicant_name,
+                talkId,
+                agora_name,
+                human_date_str,
+                conference_url)
+
+            # B. Send email to administrator
+            if website == "":
+                website = "(Not provided)"
+            contact_emails = self.channels.getContactAddresses(channel_id)
+
+            for email in contact_emails:
+                self.mail_sys.notify_admin_talk_registration(
+                    email,
+                    agora_name, 
+                    talk_name,
+                    applicant_name,
+                    institution,
+                    website)
+
             return "ok"     
         except Exception as e:
             return str(e)

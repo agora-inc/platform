@@ -254,6 +254,9 @@ const registerForTalk = (
   website: any, 
   institution: string, 
   callback: any) => {
+  var now = new Date();
+  var userHourOffset = - now.getTimezoneOffset() / 60;
+  // (NOTE: userHourOffset=-3 if user browser is in GMT-3 right now)
   post(
     "talks/requestaccess/register",
     {
@@ -262,7 +265,8 @@ const registerForTalk = (
       name: name,
       email: email,
       website: website,
-      institution: institution
+      institution: institution,
+      userHourOffset: userHourOffset
     },
     callback
   );
