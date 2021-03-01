@@ -43,7 +43,7 @@ export default class Schedule extends Component<Props, State> {
   render() {
     return (
       <Box
-        pad={{ top: "7.5%", bottom: "100px" }}
+        pad={{ top: "10vh", bottom: "100px" }}
         width="100vw"
         height="100vh"
         align="center"

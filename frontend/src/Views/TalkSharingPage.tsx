@@ -386,7 +386,7 @@ export default class ChannelPage extends Component<Props, State> {
           <meta name="twitter:description" content={talk.description} />
         </Helmet>
         <Box
-            margin={{top: "100px", left: "20px", right: "20px"}}
+            margin={{top: "10vh", left: "20px", right: "20px"}}
             align="center">
             <Box
                 width="60vw"
