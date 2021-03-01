@@ -35,7 +35,9 @@ interface State {
     BachelorMaster: boolean,
     Phdplus: boolean,
     all: boolean
-  }
+  };
+  chosenAudience: string,
+  chosenVisibility: string,
 }
 
 export default class TopicTalkList extends Component<Props, State> {
@@ -58,7 +60,9 @@ export default class TopicTalkList extends Component<Props, State> {
         BachelorMaster: true,
         Phdplus: true,
         all: true
-      }
+      },
+      chosenAudience: "",
+      chosenVisibility: "",
     };
   }
 
@@ -91,7 +95,7 @@ export default class TopicTalkList extends Component<Props, State> {
     });
   }
 
-  filterChosenTalksByAudience = () => {
+  /*filterChosenTalksByAudience = () => {
     let filteredTopics = []
     if (!(this.state.audienceLevel.all)){
     for (let talk of this.state.allTalks){
@@ -153,14 +157,75 @@ export default class TopicTalkList extends Component<Props, State> {
       });
     }
     // this.filterChosenTalksByAudience();
-  };
+  };*/
 
-  selectTopic = (temp: Topic) => {
+  fetchTalksFromFilters(audience: string, topic1Id: number, topic2Id: number, visibility: string, userId: number) {
+    let sqlAudience: string = "*";
+    let sqlTopic1Id: number = -1;
+    let sqlTopic2Id: number = -1;
+    let sqlVisibility: string = "*";
+
+    if (audience != "All" || "" || undefined ||null) {
+      sqlAudience = audience
+    }  
+    if (topic1Id != -1 || 0 || null) {
+      sqlTopic1Id = topic1Id
+    }
+    if (topic2Id != -1 || 0 || null) {
+      sqlTopic2Id = topic2Id
+    }
+    if (visibility != "All" || "" || undefined || null) {
+      sqlVisibility = visibility
+    }
+    TalkService.getFilteredTalks(
+      sqlAudience, 
+      topic1Id, 
+      topic2Id, 
+      sqlVisibility,
+      userId, 
+      (chosenTalks: Talk[]) => {
+        this.setState({
+          chosenTalks: chosenTalks,
+        });
+      }
+    )
+  }
+
+  /*selectTopic = (temp: Topic) => {
     this.setState({
       chosenTopic: temp,
     });
     this.fetchTalksByTopicWithChildren(temp);
-  };
+  };*/
+  setTopic = (temp: Topic) => {
+    this.setState({
+      chosenTopic: temp,
+    });
+  }
+  setAudience = (temp: string) => {
+    this.setState({
+      chosenAudience: temp,
+    });
+    this.fetchTalksFromFilters(
+      this.state.chosenVisibility,
+      this.state.chosenTopic.parent_1_id!,
+      this.state.chosenTopic.parent_2_id!,
+      temp, 
+      this.props.user!.id,
+    )
+  }
+  setVisibility = (temp: string) => {
+    this.setState({
+      chosenVisibility: temp,
+    });
+    this.fetchTalksFromFilters(
+      temp, 
+      this.state.chosenTopic.parent_1_id!,
+      this.state.chosenTopic.parent_2_id!, 
+      this.state.chosenAudience, 
+      this.props.user!.id
+    )
+  }
 
   ifTalks = () => {
     
@@ -223,12 +288,11 @@ export default class TopicTalkList extends Component<Props, State> {
 
         {this.props.topicSearch && (
           <TalkClassificationBar
-            seeMore={true}
-            title={true}
-            topicSearch={true}
             user={this.props.user}
             talkPast={false}
-            topicCallback={this.selectTopic} 
+            topicCallback={this.setTopic}
+            audienceCallback={this.setAudience}
+            visibilityCallback={this.setVisibility} 
             />
         )}
 

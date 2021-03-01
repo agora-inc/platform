@@ -24,8 +24,8 @@ channels = ChannelRepository.ChannelRepository(db=agora_db)
 search = SearchRepository.SearchRepository(db=agora_db)
 invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
 
-# BASE_API_URL = "http://localhost:8000"
-BASE_API_URL = "https://agora.stream/api"
+BASE_API_URL = "http://localhost:8000"
+# BASE_API_URL = "https://agora.stream/api"
 
 
 # --------------------------------------------
@@ -1331,11 +1331,12 @@ def getTopicsOnStream():
 
 @app.route('/topic/filter/talks', methods=["GET"])
 def getFilteredTalks():
-    visibility = int(request.args.get("visibility"))
+    visibility = request.args.get("visibility")
     topic1Id = int(request.args.get("topic1Id"))
     topic2Id = int(request.args.get("topic2Id"))
-    audienceLevel = int(request.args.get("audienceLevel"))
-    return jsonify(talks.getFilteredTalks(visibility, topic1Id, topic2Id, audienceLevel))
+    audienceLevel = request.args.get("audienceLevel")
+    userId = int(request.args.get("userId"))
+    return jsonify(talks.getFilteredTalks(visibility, topic1Id, topic2Id, audienceLevel, userId))
 
 #@app.route('/topic/filter/channels', methods=["GET"])
 #def getFilteredChannels():

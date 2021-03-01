@@ -692,18 +692,53 @@ class TalkRepository:
         result = self.db.run_query(query)
         return result[0]["COUNT(*)"] != 0
 
-    def getFilteredTalks(self, visibility, topic1Id, topic2Id, audienceLevel):
-        query = f'''
-            SELECT  
-                Talks.channel_id,
-                Talks.Visibility,
-                Talks.topic_1_id,
-                Talks.topic_2_id,
-                Talks.audience_level
-            FROM Talks 
-            WHERE Talks.Visibility = {visibility} 
-                AND Talks.topic_1_id = {topic1Id} 
-                AND Talks.topic_2_id, = {topic2Id} 
-                AND Talks.audience_level = {audienceLevel}
-            '''
-        return self.db.run_query(query)
+    def getFilteredTalks(self, visibility, topic1Id, topic2Id, audienceLevel, userId):
+        if userId is None:
+            query = f'''
+                SELECT DISTINCT * FROM Talks
+                FROM Talks 
+                WHERE published = 1
+                    AND card_visibility = 'Everybody'
+                    AND Talks.Visibility = {visibility} 
+                    AND Talks.topic_1_id = {topic1Id} 
+                    AND Talks.topic_2_id, = {topic2Id} 
+                    AND Talks.audience_level = {audienceLevel}
+                    AND Talks.date > CURRENT_TIMESTAMP
+                ORDER BY Talks.date ASC;
+                '''
+            talks = self.db.run_query(query)
+        else:
+            query = f'''SELECT DISTINCT * FROM Talks 
+                    WHERE Talks.published = 1 
+                        AND (Talks.card_visibility = 'Everybody' 
+                                OR (Talks.card_visibility = 'Followers and members' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'follower' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {userId}
+                                        )
+                                    )
+                                OR (Talks.card_visibility = 'Members only' 
+                                    AND Talks.channel_id in (
+                                        SELECT Channels.id FROM Channels 
+                                        INNER JOIN ChannelUsers ON Channels.id = ChannelUsers.channel_id 
+                                        WHERE (ChannelUsers.role = 'member' OR ChannelUsers.role = 'owner')
+                                            AND ChannelUsers.user_id = {userId}
+                                        )
+                                    )
+                            )
+                        AND Talks.Visibility = {visibility} 
+                        AND Talks.topic_1_id = {topic1Id} 
+                        AND Talks.topic_2_id, = {topic2Id} 
+                        AND Talks.audience_level = {audienceLevel}
+                        AND Talks.date > CURRENT_TIMESTAMP 
+                    ORDER BY Talks.date ASC;
+                    '''
+
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+        return talks

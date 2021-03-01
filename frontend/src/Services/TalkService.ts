@@ -374,9 +374,10 @@ const getFilteredTalks = (
   visibility: string,
   topic1Id: number,
   topic2Id: number,
-  audienceLevel: string, 
+  audienceLevel: string,
+  userId: number, 
   callback: any) => {
-  get(`/topic/filter/talks?visibilty=${visibility}&topic1Id=${topic1Id}&topic2Id=${topic2Id}&audienceLevel=${audienceLevel}`, callback);
+  get(`/topic/filter/talks?visibilty=${visibility}&topic1Id=${topic1Id}&topic2Id=${topic2Id}&audienceLevel=${audienceLevel}&userId=${userId}`, callback);
 };
 
 export const TalkService = {

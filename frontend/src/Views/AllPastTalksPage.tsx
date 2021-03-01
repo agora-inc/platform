@@ -6,6 +6,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import TalkClassificationBar from "../Components/Core/talkClassificationBar";
 import { Talk, TalkService } from "../Services/TalkService";
 import { User, UserService } from "../Services/UserService";
+import { Topic } from "../Services/TopicService";
 
 interface State {
   talks: Talk[];
@@ -13,6 +14,16 @@ interface State {
   loading: boolean;
   user: User | null;
   //   sortBy: string;
+  chosenTalks: Talk[];
+  chosenTopic: Topic;
+  audienceLevel: {
+    GeneralAudience: boolean,
+    BachelorMaster: boolean,
+    Phdplus: boolean,
+    all: boolean
+  };
+  chosenAudience: string,
+  chosenVisibility: string,
 }
 
 export default class AllPastTalksPage extends Component<{}, State> {
@@ -24,6 +35,23 @@ export default class AllPastTalksPage extends Component<{}, State> {
       loading: true,
       user: UserService.getCurrentUser(),
       //   sortBy: "date",
+      chosenTalks: [],
+      chosenTopic: {
+        field: "-",
+        id: -1,
+        is_primitive_node: false,
+        parent_1_id: -1,
+        parent_2_id: -1,
+        parent_3_id: -1,
+      },
+      audienceLevel: {
+        GeneralAudience: true,
+        BachelorMaster: true,
+        Phdplus: true,
+        all: true
+      },
+      chosenAudience: "",
+      chosenVisibility: "",
     };
   }
 
@@ -76,6 +104,19 @@ export default class AllPastTalksPage extends Component<{}, State> {
   //       : this.state.videos.sort(this.compareVideosByViews);
   //   };
 
+
+  setTopic = () =>{
+
+  }
+
+  setAudience = () =>{
+
+  }
+
+  setVisibility = () => {
+    
+  }
+
   render() {
     return (
       <Box
@@ -103,12 +144,11 @@ export default class AllPastTalksPage extends Component<{}, State> {
           >
 
             <TalkClassificationBar
-              seeMore={true}
-              title={true}
-              topicSearch={true}
               user={this.state.user}
               talkPast={true}
-              topicCallback={""} 
+              topicCallback={this.setTopic}
+              audienceCallback={this.setAudience}
+              visibilityCallback={this.setVisibility}
             />
 
             {/* <Box direction="row" align="center" gap="xsmall">

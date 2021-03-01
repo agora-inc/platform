@@ -9,16 +9,11 @@ import StandardClassificationBar from "./standardClassificationBar";
 
 
 interface Props {
-  gridArea?: string;
-  past?: boolean;
-  onSave?: any;
-  onUnsave?: any;
-  seeMore: boolean;
-  title: boolean;
-  topicSearch: boolean;
   user: User | null;
+  topicCallback: any;
+  audienceCallback: any;
+  visibilityCallback: any;
   talkPast: boolean;
-  topicCallback: any
 }
 
 interface State {
@@ -32,9 +27,14 @@ interface State {
     Phdplus: boolean,
     all: boolean
   }
+  visibility: {
+    public: boolean,
+    private: boolean,
+    all: boolean,
+  }
 }
 
-export default class TopicTalkList extends Component<Props, State> {
+export default class TalkClassificationBar extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -54,16 +54,14 @@ export default class TopicTalkList extends Component<Props, State> {
         BachelorMaster: true,
         Phdplus: true,
         all: true
+      },
+      visibility: {
+        public: true,
+        private: true,
+        all: true,
       }
-    };
   }
 
-  componentWillMount() {
-    if (this.props.topicSearch) {
-      TopicService.getAll((allTopics: Topic[]) => {
-        this.setState({ allTopics: allTopics });
-      });
-    }
 
     // Limit to 1000 talks
     /*
@@ -87,77 +85,76 @@ export default class TopicTalkList extends Component<Props, State> {
     });
   }
 
-  filterChosenTalksByAudience = () => {
-    let filteredTopics = []
-    if (!(this.state.audienceLevel.all)){
-    for (let talk of this.state.allTalks){
-      if ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
-        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
-        (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+") 
-      )
-        {
-        filteredTopics.push(talk);
-      }
-    };
-    this.setState({chosenTalks: filteredTopics});
-    }
-  };
-
-  getTalksByTopicsAndAudience = (talks: Talk[], topicsId: number[]): Talk[] => {
-    let res: Talk[] = [];
-    for (let talk of talks) {
-      let isIn: boolean = false;
-      for (let topic of talk.topics) {
-        if ((!isIn && topicsId.includes(topic.id)) &&
-        ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
-        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
-        (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+")))  {
-          isIn = true;
-          res.push(talk);
-        }
-      }
-    }
-    return res;
-  };
-
-  getTalksByAudience = (talks: Talk[]): Talk[] => {
-    let res: Talk[] = [];
-    for (let talk of talks) {
-      let isIn: boolean = false;
-      if ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
-        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
-        (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+"))  {
-          res.push(talk);
-        }
-      } 
-    return res;
-  };
-
-  fetchTalksByTopicWithChildren = (topic: Topic) => {
-    if (topic.id >= 0) {
-      let childrenId = TopicService.getDescendenceId(
-        topic,
-        this.state.allTopics
-      );
-      childrenId.push(topic.id);
+  
+  changestateAudience(option: string) {
+    if (option == "General Audience") {
       this.setState({
-        chosenTalks: this.getTalksByTopicsAndAudience(this.state.allTalks, childrenId),
-      });
-    } else {
+        audienceLevel: {
+          GeneralAudience: true,
+          BachelorMaster: false,
+          Phdplus: false,
+          all: false
+        }
+      })
+    }if (option == "Bachelor / Master") {
       this.setState({
-        chosenTalks: this.getTalksByAudience(this.state.allTalks)
-      });
+        audienceLevel: {
+          GeneralAudience: false,
+          BachelorMaster: true,
+          Phdplus: false,
+          all: false
+        }
+      })
+    }if (option == "PhD+") {
+      this.setState({
+        audienceLevel: {
+          GeneralAudience: false,
+          BachelorMaster: false,
+          Phdplus: true,
+          all: false
+        }
+      })
+    }else {
+      this.setState({
+        audienceLevel: {
+          GeneralAudience: true,
+          BachelorMaster: true,
+          Phdplus: true,
+          all: true
+        }
+      })
     }
-    // this.filterChosenTalksByAudience();
-  };
+    this.props.audienceCallback(option)
+  }
 
-  selectTopic = (temp: Topic) => {
-    this.setState({
-      chosenTopic: temp,
-    });
-    this.fetchTalksByTopicWithChildren(temp);
-  };
-
+  changestateVisibility(option: string) {
+    if (option == "Public") {
+      this.setState({
+        visibility: {
+          public: true,
+          private: false,
+          all: false,
+        }
+      })
+    }if (option == "private") {
+      this.setState({
+        visibility: {
+          public: true,
+          private: false,
+          all: false,
+        }
+      })
+    }else {
+      this.setState({
+        visibility: {
+          public: true,
+          private: true,
+          all: true,
+        }
+      })
+    }
+    this.props.visibilityCallback(option)
+  }
 
 
 
@@ -184,6 +181,9 @@ export default class TopicTalkList extends Component<Props, State> {
             options={ ["General Audience", "Bachelor / Master", "PhD+", "All"] }
             placeholder={"Education Level"}
             dropHeight="medium"
+            onChange={({ option }) =>
+              this.changestateAudience(option)
+            }
           />
           
           <StandardClassificationBar
@@ -195,6 +195,9 @@ export default class TopicTalkList extends Component<Props, State> {
               options={ ["Public", "Private", "All"] }
               placeholder={"Visibility"}
               dropHeight="medium"
+              onChange={({ option }) =>
+              this.changestateVisibility(option)
+              }
             />
           )}
         </Box>
