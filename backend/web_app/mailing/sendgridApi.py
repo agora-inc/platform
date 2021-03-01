@@ -3,14 +3,11 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import datetime
 import math
-# https://sendgrid.com/docs/API_Reference/api_getting_started.html
 
 
 # NOTE:
+#   API URL: https://sendgrid.com/docs/API_Reference/api_getting_started.html
 #   Free email HTML templates: https://www.campaignmonitor.com/email-templates/
-
-
-
 
 ##########################################
 # Dynamic template methods:
@@ -193,7 +190,6 @@ class sendgridApi:
     # D. User channel registrations #
     #################################
     def send_confirmation_agora_membership_request(self, target_email, recipient_name, agora_name):
-        # TODO: TO BE IMPLEMENTED IN CODE
         template_id = "d-a17b20abbb12420a97ecab7bd324b9bb"
         response = self._post_sendgrid_request(
             target_email=target_email,
@@ -206,7 +202,6 @@ class sendgridApi:
         return response
 
     def send_confirmation_agora_membership_acceptance(self, target_email, agora_name, recipient_name):
-        # TODO: TO BE IMPLEMENTED IN CODE
         template_id = "d-5a9c28cdcc814ea589dcb503076e9877"
         response = self._post_sendgrid_request(
             target_email=target_email,
@@ -236,15 +231,12 @@ class sendgridApi:
         )
         return response
 
-    def notify_admin_membership_application(self):
-        # TODO: TO BE IMPLEMENTED IN CODE
-        raise NotImplementedError
-        template_id = "d-5a9c28cdcc814ea589dcb503076e9877"
+    def notify_admin_membership_application(self, target_email, agora_name):
+        template_id = "d-78a88eef9d9c46998c75ecbc01e43d4a"
         response = self._post_sendgrid_request(
             target_email=target_email,
             dynamic_template_data={
                     "agora_name": agora_name,
-                    "recipient_name": recipient_name
                 },
             template_id=template_id
         )
@@ -260,22 +252,12 @@ class sendgridApi:
         raise NotImplementedError
 
 
-
 #################
 # TESTING CELL: #
 #################
 if __name__ == "__main__":
-
     target_test_email = "testagora@mailinator.com"
-
     client = sendgridApi()
-    dynamic_template_data = {
-            "talk_name": "Quantum fluids on manifolds",
-            "recipient_name": "Mike Tyson",
-            "talk_id": "123",
-            "agora_name": "Malliavin calculus",
-            "conference_url": "google.com"
-    }
 
     # Methods
     # client.send_confirmation_account_creation(

@@ -8,11 +8,11 @@ from datetime import datetime
 """
     TODO: All methods involving the "state" field must be tested.
 """
+mail_sys = sendgridApi()
 
 class TalkRepository:
-    def __init__(self, db, mail_sys):
+    def __init__(self, db, mail_sys=mail_sys):
         self.db = db
-        self.mailing_api = sendgridApi()
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)
         self.topics = TopicRepository(db=self.db)
@@ -640,7 +640,7 @@ class TalkRepository:
             
             # # 2. Send email
             if talk_has_conference_url:
-                self.mailing_api.send_confirmation_talk_registration_acceptance(
+                self.mail_sys.send_confirmation_talk_registration_acceptance(
                     target_email,
                     talk_name,
                     recipient_name,

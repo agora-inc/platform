@@ -3,11 +3,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
 import jwt
+from mailing.sendgridApi import sendgridApi
 
 # for emails
 from flask_mail import Message
 from flask import render_template
 
+
+mail_sys = sendgridApi()
 
 class User:
     def __init__(self, username, password):
@@ -15,7 +18,7 @@ class User:
         self.password = generate_password_hash(password)
 
 class UserRepository:
-    def __init__(self, db, mail_sys):
+    def __init__(self, db, mail_sys=mail_sys):
         self.db = db
         self.secret = b'\xccu\x9e2\xda\xe8\x16\x8a\x137\xde@G\xc7T\xf1\x16\xca\x05\xee\xa7\xa4\x98\x05'
         self.mail_sys = mail_sys
