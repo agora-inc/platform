@@ -98,13 +98,13 @@ export default class TalkRegistrationFormButton extends Component<Props, State> 
 
   isMissing = () => {
     let res: string[] = []
-    if (this.state.form.fullName !== "") {
+    if (this.state.form.fullName === "") {
       res.push("Name")
     }
-    if (this.state.form.email !== "") {
+    if (this.state.form.email === "") {
       res.push("Email address")
     }
-    if (this.state.form.institution !== "") {
+    if (this.state.form.institution === "") {
       res.push("Institution")
     }
     return res;
