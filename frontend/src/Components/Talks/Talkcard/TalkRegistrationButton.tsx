@@ -179,6 +179,37 @@ export default class TalkRegistrationButton extends Component<Props, State> {
         {this.props.talk.visibility !== "Everybody" && (
           <>
           <Grid
+            rows={['80px', "60px"]}
+            columns={['430px']}
+            gap="small"
+            areas={[
+                { name: 'info', start: [0, 0], end: [0, 0] },
+                { name: 'fill-in', start: [0, 1], end: [0, 1] },
+            ]}
+          >
+            <Box gridArea="info" direction="column" align="start" justify="start" gap="10px" >
+              <Text weight="bold" size="20px" textAlign="start"> 
+                This event has a restricted audience
+              </Text>
+              <Box direction="row" align="center" pad="xsmall" justify="start">
+                <FormNext size="20px" />
+                <Text size="14px">  To receive via email the link to the seminar </Text>
+              </Box>
+            </Box>
+            
+            <Box gridArea="fill-in" pad="xsmall" align="center">
+              <TalkRegistrationFormButton
+                  text="Fill in this form"
+                  talk={this.props.talk}
+                  user={this.props.user}
+              />
+            </Box>
+
+          </Grid>  
+          </>
+
+          /*<>
+          <Grid
             rows={['90px', '20px', '40px', '40px', '40px']}
             columns={['430px']}
             gap="small"
@@ -252,6 +283,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             </Box>
           </Grid>        
           </>
+          */
         )}
           </OverlaySection>
         </Overlay>
