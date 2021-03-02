@@ -28,7 +28,7 @@ import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
-import { Topic } from "../Services/TopicService";
+import { Topic, TopicService } from "../Services/TopicService";
 
 interface Props {
   location: any;
@@ -38,6 +38,7 @@ interface Props {
 
 interface State {
   channel: Channel | null;
+  channelId: number;
   loading: boolean;
   user: User | null;
   role: "none" | "owner" | "member" | "follower";
@@ -67,6 +68,8 @@ interface State {
   isPrevTopics: boolean[];
   topicSaved: boolean;
   saveButtonFade: boolean;
+  topicId: number;
+  field: string;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -74,6 +77,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     super(props);
     this.state = {
       channel: null,
+      channelId: 0,
       loading: true,
       user: null,
       role: "none",
@@ -103,12 +107,32 @@ export default class ManageChannelPage extends Component<Props, State> {
       isPrevTopics: this.props.channel ? this.topicExists(this.props.channel.topics) : [false, false, false],
       topicSaved: false,
       saveButtonFade: false,
+      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
+      field: "",
     };
   }
 
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
     this.getChannelAndCheckAccess();
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+        this.setState({channelId: channel.id})
+      }
+    );
+    ChannelService.getChannelTopic(
+      this.state.channelId,
+      (currentTopicId: number) => {
+        this.setState({ topicId:currentTopicId });
+      }
+    );
+    TopicService.getFieldFromId(
+      this.state.topicId,
+      (topicName: string) => {
+        this.setState({field: topicName})
+      }
+    )
   }
 
   componentWillUnmount() {

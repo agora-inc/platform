@@ -20,7 +20,7 @@ import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
-import { Topic } from "../Services/TopicService";
+import { Topic, TopicService } from "../Services/TopicService";
 
 interface Props {
   location: { pathname: string };
@@ -32,6 +32,7 @@ interface Props {
 
 interface State {
   channel: Channel | null;
+  channelId: number;
   role: "none" | "owner" | "member" | "follower";
   loading: boolean;
   streams: Stream[];
@@ -54,6 +55,7 @@ interface State {
   }
   topics: Topic[];
   topicId: number;
+  field: string;
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -61,6 +63,7 @@ export default class ChannelPage extends Component<Props, State> {
     super(props);
     this.state = {
       channel: null,
+      channelId: 0,
       role: "none",
       loading: true,
       streams: [],
@@ -83,13 +86,32 @@ export default class ChannelPage extends Component<Props, State> {
         personalHomepage: ""
       },
       topics: this.props.channel ? this.props.channel.topics : [],
-      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0
+      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
+      field: "",
     };
   }
 
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
     this.fetchChannel();
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+        this.setState({channelId: channel.id})
+      }
+    );
+    ChannelService.getChannelTopic(
+      this.state.channelId,
+      (currentTopicId: number) => {
+        this.setState({ topicId:currentTopicId });
+      }
+    );
+    TopicService.getFieldFromId(
+      this.state.topicId,
+      (topicName: string) => {
+        this.setState({field: topicName})
+      }
+    )
   }
 
   componentWillUnmount() {
@@ -396,11 +418,9 @@ export default class ChannelPage extends Component<Props, State> {
                 {this.state.channel ?.name}
               </Text>
               <Box height="36px">
-                  {this.fetchChannelTopic() && (
-                  <Text size="14px" color="grey" weight="bold">
-                    This Agora Topic is: {this.state.topicId}
-                  </Text>
-                  )}
+                <Text size="14px" color="grey" weight="bold">
+                  This Agora Topic is: {this.state.field}
+                </Text>
               </Box>
               {/*<Text size="24px" color="#999999" weight="bold">
                 {this.state.followerCount} followers

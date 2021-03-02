@@ -565,7 +565,7 @@ def editChannelTopic():
     #app.logger.debug(f"channel with id {params['channelId']} edited")
     return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
 
-@app.route('/channel/topics/fetch', methods=["GET"])
+@app.route('/channel/topics/fetch', methods=["GET", "OPTIONS"])
 def getChannelTopic():
     if request.method == "OPTIONS":
         return jsonify("ok")
@@ -1310,6 +1310,14 @@ def getTopicsOnStream():
     # streamId = int(request.args.get("streamId"))
     # return jsonify(tags.getTagsOnStream(streamId))
     raise NotImplementedError
+
+@app.route('/topics/getField', methods=["GET"])
+def getFieldFromId():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    topicId = request.args.get("topicId")
+    return jsonify(topics.getFieldFromId(topicId)) 
 
 # --------------------------------------------
 # SEARCH ROUTES
