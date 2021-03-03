@@ -526,7 +526,7 @@ export default class ChannelPage extends Component<Props, State> {
               align="center" 
               gap="20px" 
               background="#d5d5d5" 
-              pad="25px" 
+              pad="35px" 
               justify="center"
             >
 
@@ -542,7 +542,7 @@ export default class ChannelPage extends Component<Props, State> {
                 />
               )}
               {((this.state.user && talk.visibility === "Members only") || (talk.visibility === "Everybody")) && ( 
-                <Text> COUNTDOWN </Text>
+                <Countdown talk={talk} />
               )}
             </Box>
           </Box>

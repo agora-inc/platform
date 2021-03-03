@@ -68,28 +68,37 @@ export default class Countdown extends Component<
     // to implement
   };
 
+  addS = (n: number) =>  {
+    return n > 1 ? "s " : " "
+  }
+
   showTimeUntil = () => {
     let message = "Link available here in ";
-    let minutesUntil =
-      (this.state.showLinkAt.getTime() - this.state.now.getTime()) /
-      (1000 * 60);
+    let secondsUntil = Math.floor(
+      (this.state.showLinkAt.getTime() - this.state.now.getTime()) / 1000
+    )
 
     // Check if 
     // if (this.DstAppliesInbetween()){
-    //   minutesUntil = minutesUntil + 60
+    //   secondsUntil = secondsUntil + 60*60
     // }
 
-    if (minutesUntil < 60) {
-      message += `${Math.floor(minutesUntil)} minutes`;
-    } else if (minutesUntil < 1440) {
-      let hoursUntil = Math.floor(minutesUntil / 60);
-      let minutesRemainder = Math.floor(minutesUntil % 60);
-      message += `${hoursUntil} hours ${minutesRemainder} minutes`;
-    } else {
-      let daysUntil = Math.floor(minutesUntil / 1440);
-      let hoursRemainder = Math.floor((minutesUntil % 1440) / 60);
-      let minutesRemainder = Math.floor((minutesUntil % 1440) % 60);
-      message += `${daysUntil} days ${hoursRemainder} hours ${minutesRemainder} minutes`;
+    let daysRemain = Math.floor(secondsUntil / (60*60*24))
+    let hoursRemain =  Math.floor((secondsUntil % (60*60*24)) / (60*60));
+    let minutesRemain =  Math.floor((secondsUntil % (60*60)) / 60);
+    let secondsRemain = secondsUntil % 60
+
+    if (daysRemain > 0) {
+      message += `${daysRemain} day` + this.addS(daysRemain)
+    } 
+    if (hoursRemain > 0) {
+      message += `${hoursRemain} hour` + this.addS(hoursRemain)
+    }  
+    if (minutesRemain > 0) {
+      message += `${minutesRemain} minute` + this.addS(minutesRemain)
+    }  
+    if (secondsRemain > 0) {
+      message += `${secondsRemain} second` + this.addS(secondsRemain)
     }
 
     return message;
@@ -128,23 +137,9 @@ export default class Countdown extends Component<
         )}
 
         {!this.shouldShowLink() && (
-            <Button 
-               alignSelf="center"
-              hoverIndicator={false}
-              style={{
-                fontSize: 17,
-                fontWeight: "bold",
-                padding: 10,
-                backgroundColor: "#d5d5d5",
-                border: "none",
-                borderRadius: 5,
-              }}
-              margin={{bottom: "5px"}}
-              >
-              <Text size="14px" weight="bold" margin={{ top: "1px" }}>
-                {this.showTimeUntil()}
-              </Text>
-            </Button>
+          <Text size="16px" weight="bold" margin={{ top: "1px" }}>
+            {this.showTimeUntil()}
+          </Text>
         )}
       </Box>
     );
