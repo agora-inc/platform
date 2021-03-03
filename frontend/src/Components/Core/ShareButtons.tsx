@@ -120,7 +120,7 @@ interface Props {
         <Box 
           direction="row"
           style = {{ zIndex: 0 }}
-          width="250px"
+          width="275px"
           // alignSelf="end"
           gap="10px"
         >
@@ -158,7 +158,7 @@ interface Props {
             </Text>
           </Box> 
 
-          <ReactTooltip id="share_social" effect="solid">
+          <ReactTooltip id="share_social" effect="solid" place="bottom">
             Share with friends and colleagues
           </ReactTooltip>
           
@@ -189,7 +189,7 @@ interface Props {
                 show_mobile: true,    // show/hide the buttons on mobile (true, false)
                 show_toggle: false,    // show/hide the toggle buttons (true, false)
                 size: 48,             // the size of each button (INTEGER)
-                top: 160,             // offset in pixels from the top of the page
+                top: 150,             // offset in pixels from the top of the page
     
                 // OPTIONAL PARAMETERS
                 url: this.apiUrlLink(), // (defaults to current url)

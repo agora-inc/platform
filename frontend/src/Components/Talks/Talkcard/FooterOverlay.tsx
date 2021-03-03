@@ -238,11 +238,7 @@ render() {
     return (
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
-            <Box
-              direction="row"
-              align="center"
-              gap="10px"
-            >
+            <Box direction="row" width="70%" align="center" gap="10px">
               <Calendar size="16px" />
               <Text
                 size="16px"
@@ -255,17 +251,15 @@ render() {
                   this.props.talk.end_date
                 )}
               </Text>
-              <Box margin={{left: "5px"}}>
-                <CalendarButtons talk={this.props.talk}/>
-              </Box>
-              <Box
-                align="end"
-                // margin={{left: "10px"}}
-              >
-                <ShareButtons 
-                  talk={this.props.talk}
-                />
-              </Box>
+              <CalendarButtons talk={this.props.talk}/>
+            </Box>
+
+            <Box
+              justify="end"
+              // align="end"
+              // margin={{left: "10px"}}
+            >
+              <ShareButtons talk={this.props.talk} />
             </Box>
 
 
