@@ -99,7 +99,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
         {this.props.talk.visibility === "Everybody" && (
           <>
           <Grid
-            rows={['90px', '20px', '40px', '40px', '40px']}
+            rows={['90px', '20px', '40px', '40px']}
             columns={['430px']}
             gap="small"
             areas={[
@@ -107,7 +107,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                 { name: 'you_can_also', start: [0, 1], end: [0, 1] },
                 { name: 'calendar', start: [0, 2], end: [0, 2] },
                 { name: 'share', start: [0, 3], end: [0, 3] },
-                { name: 'register_suggestion', start: [0, 4], end: [0, 4] },
+                // { name: 'register_suggestion', start: [0, 4], end: [0, 4] },
             ]}
           >
             <Box gridArea="info" direction="column" align="start" gap="10px" >  
@@ -122,7 +122,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                     <Text size="14px" weight="bold" color="#7E1115"> here </Text>
                   </Link>
                 </Box>
-                <Text size="14px"> shortly before the event starts </Text>
+                <Text size="14px"> shortly before the start </Text>
               </Box>
             </Box>
 
@@ -137,7 +137,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
 
             <Box gridArea="calendar" pad="xsmall" direction="row" align="center">
               <FormNext size="20px" />
-              <Text size="14px"> Add this event to your calendar </Text>
+              <Text size="14px" margin={{right: "10px"}}> Add this event to your calendar </Text>
               <Box pad="xsmall">
                 <CalendarButtons talk={this.props.talk} height="30px" />
               </Box>
@@ -145,13 +145,13 @@ export default class TalkRegistrationButton extends Component<Props, State> {
 
             <Box gridArea="share" direction="row" pad="xsmall" align="center">
               <FormNext size="20px" />
-              <Text size="14px"> Share this event </Text> 
+              <Text size="14px" margin={{right: "10px"}}> Share it </Text> 
               <Box align="center" pad="xsmall">
                 <ShareButtons talk={this.props.talk} height="30px"/>
               </Box>
             </Box>
 
-            <Box gridArea="register_suggestion" direction="row" pad="xsmall" align="center">
+            {/*<Box gridArea="register_suggestion" direction="row" pad="xsmall" align="center">
               <FormNext size="20px" />
               <LoginModal
                 // open={this.props.showLogin}
@@ -171,7 +171,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
               <SignUpButton callback={() => {}} />
               <Text size="14px" margin={{left: "8px", right: "4px"}}> to put it in your </Text>   
               <Text size="14px" style={{fontStyle: "italic"}}> Saved talks </Text> 
-            </Box>
+              </Box>*/}
           </Grid>
           </>
         )}
