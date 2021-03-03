@@ -238,7 +238,7 @@ render() {
     return (
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
-            <Box direction="row" width="70%" align="center" gap="10px">
+            <Box direction="row" width="80%" align="center" gap="10px">
               <Calendar size="16px" />
               <Text
                 size="16px"
@@ -259,7 +259,7 @@ render() {
               // align="end"
               // margin={{left: "10px"}}
             >
-              <ShareButtons talk={this.props.talk} />
+              <ShareButtons talk={this.props.talk} width="90px" />
             </Box>
 
 
