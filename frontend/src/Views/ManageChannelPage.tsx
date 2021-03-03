@@ -560,13 +560,12 @@ export default class ManageChannelPage extends Component<Props, State> {
       );
     } else {
       return this.isAllowed() ? (
-        <Box
-          className="manage-channel"
-        >
+        <Box>
           <Box
             width="100%"
             height="100%"
             align="center"
+            margin={{ top: "100px" }}
           >
             <Box width="75%" align="start">
               {this.state.role === "owner" && (
