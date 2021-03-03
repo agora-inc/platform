@@ -466,6 +466,7 @@ export default class TalkCard extends Component<Props, State> {
                   talk={this.props.talk}
                   user={this.props.user}
                   role={this.state.role}
+                  isSharingPage={false}
                 />
             </Layer>
           </MediaQuery>

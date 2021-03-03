@@ -27,6 +27,7 @@ import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
 import Countdown from "../Components/Talks/Countdown";
 import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
+import TalkRegistrationButton from "../Components/Talks/Talkcard/TalkRegistrationButton";
 import { textToLatex } from "../Components/Core/LatexRendering";
 import { Helmet } from "react-helmet";
 
@@ -386,25 +387,31 @@ export default class ChannelPage extends Component<Props, State> {
           <meta name="twitter:description" content={talk.description} />
         </Helmet>
         <Box
-            margin={{top: "10vh", left: "20px", right: "20px"}}
-            align="center">
-            <Box
-                width="60vw"
-                margin={{left: "20px", right: "20px"}}>
-                <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
-                <Link
+          margin={{top: "10vh", left: "20px", right: "20px"}}
+          align="center"
+        >
+          <Box
+            width="60vw"
+            margin={{left: "20px", right: "20px"}}
+          >
+            <Box 
+              direction="row" 
+              gap="xsmall" 
+              style={{ minHeight: "40px" }}
+            >
+              <Link
                 className="channel"
                 to={`/${this.state.talk.channel_name}`}
                 style={{ textDecoration: "none" }}
-                >
+              >
                 <Box
-                    direction="row"
-                    gap="xsmall"
-                    align="center"
-                    round="xsmall"
-                    pad={{ vertical: "6px", horizontal: "6px" }}
+                  direction="row"
+                  gap="xsmall"
+                  align="center"
+                  round="xsmall"
+                  pad={{ vertical: "6px", horizontal: "6px" }}
                 >
-                    <Box
+                  <Box
                     justify="center"
                     align="center"
                     background="#efeff1"
@@ -414,103 +421,130 @@ export default class ChannelPage extends Component<Props, State> {
                         minWidth: 30,
                         borderRadius: 15,
                     }}
-                    >
-                        <img
-                        src={ChannelService.getAvatar(
-                            this.state.talk.channel_id
-                        )}
-                        height={30}
-                        width={30}
-                        />
-                    </Box>
-                    <Box justify="between">
+                  >
+                    <img
+                      src={ChannelService.getAvatar(
+                          this.state.talk.channel_id
+                      )}
+                      height={30}
+                      width={30}
+                    />
+                  </Box>
+                  <Box justify="between">
                     <Text weight="bold" size="18px" color="grey">
-                        {this.state.talk.channel_name}
+                      {this.state.talk.channel_name}
                     </Text>
-                    </Box>
+                  </Box>
                 </Box>
-                </Link>
+              </Link>
             </Box>
             <Text
-                      weight="bold"
-                      size="21px"
-                      color="black"
-                      style={{
-                        minHeight: "50px",
-                        maxHeight: "120px",
-                        overflowY: "auto",
-                      }}
-                      margin={{ bottom: "5px", top: "10px" }}
-                    >
-                      {this.state.talk.name}
+              weight="bold"
+              size="21px"
+              color="black"
+              style={{
+                minHeight: "50px",
+                maxHeight: "120px",
+                overflowY: "auto",
+              }}
+              margin={{ bottom: "5px", top: "10px" }}
+            >
+              {this.state.talk.name}
             </Text> 
 
             {this.state.talk.talk_speaker_url && (
-                      <a href={this.state.talk.talk_speaker_url} target="_blank">
-                        <Box
-                          direction="row"
-                          gap="small"
-                          onClick={() => {}}
-                          hoverIndicator={true}
-                          pad={{ left: "6px", top: "4px" }}
-                        >
-                          <UserExpert size="18px" />
-                          <Text
-                            size="18px"
-                            color="black"
-                            style={{
-                              height: "24px",
-                              overflow: "auto",
-                              fontStyle: "italic",
-                            }}
-                          >
-                            {this.state.talk.talk_speaker
-                              ? this.state.talk.talk_speaker
-                              : "TBA"}
-                          </Text>
-                        </Box>
-                      </a>
-                    )}
+              <a href={this.state.talk.talk_speaker_url} target="_blank">
+                <Box
+                  direction="row"
+                  gap="small"
+                  onClick={() => {}}
+                  hoverIndicator={true}
+                  pad={{ left: "6px", top: "4px" }}
+                >
+                  <UserExpert size="18px" />
+                  <Text
+                    size="18px"
+                    color="black"
+                    style={{
+                      height: "24px",
+                      overflow: "auto",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {this.state.talk.talk_speaker
+                      ? this.state.talk.talk_speaker
+                      : "TBA"}
+                  </Text>
+                </Box>
+              </a>
+            )}
 
             {!this.state.talk.talk_speaker_url && (
-                      <Box direction="row" gap="small">
-                        <UserExpert size="18px" />
-                        <Text
-                          size="18px"
-                          color="black"
-                          style={{
-                            height: "30px",
-                            overflow: "auto",
-                            fontStyle: "italic",
-                          }}
-                          margin={{ bottom: "10px" }}
-                        >
-                          {this.state.talk.talk_speaker
-                            ? this.state.talk.talk_speaker
-                            : "TBA"}
-                        </Text>
-                      </Box>
-                    )}
+              <Box direction="row" gap="small">
+                <UserExpert size="18px" />
+                <Text
+                  size="18px"
+                  color="black"
+                  style={{
+                    height: "30px",
+                    overflow: "auto",
+                    fontStyle: "italic",
+                  }}
+                  margin={{ bottom: "10px" }}
+                >
+                  {this.state.talk.talk_speaker
+                    ? this.state.talk.talk_speaker
+                    : "TBA"}
+                </Text>
+              </Box>
+            )}
 
             <Text
-                      size="16px"
-                      color="black"
-                      style={{
-                        minHeight: "50px",
-                        // maxHeight: "200px",
-                        // overflowY: "auto",
-                      }}
-                      margin={{ top: "10px", bottom: "10px" }}
-                    >
-                      {this.state.talk.description.split('\n').map(
-                        (item, i) => textToLatex(item)
-                      )}
-                    </Text>
-          <FooterOverlay
+              size="16px"
+              color="black"
+              style={{
+                minHeight: "50px",
+                // maxHeight: "200px",
+                // overflowY: "auto",
+              }}
+              margin={{ top: "10px", bottom: "10px" }}
+            >
+              {this.state.talk.description.split('\n').map(
+                (item, i) => textToLatex(item)
+              )}
+            </Text>
+
+            <FooterOverlay
               talk={this.state.talk}
               user={this.state.user}
               role={this.state.role}
-              />
+              isSharingPage={true}
+            />
+            <Box 
+              direction="row"
+              margin={{top: "20px"}} 
+              align="center" 
+              gap="20px" 
+              background="#d5d5d5" 
+              pad="25px" 
+              justify="center"
+            >
+
+              {/* <SaveForLaterButton
+                talk={this.props.talk}
+                user={this.props.user}
+              /> */}
+              
+              {((!this.state.user || talk.visibility !== "Members only") && (talk.visibility !== "Everybody")) && ( 
+                <TalkRegistrationButton
+                  talk={talk}
+                  user={this.state.user}
+                />
+              )}
+              {((this.state.user && talk.visibility === "Members only") || (talk.visibility === "Everybody")) && ( 
+                <Text> COUNTDOWN </Text>
+              )}
+            </Box>
           </Box>
         </Box>
       </>

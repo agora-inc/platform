@@ -22,6 +22,7 @@ import CalendarButtons from "../CalendarButtons";
 interface Props {
     talk: Talk;
     user: User | null;
+    isSharingPage: boolean;
     admin?: boolean;
     width?: string;
     // isCurrent?: boolean;
@@ -285,16 +286,18 @@ render() {
             
           </Box>
 
-          <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
-            {/* <SaveForLaterButton
-              talk={this.props.talk}
-              user={this.props.user}
-            /> */}
-            <TalkRegistrationButton
-              talk={this.props.talk}
-              user={this.props.user}
-            />
-          </Box>
+          {!this.props.isSharingPage && (
+            <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
+              {/* <SaveForLaterButton
+                talk={this.props.talk}
+                user={this.props.user}
+              /> */}
+              <TalkRegistrationButton
+                talk={this.props.talk}
+                user={this.props.user}
+              />
+            </Box>
+          )}
 
 
 
