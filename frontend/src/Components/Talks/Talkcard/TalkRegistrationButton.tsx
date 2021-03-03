@@ -93,7 +93,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           width={500}
           height={450}
           contentHeight="300px"
-          title={"How to attend?"}
+          title={"How to attend"}
         >
         <OverlaySection>
         {this.props.talk.visibility === "Everybody" && (
@@ -181,7 +181,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           <Grid
             rows={['80px', "60px"]}
             columns={['430px']}
-            gap="small"
+            // gap="small"
             areas={[
                 { name: 'info', start: [0, 0], end: [0, 0] },
                 { name: 'fill-in', start: [0, 1], end: [0, 1] },
@@ -191,17 +191,17 @@ export default class TalkRegistrationButton extends Component<Props, State> {
               <Text weight="bold" size="20px" textAlign="start"> 
                 This event has a restricted audience
               </Text>
-              <Box direction="row" align="center" pad="xsmall" justify="start">
-                <FormNext size="20px" />
-                <Text size="14px">  To receive via email the link to the seminar </Text>
+              <Box direction="row" align="center" pad="1px" justify="start">
+                <Text size="14px">  To receive via email the link to the seminar: </Text>
               </Box>
             </Box>
             
             <Box gridArea="fill-in" pad="xsmall" align="center">
               <TalkRegistrationFormButton
-                  text="Fill in this form"
-                  talk={this.props.talk}
-                  user={this.props.user}
+                text="Fill in this form"
+                talk={this.props.talk}
+                user={this.props.user}
+                callback={this.toggleModal}
               />
             </Box>
 

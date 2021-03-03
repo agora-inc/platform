@@ -5,7 +5,9 @@ import {
   Text,
   TextInput,
   Layer,
+  Grid,
 } from "grommet";
+import { FormNext } from "grommet-icons";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import { User } from "../../../Services/UserService";
@@ -15,6 +17,7 @@ interface Props {
   text?: string,
   talk: Talk,
   user: User | null;
+  callback: any
 }
 
 interface State {
@@ -87,6 +90,11 @@ export default class TalkRegistrationFormButton extends Component<Props, State> 
     this.setState({ feedbackModal: !this.state.feedbackModal });
     this.setState({ showForm: false });
   };
+
+  toggleFeedbackAndRegistrationModal = () => {
+    this.setState({ feedbackModal: !this.state.feedbackModal });
+    this.props.callback();
+  }
 
   isComplete = () => {
     return (
@@ -195,31 +203,51 @@ export default class TalkRegistrationFormButton extends Component<Props, State> 
               width: 350,
               height: 200,
               borderRadius: 15,
-              border: "3.5px solid black",
-              padding: 10,
+              // border: "3.5px solid black",
+              padding: 20,
             }}
           >
-            <Box height="200px"
-            >
-              {(this.state.feedbackMsg.errorMsg == "") && (
-              <Text margin="20px">
-                <p><b>Thank you for registering!</b></p> 
-                <p>You will receive a conference URL by email after review by the organisers.</p>
-              </Text>
-              )}
-              {(this.state.feedbackMsg.errorMsg !== "") && (
                 <>
-                  <Text margin={{left: "15px", right: "15px"}}>
-                    Something went wrong. Please signal issue using the "Feedback / bug" button.
-                  </Text>
-                  <Text margin={{left: "15px", right: "15px", top: "5px"}} color="red">
-                    Error: {this.state.feedbackMsg.errorMsg}
+                <Grid
+                  rows={['120px', "40px"]}
+                  columns={['300px']}
+                  // gap="small"
+                  areas={[
+                      { name: 'info', start: [0, 0], end: [0, 0] },
+                      { name: 'ok', start: [0, 1], end: [0, 1] },
+                  ]}
+                >
+                  <Box gridArea="info" direction="column" align="start" justify="start" gap="15px" >
+                    <Text weight="bold" size="20px" textAlign="start"> 
+                      {this.state.feedbackMsg.errorMsg === "" ? "Thank you for registering!" : "Something went wrong..."} 
                     </Text>
+                    <Box direction="row" align="start" pad="1px" justify="start">
+                      <Text size="14px"> 
+                        {this.state.feedbackMsg.errorMsg === "" 
+                          ? "You will receive a conference URL by email after review by the organisers" 
+                          : "Please report the issue using `Feedback`. Error: " + this.state.feedbackMsg.errorMsg}
+                      </Text>
+                    </Box>
+                  </Box>
+                  <Box
+                    gridArea="ok"
+                    onClick={this.toggleFeedbackAndRegistrationModal}
+                    background="#F2F2F2"
+                    round="xsmall"
+                    width="70px" height="35px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={true}
+                    hoverIndicator="#DDDDDD"
+                  >
+                    <Text weight="bold" size="15px">
+                      OK
+                    </Text>
+                  </Box> 
+                        
+                </Grid>  
                 </>
-              )}
 
-            </Box>
-            <Button label="Ok" onClick={this.toggleFeedbackModal} alignSelf="center"/>
           </Layer>
         )}
       </Box>
