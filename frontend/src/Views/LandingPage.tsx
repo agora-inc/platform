@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading } from "grommet";
 // import { ReactComponent as Logo } from "../apollo.svg";
-import logo from "../assets/general/logo_v2.png";
+import Logo from "../assets/general/logo_v2.png";
 
 import { User, UserService } from "../Services/UserService";
 import { Search, Play, Add, Channel, ScheduleNew, Multiple } from "grommet-icons";
@@ -65,7 +65,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           
           <Box direction="row" justify="center" style={{justifyContent: "center"}} margin={{top: "50px"}}>
             {/* <Logo style={{ height: "60px", width: "60px"}} /> */}
-            <img src={logo} style={{ height: "50px", width: "55px"}}/>
+            <img src={Logo} style={{ height: "50px", width: "55px"}}/>
             <Heading
               level="1"
               // margin={{ top: "5px" }}
@@ -151,7 +151,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               hoverIndicator="#CCCCCC"
             > 
               <Add size="30px" />
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Create an <img src={logo} style={{ height: "14px", width: "16px"}}/>gora </Text>
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Create an <img src={Logo} style={{ height: "14px", width: "16px"}}/>gora </Text>
             </Box>
           </Link>
           <Link
@@ -172,7 +172,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               hoverIndicator="#CCCCCC"
             >
               <Multiple size="30px" />
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover all <img src={logo} style={{ height: "14px", width: "14px"}}/>goras </Text>
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover all <img src={Logo} style={{ height: "14px", width: "14px"}}/>goras </Text>
             </Box>
           </Link>
         </Box>
@@ -185,7 +185,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           margin={{top: "100px", left:"-50px"}}
         >
           <Box direction="column" justify="start" style={{minWidth: "50%"}}>
-            <Text size="21px" margin={{bottom: "12px"}}> What is an <img src={logo} style={{ height: "16px", width: "16px"}}/>gora? </Text>
+            <Text size="21px" margin={{bottom: "12px"}}> What is an <img src={Logo} style={{ height: "16px", width: "16px"}}/>gora? </Text>
             <Text size="14px" margin={{bottom: "6px"}}> An agora is a community hub </Text>
             <Text size="14px" margin={{bottom: "6px"}} weight="bold"> It is the place where seminars are hosted and future events advertised </Text>
             <Text size="14px" margin={{bottom: "6px"}}> Visit and connect with any agora by becoming a member or a future speaker </Text>
