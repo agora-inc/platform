@@ -59,15 +59,7 @@ export default class ChannelPage extends Component<Props, State> {
       registered: false,
       showTalkId: this.getTalkIdFromUrl(),
     };
-    this.fetchTalk();
-    this.checkIfRegistered();
-    this.fetchRoleInChannel();
-  }
-
-  componentWillMount() {
-    this.fetchTalk();
-    this.checkIfRegistered();
-    this.fetchRoleInChannel();
+    this.fetchAll()
   }
 
   getTalkIdFromUrl = (): number => {
@@ -79,50 +71,24 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   fetchAll = () => {
-    let talkId = this.getTalkIdFromUrl();
-    let channelId = 0; // this.getChannelIdFromTalkId();
+    let talkId = this.getTalkIdFromUrl();  
     TalkService.getTalkById(talkId, (talk: Talk) => {
-        this.setState({talk: talk})
-    });
-
-    this.state.user && 
-      ChannelService.getRoleInChannel(
-        this.state.user.id, 
-        channelId, 
-        (role: "none" | "owner" | "member" | "follower") => {
-          this.setState({role: role})
-      })
-
-    this.state.user &&
-      TalkService.isRegisteredForTalk(
-        talkId,
-        this.state.user.id,
-        (registered: any) => {
-          this.setState({ registered });
-        }
-      );
-
-  }
-
-  fetchTalk = () => {
-    let talkId = this.getTalkIdFromUrl();
-    TalkService.getTalkById(talkId, (talk: Talk) => {
-        this.setState({talk: talk})
+        this.setState({talk: talk}, 
+          () => {this.fetchUserInfo();}
+        );
     });
   }
 
-  fetchRoleInChannel = () => {
-    this.state.user && 
+  fetchUserInfo = () => {
+    if (this.state.user) {
       ChannelService.getRoleInChannel(
         this.state.user.id, 
         this.state.talk.channel_id, 
         (role: "none" | "owner" | "member" | "follower") => {
           this.setState({role: role})
-      })
-  }
+        }
+      );
 
-  checkIfRegistered = () => {
-    this.state.user &&
       TalkService.isRegisteredForTalk(
         this.state.talk.id,
         this.state.user.id,
@@ -130,7 +96,8 @@ export default class ChannelPage extends Component<Props, State> {
           this.setState({ registered });
         }
       );
-  };
+    }
+  }
 
   formatDateFull = (s: string, e: string) => {
     const start = new Date(s);
@@ -144,9 +111,6 @@ export default class ChannelPage extends Component<Props, State> {
 
   render() { 
     const talk = this.state.talk;
-    console.log("talk", talk)
-    console.log("role", this.state.role)
-    console.log("registered", this.state.registered)
 
       return(
         <>
@@ -296,6 +260,8 @@ export default class ChannelPage extends Component<Props, State> {
               role={this.state.role}
               isSharingPage={true}
             />
+
+            {/*
             <Box 
               direction="row"
               margin={{top: "20px"}} 
@@ -306,21 +272,22 @@ export default class ChannelPage extends Component<Props, State> {
               justify="center"
             >
 
-              {/* <SaveForLaterButton
+              <SaveForLaterButton
                 talk={this.props.talk}
                 user={this.props.user}
-              /> */}
+              /> 
               
-              {!(this.state.role in ["owner", "member"]) && !this.state.registered && talk.visibility !== "Everybody" && ( 
+              {!["owner", "member"].includes(this.state.role) && !this.state.registered && talk.visibility !== "Everybody" && ( 
                 <TalkRegistrationButton
                   talk={talk}
                   user={this.state.user}
                 />
               )}
-              {(this.state.role in ["owner", "member"] || this.state.registered || talk.visibility === "Everybody") && ( 
+              {(["owner", "member"].includes(this.state.role) || this.state.registered || talk.visibility === "Everybody") && ( 
                 <Countdown talk={talk} />
               )}
             </Box>
+              */}
           </Box>
         </Box>
       </>

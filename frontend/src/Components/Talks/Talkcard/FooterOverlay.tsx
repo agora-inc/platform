@@ -37,7 +37,7 @@ interface Props {
     showShadow: boolean;
     registered: boolean;
     available: boolean;
-    showEdit: boolean
+    showEdit: boolean;
   }
   
   export default class FooterOverlay extends Component<Props, State> {
@@ -48,8 +48,9 @@ interface Props {
         showShadow: false,
         registered: false,
         available: true,
-        showEdit: false
+        showEdit: false,
       };
+      this.checkIfAvailableAndRegistered();
     }
   
     checkIfRegistered = () => {
@@ -108,7 +109,7 @@ interface Props {
     componentWillMount() {
       this.checkIfAvailableAndRegistered();
     }
-  
+
     checkIfAvailableAndRegistered = () => {
       if (this.props.user) {
         TalkService.isAvailableToUser(
@@ -236,6 +237,9 @@ interface Props {
     };
 
 render() {
+    console.log("role", this.props.role)
+    console.log("user", this.props.user)
+    console.log("talk", this.props.talk)
     return (
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
@@ -286,29 +290,30 @@ render() {
             
           </Box>
 
-          {!this.props.isSharingPage && (
-            <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
-              {/* <SaveForLaterButton
-                talk={this.props.talk}
-                user={this.props.user}
-              /> */}
+      {/* <SaveForLaterButton
+            talk={this.props.talk}
+            user={this.props.user}
+          /> */}
+
+          <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
+            {!this.props.isSharingPage && (
               <TalkRegistrationButton
                 talk={this.props.talk}
                 user={this.props.user}
               />
-            </Box>
-          )}
-
-
-
-
-
-
-
-
-
-
-
+            )}
+            {this.props.isSharingPage && !(this.props.role && ["owner", "member"].includes(this.props.role)) && 
+             !this.state.registered && this.props.talk.visibility !== "Everybody" && ( 
+              <TalkRegistrationButton
+                talk={this.props.talk}
+                user={this.props.user}
+              />
+            )}
+            {this.props.isSharingPage && this.props.role &&
+            (["owner", "member"].includes(this.props.role) || this.state.registered || this.props.talk.visibility === "Everybody") && ( 
+              <Countdown talk={this.props.talk} />
+            )}
+          </Box>
 
 
 
