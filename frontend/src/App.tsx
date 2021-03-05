@@ -5,7 +5,7 @@ import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
-import StreamPage from "./Views/StreamPage";
+// import StreamPage from "./Views/StreamPage";
 import TagPage from "./Views/TagPage";
 import Streaming from "./Views/Streaming";
 import AllVideosPage from "./Views/AllVideosPage";
@@ -30,6 +30,20 @@ import AgoraStreamSpeakerPage from "./Views/AgoraStreamSpeakerPage";
 import AgoraStreamAudiencePage from "./Views/AgoraStreamAudiencePage";
 import {useTracking} from './Components/Core/Analytics/useTracking';
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function App() {
   // // Initialize google analytics page view tracking
   useTracking("G-J8FEQBCS4H");
@@ -47,7 +61,7 @@ function App() {
           <Route path="/agora/:room_id/speaker/" component={AgoraStreamSpeakerPage} />
           <Route path="/agora/:room_id/" component={AgoraStreamAudiencePage} />
           <Route path="/video" component={VideoPage} />
-          <Route path="/stream" component={StreamPage} />
+          {/* <Route path="/stream" component={StreamPage} /> */}
           <Route path={`/:name/manage`} component={ManageChannelPage} />
           <Route path="/tag" component={TagPage} />
           <Route path="/event/:name" component={TalkSharingPage}/>
