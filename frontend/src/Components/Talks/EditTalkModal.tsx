@@ -566,11 +566,11 @@ export default class EditTalkModal extends Component<Props, State> {
                         Remy
                         */}
 
-                      <CheckBox
+                      {/* <CheckBox
                           checked={this.state.linkAvailable}
                           label="interested?"
                           onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
-                        />
+                        /> */}
 
 
 
