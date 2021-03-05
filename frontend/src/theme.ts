@@ -38,7 +38,7 @@ export const Theme = {
     },
     focus: {
       border: {
-        color: "#5454A0",
+        color: "#7E1115",
       }
     }
   },

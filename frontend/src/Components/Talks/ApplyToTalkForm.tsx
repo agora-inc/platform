@@ -7,11 +7,10 @@ import {
   TextArea,
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
-import emailjs from "emailjs-com";
 import { Topic } from "../../Services/TopicService";
 import TopicSelector from "../Talks/TopicSelector";
 import { ChannelService } from "../../Services/ChannelService";
-import { Empty } from "antd";
+import ReactTooltip from "react-tooltip";
 
 
 
@@ -233,10 +232,12 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       <Box>
         <Box
           focusIndicator={false}
+          data-tip data-for='apply_give_talk'
           width="12vw"
+          height="30px"
           background="white"
           round="xsmall"
-          pad={{bottom: "3px", top: "3px", left: "18px", right: "18px"}}
+          pad={{bottom: "3px", top: "6px", left: "3px", right: "3px"}}
           onClick={() => this.setState({ showForm: true })}
           style={{
             border: "1px solid #C2C2C2",
@@ -249,8 +250,11 @@ export default class ApplyToTalkForm extends Component<Props, State> {
             color="grey"
             alignSelf="center"
           >
-            Give a talk!
+            Give a talk
           </Text>
+            <ReactTooltip id="apply_give_talk" effect="solid">
+              Want to give a seminar within '{this.props.channelName}'? Apply!
+            </ReactTooltip>
         </Box>
         <Overlay
           visible={this.state.showForm}

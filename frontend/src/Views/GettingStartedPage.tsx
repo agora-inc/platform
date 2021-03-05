@@ -127,7 +127,7 @@ export default class GettingStartedPage extends Component<Props, State> {
         width="100vw"
         height="100vh"
         align="center"
-        margin={{ top: "140px" }}
+        margin={{ top: "10vh" }}
       >
         <Box width="70%" direction="column">
           {/* <Box
@@ -145,12 +145,12 @@ export default class GettingStartedPage extends Component<Props, State> {
           <Box margin={{bottom: "32px"}}>
             <Text size={this.state.sizeText} > Welcome to <b>agora.stream</b>, the centralized platform to advertise and attend academic seminars!
              </Text>
-          <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
+          {/* <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
             PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
-          </Text>
+          </Text> */}
           </Box>
 
-          <Box direction="row" gap="small" margin={{top: "72px", bottom: "48px"}}>
+          <Box direction="row" gap="small" margin={{top: "22px", bottom: "48px"}}>
             <PersonalComputer size="medium"/>
             <Text size={this.state.sizeItem} weight="bold"> For talk participants </Text>
           </Box>
@@ -272,7 +272,7 @@ export default class GettingStartedPage extends Component<Props, State> {
 
             <TabPanel>
               <Text size={this.state.sizeText}>
-                Click on the user panel on the top right corner of the homepage and click on "Create Agora".
+                First, you need to log in or sign up. Once done, click on the user panel on the top right corner of the homepage and click on "Create Agora".
                 Enter the name you want and you will be redirected to the agora's main page. You are automatically an
                 administrator of the agora, meaning that you can customize it.
 
