@@ -5,6 +5,8 @@
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from mailing import sendgridApi
+from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
 
@@ -13,16 +15,20 @@ from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-users = UserRepository.UserRepository(db=agora_db, mail_sys=mail)
+mail_sys = sendgridApi.sendgridApi()
+
+users = UserRepository.UserRepository(db=agora_db, mail_sys=mail_sys)
 tags = TagRepository.TagRepository(db=agora_db)
 topics = TopicRepository.TopicRepository(db=agora_db)
 questions = QandARepository.QandARepository(db=agora_db)
 streams = StreamRepository.StreamRepository(db=agora_db)
-talks = TalkRepository.TalkRepository(db=agora_db)
+talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
 videos = VideoRepository.VideoRepository(db=agora_db)
-channels = ChannelRepository.ChannelRepository(db=agora_db)
+channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
 search = SearchRepository.SearchRepository(db=agora_db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
+sendgridApi = sendgridApi.sendgridApi()
+
 
 # BASE_API_URL = "http://localhost:8000"
 BASE_API_URL = "https://agora.stream/api"
@@ -709,8 +715,6 @@ def getTalkById():
     except Exception as e:
         return jsonify(str(e))
 
-
-
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
     # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
@@ -964,7 +968,10 @@ def registerTalk():
         email = params["email"]
         website = params["website"] if "website" in params else ""
         institution = params["institution"] if "institution" in params else ""
-        res = talks.registerTalk(talkId, userId, name, email, website, institution)
+        user_hour_offset = params["userHourOffset"]
+
+        
+        res = talks.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
         return jsonify(str(res))
 
     except Exception as e:
@@ -1406,4 +1413,4 @@ def channelLinkRedirect():
         '''
         return render_template(res_string)
     except Exception as e:
-        return str(e)
+        return jsonify(str(e))

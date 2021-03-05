@@ -23,6 +23,10 @@ import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton
 import ShareButtons from ".././Components/Core/ShareButtons";
 
 
+// import * as RNLocalize from 'react-native-localize';
+
+
+
 interface Props {
   location: { pathname: string };
   streamId: number;
@@ -81,9 +85,12 @@ export default class ChannelPage extends Component<Props, State> {
         personalHomepage: ""
       }
     };
+    console.log("YOOOO")
+    var now = new Date()
+    console.log(- now.getTimezoneOffset())
     // TEST: DELETE THE BELOW LINE ONCE AGORA.IO TOKEN SERVER WORKS
-    var token = StreamService.getToken("xyz", 1, 1611010057, "", "abc-55441-u1", ()=>{})
-    console.log("TOKEN TEST");
+    // var token = StreamService.getToken("xyz", 1, 1611010057, "", "abc-55441-u1", ()=>{})
+    // console.log("TOKEN TEST");
     
   }
 
@@ -394,11 +401,14 @@ export default class ChannelPage extends Component<Props, State> {
                 </Text>*/}
             </Box>
           </Box>
+
+
+          
           <Box direction="row" gap="xsmall" align="center">
-          <ApplyToTalkForm
-                      channelId={this.state.channel!.id}
-                      channelName={this.state.channel!.name}
-                    />
+            <ApplyToTalkForm
+                        channelId={this.state.channel!.id}
+                        channelName={this.state.channel!.name}
+                      />
             {!(this.state.role == "member" || this.state.role == "owner") && (
             <RequestMembershipButton
               channelId={this.state.channel!.id}
