@@ -28,6 +28,7 @@ interface State {
     feedbackModal: boolean;
     restricted: boolean;
     mainTitle: string;
+    registrationStatus: string;
 }
 
 export default class TalkRegistrationButton extends Component<Props, State> {
@@ -42,12 +43,20 @@ export default class TalkRegistrationButton extends Component<Props, State> {
       feedbackModal: false,
       restricted: true,
       mainTitle: "",
+      registrationStatus: "",
     };
     this.setRestrictedAndTitle();
   }
 
   componentWillMount() {
     this.setRestrictedAndTitle();
+  }
+
+  registrationStatus = () => {
+    if (this.props.user) {
+      
+    }
+    // this.setState({registrationStatus})
   }
 
   setRestrictedAndTitle = () => {
@@ -126,7 +135,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
         {!this.state.restricted && (
           <>
           <Grid
-            rows={['90px', '20px', '40px', '40px']}
+            rows={['80px', '30px', '40px', '40px']}
             columns={['430px']}
             gap="small"
             areas={[
@@ -153,10 +162,10 @@ export default class TalkRegistrationButton extends Component<Props, State> {
               </Box>
             </Box>
 
-            <Box gridArea="you_can_also" align="start">
+            <Box gridArea="you_can_also" align="start" pad="10px">
               <Text
                 weight="bold"
-                size="20px"
+                size="16px"
               >
                 Next steps
               </Text>

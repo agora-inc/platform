@@ -283,14 +283,30 @@ export default class TalkCard extends Component<Props, State> {
               {this.props.talk.card_visibility === "Members only" && 
                 <Box
                   round="xsmall"
-                  background="#C2C2C2"
+                  background="#EAF1F1"
                   pad="small"
                   justify="center"
                   align="center"
-                  width="250px"             
+                  width="170px"
+                  height="30px"            
                 >
                   <Text size="14px">
-                    Members only
+                    member-only
+                  </Text>
+                </Box>
+              }
+              {this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
+                <Box
+                  round="xsmall"
+                  background="#D7F75B"
+                  pad="small"
+                  justify="center"
+                  align="center"
+                  width="170px"
+                  height="30px"             
+                >
+                  <Text size="14px" style={{ fontStyle: "normal" }}>
+                    on-registration
                   </Text>
                 </Box>
               }
@@ -650,7 +666,7 @@ export default class TalkCard extends Component<Props, State> {
                         width="33%"                
                       >
                         <Text size="14px">
-                          Members only
+                          member-only
                         </Text>
                       </Box>
                         */}
