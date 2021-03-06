@@ -36,6 +36,7 @@ interface Props {
 interface State {
   showModal: boolean;
   showEdit: boolean;
+  available: boolean;
   registered: boolean;
   showShadow: boolean;
 }
@@ -46,6 +47,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.state = {
       showModal: this.props.show ? this.props.show && !this.props.admin : false,
       showEdit: false,
+      available: false,
       registered: false,
       showShadow: false,
     };
@@ -54,6 +56,28 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   componentDidMount = () => {
     this.checkIfUserCanAccessLink();
     this.checkIfUserCanViewCard();
+  };
+
+  checkIfAvailableAndRegistered = () => {
+    if (this.props.user) {
+      TalkService.isAvailableToUser(
+        this.props.user.id,
+        this.props.talk.id,
+        (available: boolean) => {
+          this.setState({ available }, () => {
+            if (available) {
+              this.checkIfRegistered();
+            }
+          });
+        }
+      );
+    } else {
+      this.setState({
+        available:
+          this.props.talk.visibility === "Everybody" ||
+          this.props.talk.visibility === null,
+      });
+    }
   };
 
   checkIfRegistered = () => {
@@ -93,8 +117,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
         }
       }
   };
-
-
 
   checkIfUserCanViewCard = (): boolean => {
     if (this.props.admin) {
@@ -530,7 +552,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 user={this.props.user}
                 isSharingPage={false}
                 admin={this.props.admin}
+                registered={this.state.registered}
                 role={this.props.role}
+                available={this.state.available}
                 width={this.props.width}
                 // isCurrent?: boolean;
                 // show?: boolean;

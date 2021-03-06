@@ -15,6 +15,8 @@ import ReactTooltip from "react-tooltip";
 interface Props {
   talk: Talk,
   user: User | null;
+  role: string | undefined;
+  registered: boolean;
 }
 
 interface State {
@@ -24,6 +26,8 @@ interface State {
     },
     showForm: boolean;
     feedbackModal: boolean;
+    restricted: boolean;
+    mainTitle: string;
 }
 
 export default class TalkRegistrationButton extends Component<Props, State> {
@@ -36,7 +40,30 @@ export default class TalkRegistrationButton extends Component<Props, State> {
       },
       showForm: false,
       feedbackModal: false,
+      restricted: true,
+      mainTitle: "",
     };
+    this.setRestrictedAndTitle();
+  }
+
+  componentWillMount() {
+    this.setRestrictedAndTitle();
+  }
+
+  setRestrictedAndTitle = () => {
+    if (this.props.talk.visibility === "Everybody") {
+      this.setState({restricted: false, mainTitle: "This event is public"})
+    } else {
+      if (this.props.role === "owner") {
+        this.setState({restricted: false, mainTitle: "You are an administrator of this agora"})
+      } else if (this.props.role === "member") {
+        this.setState({restricted: false, mainTitle: "You are a member of this agora"})
+      } else if (this.props.registered) {
+        this.setState({restricted: false, mainTitle: "You are already registered to this event"})
+      } else {
+        this.setState({restricted: true, mainTitle: "This event has a restricted audience"})
+      }
+    }
   }
 
   toggleModal = () => {
@@ -96,7 +123,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           title={"How to attend"}
         >
         <OverlaySection>
-        {this.props.talk.visibility === "Everybody" && (
+        {!this.state.restricted && (
           <>
           <Grid
             rows={['90px', '20px', '40px', '40px']}
@@ -112,7 +139,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           >
             <Box gridArea="info" direction="column" align="start" gap="10px" >  
               <Text weight="bold" size="20px"> 
-                This event is public
+                {this.state.mainTitle}
               </Text>
               <Box direction="row" align="center" pad="xsmall">
                 <FormNext size="20px" />
@@ -176,7 +203,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           </>
         )}
 
-        {this.props.talk.visibility !== "Everybody" && (
+        {this.state.restricted && (
           <>
           <Grid
             rows={['80px', "60px"]}
@@ -189,7 +216,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           >
             <Box gridArea="info" direction="column" align="start" justify="start" gap="10px" >
               <Text weight="bold" size="20px" textAlign="start"> 
-                This event has a restricted audience
+                {this.state.mainTitle}
               </Text>
               <Box direction="row" align="center" pad="1px" justify="start">
                 <Text size="14px">  To receive via email the link to the seminar: </Text>

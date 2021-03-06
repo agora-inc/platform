@@ -22,12 +22,14 @@ import CalendarButtons from "../CalendarButtons";
 interface Props {
     talk: Talk;
     user: User | null;
+    role: string | undefined;
+    available: boolean;
+    registered: boolean;
     isSharingPage: boolean;
     admin?: boolean;
     width?: string;
     // isCurrent?: boolean;
     following?: boolean;
-    role?: string;
     onEditCallback?: any;
     callback?: any;
   }
@@ -35,8 +37,6 @@ interface Props {
   interface State {
     showModal: boolean;
     showShadow: boolean;
-    registered: boolean;
-    available: boolean;
     showEdit: boolean;
   }
   
@@ -46,23 +46,9 @@ interface Props {
       this.state = {
         showModal: false,
         showShadow: false,
-        registered: false,
-        available: true,
         showEdit: false,
       };
-      this.checkIfAvailableAndRegistered();
     }
-  
-    checkIfRegistered = () => {
-        this.props.user &&
-          TalkService.isRegisteredForTalk(
-            this.props.talk.id,
-            this.props.user.id,
-            (registered: any) => {
-              this.setState({ registered });
-            }
-          );
-      };
 
     onFollowClicked = () => {
       if (!this.props.following) {
@@ -104,32 +90,6 @@ interface Props {
       let deltaHour = Math.floor(deltaSec / 3600);
       let remainderMin = Math.floor((deltaSec % 3600) / 60);
       return `Finishing in ${deltaHour}h ${remainderMin}m`;
-    };
-
-    componentWillMount() {
-      this.checkIfAvailableAndRegistered();
-    }
-
-    checkIfAvailableAndRegistered = () => {
-      if (this.props.user) {
-        TalkService.isAvailableToUser(
-          this.props.user.id,
-          this.props.talk.id,
-          (available: boolean) => {
-            this.setState({ available }, () => {
-              if (available) {
-                this.checkIfRegistered();
-              }
-            });
-          }
-        );
-      } else {
-        this.setState({
-          available:
-            this.props.talk.visibility === "Everybody" ||
-            this.props.talk.visibility === null,
-        });
-      }
     };
 
     register = () => {
@@ -205,7 +165,7 @@ interface Props {
           }
         }
         else if (this.props.talk.visibility == "Members only") {
-          if (this.props.role === "member"){
+          if (this.props.role === "member") {
             return true;
           }
           else {
@@ -225,7 +185,7 @@ interface Props {
     };
 
     onClick = () => {
-      if (this.state.registered) {
+      if (this.props.registered) {
         this.unregister();
       } else {
         this.register();
@@ -237,9 +197,6 @@ interface Props {
     };
 
 render() {
-    console.log("role", this.props.role)
-    console.log("user", this.props.user)
-    console.log("talk", this.props.talk)
     return (
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
@@ -296,22 +253,24 @@ render() {
           /> */}
 
           <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
-            {!this.props.isSharingPage && (
-              <TalkRegistrationButton
-                talk={this.props.talk}
-                user={this.props.user}
-              />
+            {(!this.props.isSharingPage || (
+              !(this.props.role && ["owner", "member"].includes(this.props.role)) && 
+              !this.props.registered && 
+              this.props.talk.visibility !== "Everybody")) && (
+
+                <TalkRegistrationButton
+                  talk={this.props.talk}
+                  user={this.props.user}
+                  role={this.props.role}
+                  registered={this.props.registered}
+                />
             )}
-            {this.props.isSharingPage && !(this.props.role && ["owner", "member"].includes(this.props.role)) && 
-             !this.state.registered && this.props.talk.visibility !== "Everybody" && ( 
-              <TalkRegistrationButton
-                talk={this.props.talk}
-                user={this.props.user}
-              />
-            )}
-            {this.props.isSharingPage && this.props.role &&
-            (["owner", "member"].includes(this.props.role) || this.state.registered || this.props.talk.visibility === "Everybody") && ( 
-              <Countdown talk={this.props.talk} />
+            {(this.props.isSharingPage && (
+              (this.props.role && ["owner", "member"].includes(this.props.role)) || 
+              this.props.registered || 
+              this.props.talk.visibility === "Everybody")) && (
+
+                <Countdown talk={this.props.talk} />
             )}
           </Box>
 

@@ -43,13 +43,13 @@ export default class TalkCard extends Component<Props, State> {
   }
   
   fetchRoleInChannel = () => {
-    if (this.props.user !== null){
-    ChannelService.getRoleInChannel(
-      this.props.user?.id, 
-      this.props.talk.channel_id, 
-      (role: "none" | "owner" | "member" | "follower") => {
-        this.setState(
-          {role: role})
+    if (this.props.user !== null) {
+      ChannelService.getRoleInChannel(
+        this.props.user.id, 
+        this.props.talk.channel_id, 
+        (role: "none" | "owner" | "member" | "follower") => {
+          this.setState(
+            {role: role})
         })
       }
     }
@@ -94,7 +94,6 @@ export default class TalkCard extends Component<Props, State> {
   componentWillMount() {
     this.checkIfAvailableAndRegistered();
   }
-
 
   // method here for mobile
   checkIfAvailableAndRegistered = () => {
@@ -466,6 +465,8 @@ export default class TalkCard extends Component<Props, State> {
                   talk={this.props.talk}
                   user={this.props.user}
                   role={this.state.role}
+                  available={this.state.available}
+                  registered={this.state.registered}
                   isSharingPage={false}
                 />
             </Layer>

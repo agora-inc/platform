@@ -23,6 +23,7 @@ interface State {
   talk: Talk;
   role: "none" | "owner" | "member" | "follower";
   user: User | null;
+  available: boolean;
   registered: boolean;
   showTalkId: number;
 }
@@ -56,6 +57,7 @@ export default class ChannelPage extends Component<Props, State> {
         audience_level: "All"
       },
       user: UserService.getCurrentUser(),
+      available: false,
       registered: false,
       showTalkId: this.getTalkIdFromUrl(),
     };
@@ -86,6 +88,14 @@ export default class ChannelPage extends Component<Props, State> {
         this.state.talk.channel_id, 
         (role: "none" | "owner" | "member" | "follower") => {
           this.setState({role: role})
+        }
+      );
+
+      TalkService.isAvailableToUser(
+        this.state.user.id,
+        this.state.talk.id,
+        (available: boolean) => {
+          this.setState({ available });
         }
       );
 
@@ -258,6 +268,8 @@ export default class ChannelPage extends Component<Props, State> {
               talk={this.state.talk}
               user={this.state.user}
               role={this.state.role}
+              available={this.state.available}
+              registered={this.state.registered}
               isSharingPage={true}
             />
 
