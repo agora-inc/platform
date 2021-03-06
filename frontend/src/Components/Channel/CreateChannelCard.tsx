@@ -104,8 +104,8 @@ export default class CreateChannelCard extends Component<Props, State> {
   isComplete = () => {
     return (
       this.state.newChannelName !== "" &&
-      this.containsSpecialCharacter(this.state.newChannelName) &&
-      this.state.topics.length > 0
+      !(this.containsSpecialCharacter(this.state.newChannelName)) &&
+      this.state.topics.length > 5
     );
   };
 
@@ -211,7 +211,7 @@ export default class CreateChannelCard extends Component<Props, State> {
             onCanceledCallback={this.cancelTopic}
             isPrevTopics={this.state.isPrevTopics}
             prevTopics={this.props.channel ? this.props.channel.topics : []} 
-            size="medium"
+            textSize="medium"
           />
         </OverlaySection>
         {this.containsSpecialCharacter(this.state.newChannelName) ? (
@@ -220,7 +220,7 @@ export default class CreateChannelCard extends Component<Props, State> {
             size="12px"
             style={{ marginBottom: "12px" }}
             >
-              Agora name cannot contain special characters!
+              Agora name cannot contain special characters
             </Text>
           ) : (null)}
       </Overlay>

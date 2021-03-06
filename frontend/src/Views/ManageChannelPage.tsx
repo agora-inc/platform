@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image, Button } from "grommet";
+import { Box, Text, TextArea, Image, Grid } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -20,7 +20,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, DocumentText, Resources } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -603,55 +603,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                   name={this.state.channel!.name}
                   id={this.state.channel!.id}
                 />
-                <Box width="50%" margin={{ left: "xsmall", right: "xsmall" }}>
-                <ChannelTopicSelector 
-                  onSelectedCallback={this.selectTopic}
-                  onCanceledCallback={this.cancelTopic}
-                  isPrevTopics={this.state.isPrevTopics}
-                  prevTopics={this.props.channel ? this.props.channel.topics : []} 
-                  size="small"
-                />
-                </Box>
-                {/*<ConfirmationButton
-                  overlayWidth={400}
-                  overlayheight={200}
-                  actionTitle="Topic saved"
-                  confirmationMessage="You have saved the topic!"
-                  buttonMessage="Save Topic"
-                  action={this.updateTopic()}
-                >
-                </ConfirmationButton>*/}
-                <Box
-                  className={"save_Button"}
-                  focusIndicator={false}
-                  width={"10vw"}
-                  background="white"
-                  round="xsmall"
-                  height={"30px"}
-                  pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
-                  onClick={this.SavedButtonClicked}
-                  onAnimationEnd={this.endOfAnimation}
-                  style={{
-                    border: "1px solid #C2C2C2",
-                    minWidth: "25px"
-                  }}
-                  hoverIndicator={true}
-                  justify="center"
-                >
-                  <Text 
-                    size="14px" 
-                    color="grey"
-                    alignSelf="center"
-                  >
-
-                {this.state.topicSaved == false && (
-                    "Save Topic"
-                )}
-                {this.state.topicSaved == true && (
-                    "Topic Saved"
-                )}
-                  </Text>
-                </Box>
               </Box>
             </Box>
           </Box>
@@ -778,14 +729,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Tab>*/}
                   <Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <ContactInfo />
-                      <Text size="14px"> 
-                        Contact 
-                      </Text>
-                    </Box>
-                  </Tab>
-                  <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <Resources />
                       <Text size="14px"> 
@@ -798,6 +741,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <DocumentText />
                       <Text size="14px"> 
                         Registrations 
+                      </Text>
+                    </Box>
+                  </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <SettingsOption />
+                      <Text size="14px"> 
+                        Details 
                       </Text>
                     </Box>
                   </Tab>
@@ -953,6 +904,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                     ))}
                   </Box>
                 </TabPanel>
+
+
                 <TabPanel style={{width: "74.35vw"}}>
                   <Box direction="column">
                     <Box 
@@ -1166,33 +1119,85 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>             
 
-                  <Box
-                    direction="row"
-                    width="100%"
-                    wrap
-                    // justify="between"
-                    gap="20px"
-                    margin={{ top: "10px", bottom: "60px" }}
-                  >
-                    <EmailContactManagement
-                      channelId={this.state.channel!.id}
-                      currentAddress={this.state.contactAddresses}
-                      onAddAddress={this.onAddContactAddress}
-                      onDeleteAddress={this.onDeleteContactAddress}
-                    />
-                  </Box>
-                </TabPanel>
                 <TabPanel style={{width: "74.35vw"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel>
+
+
                 <TabPanel style={{width: "74.35vw"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RegistrationsTab channelId={channel!.id} />
                   </Box>
+                </TabPanel>
+                
+
+                <TabPanel style={{width: "74.35vw"}}>             
+                  <Grid
+                    rows={['xxsmall', 'xxsmall']}
+                    columns={['medium', 'xxsmall']}
+                    gap="small"
+                    areas={[
+                      { name: 'email', start: [0, 0], end: [1, 0]},
+                      { name: 'topic_change', start: [0, 1], end: [0, 1] },
+                      { name: 'topic_button', start: [1, 1], end: [1, 1]},
+                    ]}
+                  >
+                    <Box gridArea="email">
+                      <EmailContactManagement
+                        channelId={this.state.channel!.id}
+                        currentAddress={this.state.contactAddresses}
+                        onAddAddress={this.onAddContactAddress}
+                        onDeleteAddress={this.onDeleteContactAddress}
+                      />
+                    </Box>
+                    {/* <Box gridArea="topic_change">
+                      <ChannelTopicSelector 
+                        onSelectedCallback={this.selectTopic}
+                        onCanceledCallback={this.cancelTopic}
+                        isPrevTopics={this.state.isPrevTopics}
+                        prevTopics={this.props.channel ? this.props.channel.topics : []} 
+                        textSize="small"
+                      />
+                    </Box>
+                    <Box gridArea="topic_button">
+                      <Box
+                        className={"save_Button"}
+                        focusIndicator={false}
+                        width={"10vw"}
+                        background="white"
+                        round="xsmall"
+                        height={"30px"}
+                        pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
+                        onClick={this.SavedButtonClicked}
+                        onAnimationEnd={this.endOfAnimation}
+                        style={{
+                          border: "1px solid #C2C2C2",
+                          minWidth: "25px"
+                        }}
+                        hoverIndicator={true}
+                        justify="center"
+                      >
+                        <Text 
+                          size="14px" 
+                          color="grey"
+                          alignSelf="center"
+                        >
+
+                      {this.state.topicSaved == false && (
+                          "Save"
+                      )}
+                      {this.state.topicSaved == true && (
+                          "Saved"
+                      )}
+                      </Text>
+                      </Box>
+                    </Box> */}
+                  </Grid>
+
+
                 </TabPanel>
               </Tabs>
             </Box>

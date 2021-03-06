@@ -15,7 +15,9 @@ interface Props {
   onCanceledCallback: any;
   prevTopics: Topic[];
   isPrevTopics: boolean[];
-  size?: string;
+  width?: string;
+  height?: string;
+  textSize?: string;
 }
 
 export default class ChannelTopicSelector extends Component<Props, State> {
@@ -31,7 +33,8 @@ export default class ChannelTopicSelector extends Component<Props, State> {
 
   componentWillMount() {
     TopicService.getAll((allTopics: Topic[]) => {
-      this.setState({ all: allTopics });
+      var allPossibleTopics = allTopics.filter(x => x["field"] != "All");
+      this.setState({ all: allPossibleTopics });
     });
   }
 
@@ -139,13 +142,14 @@ export default class ChannelTopicSelector extends Component<Props, State> {
     if (this.state.isFilledTopics[choice]) {
       return (
         <Box
-          width="100%"
+          width={this.props.width ? this.props.width : "100%"}
+          height={this.props.height ? this.props.height : "20px"}
           direction="row"
           gap="xsmall"
           align="center"
           margin={{ bottom: "15px" }}
         >
-          <Text size={this.props.size} weight="bold">
+          <Text size={this.props.textSize} weight="bold">
             {this.props.prevTopics[choice].field}
           </Text>
         </Box>
