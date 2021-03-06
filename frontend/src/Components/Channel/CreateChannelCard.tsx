@@ -56,6 +56,16 @@ export default class CreateChannelCard extends Component<Props, State> {
     this.props.onBackClicked()
   };
 
+  containsSpecialCharacter = (name: string) => {
+    let check = /[`~@£$%^&*=+{}\[\]'"\\\|\/?<>]/;
+    let test = name.toLowerCase().replace(/[0-9]/g, " ");
+    if(test.match(check)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   topicExists = (topics: Topic[]) => {
     let res = [];
     for (let topic in topics) {
@@ -94,6 +104,7 @@ export default class CreateChannelCard extends Component<Props, State> {
   isComplete = () => {
     return (
       this.state.newChannelName !== "" &&
+      this.containsSpecialCharacter(this.state.newChannelName) &&
       this.state.topics.length > 0
     );
   };
@@ -203,6 +214,15 @@ export default class CreateChannelCard extends Component<Props, State> {
             size="medium"
           />
         </OverlaySection>
+        {this.containsSpecialCharacter(this.state.newChannelName) ? (
+            <Text
+            color="red"
+            size="12px"
+            style={{ marginBottom: "12px" }}
+            >
+              Agora name cannot contain special characters!
+            </Text>
+          ) : (null)}
       </Overlay>
     );
   }
