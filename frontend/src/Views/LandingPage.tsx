@@ -225,7 +225,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <Box direction="column" margin={{top: "-20px"}}> 
               <Text size="18px"> 
-                Live stream seminars from the best
+                Connecting academics
               </Text>
               <Text size="18px"> 
                 academics in the world - for FREE!

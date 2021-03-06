@@ -78,7 +78,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                     fontStyle: "italic",
                   }}
                 >
-                  Live stream from the best academics 
+                  Connecting academics. 
                 </Text>
                 {/* Automating the academic seminar organisation pipeline. */}
               </MediaQuery>
