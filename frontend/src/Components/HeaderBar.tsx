@@ -3,8 +3,7 @@ import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 
-// import { ReactComponent as Logo } from "../apollo.svg";
-import Logo from "../assets/general/logo_v2.png";
+import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.png";
 
 
 import { Link } from "react-router-dom";
@@ -63,14 +62,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             <Link to="/" style={{ textDecoration: "none", width: 140 }}>
               <Box direction="row" align="center">
                 {/* <Logo style={{ height: "5vh", margin: 0 }} /> */}
-                <img src={Logo} style={{ height: "5vh", margin: 0 }}/>
-                <Heading
-                  level="3"
-                  margin="none"
-                  style={{ fontSize: 32, color: "black" }}
-                >
-                  gora
-                  </Heading>
+                <img src={agoraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
                   <MediaQuery maxDeviceWidth={992}>
                     <Text size="xsmall" color="black">mobile</Text>
                     </MediaQuery>
