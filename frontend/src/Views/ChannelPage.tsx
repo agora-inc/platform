@@ -20,6 +20,7 @@ import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
+import { Topic, TopicService } from "../Services/TopicService";
 import ShareButtons from ".././Components/Core/ShareButtons";
 
 
@@ -30,12 +31,14 @@ import ShareButtons from ".././Components/Core/ShareButtons";
 interface Props {
   location: { pathname: string };
   streamId: number;
+  channel?: Channel;
 }
 
 // NOTE: "following" feature globally disabled
 
 interface State {
   channel: Channel | null;
+  channelId: number;
   role: "none" | "owner" | "member" | "follower";
   loading: boolean;
   streams: Stream[];
@@ -56,6 +59,9 @@ interface State {
     email: string,
     personalHomepage: string
   }
+  topics: Topic[];
+  topicId: number;
+  field: string;
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -63,6 +69,7 @@ export default class ChannelPage extends Component<Props, State> {
     super(props);
     this.state = {
       channel: null,
+      channelId: 0,
       role: "none",
       loading: true,
       streams: [],
@@ -83,7 +90,10 @@ export default class ChannelPage extends Component<Props, State> {
         institution: "",
         email: "",
         personalHomepage: ""
-      }
+      },
+      topics: this.props.channel ? this.props.channel.topics : [],
+      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
+      field: "",
     };
     console.log("YOOOO")
     var now = new Date()
@@ -97,6 +107,24 @@ export default class ChannelPage extends Component<Props, State> {
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
     this.fetchChannel();
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+        this.setState({channelId: channel.id})
+      }
+    );
+    ChannelService.getChannelTopic(
+      this.state.channelId,
+      (currentTopicId: number) => {
+        this.setState({ topicId:currentTopicId });
+      }
+    );
+    TopicService.getFieldFromId(
+      this.state.topicId,
+      (topicName: string) => {
+        this.setState({field: topicName})
+      }
+    )
   }
 
   componentWillUnmount() {
@@ -345,6 +373,18 @@ export default class ChannelPage extends Component<Props, State> {
 
   toggleBanner = () => {
     this.setState({ bannerExtended: !this.state.bannerExtended });
+  };
+
+  fetchChannelTopic = () => {
+    if (this.state.topics) {
+      ChannelService.getChannelTopic(
+        this.state.channel!.id,
+        (topicId: number) => {
+          this.setState({ topicId });
+        }
+      );
+    return this.state.topicId
+    }
   };
 
   banner = () => {

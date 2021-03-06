@@ -266,10 +266,11 @@ def createChannel():
     name = params["name"]
     description = params["description"]
     userId = params["userId"]
+    topic1Id = params["topic1Id"]
 
-    app.logger.debug(f"New agora '{name}' created by user with id {userId}")
+    #app.logger.debug(f"New agora '{name}' created by user with id {userId}")
 
-    return jsonify(channels.createChannel(name, description, userId))
+    return jsonify(channels.createChannel(name, description, userId, topic1Id))
 
 @app.route('/channels/delete', methods=["POST"])
 def deleteChannel():
@@ -597,6 +598,36 @@ def sendTalkApplicationEmail():
     msg.subject = email_subject
     mail.send(msg)
     return "ok"
+
+@app.route('/channel/edit/topic', methods=["POST", "OPTIONS"])
+def editChannelTopic():
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+
+    #app.logger.debug(f"channel with id {params['channelId']} edited")
+    return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
+
+@app.route('/channels/topics/fetch', methods=["GET", "OPTIONS"])
+def getChannelTopic():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelTopic(channelId))
+
+@app.route('/channels/topics/all', methods=["GET"])
+def getChannelsWithTopic():
+    limit = int(request.args.get("limit"))
+    topicId = int(request.args.get("topicId"))
+    offset = int(request.args.get("offset"))
+    return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
+
 
 # --------------------------------------------
 # x Membership ROUTES
@@ -1335,6 +1366,14 @@ def getTopicsOnStream():
     # streamId = int(request.args.get("streamId"))
     # return jsonify(tags.getTagsOnStream(streamId))
     raise NotImplementedError
+
+@app.route('/topics/getField', methods=["GET"])
+def getFieldFromId():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    topicId = request.args.get("topicId")
+    return jsonify(topics.getFieldFromId(topicId)) 
 
 # --------------------------------------------
 # SEARCH ROUTES

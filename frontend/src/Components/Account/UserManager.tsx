@@ -15,6 +15,7 @@ import "../../Styles/antd.css";
 import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
+import agorasLogo from "../../assets/general/agoras_logo_v2.png";
 
 const makeProfilePublicInfo =
   "Making your profile public means that it will be shown in the 'speaker marketplace' feature of the platform, and administrators of relevant agoras may reach out to you about speaking opportunities if you have contact details in your bio. This action can be undone at any time.";
@@ -120,7 +121,8 @@ export default class UserManager extends Component<Props, State> {
           marginTop: 5,
           overflow: "hidden",
           paddingBottom: 0,
-          height: 175,
+          //height: 175,
+          height: "100%",
           width: 350,
         }}
       >
@@ -131,6 +133,7 @@ export default class UserManager extends Component<Props, State> {
             this.toggleCreateChannelCard();
             this.toggleDropdown();
           }}
+          visible={true}
           user={this.state.user}
         />
       </Menu>
@@ -208,7 +211,7 @@ export default class UserManager extends Component<Props, State> {
           >
             <Box
               onClick={this.toggleDropdown}
-              background="#7E1115"
+              background="#025377"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -217,7 +220,7 @@ export default class UserManager extends Component<Props, State> {
               align="center"
               focusIndicator={false}
               // hoverIndicator="#2433b5"
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#6DA3C7"
             >
               <Text size="14px"> My schedule </Text>
             </Box>
@@ -236,7 +239,7 @@ export default class UserManager extends Component<Props, State> {
           gap="xsmall"
         >
           <Text size="16px" color="grey">
-            Manage your Agoras
+            Manage your <img src={agorasLogo} style={{ height: "14px"}}/>
           </Text>
           <Box
             height={{max: "200px"}}

@@ -19,6 +19,18 @@
   grid-gap: 30px;
 }
 
+@media(max-width:1400px){
+  .all-agoras-grid {
+     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width:950px){
+  .all-agoras-grid {
+     grid-template-columns: repeat(1, 1fr);
+  }
+}
+
 .agora-card {
   width: 420px;
   background: white;
