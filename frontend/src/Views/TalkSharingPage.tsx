@@ -28,7 +28,7 @@ interface State {
   showTalkId: number;
 }
 
-export default class ChannelPage extends Component<Props, State> {
+export default class TalkSharingPage extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {

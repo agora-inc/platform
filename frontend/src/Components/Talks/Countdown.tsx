@@ -116,19 +116,15 @@ export default class Countdown extends Component<
           >
             <Box
               onClick={() => {}}
-              background="white"
+              background="#025377"
               round="xsmall"
-              pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
+              width="160px" height="35px"
               justify="center"
               align="center"
-              focusIndicator={false}
-              style={{
-                border: "1px solid #C2C2C2",
-              }}
-              hoverIndicator={true}
-              height="40px"
+              focusIndicator={true}
+              hoverIndicator="#6DA3C7"
             >
-              <Text size="14px" weight="bold">
+              <Text size="15px" weight="bold">
                 Link to talk
               </Text>
             </Box>

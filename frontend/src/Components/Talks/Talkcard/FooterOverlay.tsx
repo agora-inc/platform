@@ -1,19 +1,11 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer, Image} from "grommet";
+import { Box, Text } from "grommet";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import { ChannelService } from "../../../Services/ChannelService";
 import { User } from "../../../Services/UserService";
-import { Link } from "react-router-dom";
-import AsyncButton from "../../Core/AsyncButton";
-import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
+import { Calendar } from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
 import Countdown from "../Countdown";
-import LoginModal from "../../Account/LoginModal";
-import SignUpButton from "../../Account/SignUpButton";
-import MediaQuery from "react-responsive";
-import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
-import ReactTooltip from "react-tooltip";
-import EditTalkModal from "../EditTalkModal";
 import ShareButtons from "../../Core/ShareButtons";
 import TalkRegistrationButton from "./TalkRegistrationButton";
 import SaveForLaterButton  from "./SaveForLaterButton";
@@ -26,7 +18,6 @@ interface Props {
     available: boolean;
     registered: boolean;
     isSharingPage: boolean;
-    admin?: boolean;
     width?: string;
     // isCurrent?: boolean;
     following?: boolean;
@@ -121,7 +112,7 @@ interface Props {
       //     }
       //   );
     };
-
+    /*
     checkIfUserCanViewCard = () => {
       if (this.props.admin) {
         return true;
@@ -173,6 +164,7 @@ interface Props {
           }
         }
     };
+    */
   
     formatDateFull = (s: string, e: string) => {
       const start = new Date(s);

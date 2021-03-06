@@ -551,9 +551,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 talk={this.props.talk}
                 user={this.props.user}
                 isSharingPage={false}
-                admin={this.props.admin}
                 registered={this.state.registered}
-                role={this.props.role}
+                role={this.props.admin ? "owner" : this.props.role} 
                 available={this.state.available}
                 width={this.props.width}
                 // isCurrent?: boolean;
