@@ -341,14 +341,8 @@ const editChannelTopic = (
   );
 };
 
-const getChannelTopic = (
-  channelId: Number,
-  callback: any
-) => {
-  get(
-    `channels/topics/fetch?channelId=${channelId}`,
-    callback
-  );
+const getChannelTopic = (channelId: Number, callback: any) => {
+  get(`channels/topics/fetch?channelId=${channelId}`, callback);
 };
 
 const getChannelsWithTopic = (limit: number, topicId: number, offset: number, callback: any) => {
