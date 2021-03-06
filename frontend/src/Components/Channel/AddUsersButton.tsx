@@ -80,7 +80,7 @@ export default class AddUsersButton extends Component<Props, State> {
         <Box
           width="100%"
           height="45px"
-          background="#f5f5f5"
+          background="#EAF1F1"
           focusIndicator={false}
           justify="center"
           align="center"

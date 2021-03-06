@@ -51,7 +51,7 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
-    def createChannel(self, channelName, channelDescription, userId):
+    def createChannel(self, channelName, channelDescription, userId, topic_1_id):
         # colours = [
         #     "orange",
         #     "goldenrod",
@@ -65,7 +65,7 @@ class ChannelRepository:
         # ]
         colour = "#5454A0"
 
-        query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
+        query = f'INSERT INTO Channels(name, long_description, colour, topic_1_id) VALUES ("{channelName}", "{channelDescription}", "{colour}", "{topic_1_id}")'
         insertId = self.db.run_query(query)[0]
     
         query = f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {insertId}, "owner")'
@@ -415,3 +415,26 @@ class ChannelRepository:
             return self.db.run_query(get_counter_query)[0]["total_views"]
         except Exception as e:
             return str(e)
+
+    def editChannelTopic(self, channelId, topic_1_id, topic_2_id, topic_3_id):
+        topicsQuery = f'''
+            UPDATE Channels
+                set topic_1_id="{topic_1_id}", 
+                topic_2_id="{topic_2_id}", 
+                topic_3_id="{topic_3_id}"
+            WHERE id = {channelId};
+            '''
+        try:
+            return self.db.run_query(topicsQuery)
+        except Exception as e:
+            return str(e)
+
+    def getChannelTopic(self, channelId):
+        query = f'SELECT topic_1_id FROM Channels WHERE id = {channelId}'
+        result = self.db.run_query(query)
+        return result
+
+    def getChannelsWithTopic(self, limit, topicId, offset):
+        query = f'SELECT * FROM Channels WHERE topic_1_id = {topicId} LIMIT {limit} OFFSET {offset};'
+        result = self.db.run_query(query)
+        return result

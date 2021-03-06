@@ -57,7 +57,7 @@ const DeleteAgoraButton = ({ name, id }: Props) => {
         >
           <div
             style={{
-              background: "#F5F5F5",
+              background: "#EAF1F1",
               padding: 10,
               display: "flex",
               flexDirection: "row",
@@ -101,7 +101,7 @@ const DeleteAgoraButton = ({ name, id }: Props) => {
               onChange={(e) => setTypedName(e.target.value)}
             />
           </div>
-          <div style={{ background: "#F5F5F5", padding: 10 }}>
+          <div style={{ background: "#EAF1F1", padding: 10 }}>
             <div
               onClick={onDeleteClicked}
               style={{

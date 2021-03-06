@@ -460,7 +460,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
                       id="link-visibility-select"
-                      options={["General audience", "Bachelor/Master", "PhD+"]}
+                      options={["General audience", "Bachelor / Master", "PhD+"]}
                       value={this.state.audienceLevel}
                       onChange={({ option }) =>
                         this.setState({ audienceLevel: option })
@@ -566,11 +566,11 @@ export default class EditTalkModal extends Component<Props, State> {
                         Remy
                         */}
 
-                      <CheckBox
+                      {/* <CheckBox
                           checked={this.state.linkAvailable}
                           label="interested?"
                           onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
-                        />
+                        /> */}
 
 
 

@@ -44,7 +44,7 @@ export class Overlay extends Component<OverlayProps> {
             width: this.props.width,
             height: this.props.height > 700 ? "82%" : this.props.height,
             borderRadius: 15,
-            border: "3.5px solid black",
+            // border: "3.5px solid black",
             padding: 0,
           }}
         >
@@ -105,13 +105,13 @@ export class Overlay extends Component<OverlayProps> {
               {(this.props.disableSubmitButton == true) || (
                 <Box data-tip data-for='submitbutton' margin={{right: "32px"}}   > 
                   <Button
-                    fill="#7E1115"
+                    fill="#025377"
                     disabled={!this.props.canProceed}
                     height="35px"
                     width="170px"
                     text={this.props.submitButtonText}
                     onClick={this.props.onSubmitClick}
-                    hoverIndicator="#5A0C0F"
+                    hoverIndicator="#025377"
                     onMouseEnter={this.props.buttonOnMouseEnter}
                   />
                   {!this.props.canProceed && this.props.isMissing && (

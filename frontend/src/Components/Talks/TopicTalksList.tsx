@@ -380,7 +380,8 @@ export default class TopicTalkList extends Component<Props, State> {
 
         {this.props.topicSearch && (
           <TopicClassification 
-            topicCallback={this.selectTopic} 
+            topicCallback={this.selectTopic}
+            searchType={"Talks"} 
             />
         )}
 

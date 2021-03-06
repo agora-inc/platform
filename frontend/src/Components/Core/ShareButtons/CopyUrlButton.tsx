@@ -5,6 +5,8 @@ import {Link as LinkIcon} from "grommet-icons";
 
 interface Props {
   url: string;
+  height?: string;
+  width?: string;
 }
 
 export default class CopyUrlButton extends Component<Props, {}> {
@@ -16,7 +18,8 @@ export default class CopyUrlButton extends Component<Props, {}> {
         data-tip data-for='save_url_event'
         background="#5AAB61"
         round="xsmall"
-        width="140px" height="35px"
+        width={this.props.width ? this.props.width : "100px"}
+        height={this.props.height ? this.props.height : "35px"}
         margin={{left: "2px"}}
         justify="center"
         align="center"

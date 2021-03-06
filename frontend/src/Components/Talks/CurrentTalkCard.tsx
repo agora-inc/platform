@@ -240,7 +240,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
               left: 8,
               opacity: 0.5,
             }}
-            background={this.props.talk.channel_colour}
+            background="#BAD6DB"
           ></Box>
         )}
         {this.state.showModal && (
@@ -436,14 +436,14 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   !this.state.registered && (
                     <Box
                       onClick={this.onClick}
-                      background="#7E1115"
+                      background="#025377"
                       round="xsmall"
                       pad="xsmall"
                       height="40px"
                       justify="center"
                       align="center"
                       focusIndicator={false}
-                      hoverIndicator="#5A0C0F"
+                      hoverIndicator="#025377"
                     >
                       <Text size="18px">Register</Text>
                     </Box>

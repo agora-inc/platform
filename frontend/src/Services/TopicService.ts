@@ -23,6 +23,10 @@ const getDescendenceId = (node: Topic, topics: Topic[]): number[] => {
   return res;
 };
 
+const getFieldFromId = (topicId: number, callback: any) => {
+  get(`topics/getField?topicId=${topicId}`, callback);
+}
+ 
 // const getPopular = (callback: any) => {
 //   axios
 //     .get(baseApiUrl + "/topics/popular?n=5", {
@@ -49,6 +53,7 @@ export const TopicService = {
   getAll,
   getDataTreeStructure,
   getDescendenceId,
+  getFieldFromId,
 };
 
 export type Topic = {

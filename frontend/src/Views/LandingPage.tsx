@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading } from "grommet";
-import { ReactComponent as Logo } from "../apollo.svg";
+import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.png";
+import agoraLogo from "../assets/general/agora_logo_v2.png";
+import agorasLogo from "../assets/general/agoras_logo_v2.png";
+
 import { User, UserService } from "../Services/UserService";
-import { Search, Channel, ScheduleNew, Multiple } from "grommet-icons";
+import { Search, Play, Add, Channel, ScheduleNew, Multiple } from "grommet-icons";
 import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
@@ -33,6 +36,22 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     }
   }
 
+  showDynamicTextValue() {
+    // Changes every minute
+    var dynamicTextValueList = [
+      "Opening the doors to all online academic seminars in the world.",
+      "Democratizing access to cutting-edge research.",
+      "Leveraging modern technologies in the service of academics.",
+      "Cut global travel of academics and fight climate change.",
+      "Empower academics' reach and visibility.",
+      "Automating the seminar organisers' pipeline."
+    ];
+
+    var now = Date.now();
+    return dynamicTextValueList[now % dynamicTextValueList.length]
+  }
+    
+
   render() {
     return (
       <Box 
@@ -59,24 +78,17 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4" /> 
         </video>
 
-        <Box direction="column" justify="center" margin={{right: "60px"}} >
+        <Box direction="column" justify="center" style={{justifyContent: "center"}}>
           
-          <Box direction="row" justify="center" margin={{top: "50px"}}>
-            <Logo style={{ height: "60px", width: "60px"}} />
-            {/* <img src="/home/cloud-user/plateform/agora/images/logo.jpg" /> */}
-            <Heading
-              level="1"
-              margin={{ top: "13px" }}
-              style={{ fontSize: "48px", color: "black" }}
-            >
-              gora.stream
-            </Heading>
+          <Box direction="row" justify="center" style={{justifyContent: "center"}} margin={{top: "50px", bottom: "20px"}}>
+            {/* <Logo style={{ height: "60px", width: "60px"}} /> */}
+            <img src={agoraStreamFullLogo} style={{ height: "90px"}}/>
           </Box>
 
 
-          <Box direction="column" justify="center" margin={{top: "-15px"}}> 
-            <Text size="16px" weight="bold"> 
-              Live stream seminars from the best academics in the world - for FREE!
+          <Box direction="column" justify="center" margin={{top: "5px"}}> 
+            <Text size="16px" weight="bold" alignSelf="center"> 
+              {this.showDynamicTextValue()}
             </Text>
           </Box>
 
@@ -86,26 +98,28 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           direction="row" 
           gap="50px" 
           focusIndicator={false}
-          margin={{top: "80px"}}
+          margin={{top: "70px"}}
         >
           <Link
             to={{ pathname: "/browse" }}
             style={{ textDecoration: "none" }}
           >
             <Box
-              background="#F2F2F2"
+              onClick={() => ({})}
+              background="#DDDDDD"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
-              height="100px"
+              height="130px"
               width="176px"
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#CCCCCC"
             >
               <Search size="30px"/>
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Find future seminars </Text>
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Find </Text>
+              <Text size="16px" margin={{top: "10px"}}> future seminars </Text>
             </Box>
           </Link>
           <Link
@@ -113,39 +127,43 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             style={{ textDecoration: "none" }}
           >
             <Box
-              background="#F2F2F2"
+              onClick={() => ({})}
+              background="#DDDDDD"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
-              height="100px"
+              height="130px"
               width="176px"
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator={true}
+              hoverIndicator="#CCCCCC"
             >
-              <Channel size="30px" />
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch past seminars </Text>
+              <Play size="30px" />
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch</Text>
+              <Text size="16px" margin={{top: "10px"}}> past seminars </Text>
             </Box>
           </Link>
           <Link
-            to={{ pathname: "/" }}
+            to={{ pathname: "/info/getting-started" }}
             style={{ textDecoration: "none" }}
           >
             <Box
-              background="#F2F2F2"
+              onClick={() => ({})}
+              background="#DDDDDD"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
-              height="100px"
+              height="130px"
               width="176px"
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
-            >
-              <ScheduleNew size="30px" />
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Create an Agora </Text>
+              hoverIndicator="#CCCCCC"
+            > 
+              <Add size="30px" />
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Create </Text>
+              <Text size="16px" margin={{top: "10px"}}> an <img src={agoraLogo} style={{ height: "14px"}}/> </Text>
             </Box>
           </Link>
           <Link
@@ -153,19 +171,21 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             style={{ textDecoration: "none" }}
           >
             <Box
-              background="#F2F2F2"
+              onClick={() => ({})}
+              background="#DDDDDD"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
-              height="100px"
+              height="130px"
               width="176px"
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#CCCCCC"
             >
               <Multiple size="30px" />
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover all Agoras </Text>
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover</Text>
+              <Text size="16px" margin={{top: "10px"}}> all <img src={agorasLogo} style={{ height: "14px"}}/> </Text>
             </Box>
           </Link>
         </Box>
@@ -175,24 +195,16 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box 
           direction="row" 
           gap="150px"
-          margin={{top: "150px", left:"-50px"}}
+          margin={{top: "60px"}}
         >
-          <Box direction="column" justify="start" style={{minWidth: "50%"}}>
-            <Text size="21px" margin={{bottom: "10px"}}> What is an agora? </Text>
-            <Text size="14px"> An agora is like a youtube channel </Text>
-            <Text size="14px" weight="bold"> It is the place where you post future seminars and past recordings </Text>
-            <Text size="14px"> Invite people from your research groups </Text>
-            <Text size="14px" weight="bold"> Follow some Agoras to never miss out on their awesome events!   </Text>
+          <Box direction="column" justify="center" style={{minWidth: "50%"}}>
+            <Text size="21px" margin={{bottom: "12px"}} alignSelf="center"> What is an <img src={agoraLogo} style={{ height: "16px", alignSelf:"center"}}/>? </Text>
+            <Text size="14px" margin={{bottom: "6px"}}> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a community hub </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> It is the place where seminars are hosted and future events advertised </Text>
+            <Text size="14px" margin={{bottom: "6px"}}> Visit and connect with any agora by becoming a member or a future speaker </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Follow some <img src={agorasLogo} style={{ height: "14px", alignSelf:"center"}}/> to never miss out on their awesome events! </Text>
 
           </Box>
-          <Box direction="column" justify="start" style={{minWidth: "50%"}}>
-            <Text size="21px" margin={{bottom: "10px"}}> Our values </Text>
-            <Text size="14px" weight="bold"> Democratizing access to world-class research </Text>
-            <Text size="14px"> Find a social and interactive solution to online seminars </Text>
-            <Text size="14px" weight="bold"> Help researchers reach out and network with their peers </Text>
-            <Text size="14px"> Cut global travel of academics and fight climate change </Text>
-          </Box>
- 
         </Box>
 
 
@@ -214,7 +226,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <Box direction="column" margin={{top: "-20px"}}> 
               <Text size="18px"> 
-                Live stream seminars from the best
+                Connecting academics
               </Text>
               <Text size="18px"> 
                 academics in the world - for FREE!
@@ -241,7 +253,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 justify="center"
                 align="center"
                 focusIndicator={false}
-                hoverIndicator="#5A0C0F"
+                hoverIndicator="#025377"
               >
                 <Text size="18px" weight="bold"> Find </Text>
                 <Text size="18px" weight="bold"> future seminars </Text>
@@ -289,7 +301,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 justify="center"
                 align="center"
                 focusIndicator={false}
-                hoverIndicator="#5A0C0F"
+                hoverIndicator="#025377"
               >
                 <Text size="18px" weight="bold"> Create </Text>
                 <Text size="18px" weight="bold"> an Agora </Text>
@@ -309,7 +321,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 justify="center"
                 align="center"
                 focusIndicator={false}
-                hoverIndicator="#5A0C0F"
+                hoverIndicator="#025377"
               >
                 <Text size="18px" weight="bold"> Discover</Text>
                 <Text size="18px" weight="bold"> all Agoras </Text>

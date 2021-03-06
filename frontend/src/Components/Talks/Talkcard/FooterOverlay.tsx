@@ -22,6 +22,7 @@ import CalendarButtons from "../CalendarButtons";
 interface Props {
     talk: Talk;
     user: User | null;
+    isSharingPage: boolean;
     admin?: boolean;
     width?: string;
     // isCurrent?: boolean;
@@ -238,33 +239,30 @@ render() {
     return (
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
-            <Box 
-              width="50%" 
-              direction="row"
+            <Box direction="row" width="80%" align="center" gap="10px">
+              <Calendar size="16px" />
+              <Text
+                size="16px"
+                color="black"
+                margin={{left:"5px"}}
+                style={{ height: "20px", fontStyle: "normal" }}
               >
-                <Calendar size="16px" />
-                <Text
-                  size="16px"
-                  color="black"
-                  margin={{left:"5px"}}
-                  style={{ height: "20px", fontStyle: "normal" }}
-                >
-                  {this.formatDateFull(
-                    this.props.talk.date,
-                    this.props.talk.end_date
-                    )}
-                </Text>
-                <Box margin={{left: "5px"}}>
-                  <CalendarButtons talk={this.props.talk}/>
-                </Box>
+                {this.formatDateFull(
+                  this.props.talk.date,
+                  this.props.talk.end_date
+                )}
+              </Text>
+              <CalendarButtons talk={this.props.talk}/>
             </Box>
+
             <Box
-                width="50%"
-                align="end"
-                >
-              <ShareButtons 
-                talk={this.props.talk}
-              />
+              justify="end"
+              // align="end"
+              // margin={{left: "10px"}}
+            >
+              <ShareButtons talk={this.props.talk} width="90px" />
+            </Box>
+
 
               {/* <Box
                   onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
@@ -285,10 +283,11 @@ render() {
                 Click to copy Event URL!
               </ReactTooltip> */}
 
-            </Box>
+            
           </Box>
 
-          <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
+          {!this.props.isSharingPage && (
+            <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
               {/* <SaveForLaterButton
                 talk={this.props.talk}
                 user={this.props.user}
@@ -298,6 +297,7 @@ render() {
                 user={this.props.user}
               />
             </Box>
+          )}
 
 
 

@@ -12,6 +12,8 @@ import CopyUrlButton from "./ShareButtons/CopyUrlButton";
 interface Props {
     talk?: Talk | any;
     channel?: Channel | any;
+    height?: string;
+    width?: string;
   }
   
   interface State {
@@ -119,28 +121,55 @@ interface Props {
         <Box 
           direction="row"
           style = {{ zIndex: 0 }}
-          width="300px"
-          alignSelf="end"
+          width="275px"
+          // alignSelf="end"
+          gap="10px"
         >
-          <Button
-          data-tip data-for='share_social'
-          label="Share"
-          onClick={this.displayShareButtons}
-          style={{
-            width: 140,
-            height: 35,
-            fontSize: 15,
-            fontWeight: "bold",
-            padding: 0,
-            // margin: 6,
-            backgroundColor: "#F2F2F2",
-            border: "none",
-            borderRadius: 7,
-          }}
-        />
-            <ReactTooltip id="share_social" effect="solid">
-              Share with friends and colleagues
-            </ReactTooltip>
+          <CopyUrlButton 
+            url={this.urlLink()} 
+            height={this.props.height ? this.props.height : "35px"}
+            width={this.props.width ? this.props.width : "100px"}
+          />
+
+          {/*<Button
+            data-tip data-for='share_social'
+            label="Share"
+            onClick={this.displayShareButtons}
+            style={{
+              width: 140,
+              height: 35,
+              fontSize: 15,
+              fontWeight: "bold",
+              padding: 0,
+              // margin: 6,
+              backgroundColor: "#F2F2F2",
+              border: "none",
+              borderRadius: 7,
+            }}
+          />*/}
+          <Box
+            data-tip data-for='share_social'
+            onClick={this.displayShareButtons}
+            background="#F2F2F2"
+            round="xsmall"
+            width={this.props.width ? this.props.width : "100px"}
+            height={this.props.height ? this.props.height : "35px"}
+            justify="center"
+            align="center"
+            focusIndicator={true}
+            hoverIndicator="#DDDDDD"
+          >
+            <Text weight="bold" size="15px">
+              Share 
+            </Text>
+          </Box> 
+
+          <ReactTooltip id="share_social" effect="solid" place="bottom">
+            Share with friends and colleagues
+          </ReactTooltip>
+          
+
+
 
           {(this.state.showShareButtons && (this.props.talk !== null)) || (
             <StickyShareButtons
@@ -166,7 +195,7 @@ interface Props {
                 show_mobile: true,    // show/hide the buttons on mobile (true, false)
                 show_toggle: false,    // show/hide the toggle buttons (true, false)
                 size: 48,             // the size of each button (INTEGER)
-                top: 160,             // offset in pixels from the top of the page
+                top: 150,             // offset in pixels from the top of the page
     
                 // OPTIONAL PARAMETERS
                 url: this.apiUrlLink(), // (defaults to current url)
@@ -180,7 +209,7 @@ interface Props {
             />
           )}
 
-          <CopyUrlButton url={this.urlLink()}/>
+          
 
         </Box>
       )
