@@ -4,18 +4,15 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Tag } from "../../Services/TagService";
 import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
-import AddToCalendarButtons from "./AddToCalendarButtons";
 import Countdown from "./Countdown";
-import LoginModal from "../Account/LoginModal";
-import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
+import { textToLatex } from "../Core/LatexRendering";
+
 import FooterOverlay from "./Talkcard/FooterOverlay";
-import CalendarButtons from "./CalendarButtons";
 
 interface Props {
   talk: Talk;
@@ -56,10 +53,6 @@ export default class TalkCard extends Component<Props, State> {
         })
       }
     }
-    
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
 
   formatDate = (d: string) => {
     const date = new Date(d);
@@ -77,7 +70,6 @@ export default class TalkCard extends Component<Props, State> {
     const timeEndStr = end.toTimeString().slice(0, 5);
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
-
 
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
@@ -318,7 +310,7 @@ export default class TalkCard extends Component<Props, State> {
               left: 8,
               opacity: 0.5,
             }}
-            background={this.props.talk.channel_colour}
+            background="#6DA3C7"
           ></Box>
         )}
         {this.state.showModal && 
@@ -455,10 +447,7 @@ export default class TalkCard extends Component<Props, State> {
                       </Text>
                     </Box>
                   )}
-
-                  <Text
-                    size="14px"
-                    color="black"
+                  <Box
                     style={{
                       minHeight: "50px",
                       maxHeight: "200px",
@@ -466,8 +455,10 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.escapeDoubleQuotes(this.props.talk.description)}
-                  </Text>
+                    {this.props.talk.description.split('\n').map(
+                      (item, i) => textToLatex(item)
+                    )}
+                  </Box>
                 </Box>
 
                 </Box> 
@@ -475,6 +466,7 @@ export default class TalkCard extends Component<Props, State> {
                   talk={this.props.talk}
                   user={this.props.user}
                   role={this.state.role}
+                  isSharingPage={false}
                 />
             </Layer>
           </MediaQuery>
@@ -614,10 +606,8 @@ export default class TalkCard extends Component<Props, State> {
                       </Text>
                     </Box>
                   )}
-
-                  <Text
-                    size="16px"
-                    color="black"
+                  
+                  <Box
                     style={{
                       minHeight: "50px",
                       maxHeight: "200px",
@@ -625,8 +615,10 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.escapeDoubleQuotes(this.props.talk.description)}
-                  </Text>
+                    {this.props.talk.description.split('\n').map(
+                      (item, i) => textToLatex(item)
+                    )}
+                  </Box>
                 </Box>
                 <Box direction="column" gap="small">
                   <Box direction="row" gap="small" height="30px">
@@ -693,14 +685,14 @@ export default class TalkCard extends Component<Props, State> {
                     !this.state.registered && (
                       <Box
                         onClick={this.onClick}
-                        background="#7E1115"
+                        background="#025377"
                         round="xsmall"
                         pad="xsmall"
                         height="40px"
                         justify="center"
                         align="center"
                         focusIndicator={false}
-                        hoverIndicator="#5A0C0F"
+                        hoverIndicator="#025377"
                       >
                         <Text size="18px">Register</Text>
                       </Box>

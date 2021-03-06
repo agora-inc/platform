@@ -8,7 +8,6 @@ import { Channel, ChannelService } from "../../Services/ChannelService";
 import ChannelTopicSelector from "../Channel/ChannelTopicSelector";
 import { Topic } from "../../Services/TopicService";
 import { Overlay, OverlaySection } from "../Core/Overlay";
-import TopicSelector from "../Talks/TopicSelector";
 
 
 interface Props {
@@ -135,7 +134,7 @@ export default class CreateChannelCard extends Component<Props, State> {
             <Previous color="black" />
           </Box>
           <Text weight="bold" color="black" size="14px">
-            Create an Agora
+            Create an <img src={agoraLogo} style={{ height: "14px"}}/>
           </Text>
         </Box>
 
@@ -143,7 +142,7 @@ export default class CreateChannelCard extends Component<Props, State> {
         
         <Box>
           <TextInput
-            style={{ width: "100%" }}
+            style={{ width: 300, height: 40 }}
             placeholder="Your Agora name"
             onChange={(e) => this.setState({ newChannelName: e.target.value })}
           />
@@ -165,11 +164,12 @@ export default class CreateChannelCard extends Component<Props, State> {
           </Box>
 
           <AsyncButton
-            color="#7E1115"
+            color="#025377"
             fontColor="white"
             label="Create"
             disabled={
-              this.state.newChannelName === ""
+              this.state.newChannelName === "" ||
+              this.containsSpecialCharacter(this.state.newChannelName)
             }
             onClick={this.onCreateClicked}
             width="100%"
@@ -189,7 +189,7 @@ export default class CreateChannelCard extends Component<Props, State> {
       width={500}
       height={300}
       visible={this.props.visible}
-      title={"Create an Agora"}
+      title={`Create an Agora`}
       submitButtonText="Create"
       onSubmitClick={this.onCreateClicked}
       contentHeight="150px"
@@ -200,8 +200,8 @@ export default class CreateChannelCard extends Component<Props, State> {
       >
         <OverlaySection>
           <TextInput
-            style={{ width: "100%" }}
-            placeholder="Your Agora name"
+            style={{ width: "100%", marginTop: "5px"}}
+            placeholder="Your agora name"
             onChange={(e) => this.setState({ newChannelName: e.target.value })}
           />
         </OverlaySection>

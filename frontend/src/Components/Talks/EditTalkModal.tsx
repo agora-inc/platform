@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   Box,
+  CheckBox,
   Text,
   TextInput,
   TextArea,
@@ -40,6 +41,7 @@ interface State {
   date: string;
   startTime: string;
   endTime: string;
+  linkAvailable: boolean | undefined;
   link: string;
   releaseLinkOffset: number;
   linkVisibility: string;
@@ -59,7 +61,7 @@ export default class EditTalkModal extends Component<Props, State> {
     super(props);
     this.state = {
       title: this.props.talk ? this.props.talk.name : "",
-      description: this.props.talk ? this.escapeDoubleQuotes(this.props.talk.description) : "",
+      description: this.props.talk ? this.props.talk.description.replace("''", "'") : "", //replace is escapeDoubleQuotes
       tags: this.props.talk ? this.props.talk.tags : [],
       loading: false,
       date: this.props.talk
@@ -72,6 +74,7 @@ export default class EditTalkModal extends Component<Props, State> {
         ? new Date(this.props.talk.end_date).toTimeString().slice(0, 5)
         : "",
       link: this.props.talk ? this.props.talk.link : "",
+      linkAvailable: this.props.talk ? this.props.talk.link_available : false,
       releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 45,
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
@@ -167,11 +170,9 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   escapeSingleQuotes = (text: string) => {
-    return text.replace("'", "''").replace(/"/g, "'")
-  }
-
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
+    // We want to store backslash with \\
+    // We want to store apostrophe '
+    return text.replace(/'/g, "''").replace(/"/g, "'").replace(/\\/g, "\\\\")
   }
 
   onFinish = () => {
@@ -411,26 +412,32 @@ export default class EditTalkModal extends Component<Props, State> {
 
               <Box width="100%" gap="5px" margin={{top: "15px"}}>
                 <Box direction="row" gap="small">
-                  <Text size="14px" weight="bold" color="black" margin={{"right": "100px"}}>
-                    Description
-                  </Text>
-                  {/*<Switch
+                  <Box margin={{"right": "70px"}}>
+                    <Text size="14px" weight="bold" color="black">
+                      Description
+                      <StatusInfo size="small" data-tip data-for='description_latex_info'/>
+                        <ReactTooltip id='description_latex_info' place="right" effect="solid">
+                        <InlineMath math={"{\\small \\LaTeX}"} /> supported (e.g. $\log(a)+\log(b)=\log(ab)$).
+                        </ReactTooltip>
+                    </Text>
+                  </Box>
+                  <Switch
                     checked={this.state.latex}
                     onChange={(checked: boolean) => {
                       this.setState({ latex: checked });
                     }}
                     size="small"
                   />
-                  <InlineMath math={"{\\small \\LaTeX}"} />
-                  */}
+                  Preview <InlineMath math={"{\\small \\LaTeX}"} />
                 </Box>
-                <TextArea
+
+                {/*<TextArea
                     style={{height: "240px"}}
                     value={this.state.description}
                     placeholder=""
                     onChange={(e) => this.setState({ description: e.target.value })}
-                  />
-                {/*!this.state.latex && (
+                />*/}
+                {!this.state.latex && (
                   <TextArea
                     style={{height: "240px"}}
                     value={this.state.description}
@@ -439,8 +446,10 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                 )}
                 {this.state.latex && (
-                  textToLatex(this.state.description, "240px")
-                )*/}
+                  this.state.description.split('\n').map(
+                    (item, i) => textToLatex(item)
+                  )
+                )}
               </Box>
 
               <Box width="100%" gap="5px">
@@ -451,7 +460,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
                       id="link-visibility-select"
-                      options={["General audience", "Bachelor/Master", "PhD+"]}
+                      options={["General audience", "Bachelor / Master", "PhD+"]}
                       value={this.state.audienceLevel}
                       onChange={({ option }) =>
                         this.setState({ audienceLevel: option })
@@ -550,6 +559,28 @@ export default class EditTalkModal extends Component<Props, State> {
                 margin={{left: "large", right: "xsmall", top:"6px", bottom: "10px"}}
               > 
                 <OverlaySection heading="Link to event">
+
+                        {/* PLACEHOLDER 
+                        FOR A MULTI BOX TICKER 
+                        TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
+                        Remy
+                        */}
+
+                      {/* <CheckBox
+                          checked={this.state.linkAvailable}
+                          label="interested?"
+                          onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
+                        /> */}
+
+
+
+
+
+
+
+
+
+
                 <TextInput
                     value={this.state.link}
                     placeholder="https://zoom.us/1234"
@@ -568,6 +599,15 @@ export default class EditTalkModal extends Component<Props, State> {
                        <p>Your selected audience will be able to see the link 30 minutes before the start of your event.</p>
                       </ReactTooltip>
                   </Text>
+
+
+
+
+
+
+
+
+
                 </OverlaySection>
 
                 <OverlaySection heading="Access and visibility">
@@ -578,7 +618,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       </Text>
                       <StatusInfo size="small" data-tip data-for='linkinfo'/>
                       <ReactTooltip id='linkinfo' place="right" effect="solid">
-                        Decide who does not need to manually register to attend the talk. The same people will also have access to the recording if there is one.
+                        Decide who does not need to manually fill the registration request form to attend the talk. The same people will also automatically have access to the recording if there is one.
                       </ReactTooltip>
                     </Box>
                     <Select

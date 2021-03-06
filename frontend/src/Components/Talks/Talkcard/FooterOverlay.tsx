@@ -4,11 +4,9 @@ import { Talk, TalkService } from "../../../Services/TalkService";
 import { ChannelService } from "../../../Services/ChannelService";
 import { User } from "../../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Tag } from "../../../Services/TagService";
 import AsyncButton from "../../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
-import AddToCalendarButtons from "../AddToCalendarButtons";
 import Countdown from "../Countdown";
 import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
@@ -16,13 +14,15 @@ import MediaQuery from "react-responsive";
 import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
 import ReactTooltip from "react-tooltip";
 import EditTalkModal from "../EditTalkModal";
-import ShareButtons from "./ShareButtons";
-import TalkRegistrationButton from "../TalkRegistrationButton";
+import ShareButtons from "../../Core/ShareButtons";
+import TalkRegistrationButton from "./TalkRegistrationButton";
+import SaveForLaterButton  from "./SaveForLaterButton";
 import CalendarButtons from "../CalendarButtons";
 
 interface Props {
     talk: Talk;
     user: User | null;
+    isSharingPage: boolean;
     admin?: boolean;
     width?: string;
     // isCurrent?: boolean;
@@ -239,33 +239,30 @@ render() {
     return (
         <Box direction="column" gap="small" width="100%" >
           <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
-            <Box 
-              width="50%" 
-              direction="row"
+            <Box direction="row" width="80%" align="center" gap="10px">
+              <Calendar size="16px" />
+              <Text
+                size="16px"
+                color="black"
+                margin={{left:"5px"}}
+                style={{ height: "20px", fontStyle: "normal" }}
               >
-                <Calendar size="16px" />
-                <Text
-                  size="16px"
-                  color="black"
-                  margin={{left:"5px"}}
-                  style={{ height: "20px", fontStyle: "normal" }}
-                >
-                  {this.formatDateFull(
-                    this.props.talk.date,
-                    this.props.talk.end_date
-                    )}
-                </Text>
-                <Box margin={{left: "5px"}}>
-                  <CalendarButtons talk={this.props.talk}/>
-                </Box>
+                {this.formatDateFull(
+                  this.props.talk.date,
+                  this.props.talk.end_date
+                )}
+              </Text>
+              <CalendarButtons talk={this.props.talk}/>
             </Box>
+
             <Box
-                width="50%"
-                align="end"
-                >
-              <ShareButtons 
-                talk={this.props.talk}
-              />
+              justify="end"
+              // align="end"
+              // margin={{left: "10px"}}
+            >
+              <ShareButtons talk={this.props.talk} width="90px" />
+            </Box>
+
 
               {/* <Box
                   onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
@@ -286,9 +283,36 @@ render() {
                 Click to copy Event URL!
               </ReactTooltip> */}
 
-            </Box>
+            
           </Box>
-          {this.checkIfUserCanAccessLink() &&
+
+          {!this.props.isSharingPage && (
+            <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
+              {/* <SaveForLaterButton
+                talk={this.props.talk}
+                user={this.props.user}
+              /> */}
+              <TalkRegistrationButton
+                talk={this.props.talk}
+                user={this.props.user}
+              />
+            </Box>
+          )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          {/* {this.checkIfUserCanAccessLink() &&
             this.props.user !== null &&
             this.state.registered && (
               <Box margin={{ top: "10px", bottom: "5px", left: "20px", right: "20px" }} background="#d5d5d5">
@@ -321,20 +345,7 @@ render() {
                 <Box>
                   <Countdown talk={this.props.talk} />
                 </Box>
-                {/* <Box
-                  onClick={this.onClick}
-                  background="#7E1115"
-                  round="xsmall"
-                  // pad="xsmall"
-                  height="30px"
-                  justify="center"
-                  align="center"
-                  focusIndicator={false}
-                  hoverIndicator="#5A0C0F"
-                  margin={{top: "10px"}}
-                >
-                  <Text size="18px">Register</Text>
-                </Box> */}
+
               </Box>
           )}
           {this.checkIfUserCanAccessLink() &&
@@ -351,18 +362,12 @@ render() {
           && (
             
             <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
+              <SaveForLaterButton
+                talk={this.props.talk}
+              />
               <TalkRegistrationButton
                 talk={this.props.talk}
               />
-              <Text size="16px"> or </Text>
-              <LoginModal callback={() => {}} />
-              {/* <RequestMembershipButton
-                channelId={this.props.talk.channel_id}
-                channelName={this.props.talk.channel_name}
-                user={this.props.user}
-              /> */}
-              {/* <SignUpButton callback={() => {}} /> */}
-              <Text size="16px"> to attend </Text>
             </Box>
           )}
           {!this.checkIfUserCanAccessLink() && this.props.user !== null
@@ -397,6 +402,7 @@ render() {
             </Link>
           </Box>
         )}
+        */}
       </Box>
       
     )

@@ -6,6 +6,8 @@ import { User } from "../Services/UserService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicClassification from "../Components/Homepage/TopicClassification";
 import "../Styles/all-agoras-page.css";
+import agorasLogo from "../assets/general/agoras_logo_v2.png";
+
 
 /*const AllAgorasPage = () => {
   const [agoras, setAgoras] = useState<Channel[]>([]);
@@ -206,7 +208,7 @@ export default class AllAgorasPage extends Component<Props, State> {
         background="#F3EACE"
       >
         <Text size="18px" weight="bold" color="grey">
-          There are no Agoras in that category
+          No public Agoras in that category
         </Text>
       </Box>
     );
@@ -216,8 +218,9 @@ export default class AllAgorasPage extends Component<Props, State> {
 
     return (
       <div className="all-agoras-page">
-        <span className="all-agoras-title">Agoras</span>
-        
+        <Text weight="bold" size="28px" margin={{bottom: "15px"}}>
+          Discover new  <img src={agorasLogo} height="30px"/>
+          </Text>
           <TopicClassification 
             topicCallback={this.selectTopic}
             searchType="Agoras"

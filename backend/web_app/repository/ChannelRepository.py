@@ -1,10 +1,15 @@
 import random
 import logging
+from mailing.sendgridApi import sendgridApi
+from repository import UserRepository
 
+mail_sys = sendgridApi()
 
 class ChannelRepository:
-    def __init__(self, db):
+    def __init__(self, db, mail_sys=mail_sys):
         self.db = db
+        self.mail_sys = mail_sys
+        self.users = UserRepository.UserRepository(db=self.db)
 
     def getChannelById(self, id):
         query = f"SELECT * FROM Channels WHERE id = {id}"
@@ -213,20 +218,32 @@ class ChannelRepository:
         query = f"DELETE FROM Channels where id = {id}"
         return self.db.run_query(query)
 
-    def getEmailAddressesMembersAndAdmins(self, channelId):
+    def getEmailAddressesMembersAndAdmins(self, channelId, getMembersAddress: bool, getAdminsAddress: bool):
         #
         # TODO: TEST
         #
+        if getMembersAddress:
+            if getAdminsAddress:
+                role_sql_str = "('member','admin')"
+            else:
+                role_sql_str = "(member)"
+        else:
+            if getAdminsAddress:
+                role_sql_str = "('admin')"
+            else:
+                return []
+
         email_members_and_admins_query = f'''
             SELECT email from Users t1
             INNER JOIN ChannelUsers t2
             WHERE
                 (t1.id = t2.user_id 
-                    AND (t2.role in ('member', 'admin'))
+                    AND (t2.role in {role_sql_str})
                 )
             ;
             '''
         return self.db.run_query(email_members_and_admins_query)
+
 
     def applyMembership(self, channelId, userId, fullName, position, institution, email=None, personal_homepage=None):
         personal_homepage_var = str() if personal_homepage == None else personal_homepage
@@ -282,7 +299,22 @@ class ChannelRepository:
 
         try:
             self.db.run_query(apply_membership_insert_query)
+
+            # Send confirmation email applicant
+            agora_name = self.getChannelById(channelId)["name"]
+            self.mail_sys.send_confirmation_agora_membership_request(email, fullName, agora_name)
+
+            try:
+                # Send notification email administrator
+                contact_addresses = self.getContactAddresses(channelId)
+
+                for email in contact_addresses:
+                    self.mail_sys.notify_admin_membership_application(email, agora_name)
+            except Exception as e:
+                return str(e)
+
             return "ok"
+
         except Exception as e:
             return str(e)
 
@@ -323,7 +355,7 @@ class ChannelRepository:
             '''
         res = self.db.run_query(check_membership_query)
 
-        # B. add membership
+        # B. If not, add as member
         if len(res) == 0:
             add_membership_query = f'''
             INSERT into ChannelUsers(
@@ -344,9 +376,16 @@ class ChannelRepository:
 
             res = self.db.run_query([add_membership_query, 
             remove_membership_request_query])
+        
+            # D. Send acceptance email to applicant
+            user_name = self.users.getUserById(userId)["username"]
+            user_email = self.users.getUserById(userId)["email"]
+            agora_name = self.getChannelById(channelId)["name"]
 
-            return "ok"
+            self.mail_sys.send_confirmation_agora_membership_acceptance(user_email, agora_name, user_name)
+
         return "ok"
+
     def increaseChannelViewCount(self, channelId):
         try:
             increase_counter_query = f'''

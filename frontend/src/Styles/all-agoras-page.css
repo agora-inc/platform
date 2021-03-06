@@ -1,6 +1,6 @@
 .all-agoras-page {
   margin: 60px;
-  margin-top: 140px;
+  margin-top: 10vh;
   display: flex;
   flex-direction: column;
 }

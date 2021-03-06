@@ -1,10 +1,11 @@
 import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch} from "react-router-dom";
 import { Grommet } from "grommet";
 import Home from "./Views/Home";
+import LandingPage from "./Views/LandingPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
-import StreamPage from "./Views/StreamPage";
+// import StreamPage from "./Views/StreamPage";
 import TagPage from "./Views/TagPage";
 import Streaming from "./Views/Streaming";
 import AllVideosPage from "./Views/AllVideosPage";
@@ -24,19 +25,43 @@ import ChangePasswordPage from "./Views/ChangePasswordPage";
 import AllAgorasPage from "./Views/AllAgorasPage";
 import AllSpeakersPage from "./Views/AllSpeakersPage";
 import TalkSharingPage from "./Views/TalkSharingPage";
+import AvatarPage from "./Views/AvatarPage";
+import AgoraStreamSpeakerPage from "./Views/AgoraStreamSpeakerPage";
+import AgoraStreamAudiencePage from "./Views/AgoraStreamAudiencePage";
+import {useTracking} from './Components/Core/Analytics/useTracking';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function App() {
+  // // Initialize google analytics page view tracking
+  useTracking("G-J8FEQBCS4H");
+  
   return (
-    <BrowserRouter>
       <Grommet theme={Theme} full>
-        <HeaderBar />
+      <HeaderBar />
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/" component={LandingPage} />
+          <Route exact path="/browse" component={Home} />
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
           {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
+          <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
+          <Route path="/agora/:room_id/speaker/" component={AgoraStreamSpeakerPage} />
+          <Route path="/agora/:room_id/" component={AgoraStreamAudiencePage} />
           <Route path="/video" component={VideoPage} />
-          <Route path="/stream" component={StreamPage} />
+          {/* <Route path="/stream" component={StreamPage} /> */}
           <Route path={`/:name/manage`} component={ManageChannelPage} />
           <Route path="/tag" component={TagPage} />
           <Route path="/event/:name" component={TalkSharingPage}/>
@@ -54,8 +79,12 @@ function App() {
           <Route path="*" component={ChannelPage} />
         </Switch>
       </Grommet>
-    </BrowserRouter>
   );
 }
 
-export default App;
+export default () => (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+
+)
