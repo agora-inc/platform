@@ -5,6 +5,7 @@ import AsyncButton from "../Core/AsyncButton";
 import { User } from "../../Services/UserService";
 import { Previous } from "grommet-icons";
 import { ChannelService } from "../../Services/ChannelService";
+import agoraLogo from "../../assets/general/agora_logo_v2.png";
 
 
 import RichTextEditor from 'react-rte';
@@ -86,7 +87,7 @@ export default class CreateChannelCard extends Component<Props, State> {
             <Previous color="black" />
           </Box>
           <Text weight="bold" color="black" size="14px">
-            Create an Agora
+            Create an <img src={agoraLogo} style={{ height: "14px"}}/>
           </Text>
         </Box>
 
@@ -115,7 +116,7 @@ export default class CreateChannelCard extends Component<Props, State> {
           ) : (null)}
 
           <AsyncButton
-            color="#7E1115"
+            color="#025377"
             fontColor="white"
             label="Create"
             disabled={

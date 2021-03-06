@@ -347,7 +347,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   left: 8,
                   opacity: 0.5,
                 }}
-                background={this.props.talk.channel_colour}
+                background="#6DA3C7"
               ></Box>
             )}
           </Box>
@@ -357,14 +357,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             onClick={() => {
               this.toggleEdit();
             }}
-            background="#7E1115"
+            background="#025377"
             round="xsmall"
             pad="xsmall"
             height="40px"
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#5A0C0F"
+            hoverIndicator="#025377"
             margin="10px"
           >
             <Text size="18px">Edit</Text>

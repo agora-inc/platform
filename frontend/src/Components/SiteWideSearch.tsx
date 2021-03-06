@@ -99,7 +99,7 @@ export default class SiteWideSearch extends Component<{}, State> {
         {this.state.results.channel.length !== 0 && (
           <Box>
             <Box
-              background="#f5f5f5"
+              background="#EAF1F1"
               width="100%"
               pad="xsmall"
               style={{
@@ -163,7 +163,7 @@ export default class SiteWideSearch extends Component<{}, State> {
         {this.state.results.stream && this.state.results.stream.length !== 0 && (
           <Box>
             <Box
-              background="#f5f5f5"
+              background="#EAF1F1"
               width="100%"
               pad="xsmall"
               style={{
@@ -207,7 +207,7 @@ export default class SiteWideSearch extends Component<{}, State> {
         {this.state.results.past.length !== 0 && (
           <Box>
             <Box
-              background="#f5f5f5"
+              background="#EAF1F1"
               width="100%"
               pad="xsmall"
               style={{
@@ -270,7 +270,7 @@ export default class SiteWideSearch extends Component<{}, State> {
         {this.state.results.upcoming.length !== 0 && (
           <Box>
             <Box
-              background="#f5f5f5"
+              background="#EAF1F1"
               width="100%"
               pad="xsmall"
               style={{
@@ -333,7 +333,7 @@ export default class SiteWideSearch extends Component<{}, State> {
         {/* {this.state.results.tag.length !== 0 && (
           <Box>
             <Box
-              background="#f5f5f5"
+              background="#EAF1F1"
               width="100%"
               pad="xsmall"
               style={{

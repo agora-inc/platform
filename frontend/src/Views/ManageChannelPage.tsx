@@ -27,6 +27,7 @@ import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import agoraLogo from "../assets/general/agora_logo_v2.png";
 
 interface Props {
   location: any;
@@ -830,7 +831,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       >
                         <Box direction="row" justify="between">
                           <Text weight="bold" size="14px" color="black">
-                            Agora admins
+                          <img src={agoraLogo} style={{ height: "14px"}}/> admins
                           </Text>
                           {/* {this.state.role === "owner" && (
                             <AddUsersButton
@@ -871,7 +872,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       >
                         <Box direction="row" justify="between">
                           <Text weight="bold" size="14px" color="black">
-                            Agora members
+                          <img src={agoraLogo} style={{ height: "14px"}}/> members
                           </Text>
                           {/* {this.state.role === "owner" && (
                             <AddUsersButton
@@ -1011,7 +1012,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         </Box>
                         <Box
                           onClick={this.parseMailingList}
-                          background="#7E1115"
+                          background="#025377"
                           round="xsmall"
                           // pad="xsmall"
                           height="30px"
@@ -1019,7 +1020,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           justify="center"
                           align="center"
                           focusIndicator={false}
-                          hoverIndicator="#5A0C0F"
+                          hoverIndicator="#025377"
                         >
                           <Text size="14px"> Add </Text>
                         </Box>
