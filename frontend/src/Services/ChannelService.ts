@@ -351,6 +351,10 @@ const getChannelTopic = (
   );
 };
 
+const getChannelsWithTopic = (limit: number, topicId: number, offset: number, callback: any) => {
+  get(`channels/topics/all?limit=${limit}&topicId=${topicId}&offset=${offset}`, callback);
+};
+
 /*const getChannelTopic = (channelId: number) => {
   return baseApiUrl + `channels/topics/fetch?channelId=${channelId}`;
 };*/
@@ -485,6 +489,7 @@ export const ChannelService = {
   ////////////////////////
   editChannelTopic,
   getChannelTopic,
+  getChannelsWithTopic,
   /////////////////////
   // membership methods
   /////////////////////

@@ -573,6 +573,13 @@ def getChannelTopic():
     channelId = request.args.get("channelId")
     return jsonify(channels.getChannelTopic(channelId))
 
+@app.route('/channels/topics/all', methods=["GET"])
+def getChannelsWithTopic():
+    limit = int(request.args.get("limit"))
+    topicId = int(request.args.get("topicId"))
+    offset = int(request.args.get("offset"))
+    return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
+
 
 # --------------------------------------------
 # x Membership ROUTES

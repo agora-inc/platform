@@ -394,3 +394,8 @@ class ChannelRepository:
         query = f'SELECT topic_1_id FROM Channels WHERE id = {channelId}'
         result = self.db.run_query(query)
         return result
+
+    def getChannelsWithTopic(self, limit, topicId, offset):
+        query = f'SELECT * FROM Channels WHERE topic_1_id = {topicId} LIMIT {limit} OFFSET {offset};'
+        result = self.db.run_query(query)
+        return result

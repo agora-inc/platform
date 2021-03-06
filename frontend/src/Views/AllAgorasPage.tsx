@@ -103,7 +103,7 @@ export default class AllAgorasPage extends Component<Props, State> {
     });
   }
 
-  getAgorasByTopics = (channels: Channel[], topicsId: number[]): Channel[] => {
+  /*getAgorasByTopics = (channels: Channel[], topicsId: number[]): Channel[] => {
     let res: Channel[] = [];
     for (let channel of channels) {
       let isIn: boolean = false;
@@ -117,7 +117,7 @@ export default class AllAgorasPage extends Component<Props, State> {
       }
     }
     return res;
-  };
+  };*/
 
   fetchAgorasByTopic = (topic: Topic) => {
     if (topic.id >= 0) {
@@ -126,9 +126,16 @@ export default class AllAgorasPage extends Component<Props, State> {
         this.state.allTopics
       );
       childrenId.push(topic.id);
-      this.setState({
-        chosenAgoras: this.getAgorasByTopics(this.state.allAgoras, childrenId),
-      });
+        ChannelService.getChannelsWithTopic(
+          100,
+          topic.id,
+          0,
+          (foundAgoras: Channel[]) => {
+            this.setState({
+              chosenAgoras: foundAgoras,
+            })
+          }
+        )
     } else {
       this.setState({
         chosenAgoras: this.state.allAgoras,
