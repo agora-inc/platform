@@ -52,6 +52,8 @@ export default class CreateChannelCard extends Component<Props, State> {
       },
       this.state.topics
     );
+    // close modal
+    this.props.onBackClicked()
   };
 
   topicExists = (topics: Topic[]) => {
