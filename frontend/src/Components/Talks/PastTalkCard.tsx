@@ -185,14 +185,14 @@ export default class PastTalkCard extends Component<Props, State> {
             style={{ width: "100%" }}
           >
             <Box
-              background="#7E1115"
+              background="#025377"
               round="xsmall"
               height="40px"
               width="50%"
               justify="center"
               align="start"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#025377"
             >
               <Text alignSelf="center" size="16px">
                 Watch talk
@@ -230,14 +230,14 @@ export default class PastTalkCard extends Component<Props, State> {
             style={{ width: "100%" }}
           >
             <Box
-              background="#7E1115"
+              background="#025377"
               round="xsmall"
               height="40px"
               width="50%"
               justify="center"
               align="start"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#025377"
             >
               <Text alignSelf="center" size="14px">
                 Watch talk
@@ -314,7 +314,7 @@ export default class PastTalkCard extends Component<Props, State> {
           {!this.props.talk.recording_link && (
             <Box
               height="60%"
-              background={this.props.talk.channel_colour}
+              background="#6DA3C7"
               style={{ opacity: 0.75 }}
             ></Box>
           )}
@@ -348,7 +348,7 @@ export default class PastTalkCard extends Component<Props, State> {
               <Text
                 weight="bold"
                 size="14px"
-                color={this.props.talk.channel_colour}
+                color="#6DA3C7"
               >
                 {this.props.talk.channel_name}
               </Text>
@@ -385,7 +385,7 @@ export default class PastTalkCard extends Component<Props, State> {
               left: 8,
               opacity: 0.5,
             }}
-            background={this.props.talk.channel_colour}
+            background="#6DA3C7"
           ></Box>
         )}
 
@@ -684,7 +684,7 @@ export default class PastTalkCard extends Component<Props, State> {
           //         <Text
           //           weight="bold"
           //           size="22px"
-          //           color={this.props.talk.channel_colour}
+          //           color="#6DA3C7"
           //         >
           //           {this.props.talk.channel_name}
           //         </Text>
@@ -737,7 +737,7 @@ export default class PastTalkCard extends Component<Props, State> {
           //           direction="row"
           //           width="100%"
           //           height="45px"
-          //           background="#f5f5f5"
+          //           background="#eaf1f1"
           //           round="xsmall"
           //           pad="xsmall"
           //           justify="center"
@@ -786,14 +786,14 @@ export default class PastTalkCard extends Component<Props, State> {
             onClick={() => {
               this.toggleEdit();
             }}
-            background="#7E1115"
+            background="#025377"
             round="xsmall"
             pad="xsmall"
             height="40px"
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#5A0C0F"
+            hoverIndicator="#025377"
             margin="10px"
           >
             <Text size="18px">Edit</Text>

@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
-import { ReactComponent as Logo } from "../apollo.svg";
+
+import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.png";
+
+
 import { Link } from "react-router-dom";
 import UserManager from "./Account/UserManager";
 import FormContainer from "./Homepage/FormContainer";
@@ -58,14 +61,8 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           <Box style={{ minWidth: "15%" }}>
             <Link to="/" style={{ textDecoration: "none", width: 140 }}>
               <Box direction="row" align="center">
-                <Logo style={{ height: "5vh", margin: 0 }} />
-                <Heading
-                  level="3"
-                  margin="none"
-                  style={{ fontSize: 28, color: "black" }}
-                >
-                  Agora
-                  </Heading>
+                {/* <Logo style={{ height: "5vh", margin: 0 }} /> */}
+                <img src={agoraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
                   <MediaQuery maxDeviceWidth={992}>
                     <Text size="xsmall" color="black">mobile</Text>
                     </MediaQuery>
@@ -80,9 +77,10 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                     overflow: "auto",
                     fontStyle: "italic",
                   }}
-                  >
-                  Automating the academic seminar organisation pipeline.
+                >
+                  Connecting academics. 
                 </Text>
+                {/* Automating the academic seminar organisation pipeline. */}
               </MediaQuery>
           </Box>
           {/* <MediaQuery minDeviceWidth={992}>

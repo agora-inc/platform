@@ -31,7 +31,7 @@ export default class ScheduleTalkButton extends Component<Props, State> {
       <Box margin={this.props.margin} pad="none">
         <Box
           onClick={this.toggleModal}
-          background="#7E1115"
+          background="#025377"
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
           height="40px"
@@ -40,7 +40,7 @@ export default class ScheduleTalkButton extends Component<Props, State> {
           align="center"
           focusIndicator={false}
           // hoverIndicator="#2433b5"
-          hoverIndicator="#5A0C0F"
+          hoverIndicator="#6DA3C7"
         >
           <Text size="14px" weight="bold"> Schedule talk </Text>
         </Box>

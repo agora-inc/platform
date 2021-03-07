@@ -170,7 +170,7 @@ const WineButton: React.FC<any> = (props) => {
   return (
     <Box
       onClick={props.onClick}
-      background="#7E1115"
+      background="#025377"
       round="xsmall"
       pad="xsmall"
       height="30px"
@@ -178,7 +178,7 @@ const WineButton: React.FC<any> = (props) => {
       justify="center"
       align="center"
       focusIndicator={false}
-      hoverIndicator="#5A0C0F"
+      hoverIndicator="#025377"
     >
       <Text size="14px">{props.children}</Text>
     </Box>

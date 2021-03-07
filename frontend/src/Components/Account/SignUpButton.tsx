@@ -80,7 +80,7 @@ export default class SignUpButton extends Component<Props, State> {
             fontWeight: "bold",
             color: "white",
             padding: 0,
-            backgroundColor: "#7E1115",
+            backgroundColor: "#025377",
             border: "none",
             borderRadius: 5,
           }}

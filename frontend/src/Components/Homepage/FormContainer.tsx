@@ -112,7 +112,7 @@ export default class FormContainer extends Component<{}, State> {
             color="grey"
             onClick={() => this.setState({ showForm: true })}
           > 
-            Feedback/ Bug
+            Feedback / Report a bug
           </Text>
         <Overlay
           visible={this.state.showForm}
@@ -128,10 +128,6 @@ export default class FormContainer extends Component<{}, State> {
           contentHeight="500px"
           title="Submit feedback"
         >
-          <Text>
-            Thank you very much for reaching out!
-          </Text>
-          <p><i>(NB: If you are reporting a bug, resetting your cache solves it 95% of the time).</i></p>
           <Box width="100%" gap="2px">
             <TextInput
               placeholder="Name (optional)"

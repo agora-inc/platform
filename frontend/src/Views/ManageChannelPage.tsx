@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image } from "grommet";
+import { Box, Text, TextArea, Image, Grid } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -20,7 +20,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, ContactInfo, Group, DocumentText, Resources } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -28,14 +28,19 @@ import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
+import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
+import { Topic, TopicService } from "../Services/TopicService";
+import agoraLogo from "../assets/general/agora_logo_v2.png";
 
 interface Props {
   location: any;
   match: any;
+  channel?: Channel;
 }
 
 interface State {
   channel: Channel | null;
+  channelId: number;
   loading: boolean;
   user: User | null;
   role: "none" | "owner" | "member" | "follower";
@@ -61,6 +66,12 @@ interface State {
   contactAddresses: string;
   showDraftInfo: boolean;
   showMemberEmailInfo: boolean;
+  topics: Topic[];
+  isPrevTopics: boolean[];
+  topicSaved: boolean;
+  saveButtonFade: boolean;
+  topicId: number;
+  field: string;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -68,6 +79,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     super(props);
     this.state = {
       channel: null,
+      channelId: 0,
       loading: true,
       user: null,
       role: "none",
@@ -93,12 +105,36 @@ export default class ManageChannelPage extends Component<Props, State> {
       contactAddresses: "",
       showDraftInfo: false,
       showMemberEmailInfo: false,
+      topics: this.props.channel ? this.props.channel.topics : [],
+      isPrevTopics: this.props.channel ? this.topicExists(this.props.channel.topics) : [false, false, false],
+      topicSaved: false,
+      saveButtonFade: false,
+      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
+      field: "",
     };
   }
 
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
     this.getChannelAndCheckAccess();
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+        this.setState({channelId: channel.id})
+      }
+    );
+    ChannelService.getChannelTopic(
+      this.state.channelId,
+      (currentTopicId: number) => {
+        this.setState({ topicId:currentTopicId });
+      }
+    );
+    TopicService.getFieldFromId(
+      this.state.topicId,
+      (topicName: string) => {
+        this.setState({field: topicName})
+      }
+    )
   }
 
   componentWillUnmount() {
@@ -436,6 +472,61 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  SavedButtonClicked = () => {
+    this.setState({ topicSaved: true });
+    this.setState({ saveButtonFade: true});
+    ChannelService.editChannelTopic(
+      this.state.channel!.id,
+      this.state.topics,
+      () => {console.log("channel topic saved");}
+    );
+    return (
+      <Box></Box>
+    );
+  };
+
+  endOfAnimation = () => {
+    this.setState({ saveButtonFade: false});
+    return (
+      <Box></Box>
+    );
+  }
+
+  topicExists = (topics: Topic[]) => {
+    let res = [];
+    for (let topic in topics) {
+      if (topic) {
+        res.push(true)
+      } else {
+        res.push(false)
+      }
+    }
+    return res;
+  }
+
+  selectTopic = (topic: Topic, num: number) => {
+    let tempTopics = this.state.topics;
+    tempTopics[num] = topic;
+    this.setState({
+      topics: tempTopics
+    });
+  }
+
+  cancelTopic = (num: number) => {
+    let tempTopics = this.state.topics;
+    tempTopics[num] = {
+      field: "",
+      id: 0,
+      is_primitive_node: false,
+      parent_1_id: -1,
+      parent_2_id: -1, 
+      parent_3_id: -1,
+    }
+    this.setState({
+      topics: tempTopics
+    });
+  }
+
   banner = () => {
     return (
       <Box
@@ -492,58 +583,58 @@ export default class ManageChannelPage extends Component<Props, State> {
             </Box>
 
 
-            <Box>
-              <Text 
-                size="26px"
-                color="black"
-                weight="bold"
-              >
-                {this.state.channel ?.name}
-              </Text>
-              <Text size="14px" style={{marginBottom: "6px"}}>
-                Share this Agora:
-              </Text>
-              <Box height="36px" style={{width: "300px"}}> 
-                  <ShareButtons
-                    channel={this.state.channel}
-                  />
-              </Box>
-              {/*<Text size="24px" color="#999999" weight="bold">
-                {this.state.followerCount} followers
-                </Text>*/}
-            </Box>
-          </Box>
 
-          
-          <Box direction="column" gap="xsmall" align="end" width="22vw">
-            {(typeof(this.state.viewerCount) == "number") &&
+
+            <Box direction="column" gap="xsmall" align="start" width="70%vw">
               <Text 
-                size="16px"
-                color="#999999"
-                weight="bold"
-                margin={{bottom: "6px"}}
-              >
-                {this.state.viewerCount} visits
-              </Text>
-            }
+                  size="26px"
+                  color="black"
+                  weight="bold"
+                >
+                  {this.state.channel ?.name}
+                </Text>
+              {(typeof(this.state.viewerCount) == "number") &&
+                <Text 
+                  size="16px"
+                  color="#999999"
+                  weight="bold"
+                  margin={{bottom: "6px", right: "20px"}}
+                >
+                  {this.state.viewerCount} visits
+                </Text>
+              }
+
             <Box 
               direction="row"
               align="end"
-              data-tip data-for="avatar_info"
+              gap="5px"
             >
-              <ImageUploader
-                text="Upload avatar"
-                onUpload={this.onFileChosen}
-                />
-                  <ReactTooltip id='avatar_info' place="top" effect="solid">
-                    <p>Recommended avatar dim: 400x400px</p>
-                  </ReactTooltip>
+            <Box data-tip data-for="avatar_info">
+                <ImageUploader
+                  text="Upload avatar"
+                  onUpload={this.onFileChosen}
+                  />
+                    <ReactTooltip id='avatar_info' place="top" effect="solid">
+                      <p>Recommended avatar dim: 400x400px</p>
+                    </ReactTooltip>
+              </Box>
               <DeleteAgoraButton
                 name={this.state.channel!.name}
                 id={this.state.channel!.id}
                 />
             </Box>
+            </Box>
           </Box>
+
+          
+
+          <Box direction="row" gap="xsmall" align="end" width="30%">
+              <ShareButtons
+                channel={this.state.channel}
+              />
+          </Box>
+
+
 
 
           {this.state.bannerExtended ? (
@@ -590,13 +681,12 @@ export default class ManageChannelPage extends Component<Props, State> {
       );
     } else {
       return this.isAllowed() ? (
-        <Box
-          className="manage-channel"
-        >
+        <Box>
           <Box
             width="100%"
             height="100%"
             align="center"
+            margin={{ top: "100px" }}
           >
             <Box width="75%" align="start">
               {this.state.role === "owner" && (
@@ -613,9 +703,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                     align="center"
                     pad="small"
                     round="xsmall"
-                    background="#F3EACE"
+                    background="#D7F75B"
                   >
-                    <Text size="14px" weight="bold" color="grey">
+                    <Text size="14px" weight="bold">
                       You are an administrator
                     </Text>
                   </Box>
@@ -670,14 +760,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Tab>*/}
                   <Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <ContactInfo />
-                      <Text size="14px"> 
-                        Contact 
-                      </Text>
-                    </Box>
-                  </Tab>
-                  <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <Resources />
                       <Text size="14px"> 
@@ -693,9 +775,18 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <SettingsOption />
+                      <Text size="14px"> 
+                        Details 
+                      </Text>
+                    </Box>
+                  </Tab>
                 </TabList>
                 
-                <TabPanel style={{width: "74.35vw"}}>
+
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box
                     width="100%"
                     direction="row"
@@ -845,7 +936,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                     ))}
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>
+
+
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="column">
                     <Box 
                       direction="row" 
@@ -861,7 +954,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       >
                         <Box direction="row" justify="between">
                           <Text weight="bold" size="14px" color="black">
-                            Agora admins
+                          <img src={agoraLogo} style={{ height: "14px"}}/> admins
                           </Text>
                           {/* {this.state.role === "owner" && (
                             <AddUsersButton
@@ -902,7 +995,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       >
                         <Box direction="row" justify="between">
                           <Text weight="bold" size="14px" color="black">
-                            Agora members
+                          <img src={agoraLogo} style={{ height: "14px"}}/> members
                           </Text>
                           {/* {this.state.role === "owner" && (
                             <AddUsersButton
@@ -1042,7 +1135,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         </Box>
                         <Box
                           onClick={this.parseMailingList}
-                          background="#7E1115"
+                          background="#025377"
                           round="xsmall"
                           // pad="xsmall"
                           height="30px"
@@ -1050,7 +1143,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           justify="center"
                           align="center"
                           focusIndicator={false}
-                          hoverIndicator="#5A0C0F"
+                          hoverIndicator="#025377"
                         >
                           <Text size="14px"> Add </Text>
                         </Box>
@@ -1058,33 +1151,83 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>             
 
-                  <Box
-                    direction="row"
-                    width="100%"
-                    wrap
-                    // justify="between"
-                    gap="20px"
-                    margin={{ top: "10px", bottom: "60px" }}
-                  >
-                    <EmailContactManagement
-                      channelId={this.state.channel!.id}
-                      currentAddress={this.state.contactAddresses}
-                      onAddAddress={this.onAddContactAddress}
-                      onDeleteAddress={this.onDeleteContactAddress}
-                    />
-                  </Box>
-                </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel>
-                <TabPanel style={{width: "74.35vw"}}>
+
+
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RegistrationsTab channelId={channel!.id} />
                   </Box>
+                </TabPanel>
+                
+
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
+                  <Grid
+                    rows={['xxsmall', 'xxsmall']}
+                    columns={['medium', 'xxsmall']}
+                    gap="small"
+                    areas={[
+                      { name: 'email', start: [0, 0], end: [1, 0]},
+                      { name: 'topic_change', start: [0, 1], end: [0, 1] },
+                      { name: 'topic_button', start: [1, 1], end: [1, 1]},
+                    ]}
+                  >
+                    <Box gridArea="email">
+                      <EmailContactManagement
+                        channelId={this.state.channel!.id}
+                        currentAddress={this.state.contactAddresses}
+                        onAddAddress={this.onAddContactAddress}
+                        onDeleteAddress={this.onDeleteContactAddress}
+                      />
+                    </Box>
+                    {/* <Box gridArea="topic_change">
+                      <ChannelTopicSelector 
+                        onSelectedCallback={this.selectTopic}
+                        onCanceledCallback={this.cancelTopic}
+                        isPrevTopics={this.state.isPrevTopics}
+                        prevTopics={this.props.channel ? this.props.channel.topics : []} 
+                        textSize="small"
+                      />
+                    </Box>
+                    <Box gridArea="topic_button">
+                      <Box
+                        className={"save_Button"}
+                        focusIndicator={false}
+                        width={"10vw"}
+                        background="white"
+                        round="xsmall"
+                        height={"30px"}
+                        pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
+                        onClick={this.SavedButtonClicked}
+                        onAnimationEnd={this.endOfAnimation}
+                        style={{
+                          border: "1px solid #C2C2C2",
+                          minWidth: "25px"
+                        }}
+                        hoverIndicator={true}
+                        justify="center"
+                      >
+                        <Text 
+                          size="14px" 
+                          color="grey"
+                          alignSelf="center"
+                        >
+
+                      {this.state.topicSaved == false && (
+                          "Save"
+                      )}
+                      {this.state.topicSaved == true && (
+                          "Saved"
+                      )}
+                      </Text>
+                      </Box>
+                    </Box> */}
+                  </Grid>
                 </TabPanel>
               </Tabs>
             </Box>

@@ -49,3 +49,12 @@
   /* pointer-events: none; */
   /* z-index: -1; */
 }
+
+.save_Button{
+  animation: fade-in-keyframes 1s;
+}
+
+@keyframes fade-in-keyframes {
+  from {opacity: 0}
+  to {opacity: 1}
+}
