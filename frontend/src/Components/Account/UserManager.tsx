@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Button, Text, TextArea } from "grommet";
 import {UserSettings} from "grommet-icons";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
 import { Channel, ChannelService } from "../../Services/ChannelService";

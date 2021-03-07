@@ -38,21 +38,17 @@ export default class CreateChannelOverlay extends Component<Props, State> {
     };
   }
 
-  onCreateClicked = (callback: any) => {
+  onCreateClicked = () => {
     ChannelService.createChannel(
       this.state.newChannelName,
       this.state.newChannelDescription,
       this.props.user!.id,
-      () => {
-        callback();
+      (r:string) => {
         this.setState({ redirect: true }, () => {
-          this.props.onComplete();
         });
       },
       this.state.topics
-    );
-    // close modal
-    this.props.onBackClicked()
+      );
   };
 
   containsSpecialCharacter = (name: string) => {

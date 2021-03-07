@@ -87,7 +87,6 @@ export default class RegistrationsTab extends Component<Props, State> {
     TalkService.acceptTalkRegistration(item.id, () => {});
 
     let pendingRegistrationList = this.state.pendingRegistrationList.filter(x => x !== item);
-    console.log("lets see if diff: ", pendingRegistrationList)
     let acceptedRegistrationList = this.state.acceptedRegistrationList
 
     acceptedRegistrationList.push(item);
@@ -130,7 +129,7 @@ export default class RegistrationsTab extends Component<Props, State> {
     const item = this.state.itemDetail!;
     const showItem = !!this.state.itemDetail;
 
-    console.log("item", item);
+    // console.log("item", item);
 
 
     return (

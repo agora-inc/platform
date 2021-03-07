@@ -146,7 +146,7 @@ class ChannelRepository:
         if res[0]["has_avatar"] == 1:
             return f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
         else:
-            return f"/home/cloud-user/plateform/agora/images/avatars/default.jpg"
+            return f"/home/cloud-user/plateform/agora/frontend/public/agora_default_avatar_channel_v2.png"
 
     def addAvatar(self, channelId):
         query = f'UPDATE Channels SET has_avatar=1 WHERE id = {channelId}'
