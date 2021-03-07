@@ -469,7 +469,10 @@ def cover():
 def getContactAddresses():
     if "channelId" in request.args: 
         channel_id = request.args.get("channelId")
-        res = channels.getContactAddresses(channel_id)
+        res = channels.getEmailAddressesMembersAndAdmins(
+            channel_id, 
+            getMembersAddress=False, 
+            getAdminsAddress=True)
         return jsonify(res)
 
 @app.route('/channels/contact/add', methods=["POST", "OPTIONS"])

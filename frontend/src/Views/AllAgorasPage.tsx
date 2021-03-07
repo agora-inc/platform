@@ -208,7 +208,7 @@ export default class AllAgorasPage extends Component<Props, State> {
         background="#F3EACE"
       >
         <Text size="18px" weight="bold" color="grey">
-          No publicly visible Agoras in that category
+          No public Agoras in that category
         </Text>
       </Box>
     );

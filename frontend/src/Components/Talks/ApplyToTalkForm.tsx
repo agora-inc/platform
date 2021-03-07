@@ -35,7 +35,6 @@ interface State {
       // date: string;
     }
     showForm: boolean;
-    contactAddresses: string
 }
 
 export default class ApplyToTalkForm extends Component<Props, State> {
@@ -57,19 +56,8 @@ export default class ApplyToTalkForm extends Component<Props, State> {
         // date: "",
         },
       showForm: false,
-      contactAddresses: ""
     };
-    this.fetchContactAddresses()
   }
-
-  fetchContactAddresses = () => {
-    ChannelService.getContactAddresses(
-      this.props.channelId,
-      (contactAddresses: string) => {
-        this.setState({ contactAddresses: contactAddresses });
-      }
-    );
-  };
 
   handleInput = (e: any, key: string) => {
     let value = e.target.value;
@@ -87,7 +75,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
 
   handleFormSubmit = (e: any) => {
     // prevents the page from bein
-    this.fetchContactAddresses();
     e.preventDefault();
     let userData = this.state.user;
     this.sendApplication();
@@ -110,7 +97,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       };
     }
     ChannelService.sendTalkApplicationEmail(
-      // "agora_administrators_contact_email": this.state.contactAddresses,
       this.props.channelId,
       this.props.channelName,
       this.state.user.speaker_name,

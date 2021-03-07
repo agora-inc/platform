@@ -6,6 +6,8 @@ import agoraLogo from "../../assets/general/agora_logo_v2.png";
 
 interface Props {
   onClick: any;
+  width?: string;
+  height?: string
 }
 
 interface State {
@@ -33,6 +35,8 @@ export default class CreateChannelButton extends Component<Props, State> {
         direction="row"
         gap="small"
         align="center"
+        width={this.props.width ? (this.props.width) : "fill"}
+        height={this.props.height ? (this.props.height) : "fill"}
         round="xsmall"
         pad="xsmall"
         style={{

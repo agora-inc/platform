@@ -23,25 +23,12 @@ import TermsOfServicePage from "./Views/TermsOfServicePage";
 import PrivacyPage from "./Views/PrivacyPage";
 import ChangePasswordPage from "./Views/ChangePasswordPage";
 import AllAgorasPage from "./Views/AllAgorasPage";
-import AllSpeakersPage from "./Views/AllSpeakersPage";
+import AgoraCreationPage from "./Views/AgoraCreationPage";
 import TalkSharingPage from "./Views/TalkSharingPage";
 import AvatarPage from "./Views/AvatarPage";
 import AgoraStreamSpeakerPage from "./Views/AgoraStreamSpeakerPage";
 import AgoraStreamAudiencePage from "./Views/AgoraStreamAudiencePage";
 import {useTracking} from './Components/Core/Analytics/useTracking';
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 function App() {
@@ -72,6 +59,7 @@ function App() {
           <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
           <Route path="/info/welcome" component={InformationPage} />
+          <Route path="/info/agora_creation" component={AgoraCreationPage} />
           <Route path="/info/getting-started" component={GettingStartedPage} />
           <Route path="/info/tos" component={TermsOfServicePage} />
           <Route path="/info/privacy" component={PrivacyPage} />

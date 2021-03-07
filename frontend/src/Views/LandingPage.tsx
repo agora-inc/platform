@@ -11,6 +11,9 @@ import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
+import TrendingChannelsList from "../Components/Homepage/TrendingChannelsList";
+
+
 
 interface State {
   user: User | null
@@ -37,12 +40,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   }
 
   showDynamicTextValue() {
-    // Changes every minute
+    // Changes every second
     var dynamicTextValueList = [
       "Opening the doors to all online academic seminars in the world.",
       "Democratizing access to cutting-edge research.",
       "Leveraging modern technologies in the service of academics.",
-      "Cut global travel of academics and fight climate change.",
+      "Cutting global travel of academics and fight climate change.",
       "Empowering academics' reach and visibility.",
       "Automating the seminar organisers' pipeline."
     ];
@@ -118,7 +121,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               hoverIndicator="#CCCCCC"
             >
               <Search size="30px"/>
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover </Text>
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Browse </Text>
               <Text size="16px" margin={{top: "10px"}}> future seminars </Text>
             </Box>
           </Link>
@@ -145,7 +148,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Box>
           </Link>
           <Link
-            to={{ pathname: "/info/getting-started" }}
+            to={{ pathname: "info/agora_creation" }}
             style={{ textDecoration: "none" }}
           >
             <Box
@@ -185,7 +188,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             >
               <Multiple size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover</Text>
-              <Text size="16px" margin={{top: "10px"}}> all <img src={agorasLogo} style={{ height: "14px"}}/> </Text>
+              <Text size="16px" margin={{top: "10px"}}> new <img src={agorasLogo} style={{ height: "14px"}}/> </Text>
             </Box>
           </Link>
         </Box>
@@ -198,14 +201,23 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           margin={{top: "60px"}}
         >
           <Box direction="column" justify="center" style={{minWidth: "50%"}}>
-            <Text size="21px" margin={{bottom: "12px"}} alignSelf="center"> What is an <img src={agoraLogo} style={{ height: "16px", alignSelf:"center"}}/>? </Text>
-            <Text size="14px" margin={{bottom: "6px"}}> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a community hub </Text>
-            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> It is the place where seminars are hosted and future events advertised </Text>
-            <Text size="14px" margin={{bottom: "6px"}}> Visit and connect with any agora by becoming a member or a future speaker </Text>
-            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Follow some <img src={agorasLogo} style={{ height: "14px", alignSelf:"center"}}/> to never miss out on their awesome events! </Text>
+            <Text size="21px" weight="bold" margin={{bottom: "24px"}} alignSelf="center"> What is an <img src={agoraLogo} style={{ height: "19px", alignSelf:"center"}}/>? </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a community hub </Text>
+            <Text size="14px" margin={{bottom: "6px"}}> It is the place where seminars are hosted and future events advertised </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Visit and connect with any agora by becoming a member or a future speaker </Text>
+            {/* <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Follow some <img src={agorasLogo} style={{ height: "14px", alignSelf:"center"}}/> to never miss out on their awesome events! </Text> */}
 
           </Box>
         </Box>
+
+        <Box 
+          direction="row" 
+          gap="150px"
+          margin={{top: "50px"}}
+        >
+          <TrendingChannelsList/>
+        </Box>
+
 
 
         { /*
