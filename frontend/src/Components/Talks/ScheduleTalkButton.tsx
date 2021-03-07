@@ -40,7 +40,7 @@ export default class ScheduleTalkButton extends Component<Props, State> {
           align="center"
           focusIndicator={false}
           // hoverIndicator="#2433b5"
-          hoverIndicator="#025377"
+          hoverIndicator="#6DA3C7"
         >
           <Text size="14px" weight="bold"> Schedule talk </Text>
         </Box>

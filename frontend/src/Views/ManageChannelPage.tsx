@@ -27,6 +27,7 @@ import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.png";
@@ -557,56 +558,85 @@ export default class ManageChannelPage extends Component<Props, State> {
           height="133px"
           align="center"
           justify="between"
-          pad="16px"
+          pad={{ top: "16px", right: "16px", left: "16px" }}
         >
-          <Box direction="row" align="center" gap="small">
-            <Box>
-              <Box
-                width="100px"
-                height="100px"
-                round="50px"
-                background="white"
-                justify="center"
-                align="center"
-                style={{ minWidth: 100, minHeight: 100 }}
-                overflow="hidden"
-              >
-                {
-                  <img
-                    src={
-                      ChannelService.getAvatar(this.state.channel!.id, 1)
-                    }
-                    height={100}
-                    width={100}
-                  />
-                }
-              </Box>
+          <Box direction="row" align="center" gap="small" width="75vw">
+            <Box
+              width="100px"
+              height="100px"
+              round="50px"
+              background="white"
+              justify="center"
+              align="center"
+              style={{ minWidth: 100, minHeight: 100 }}
+              overflow="hidden"
+            >
+              {
+                <img
+                  src={
+                    ChannelService.getAvatar(this.state.channel!.id, 1)
+                  }
+                  height={100}
+                  width={100}
+                />
+              }
             </Box>
-            <Box>
-              <Text size="24px" color="black" weight="bold" margin={{bottom: "6px"}}>
-                {this.state.channel?.name}
-              </Text>
+
+
+
+
+            <Box direction="column" gap="xsmall" align="start" width="70%vw">
+              <Text 
+                  size="26px"
+                  color="black"
+                  weight="bold"
+                >
+                  {this.state.channel ?.name}
+                </Text>
               {(typeof(this.state.viewerCount) == "number") &&
-                <Text size="16px" color="#999999" weight="bold" margin={{bottom: "6px"}}>
+                <Text 
+                  size="16px"
+                  color="#999999"
+                  weight="bold"
+                  margin={{bottom: "6px", right: "20px"}}
+                >
                   {this.state.viewerCount} visits
                 </Text>
               }
-              <Box direction="row" align="center">
+
+            <Box 
+              direction="row"
+              align="end"
+              gap="5px"
+            >
+            <Box data-tip data-for="avatar_info">
                 <ImageUploader
                   text="Upload avatar"
                   onUpload={this.onFileChosen}
-                />
-                <StatusInfo size="small" data-tip data-for='avatar_info'/>
-                      <ReactTooltip id='avatar_info' place="right" effect="solid">
-                       <p>Recommended avatar dim: 400x400px</p>
-                      </ReactTooltip>
-                <DeleteAgoraButton
-                  name={this.state.channel!.name}
-                  id={this.state.channel!.id}
-                />
+                  />
+                    <ReactTooltip id='avatar_info' place="top" effect="solid">
+                      <p>Recommended avatar dim: 400x400px</p>
+                    </ReactTooltip>
               </Box>
+              <DeleteAgoraButton
+                name={this.state.channel!.name}
+                id={this.state.channel!.id}
+                />
+            </Box>
             </Box>
           </Box>
+
+          
+
+          <Box direction="row" gap="xsmall" align="end" width="30%">
+              <ShareButtons
+                channel={this.state.channel}
+              />
+          </Box>
+
+
+
+
           {this.state.bannerExtended ? (
             <FormUp
               onClick={this.toggleBanner}

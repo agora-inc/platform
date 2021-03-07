@@ -26,14 +26,15 @@ const DeleteAgoraButton = ({ name, id }: Props) => {
   ) : (
     <Fragment>
       <Box
+        background="#FF4040"
+        // background="#F2F2F2"
+        round="xsmall"
         width="100px"
         height="25px"
-        background="#FF4040"
-        round="xsmall"
-        style={{ cursor: "pointer" }}
-        align="center"
         justify="center"
-        margin={{ left: "5px" }}
+        align="center"
+        focusIndicator={true}
+        hoverIndicator="#DDDDDD"
         onClick={() => setShowModal(true)}
       >
         <Text size="13px" weight="bold" color="white">
