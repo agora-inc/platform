@@ -47,7 +47,7 @@ export default class Carousel extends Component<Props, State> {
         background="rgba(96, 110, 235, 0.7)"
       >
         <Text size="20px" weight="bold" color="black">
-          No publicly visible talks happening right now
+          No public talks happening right now
         </Text>
         <Box
           background="white"

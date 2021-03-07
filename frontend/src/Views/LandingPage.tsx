@@ -40,12 +40,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   }
 
   showDynamicTextValue() {
-    // Changes every minute
+    // Changes every second
     var dynamicTextValueList = [
       "Opening the doors to all online academic seminars in the world.",
       "Democratizing access to cutting-edge research.",
       "Leveraging modern technologies in the service of academics.",
-      "Cut global travel of academics and fight climate change.",
+      "Cutting global travel of academics and fight climate change.",
       "Empowering academics' reach and visibility.",
       "Automating the seminar organisers' pipeline."
     ];

@@ -210,7 +210,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_3">
-                : Allow like-minded people around the world to connect with your events
+                : Attract like-minded people and experts from all around the world to your events
                 </Box>
 
               <Box gridArea="arg_4_icon">
