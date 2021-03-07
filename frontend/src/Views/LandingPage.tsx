@@ -118,7 +118,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               hoverIndicator="#CCCCCC"
             >
               <Search size="30px"/>
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover </Text>
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Browse </Text>
               <Text size="16px" margin={{top: "10px"}}> future seminars </Text>
             </Box>
           </Link>
@@ -185,7 +185,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             >
               <Multiple size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover</Text>
-              <Text size="16px" margin={{top: "10px"}}> all <img src={agorasLogo} style={{ height: "14px"}}/> </Text>
+              <Text size="16px" margin={{top: "10px"}}> new <img src={agorasLogo} style={{ height: "14px"}}/> </Text>
             </Box>
           </Link>
         </Box>
