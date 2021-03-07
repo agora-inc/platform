@@ -22,7 +22,7 @@ export default class ImageUploader extends Component<Props> {
           height="25px"
           background="white"
           round="xsmall"
-          style={{ border: "solid black 2px", cursor: "pointer" }}
+          style={{ border: "solid black 1px", cursor: "pointer" }}
           align="center"
           justify="center"
         >

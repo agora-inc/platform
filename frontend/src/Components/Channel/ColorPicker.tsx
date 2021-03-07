@@ -127,8 +127,8 @@ export default class ColorPicker extends Component<Props, State> {
     if (this.props.hasCover){
     remove_button =
       <Box
-        width="100%"
-        height="25px"
+        width={"150px"}
+        height="30px"
         background="#FF4040"
         round="xsmall"
         style={{ cursor: "pointer" }}
@@ -202,8 +202,9 @@ export default class ColorPicker extends Component<Props, State> {
         <ImageCropUploader
           text="Upload header"
           onUpload={this.onCoverUpload}
-          width="200px"
+          width="150px"
         />
+        <Box margin= {{ right: "xsmall" }}/>
         {remove_button}
 
       </Box>

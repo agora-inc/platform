@@ -551,9 +551,9 @@ export default class ChannelPage extends Component<Props, State> {
                         align="center"
                         pad="small"
                         round="xsmall"
-                        background="#F3EACE"
+                        background="#D7F75B"
                       >
-                        <Text size="16px" weight="bold" color="grey">
+                        <Text size="16px" weight="bold">
                           You are a member
                         </Text>
                       </Box>

@@ -202,8 +202,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         >
           <Box direction="column" justify="center" style={{minWidth: "50%"}}>
             <Text size="21px" weight="bold" margin={{bottom: "24px"}} alignSelf="center"> What is an <img src={agoraLogo} style={{ height: "19px", alignSelf:"center"}}/>? </Text>
-            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a community hub </Text>
-            <Text size="14px" margin={{bottom: "6px"}}> It is the place where seminars are hosted and future events advertised </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a hub for a community (e.g. a reading group, seminar group, institution, etc..)</Text>
+            <Text size="14px" margin={{bottom: "6px"}}> It is the place where seminars happen and future events advertised </Text>
             <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Visit and connect with any agora by becoming a member or a future speaker </Text>
             {/* <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Follow some <img src={agorasLogo} style={{ height: "14px", alignSelf:"center"}}/> to never miss out on their awesome events! </Text> */}
 

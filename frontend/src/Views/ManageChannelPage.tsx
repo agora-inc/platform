@@ -673,9 +673,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                     align="center"
                     pad="small"
                     round="xsmall"
-                    background="#F3EACE"
+                    background="#D7F75B"
                   >
-                    <Text size="14px" weight="bold" color="grey">
+                    <Text size="14px" weight="bold">
                       You are an administrator
                     </Text>
                   </Box>
@@ -755,7 +755,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Tab>
                 </TabList>
                 
-                <TabPanel style={{width: "74.35vw"}}>
+
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box
                     width="100%"
                     direction="row"
@@ -907,7 +908,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TabPanel>
 
 
-                <TabPanel style={{width: "74.35vw"}}>
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="column">
                     <Box 
                       direction="row" 
@@ -1121,21 +1122,21 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
 
-                <TabPanel style={{width: "74.35vw"}}>
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel>
 
 
-                <TabPanel style={{width: "74.35vw"}}>
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RegistrationsTab channelId={channel!.id} />
                   </Box>
                 </TabPanel>
                 
 
-                <TabPanel style={{width: "74.35vw"}}>             
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
                   <Grid
                     rows={['xxsmall', 'xxsmall']}
                     columns={['medium', 'xxsmall']}
@@ -1197,8 +1198,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Box>
                     </Box> */}
                   </Grid>
-
-
                 </TabPanel>
               </Tabs>
             </Box>
