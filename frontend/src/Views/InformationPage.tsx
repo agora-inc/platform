@@ -33,7 +33,7 @@ export default class InformationPage extends Component<Props, State> {
         width="100vw"
         height="100vh"
         align="center"
-        margin={{ top: "140px" }}
+        margin={{ top: "10vh" }}
       >
         <Box width="75%">
           {/* <Box
@@ -63,7 +63,7 @@ export default class InformationPage extends Component<Props, State> {
                 {/* <p>Founded in 2020 by a team of researchers at Imperial College London and the University of Oxford, Agora believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.</p> */}
               <h2><strong> 2) What is agora.stream? </strong></h2>
                 <p> agora.stream is a centralised platform for academics to share their online events and manage their audience, as well as browse across a large selection of seminars in a smooth, easy and efficient way.</p>
-              <h2><strong> 3) How to use agora.stream?</strong></h2>
+              {/* <h2><strong> 3) How to use agora.stream?</strong></h2>
                 <p>We made the use of this platform very intuitive.</p>
                 <h3>a) Are you a researcher?&nbsp;</h3>
                   <ul>
@@ -98,12 +98,12 @@ export default class InformationPage extends Component<Props, State> {
                       </ul>
                     </li>
                     <li>(Optional) If you decide to record your talks and upload them on Youtube, we offer the possibility for you to link your recording to your event: hence, people will be able to watch/re-watch the talk at any time!</li>
-                  </ul>
+                  </ul> */}
 
-                <h2><strong>4) Who are we?</strong></h2>
-                  <p>Founded in 2020 by a team of researchers at Imperial College London and the University of Oxford, Agora believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.</p>
+                <h2><strong>3) Who are we?</strong></h2>
+                  <p>We are a team of researchers at Imperial College London and the University of Oxford who believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.</p>
 
-                <h2><strong>5) Any questions? Reach out!</strong></h2>
+                <h2><strong>4) Any questions? Reach out!</strong></h2>
                   <p>Do you have any questions, inqueries, or suggestions? If yes, please reach out to us using the top right-hand side button, or drop us a message at <em>agora.stream.inquiries(.at.)gmail.com</em>. For more information, check our{" "}
                     <Link to={"/info/tos"} color="brand">
                       <Text color="brand" weight="bold" size="14px">

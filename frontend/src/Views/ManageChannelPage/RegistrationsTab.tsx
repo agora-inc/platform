@@ -87,7 +87,6 @@ export default class RegistrationsTab extends Component<Props, State> {
     TalkService.acceptTalkRegistration(item.id, () => {});
 
     let pendingRegistrationList = this.state.pendingRegistrationList.filter(x => x !== item);
-    console.log("lets see if diff: ", pendingRegistrationList)
     let acceptedRegistrationList = this.state.acceptedRegistrationList
 
     acceptedRegistrationList.push(item);
@@ -130,7 +129,7 @@ export default class RegistrationsTab extends Component<Props, State> {
     const item = this.state.itemDetail!;
     const showItem = !!this.state.itemDetail;
 
-    console.log("item", item);
+    // console.log("item", item);
 
 
     return (
@@ -256,7 +255,7 @@ const WineButton: React.FC<any> = (props) => {
   return (
     <Box
       onClick={props.onClick}
-      background="#7E1115"
+      background="#025377"
       round="xsmall"
       pad="xsmall"
       height="30px"
@@ -264,7 +263,7 @@ const WineButton: React.FC<any> = (props) => {
       justify="center"
       align="center"
       focusIndicator={false}
-      hoverIndicator="#5A0C0F"
+      hoverIndicator="#025377"
     >
       <Text size="14px">{props.children}</Text>
     </Box>

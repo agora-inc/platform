@@ -5,10 +5,7 @@ import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { Link } from "react-router-dom";
-import { Tag } from "../../Services/TagService";
-import { default as TagComponent } from "../Core/Tag";
 import Identicon from "react-identicons";
-import AddToCalendarButtons from "./AddToCalendarButtons";
 import Countdown from "./Countdown";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
@@ -25,6 +22,7 @@ interface State {
   showModal: boolean;
   showShadow: boolean;
   registered: boolean;
+  registrationStatus: string;
   available: boolean;
 }
 
@@ -35,8 +33,13 @@ export default class CurrentTalkCard extends Component<Props, State> {
       showModal: false,
       showShadow: false,
       registered: false,
+      registrationStatus: "",
       available: true,
     };
+  }
+
+  componentWillMount() {
+    this.checkIfAvailableAndRegistered();
   }
 
   getTimeRemaining = (): string => {
@@ -58,10 +61,6 @@ export default class CurrentTalkCard extends Component<Props, State> {
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, showShadow: true });
   };
-
-  componentWillMount() {
-    this.checkIfAvailableAndRegistered();
-  }
 
   checkIfAvailableAndRegistered = () => {
     if (this.props.user) {
@@ -87,11 +86,14 @@ export default class CurrentTalkCard extends Component<Props, State> {
 
   checkIfRegistered = () => {
     this.props.user &&
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: boolean) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"), 
+            registrationStatus: status 
+        });
         }
       );
   };
@@ -243,7 +245,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
               left: 8,
               opacity: 0.5,
             }}
-            background={this.props.talk.channel_colour}
+            background="#BAD6DB"
           ></Box>
         )}
         {this.state.showModal && (
@@ -439,14 +441,14 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   !this.state.registered && (
                     <Box
                       onClick={this.onClick}
-                      background="#7E1115"
+                      background="#025377"
                       round="xsmall"
                       pad="xsmall"
                       height="40px"
                       justify="center"
                       align="center"
                       focusIndicator={false}
-                      hoverIndicator="#5A0C0F"
+                      hoverIndicator="#025377"
                     >
                       <Text size="18px">Register</Text>
                     </Box>

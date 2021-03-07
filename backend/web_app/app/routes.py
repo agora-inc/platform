@@ -5,6 +5,8 @@
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from mailing import sendgridApi
+from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
 
@@ -13,16 +15,20 @@ from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-users = UserRepository.UserRepository(db=agora_db, mail_sys=mail)
+mail_sys = sendgridApi.sendgridApi()
+
+users = UserRepository.UserRepository(db=agora_db, mail_sys=mail_sys)
 tags = TagRepository.TagRepository(db=agora_db)
 topics = TopicRepository.TopicRepository(db=agora_db)
 questions = QandARepository.QandARepository(db=agora_db)
 streams = StreamRepository.StreamRepository(db=agora_db)
-talks = TalkRepository.TalkRepository(db=agora_db)
+talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
 videos = VideoRepository.VideoRepository(db=agora_db)
-channels = ChannelRepository.ChannelRepository(db=agora_db)
+channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
 search = SearchRepository.SearchRepository(db=agora_db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
+sendgridApi = sendgridApi.sendgridApi()
+
 
 # BASE_API_URL = "http://localhost:8000"
 BASE_API_URL = "https://agora.stream/api"
@@ -260,10 +266,11 @@ def createChannel():
     name = params["name"]
     description = params["description"]
     userId = params["userId"]
+    topic1Id = params["topic1Id"]
 
-    app.logger.debug(f"New agora '{name}' created by user with id {userId}")
+    #app.logger.debug(f"New agora '{name}' created by user with id {userId}")
 
-    return jsonify(channels.createChannel(name, description, userId))
+    return jsonify(channels.createChannel(name, description, userId, topic1Id))
 
 @app.route('/channels/delete', methods=["POST"])
 def deleteChannel():
@@ -462,7 +469,10 @@ def cover():
 def getContactAddresses():
     if "channelId" in request.args: 
         channel_id = request.args.get("channelId")
-        res = channels.getContactAddresses(channel_id)
+        res = channels.getEmailAddressesMembersAndAdmins(
+            channel_id, 
+            getMembersAddress=False, 
+            getAdminsAddress=True)
         return jsonify(res)
 
 @app.route('/channels/contact/add', methods=["POST", "OPTIONS"])
@@ -592,6 +602,36 @@ def sendTalkApplicationEmail():
     mail.send(msg)
     return "ok"
 
+@app.route('/channel/edit/topic', methods=["POST", "OPTIONS"])
+def editChannelTopic():
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+
+    #app.logger.debug(f"channel with id {params['channelId']} edited")
+    return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
+
+@app.route('/channels/topics/fetch', methods=["GET", "OPTIONS"])
+def getChannelTopic():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelTopic(channelId))
+
+@app.route('/channels/topics/all', methods=["GET"])
+def getChannelsWithTopic():
+    limit = int(request.args.get("limit"))
+    topicId = int(request.args.get("topicId"))
+    offset = int(request.args.get("offset"))
+    return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
+
+
 # --------------------------------------------
 # x Membership ROUTES
 # --------------------------------------------
@@ -708,8 +748,6 @@ def getTalkById():
         return jsonify(talks.getTalkById(talkId))
     except Exception as e:
         return jsonify(str(e))
-
-
 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
@@ -964,7 +1002,10 @@ def registerTalk():
         email = params["email"]
         website = params["website"] if "website" in params else ""
         institution = params["institution"] if "institution" in params else ""
-        res = talks.registerTalk(talkId, userId, name, email, website, institution)
+        user_hour_offset = params["userHourOffset"]
+
+        
+        res = talks.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
         return jsonify(str(res))
 
     except Exception as e:
@@ -1055,15 +1096,15 @@ def getTalkRegistrations():
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('/talks/isregistered', methods=["GET"])
-def isRegisteredForTalk():
+@app.route('/talks/registrationstatus', methods=["GET"])
+def registrationStatusForTalk():
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     talkId = int(request.args.get("talkId"))
     userId = int(request.args.get("userId"))
         
-    return jsonify(talks.isUserRegisteredForTalk(talkId, userId))
+    return jsonify(talks.registrationStatusForTalk(talkId, userId))
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------
@@ -1329,6 +1370,14 @@ def getTopicsOnStream():
     # return jsonify(tags.getTagsOnStream(streamId))
     raise NotImplementedError
 
+@app.route('/topics/getField', methods=["GET"])
+def getFieldFromId():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    topicId = request.args.get("topicId")
+    return jsonify(topics.getFieldFromId(topicId)) 
+
 # --------------------------------------------
 # SEARCH ROUTES
 # --------------------------------------------
@@ -1406,4 +1455,4 @@ def channelLinkRedirect():
         '''
         return render_template(res_string)
     except Exception as e:
-        return str(e)
+        return jsonify(str(e))

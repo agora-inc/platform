@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   Box,
+  CheckBox,
   Text,
   TextInput,
   TextArea,
@@ -40,6 +41,7 @@ interface State {
   date: string;
   startTime: string;
   endTime: string;
+  linkAvailable: boolean | undefined;
   link: string;
   releaseLinkOffset: number;
   linkVisibility: string;
@@ -72,6 +74,7 @@ export default class EditTalkModal extends Component<Props, State> {
         ? new Date(this.props.talk.end_date).toTimeString().slice(0, 5)
         : "",
       link: this.props.talk ? this.props.talk.link : "",
+      linkAvailable: this.props.talk ? this.props.talk.link_available : false,
       releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 45,
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
@@ -457,7 +460,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
                       id="link-visibility-select"
-                      options={["General audience", "Bachelor/Master", "PhD+"]}
+                      options={["General audience", "Bachelor / Master", "PhD+"]}
                       value={this.state.audienceLevel}
                       onChange={({ option }) =>
                         this.setState({ audienceLevel: option })
@@ -556,6 +559,28 @@ export default class EditTalkModal extends Component<Props, State> {
                 margin={{left: "large", right: "xsmall", top:"6px", bottom: "10px"}}
               > 
                 <OverlaySection heading="Link to event">
+
+                        {/* PLACEHOLDER 
+                        FOR A MULTI BOX TICKER 
+                        TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
+                        Remy
+                        */}
+
+                      {/* <CheckBox
+                          checked={this.state.linkAvailable}
+                          label="interested?"
+                          onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
+                        /> */}
+
+
+
+
+
+
+
+
+
+
                 <TextInput
                     value={this.state.link}
                     placeholder="https://zoom.us/1234"
@@ -574,6 +599,15 @@ export default class EditTalkModal extends Component<Props, State> {
                        <p>Your selected audience will be able to see the link 30 minutes before the start of your event.</p>
                       </ReactTooltip>
                   </Text>
+
+
+
+
+
+
+
+
+
                 </OverlaySection>
 
                 <OverlaySection heading="Access and visibility">
@@ -584,7 +618,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       </Text>
                       <StatusInfo size="small" data-tip data-for='linkinfo'/>
                       <ReactTooltip id='linkinfo' place="right" effect="solid">
-                        Decide who does not need to manually register to attend the talk. The same people will also have access to the recording if there is one.
+                        Decide who does not need to manually fill the registration request form to attend the talk. The same people will also automatically have access to the recording if there is one.
                       </ReactTooltip>
                     </Box>
                     <Select

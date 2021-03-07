@@ -4,6 +4,7 @@ import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
 import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help, Channel, PersonalComputer} from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import agoraLogo from "../assets/general/agora_logo_v2.png";
 
 import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
 import adding_email_invitation from "../assets/getting-started/adding_members/adding_email_invitation.png";
@@ -127,7 +128,7 @@ export default class GettingStartedPage extends Component<Props, State> {
         width="100vw"
         height="100vh"
         align="center"
-        margin={{ top: "140px" }}
+        margin={{ top: "10vh" }}
       >
         <Box width="70%" direction="column">
           {/* <Box
@@ -145,14 +146,16 @@ export default class GettingStartedPage extends Component<Props, State> {
           <Box margin={{bottom: "32px"}}>
             <Text size={this.state.sizeText} > Welcome to <b>agora.stream</b>, the centralized platform to advertise and attend academic seminars!
              </Text>
-          <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
+          {/* <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
             PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
-          </Text>
+          </Text> */}
           </Box>
 
-          <Box direction="row" gap="small" margin={{top: "72px", bottom: "48px"}}>
+
+
+          <Box direction="row" gap="small" margin={{top: "22px", bottom: "48px"}}>
             <PersonalComputer size="medium"/>
-            <Text size={this.state.sizeItem} weight="bold"> For talk participants </Text>
+            <Text size={this.state.sizeItem} weight="bold"> For participants </Text>
           </Box>
 
           <Tabs>
@@ -211,7 +214,7 @@ export default class GettingStartedPage extends Component<Props, State> {
             <TabPanel>
               <Text size={this.state.sizeText}>
                 You can become a member of an agora in two ways: either (1) you log on your account, 
-                go on the agora you want to be a member of and apply using the form; an administrator of the agora will review your application and accept/refuse you. 
+                go on the agora you want to be a member of and apply using the form; an administrator of the <img src={agoraLogo} style={{ height: "14px"}}/> will review your application and accept/refuse you. 
                 (2) the administrator of an agora can directly invit you using your email address. 
                 If this email is associated to an agora account, the membership will be automatically granted. Else, you will have to create an account with that address to claim the membership that was given to you.
               </Text>
@@ -228,7 +231,7 @@ export default class GettingStartedPage extends Component<Props, State> {
 
           <Box direction="row" gap="small" margin={{top: "48px", bottom: "48px"}}>
             <Schedules size="medium" />
-            <Text size={this.state.sizeItem} weight="bold"> For talk organisers </Text>
+            <Text size={this.state.sizeItem} weight="bold"> For organisers </Text>
           </Box>
 
           <Tabs>
@@ -236,7 +239,7 @@ export default class GettingStartedPage extends Component<Props, State> {
               <Tab>
                 <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
                   <Text size={this.state.sizeText}> 
-                    Create an agora
+                    Create an <img src={agoraLogo} style={{ height: "14px"}}/>
                   </Text>
                 </Box>
               </Tab>
@@ -272,9 +275,9 @@ export default class GettingStartedPage extends Component<Props, State> {
 
             <TabPanel>
               <Text size={this.state.sizeText}>
-                Click on the user panel on the top right corner of the homepage and click on "Create Agora".
+                First, you need to log in or sign up. Once done, click on the user panel on the top right corner of the homepage and click on "Create Agora".
                 Enter the name you want and you will be redirected to the agora's main page. You are automatically an
-                administrator of the agora, meaning that you can customize it.
+                administrator of the <img src={agoraLogo} style={{ height: "14px"}}/>, meaning that you can customize it.
 
               </Text>
               <Box margin={{top: "24px", bottom: "36px"}} wrap >

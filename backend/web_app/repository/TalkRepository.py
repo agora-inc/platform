@@ -1,19 +1,22 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
+from mailing.sendgridApi import sendgridApi
 from datetime import datetime
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
     TODO: All methods involving the "state" field must be tested.
 """
+mail_sys = sendgridApi()
 
 class TalkRepository:
-    def __init__(self, db):
+    def __init__(self, db, mail_sys=mail_sys):
         self.db = db
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)
-        self.topics = TopicRepository(db=self.db) 
+        self.topics = TopicRepository(db=self.db)
+        self.mail_sys = mail_sys
 
     def getNumberOfCurrentTalks(self):
         query = "SELECT COUNT(*) FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP"
@@ -600,10 +603,57 @@ class TalkRepository:
     ###############################
     # Talk 
     ###############################
-    def acceptTalkRegistration(self, requestRegistrationId):
-        #TODO: TO TEST
-        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
+    def acceptTalkRegistration(self, requestRegistrationId,):
         try:
+            # 1. get talk infos for email
+            extra_email_info_query = f'''
+                SELECT 
+                    Talks.link,
+                    Talks.id,
+                    Talks.name,
+                    Talks.channel_name,
+                    Talks.channel_id,
+                    TalkRegistrations.applicant_name,
+                    TalkRegistrations.email
+                FROM Talks
+                INNER JOIN TalkRegistrations
+                    ON TalkRegistrations.id = {requestRegistrationId}
+                WHERE TalkRegistrations.talk_id = Talks.id;
+            '''
+            extra_email_info = self.db.run_query(extra_email_info_query)[0]
+
+            target_email = extra_email_info["email"]
+            talk_name = extra_email_info["name"]
+            recipient_name = extra_email_info["applicant_name"]
+            talk_id = extra_email_info["id"]
+            agora_name = extra_email_info["channel_name"]
+            channel_id = extra_email_info["channel_id"]
+            conference_url = extra_email_info["link"]
+
+            # ## DO THE CHECK OF CONFERENCE LINK HERE TO SEE IF THERE IS ONE OR NOT!
+            # #
+            # #
+            # #
+            talk_has_conference_url = True
+            # # if conference_url == "https://SD"
+
+            
+            # # 2. Send email
+            if talk_has_conference_url:
+                self.mail_sys.send_confirmation_talk_registration_acceptance(
+                    target_email,
+                    talk_name,
+                    recipient_name,
+                    talk_id,
+                    agora_name,
+                    channel_id,
+                    conference_url
+                )
+            else:
+                pass
+
+            # 3. Flag user as registered in DB
+            accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
             self.db.run_query(accept_query)
             return "ok"
         except Exception as e:
@@ -619,7 +669,7 @@ class TalkRepository:
         except Exception as e:
             return str(e)
 
-    def registerTalk(self, talkId, userId, name, email, website, institution):
+    def registerTalk(self, talkId, userId, applicant_name, email, website, institution, user_hour_offset):
         # get today's time GMT in format: "2020-12-31 23:59"
         dateTimeObj = datetime.now()
         timestampStr = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
@@ -628,9 +678,46 @@ class TalkRepository:
             with self.db.con.cursor() as cur:
                 cur.execute(
                     'INSERT INTO TalkRegistrations(talk_id, user_id, applicant_name, email, website, institution, registration_date) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                    [str(talkId), str(userId), name, email, website, institution, timestampStr])
+                    [str(talkId), str(userId), applicant_name, email, website, institution, timestampStr])
                 self.db.con.commit()
                 cur.close()
+
+            # A. send confirmation email to user
+            # 1) query talk info
+            talk_info = self.getTalkById(talkId)
+            talk_name = talk_info["name"]
+            agora_name = talk_info["channel_name"]
+            date_str = talk_info["date"]
+            conference_url = talk_info["link"]
+            channel_id = talk_info["channel_id"]
+
+            # 2) check userId GMT:
+            human_date_str = self.mail_sys._convert_gmt_into_human_date_str(str(date_str), float(user_hour_offset))
+
+            # 3) send email
+            self.mail_sys.send_confirmation_talk_registration_request(
+                email,
+                talk_name,
+                applicant_name,
+                talkId,
+                agora_name,
+                human_date_str,
+                conference_url)
+
+            # B. Send email to administrator
+            if website == "":
+                website = "(Not provided)"
+            contact_emails = self.channels.getContactAddresses(channel_id)
+
+            for email in contact_emails:
+                self.mail_sys.notify_admin_talk_registration(
+                    email,
+                    agora_name, 
+                    talk_name,
+                    applicant_name,
+                    institution,
+                    website)
+
             return "ok"     
         except Exception as e:
             return str(e)
@@ -687,7 +774,7 @@ class TalkRepository:
     def getTalkRegistrationsForUser(self, userId):
         raise NotImplementedError
 
-    def isUserRegisteredForTalk(self, talkId, userId):
-        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
+    def registrationStatusForTalk(self, talkId, userId):
+        query = f'SELECT status FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
         result = self.db.run_query(query)
-        return result[0]["COUNT(*)"] != 0
+        return result[0]["status"]

@@ -3,23 +3,25 @@ import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import { CalendarService } from "../../Services/CalendarService";
 import { Google } from "grommet-icons";
+import { Talk } from "../../Services/TalkService";
 
 interface Props {
-  startTime: string;
-  endTime: string;
-  name: string;
-  description: string;
-  link: string;
+  // startTime: string;
+  // endTime: string;
+  // name: string;
+  // description: string;
+  // link: string;
+  talk: Talk;
 }
 
 export default class AddToCalendarButtons extends Component<Props> {
   createICShref = () => {
     const url = CalendarService.generateICSDownloadLink(
-      this.props.startTime,
-      this.props.endTime,
-      this.props.name,
-      this.props.description,
-      this.props.link
+      this.props.talk.date,
+      this.props.talk.end_date,
+      this.props.talk.name,
+      this.props.talk.description,
+      this.props.talk.link
     );
     const blob = new Blob([url], { type: "text/calendar;charset=utf-8" });
     return window.URL.createObjectURL(blob);
@@ -36,11 +38,11 @@ export default class AddToCalendarButtons extends Component<Props> {
         <a
           style={{ width: "48%", textDecoration: "none" }}
           href={CalendarService.generateGoogleCalendarLink(
-            this.props.startTime,
-            this.props.endTime,
-            this.props.name,
-            this.props.description,
-            this.props.link
+            this.props.talk.date,
+            this.props.talk.end_date,
+            this.props.talk.name,
+            this.props.talk.description,
+            this.props.talk.link
           )}
           target="_blank"
         >
@@ -57,13 +59,13 @@ export default class AddToCalendarButtons extends Component<Props> {
             onClick={() => {}}
             hoverIndicator={true}
           >
-            <Text size="14px" weight="bold" color="black">
+            {/* <Text size="14px" weight="bold" color="black">
               Add to
-            </Text>
+            </Text> */}
             <Google size="14px" color="plain" />
-            <Text size="14px" weight="bold" color="black">
+            {/* <Text size="14px" weight="bold" color="black">
               Calendar
-            </Text>
+            </Text> */}
           </Box>
         </a>
         <a
@@ -83,9 +85,9 @@ export default class AddToCalendarButtons extends Component<Props> {
             onClick={() => {}}
             hoverIndicator={true}
           >
-            <Text size="14px" weight="bold" color="black">
+            {/* <Text size="14px" weight="bold" color="black">
               Download .ics file
-            </Text>
+            </Text> */}
           </Box>
         </a>
       </Box>

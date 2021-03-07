@@ -20,18 +20,25 @@ import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
+import { Topic, TopicService } from "../Services/TopicService";
 import ShareButtons from ".././Components/Core/ShareButtons";
+
+
+// import * as RNLocalize from 'react-native-localize';
+
 
 
 interface Props {
   location: { pathname: string };
   streamId: number;
+  channel?: Channel;
 }
 
 // NOTE: "following" feature globally disabled
 
 interface State {
   channel: Channel | null;
+  channelId: number;
   role: "none" | "owner" | "member" | "follower";
   loading: boolean;
   streams: Stream[];
@@ -52,6 +59,9 @@ interface State {
     email: string,
     personalHomepage: string
   }
+  topics: Topic[];
+  topicId: number;
+  field: string;
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -59,6 +69,7 @@ export default class ChannelPage extends Component<Props, State> {
     super(props);
     this.state = {
       channel: null,
+      channelId: 0,
       role: "none",
       loading: true,
       streams: [],
@@ -79,17 +90,34 @@ export default class ChannelPage extends Component<Props, State> {
         institution: "",
         email: "",
         personalHomepage: ""
-      }
+      },
+      topics: this.props.channel ? this.props.channel.topics : [],
+      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
+      field: "",
     };
-    // TEST: DELETE THE BELOW LINE ONCE AGORA.IO TOKEN SERVER WORKS
-    var token = StreamService.getToken("xyz", 1, 1611010057, "", "abc-55441-u1", ()=>{})
-    console.log("TOKEN TEST");
-    
   }
 
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
     this.fetchChannel();
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+        this.setState({channelId: channel.id})
+      }
+    );
+    ChannelService.getChannelTopic(
+      this.state.channelId,
+      (currentTopicId: number) => {
+        this.setState({ topicId:currentTopicId });
+      }
+    );
+    TopicService.getFieldFromId(
+      this.state.topicId,
+      (topicName: string) => {
+        this.setState({field: topicName})
+      }
+    )
   }
 
   componentWillUnmount() {
@@ -340,6 +368,18 @@ export default class ChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  fetchChannelTopic = () => {
+    if (this.state.topics) {
+      ChannelService.getChannelTopic(
+        this.state.channel!.id,
+        (topicId: number) => {
+          this.setState({ topicId });
+        }
+      );
+    return this.state.topicId
+    }
+  };
+
   banner = () => {
     return (
       <Box width="75vw" background="white" round="10px">
@@ -383,7 +423,6 @@ export default class ChannelPage extends Component<Props, State> {
               <Text size="26px" color="black" weight="bold">
                 {this.state.channel ?.name}
               </Text>
-              <Text size="14px" style={{marginBottom: "6px"}}>Share this Agora:</Text>
               <Box height="36px" style={{width: "300px"}}> 
                   <ShareButtons
                     channel={this.state.channel}
@@ -394,8 +433,14 @@ export default class ChannelPage extends Component<Props, State> {
                 </Text>*/}
             </Box>
           </Box>
-          <Box direction="row" gap="xsmall" align="center">
 
+
+          
+          <Box direction="row" gap="xsmall" align="center">
+            <ApplyToTalkForm
+                        channelId={this.state.channel!.id}
+                        channelName={this.state.channel!.name}
+                      />
             {!(this.state.role == "member" || this.state.role == "owner") && (
             <RequestMembershipButton
               channelId={this.state.channel!.id}
@@ -404,7 +449,7 @@ export default class ChannelPage extends Component<Props, State> {
             />
             )}
 
-            {this.state.user && (
+            {/*this.state.user && (
               <Box
                 className="follow-button"
                 pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
@@ -429,7 +474,7 @@ export default class ChannelPage extends Component<Props, State> {
                   {this.state.following ? "Following" : "Follow"}
                 </Text>
               </Box>
-            )}
+              )*/}
             {this.state.bannerExtended ? (
               <FormUp
                 onClick={this.toggleBanner}
@@ -488,7 +533,7 @@ export default class ChannelPage extends Component<Props, State> {
                 width="100%"
                 height="100%"
                 align="center"
-                margin={{ top: "100px" }}
+                margin={{ top: "10vh" }}
               >
                 {this.state.streams.length !== 0 && (
                   <ChannelLiveNowCard
@@ -498,10 +543,6 @@ export default class ChannelPage extends Component<Props, State> {
                 )}
                 <Box width="75%" align="start" gap="20px">
                   <Box direction="row" gap="45vw">
-                    <ApplyToTalkForm
-                      channelId={this.state.channel!.id}
-                      channelName={this.state.channel!.name}
-                    />
                     {this.state.role == "member" && (
                       <Box
                         width="20vw"
@@ -510,9 +551,9 @@ export default class ChannelPage extends Component<Props, State> {
                         align="center"
                         pad="small"
                         round="xsmall"
-                        background="#F3EACE"
+                        background="#D7F75B"
                       >
-                        <Text size="16px" weight="bold" color="grey">
+                        <Text size="16px" weight="bold">
                           You are a member
                         </Text>
                       </Box>

@@ -4,20 +4,15 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Tag } from "../../Services/TagService";
 import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
-import AddToCalendarButtons from "./AddToCalendarButtons";
 import Countdown from "./Countdown";
-import LoginModal from "../Account/LoginModal";
-import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
 import { textToLatex } from "../Core/LatexRendering";
 
 import FooterOverlay from "./Talkcard/FooterOverlay";
-import CalendarButtons from "./CalendarButtons";
 
 interface Props {
   talk: Talk;
@@ -30,6 +25,7 @@ interface State {
   showModal: boolean;
   showShadow: boolean;
   registered: boolean;
+  registrationStatus: string;
   available: boolean;
   role: string
 }
@@ -41,20 +37,25 @@ export default class TalkCard extends Component<Props, State> {
       showModal: false,
       showShadow: false,
       registered: false,
+      registrationStatus: "",
       available: true,
       role: "none"
     };
+  }
+
+  componentWillMount() {
     this.fetchRoleInChannel();
+    this.checkIfAvailableAndRegistered();
   }
   
   fetchRoleInChannel = () => {
-    if (this.props.user !== null){
-    ChannelService.getRoleInChannel(
-      this.props.user?.id, 
-      this.props.talk.channel_id, 
-      (role: "none" | "owner" | "member" | "follower") => {
-        this.setState(
-          {role: role})
+    if (this.props.user !== null) {
+      ChannelService.getRoleInChannel(
+        this.props.user.id, 
+        this.props.talk.channel_id, 
+        (role: "none" | "owner" | "member" | "follower") => {
+          this.setState(
+            {role: role})
         })
       }
     }
@@ -96,11 +97,6 @@ export default class TalkCard extends Component<Props, State> {
     this.setState({ showModal: !this.state.showModal });
   };
 
-  componentWillMount() {
-    this.checkIfAvailableAndRegistered();
-  }
-
-
   // method here for mobile
   checkIfAvailableAndRegistered = () => {
     if (this.props.user) {
@@ -127,11 +123,14 @@ export default class TalkCard extends Component<Props, State> {
   // method here for mobile
   checkIfRegistered = () => {
     this.props.user &&
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: any) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"),
+            registrationStatus: status 
+          });
         }
       );
   };
@@ -289,14 +288,30 @@ export default class TalkCard extends Component<Props, State> {
               {this.props.talk.card_visibility === "Members only" && 
                 <Box
                   round="xsmall"
-                  background="#C2C2C2"
+                  background="#EAF1F1"
                   pad="small"
                   justify="center"
                   align="center"
-                  width="250px"             
+                  width="170px"
+                  height="30px"            
                 >
                   <Text size="14px">
-                    Members only
+                    member-only
+                  </Text>
+                </Box>
+              }
+              {this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
+                <Box
+                  round="xsmall"
+                  background="#D7F75B"
+                  pad="small"
+                  justify="center"
+                  align="center"
+                  width="170px"
+                  height="30px"             
+                >
+                  <Text size="14px" style={{ fontStyle: "normal" }}>
+                    on-registration
                   </Text>
                 </Box>
               }
@@ -315,7 +330,7 @@ export default class TalkCard extends Component<Props, State> {
               left: 8,
               opacity: 0.5,
             }}
-            background={this.props.talk.channel_colour}
+            background="#6DA3C7"
           ></Box>
         )}
         {this.state.showModal && 
@@ -471,6 +486,10 @@ export default class TalkCard extends Component<Props, State> {
                   talk={this.props.talk}
                   user={this.props.user}
                   role={this.state.role}
+                  available={this.state.available}
+                  registered={this.state.registered}
+                  registrationStatus={this.state.registrationStatus}
+                  isSharingPage={false}
                 />
             </Layer>
           </MediaQuery>
@@ -653,7 +672,7 @@ export default class TalkCard extends Component<Props, State> {
                         width="33%"                
                       >
                         <Text size="14px">
-                          Members only
+                          member-only
                         </Text>
                       </Box>
                         */}
@@ -689,14 +708,14 @@ export default class TalkCard extends Component<Props, State> {
                     !this.state.registered && (
                       <Box
                         onClick={this.onClick}
-                        background="#7E1115"
+                        background="#025377"
                         round="xsmall"
                         pad="xsmall"
                         height="40px"
                         justify="center"
                         align="center"
                         focusIndicator={false}
-                        hoverIndicator="#5A0C0F"
+                        hoverIndicator="#025377"
                       >
                         <Text size="18px">Register</Text>
                       </Box>

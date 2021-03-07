@@ -3,11 +3,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
 import jwt
+from mailing.sendgridApi import sendgridApi
 
 # for emails
 from flask_mail import Message
 from flask import render_template
 
+
+mail_sys = sendgridApi()
 
 class User:
     def __init__(self, username, password):
@@ -15,7 +18,7 @@ class User:
         self.password = generate_password_hash(password)
 
 class UserRepository:
-    def __init__(self, db, mail_sys):
+    def __init__(self, db, mail_sys=mail_sys):
         self.db = db
         self.secret = b'\xccu\x9e2\xda\xe8\x16\x8a\x137\xde@G\xc7T\xf1\x16\xca\x05\xee\xa7\xa4\x98\x05'
         self.mail_sys = mail_sys
@@ -70,14 +73,14 @@ class UserRepository:
             SELECT Channels.name, Channels.id 
             FROM InvitedUsers
             INNER JOIN Channels 
-            ON InvitedUsers.email = "{email}" AND InvitedUsers.channel_id = Channels.id'''
+            ON InvitedUsers.email = "{email}" AND InvitedUsers.channel_id = Channels.id;'''
 
         existing_invitations = self.db.run_query(query_existing_invitations)
         existing_invitation_paragraph = ""
 
-        # if user invited, make this user member and reformat email
-        if existing_invitations is not None:
-            if len(existing_invitations) > 0:
+        try:
+            # if user invited, make this user member and reformat email
+            if isinstance(existing_invitations,list) and len(existing_invitations) > 0:
                 # add user as member
                 sql_synt_invit = str([tuple([i["id"], userId, "member"]) for i in existing_invitations])[1:-1]
 
@@ -88,7 +91,7 @@ class UserRepository:
                 self.db.run_query(add_member_query)
 
                 # delete invitations with his email address
-                delete_old_invit_query = f"DELETE FROM InvitedUsers WHERE email='{email}'"
+                delete_old_invit_query = f"DELETE FROM InvitedUsers WHERE email='{email}';"
                 self.db.run_query(delete_old_invit_query)
 
                 # edit email paragraph for invitations
@@ -105,23 +108,30 @@ class UserRepository:
                         </ul>
                         '''
 
-        # send confirmation email
-        msg = Message(sender = 'team@agora.stream', recipients = [email])
-        msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif;">Dear <strong>{username}</strong>,</span></p>
-                <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://agora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">agora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion will be driving forces for many research communities.</span></p>
-                
-                <p><span style="font-family: Arial, Helvetica, sans-serif;">With your new account, you can:</span></p>
-                <ol>
-                    <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Become a member of an agora</strong> and have access to its <strong>exclusive content</strong>, such as recordings of past seminars and members-only events.</span></li>
-                    <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Create your own agora</strong> and/or become the <strong>administrator</strong> of one, allowing you to advertise your events to the audience you desire, receive talk applications from researchers all around the world and much more!</span></li>
-                </ol>
-                {existing_invitation_paragraph}
-                <p><span style="font-family: Arial, Helvetica, sans-serif;">You can visit our <a href="https://agora.stream/info/getting-started">getting started page</a> to explore all the features of agora.stream.</span></p>
-                <p><span style="font-family: Arial, Helvetica, sans-serif;">If you have any question, feedback or suggestion, please reach out to us by replying to this email.</span></p>
-                <p><span style="font-family: Arial, Helvetica, sans-serif;"><em>The agora.stream team</em></span></p>
-            '''
-        msg.subject = f"Welcome to agora.stream!"
-        self.mail_sys.send(msg)
+                # send confirmation email
+                msg = Message(sender = 'team@agora.stream', recipients = [email])
+                msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif;">Dear <strong>{username}</strong>,</span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://agora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">agora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion will be driving forces for many research communities.</span></p>
+                        
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">With your new account, you can:</span></p>
+                        <ol>
+                            <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Become a member of an agora</strong> and have access to its <strong>exclusive content</strong>, such as recordings of past seminars and members-only events.</span></li>
+                            <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Create your own agora</strong> and/or become the <strong>administrator</strong> of one, allowing you to advertise your events to the audience you desire, receive talk applications from researchers all around the world and much more!</span></li>
+                        </ol>
+                        {existing_invitation_paragraph}
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">You can visit our <a href="https://agora.stream/info/getting-started">getting started page</a> to explore all the features of agora.stream.</span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">If you have any question, feedback or suggestion, please reach out to us by replying to this email.</span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;"><em>The agora.stream team</em></span></p>
+                    '''
+                msg.subject = f"Welcome to agora.stream!"
+                self.mail_sys.send(msg)
+
+            # New email formatting (Sendgrid) if no invitations
+            else:
+                self.mail_sys.send_confirmation_account_creation(email, username)
+
+        except Exception as e:
+            return 500, str(e)
 
         return self.getUserById(userId)
 

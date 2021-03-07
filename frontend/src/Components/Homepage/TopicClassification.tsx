@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Box, Select, Text } from "grommet";
 import { Topic, TopicService } from "../../Services/TopicService";
-// import allTopics from "../../assets/allTopics.json"
 import "../../Styles/topic-classification.css";
 
 
 interface Props {
   topicCallback: any
+  searchType: any
 }
 
 interface State {
@@ -45,8 +45,6 @@ export default class TopicClassification extends Component<Props, State> {
       topics: tempTopics,
       topicBeingShown: temp,
     });
-
-    
   };
 
   nameToTopic = (name: string): Topic => {
@@ -89,18 +87,6 @@ export default class TopicClassification extends Component<Props, State> {
   render() {
     return (
       <Box width="100%" direction="column">
-        <Box
-          width="100%"
-          direction="row"
-          gap="xsmall"
-          align="end"
-          margin={{ bottom: "15px" }}
-        >
-          <Text size="14px" color="grey" margin="5px" weight="bold">
-            Filter by topics
-          </Text>
-        </Box>
-
         <div 
           className="classification_box"
         >
@@ -114,7 +100,8 @@ export default class TopicClassification extends Component<Props, State> {
             }
           />
         )}
-        {this.state.topicBeingShown >= 1 && (
+        {this.props.searchType == "Talks"  &&
+        this.state.topicBeingShown >= 1 && (
           <Select
             options={this.getChildren(
               this.state.topics[0]
