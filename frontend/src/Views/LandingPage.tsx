@@ -43,7 +43,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       "Democratizing access to cutting-edge research.",
       "Leveraging modern technologies in the service of academics.",
       "Cut global travel of academics and fight climate change.",
-      "Empower academics' reach and visibility.",
+      "Empowering academics' reach and visibility.",
       "Automating the seminar organisers' pipeline."
     ];
 
