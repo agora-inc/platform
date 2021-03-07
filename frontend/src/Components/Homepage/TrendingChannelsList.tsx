@@ -33,17 +33,16 @@ export default class TrendingChannelsList extends Component<{}, State> {
   render() {
     return (
       <Box height="240px">
-        <Box direction="row">
+        <Box direction="row" justify="center" style={{minWidth: "50%"}} margin={{bottom: "21px"}}>
           <Text
-            size="14px"
-            weight="bold"
-            color="grey"
+            size="21px"
             margin={{ left: "small" }}
             alignSelf="center"
+            weight="bold"
           >
-            Trending <img src={AgorasLogo} height="13px"/>
+            Trending <img src={AgorasLogo} height="19px"/>
           </Text>
-          <Link to="/agoras" style={{ fontSize: 12, marginLeft: 15 }}>
+          {/* <Link to="/agoras" style={{ fontSize: 12, marginLeft: 15 }}>
             <Box
               className="see-more-button"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
@@ -56,12 +55,12 @@ export default class TrendingChannelsList extends Component<{}, State> {
             >
               <Text color="grey" size="12px"> See all </Text>
             </Box>
-          </Link>
+          </Link> */}
 
         </Box>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
-            <Loading color="black" size={50} />
+            <Loading color="brand" size={50} />
           </Box>
         )}
         <Box margin={{ top: "2px" }} overflow="auto">
@@ -102,7 +101,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   )}
                 </Box>
                 <Box justify="center">
-                  <Text size="14px" color="black" weight="bold">
+                  <Text size="14px" color="brand" weight="bold">
                     {channel.name}
                   </Text>
                 </Box>

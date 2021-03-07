@@ -150,7 +150,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
         height="400vh"
         align="center"
         margin={{ top: "10vh" }}
-      >
+        >
         <Box width="70%" direction="column">
           {/* <Box
             width="98.25%"
@@ -171,7 +171,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
           </Text> */}
           </Box>
 
-          <Text size={this.state.sizeText} weight="bold">Why having an <img src={agoraLogo} height={this.state.sizeText}/> simplifies your life:</Text>
+          <Text size={this.state.sizeText} weight="bold">Why having an <img src={agoraLogo} height={this.state.sizeText}/> simplifies the life of the organiser:</Text>
 
             <Grid
               rows={['18px', '18px', '18px', '18px', '18px', '18px', '18px']}
