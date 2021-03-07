@@ -7,7 +7,7 @@ import { UserService } from "../../Services/UserService";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import DropdownChannelButton from "../Channel/DropdownChannelButton";
 import CreateChannelButton from "../Channel/CreateChannelButton";
-import CreateChannelCard from "../Channel/CreateChannelCard";
+import CreateChannelOverlay from "../Channel/CreateChannelButton/CreateChannelOverlay";
 import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../../Styles/header.css";
@@ -28,7 +28,7 @@ interface State {
   isLoggedIn: boolean;
   user: { id: number; username: string; bio: string; public: boolean } | null;
   channels: Channel[];
-  showCreateChannelCard: boolean;
+  showCreateChannelOverlay: boolean;
   showDropdown: boolean;
   editingBio: boolean;
 }
@@ -40,7 +40,7 @@ export default class UserManager extends Component<Props, State> {
       isLoggedIn: UserService.isLoggedIn(),
       user: UserService.getCurrentUser(),
       channels: [],
-      showCreateChannelCard: false,
+      showCreateChannelOverlay: false,
       showDropdown: false,
       editingBio: false,
     };
@@ -65,9 +65,9 @@ export default class UserManager extends Component<Props, State> {
     this.setState({ showDropdown: !this.state.showDropdown });
   };
 
-  toggleCreateChannelCard = () => {
+  toggleCreateChannelOverlay = () => {
     this.setState({
-      showCreateChannelCard: !this.state.showCreateChannelCard,
+      showCreateChannelOverlay: !this.state.showCreateChannelOverlay,
     });
   };
 
@@ -114,7 +114,7 @@ export default class UserManager extends Component<Props, State> {
   };
 
   menu = () => {
-    return this.state.showCreateChannelCard ? (
+    return this.state.showCreateChannelOverlay ? (
       <Menu
         style={{
           borderRadius: 10,
@@ -126,11 +126,11 @@ export default class UserManager extends Component<Props, State> {
           width: 350,
         }}
       >
-        <CreateChannelCard
-          onBackClicked={this.toggleCreateChannelCard}
+        <CreateChannelOverlay
+          onBackClicked={this.toggleCreateChannelOverlay}
           onComplete={() => {
             this.fetchChannels();
-            this.toggleCreateChannelCard();
+            this.toggleCreateChannelOverlay();
             this.toggleDropdown();
           }}
           visible={true}
@@ -252,7 +252,7 @@ export default class UserManager extends Component<Props, State> {
             />
             ))}
           </Box>
-          <CreateChannelButton onClick={this.toggleCreateChannelCard} />
+          <CreateChannelButton onClick={this.toggleCreateChannelOverlay} />
         </Box>
         <Menu.Divider />
         {/*<Text weight="bold" color="black" margin="small">

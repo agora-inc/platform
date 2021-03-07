@@ -145,7 +145,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Box>
           </Link>
           <Link
-            to={{ pathname: "/info/getting-started" }}
+            to={{ pathname: "info/agora_creation" }}
             style={{ textDecoration: "none" }}
           >
             <Box
