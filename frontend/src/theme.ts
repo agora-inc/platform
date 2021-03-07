@@ -27,7 +27,7 @@ export const Theme = {
     },
     colors: {
       brand: "#025377",
-      selected: "F5F5F5",
+      selected: "eaf1f1",
     },
     drop: {
       //background: "transparent",
@@ -43,7 +43,7 @@ export const Theme = {
     }
   },
   tab: {
-    color: "#F5F5F5",
+    color: "#eaf1f1",
     active: { color: "black" },
     margin: {
       vertical: "none",
@@ -57,7 +57,7 @@ export const Theme = {
       side: "bottom",
       size: "medium",
       color: {
-        light: "#F5F5F5",
+        light: "#eaf1f1",
       },
       active: {
         color: {
@@ -65,7 +65,7 @@ export const Theme = {
         },
       },
       hover: {
-        color: "#F5F5F5"
+        color: "#eaf1f1"
       },
     },
   },
@@ -103,7 +103,7 @@ export const Theme = {
   },
   hover: {
     background: {
-      color: "#F5F5F5"
+      color: "#eaf1f1"
     },
     color: {"dark": "white"}
   },

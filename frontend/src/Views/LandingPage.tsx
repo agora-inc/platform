@@ -118,7 +118,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               hoverIndicator="#CCCCCC"
             >
               <Search size="30px"/>
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Find </Text>
+              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover </Text>
               <Text size="16px" margin={{top: "10px"}}> future seminars </Text>
             </Box>
           </Link>

@@ -52,7 +52,7 @@ export class Overlay extends Component<OverlayProps> {
             <Box
               justify="start"
               width="99.7%"
-              background="#F5F5F5"
+              background="#eaf1f1"
               direction="row"
               style={{
                 borderTopLeftRadius: "15px",
@@ -90,7 +90,7 @@ export class Overlay extends Component<OverlayProps> {
               align="center"
               gap="xsmall"
               width="99.7%"
-              background="#F5F5F5"
+              background="#eaf1f1"
               style={{
                 borderBottomLeftRadius: "15px",
                 borderBottomRightRadius: "15px",

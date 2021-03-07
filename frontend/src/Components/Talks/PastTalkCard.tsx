@@ -737,7 +737,7 @@ export default class PastTalkCard extends Component<Props, State> {
           //           direction="row"
           //           width="100%"
           //           height="45px"
-          //           background="#f5f5f5"
+          //           background="#eaf1f1"
           //           round="xsmall"
           //           pad="xsmall"
           //           justify="center"
