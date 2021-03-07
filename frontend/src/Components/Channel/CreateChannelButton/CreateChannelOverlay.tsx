@@ -22,6 +22,7 @@ interface Props {
 interface State {
   newChannelName: string;
   newChannelDescription: string;
+  newChannelContactEmail: string;
   redirect: boolean;
   topics: Topic[];
   isPrevTopics: boolean[];
@@ -33,6 +34,7 @@ export default class CreateChannelOverlay extends Component<Props, State> {
     this.state = {
       newChannelName: "",
       newChannelDescription: "",
+      newChannelContactEmail: "",
       redirect: false,
       topics: this.props.channel ? this.props.channel.topics : [],
       isPrevTopics: this.props.channel ? this.topicExists(this.props.channel.topics) : [false, false, false]
