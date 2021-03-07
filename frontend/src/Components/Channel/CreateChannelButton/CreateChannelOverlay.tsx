@@ -8,7 +8,8 @@ import { Channel, ChannelService } from "../../../Services/ChannelService";
 import ChannelTopicSelector from "../ChannelTopicSelector";
 import { Topic } from "../../../Services/TopicService";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
-
+import LoginModal from "../../Account/LoginModal";
+import SignUpButton from "../../Account/SignUpButton";
 
 interface Props {
   user: User | null;
@@ -123,22 +124,45 @@ export default class CreateChannelOverlay extends Component<Props, State> {
       onClickOutside={this.props.onBackClicked}
       onEsc={this.props.onBackClicked}
       >
-        <OverlaySection>
-          <TextInput
-            style={{ width: "100%", marginTop: "5px"}}
-            placeholder="Your agora name"
-            onChange={(e) => this.setState({ newChannelName: e.target.value })}
-          />
-        </OverlaySection>
-        <OverlaySection>
-          <ChannelTopicSelector 
-            onSelectedCallback={this.selectTopic}
-            onCanceledCallback={this.cancelTopic}
-            isPrevTopics={this.state.isPrevTopics}
-            prevTopics={this.props.channel ? this.props.channel.topics : []} 
-            textSize="medium"
-          />
-        </OverlaySection>
+
+        {this.props.user === null && (
+                <>
+                  <Box style={{minHeight: "40%"}} />
+                  <Box direction="row" align="center" gap="10px">
+                    <LoginModal callback={() => {}} />
+                    <Text size="14px"> or </Text>
+                    <SignUpButton callback={() => {}} />
+                    <Text size="14px"> to proceed </Text>
+                  </Box>
+                </>
+                )}  
+
+
+
+
+      {!(this.props.user === null) && (
+        <>
+          <OverlaySection>
+            <TextInput
+              style={{ width: "100%", marginTop: "5px"}}
+              placeholder="Your agora name"
+              onChange={(e) => this.setState({ newChannelName: e.target.value })}
+            />
+          </OverlaySection>
+          <OverlaySection>
+            <ChannelTopicSelector 
+              onSelectedCallback={this.selectTopic}
+              onCanceledCallback={this.cancelTopic}
+              isPrevTopics={this.state.isPrevTopics}
+              prevTopics={this.props.channel ? this.props.channel.topics : []} 
+              textSize="medium"
+            />
+          </OverlaySection>
+        </>
+      )}
+
+
+
         {this.containsSpecialCharacter(this.state.newChannelName) ? (
             <Text
             color="red"
@@ -148,6 +172,12 @@ export default class CreateChannelOverlay extends Component<Props, State> {
               Agora name cannot contain special characters
             </Text>
           ) : (null)}
+      
+      
+      
+      
+      
+      
       </Overlay>
     );
   }
