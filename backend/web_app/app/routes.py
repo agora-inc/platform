@@ -1093,15 +1093,15 @@ def getTalkRegistrations():
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('/talks/isregistered', methods=["GET"])
-def isRegisteredForTalk():
+@app.route('/talks/registrationstatus', methods=["GET"])
+def registrationStatusForTalk():
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     talkId = int(request.args.get("talkId"))
     userId = int(request.args.get("userId"))
         
-    return jsonify(talks.isUserRegisteredForTalk(talkId, userId))
+    return jsonify(talks.registrationStatusForTalk(talkId, userId))
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------

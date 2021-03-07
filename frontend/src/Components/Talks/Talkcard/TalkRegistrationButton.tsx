@@ -6,6 +6,7 @@ import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import { User } from "../../../Services/UserService";
 import TalkRegistrationFormButton from "../Talkcard/TalkRegistrationFormButton";
+import { ChannelService } from "../../../Services/ChannelService";
 import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
 import CalendarButtons from "../CalendarButtons";
@@ -17,6 +18,7 @@ interface Props {
   user: User | null;
   role: string | undefined;
   registered: boolean;
+  registrationStatus: string;
 }
 
 interface State {
@@ -26,9 +28,6 @@ interface State {
     },
     showForm: boolean;
     feedbackModal: boolean;
-    restricted: boolean;
-    mainTitle: string;
-    registrationStatus: string;
 }
 
 export default class TalkRegistrationButton extends Component<Props, State> {
@@ -41,36 +40,23 @@ export default class TalkRegistrationButton extends Component<Props, State> {
       },
       showForm: false,
       feedbackModal: false,
-      restricted: true,
-      mainTitle: "",
-      registrationStatus: "",
     };
-    this.setRestrictedAndTitle();
   }
 
-  componentWillMount() {
-    this.setRestrictedAndTitle();
-  }
-
-  registrationStatus = () => {
-    if (this.props.user) {
-      
-    }
-    // this.setState({registrationStatus})
-  }
-
-  setRestrictedAndTitle = () => {
+  returnRestrictedAndTitle = () => {
     if (this.props.talk.visibility === "Everybody") {
-      this.setState({restricted: false, mainTitle: "This event is public"})
+      return {restricted: false, mainTitle: "This event is public"}
     } else {
       if (this.props.role === "owner") {
-        this.setState({restricted: false, mainTitle: "You are an administrator of this agora"})
+        return {restricted: false, mainTitle: "You are an administrator of this agora"}
       } else if (this.props.role === "member") {
-        this.setState({restricted: false, mainTitle: "You are a member of this agora"})
+        return {restricted: false, mainTitle: "You are a member of this agora"}
       } else if (this.props.registered) {
-        this.setState({restricted: false, mainTitle: "You are already registered to this event"})
+        return {restricted: false, mainTitle: "You are already registered to this event"}
+      } else if (this.props.registrationStatus === "pending") {
+        return {restricted: true, mainTitle: "Registration pending"}
       } else {
-        this.setState({restricted: true, mainTitle: "This event has a restricted audience"})
+        return {restricted: true, mainTitle: "This event has a restricted audience"}
       }
     }
   }
@@ -80,6 +66,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
   };
 
   render() {
+    const {restricted, mainTitle} = this.returnRestrictedAndTitle()
     return (
       <Box style={{maxHeight: "35px"}}>
         {/*<Button
@@ -132,7 +119,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           title={"How to attend"}
         >
         <OverlaySection>
-        {!this.state.restricted && (
+        {!restricted && (
           <>
           <Grid
             rows={['80px', '30px', '40px', '40px']}
@@ -148,7 +135,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           >
             <Box gridArea="info" direction="column" align="start" gap="10px" >  
               <Text weight="bold" size="20px"> 
-                {this.state.mainTitle}
+                {mainTitle}
               </Text>
               <Box direction="row" align="center" pad="xsmall">
                 <FormNext size="20px" />
@@ -165,7 +152,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             <Box gridArea="you_can_also" align="start" pad="10px">
               <Text
                 weight="bold"
-                size="16px"
+                size="14px"
               >
                 Next steps
               </Text>
@@ -212,7 +199,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           </>
         )}
 
-        {this.state.restricted && (
+        {restricted && this.props.registrationStatus !== "pending" && (
           <>
           <Grid
             rows={['80px', "60px"]}
@@ -225,7 +212,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           >
             <Box gridArea="info" direction="column" align="start" justify="start" gap="10px" >
               <Text weight="bold" size="20px" textAlign="start"> 
-                {this.state.mainTitle}
+                {mainTitle}
               </Text>
               <Box direction="row" align="center" pad="1px" justify="start">
                 <Text size="14px">  To receive via email the link to the seminar: </Text>
@@ -320,6 +307,108 @@ export default class TalkRegistrationButton extends Component<Props, State> {
           </Grid>        
           </>
           */
+        )}
+
+        {restricted && this.props.registrationStatus === "pending" && (
+          <>
+          <Grid
+            rows={['80px', '30px', '85px', '40px', '40px']}
+            columns={['430px']}
+            // gap="small"
+            areas={[
+                { name: 'info', start: [0, 0], end: [0, 0] },
+                { name: 'you-can-also', start: [0, 1], end: [0, 1] },
+                { name: 'agora-member', start: [0, 2], end: [0, 2] },
+                { name: 'calendar', start: [0, 3], end: [0, 3] },
+                { name: 'share', start: [0, 4], end: [0, 4] },
+            ]}
+          >
+            <Box gridArea="info" direction="column" align="start" gap="10px" >  
+              <Text weight="bold" size="20px"> 
+                {mainTitle}
+              </Text>
+              <Box direction="row" align="center" pad="xsmall">
+                <FormNext size="20px" />
+                <Text size="14px"> Please wait for the approval from the event organizer </Text>
+              </Box>
+            </Box>
+
+            <Box gridArea="you-can-also" align="start" pad="12px">
+              <Text
+                weight="bold"
+                size="14px"
+              >
+                Next steps
+              </Text>
+            </Box>
+
+            <Box gridArea="agora-member" gap="2px" pad="xsmall" direction="column" align="start" justify="center">
+              <Box direction="row" align="center"> 
+                <FormNext size="20px" />
+                <Text size="14px"> Apply to become a member of </Text>
+              </Box>
+              <Link
+                className="channel"
+                to={`/${this.props.talk.channel_name}`}
+                style={{ textDecoration: "none" }}
+                
+              >
+                <Box
+                  direction="row"
+                  gap="xsmall"
+                  align="center"
+                  round="xsmall"
+                  pad={{ vertical: "6px", horizontal: "6px" }}
+                  margin={{start: "25px"}}
+                  
+                >
+                  <Box
+                    justify="center"
+                    align="center"
+                    background="#efeff1"
+                    overflow="hidden"
+                    style={{
+                        minHeight: 14,
+                        minWidth: 14,
+                        borderRadius: 7,
+                    }}
+                  >
+                    <img
+                      src={ChannelService.getAvatar(
+                          this.props.talk.channel_id
+                      )}
+                      height={14}
+                      width={14}
+                    />
+                  </Box>
+                  <Box justify="between">
+                    <Text weight="bold" size="14px" color="black">
+                      {this.props.talk.channel_name}
+                    </Text>
+                  </Box>
+                </Box>
+              </Link>
+              <Text size="14px" margin={{start: "20px"}}> for an easier access to future seminars </Text>
+            </Box>
+
+            <Box gridArea="calendar" pad="xsmall" direction="row" align="center">
+              <FormNext size="20px" />
+              <Text size="14px" margin={{right: "10px"}}> Add this event to your calendar </Text>
+              <Box pad="xsmall">
+                <CalendarButtons talk={this.props.talk} height="30px" />
+              </Box>
+            </Box>
+
+            <Box gridArea="share" direction="row" pad="xsmall" align="center">
+              <FormNext size="20px" />
+              <Text size="14px" margin={{right: "10px"}}> Share it </Text> 
+              <Box align="center" pad="xsmall">
+                <ShareButtons talk={this.props.talk} height="30px"/>
+              </Box>
+            </Box>
+
+          </Grid>  
+          </>
         )}
           </OverlaySection>
         </Overlay>

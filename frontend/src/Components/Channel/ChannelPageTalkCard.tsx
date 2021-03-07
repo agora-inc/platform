@@ -38,6 +38,7 @@ interface State {
   showEdit: boolean;
   available: boolean;
   registered: boolean;
+  registrationStatus: string;
   showShadow: boolean;
 }
 
@@ -49,8 +50,13 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       showEdit: false,
       available: false,
       registered: false,
+      registrationStatus: "",
       showShadow: false,
     };
+  }
+
+  componentWillMount() {
+    this.checkIfAvailableAndRegistered();
   }
 
   componentDidMount = () => {
@@ -82,11 +88,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
   checkIfRegistered = () => {
     this.props.user &&
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: boolean) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"),
+            registrationStatus: status,
+           });
         }
       );
   };
@@ -567,6 +576,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 user={this.props.user}
                 isSharingPage={false}
                 registered={this.state.registered}
+                registrationStatus={this.state.registrationStatus}
                 role={this.props.admin ? "owner" : this.props.role} 
                 available={this.state.available}
                 width={this.props.width}

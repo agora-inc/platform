@@ -25,6 +25,7 @@ interface State {
   showModal: boolean;
   showShadow: boolean;
   registered: boolean;
+  registrationStatus: string;
   available: boolean;
   role: string
 }
@@ -36,10 +37,15 @@ export default class TalkCard extends Component<Props, State> {
       showModal: false,
       showShadow: false,
       registered: false,
+      registrationStatus: "",
       available: true,
       role: "none"
     };
+  }
+
+  componentWillMount() {
     this.fetchRoleInChannel();
+    this.checkIfAvailableAndRegistered();
   }
   
   fetchRoleInChannel = () => {
@@ -91,10 +97,6 @@ export default class TalkCard extends Component<Props, State> {
     this.setState({ showModal: !this.state.showModal });
   };
 
-  componentWillMount() {
-    this.checkIfAvailableAndRegistered();
-  }
-
   // method here for mobile
   checkIfAvailableAndRegistered = () => {
     if (this.props.user) {
@@ -121,11 +123,14 @@ export default class TalkCard extends Component<Props, State> {
   // method here for mobile
   checkIfRegistered = () => {
     this.props.user &&
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: any) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"),
+            registrationStatus: status 
+          });
         }
       );
   };
@@ -483,6 +488,7 @@ export default class TalkCard extends Component<Props, State> {
                   role={this.state.role}
                   available={this.state.available}
                   registered={this.state.registered}
+                  registrationStatus={this.state.registrationStatus}
                   isSharingPage={false}
                 />
             </Layer>

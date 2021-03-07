@@ -22,6 +22,7 @@ interface State {
   showModal: boolean;
   showShadow: boolean;
   registered: boolean;
+  registrationStatus: string;
   available: boolean;
 }
 
@@ -32,8 +33,13 @@ export default class CurrentTalkCard extends Component<Props, State> {
       showModal: false,
       showShadow: false,
       registered: false,
+      registrationStatus: "",
       available: true,
     };
+  }
+
+  componentWillMount() {
+    this.checkIfAvailableAndRegistered();
   }
 
   getTimeRemaining = (): string => {
@@ -55,10 +61,6 @@ export default class CurrentTalkCard extends Component<Props, State> {
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, showShadow: true });
   };
-
-  componentWillMount() {
-    this.checkIfAvailableAndRegistered();
-  }
 
   checkIfAvailableAndRegistered = () => {
     if (this.props.user) {
@@ -84,11 +86,14 @@ export default class CurrentTalkCard extends Component<Props, State> {
 
   checkIfRegistered = () => {
     this.props.user &&
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: boolean) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"), 
+            registrationStatus: status 
+        });
         }
       );
   };

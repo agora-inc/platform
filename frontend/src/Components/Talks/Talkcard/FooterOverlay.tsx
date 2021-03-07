@@ -17,6 +17,7 @@ interface Props {
     role: string | undefined;
     available: boolean;
     registered: boolean;
+    registrationStatus: string;
     isSharingPage: boolean;
     width?: string;
     // isCurrent?: boolean;
@@ -255,6 +256,7 @@ render() {
                   user={this.props.user}
                   role={this.props.role}
                   registered={this.props.registered}
+                  registrationStatus={this.props.registrationStatus}
                 />
             )}
             {(this.props.isSharingPage && (

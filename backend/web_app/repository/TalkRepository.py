@@ -774,7 +774,7 @@ class TalkRepository:
     def getTalkRegistrationsForUser(self, userId):
         raise NotImplementedError
 
-    def isUserRegisteredForTalk(self, talkId, userId):
-        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
+    def registrationStatusForTalk(self, talkId, userId):
+        query = f'SELECT status FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
         result = self.db.run_query(query)
-        return result[0]["COUNT(*)"] != 0
+        return result[0]["status"]

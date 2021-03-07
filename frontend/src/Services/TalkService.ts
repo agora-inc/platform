@@ -286,10 +286,10 @@ const unRegisterForTalk = (talkId: number, userId: any, callback: any) => {
 const getRegisteredTalksForUser = (userId: number, callback: any) => {
   get(`talks/registered?userId=${userId}`, callback);
 };
-              
-              
-const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
-  get(`talks/isregistered?talkId=${talkId}&userId=${userId}`, callback);
+    
+
+const registrationStatusForTalk = (talkId: number, userId: number, callback: any) => {
+  get(`talks/registrationstatus?talkId=${talkId}&userId=${userId}`, callback);
 };
 
 const acceptTalkRegistration = (requestRegistrationId: number, callback: any) => {
@@ -408,7 +408,7 @@ export const TalkService = {
   refuseTalkRegistration,
   registerForTalk,
   unRegisterForTalk,
-  isRegisteredForTalk,
+  registrationStatusForTalk,
   getTalkRegistrations,
   getRegisteredTalksForUser,
 };

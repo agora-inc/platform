@@ -24,7 +24,7 @@ interface State {
     showForm: boolean;
 }
 
-export default class TalkRegistrationButton extends Component<Props, State> {
+export default class SaveForLaterButton extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {

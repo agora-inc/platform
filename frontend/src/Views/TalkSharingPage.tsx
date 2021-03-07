@@ -9,7 +9,6 @@ import "../Styles/channel-page.css";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import Countdown from "../Components/Talks/Countdown";
 import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
-import TalkRegistrationButton from "../Components/Talks/Talkcard/TalkRegistrationButton";
 import { textToLatex } from "../Components/Core/LatexRendering";
 import { Helmet } from "react-helmet";
 
@@ -25,6 +24,7 @@ interface State {
   user: User | null;
   available: boolean;
   registered: boolean;
+  registrationStatus: string;
   showTalkId: number;
 }
 
@@ -59,8 +59,12 @@ export default class TalkSharingPage extends Component<Props, State> {
       user: UserService.getCurrentUser(),
       available: false,
       registered: false,
+      registrationStatus: "",
       showTalkId: this.getTalkIdFromUrl(),
     };
+  }
+
+  componentWillMount() {
     this.fetchAll()
   }
 
@@ -99,11 +103,14 @@ export default class TalkSharingPage extends Component<Props, State> {
         }
       );
 
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.state.talk.id,
         this.state.user.id,
-        (registered: any) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"),
+            registrationStatus: status 
+          });
         }
       );
     }
@@ -270,36 +277,9 @@ export default class TalkSharingPage extends Component<Props, State> {
               role={this.state.role}
               available={this.state.available}
               registered={this.state.registered}
+              registrationStatus={this.state.registrationStatus}
               isSharingPage={true}
             />
-
-            {/*
-            <Box 
-              direction="row"
-              margin={{top: "20px"}} 
-              align="center" 
-              gap="20px" 
-              background="#d5d5d5" 
-              pad="35px" 
-              justify="center"
-            >
-
-              <SaveForLaterButton
-                talk={this.props.talk}
-                user={this.props.user}
-              /> 
-              
-              {!["owner", "member"].includes(this.state.role) && !this.state.registered && talk.visibility !== "Everybody" && ( 
-                <TalkRegistrationButton
-                  talk={talk}
-                  user={this.state.user}
-                />
-              )}
-              {(["owner", "member"].includes(this.state.role) || this.state.registered || talk.visibility === "Everybody") && ( 
-                <Countdown talk={talk} />
-              )}
-            </Box>
-              */}
           </Box>
         </Box>
       </>
