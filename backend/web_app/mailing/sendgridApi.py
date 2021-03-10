@@ -171,13 +171,27 @@ class sendgridApi:
         )
         return response
         
-    def send_talk_details_modification_update(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url):
+    def send_talk_details_modification_update(self, target_email, talk_name, talk_id, agora_name, date_str, conference_url):
         template_id = "d-712e04b993df4855ab7903bd35600f4b"
+
+
+        #
+        #
+        #
+        # WIP
+        #
+        #
+        #
+
+
+
+
+
         response = self._post_sendgrid_request(
             target_email=target_email,
             dynamic_template_data={
                     "talk_name": talk_name,
-                    "recipient_name": recipient_name,
+                    # "recipient_name": recipient_name,
                     "talk_id": talk_id,
                     "agora_name": agora_name,
                     "conference_url": conference_url

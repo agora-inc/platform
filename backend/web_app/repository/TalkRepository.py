@@ -782,3 +782,45 @@ class TalkRepository:
         query = f'SELECT status FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
         result = self.db.run_query(query)
         return result[0]["status"]
+
+    def notifyParticipantAboutTalkModification(self, talkId, channelId):
+        # query emails
+        community_emails = self.channels.getEmailAddressesMembersAndAdmins(
+            channelId,
+            getMembersAddress=True,
+            getAdminsAddress=True
+        )
+        
+        get_emails_all_registrations = f'''
+            SELECT 
+                email
+            FROM TalkRegistrations
+            WHERE
+                talk_id = {talkId} AND
+                status = 'accepted';
+        '''
+        res = self.db.run_query(get_emails_all_registrations)
+        participant_emails = [x["email"] for x in res]
+
+        all_emails = community_emails + participant_emails
+        
+        for email in all_emails:
+            self.mail_sys.send_talk_details_modification_update(
+
+            )
+
+
+
+
+        #
+        #
+        #
+        # WIP
+        #
+        #
+        #
+        
+        
+        raise NotImplementedError
+
+
