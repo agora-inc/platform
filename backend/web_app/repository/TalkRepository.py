@@ -707,9 +707,13 @@ class TalkRepository:
             # B. Send email to administrator
             if website == "":
                 website = "(Not provided)"
-            contact_emails = self.channels.getContactAddresses(channel_id)
+            admin_emails = self.channels.getEmailAddressesMembersAndAdmins(
+                channel_id, 
+                getMembersAddress=False, 
+                getAdminsAddress=True
+                )
 
-            for email in contact_emails:
+            for email in admin_emails:
                 self.mail_sys.notify_admin_talk_registration(
                     email,
                     agora_name, 

@@ -540,7 +540,12 @@ def sendTalkApplicationEmail():
 
     # query email address from administrators 
     # NOTE: we receive a list of all of admins but we only send to 1 for now; to be extended later
-    administrator_emails = channels.getContactAddresses(params['channel_id'])[0]
+    channel_id = params['channel_id']
+    administrator_emails = channels.getEmailAddressesMembersAndAdmins(
+        channel_id,
+        getMembersAddress=False, 
+        getAdminsAddress=True
+    )
 
     # handling optional field
     if "speaker_personal_website" not in params:
