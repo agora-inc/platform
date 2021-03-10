@@ -2,6 +2,8 @@ import { baseApiUrl } from "../config";
 import axios from "axios";
 import { Tag } from "./TagService";
 import { ArtService } from "./ArtService";
+import { get, post } from "../Middleware/httpMiddleware";
+
 
 const getAllStreams = (limit: number, offset: number, callback: any) => {
   axios
@@ -53,7 +55,6 @@ const createStream = (
         streamTags: streamTags,
         imageUrl: "",
       },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
       callback(response.data);
@@ -81,7 +82,27 @@ const archiveStream = (streamId: number, del: boolean, callback: any) => {
   // });
 };
 
+const getToken = (
+    channelName: string, 
+    roleAttendee: number,
+    expireTimeInSec: number,
+    userAccount: any,
+    uid: any,
+    callback: any) => {
+      let url = "";
+      if (uid){
+        url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&uid=${uid}`
+      }
+      else if (userAccount){
+        url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&user_account=${userAccount}`
+      }
+      get(url, callback);
+};
+
+
+
 export const StreamService = {
+  getToken,
   getAllStreams,
   getStreamsForChannel,
   getStreamById,

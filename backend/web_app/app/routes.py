@@ -2,25 +2,37 @@
     TODO: 
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
-
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from mailing import sendgridApi
 from flask import jsonify, request, send_file
+from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
+
+
+from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-users = UserRepository.UserRepository(db=agora_db, mail_sys=mail)
+mail_sys = sendgridApi.sendgridApi()
+
+users = UserRepository.UserRepository(db=agora_db, mail_sys=mail_sys)
 tags = TagRepository.TagRepository(db=agora_db)
 topics = TopicRepository.TopicRepository(db=agora_db)
 questions = QandARepository.QandARepository(db=agora_db)
 streams = StreamRepository.StreamRepository(db=agora_db)
-talks = TalkRepository.TalkRepository(db=agora_db)
+talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
 videos = VideoRepository.VideoRepository(db=agora_db)
-channels = ChannelRepository.ChannelRepository(db=agora_db)
+channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
 search = SearchRepository.SearchRepository(db=agora_db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
+sendgridApi = sendgridApi.sendgridApi()
+
+
+# BASE_API_URL = "http://localhost:8000"
+BASE_API_URL = "https://agora.stream/api"
+
 
 # --------------------------------------------
 # HELPER FUNCTIONS
@@ -42,6 +54,42 @@ def logRequest(request):
         app.logger.debug(f"request made to {request.path} with args {request.args} {f'by user with id {userId}' if userId else ''}")
     elif request.method == "POST":
         app.logger.debug(f"request made to {request.path} with body {request.data} {f'by user with id {userId}' if userId else ''}")
+
+# --------------------------------------------
+# TOKENS
+# --------------------------------------------
+@app.route('/tokens/streaming', methods=['GET', 'OPTIONS'])
+def generateStreamingToken():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    try:
+        channel_name = request.args.get('channel_name')
+        role_attendee = request.args.get('role_attendee') # Either 1) speaker, 2) host, 3) audience
+        expire_time_in_sec = request.args.get('expire_time_in_sec')
+        try:
+            user_account = request.args.get('user_account')
+        except:
+            user_account = None
+        try:
+            uid = request.args.get('uid')
+        except:
+            uid = None
+    except Exception as e:
+        return jsonify(str(e))
+
+    token = generate_rtc_token(
+        channel_name,
+        role_attendee,
+        expire_time_in_sec,
+        user_account,
+        uid
+    )
+
+    return jsonify(token)
 
 # --------------------------------------------
 # USER ROUTES
@@ -218,10 +266,11 @@ def createChannel():
     name = params["name"]
     description = params["description"]
     userId = params["userId"]
+    topic1Id = params["topic1Id"]
 
-    app.logger.debug(f"New agora '{name}' created by user with id {userId}")
+    #app.logger.debug(f"New agora '{name}' created by user with id {userId}")
 
-    return jsonify(channels.createChannel(name, description, userId))
+    return jsonify(channels.createChannel(name, description, userId, topic1Id))
 
 @app.route('/channels/delete', methods=["POST"])
 def deleteChannel():
@@ -244,7 +293,7 @@ def addInvitedMembersToChannel():
     for email in params['emails']:
         app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
 
-    return jsonify("Success")
+    return jsonify("ok")
 
 @app.route('/channels/invite', methods=["GET"])
 def getInvitedMembersForChannel():
@@ -264,7 +313,7 @@ def addUserToChannel():
 
     params = request.json
     channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
-    return jsonify("Success")
+    return jsonify("ok")
 
 
 @app.route('/channels/users/remove', methods=["POST", "OPTIONS"])
@@ -277,7 +326,7 @@ def removeUserForChannel():
 
     params = request.json
     channels.removeUserFromChannel(params["userId"], params["channelId"])
-    return jsonify("Success")
+    return jsonify("ok")
 
 @app.route('/channels/users', methods=["GET"])
 def getUsersForChannel():
@@ -420,7 +469,10 @@ def cover():
 def getContactAddresses():
     if "channelId" in request.args: 
         channel_id = request.args.get("channelId")
-        res = channels.getContactAddresses(channel_id)
+        res = channels.getEmailAddressesMembersAndAdmins(
+            channel_id, 
+            getMembersAddress=False, 
+            getAdminsAddress=True)
         return jsonify(res)
 
 @app.route('/channels/contact/add', methods=["POST", "OPTIONS"])
@@ -550,6 +602,36 @@ def sendTalkApplicationEmail():
     mail.send(msg)
     return "ok"
 
+@app.route('/channel/edit/topic', methods=["POST", "OPTIONS"])
+def editChannelTopic():
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+
+    #app.logger.debug(f"channel with id {params['channelId']} edited")
+    return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
+
+@app.route('/channels/topics/fetch', methods=["GET", "OPTIONS"])
+def getChannelTopic():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelTopic(channelId))
+
+@app.route('/channels/topics/all', methods=["GET"])
+def getChannelsWithTopic():
+    limit = int(request.args.get("limit"))
+    topicId = int(request.args.get("topicId"))
+    offset = int(request.args.get("offset"))
+    return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
+
+
 # --------------------------------------------
 # x Membership ROUTES
 # --------------------------------------------
@@ -666,8 +748,6 @@ def getTalkById():
         return jsonify(talks.getTalkById(talkId))
     except Exception as e:
         return jsonify(str(e))
-
-
 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
@@ -909,14 +989,10 @@ def isAvailable():
 # --------------------------------------------
 # TALK ACCESS REQUESTS ROUTES
 # --------------------------------------------
-@app.route('/talks/requestaccess/register', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/register', methods=["POST"])
 def registerTalk():
-    logRequest(request)
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-        
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
     try:
@@ -926,9 +1002,11 @@ def registerTalk():
         email = params["email"]
         website = params["website"] if "website" in params else ""
         institution = params["institution"] if "institution" in params else ""
-        talks.registerTalk(talkId, userId, name, email, website, institution)
+        user_hour_offset = params["userHourOffset"]
 
-        return jsonify("success")
+        
+        res = talks.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
+        return jsonify(str(res))
 
     except Exception as e:
         return jsonify(str(e))
@@ -947,12 +1025,12 @@ def unregisterTalk():
         requestRegistrationId = params["requestRegistrationId"]
         userId = params["userId"] if "userId" in params else None 
         talks.unregisterTalk(requestRegistrationId, userId)
-        return jsonify("success")
+        return jsonify("ok")
 
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/refuse', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/refuse', methods=["POST", "OPTIONS"])
 def refuseTalkRegistration():
     #TODO: test
     logRequest(request)
@@ -965,13 +1043,16 @@ def refuseTalkRegistration():
     params = request.json
     try:
         requestRegistrationId = params["requestRegistrationId"]
-        talks.refuseTalkRegistration(requestRegistrationId)
-        return jsonify("success")
+        res = talks.refuseTalkRegistration(requestRegistrationId)
+        if res == "ok":
+            return jsonify("ok")
+        else:
+            return jsonify(500, str(res))
 
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/accept', methods=["POST", "OPTIONS"])
+@app.route('/talks/requestaccess/accept', methods=["POST", "OPTIONS"])
 def acceptTalkRegistration():
     #TODO: test
     logRequest(request)
@@ -984,13 +1065,13 @@ def acceptTalkRegistration():
     params = request.json
     try:
         requestRegistrationId = params["requestRegistrationId"]
-        talks.acceptTalkRegistration(requestRegistrationId)
-        return jsonify("success")
+        res = talks.acceptTalkRegistration(requestRegistrationId)
+        return jsonify(str(res))
 
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('talks/requestaccess/all', methods=["GET", "OPTIONS"])
+@app.route('/talks/requestaccess/all', methods=["GET", "OPTIONS"])
 def getTalkRegistrations():
     if request.method == "OPTIONS":
         return jsonify("ok")
@@ -1004,26 +1085,26 @@ def getTalkRegistrations():
     try:
         if channelId != None:
             res = talks.getTalkRegistrationsForChannel(channelId)
-            return jsonify({"registrations": res, "channelId": channelId})
+            return jsonify(res)
         elif talkId != None:
             res = talks.getTalkRegistrationsForTalk(talkId)
-            return jsonify({"registrations": res, "talkId": talkId})
+            return jsonify(res)
         elif userId != None:
-            res = talks.getTalkRegistrationsForUser(talkId)
-            return jsonify({"registrations": res, "talkId": talkId})
+            res = talks.getTalkRegistrationsForUser(userId)
+            return jsonify(res)
 
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('/talks/isregistered', methods=["GET"])
-def isRegisteredForTalk():
+@app.route('/talks/registrationstatus', methods=["GET"])
+def registrationStatusForTalk():
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     talkId = int(request.args.get("talkId"))
     userId = int(request.args.get("userId"))
         
-    return jsonify(talks.isUserRegisteredForTalk(talkId, userId))
+    return jsonify(talks.registrationStatusForTalk(talkId, userId))
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------
@@ -1289,6 +1370,14 @@ def getTopicsOnStream():
     # return jsonify(tags.getTagsOnStream(streamId))
     raise NotImplementedError
 
+@app.route('/topics/getField', methods=["GET"])
+def getFieldFromId():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    topicId = request.args.get("topicId")
+    return jsonify(topics.getFieldFromId(topicId)) 
+
 # --------------------------------------------
 # SEARCH ROUTES
 # --------------------------------------------
@@ -1301,3 +1390,69 @@ def fullTextSearch():
     searchString = params["searchString"]
     results = {objectType: search.searchTable(objectType, searchString) for objectType in objectTypes}
     return jsonify(results)
+
+# --------------------------------------------
+# METATAG ROUTES (this is a hack)
+# --------------------------------------------
+@app.route('/event-link', methods=["GET"])
+def eventLinkRedirect():
+    try:
+        eventId = request.args.get("eventId")
+        talk_info = talks.getTalkById(eventId)
+        title = talk_info["name"]
+        description = talk_info["description"]
+        channel_name = talk_info["channel_name"]
+        channel_id = channels.getChannelByName(channel_name)["id"]
+
+        real_url = f"https://agora.stream/event/{eventId}"
+        hack_url = f"{BASE_API_URL}/event-link?eventId={eventId}"
+        image = f"{BASE_API_URL}/channels/avatar?channelId={channel_id}"
+
+        res_string = f'''
+            <html>
+                <head>
+                    <title>{title}</title>
+                    <meta property="title" content="{title}" />
+                    <meta name="description" content="{description}" />
+                    <meta property="og:title" content="{title}" />
+                    <meta property="og:description" content="{description}" />
+                    <meta property="og:url" content="{hack_url}" />
+                    <meta property="og:image" content="{image}" />
+                    <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
+                </head>
+            </html>
+        '''
+        return render_template(res_string)
+    except Exception as e:
+        return str(e)
+
+@app.route('/channel-link', methods=["GET"])
+def channelLinkRedirect():
+    try:
+        channel_id = request.args.get("channelId")
+        channel_info = channels.getChannelById(channel_id)
+        name = channel_info["name"]
+        long_description = channel_info["long_description"]
+        real_url = f"https://agora.stream/{name}"
+        hack_url = f"{BASE_API_URL}/channel-link?channelId={channel_id}"
+        image = f"{BASE_API_URL}/api/channels/avatar?channelId={channel_id}"
+
+        res_string = f'''
+            <html>
+                <head>
+                    <title>{name}</title>
+                    <meta property="title" content="{name}" />
+                    <meta name="description" content="{long_description}" />
+                    <meta property="og:title" content="{name}" />
+                    <meta property="og:description" content="{long_description}" />
+                    <meta property="og:url" content="{hack_url}" />
+                    <meta property="og:image" content="{image}" />
+                    <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
+                </head>
+            </html>
+        '''
+        return render_template(res_string)
+    except Exception as e:
+        return jsonify(str(e))

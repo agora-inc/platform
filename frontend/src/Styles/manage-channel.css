@@ -1,3 +1,7 @@
+.manage-channel {
+  margin-top: 10vh;
+}
+
 .channel-description {
   outline: 0px solid transparent;
 }
@@ -44,4 +48,13 @@
   cursor: pointer;
   /* pointer-events: none; */
   /* z-index: -1; */
+}
+
+.save_Button{
+  animation: fade-in-keyframes 1s;
+}
+
+@keyframes fade-in-keyframes {
+  from {opacity: 0}
+  to {opacity: 1}
 }

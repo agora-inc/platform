@@ -112,12 +112,33 @@ export default class EmailContactManagement extends Component<Props, State> {
             style={{ width: "27vw", height: "4.5vh", justifySelf: "center" }}
             />
 
-            <Button
-                height="35px"
-                width="90px"
-                text="Save"
-                onClick={this.onSave}
-              />
+            <Box
+              focusIndicator={false}
+              width={"10vw"}
+              background="white"
+              round="xsmall"
+              height={"30px"}
+              pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
+              onClick={this.onSave}
+              style={{
+                border: "1px solid #C2C2C2",
+                minWidth: "25px"
+              }}
+              hoverIndicator={true}
+              justify="center"
+              >
+              <Text 
+                size="14px" 
+                color="grey"
+                alignSelf="center"
+              >
+                Save
+              </Text>
+            </Box>
+
+
+
+
         </Box>
       </Box>
     );

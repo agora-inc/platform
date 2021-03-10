@@ -72,6 +72,7 @@ roman==2.0.0
 rsa==3.4.2
 s3transfer==0.1.13
 SecretStorage==2.3.1
+sendgrid==6.4.8
 service-identity==16.0.0
 setuptools==39.0.1
 six==1.15.0

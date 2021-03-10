@@ -4,11 +4,13 @@ import { CalendarService } from "../../Services/CalendarService";
 import { Google} from "grommet-icons";
 import { Talk } from "../../Services/TalkService";
 import MediaQuery from "react-responsive";
+import ReactTooltip from "react-tooltip";
 
 var moment = require("moment");
 
 interface Props {
   talk: Talk;
+  height?: string;
 }
 
 interface State {
@@ -54,7 +56,8 @@ export default class CalendarButtons extends Component<
           direction="row"
           width="100%"
           justify="between"
-          style={{ minHeight: "35px" }}
+          // style={{ minHeight: "35px" }}
+          gap="10px"
         >
           <a
             style={{ width: "48%", textDecoration: "none" }}
@@ -63,30 +66,31 @@ export default class CalendarButtons extends Component<
               this.props.talk.end_date,
               this.props.talk.name,
               this.props.talk.description,
-              `https://agora.stream/${this.props.talk.channel_name.toLowerCase()}?talkId=${
+              `https://agora.stream/event/${
                 this.props.talk.id
               }`
             )}
             target="_blank"
           >
             <Box
-              width="100%"
-              height="25px"
+              data-tip data-for='google_cal'
+              width="50px"
+              height={this.props.height ? this.props.height : "35px"}
               round="xsmall"
-              background="white"
-              style={{
-                border: "1px solid #C2C2C2",
-              }}
+              background="#F2F2F2"
               align="center"
               justify="center"
               direction="row"
               // gap="4px"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={() => {}}
-              hoverIndicator={true}
+              hoverIndicator="#DDDDDD"
             >
               <Google size="14px" color="plain" />
             </Box>
+            <ReactTooltip id="google_cal" effect="solid">
+              Save in Google Calendar
+            </ReactTooltip>
           </a>
           <a
             style={{ width: "48%", textDecoration: "none" }}
@@ -94,23 +98,24 @@ export default class CalendarButtons extends Component<
             download="download.ics"
           >
             <Box
-              width="100%"
-              height="25px"
+              data-tip data-for='ics'
+              width="50px"
+              height={this.props.height ? this.props.height : "35px"}
               round="xsmall"
-              background="white"
-              style={{
-                border: "1px solid #C2C2C2",
-              }}
+              background="#F2F2F2"
               align="center"
               justify="center"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={() => {}}
-              hoverIndicator={true}
+              hoverIndicator="#DDDDDD"
             >
-              <Text size="14px" weight="bold" color="grey">
+              <Text size="15px" weight="bold">
                 ics
               </Text>
             </Box>
+            <ReactTooltip id="ics" effect="solid">
+              Download .ics file
+            </ReactTooltip>
           </a>
         </Box>
         </MediaQuery>

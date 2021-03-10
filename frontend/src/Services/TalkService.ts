@@ -2,6 +2,7 @@ import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
+import Identicon from "@polkadot/react-identicon/icons/Polkadot";
 
 const getTalkById = (talkId: number, callback: any) => {
   get(`talk/info?id=${talkId}`, callback);
@@ -253,6 +254,9 @@ const registerForTalk = (
   website: any, 
   institution: string, 
   callback: any) => {
+  var now = new Date();
+  var userHourOffset = - now.getTimezoneOffset() / 60;
+  // (NOTE: userHourOffset=-3 if user browser is in GMT-3 right now)
   post(
     "talks/requestaccess/register",
     {
@@ -261,7 +265,8 @@ const registerForTalk = (
       name: name,
       email: email,
       website: website,
-      institution: institution
+      institution: institution,
+      userHourOffset: userHourOffset
     },
     callback
   );
@@ -281,12 +286,44 @@ const unRegisterForTalk = (talkId: number, userId: any, callback: any) => {
 const getRegisteredTalksForUser = (userId: number, callback: any) => {
   get(`talks/registered?userId=${userId}`, callback);
 };
-              
-              
-const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
-  get(`talks/isregistered?talkId=${talkId}&userId=${userId}`, callback);
+    
+
+const registrationStatusForTalk = (talkId: number, userId: number, callback: any) => {
+  get(`talks/registrationstatus?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+const acceptTalkRegistration = (requestRegistrationId: number, callback: any) => {
+  post(
+    "talks/requestaccess/accept",
+    {
+      requestRegistrationId: requestRegistrationId,
+    },
+    callback
+    );
+  };
+  
+const refuseTalkRegistration = (requestRegistrationId: number, callback: any) => {
+  post(
+    "talks/requestaccess/refuse",
+    {
+      requestRegistrationId: requestRegistrationId,
+    },
+    callback
+    );
+  };
+
+  const getTalkRegistrations = (talkId: any, channelId: any, userId: any, callback:any) => {
+    // method must be called with either talkId OR channelId OR userId (only one of them). 
+    let url = "";
+    if (talkId !== null){
+      url = `/talks/requestaccess/all?talkId=${talkId}`;
+    } else if (channelId !== null){
+      url = `/talks/requestaccess/all?channelId=${channelId}`;
+    } else if (userId !== null){
+      url = `/talks/requestaccess/all?userId=${userId}`;
+    }
+    get(url, callback);
+  }
 
 const saveTalk = (userId: number, talkId: number, callback: any) => {
   post(
@@ -360,17 +397,20 @@ export const TalkService = {
   scheduleTalk,
   deleteTalk,
   addRecordingLink,
-  isRegisteredForTalk,
-  registerForTalk,
-  unRegisterForTalk,
-  getRegisteredTalksForUser,
   saveTalk,
   unsaveTalk,
   getSavedTalksForUser,
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
-  
+  // talk registration management
+  acceptTalkRegistration,
+  refuseTalkRegistration,
+  registerForTalk,
+  unRegisterForTalk,
+  registrationStatusForTalk,
+  getTalkRegistrations,
+  getRegisteredTalksForUser,
 };
 
 export type Talk = {
@@ -384,6 +424,7 @@ export type Talk = {
   end_date: string;
   description: string;
   link: string;
+  link_available?: boolean;
   recording_link: string;
   tags: Tag[];
   show_link_offset: number;

@@ -1,6 +1,6 @@
 .all-agoras-page {
   margin: 60px;
-  margin-top: 140px;
+  margin-top: 10vh;
   display: flex;
   flex-direction: column;
 }
@@ -17,6 +17,18 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 30px;
+}
+
+@media(max-width:1400px){
+  .all-agoras-grid {
+     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width:950px){
+  .all-agoras-grid {
+     grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .agora-card {

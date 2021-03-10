@@ -11,6 +11,7 @@ import { default as CoreButton } from "../Core/Button";
 import Identicon from "react-identicons";
 import "../../Styles/past-talk-card.css";
 import EditTalkModal from "../Talks/EditTalkModal";
+import { textToLatex } from "../Core/LatexRendering";
 
 interface Props {
   talk: Talk;
@@ -84,10 +85,6 @@ export default class PastTalkCard extends Component<Props, State> {
     const timeStr = date.toTimeString().slice(0, 5);
     return [dateStr, timeStr];
   };
-
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
 
   toggleModal = () => {
     this.setState({
@@ -188,14 +185,14 @@ export default class PastTalkCard extends Component<Props, State> {
             style={{ width: "100%" }}
           >
             <Box
-              background="#7E1115"
+              background="#025377"
               round="xsmall"
               height="40px"
               width="50%"
               justify="center"
               align="start"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#025377"
             >
               <Text alignSelf="center" size="16px">
                 Watch talk
@@ -233,14 +230,14 @@ export default class PastTalkCard extends Component<Props, State> {
             style={{ width: "100%" }}
           >
             <Box
-              background="#7E1115"
+              background="#025377"
               round="xsmall"
               height="40px"
               width="50%"
               justify="center"
               align="start"
               focusIndicator={false}
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#025377"
             >
               <Text alignSelf="center" size="14px">
                 Watch talk
@@ -317,7 +314,7 @@ export default class PastTalkCard extends Component<Props, State> {
           {!this.props.talk.recording_link && (
             <Box
               height="60%"
-              background={this.props.talk.channel_colour}
+              background="#6DA3C7"
               style={{ opacity: 0.75 }}
             ></Box>
           )}
@@ -351,7 +348,7 @@ export default class PastTalkCard extends Component<Props, State> {
               <Text
                 weight="bold"
                 size="14px"
-                color={this.props.talk.channel_colour}
+                color="#6DA3C7"
               >
                 {this.props.talk.channel_name}
               </Text>
@@ -388,7 +385,7 @@ export default class PastTalkCard extends Component<Props, State> {
               left: 8,
               opacity: 0.5,
             }}
-            background={this.props.talk.channel_colour}
+            background="#6DA3C7"
           ></Box>
         )}
 
@@ -505,18 +502,18 @@ export default class PastTalkCard extends Component<Props, State> {
                       : "TBA"}
                   </Text>
                 </Box>
-                <Text
-                  size="14px"
-                  color="black"
+                <Box
                   style={{
                     minHeight: "50px",
-                    maxHeight: "220px",
+                    maxHeight: "200px",
                     overflowY: "auto",
                   }}
-                  margin={{ bottom: "10px" }}
+                  margin={{ top: "10px", bottom: "10px" }}
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description)}
-                </Text>
+                  {this.props.talk.description.split('\n').map(
+                    (item, i) => textToLatex(item)
+                  )}
+                </Box>
               </Box>
               <Box
                 direction="column"
@@ -687,7 +684,7 @@ export default class PastTalkCard extends Component<Props, State> {
           //         <Text
           //           weight="bold"
           //           size="22px"
-          //           color={this.props.talk.channel_colour}
+          //           color="#6DA3C7"
           //         >
           //           {this.props.talk.channel_name}
           //         </Text>
@@ -740,7 +737,7 @@ export default class PastTalkCard extends Component<Props, State> {
           //           direction="row"
           //           width="100%"
           //           height="45px"
-          //           background="#f5f5f5"
+          //           background="#eaf1f1"
           //           round="xsmall"
           //           pad="xsmall"
           //           justify="center"
@@ -789,14 +786,14 @@ export default class PastTalkCard extends Component<Props, State> {
             onClick={() => {
               this.toggleEdit();
             }}
-            background="#7E1115"
+            background="#025377"
             round="xsmall"
             pad="xsmall"
             height="40px"
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#5A0C0F"
+            hoverIndicator="#025377"
             margin="10px"
           >
             <Text size="18px">Edit</Text>

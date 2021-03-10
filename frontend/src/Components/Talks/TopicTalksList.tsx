@@ -205,7 +205,7 @@ export default class TopicTalkList extends Component<Props, State> {
         background="#F3EACE"
       >
         <Text size="18px" weight="bold" color="grey">
-          There are no talks in that category
+          No public talks in that category
         </Text>
       </Box>
     );
@@ -380,7 +380,8 @@ export default class TopicTalkList extends Component<Props, State> {
 
         {this.props.topicSearch && (
           <TopicClassification 
-            topicCallback={this.selectTopic} 
+            topicCallback={this.selectTopic}
+            searchType={"Talks"} 
             />
         )}
 

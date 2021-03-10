@@ -7,7 +7,6 @@ import { Tag } from "../../Services/TagService";
 import { Link } from "react-router-dom";
 import { Talk, TalkService } from "../../Services/TalkService";
 import EditTalkModal from "../Talks/EditTalkModal";
-import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
 import { default as TagComponent } from "../Core/Tag";
 import { ChannelService } from "../../Services/ChannelService";
 import Countdown from "../Talks/Countdown";
@@ -17,6 +16,7 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import RequestMembershipButton from "./ApplyMembershipButton";
 import { thisExpression } from "@babel/types";
+import { textToLatex } from "../Core/LatexRendering";
 import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 
 interface Props {
@@ -36,7 +36,9 @@ interface Props {
 interface State {
   showModal: boolean;
   showEdit: boolean;
+  available: boolean;
   registered: boolean;
+  registrationStatus: string;
   showShadow: boolean;
 }
 
@@ -46,9 +48,15 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.state = {
       showModal: this.props.show ? this.props.show && !this.props.admin : false,
       showEdit: false,
+      available: false,
       registered: false,
+      registrationStatus: "",
       showShadow: false,
     };
+  }
+
+  componentWillMount() {
+    this.checkIfAvailableAndRegistered();
   }
 
   componentDidMount = () => {
@@ -56,13 +64,38 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.checkIfUserCanViewCard();
   };
 
+  checkIfAvailableAndRegistered = () => {
+    if (this.props.user) {
+      TalkService.isAvailableToUser(
+        this.props.user.id,
+        this.props.talk.id,
+        (available: boolean) => {
+          this.setState({ available }, () => {
+            if (available) {
+              this.checkIfRegistered();
+            }
+          });
+        }
+      );
+    } else {
+      this.setState({
+        available:
+          this.props.talk.visibility === "Everybody" ||
+          this.props.talk.visibility === null,
+      });
+    }
+  };
+
   checkIfRegistered = () => {
     this.props.user &&
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: boolean) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"),
+            registrationStatus: status,
+           });
         }
       );
   };
@@ -94,13 +127,11 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       }
   };
 
-
-
-  checkIfUserCanViewCard = () => {
+  checkIfUserCanViewCard = (): boolean => {
     if (this.props.admin) {
       return true;
     }
-    else
+    else {
       if (this.props.talk.card_visibility == "Everybody") {
         return true;
       }
@@ -120,6 +151,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           return false;
         }
       }
+      else {
+        return false;
+      }
+    }
   };
 
   register = () => {
@@ -186,10 +221,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     const timeEndStr = end.toTimeString().slice(0, 5);
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
-
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
 
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
@@ -323,14 +354,29 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               {this.props.talk.card_visibility === "Members only" &&
                 <Box
                   round="xsmall"
-                  background="#C2C2C2"
+                  background="#EAF1F1"
                   pad="xsmall"
                   justify="center"
                   align="center"
                   width="160px"
                 >
                   <Text size="14px">
-                    Members only
+                    member-only
+                  </Text>
+                </Box>
+              }
+              {this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
+                <Box
+                  round="xsmall"
+                  background="#D7F75B"
+                  pad="small"
+                  justify="center"
+                  align="center"
+                  width="170px"
+                  height="30px"             
+                >
+                  <Text size="14px" style={{ fontStyle: "normal" }}>
+                    on-registration
                   </Text>
                 </Box>
               }
@@ -347,7 +393,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   left: 8,
                   opacity: 0.5,
                 }}
-                background={this.props.talk.channel_colour}
+                background="#6DA3C7"
               ></Box>
             )}
           </Box>
@@ -357,14 +403,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             onClick={() => {
               this.toggleEdit();
             }}
-            background="#7E1115"
+            background="#025377"
             round="xsmall"
             pad="xsmall"
             height="40px"
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#5A0C0F"
+            hoverIndicator="#025377"
             margin="10px"
           >
             <Text size="18px">Edit</Text>
@@ -510,25 +556,29 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     </Text>
                   </Box>
                 )}
-                <Text
-                  size="14px"
-                  color="black"
+                <Box
                   style={{
                     minHeight: "50px",
                     maxHeight: "200px",
                     overflowY: "auto",
                   }}
                   margin={{ top: "10px", bottom: "10px" }}
+                  direction="column"
                 >
-                  {this.escapeDoubleQuotes(this.props.talk.description)}
-                </Text>
+                  {this.props.talk.description.split('\n').map(
+                    (item, i) => textToLatex(item)
+                  )}
+                </Box>
               </Box>
               </Box>
               <FooterOverlay
                 talk={this.props.talk}
                 user={this.props.user}
-                admin={this.props.admin}
-                role={this.props.role}
+                isSharingPage={false}
+                registered={this.state.registered}
+                registrationStatus={this.state.registrationStatus}
+                role={this.props.admin ? "owner" : this.props.role} 
+                available={this.state.available}
                 width={this.props.width}
                 // isCurrent?: boolean;
                 // show?: boolean;
