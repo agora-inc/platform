@@ -14,6 +14,7 @@ interface Props {
     channel?: Channel | any;
     height?: string;
     width?: string;
+    useReducedHorizontalVersion?: boolean
   }
   
   interface State {
@@ -117,101 +118,139 @@ interface Props {
     }
 
     render () {
-      return (
-        <Box 
-          direction="row"
-          style = {{ zIndex: 0 }}
-          width="275px"
-          // alignSelf="end"
-          gap="10px"
-        >
-          <CopyUrlButton 
-            url={this.urlLink()} 
-            height={this.props.height ? this.props.height : "35px"}
-            width={this.props.width ? this.props.width : "100px"}
-          />
-
-          {/*<Button
-            data-tip data-for='share_social'
-            label="Share"
-            onClick={this.displayShareButtons}
-            style={{
-              width: 140,
-              height: 35,
-              fontSize: 15,
-              fontWeight: "bold",
-              padding: 0,
-              // margin: 6,
-              backgroundColor: "#F2F2F2",
-              border: "none",
-              borderRadius: 7,
-            }}
-          />*/}
-          <Box
-            data-tip data-for='share_social'
-            onClick={this.displayShareButtons}
-            background="#F2F2F2"
-            round="xsmall"
-            width={this.props.width ? this.props.width : "100px"}
-            height={this.props.height ? this.props.height : "35px"}
-            justify="center"
-            align="center"
-            focusIndicator={true}
-            hoverIndicator="#DDDDDD"
+      var useReducedHorizontalVersion = this.props.useReducedHorizontalVersion ? this.props.useReducedHorizontalVersion : false;
+      if (!useReducedHorizontalVersion){
+        return (
+          <Box 
+            direction="row"
+            style = {{ zIndex: 0 }}
+            width="275px"
+            // alignSelf="end"
+            gap="10px"
           >
-            <Text weight="bold" size="15px">
-              Share 
-            </Text>
-          </Box> 
-
-          <ReactTooltip id="share_social" effect="solid" place="bottom">
-            Share with friends and colleagues
-          </ReactTooltip>
-          
-
-
-
-          {(this.state.showShareButtons && (this.props.talk !== null)) || (
-            <StickyShareButtons
-              config={{
-                alignment: 'right',    // alignment of buttons (left, right)
-                color: 'white',      // set the color of buttons (social, white)
-                enabled: true,        // show/hide buttons (true, false)
-                font_size: 14,        // font size for the buttons
-                // hide_desktop: false,  // hide buttons on desktop (true, false)
-                labels: 'cta',     // button labels (cta, counts, null)
-                language: 'en',       // which language to use (see LANGUAGES)
-                min_count: 0,         // hide react counts less than min_count (INTEGER)
-                networks: [           // which networks to include (see SHARING NETWORKS)
-                  'twitter',
-                  'linkedin',
-                  'whatsapp',
-                  'facebook',
-                  'email'
-                ],
-                padding: 12,          // padding within buttons (INTEGER)
-                radius: 4,            // the corner radius on each button (INTEGER)
-                show_total: false,     // show/hide the total share count (true, false)
-                show_mobile: true,    // show/hide the buttons on mobile (true, false)
-                show_toggle: false,    // show/hide the toggle buttons (true, false)
-                size: 48,             // the size of each button (INTEGER)
-                top: 150,             // offset in pixels from the top of the page
-    
-                // OPTIONAL PARAMETERS
-                url: this.apiUrlLink(), // (defaults to current url)
-                image: this.agoraLogoUrl(),  // (defaults to og:image or twitter:image)
-                description: this.description(),       // (defaults to og:description or twitter:description)
-                title: this.title(),            // (defaults to og:title or twitter:title)
-                message: this.emailMessage(),     // (only for email sharing)
-                subject: this.emailTitle(),  // (only for email sharing)
-                username: this.twitterUsername() // (only for twitter sharing)
-              }}
+            <CopyUrlButton 
+              url={this.urlLink()} 
+              height={this.props.height ? this.props.height : "35px"}
+              width={this.props.width ? this.props.width : "100px"}
             />
-          )}
 
-          
+            {/*<Button
+              data-tip data-for='share_social'
+              label="Share"
+              onClick={this.displayShareButtons}
+              style={{
+                width: 140,
+                height: 35,
+                fontSize: 15,
+                fontWeight: "bold",
+                padding: 0,
+                // margin: 6,
+                backgroundColor: "#F2F2F2",
+                border: "none",
+                borderRadius: 7,
+              }}
+            />*/}
+            <Box
+              data-tip data-for='share_social'
+              onClick={this.displayShareButtons}
+              background="#F2F2F2"
+              round="xsmall"
+              width={this.props.width ? this.props.width : "100px"}
+              height={this.props.height ? this.props.height : "35px"}
+              justify="center"
+              align="center"
+              focusIndicator={true}
+              hoverIndicator="#DDDDDD"
+            >
+              <Text weight="bold" size="15px">
+                Share 
+              </Text>
+            </Box> 
 
-        </Box>
-      )
-    }
+            <ReactTooltip id="share_social" effect="solid" place="bottom">
+              Share with friends and colleagues
+            </ReactTooltip>
+            
+
+
+
+            {(this.state.showShareButtons && (this.props.talk !== null)) || (
+              <StickyShareButtons
+                config={{
+                  alignment: 'right',    // alignment of buttons (left, right)
+                  color: 'white',      // set the color of buttons (social, white)
+                  enabled: true,        // show/hide buttons (true, false)
+                  font_size: 14,        // font size for the buttons
+                  // hide_desktop: false,  // hide buttons on desktop (true, false)
+                  labels: 'cta',     // button labels (cta, counts, null)
+                  language: 'en',       // which language to use (see LANGUAGES)
+                  min_count: 0,         // hide react counts less than min_count (INTEGER)
+                  networks: [           // which networks to include (see SHARING NETWORKS)
+                    'twitter',
+                    'linkedin',
+                    'whatsapp',
+                    'facebook',
+                    'email'
+                  ],
+                  padding: 12,          // padding within buttons (INTEGER)
+                  radius: 4,            // the corner radius on each button (INTEGER)
+                  show_total: false,     // show/hide the total share count (true, false)
+                  show_mobile: true,    // show/hide the buttons on mobile (true, false)
+                  show_toggle: false,    // show/hide the toggle buttons (true, false)
+                  size: 48,             // the size of each button (INTEGER)
+                  top: 150,             // offset in pixels from the top of the page
+      
+                  // OPTIONAL PARAMETERS
+                  url: this.apiUrlLink(), // (defaults to current url)
+                  image: this.agoraLogoUrl(),  // (defaults to og:image or twitter:image)
+                  description: this.description(),       // (defaults to og:description or twitter:description)
+                  title: this.title(),            // (defaults to og:title or twitter:title)
+                  message: this.emailMessage(),     // (only for email sharing)
+                  subject: this.emailTitle(),  // (only for email sharing)
+                  username: this.twitterUsername() // (only for twitter sharing)
+                }}
+              />
+            )}
+          </Box>
+        )
+      }
+      else
+        return(
+          <InlineShareButtons
+          config={{
+            alignment: 'right',    // alignment of buttons (left, right)
+            color: 'white',      // set the color of buttons (social, white)
+            enabled: true,        // show/hide buttons (true, false)
+            font_size: 14,        // font size for the buttons
+            // hide_desktop: false,  // hide buttons on desktop (true, false)
+            labels: 'cta',     // button labels (cta, counts, null)
+            language: 'en',       // which language to use (see LANGUAGES)
+            // min_count: 0,         // hide react counts less than min_count (INTEGER)
+            networks: [           // which networks to include (see SHARING NETWORKS)
+              'twitter',
+              'linkedin',
+              'whatsapp',
+              'facebook',
+              'email'
+            ],
+            padding: 12,          // padding within buttons (INTEGER)
+            radius: 4,            // the corner radius on each button (INTEGER)
+            show_total: false,     // show/hide the total share count (true, false)
+            // show_mobile: true,    // show/hide the buttons on mobile (true, false)
+            // show_toggle: false,    // show/hide the toggle buttons (true, false)
+            size: 48,             // the size of each button (INTEGER)
+            // top: 150,             // offset in pixels from the top of the page
+
+            // OPTIONAL PARAMETERS
+            url: this.apiUrlLink(), // (defaults to current url)
+            image: this.agoraLogoUrl(),  // (defaults to og:image or twitter:image)
+            description: this.description(),       // (defaults to og:description or twitter:description)
+            title: this.title(),            // (defaults to og:title or twitter:title)
+            message: this.emailMessage(),     // (only for email sharing)
+            subject: this.emailTitle(),  // (only for email sharing)
+            username: this.twitterUsername() // (only for twitter sharing)
+          }}
+        />
+        )
+      }
 }
