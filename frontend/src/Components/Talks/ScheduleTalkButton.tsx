@@ -44,15 +44,15 @@ export default class ScheduleTalkButton extends Component<Props, State> {
         >
           <Text size="14px" weight="bold"> Schedule talk </Text>
         </Box>
-        <EditTalkModal
-          visible={this.state.showModal}
-          channel={this.props.channel}
-          onCanceledCallback={this.toggleModal}
-          onFinishedCallback={() => {
-            this.toggleModal();
-            this.props.onCreatedCallback();
-          }}
-        />
+          <EditTalkModal
+            visible={this.state.showModal}
+            channel={this.props.channel}
+            onCanceledCallback={this.toggleModal}
+            onFinishedCallback={() => {
+              this.toggleModal();
+              this.props.onCreatedCallback();
+            }}
+          />
       </Box>
     );
   }

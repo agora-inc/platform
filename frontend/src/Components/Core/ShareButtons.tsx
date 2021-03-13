@@ -23,8 +23,7 @@ interface Props {
     emailTitle: string;
     emailMessage: string;
     imageUrl: string;
-    showShareButtons: boolean
-
+    showShareButtons: boolean;
   }
   
   export default class ShareButtons extends Component<Props, State> {
@@ -39,11 +38,6 @@ interface Props {
         showShareButtons: true
       };
     }
-
-    // //True if talk, therefore false if Channel.
-    // isTalk = (variableToCheck: any): variableToCheck is Talk => {
-    //   return (variableToCheck as Talk).talk_speaker !== undefined;
-    // }
 
     urlLink = () => {
       if (this.props.talk) {

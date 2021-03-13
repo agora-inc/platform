@@ -58,9 +58,8 @@ interface State {
   showCardVisibilityInfo: boolean,
   isPrevTopics: boolean[];
   audienceLevel: string;
-  overlay: {
-    showAdvertisementOverlay: boolean
-  }
+  showAdvertisementOverlay: boolean;
+  talkToAdvertise: Talk | null,
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -97,9 +96,8 @@ export default class EditTalkModal extends Component<Props, State> {
       showCardVisibilityInfo: false,
       isPrevTopics: this.props.talk ? this.topicExists(this.props.talk.topics) : [false, false, false],
       audienceLevel: this.props.talk?.audience_level || "General audience",
-      overlay: {
-        showAdvertisementOverlay: false
-      }
+      showAdvertisementOverlay: false,
+      talkToAdvertise: this.props.talk ? this.props.talk : null
     };
   }
 
@@ -120,9 +118,7 @@ export default class EditTalkModal extends Component<Props, State> {
       {
         published: 1,
         loading: true,
-        overlay: {
-          showAdvertisementOverlay: true
-        }
+        showAdvertisementOverlay: true
       },
       () => {
         this.onFinish();
@@ -208,6 +204,12 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.published,
         this.state.audienceLevel,
         (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
           this.setState(
             {
               loading: false,
@@ -237,6 +239,12 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.published,
         this.state.audienceLevel,
         (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
           this.setState(
             {
               loading: false,
@@ -367,6 +375,12 @@ export default class EditTalkModal extends Component<Props, State> {
     else {
       return false
     }
+  }
+
+  hideAdvertisementOverlay = () => {
+    this.setState({
+      showAdvertisementOverlay: false}
+    )
   }
 
   render() {
@@ -718,29 +732,29 @@ export default class EditTalkModal extends Component<Props, State> {
         </Box>  
       </Overlay>
 
-      {this.isInThePast() || (
-        <Overlay
-          width={400}
-          height={300}
-          visible={this.state.overlay.showAdvertisementOverlay}
-          title={"Successful publication"}
-          submitButtonText="Ok"
-          onSubmitClick={this.props.onFinishedAdvertisementCallback}
-          contentHeight="150px"
-          canProceed={true}
-          onCancelClick={this.props.onCanceledAdvertisementCallback}
-          onClickOutside={this.props.onCanceledAdvertisementCallback}
-          onEsc={this.props.onCanceledCallback}
-        > 
-          Get new like-minded people to know about your new event
-          <ShareButtons
-            talk={this.props.talk}
-            channel={this.props.channel}
-            useReducedHorizontalVersion={true}
-          />
-        </Overlay>
-      )
-    }
+      { this.state.talkToAdvertise !== null && !(this.isInThePast()) && (
+          <Overlay
+            width={400}
+            height={300}
+            visible={this.state.showAdvertisementOverlay}
+            title={"Your event got published"}
+            submitButtonText="Ok"
+            onSubmitClick={this.props.onFinishedAdvertisementCallback}
+            contentHeight="150px"
+            canProceed={true}
+            onCancelClick={this.hideAdvertisementOverlay}
+            onClickOutside={this.hideAdvertisementOverlay}
+            onEsc={this.hideAdvertisementOverlay}
+          > 
+            Your agora members have all been notified about the incoming event.
+            <ShareButtons
+              talk={this.state.talkToAdvertise}
+              channel={this.props.channel}
+              useReducedHorizontalVersion={true}
+            />
+          </Overlay>
+        )
+      }
       </>
     );
   }
