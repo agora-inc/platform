@@ -392,11 +392,6 @@ class TalkRepository:
         return (talks, self.getNumberOfPastTalksForChannel(channelId))
 
     def getAllDraftedTalksForChannel(self, channelId):
-        ############################
-        #                          #
-        # TODO: Test this works    #
-        #                          #
-        ############################
         query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND published = 0"
         talks = self.db.run_query(query)
         for talk in talks:
@@ -465,6 +460,19 @@ class TalkRepository:
 
         tagIds = [t["id"] for t in talkTags]
         self.tags.tagTalk(insertId, tagIds)
+
+        # send email to members / admins
+        # self.notifyCommunityAboutNewTalk()
+        #
+        #
+        # WIP
+        #
+        #
+        #
+
+
+
+
 
         return self.getTalkById(insertId)
 
@@ -860,3 +868,12 @@ class TalkRepository:
 
         except Exception as e:
             return str(e)
+
+    def notifyCommunityAboutNewTalk(self):
+        #
+        #
+        #
+        # WIP
+        #
+        #
+        raise NotImplementedError
