@@ -48,8 +48,8 @@ class sendgridApi:
         """
         date_original_format_1 = "%Y-%m-%d %H:%M:%S"
         date_original_format_2 = "%Y-%m-%d %H:%M"
-
-        final_date_format = '%A, %d %B %Y at %H:%M:%S'
+        final_date_format = "%A, %d %B %Y at %H:%M:%S"
+        gmt_string = str(gmt_string)
 
         # Convert strings in datetime format
         try:
@@ -123,13 +123,14 @@ class sendgridApi:
 
     def send_confirmation_talk_registration_acceptance(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None):
         template_id = "d-e2791dbf94084474b5dd50b15a8ea372"
-
+        human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
+        
         dynamic_template_data={
                             "talk_name": talk_name,
                             "recipient_name": recipient_name,
                             "talk_id": talk_id,
                             "agora_name": agora_name,
-                            "date": date_str
+                            "date_str": human_readable_date
                         }
 
         if conference_url is None or conference_url == "":

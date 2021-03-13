@@ -652,6 +652,7 @@ class TalkRepository:
                     Talks.name,
                     Talks.channel_name,
                     Talks.channel_id,
+                    Talks.date,
                     TalkRegistrations.applicant_name,
                     TalkRegistrations.email
                 FROM Talks
@@ -666,30 +667,19 @@ class TalkRepository:
             recipient_name = extra_email_info["applicant_name"]
             talk_id = extra_email_info["id"]
             agora_name = extra_email_info["channel_name"]
-            channel_id = extra_email_info["channel_id"]
             conference_url = extra_email_info["link"]
+            start_time = extra_email_info["date"]
 
-            # ## DO THE CHECK OF CONFERENCE LINK HERE TO SEE IF THERE IS ONE OR NOT!
-            # #
-            # #
-            # #
-            talk_has_conference_url = True
-            # # if conference_url == "https://SD"
-
-            
-            # # 2. Send email
-            if talk_has_conference_url:
-                self.mail_sys.send_confirmation_talk_registration_acceptance(
-                    target_email,
-                    talk_name,
-                    recipient_name,
-                    talk_id,
-                    agora_name,
-                    channel_id,
-                    conference_url
-                )
-            else:
-                pass
+            # 2. Send email to applicant
+            self.mail_sys.send_confirmation_talk_registration_acceptance(
+                target_email,
+                talk_name,
+                recipient_name,
+                talk_id,
+                agora_name,
+                start_time,
+                conference_url
+            )
 
             # 3. Flag user as registered in DB
             accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
@@ -818,12 +808,12 @@ class TalkRepository:
         raise NotImplementedError
 
     def registrationStatusForTalk(self, talkId, userId):
-        query = f'SELECT status FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
+        query = f'SELECT status FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId};'
         result = self.db.run_query(query)
-        if "status" in result:
-            return result[0]["status"]
-        else:
-            return "unregistered"
+        try:
+            return result["status"]
+        except:
+            return {"status": "unregistered"}
 
     def notifyParticipantAboutTalkModification(self, talkId, channelId, talkName, talkLink, startDate, endDate):
         try:
