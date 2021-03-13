@@ -36,7 +36,6 @@ interface Props {
 interface State {
   showModal: boolean;
   showEdit: boolean;
-  showAdvertisementOverlay: boolean;
   available: boolean;
   registered: boolean;
   registrationStatus: string;
@@ -49,7 +48,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.state = {
       showModal: this.props.show ? this.props.show && !this.props.admin : false,
       showEdit: false,
-      showAdvertisementOverlay: false,
       available: false,
       registered: false,
       registrationStatus: "",
@@ -250,9 +248,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     });
   };
 
-  toggleAdvertisementTalkOverlay = () => {
-    this.setState({ showAdvertisementOverlay: !this.state.showAdvertisementOverlay });
-  };
   render() {
     return (
       <Box
@@ -609,7 +604,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             }}
             onCanceledCallback={this.toggleEdit}
             onFinishedAdvertisementCallback={() => {
-              this.toggleAdvertisementTalkOverlay();
               this.toggleEdit()
             }}
             onCanceledAdvertisementCallback={this.toggleEdit}
