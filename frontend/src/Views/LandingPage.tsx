@@ -3,7 +3,6 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading } from "grommet";
 import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
-import agorasLogo from "../assets/general/agoras_logo_v2.png";
 
 import { User, UserService } from "../Services/UserService";
 import { Search, Play, Add, Channel, ScheduleNew, Multiple } from "grommet-icons";
@@ -189,7 +188,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             >
               <Multiple size="30px" />
               <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover</Text>
-              <Text size="16px" margin={{top: "10px"}}> new <img src={agorasLogo} style={{ height: "14px"}}/> </Text>
+              <Text size="16px" margin={{top: "10px"}}> new <img src={agoraLogo} style={{ height: "14px"}}/>s </Text>
             </Box>
           </Link>
         </Box>
@@ -204,10 +203,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Box direction="column" justify="center" style={{minWidth: "50%"}}>
             <Text size="21px" weight="bold" margin={{bottom: "24px"}} alignSelf="center"> What is an <img src={agoraLogo} style={{ height: "19px", alignSelf:"center"}}/>? </Text>
             <Text size="14px" margin={{bottom: "6px"}} weight="bold"> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a hub for a community (e.g. a reading group, seminar group, institution, etc..)</Text>
-            <Text size="14px" margin={{bottom: "6px"}}> It is the place where seminars happen and future events advertised </Text>
+            <Text size="14px" margin={{bottom: "6px"}}> It is the place where seminars happen and future events are advertised </Text>
             <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Visit and connect with any agora by becoming a member or a future speaker </Text>
-            {/* <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Follow some <img src={agorasLogo} style={{ height: "14px", alignSelf:"center"}}/> to never miss out on their awesome events! </Text> */}
-
           </Box>
         </Box>
 

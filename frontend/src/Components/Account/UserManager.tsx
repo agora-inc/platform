@@ -15,7 +15,7 @@ import "../../Styles/antd.css";
 import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
-import agorasLogo from "../../assets/general/agoras_logo_v2.png";
+import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
 
 const makeProfilePublicInfo =
   "Making your profile public means that it will be shown in the 'speaker marketplace' feature of the platform, and administrators of relevant agoras may reach out to you about speaking opportunities if you have contact details in your bio. This action can be undone at any time.";
@@ -239,7 +239,7 @@ export default class UserManager extends Component<Props, State> {
           gap="xsmall"
         >
           <Text size="16px" color="grey">
-            Manage your <img src={agorasLogo} style={{ height: "14px"}}/>
+            Manage your <img src={agoraLogo} style={{ height: "14px"}}/>s
           </Text>
           <Box
             height={{max: "200px"}}
