@@ -44,13 +44,18 @@ class sendgridApi:
         """Gets 2020-09-30 15:00:00.0 date format and convert it into "30th September 2020, 15:00GMT+1" 
         in the time zone of the user.
         
-        (NOTE: user_hour_offset is 1 if we are in GMT+1 right now)
+        (NOTE: user_hour_offset is 1 if we are in GMT+1 right now and -3 if we are in GMT-3)
         """
-        date_original_format = "%Y-%m-%d %H:%M:%S"
+        date_original_format_1 = "%Y-%m-%d %H:%M:%S"
+        date_original_format_2 = "%Y-%m-%d %H:%M"
+
         final_date_format = '%A, %d %B %Y at %H:%M:%S'
 
         # Convert strings in datetime format
-        date_original = datetime.datetime.strptime(gmt_string, date_original_format)
+        try:
+            date_original = datetime.datetime.strptime(gmt_string, date_original_format_1)
+        except:
+            date_original = datetime.datetime.strptime(gmt_string, date_original_format_2)
 
         # Add offset
         hours_to_add = datetime.timedelta(hours=user_hour_offset)
@@ -173,28 +178,15 @@ class sendgridApi:
         
     def send_talk_details_modification_update(self, target_email, talk_name, talk_id, agora_name, date_str, conference_url):
         template_id = "d-712e04b993df4855ab7903bd35600f4b"
-
-
-        #
-        #
-        #
-        # WIP
-        #
-        #
-        #
-
-
-
-
-
+        human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
         response = self._post_sendgrid_request(
             target_email=target_email,
             dynamic_template_data={
                     "talk_name": talk_name,
-                    # "recipient_name": recipient_name,
                     "talk_id": talk_id,
                     "agora_name": agora_name,
-                    "conference_url": conference_url
+                    "conference_url": conference_url,
+                    "date_str": human_readable_date
                 },
             template_id=template_id
         )
