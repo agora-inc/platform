@@ -31,7 +31,7 @@ export default class ScheduleTalkButton extends Component<Props, State> {
       <Box margin={this.props.margin} pad="none">
         <Box
           onClick={this.toggleModal}
-          background="#025377"
+          background="#0C385B"
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
           height="40px"

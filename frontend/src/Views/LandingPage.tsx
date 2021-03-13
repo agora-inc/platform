@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading } from "grommet";
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.png";
-import agoraLogo from "../assets/general/agora_logo_v2.png";
+import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 import agorasLogo from "../assets/general/agoras_logo_v2.png";
 
 import { User, UserService } from "../Services/UserService";
@@ -47,7 +47,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       "Leveraging modern technologies in the service of academics.",
       "Cutting global travel of academics and fight climate change.",
       "Empowering academics' reach and visibility.",
-      "Automating the seminar organisers' pipeline."
+      "Automating the seminar organisers' pipeline.",
+      "Bridging academic and industrial researchers."
     ];
 
     var now = Date.now();
@@ -265,7 +266,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 justify="center"
                 align="center"
                 focusIndicator={false}
-                hoverIndicator="#025377"
+                hoverIndicator="#0C385B"
               >
                 <Text size="18px" weight="bold"> Find </Text>
                 <Text size="18px" weight="bold"> future seminars </Text>
@@ -313,7 +314,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 justify="center"
                 align="center"
                 focusIndicator={false}
-                hoverIndicator="#025377"
+                hoverIndicator="#0C385B"
               >
                 <Text size="18px" weight="bold"> Create </Text>
                 <Text size="18px" weight="bold"> an Agora </Text>
@@ -333,7 +334,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 justify="center"
                 align="center"
                 focusIndicator={false}
-                hoverIndicator="#025377"
+                hoverIndicator="#0C385B"
               >
                 <Text size="18px" weight="bold"> Discover</Text>
                 <Text size="18px" weight="bold"> all Agoras </Text>

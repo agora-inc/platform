@@ -226,7 +226,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
             <Text size="1.2rem" weight="bold" margin={{bottom: "5px"}}>
               Join your{" "}
               {
-                <Text size="1.2rem" weight="bold" color="brand">
+                <Text size="1.2rem" weight="bold" color="color1">
                   Agora
                 </Text>
               }{" "}

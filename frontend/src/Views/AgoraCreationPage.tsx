@@ -5,8 +5,8 @@ import { Checkmark } from "grommet-icons";
 import { Link } from "react-router-dom";
 import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help, Channel, PersonalComputer} from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import agorastreamLogo from "../assets/general/agora.stream_logo_v2.png";
-import agoraLogo from "../assets/general/agora_logo_v2.png";
+import agorastreamLogo from "../assets/general/agora.stream_logo_v2.1.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 import ChannelCreationButton from "../Components/Channel/CreateChannelButton";
 
 

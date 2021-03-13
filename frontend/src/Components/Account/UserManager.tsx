@@ -211,7 +211,7 @@ export default class UserManager extends Component<Props, State> {
           >
             <Box
               onClick={this.toggleDropdown}
-              background="#025377"
+              background="#0C385B"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"

@@ -60,7 +60,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
         </Box>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
-            <Loading color="brand" size={50} />
+            <Loading color="color1" size={50} />
           </Box>
         )}
         <Box margin={{ top: "2px" }} overflow="auto">
@@ -101,7 +101,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   )}
                 </Box>
                 <Box justify="center">
-                  <Text size="14px" color="brand" weight="bold">
+                  <Text size="14px" color="color1" weight="bold">
                     {channel.name}
                   </Text>
                 </Box>
