@@ -453,28 +453,29 @@ class TalkRepository:
                 "{audience_level}"
                 );
             '''        
-        insertId = self.db.run_query(query)[0]
+        try:
+            insertId = self.db.run_query(query)[0]
 
-        if not isinstance(insertId, int):
-            raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
+            if not isinstance(insertId, int):
+                raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
 
-        tagIds = [t["id"] for t in talkTags]
-        self.tags.tagTalk(insertId, tagIds)
+            tagIds = [t["id"] for t in talkTags]
+            self.tags.tagTalk(insertId, tagIds)
 
-        # send email to members / admins
-        # self.notifyCommunityAboutNewTalk()
-        #
-        #
-        # WIP
-        #
-        #
-        #
+            # notify members / admins by email
+            self.notifyCommunityAboutNewTalk(
+                channelId, 
+                channelName, 
+                startDate, 
+                talkName, 
+                insertId, 
+                talk_speaker, 
+                talk_speaker_url)
 
+            return self.getTalkById(insertId)
 
-
-
-
-        return self.getTalkById(insertId)
+        except Exception as e:
+            return str(e)
 
     def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
         try:
@@ -869,11 +870,21 @@ class TalkRepository:
         except Exception as e:
             return str(e)
 
-    def notifyCommunityAboutNewTalk(self):
-        #
-        #
-        #
-        # WIP
-        #
-        #
-        raise NotImplementedError
+    def notifyCommunityAboutNewTalk(self, channelId, channelName, startDate, talkName, talkId, SpeakerName, SpeakerHomepage=""):
+        try:
+            # query all emails
+            emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=True)
+
+            for email in emails:
+                self.mail_sys.send_advertise_new_incoming_talk_for_channel(
+                    email, 
+                    channelName, 
+                    startDate, 
+                    talkName, 
+                    talkId, 
+                    SpeakerName, 
+                    SpeakerHomepage
+                )
+            return "ok"
+        except Exception as e:
+            raise Exception(f"notifyCommmunityAboutNewTalk: exception: {e}")

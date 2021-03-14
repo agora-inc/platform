@@ -255,9 +255,22 @@ class sendgridApi:
     ####################
     # F. Advertisement #
     ####################
-    def send_advertise_new_incoming_talk_for_channel(self):
-        raise NotImplementedError
-
+    def send_advertise_new_incoming_talk_for_channel(self, target_email, agora_name, date_str, talk_name, talk_id, speaker_name, speaker_homepage=None):
+        template_id = "d-0ce7c03221f14f45868f29b71f05b807"
+        human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
+        response = self._post_sendgrid_request(
+            target_email=target_email,
+            dynamic_template_data={
+                    "agora_name": agora_name,
+                    "date_str": human_readable_date,
+                    "talk_name": talk_name,
+                    "talk_id": talk_id,
+                    "speaker_name": speaker_name,
+                    "speaker_homepage": speaker_homepage
+                },
+            template_id=template_id
+        )
+        return response
 
 #################
 # TESTING CELL: #
