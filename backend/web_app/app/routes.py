@@ -537,75 +537,77 @@ def removeContactAddress():
 def sendTalkApplicationEmail():
     # NOTE: used https://wordtohtml.net/ to easily create syntax for the body
     params = request.json
+    try:
+        # query email address from administrators 
+        channel_id = params['channel_id']
+        administrator_emails = channels.getEmailAddressesMembersAndAdmins(
+            channel_id,
+            getMembersAddress=False, 
+            getAdminsAddress=True
+        )
 
-    # query email address from administrators 
-    # NOTE: we receive a list of all of admins but we only send to 1 for now; to be extended later
-    channel_id = params['channel_id']
-    administrator_emails = channels.getEmailAddressesMembersAndAdmins(
-        channel_id,
-        getMembersAddress=False, 
-        getAdminsAddress=True
-    )
-
-    # handling optional field
-    if "speaker_personal_website" not in params:
-        speaker_personal_website_section = ""
-    else:
-        if "." not in params['speaker_personal_website']:
+        # handling optional field
+        if "speaker_personal_website" not in params:
             speaker_personal_website_section = ""
         else:
-            speaker_personal_website_section =  f"""
+            if "." not in params['speaker_personal_website']:
+                speaker_personal_website_section = ""
+            else:
+                speaker_personal_website_section =  f"""
+                                    <tr>
+                                        <td style="width: 45.2381%;">Personal homepage (optional)</td>
+                                        <td style="width: 54.5635%;">{params['speaker_personal_website']}</td>
+                                    </tr>"""
+            
+        if "personal_message" not in params:
+            personal_message_section = ""
+        else:
+            personal_message_section = f"""<p><strong>3. Message from the applicant:</strong></p>
+                        <p style="margin-left: 20px;">{params["personal_message"]}</p>"""
+
+        # email link
+        email_subject = f"New speaker application: agora.stream ({params['agora_name']})"
+        body_msg = f"""<p>Dear Administrator,</p>
+                        <p>{params['speaker_name']} wants to give a talk within your <b>{params['agora_name']}</b> agora community!</p>
+                        <p> </p>
+                        <p><strong>1. About the applicant:</strong></p>
+                        <table style="width: 61%; margin-right: calc(39%);">
+                            <tbody>
                                 <tr>
-                                    <td style="width: 45.2381%;">Personal homepage (optional)</td>
-                                    <td style="width: 54.5635%;">{params['speaker_personal_website']}</td>
-                                </tr>"""
-        
-    if "personal_message" not in params:
-        personal_message_section = ""
-    else:
-        personal_message_section = f"""<p><strong>3. Message from the applicant:</strong></p>
-                    <p style="margin-left: 20px;">{params["personal_message"]}</p>"""
-
-    # email link
-    email_subject = f"New speaker application: agora.stream ({params['agora_name']})"
-    body_msg = f"""<p>Dear Administrator,</p>
-                    <p>{params['speaker_name']} wants to give a talk within your <b>{params['agora_name']}</b> agora community!</p>
-                    <p> </p>
-                    <p><strong>1. About the applicant:</strong></p>
-                    <table style="width: 61%; margin-right: calc(39%);">
-                        <tbody>
-                            <tr>
-                                <td style="width: 45.2381%;">Name</td>
-                                <td style="width: 54.5635%;">{params['speaker_title']} {params["speaker_name"]}</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 45.2381%;">Affiliation</td>
-                                <td style="width: 54.5635%;">{params["speaker_affiliation"]}</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 45.2381%;">Email of contact</td>
-                                <td style="width: 54.5635%;"><a href="mailto:{params["speaker_email"]}">{params["speaker_email"]}</a></td>
-                            </tr>
-                            {speaker_personal_website_section}
-                        </tbody>
-                    </table>
-                    <p><strong>2. About the talk:</strong></p>
-                    <ul>
-                        <li>Title:  <strong>{params['talk_title']}</strong></li>
-                        <li>Abstract: <br>{params['talk_abstract']}</li>
-                        <li>Topics: {params['talk_topics']}</li>
-                    </ul>
-                    {personal_message_section}
-                    <br></br>
-                    <p>Best wishes,</p>
-                    <p>The agora.stream Team</p>
-                """
-
-    msg = Message(body_msg, sender = 'team@agora.stream', recipients = [administrator_emails])
-    msg.html = body_msg
-    msg.subject = email_subject
-    mail.send(msg)
-    return "ok"
+                                    <td style="width: 45.2381%;">Name</td>
+                                    <td style="width: 54.5635%;">{params['speaker_title']} {params["speaker_name"]}</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 45.2381%;">Affiliation</td>
+                                    <td style="width: 54.5635%;">{params["speaker_affiliation"]}</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 45.2381%;">Email of contact</td>
+                                    <td style="width: 54.5635%;"><a href="mailto:{params["speaker_email"]}">{params["speaker_email"]}</a></td>
+                                </tr>
+                                {speaker_personal_website_section}
+                            </tbody>
+                        </table>
+                        <p><strong>2. About the talk:</strong></p>
+                        <ul>
+                            <li>Title:  <strong>{params['talk_title']}</strong></li>
+                            <li>Abstract: <br>{params['talk_abstract']}</li>
+                            <li>Topics: {params['talk_topics']}</li>
+                        </ul>
+                        {personal_message_section}
+                        <br></br>
+                        <p>Best wishes,</p>
+                        <p>The agora.stream Team</p>
+                    """
+        for email in administrator_emails:
+            msg = Message(body_msg, sender = 'team@agora.stream', recipients = [email])
+            msg.html = body_msg
+            msg.subject = email_subject
+            mail.send(msg)
+        return "ok"
+    
+    except Exception as e:
+        return str(e)
 
 @app.route('/channel/edit/topic', methods=["POST", "OPTIONS"])
 def editChannelTopic():
