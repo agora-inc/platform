@@ -142,7 +142,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                 <Text size="14px"> The link will be displayed </Text>
                 <Box pad="xsmall">
                   <Link to={`/event/${this.props.talk.id}`} target="_blank">
-                    <Text size="16px" weight="bold" color="#025377"> here </Text>
+                    <Text size="16px" weight="bold" color="#0C385B"> here </Text>
                   </Link>
                 </Box>
                 <Text size="14px"> shortly before the start. </Text>

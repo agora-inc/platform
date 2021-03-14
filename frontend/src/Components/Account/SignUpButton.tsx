@@ -80,7 +80,7 @@ export default class SignUpButton extends Component<Props, State> {
             fontWeight: "bold",
             color: "white",
             padding: 0,
-            backgroundColor: "#025377",
+            backgroundColor: "#0C385B",
             border: "none",
             borderRadius: 5,
           }}
@@ -128,7 +128,7 @@ export default class SignUpButton extends Component<Props, State> {
                 you can choose any username you like. After you've signed up
                 you'll be able to create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
-                  <Text color="brand" weight="bold" size="14px">
+                  <Text color="color1" weight="bold" size="14px">
                     Agoras
                   </Text>
                 </Link>
@@ -164,7 +164,7 @@ export default class SignUpButton extends Component<Props, State> {
             >
               By clicking Sign Up, you agree to our{" "}
               <Link to={"/info/tos"} onClick={this.toggleModal}>
-                <Text size="14px" weight="bold" color="brand">
+                <Text size="14px" weight="bold" color="color1">
                   terms.
                 </Text>
               </Link>

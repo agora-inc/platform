@@ -6,7 +6,7 @@ import { User } from "../Services/UserService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicClassification from "../Components/Homepage/TopicClassification";
 import "../Styles/all-agoras-page.css";
-import agorasLogo from "../assets/general/agoras_logo_v2.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
 
 /*const AllAgorasPage = () => {
@@ -219,7 +219,7 @@ export default class AllAgorasPage extends Component<Props, State> {
     return (
       <div className="all-agoras-page">
         <Text weight="bold" size="28px" margin={{bottom: "15px"}}>
-          Discover new  <img src={agorasLogo} height="30px"/>
+          Discover new  <img src={agoraLogo} height="30px"/>s
           </Text>
           <TopicClassification 
             topicCallback={this.selectTopic}

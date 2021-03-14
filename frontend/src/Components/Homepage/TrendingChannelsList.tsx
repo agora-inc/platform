@@ -6,7 +6,7 @@ import { Channel, ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../../Styles/trending-channels-box.css";
 import { FormNextLink } from "grommet-icons";
-import AgorasLogo from "../../assets/general/agoras_logo_v2.png";
+import AgoraLogo from "../../assets/general/agora_logo_v2.1.png";
 
 interface State {
   channels: Channel[];
@@ -40,7 +40,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
             alignSelf="center"
             weight="bold"
           >
-            Trending <img src={AgorasLogo} height="19px"/>
+            Trending <img src={AgoraLogo} height="19px"/>s
           </Text>
           {/* <Link to="/agoras" style={{ fontSize: 12, marginLeft: 15 }}>
             <Box
@@ -60,7 +60,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
         </Box>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
-            <Loading color="brand" size={50} />
+            <Loading color="color1" size={50} />
           </Box>
         )}
         <Box margin={{ top: "2px" }} overflow="auto">
@@ -101,7 +101,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   )}
                 </Box>
                 <Box justify="center">
-                  <Text size="14px" color="brand" weight="bold">
+                  <Text size="14px" color="color1" weight="bold">
                     {channel.name}
                   </Text>
                 </Box>

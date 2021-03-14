@@ -116,7 +116,7 @@ export default class Countdown extends Component<
           >
             <Box
               onClick={() => {}}
-              background="#025377"
+              background="#0C385B"
               round="xsmall"
               width="160px" height="35px"
               justify="center"
