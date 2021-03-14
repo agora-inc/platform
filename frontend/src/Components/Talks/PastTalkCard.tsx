@@ -306,19 +306,20 @@ export default class PastTalkCard extends Component<Props, State> {
                 this.props.talk.recording_link,
                 this.props.talk.id
               )}
-              style={{ height: "60%", 
+              style={{ height: "62%",
+              marginTop: "15px", 
               maxWidth: '640px',
               alignSelf: 'center'}}
             />
           )}
           {!this.props.talk.recording_link && (
             <Box
-              height="60%"
+              height="62%"
               background="#6DA3C7"
               style={{ opacity: 0.75 }}
             ></Box>
           )}
-          <Box height="40%" pad="15px" justify="end">
+          <Box height="38%" pad="15px" justify="end">
             <Box
               direction="row"
               gap="xsmall"

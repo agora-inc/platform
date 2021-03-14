@@ -72,6 +72,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 <Text 
                   size="12px"
                   color="grey"
+                  margin={{start: "1.6%"}}
                   style={{
                     // height: "30px",
                     overflow: "auto",
