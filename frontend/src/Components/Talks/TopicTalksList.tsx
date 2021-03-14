@@ -11,6 +11,7 @@ import "../../Styles/topic-talks-list.css";
 import { User } from "../../Services/UserService";
 import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
+import GlobalClassification from "../../Components/Homepage/GlobalClassification";
 import MediaQuery from "react-responsive";
 
 interface Props {
@@ -229,6 +230,7 @@ export default class TopicTalkList extends Component<Props, State> {
                   Upcoming talks
                 </Text>
               </Box>
+            {/*
             <MediaQuery minDeviceWidth={992}>
               <Box direction="row-reverse" width="50%">
                 <Box direction="row">
@@ -357,6 +359,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 </Box>
                 </Box>
             </MediaQuery>
+                    */}
               </Box>
           )}
           {/*this.props.seeMore && (
@@ -377,13 +380,17 @@ export default class TopicTalkList extends Component<Props, State> {
             </Link>
               )*/}
         </Box>
-
+        {/*
         {this.props.topicSearch && (
           <TopicClassification 
             topicCallback={this.selectTopic}
             searchType={"Talks"} 
             />
-        )}
+        )} */}
+
+        <GlobalClassification
+          user={this.props.user}
+         />
 
         {this.state.chosenTalks.length === 0
           ? this.ifNoTalks()
