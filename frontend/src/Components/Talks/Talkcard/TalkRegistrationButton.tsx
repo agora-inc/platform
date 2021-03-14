@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Button, Text, Grid } from "grommet";
 import { FormNext } from "grommet-icons";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import { User } from "../../../Services/UserService";
@@ -56,7 +56,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
       } else if (this.props.registrationStatus === "pending") {
         return {restricted: true, mainTitle: "Registration pending"}
       } else {
-        return {restricted: true, mainTitle: "This event has a restricted audience"}
+        return {restricted: true, mainTitle: "This event has a controlled audience"}
       }
     }
   }
@@ -202,12 +202,15 @@ export default class TalkRegistrationButton extends Component<Props, State> {
         {restricted && this.props.registrationStatus !== "pending" && (
           <>
           <Grid
-            rows={['80px', "60px"]}
+            rows={['80px', "60px", "40px", "40px"]}
             columns={['430px']}
             // gap="small"
             areas={[
                 { name: 'info', start: [0, 0], end: [0, 0] },
                 { name: 'fill-in', start: [0, 1], end: [0, 1] },
+                { name: 'member_info', start: [0, 2], end: [0, 2] },
+                { name: 'sign-in', start: [0, 3], end: [0, 3] },
+
             ]}
           >
             <Box gridArea="info" direction="column" align="start" justify="start" gap="10px" >
@@ -227,7 +230,21 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                 callback={this.toggleModal}
               />
             </Box>
-
+            {/* <Box gridArea="member_info" direction="column" align="start" justify="start" gap="10px" >
+              <Box direction="row" align="center" pad="1px" justify="start">
+                <Text size="14px">If you are a member of <b>{this.props.talk.channel_name}</b>, simply</Text>
+              </Box>
+            </Box>
+            
+            <Box gridArea="sign-in" pad="xsmall" align="center">
+              <LoginModal
+                callback={() => {
+                  return (
+                    <Redirect to={`/event/${this.props.talk.id}`}/>
+                  )
+                }}
+              />
+            </Box> */}
           </Grid>  
           </>
 
@@ -247,7 +264,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             <Box gridArea="info" direction="column" align="start" gap="10px" >
               
               <Text weight="bold" size="20px"> 
-                This event has a restricted audience
+                This event has a controlled audience
               </Text>
               <Box direction="row" align="center" pad="xsmall">
                 <FormNext size="20px" />
