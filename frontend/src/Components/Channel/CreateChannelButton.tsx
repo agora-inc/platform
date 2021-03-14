@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import Identicon from "react-identicons";
 import { Channel } from "../../Services/ChannelService";
-import agoraLogo from "../../assets/general/agora_logo_v2.png";
+import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
 
 interface Props {
   onClick: any;

@@ -120,7 +120,7 @@ export default class StreamerVideoPlayer extends Component<Props, State> {
     // console.log(document.getElementById("local")!.clientHeight);
     return (
       <Box
-        background={this.state.audioEnabled ? "red" : "brand"}
+        background={this.state.audioEnabled ? "red" : "color1"}
         align="center"
         justify="center"
         style={{
@@ -143,7 +143,7 @@ export default class StreamerVideoPlayer extends Component<Props, State> {
   toggleVideoButton = () => {
     return (
       <Box
-        background={this.state.videoEnabled ? "red" : "brand"}
+        background={this.state.videoEnabled ? "red" : "color1"}
         align="center"
         justify="center"
         style={{
@@ -165,7 +165,7 @@ export default class StreamerVideoPlayer extends Component<Props, State> {
   shareScreenButton = () => {
     return (
       <Box
-        background={this.state.screenSharingEnabled ? "red" : "brand"}
+        background={this.state.screenSharingEnabled ? "red" : "color1"}
         align="center"
         justify="center"
         style={{

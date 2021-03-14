@@ -128,14 +128,14 @@ export default class ColorPicker extends Component<Props, State> {
     if (this.props.hasCover){
     remove_button =
       <Box
-      round="xsmall"
-      width={this.props.width ? this.props.width : "150px"}
-      height={this.props.height ? this.props.height : "30px"}
-      justify="center"
-      align="center"
-      background="#FF4040"
-      focusIndicator={true}
-      hoverIndicator="#DDDDDD"
+        round="xsmall"
+        width={this.props.width ? this.props.width : "150px"}
+        height={this.props.height ? this.props.height : "30px"}
+        justify="center"
+        align="center"
+        background="#FF4040"
+        focusIndicator={true}
+        hoverIndicator="#DDDDDD"
         onClick={this.onDeleteCoverClicked}
       >
         <Text size="13px" weight="bold" color="white">

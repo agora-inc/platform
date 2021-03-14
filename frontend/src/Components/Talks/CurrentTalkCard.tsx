@@ -441,14 +441,14 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   !this.state.registered && (
                     <Box
                       onClick={this.onClick}
-                      background="#025377"
+                      background="#0C385B"
                       round="xsmall"
                       pad="xsmall"
                       height="40px"
                       justify="center"
                       align="center"
                       focusIndicator={false}
-                      hoverIndicator="#025377"
+                      hoverIndicator="#0C385B"
                     >
                       <Text size="18px">Register</Text>
                     </Box>

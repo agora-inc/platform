@@ -23,6 +23,8 @@ import { Switch } from "antd";
 import { InlineMath } from "react-katex";
 import { StatusInfo } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
+import ShareButtons from "../Core/ShareButtons";
+
 
 interface Props {
   channel: Channel | null;
@@ -31,6 +33,8 @@ interface Props {
   onCanceledCallback: any;
   onDeletedCallback?: any;
   talk?: Talk;
+  onFinishedAdvertisementCallback?: any;
+  onCanceledAdvertisementCallback?: any
 }
 
 interface State {
@@ -53,7 +57,9 @@ interface State {
   published: number,
   showCardVisibilityInfo: boolean,
   isPrevTopics: boolean[];
-  audienceLevel: string
+  audienceLevel: string;
+  showAdvertisementOverlay: boolean;
+  talkToAdvertise: Talk | null,
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -89,7 +95,9 @@ export default class EditTalkModal extends Component<Props, State> {
       published: this.props.talk ? this.props.talk.published : 0,
       showCardVisibilityInfo: false,
       isPrevTopics: this.props.talk ? this.topicExists(this.props.talk.topics) : [false, false, false],
-      audienceLevel: this.props.talk?.audience_level || "General audience"
+      audienceLevel: this.props.talk?.audience_level || "General audience",
+      showAdvertisementOverlay: false,
+      talkToAdvertise: this.props.talk ? this.props.talk : null
     };
   }
 
@@ -110,6 +118,7 @@ export default class EditTalkModal extends Component<Props, State> {
       {
         published: 1,
         loading: true,
+        showAdvertisementOverlay: true
       },
       () => {
         this.onFinish();
@@ -195,6 +204,12 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.published,
         this.state.audienceLevel,
         (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
           this.setState(
             {
               loading: false,
@@ -224,6 +239,12 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.published,
         this.state.audienceLevel,
         (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
           this.setState(
             {
               loading: false,
@@ -345,8 +366,26 @@ export default class EditTalkModal extends Component<Props, State> {
     return res;
   }
 
+  isInThePast = () => {
+    if (this.props.talk?.date){
+      let now = new Date;
+      var talk_date = new Date(this.props.talk.end_date);
+      return (talk_date < now)
+    }
+    else {
+      return false
+    }
+  }
+
+  hideAdvertisementOverlay = () => {
+    this.setState({
+      showAdvertisementOverlay: false}
+    )
+  }
+
   render() {
     return (
+      <>
       <Overlay
         width={1100}
         height={750}
@@ -468,8 +507,6 @@ export default class EditTalkModal extends Component<Props, State> {
                     />
               </Box>
 
-
-
             </OverlaySection>
             {/*<OverlaySection heading="Add a few relevant tags">
               <TagSelector
@@ -560,25 +597,17 @@ export default class EditTalkModal extends Component<Props, State> {
               > 
                 <OverlaySection heading="Link to event">
 
-                        {/* PLACEHOLDER 
-                        FOR A MULTI BOX TICKER 
-                        TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
-                        Remy
-                        */}
+                  {/* PLACEHOLDER 
+                  FOR A MULTI BOX TICKER 
+                  TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
+                  Remy
+                  */}
 
-                      {/* <CheckBox
-                          checked={this.state.linkAvailable}
-                          label="interested?"
-                          onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
-                        /> */}
-
-
-
-
-
-
-
-
+                {/* <CheckBox
+                    checked={this.state.linkAvailable}
+                    label="interested?"
+                    onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
+                  /> */}
 
 
                 <TextInput
@@ -599,15 +628,6 @@ export default class EditTalkModal extends Component<Props, State> {
                        <p>Your selected audience will be able to see the link 30 minutes before the start of your event.</p>
                       </ReactTooltip>
                   </Text>
-
-
-
-
-
-
-
-
-
                 </OverlaySection>
 
                 <OverlaySection heading="Access and visibility">
@@ -711,6 +731,31 @@ export default class EditTalkModal extends Component<Props, State> {
           </Box>
         </Box>  
       </Overlay>
+
+      { this.state.talkToAdvertise !== null && !(this.isInThePast()) && (
+          <Overlay
+            width={400}
+            height={300}
+            visible={this.state.showAdvertisementOverlay}
+            title={"Your event got published"}
+            submitButtonText="Ok"
+            onSubmitClick={this.props.onFinishedAdvertisementCallback}
+            contentHeight="150px"
+            canProceed={true}
+            onCancelClick={this.hideAdvertisementOverlay}
+            onClickOutside={this.hideAdvertisementOverlay}
+            onEsc={this.hideAdvertisementOverlay}
+          > 
+            Your agora members have all been notified about the incoming event.
+            <ShareButtons
+              talk={this.state.talkToAdvertise}
+              channel={this.props.channel}
+              useReducedHorizontalVersion={true}
+            />
+          </Overlay>
+        )
+      }
+      </>
     );
   }
 }

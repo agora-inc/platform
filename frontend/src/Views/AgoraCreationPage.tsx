@@ -5,8 +5,8 @@ import { Checkmark } from "grommet-icons";
 import { Link } from "react-router-dom";
 import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help, Channel, PersonalComputer} from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import agorastreamLogo from "../assets/general/agora.stream_logo_v2.png";
-import agoraLogo from "../assets/general/agora_logo_v2.png";
+import agorastreamLogo from "../assets/general/agora.stream_logo_v2.1.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 import ChannelCreationButton from "../Components/Channel/CreateChannelButton";
 
 
@@ -164,7 +164,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
             <Text size={this.state.sizeHeader} weight="bold"> Welcome to <img src={agorastreamLogo} height="28px"/>, the centralized platform to advertise and attend academic seminars! </Text>
           </Box>
           <Box margin={{bottom: "32px"}}>
-            <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> up and running in less than a minute.
+            <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> up and running in <b>less than a minute</b>.
              </Text>
           {/* <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
             PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
@@ -197,41 +197,41 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_1">
-                : Easy to customize and does not require maintenance.
+                : Most of the organiser pipeline is automated (email sending, social media sharing, etc..).
                 </Box>
               <Box gridArea="arg_2_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_2">
-                : Control your audience and manage your talk registrations in a centralised place.
+                : Easy control on who can attend your seminars.
                 </Box>
 
               <Box gridArea="arg_3_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_3">
-                : Attract like-minded people and experts from all around the world to your events
+                : Allow potential future speakers to apply to give a talk within your community.
                 </Box>
 
               <Box gridArea="arg_4_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_4">
-                : Allow potential future speakers to apply to give a talk within your community.
+                : Attract like-minded people and experts from all around the world to your events.
                 </Box>
 
               <Box gridArea="arg_5_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_5">
-                : Automated advertisement to your members, subscribers and all your social media followers.
+                : Easy to customize and does not require maintenance.
                 </Box>
 
               <Box gridArea="arg_6_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_6">
-                : Event creation, advertisement to your community and social medias and registration management: <b>all can be done in less than a minute.</b>
+                : Event creation + advertisement to your community and social media followers + registration management: <b>all can be done in less than a minute.</b>
                 </Box>                
             </Grid>
 

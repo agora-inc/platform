@@ -4,7 +4,7 @@ import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
 import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help, Channel, PersonalComputer} from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import agoraLogo from "../assets/general/agora_logo_v2.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
 import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
 import adding_email_invitation from "../assets/getting-started/adding_members/adding_email_invitation.png";
@@ -203,7 +203,7 @@ export default class GettingStartedPage extends Component<Props, State> {
                 You can register to a talk and put it in your Google or Apple calendar by click on the talk card.
                 The list of your registered talk will appear in your{" "}
                 <Link to={"/schedule"}>
-                    <Text color="brand" weight="bold" size={this.state.sizeText}>
+                    <Text color="color1" weight="bold" size={this.state.sizeText}>
                       schedule
                     </Text>
                   </Link>
@@ -364,13 +364,13 @@ export default class GettingStartedPage extends Component<Props, State> {
             Do you have any question, inquery, or feedback? If yes, please reach out to us using the "Give feedback" button, 
             or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our{" "} 
             <Link to={"/info/tos"}>
-              <Text weight="bold" color="brand" size={this.state.sizeText}>
+              <Text weight="bold" color="color1" size={this.state.sizeText}>
                 Term of services
               </Text>
             </Link>
             {" "} and {" "} 
             <Link to={"/info/privacy"}>
-              <Text weight="bold" color="brand" size={this.state.sizeText}>
+              <Text weight="bold" color="color1" size={this.state.sizeText}>
                 data privacy policies
               </Text>
             </Link>
