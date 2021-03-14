@@ -605,7 +605,7 @@ export default class ChannelPage extends Component<Props, State> {
                       margin={{ bottom: "36px" }}
                     >
                       <Text size="14px" weight="bold" color="grey">
-                        There are no upcoming talks in{" "}
+                        There are no publicly available upcoming talks in{" "}
                         {this.state.channel
                           ? this.state.channel.name
                           : "this channel"}

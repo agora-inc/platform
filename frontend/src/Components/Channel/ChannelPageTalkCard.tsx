@@ -243,7 +243,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   toggleEdit = () => {
-    this.setState({ showEdit: !this.state.showEdit });
+    this.setState({ 
+      showEdit: !this.state.showEdit
+    });
   };
 
   render() {
@@ -594,7 +596,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             channel={null}
             talk={this.props.talk}
             onFinishedCallback={() => {
-              this.toggleEdit();
               this.props.onEditCallback();
             }}
             onDeletedCallback={() => {
@@ -602,6 +603,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               this.props.onEditCallback();
             }}
             onCanceledCallback={this.toggleEdit}
+            onFinishedAdvertisementCallback={() => {
+              this.toggleEdit()
+            }}
+            onCanceledAdvertisementCallback={this.toggleEdit}
           />
         )}
       </Box>
