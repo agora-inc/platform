@@ -122,9 +122,12 @@ export default class TopicTalkList extends Component<Props, State> {
   };
 
   render() {
-
     return (
-      <Box width="100%" margin={{"bottom": "50px"}}>
+      <Box 
+        width="90%" 
+        margin={{"bottom": "50px"}}
+        background="#DDDDDD"
+      >
   
         <TopicClassification 
           topicCallback={this.selectTopic}

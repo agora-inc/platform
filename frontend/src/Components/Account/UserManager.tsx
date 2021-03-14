@@ -27,7 +27,8 @@ interface Props {
 interface State {
   isLoggedIn: boolean;
   user: { id: number; username: string; bio: string; public: boolean } | null;
-  channels: Channel[];
+  adminChannels: Channel[];
+  memberChannels: Channel[];
   showCreateChannelOverlay: boolean;
   showDropdown: boolean;
   editingBio: boolean;
@@ -39,7 +40,8 @@ export default class UserManager extends Component<Props, State> {
     this.state = {
       isLoggedIn: UserService.isLoggedIn(),
       user: UserService.getCurrentUser(),
-      channels: [],
+      adminChannels: [],
+      memberChannels: [],
       showCreateChannelOverlay: false,
       showDropdown: false,
       editingBio: false,
@@ -47,16 +49,28 @@ export default class UserManager extends Component<Props, State> {
   }
 
   componentWillMount() {
-    this.fetchChannels();
+    this.fetchAdminChannels();
+    this.fetchMemberChannels();
   }
 
-  fetchChannels = () => {
+  fetchAdminChannels = () => {
     this.state.user &&
       ChannelService.getChannelsForUser(
         this.state.user.id,
         ["owner"],
-        (channels: Channel[]) => {
-          this.setState({ channels });
+        (adminChannels: Channel[]) => {
+          this.setState({ adminChannels });
+        }
+      );
+  };
+
+  fetchMemberChannels = () => {
+    this.state.user &&
+      ChannelService.getChannelsForUser(
+        this.state.user.id,
+        ["member"],
+        (memberChannels: Channel[]) => {
+          this.setState({ memberChannels });
         }
       );
   };
@@ -129,7 +143,8 @@ export default class UserManager extends Component<Props, State> {
         <CreateChannelOverlay
           onBackClicked={this.toggleCreateChannelOverlay}
           onComplete={() => {
-            this.fetchChannels();
+            this.fetchAdminChannels();
+            this.fetchMemberChannels();
             this.toggleCreateChannelOverlay();
             this.toggleDropdown();
           }}
@@ -242,17 +257,46 @@ export default class UserManager extends Component<Props, State> {
             Manage your <img src={agorasLogo} style={{ height: "14px"}}/>
           </Text>
           <Box
-            height={{max: "200px"}}
+            height={{max: "120px"}}
             overflow="auto"
           >
-            {this.state.channels.map((channel: Channel) => (
+            {this.state.adminChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
               onClick={this.toggleDropdown}
             />
             ))}
           </Box>
-          <CreateChannelButton onClick={this.toggleCreateChannelOverlay} />
+          {/*<CreateChannelButton 
+            onClick={this.toggleCreateChannelOverlay} /> */}
+
+        </Box>
+        <Menu.Divider />
+        <Box
+          margin={{
+            bottom: "medium",
+            top: "small",
+            left: "small",
+            right: "small",
+          }}
+          focusIndicator={false}
+          // style={{ pointerEvents: "none" }}
+          gap="xsmall"
+        >
+          <Text size="16px" color="grey">
+             Memberships
+          </Text>
+          <Box
+            height={{max: "120px"}}
+            overflow="auto"
+          >
+            {this.state.memberChannels.map((channel: Channel) => (
+            <DropdownChannelButton
+              channel={channel}
+              onClick={this.toggleDropdown}
+            />
+            ))}
+          </Box>
         </Box>
         <Menu.Divider />
         {/*<Text weight="bold" color="black" margin="small">
@@ -366,7 +410,8 @@ export default class UserManager extends Component<Props, State> {
               user: UserService.getCurrentUser(),
             },
             () => {
-              this.fetchChannels();
+              this.fetchAdminChannels();
+              this.fetchMemberChannels();
             }
           );
         }}
@@ -379,7 +424,8 @@ export default class UserManager extends Component<Props, State> {
               user: UserService.getCurrentUser(),
             },
             () => {
-              this.fetchChannels();
+              this.fetchAdminChannels();
+              this.fetchMemberChannels();
             }
           );
         }}
