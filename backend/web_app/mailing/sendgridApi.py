@@ -44,13 +44,18 @@ class sendgridApi:
         """Gets 2020-09-30 15:00:00.0 date format and convert it into "30th September 2020, 15:00GMT+1" 
         in the time zone of the user.
         
-        (NOTE: user_hour_offset is 1 if we are in GMT+1 right now)
+        (NOTE: user_hour_offset is 1 if we are in GMT+1 right now and -3 if we are in GMT-3)
         """
-        date_original_format = "%Y-%m-%d %H:%M:%S"
-        final_date_format = '%A, %d %B %Y at %H:%M:%S'
+        date_original_format_1 = "%Y-%m-%d %H:%M:%S"
+        date_original_format_2 = "%Y-%m-%d %H:%M"
+        final_date_format = "%A, %d %B %Y at %H:%M:%S"
+        gmt_string = str(gmt_string)
 
         # Convert strings in datetime format
-        date_original = datetime.datetime.strptime(gmt_string, date_original_format)
+        try:
+            date_original = datetime.datetime.strptime(gmt_string, date_original_format_1)
+        except:
+            date_original = datetime.datetime.strptime(gmt_string, date_original_format_2)
 
         # Add offset
         hours_to_add = datetime.timedelta(hours=user_hour_offset)
@@ -118,13 +123,14 @@ class sendgridApi:
 
     def send_confirmation_talk_registration_acceptance(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None):
         template_id = "d-e2791dbf94084474b5dd50b15a8ea372"
-
+        human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
+        
         dynamic_template_data={
                             "talk_name": talk_name,
                             "recipient_name": recipient_name,
                             "talk_id": talk_id,
                             "agora_name": agora_name,
-                            "date": date_str
+                            "date_str": human_readable_date
                         }
 
         if conference_url is None or conference_url == "":
@@ -171,16 +177,17 @@ class sendgridApi:
         )
         return response
         
-    def send_talk_details_modification_update(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url):
+    def send_talk_details_modification_update(self, target_email, talk_name, talk_id, agora_name, date_str, conference_url):
         template_id = "d-712e04b993df4855ab7903bd35600f4b"
+        human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
         response = self._post_sendgrid_request(
             target_email=target_email,
             dynamic_template_data={
                     "talk_name": talk_name,
-                    "recipient_name": recipient_name,
                     "talk_id": talk_id,
                     "agora_name": agora_name,
-                    "conference_url": conference_url
+                    "conference_url": conference_url,
+                    "date_str": human_readable_date
                 },
             template_id=template_id
         )
@@ -248,9 +255,22 @@ class sendgridApi:
     ####################
     # F. Advertisement #
     ####################
-    def send_advertise_new_incoming_talk_for_channel(self):
-        raise NotImplementedError
-
+    def send_advertise_new_incoming_talk_for_channel(self, target_email, agora_name, date_str, talk_name, talk_id, speaker_name, speaker_homepage=None):
+        template_id = "d-0ce7c03221f14f45868f29b71f05b807"
+        human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
+        response = self._post_sendgrid_request(
+            target_email=target_email,
+            dynamic_template_data={
+                    "agora_name": agora_name,
+                    "date_str": human_readable_date,
+                    "talk_name": talk_name,
+                    "talk_id": talk_id,
+                    "speaker_name": speaker_name,
+                    "speaker_homepage": speaker_homepage
+                },
+            template_id=template_id
+        )
+        return response
 
 #################
 # TESTING CELL: #

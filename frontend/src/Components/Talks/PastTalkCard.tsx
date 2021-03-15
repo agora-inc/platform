@@ -185,14 +185,14 @@ export default class PastTalkCard extends Component<Props, State> {
             style={{ width: "100%" }}
           >
             <Box
-              background="#025377"
+              background="#0C385B"
               round="xsmall"
               height="40px"
               width="50%"
               justify="center"
               align="start"
               focusIndicator={false}
-              hoverIndicator="#025377"
+              hoverIndicator="#0C385B"
             >
               <Text alignSelf="center" size="16px">
                 Watch talk
@@ -230,14 +230,14 @@ export default class PastTalkCard extends Component<Props, State> {
             style={{ width: "100%" }}
           >
             <Box
-              background="#025377"
+              background="#0C385B"
               round="xsmall"
               height="40px"
               width="50%"
               justify="center"
               align="start"
               focusIndicator={false}
-              hoverIndicator="#025377"
+              hoverIndicator="#0C385B"
             >
               <Text alignSelf="center" size="14px">
                 Watch talk
@@ -787,14 +787,14 @@ export default class PastTalkCard extends Component<Props, State> {
             onClick={() => {
               this.toggleEdit();
             }}
-            background="#025377"
+            background="#0C385B"
             round="xsmall"
             pad="xsmall"
             height="40px"
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#025377"
+            hoverIndicator="#0C385B"
             margin="10px"
           >
             <Text size="18px">Edit</Text>

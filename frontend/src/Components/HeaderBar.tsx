@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.png";
+import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
 
 
 import { Link } from "react-router-dom";

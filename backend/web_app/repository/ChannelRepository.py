@@ -219,9 +219,6 @@ class ChannelRepository:
         return self.db.run_query(query)
 
     def getEmailAddressesMembersAndAdmins(self, channelId, getMembersAddress: bool, getAdminsAddress: bool):
-        #
-        # TODO: TEST
-        #
         if getMembersAddress:
             if getAdminsAddress:
                 role_sql_str = "('member','owner')"
@@ -243,17 +240,9 @@ class ChannelRepository:
                 )
             ;
             '''
-
-        with open("/home/cloud-user/test/testing_email_query.txt", "w") as file:
-            file.write(str(email_members_and_admins_query))
-
-
         res = self.db.run_query(email_members_and_admins_query)
 
-        with open("/home/cloud-user/test/testing_emails.txt", "w") as file:
-            file.write(str(res))
-
-        return res
+        return [x["email"] for x in res]
 
 
     def applyMembership(self, channelId, userId, fullName, position, institution, email=None, personal_homepage=None):
@@ -317,9 +306,13 @@ class ChannelRepository:
 
             try:
                 # Send notification email administrator
-                contact_addresses = self.getContactAddresses(channelId)
+                admin_addresses = self.getEmailAddressesMembersAndAdmins(
+                    channelId,
+                    getMembersAddress=False, 
+                    getAdminsAddress=True
+                )
 
-                for email in contact_addresses:
+                for email in admin_addresses:
                     self.mail_sys.notify_admin_membership_application(email, agora_name)
             except Exception as e:
                 return str(e)

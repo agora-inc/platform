@@ -551,7 +551,7 @@ export default class ChannelPage extends Component<Props, State> {
                         align="center"
                         pad="small"
                         round="xsmall"
-                        background="#D7F75B"
+                        background="#D3F930"
                       >
                         <Text size="16px" weight="bold">
                           You are a member
@@ -605,7 +605,7 @@ export default class ChannelPage extends Component<Props, State> {
                       margin={{ bottom: "36px" }}
                     >
                       <Text size="14px" weight="bold" color="grey">
-                        There are no upcoming talks in{" "}
+                        There are no publicly available upcoming talks in{" "}
                         {this.state.channel
                           ? this.state.channel.name
                           : "this channel"}

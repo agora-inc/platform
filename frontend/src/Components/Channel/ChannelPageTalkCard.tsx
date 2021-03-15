@@ -243,7 +243,9 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   toggleEdit = () => {
-    this.setState({ showEdit: !this.state.showEdit });
+    this.setState({ 
+      showEdit: !this.state.showEdit
+    });
   };
 
   render() {
@@ -368,7 +370,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               {this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
                 <Box
                   round="xsmall"
-                  background="#D7F75B"
+                  background="#D3F930"
                   pad="small"
                   justify="center"
                   align="center"
@@ -403,14 +405,14 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             onClick={() => {
               this.toggleEdit();
             }}
-            background="#025377"
+            background="#0C385B"
             round="xsmall"
             pad="xsmall"
             height="40px"
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#025377"
+            hoverIndicator="#0C385B"
             margin="10px"
           >
             <Text size="18px">Edit</Text>
@@ -594,7 +596,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             channel={null}
             talk={this.props.talk}
             onFinishedCallback={() => {
-              this.toggleEdit();
               this.props.onEditCallback();
             }}
             onDeletedCallback={() => {
@@ -602,6 +603,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               this.props.onEditCallback();
             }}
             onCanceledCallback={this.toggleEdit}
+            onFinishedAdvertisementCallback={() => {
+              this.toggleEdit()
+            }}
+            onCanceledAdvertisementCallback={this.toggleEdit}
           />
         )}
       </Box>

@@ -30,7 +30,7 @@ import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
-import agoraLogo from "../assets/general/agora_logo_v2.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
 interface Props {
   location: any;
@@ -703,7 +703,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     align="center"
                     pad="small"
                     round="xsmall"
-                    background="#D7F75B"
+                    background="#D3F930"
                   >
                     <Text size="14px" weight="bold">
                       You are an administrator
@@ -724,8 +724,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                     {<UserAdmin />} {`Administrator panel`}{" "}
                   </Text>
                   <Text size="14">
-                    For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="brand">
-                      <Text color="brand" weight="bold" size="14px">
+                    For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="color1">
+                      <Text color="color1" weight="bold" size="14px">
                       getting-started page.
                       </Text>
                     </Link>
@@ -1135,7 +1135,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         </Box>
                         <Box
                           onClick={this.parseMailingList}
-                          background="#025377"
+                          background="#0C385B"
                           round="xsmall"
                           // pad="xsmall"
                           height="30px"
@@ -1143,7 +1143,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           justify="center"
                           align="center"
                           focusIndicator={false}
-                          hoverIndicator="#025377"
+                          hoverIndicator="#0C385B"
                         >
                           <Text size="14px"> Add </Text>
                         </Box>

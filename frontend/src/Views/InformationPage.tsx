@@ -105,14 +105,14 @@ export default class InformationPage extends Component<Props, State> {
 
                 <h2><strong>4) Any questions? Reach out!</strong></h2>
                   <p>Do you have any questions, inqueries, or suggestions? If yes, please reach out to us using the top right-hand side button, or drop us a message at <em>agora.stream.inquiries(.at.)gmail.com</em>. For more information, check our{" "}
-                    <Link to={"/info/tos"} color="brand">
-                      <Text color="brand" weight="bold" size="14px">
+                    <Link to={"/info/tos"} color="color1">
+                      <Text color="color1" weight="bold" size="14px">
                         Term of services
                       </Text>
                     </Link>
                     {" "} and {"  "} 
-                    <Link to={"/info/privacy"} color="brand">
-                      <Text color="brand" weight="bold" size="14px">
+                    <Link to={"/info/privacy"} color="color1">
+                      <Text color="color1" weight="bold" size="14px">
                       data privacy policies
                       </Text>
                     </Link>

@@ -26,7 +26,7 @@ export const Theme = {
       calendarSize: "192px",
     },
     colors: {
-      brand: "#025377",
+      color1: "#0C385B",
       selected: "eaf1f1",
     },
     drop: {
@@ -38,7 +38,7 @@ export const Theme = {
     },
     focus: {
       border: {
-        color: "#025377",
+        color: "#0C385B",
       }
     }
   },

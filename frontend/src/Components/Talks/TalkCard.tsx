@@ -303,7 +303,7 @@ export default class TalkCard extends Component<Props, State> {
               {this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
                 <Box
                   round="xsmall"
-                  background="#D7F75B"
+                  background="#D3F930"
                   pad="small"
                   justify="center"
                   align="center"
@@ -708,14 +708,14 @@ export default class TalkCard extends Component<Props, State> {
                     !this.state.registered && (
                       <Box
                         onClick={this.onClick}
-                        background="#025377"
+                        background="#0C385B"
                         round="xsmall"
                         pad="xsmall"
                         height="40px"
                         justify="center"
                         align="center"
                         focusIndicator={false}
-                        hoverIndicator="#025377"
+                        hoverIndicator="#0C385B"
                       >
                         <Text size="18px">Register</Text>
                       </Box>
