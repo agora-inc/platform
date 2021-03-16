@@ -96,7 +96,7 @@ export default class TopicTalkList extends Component<Props, State> {
     if (!(this.state.audienceLevel.all)){
     for (let talk of this.state.allTalks){
       if ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
-        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
+        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor / Master" ) ||
         (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+") 
       )
         {
@@ -114,7 +114,7 @@ export default class TopicTalkList extends Component<Props, State> {
       for (let topic of talk.topics) {
         if ((!isIn && topicsId.includes(topic.id)) &&
         ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
-        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
+        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor / Master" ) ||
         (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+")))  {
           isIn = true;
           res.push(talk);
@@ -129,7 +129,7 @@ export default class TopicTalkList extends Component<Props, State> {
     for (let talk of talks) {
       let isIn: boolean = false;
       if ((this.state.audienceLevel.GeneralAudience && talk.audience_level === "General audience" ) ||
-        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor/Master" ) ||
+        (this.state.audienceLevel.BachelorMaster && talk.audience_level === "Bachelor / Master" ) ||
         (this.state.audienceLevel.Phdplus && talk.audience_level === "PhD+"))  {
           res.push(talk);
         }
@@ -281,12 +281,12 @@ export default class TopicTalkList extends Component<Props, State> {
                     <MediaQuery minDeviceWidth={992}>
                     {this.state.audienceLevel.BachelorMaster && (
                       <Text weight="bold" size="small">
-                        Bachelor/Master
+                        Bachelor / Master
                       </Text>)
                     }
                     {!this.state.audienceLevel.BachelorMaster && (
                       <Text size="small">
-                        Bachelor/Master
+                        Bachelor / Master
                       </Text>)
                     }
                     </MediaQuery>

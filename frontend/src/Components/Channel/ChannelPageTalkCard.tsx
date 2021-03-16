@@ -367,7 +367,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   </Text>
                 </Box>
               }
-              {this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
+              {/*this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
                 <Box
                   round="xsmall"
                   background="#D3F930"
@@ -381,7 +381,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                     on-registration
                   </Text>
                 </Box>
-              }
+            */}
             </Box>
             {this.state.showShadow && (
               <Box
