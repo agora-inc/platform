@@ -295,7 +295,7 @@ export default class TalkCard extends Component<Props, State> {
                   width="170px"
                   height="30px"            
                 >
-                  <Text size="14px">
+                  <Text size="12px">
                     member-only
                   </Text>
                 </Box>

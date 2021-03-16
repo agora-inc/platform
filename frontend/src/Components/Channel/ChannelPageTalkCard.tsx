@@ -362,7 +362,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   align="center"
                   width="160px"
                 >
-                  <Text size="14px">
+                  <Text size="12px">
                     member-only
                   </Text>
                 </Box>

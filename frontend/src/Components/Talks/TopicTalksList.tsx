@@ -233,7 +233,7 @@ export default class TopicTalkList extends Component<Props, State> {
     return (
       <Box
         direction="row"
-        width="25%"
+        width="280px"
         margin="none"
         pad="small"
         justify="between"
