@@ -10,6 +10,8 @@ import { User } from "../../Services/UserService";
 import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
 import MediaQuery from "react-responsive";
+import "../../Styles/global-classification.css";
+
 
 interface Props {
   user: User | null;
@@ -165,6 +167,23 @@ export default class TopicTalkList extends Component<Props, State> {
     }
   }
 
+  updateTopic = (topic: Topic) => {
+    if (this.state.chosenTopic === topic) {
+      this.setState({
+        chosenTopic: {
+          field: "-",
+          id: -1,
+          is_primitive_node: false,
+          parent_1_id: -1,
+          parent_2_id: -1,
+          parent_3_id: -1,
+        }, 
+        chosenSubtopics: []})
+    } else {
+      this.setState({chosenTopic: topic, chosenSubtopics: []})
+    }
+  }
+
   updateSubtopics = (topic: Topic) => {
     if (this.state.chosenSubtopics.includes(topic)) {
       this.setState(prevState => ({
@@ -188,108 +207,112 @@ export default class TopicTalkList extends Component<Props, State> {
         pad="12px"
         round="xsmall"
       >
-        <Box direction="column" width="34%">
+        <Box direction="column" width="25%">
           <Text size="12px" weight="bold" margin={{bottom: "10px"}}> 
             Topic
           </Text>
           {this.getPrimitiveNodes().map((topic: Topic) =>
             <Box
-              onClick={() => {this.setState({chosenTopic: topic})}}
-              background={this.state.chosenTopic === topic ? "#E0E0E0" : "white"} 
+              onClick={() => {this.updateTopic(topic)}}
+              background={"white"} 
+              border={this.state.chosenTopic === topic ? {color: "#0C385B", size: "2px"} : {size: "0px"}}
               round="xsmall"
-              pad="4px"
-              width="60%"
+              pad="5px"
+              width="80%"
               justify="center"
               align="center"
               focusIndicator={false}
               margin="3px"
-              hoverIndicator={false}
+              hoverIndicator="#6DA3C7"
             >
-              {this.state.chosenTopic === topic && (
-                <Text weight="bold" size="small">
-                  {topic.field}
-                </Text>)
-              }
-              {this.state.chosenTopic !== topic && (
-                <Text size="small">
-                  {topic.field}
-                </Text>)
-              }
+              <Text size="12px">
+                {topic.field}
+              </Text>
             </Box>
           )}
         </Box> 
 
-        <Box direction="column" width="34%">
+        <Box direction="column" width="25%">
           <Text size="12px" weight="bold" margin={{bottom: "10px"}}> 
-            Sub-topic
+            Sub-topics
           </Text>
           {this.state.chosenTopic.field === "-" && (
-            <Text size="13px" style={{fontStyle: "italic"}}> 
+            <Text size="12px" style={{fontStyle: "italic"}}> 
               Select a topic to display its subtopics 
             </Text>
           )}
           {this.state.chosenTopic.field !== "-" && (
-            this.getChildren(this.state.chosenTopic).map((topic: Topic) =>
+            this.getChildren(this.state.chosenTopic).slice(0, 7).map((topic: Topic) =>
               <Box
                 onClick={() => {this.updateSubtopics(topic)}}
-                background={this.state.chosenTopic === topic ? "#E0E0E0" : "white"} 
+                background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
                 round="xsmall"
-                pad="4px"
-                width="60%"
+                pad="5px"
+                width="90%"
                 justify="center"
                 align="center"
                 focusIndicator={false}
                 margin="3px"
-                hoverIndicator={false}
+                hoverIndicator="#6DA3C7"
               >
-                {this.state.chosenSubtopics.includes(topic) && (
-                  <Text weight="bold" size="small">
-                    {topic.field}
-                  </Text>)
-                }
-                {!this.state.chosenSubtopics.includes(topic) && (
-                  <Text size="small">
-                    {topic.field}
-                  </Text>)
-                }
+                <Text size="12px">
+                  {topic.field}
+                </Text>
               </Box>
             )
           )}
 
         </Box> 
 
-        <Box direction="column" width="32.5%">
+        <Box direction="column" width="25%" margin={{top: "24px", right: "60px"}}>
+          {this.state.chosenTopic.field !== "-" && (
+            this.getChildren(this.state.chosenTopic).slice(7).map((topic: Topic) =>
+              <Box
+                onClick={() => {this.updateSubtopics(topic)}}
+                background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
+                round="xsmall"
+                pad="5px"
+                width="90%"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                margin="3px"
+                hoverIndicator="#6DA3C7"
+              >
+                <Text size="12px">
+                  {topic.field}
+                </Text>
+              </Box>
+            )
+          )}
+
+        </Box> 
+
+        <div id="vertical-line"> {} </div>
+
+        <Box direction="column" width="20%">
           <Text size="12px" weight="bold" margin={{bottom: "10px"}}> 
             Audience level  
           </Text>
           {this.state.allAudienceLevels.map((txt: string) =>
             <Box
               onClick={() => {this.updateAudienceLevel(txt)}}
-              background={this.state.chosenTopic.field === txt ? "#E0E0E0" : "white"} 
+              background={this.state.audienceLevel.includes(txt) ? "#0C385B" : "white"} 
               round="xsmall"
-              pad="4px"
-              width="60%"
+              pad="5px"
+              width="90%"
               justify="center"
               align="center"
               focusIndicator={false}
               margin="3px"
-              hoverIndicator={false}
+              hoverIndicator="#6DA3C7"
             >
-              {this.state.audienceLevel.includes(txt) && (
-                <Text weight="bold" size="small">
-                  {txt}
-                </Text>)
-              }
-              {!this.state.audienceLevel.includes(txt) && (
-                <Text size="small">
-                  {txt}
-                </Text>)
-              }
+              <Text size="12px">
+                {txt}
+              </Text>
             </Box>
           )}
         </Box> 
-
-
 
       </Box>
     );
