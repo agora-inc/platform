@@ -38,6 +38,7 @@
     "react-blockies": "^1.4.1",
     "react-d3-graph": "^2.4.1",
     "react-d3-tree": "^1.16.1",
+    "react-device-detect": "^1.17.0",
     "react-dom": "^16.13.1",
     "react-ga": "^3.3.0",
     "react-helmet": "^6.1.0",

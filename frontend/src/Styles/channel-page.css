@@ -1,5 +1,86 @@
+.overall_channel_box {
+  background-color: #EAF1F1; 
+  width: 75%;
+  align-content: center;
+  align-self: center;
+  margin-top: 10vh;
+  /* border-spacing: "20px"; */
+  /* round: "10px" */
+}
+
+
+.channel_content_box {
+  width: "100%";
+  background-color: "#EAF1F1";
+  align-self: "center";
+  /* gap: "20px"; */
+  /* round: "10px" */
+}
+
+.banner_title {
+  font-size: 26px;
+  line-height: 25px;
+  color: black;
+  font-weight: bold;
+}
+
+.banner_avatar {
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+  min-height: 100px;
+  border-radius: 50px;
+  background-color: white;
+  justify-content: center;
+  align-content: center;
+  overflow: hidden;
+}
+
+
+/* 
+.banner_avatar {
+  
+  
+}
+
+.banner_title {
+  
+  
+}
+
+.banner_description {
+  
+  
+} */
+
+
+
 .follow-button:active {
   background-color: #e5e5e5;
 }
 
-.katex { font-size: 1em !important;}
+/* .katex { font-size: 1em !important;} */
+
+
+
+/* Mobile users: (for now, iPad and below
+(iPhone 6/7/8: 375x667)*/
+@media screen and (max-width:500px){
+  .overall_channel_box {
+    background-color: yellow;
+    width: 95%;
+    margin-top: 5vh;
+  }
+
+  .banner_title {
+    font-size: 18px
+  }
+
+  .banner_avatar {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
+    border-radius: 40px;
+  }
+}

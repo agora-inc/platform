@@ -15,8 +15,9 @@ import ReactTooltip from "react-tooltip";
 
 
 interface Props {
-  channelId: number,
-  channelName: string
+  channelId: number;
+  channelName: string;
+  widthButton?: string
 }
 
 interface State {
@@ -219,7 +220,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
         <Box
           focusIndicator={false}
           data-tip data-for='apply_give_talk'
-          width="12vw"
+          width={this.props.widthButton ? this.props.widthButton : "12vw"}
           height="30px"
           background="white"
           round="xsmall"

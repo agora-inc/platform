@@ -147,14 +147,14 @@ interface Props {
             <Box
               data-tip data-for='share_social'
               onClick={this.displayShareButtons}
-              background="#F2F2F2"
+              background={this.state.showShareButtons ? "#F2F2F2" : "#BAD6DB"}
               round="xsmall"
               width={this.props.width ? this.props.width : "100px"}
               height={this.props.height ? this.props.height : "35px"}
               justify="center"
               align="center"
               focusIndicator={true}
-              hoverIndicator="#DDDDDD"
+              hoverIndicator="#BAD6DB"
             >
               <Text weight="bold" size="15px">
                 Share 
