@@ -11,7 +11,6 @@ import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 import TrendingChannelsList from "../Components/Homepage/TrendingChannelsList";
-import { timeStamp } from "node:console";
 
 
 
@@ -87,7 +86,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Box direction="row" justify="center" style={{justifyContent: "center"}} margin={{top: "50px", bottom: "20px"}}>
             {/* <Logo style={{ height: "60px", width: "60px"}} /> */}
             <MediaQuery maxDeviceWidth={800}>
-              <img src={agoraStreamFullLogo} style={{ width: "90%"}}/>
+              <img src={agoraStreamFullLogo} style={{ width: "90%", height: "auto"}}/>
             </MediaQuery>
             <MediaQuery minDeviceWidth={800}>
               <img src={agoraStreamFullLogo} style={{ height: "90px"}}/>
@@ -216,7 +215,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box 
           direction="row" 
           gap="150px"
-          margin={{top: "60px"}}
+          margin={{top: "60px", left: "10px", right: "10px"}}
         >
           <Box direction="column" justify="center" style={{minWidth: "50%"}}>
             <Text size="21px" weight="bold" margin={{bottom: "24px"}} alignSelf="center"> What is an <img src={agoraLogo} style={{ height: "19px", alignSelf:"center"}}/>? </Text>
