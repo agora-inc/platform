@@ -86,7 +86,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Box direction="row" justify="center" style={{justifyContent: "center"}} margin={{top: "50px", bottom: "20px"}}>
             {/* <Logo style={{ height: "60px", width: "60px"}} /> */}
             <MediaQuery maxDeviceWidth={800}>
-              <img src={agoraStreamFullLogo} style={{ width: "90%", height: "auto"}}/>
+              <img src={agoraStreamFullLogo} style={{ width: "90%", maxHeight: "90%"}}/>
             </MediaQuery>
             <MediaQuery minDeviceWidth={800}>
               <img src={agoraStreamFullLogo} style={{ height: "90px"}}/>
