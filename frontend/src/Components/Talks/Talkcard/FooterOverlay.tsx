@@ -10,6 +10,7 @@ import ShareButtons from "../../Core/ShareButtons";
 import TalkRegistrationButton from "./TalkRegistrationButton";
 import SaveForLaterButton  from "./SaveForLaterButton";
 import CalendarButtons from "../CalendarButtons";
+// import "../../../Styles/talk"
 
 interface Props {
     talk: Talk;

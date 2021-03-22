@@ -180,8 +180,8 @@ export default class TalkCard extends Component<Props, State> {
     var breakpoint_width = 992;
     return (
       <div className="talk_card_box_1" style={
-        {"width": this.props.width ? this.props.width : "32%",
-      "height": "180px"}} onClick={() => {
+        {"width": this.props.width ? this.props.width : "32%"}} 
+        onClick={() => {
             !this.state.showModal && this.toggleModal();
         }}
         >

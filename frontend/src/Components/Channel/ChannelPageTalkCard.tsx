@@ -19,6 +19,9 @@ import { thisExpression } from "@babel/types";
 import { textToLatex } from "../Core/LatexRendering";
 import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 import MediaQuery from "react-responsive";
+import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
+import { timeStamp } from "node:console";
+
 
 interface Props {
   talk: Talk;
@@ -255,11 +258,20 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
-        height={this.props.admin 
-          ? ((renderMobileView && this.state.showModal) ? "360px" : "240px")
-          : ((renderMobileView && this.state.showModal) ? "360px" : "180px")}
+        // height={this.props.admin 
+        //   ? ((renderMobileView && this.state.showModal) ? "1000px" : "240px")
+        //   : ((renderMobileView && this.state.showModal) ? "560px" : "180px")}
         focusIndicator={false}
-        style={{ position: "relative" }}
+        height="100%"
+        style={{ 
+          position: "relative",
+          maxHeight: this.props.admin 
+            ? ((renderMobileView && this.state.showModal) ? "240px" : "240px")
+            : ((renderMobileView && this.state.showModal) ? "600px" : "600px"),
+          minHeight: this.props.admin 
+          ? ((renderMobileView && this.state.showModal) ? "240px" : "240px")
+          : ((renderMobileView && this.state.showModal) ? "180px" : "180px"),
+        }}
         margin={{ bottom: "small" }}
       >
         <Box
@@ -424,30 +436,16 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           </Box>
         )}
         {this.state.showModal && (
-          //
-          //
-          //
-          //
-          //
-          //
-          // TODO: Write MobileTalkCardOverlay component:
-          //  THIS WILL handle the logic for contain PastTalk and upcoming talk
-          //
-          //
-          //
-          //
-          //
-          //
-          //
           <>
           <MediaQuery maxDeviceWidth={800}>
-            {/* <MobileTalkCardOverlay
+            <MobileTalkCardOverlay
               talk={this.props.talk}
-            /> */}
-            <Box height="50%">
-              {this.props.talk.description}
-              Michael Jordan
-            </Box>
+              pastOrFutureTalk="future"
+              user={this.props.user}
+              registered={this.state.registered}
+              role={this.props.role}
+              registrationStatus={this.state.registrationStatus}
+            />
           </MediaQuery>
 
           <MediaQuery minDeviceWidth={800}>

@@ -14,6 +14,7 @@ interface Props {
     channel?: Channel | any;
     height?: string;
     width?: string;
+    widthPixel?: number;
     useReducedHorizontalVersion?: boolean
   }
   
@@ -208,7 +209,8 @@ interface Props {
           </Box>
         )
       }
-      else
+      else {
+        var widthPixel=this.props.widthPixel ? this.props.widthPixel : 48;
         return(
           <InlineShareButtons
           config={{
@@ -232,7 +234,7 @@ interface Props {
             show_total: false,     // show/hide the total share count (true, false)
             // show_mobile: true,    // show/hide the buttons on mobile (true, false)
             // show_toggle: false,    // show/hide the toggle buttons (true, false)
-            size: 48,             // the size of each button (INTEGER)
+            size: widthPixel,             // the size of each button (INTEGER)
             // top: 150,             // offset in pixels from the top of the page
 
             // OPTIONAL PARAMETERS
@@ -247,4 +249,5 @@ interface Props {
         />
         )
       }
+    }
 }

@@ -1,5 +1,5 @@
 .overall_channel_box {
-  background-color: #EAF1F1; 
+  /* background-color: #EAF1F1;  */
   width: 75%;
   align-content: center;
   align-self: center;
@@ -11,7 +11,7 @@
 
 .channel_content_box {
   width: "100%";
-  background-color: "#EAF1F1";
+  /* background-color: "#EAF1F1"; */
   align-self: "center";
   /* gap: "20px"; */
   /* round: "10px" */
@@ -67,7 +67,7 @@
 (iPhone 6/7/8: 375x667)*/
 @media screen and (max-width:500px){
   .overall_channel_box {
-    background-color: yellow;
+    /* background-color: yellow; */
     width: 95%;
     margin-top: 5vh;
   }
