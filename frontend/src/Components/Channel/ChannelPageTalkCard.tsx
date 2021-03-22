@@ -20,7 +20,6 @@ import { textToLatex } from "../Core/LatexRendering";
 import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 import MediaQuery from "react-responsive";
 import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
-import { timeStamp } from "node:console";
 
 
 interface Props {
