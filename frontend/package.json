@@ -19,7 +19,7 @@
     "@types/react-helmet": "^6.1.0",
     "agora-rtc-sdk-ng": "^4.2.1",
     "agora-rtm-sdk": "^1.4.1-201",
-    "antd": "^4.2.2",
+    "antd": "^4.12.3",
     "axios": "^0.19.2",
     "d3": "^5.16.0",
     "emailjs-com": "^2.4.1",
