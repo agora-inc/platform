@@ -9,6 +9,7 @@ import "../Styles/channel-page.css";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import Countdown from "../Components/Talks/Countdown";
 import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
+import CoffeeHangoutRoom from "../Components/Talks/TalkSharingPage/CoffeeHangoutRoom";
 import { textToLatex } from "../Components/Core/LatexRendering";
 import { Helmet } from "react-helmet";
 
@@ -281,6 +282,9 @@ export default class TalkSharingPage extends Component<Props, State> {
               isSharingPage={true}
             />
           </Box>
+          <CoffeeHangoutRoom
+            talk={this.state.talk}
+            user={this.state.user}/>
         </Box>
       </>
       )
