@@ -50,6 +50,10 @@
   /* z-index: -1; */
 }
 
+.mailingListInfo {
+  width: 100px;
+}
+
 .save_Button{
   animation: fade-in-keyframes 1s;
 }

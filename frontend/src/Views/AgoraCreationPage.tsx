@@ -197,7 +197,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_1">
-                : Most of the organiser pipeline is automated (email sending, social media sharing, etc..).
+                : Most of the organiser pipeline is automated (email sending, social media sharing, etc...).
                 </Box>
               <Box gridArea="arg_2_icon">
                 <Checkmark/>
