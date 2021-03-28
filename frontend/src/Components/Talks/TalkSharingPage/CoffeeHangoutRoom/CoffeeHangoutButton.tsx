@@ -18,6 +18,8 @@ interface State {
     now: Date;
     openingTimeBeforeSemInMinutes: number;
     openingTimeAfterSemInMinutes: number;
+    cafeteriaOpeningTime: Date;
+    cafeteriaClosingTime: Date;
   }
 
 export default class CoffeeHangoutButton extends Component<Props, State> {
@@ -27,12 +29,18 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
         now: new Date(),
         openingTimeBeforeSemInMinutes: 45,
         openingTimeAfterSemInMinutes: 120,
+        cafeteriaOpeningTime: new Date(),
+        cafeteriaClosingTime: new Date()
       };
     }
 
     componentWillMount() {
         setInterval(() => {
-          this.setState({ now: new Date() });
+          this.setState({ 
+              now: new Date() ,
+              cafeteriaOpeningTime: this.computeCafeteriaOpeningTime(),
+              cafeteriaClosingTime: this.computeCafeteriaClosingTime()
+        });
         }, 1000);
       }
 
@@ -60,7 +68,14 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
       computeCafeteriaOpeningTime = () => {
         let d = new Date(this.props.talk.date);
         return moment(d)
-          .subtract(30, "minutes")
+          .subtract(45, "minutes")
+          .toDate();
+      };
+
+      computeCafeteriaClosingTime = () => {
+        let d = new Date(this.props.talk.end_date);
+        return moment(d)
+          .add(60, "minutes")
           .toDate();
       };
 
@@ -98,15 +113,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
       };
 
     cafeteriaOpened() {
-    // Showing link 30 minutes before seminar starts and 2 hours after
-    // NOTE: difference between times are given in seconds.
-    var startTime = new Date(this.props.talk.date).getTime()
-    var endTime = new Date(this.props.talk.end_date).getTime()
-
-    var secondsBeforeSeminar = Math.floor((startTime - this.state.now.getTime() ) / 1000)
-    var secondsAfterSeminar = Math.floor((this.state.now.getTime() - endTime ) / 1000)
-
-    return ((secondsBeforeSeminar > 0 && secondsBeforeSeminar < this.state.openingTimeAfterSemInMinutes * 60))
+        return (this.state.now > this.state.cafeteriaOpeningTime) && (this.state.now < this.state.cafeteriaClosingTime)
     }
 
     cafeteriaPermanentlyClosed() {
@@ -126,6 +133,11 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                 <>
                 {!this.cafeteriaOpened() || (
                     <Box align="center" data-tip data-for='grab_coffee_button_before'>
+                    <a
+                        style={{ width: "100%", textDecoration: "none" }}
+                        href={"https://gather.town/app/ZdQRhpTeDNaBiV2P/agora.stream%20Cafeteria"}
+                        target="_blank"
+                    >
                         <Button
                             width={"150px"}
                             height={"50px"}
@@ -133,6 +145,8 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                             text={"Grab an e-coffee"}
                             buttonType="mainAction"
                         />
+                    </a>
+
                     <ReactTooltip id="grab_coffee_button_before" effect="solid" place="bottom">
                         Chat with other seminar participants and speakers; cafeteria remains open 2 hours after the end of the seminar.
                     </ReactTooltip>
