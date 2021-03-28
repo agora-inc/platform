@@ -81,7 +81,7 @@ export default class EditTalkModal extends Component<Props, State> {
         : "",
       link: this.props.talk ? this.props.talk.link : "",
       linkAvailable: this.props.talk ? this.props.talk.link_available : false,
-      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 45,
+      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 15,
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
         : "Everybody",
