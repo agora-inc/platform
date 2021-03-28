@@ -6,64 +6,70 @@ import { Talk, TalkService } from "../../../Services/TalkService";
 import CoffeeHangoutButton from "./CoffeeHangoutRoom/CoffeeHangoutButton";
 import { time } from "node:console";
 
-
 interface Props {
     user: User | null;
     talk: Talk;
 }
   
 interface State {
-}
+    now: Date;
+    openingTimeBeforeSemInMinutes: number;
+    openingTimeAfterSemInMinutes: number;
+  }
+
 
 export default class CoffeeHangoutRoom extends Component<Props, State> {
     constructor(props: Props) {
       super(props);
       this.state = {
+        now: new Date(),
+        openingTimeBeforeSemInMinutes: 45,
+        openingTimeAfterSemInMinutes: 120,
       };
     }
 
-    cafeteriaIsOpen() {
-        // Showing link 30 minutes before seminar starts and 2 hours after
-        // NOTE: difference between times are given in seconds.
-        var now = new Date().getTime();
+    // cafeteriaOpened() {
+    //     // Showing link 30 minutes before seminar starts and 2 hours after
+    //     // NOTE: difference between times are given in seconds.
+    //     var startTime = new Date(this.props.talk.date).getTime()
+    //     var endTime = new Date(this.props.talk.end_date).getTime()
+    //     var secondsBeforeSeminar = Math.floor((startTime - this.state.now.getTime() ) / 1000)
+    //     var secondsAfterSeminar = Math.floor((this.state.now.getTime() - endTime ) / 1000)
+    //     return ((secondsBeforeSeminar > 0 && secondsBeforeSeminar < this.state.openingTimeAfterSemInMinutes * 60))
+    //     }
+
+    cafeteriaPermanentlyClosed() {
         var startTime = new Date(this.props.talk.date).getTime()
         var endTime = new Date(this.props.talk.end_date).getTime()
-
-        var secondsBeforeSeminar = startTime - now
-        var secondsAfterSeminar = now - endTime
-
-        return (secondsBeforeSeminar < 30 * 60) || (secondsAfterSeminar < 2 * 3600)
-    }
+    
+        var secondsAfterSeminar = Math.floor((this.state.now.getTime() - endTime ) / 1000)
+    
+        return (secondsAfterSeminar > 0 && secondsAfterSeminar > this.state.openingTimeAfterSemInMinutes * 60)
+        }
 
     render() {
-        var cafeteriaIsOpen = this.cafeteriaIsOpen();
         return (
-            <Box>
-                {!cafeteriaIsOpen && (
-                    <>
-                        <Text>The </Text>
+            <>
+                {/* {!this.cafeteriaPermanentlyClosed() || ( */}
+                    <Box align="center" background="#BAD6DB" margin={{top:"20px"}}>
+                        <Text size="21px" weight="bold" margin={{top:"20px", bottom: "10px"}}>
+                            {/* Waiting for the start or looking to mingle after the seminar? Grab an e-coffee with other the other participants! */}
+                            {/* Want to grab a pre/post seminar coffee and have chat with the seminar participants and speakers? */}
+                            Grab a pre/post seminar coffee!
+                        </Text>
                         <CoffeeHangoutButton
                             talk={this.props.talk}
                             user={this.props.user}
                         />
-                    </>
-                )}
-                {cafeteriaIsOpen && (
-                    <>
-                        <Text>The </Text>
-                        <a
-                        style={{ width: "100%", textDecoration: "none" }}
-                        href={"https://gather.town/app/cYriy3vrC45SKr3f/Pre-post%20seminar%20coffees"}
-                        target="_blank"
-                         >
-                            <CoffeeHangoutButton
-                                talk={this.props.talk}
-                                user={this.props.user}
-                            />
-                        </a>
-                    </>
-                )}
-            </Box>
+                        <video 
+                            autoPlay loop muted
+                            style={{ height: "auto", width: "90%", marginTop: "10px", marginBottom: "10px"}}
+                            >
+                            <source src="/eCoffee/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+                        </video>
+                    </Box>
+                {/* )} */}
+            </>
         )
     }
 }

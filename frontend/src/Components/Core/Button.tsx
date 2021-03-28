@@ -11,7 +11,7 @@ interface Props {
   buttonType?: "mainAction" | "secondaryAction";
   disabled?: boolean;
   fill?: string;
-  hoverIndicator?: string;
+  hoverIndicator?: string | boolean;
   background?: string;
   onMouseEnter?: any
 }
@@ -44,6 +44,12 @@ export default class Button extends Component<Props, State> {
         background: "#F2F2F2",
         hoverIndicator: "#BAD6DB",
         textColor: "black"}
+      )
+    }
+    if (this.props.disabled){
+      this.setState({
+        hoverIndicator: false
+      }
       )
     }
   }

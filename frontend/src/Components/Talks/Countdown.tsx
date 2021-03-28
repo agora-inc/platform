@@ -104,39 +104,57 @@ export default class Countdown extends Component<
     return message;
   };
 
+  seminarIsFinished() {
+    var endTime = new Date(this.props.talk.end_date).getTime()
+    var secondsAfterSeminar = Math.floor((this.state.now.getTime() - endTime ) / 1000)
+
+    return (secondsAfterSeminar > 0)
+  }
+
+
   render() {
     return (
       <Box direction="column">
-        {this.shouldShowLink() && (
-          <Box>
-          <a
-            style={{ width: "100%", textDecoration: "none" }}
-            href={this.props.talk.link}
-            target="_blank"
-          >
-            <Box
-              onClick={() => {}}
-              background="#0C385B"
-              round="xsmall"
-              width="160px" height="35px"
-              justify="center"
-              align="center"
-              focusIndicator={true}
-              hoverIndicator="#6DA3C7"
+        {!this.seminarIsFinished() && (
+          <>
+          {this.shouldShowLink() && (
+            <Box>
+            <a
+              style={{ width: "100%", textDecoration: "none" }}
+              href={this.props.talk.link}
+              target="_blank"
             >
-              <Text size="15px" weight="bold">
-                Link to talk
-              </Text>
+              <Box
+                onClick={() => {}}
+                background="#0C385B"
+                round="xsmall"
+                width="160px" height="35px"
+                justify="center"
+                align="center"
+                focusIndicator={true}
+                hoverIndicator="#6DA3C7"
+              >
+                <Text size="15px" weight="bold">
+                  Link to talk
+                </Text>
+              </Box>
+            </a>
             </Box>
-          </a>
-          </Box>
-        )}
+          )}
 
-        {!this.shouldShowLink() && (
-          <Text size="16px" weight="bold" margin={{ top: "1px" }}>
-            {this.showTimeUntil()}
-          </Text>
+          {!this.shouldShowLink() && (
+            <Text size="16px" weight="bold" margin={{ top: "1px" }}>
+              {this.showTimeUntil()}
+            </Text>
+          )}
+        </>
         )}
+        {this.seminarIsFinished() && (
+          <Text size="16px" weight="bold" margin={{ top: "1px" }}>
+            This event ended.
+          </Text>
+        )
+        }
       </Box>
     );
   }

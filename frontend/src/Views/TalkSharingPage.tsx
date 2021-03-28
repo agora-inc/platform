@@ -150,7 +150,7 @@ export default class TalkSharingPage extends Component<Props, State> {
         >
           <Box
             width="60vw"
-            margin={{left: "20px", right: "20px"}}
+            margin={{left: "20px", right: "20px", bottom: "30px"}}
           >
             <Box 
               direction="row" 
@@ -281,10 +281,10 @@ export default class TalkSharingPage extends Component<Props, State> {
               registrationStatus={this.state.registrationStatus}
               isSharingPage={true}
             />
-          </Box>
           <CoffeeHangoutRoom
             talk={this.state.talk}
             user={this.state.user}/>
+          </Box>
         </Box>
       </>
       )
