@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   TextArea,
+  CheckBox,
   Calendar,
   MaskedInput,
   Select,
@@ -569,10 +570,16 @@ export default class EditTalkModal extends Component<Props, State> {
               > 
                 <OverlaySection heading="Link to event">
                 <TextInput
-                    value={this.state.link}
+                    disabled={this.state.link == '_agora.stream_tech'}
+                    value={this.state.link == '_agora.stream_tech'?"https://agora.stream/":this.state.link}
                     placeholder="https://zoom.us/1234"
                     onChange={(e) => this.setState({ link: e.target.value })}
                   />
+                <CheckBox 
+                  checked={this.state.link == '_agora.stream_tech'} 
+                  label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+                  onChange={(e) => this.setState({ link: e.target.checked?'_agora.stream_tech':'' })}/>
+
                   <Text
                     size="14px" 
                     weight="bold" 
