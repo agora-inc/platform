@@ -290,7 +290,7 @@ export default class PastTalkCard extends Component<Props, State> {
         style={{ 
           position: "relative",
           maxHeight: this.props.admin 
-            ? ((renderMobileView && this.state.showModal) ? "240px" : "240px")
+            ? ((renderMobileView && this.state.showModal) ? "380px" : "380px")
             : ((renderMobileView && this.state.showModal) ? "800px" : "800px"),
           minHeight: this.props.admin 
             ? ((renderMobileView && this.state.showModal) ? "240px" : "240px")
@@ -365,7 +365,7 @@ export default class PastTalkCard extends Component<Props, State> {
               <Text
                 weight="bold"
                 size="14px"
-                color="#6DA3C7"
+                color="#025377"
               >
                 {this.props.talk.channel_name}
               </Text>
@@ -392,7 +392,7 @@ export default class PastTalkCard extends Component<Props, State> {
         </Box>
         {this.state.showShadow && (
           <Box
-            height={this.props.height ? this.props.height : "350px"}
+            height={this.props.height ? this.props.height : "325px"}
             width="100%"
             round="xsmall"
             style={{
@@ -820,6 +820,7 @@ export default class PastTalkCard extends Component<Props, State> {
             round="xsmall"
             pad="xsmall"
             height="40px"
+            width="98%"
             justify="center"
             align="center"
             focusIndicator={false}
