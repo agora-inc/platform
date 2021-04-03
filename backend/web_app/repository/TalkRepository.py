@@ -300,11 +300,11 @@ class TalkRepository:
 
     def getAvailablePastTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC;"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC;"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
-                        AND (Talks.card_visibility = 'Everybody' AND recording_link <> ''
+                        AND (Talks.card_visibility = 'Everybody'
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
                                         SELECT Channels.id FROM Channels 

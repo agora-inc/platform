@@ -329,11 +329,11 @@ export default class PastTalkCard extends Component<Props, State> {
             />
           )}
           {!this.props.talk.recording_link && (
-            <Box
-              height="62%"
-              background="#6DA3C7"
-              style={{ opacity: 0.75 }}
-            ></Box>
+            <img
+              src={ChannelService.getAvatar(this.props.talk.channel_id)}
+              height={125}
+              width={125}
+            />
           )}
           <Box height="38%" pad="15px" justify="end">
             <Box
