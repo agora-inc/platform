@@ -323,13 +323,15 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   getDateBounds = () => {
-    const today = new Date();
-    const todayStr = today.toISOString().slice(0, 10);
+    const oneYearAgo = new Date(
+      new Date().setFullYear(new Date().getFullYear() - 1)
+    );
     const inOneYear = new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     );
+    const oneYearAgoStr = oneYearAgo.toISOString().slice(0, 10);
     const inOneYearStr = inOneYear.toISOString().slice(0, 10);
-    return [todayStr, inOneYearStr];
+    return [oneYearAgoStr, inOneYearStr];
   };
 
   isComplete = () => {
