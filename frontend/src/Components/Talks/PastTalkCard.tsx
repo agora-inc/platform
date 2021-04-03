@@ -331,8 +331,10 @@ export default class PastTalkCard extends Component<Props, State> {
           {!this.props.talk.recording_link && (
             <img
               src={ChannelService.getAvatar(this.props.talk.channel_id)}
-              height={125}
-              width={125}
+              height={renderMobileView ? "125px" : "48%"}
+              style={{
+              marginTop: "35px", 
+              alignSelf: 'center'}}
             />
           )}
           <Box height="38%" pad="15px" justify="end">
@@ -392,7 +394,7 @@ export default class PastTalkCard extends Component<Props, State> {
         </Box>
         {this.state.showShadow && (
           <Box
-            height={this.props.height ? this.props.height : "325px"}
+            height={this.props.height ? this.props.height : "350px"}
             width="100%"
             round="xsmall"
             style={{
