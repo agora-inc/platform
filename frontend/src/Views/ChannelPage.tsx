@@ -354,11 +354,11 @@ export default class ChannelPage extends Component<Props, State> {
     let border = "none";
 
     return {
-      width: "100%",
+      width: "75vw",
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
-      backgroundSize: "100% 25%",
+      backgroundSize: "75vw 25vw",
       border: border,
     };
   };
@@ -381,11 +381,11 @@ export default class ChannelPage extends Component<Props, State> {
 
   banner = () => {
     return (
-      <Box width="100%" background="white" round="10px">
+      <Box width="75vw" background="white" round="10px">
         <Box
           direction="row"
           justify="between"
-          height="25%"
+          height="25vw"
         >
           <Image src={this.getImageUrl()} style={this.getCoverBoxStyle()} />
         </Box>
