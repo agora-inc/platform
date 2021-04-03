@@ -50,6 +50,7 @@ function useQuery(){
 
 
 const AgoraStream:FunctionComponent<Props> = (props) => {
+  const videoContainer = useRef<HTMLDivElement>(null)
   const [agoraClient] = useState(AgoraRTC.createClient({ mode: "rtc", codec: "vp8" }))
   const [agoraScreenShareClient] = useState(AgoraRTC.createClient({ mode: "rtc", codec: "vp8" }))
   const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
@@ -86,6 +87,25 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       viewCount: -1,
       overlay: false,
   })
+
+  function toggleFullscreen() {
+    let fullscreenEl = document.fullscreenElement
+    if(fullscreenEl) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+      return
+    }
+
+    let element = videoContainer.current!
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    }
+
+  }
+  function leave() {
+
+  }
 
   async function setup() {
     const talkId = props.match.params.talk_id
@@ -243,6 +263,9 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     setup()
+    return ()=>{
+      leave()
+    }
   }, [])
 
   return (
@@ -261,7 +284,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         >
         
           <Box gridArea="player" justify="between" gap="small">
-            <VideoPlayerAgora style={{height: '90%'}} id='ad' stream={localVideoTrack} />
+            <Box ref={videoContainer} className={`video-holder ${localUser.role}`}
+              style={{height: '90%', position: 'relative'}}>
+              <VideoPlayerAgora id='speaker' stream={localVideoTrack} />
+              <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
+            </Box>
 
             <Box direction="row" justify="between" align="start">
               <p

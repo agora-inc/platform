@@ -14,6 +14,8 @@ import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 
+import '../Styles/all-stream-page.css'
+
 
 interface Props {
   location: { pathname: string; state: { video: Video } };
@@ -50,6 +52,7 @@ function useQuery(){
 
 
 const AgoraStream:FunctionComponent<Props> = (props) => {
+  const videoContainer = useRef<HTMLDivElement>(null)
   const [agoraClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
   const [agoraScreenShareClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
   const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
@@ -68,6 +71,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [remoteScreenTrack, setRemoteScreenTrack] = useState(null as any)
   const [remoteAudioTrack, setRemoteAudioTrack] = useState(null as any)
   const [messages, setMessages] = useState<Message[]>([])
+  const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
 
   const [state, setState] = useState({
       video: {
@@ -88,6 +92,23 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       viewCount: -1,
       overlay: false,
   })
+
+  function toggleFullscreen() {
+    let fullscreenEl = document.fullscreenElement
+    if(fullscreenEl) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+      return
+    }
+
+    let element = videoContainer.current!
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    }
+
+  }
+
 
   async function setup() {
     console.log(props)
@@ -123,11 +144,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     await agoraScreenShareClient.subscribe(user, mediaType);
     if(mediaType == 'video'){
       setRemoteScreenTrack(user.videoTrack)
+      setScreenAvailability(true)
       console.log("Getting screen")
       return
     }
   }
   async function onScreenShareStop(user: any, mediaType: "audio" | "video") {
+    setScreenAvailability(false)
+    setRemoteScreenTrack(null)
+    await agoraScreenShareClient.unsubscribe(user, mediaType);
     console.log("stop share")
   }
 
@@ -214,7 +239,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         >
         
           <Box gridArea="player" justify="between" gap="small">
-            <VideoPlayerAgora style={{height: '90%'}} id='ad' stream={localUser.role =='host'? localVideoTrack: remoteVideoTrack} />
+            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
+              style={{height: '90%', position: 'relative'}}>
+              <VideoPlayerAgora id='speaker' stream={localUser.role =='host'? localVideoTrack: remoteVideoTrack} />
+              { isScreenAvailable && 
+                  <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
+              }
+
+              <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
+            </Box>
 
             <Box direction="row" justify="between" align="start">
               <p

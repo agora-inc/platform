@@ -1,0 +1,17 @@
+.video-holder>div{
+    height: 100%;
+}
+.video-holder .full-screen-button{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+.audience.screen-share>#speaker{
+    position: absolute !important;
+    width: 100px;
+    height: 80px !important;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+    border: 2px solid white;
+}
