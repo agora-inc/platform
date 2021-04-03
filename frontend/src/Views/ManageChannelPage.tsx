@@ -775,14 +775,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
-                  {/*<Tab>
+                  {/* <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <SettingsOption />
                       <Text size="14px"> 
                         Details 
                       </Text>
                     </Box>
-                  </Tab>*/}
+                  </Tab> */}
                 </TabList>
                 
 
@@ -1163,8 +1163,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
                 
-
-                {/*<TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
+              {/*   DETAIL SECTION: COMMENTED OUT
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
                   <Grid
                     rows={['xxsmall', 'xxsmall']}
                     columns={['medium', 'xxsmall']}
@@ -1183,7 +1183,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         onDeleteAddress={this.onDeleteContactAddress}
                       />
                     </Box>
-                     <Box gridArea="topic_change">
+                    <Box gridArea="topic_change">
                       <ChannelTopicSelector 
                         onSelectedCallback={this.selectTopic}
                         onCanceledCallback={this.cancelTopic}
@@ -1224,9 +1224,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                       )}
                       </Text>
                       </Box>
-                    </Box> 
+                    </Box>
                   </Grid>
-                </TabPanel>*/}
+                </TabPanel> */}
               </Tabs>
             </Box>
           </Box>

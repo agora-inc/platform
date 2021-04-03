@@ -19,7 +19,7 @@ interface Props {
   channelName: string,
   user: any,
   height?: string,
-  width?: string,
+  widthButton?: string,
 }
 
 interface State {
@@ -160,7 +160,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
         <Box
           data-tip data-for='membership_application_button'
           focusIndicator={false}
-          width={this.props.width ? this.props.width : "12vw"}
+          width={this.props.widthButton ? this.props.widthButton : "12vw"}
           background="white"
           round="xsmall"
           height={this.props.height ? this.props.height : "30px"}

@@ -100,6 +100,7 @@ export default class LoginModal extends Component<Props, State> {
             border: "none",
             borderRadius: 7,
           }}
+          hoverIndicator="#BAD6DB"
         />
         <Overlay
           width={400}

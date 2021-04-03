@@ -164,17 +164,17 @@ export default class AgoraCreationPage extends Component<Props, State> {
             <Text size={this.state.sizeHeader} weight="bold"> Welcome to <img src={agorastreamLogo} height="28px"/>, the centralized platform to advertise and attend academic seminars! </Text>
           </Box>
           <Box margin={{bottom: "32px"}}>
-            <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> up and running in <b>less than a minute</b>.
+            <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>less than a minute</b>.
              </Text>
           {/* <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
             PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
           </Text> */}
           </Box>
 
-          <Text size={this.state.sizeText} weight="bold">Why having an <img src={agoraLogo} height={this.state.sizeText}/> simplifies the life of the organiser:</Text>
+          <Text size={this.state.sizeText} weight="bold"> What can you do with an <img src={agoraLogo} height={this.state.sizeText}/>?</Text>
 
             <Grid
-              rows={['18px', '18px', '18px', '18px', '18px', '18px', '18px']}
+              rows={['18px', '18px', '18px', '18px', '18px', '18px', '18px', '18px', '18px']}
               columns={['20px', 'large']}
               gap="15px"
               margin={{left: "10px", "top": "18px"}}
@@ -191,49 +191,71 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 { name: 'arg_5', start: [1, 4], end: [1, 4] },
                 { name: 'arg_6_icon', start: [0, 5], end: [0, 5] },
                 { name: 'arg_6', start: [1, 5], end: [1, 5] },
+                { name: 'arg_7_icon', start: [0, 6], end: [0, 6] },
+                { name: 'arg_7', start: [1, 6], end: [1, 6] },
+                { name: 'arg_8_icon', start: [0, 7], end: [0, 7] },
+                { name: 'arg_8', start: [1, 7], end: [1, 7] },
               ]}
             >
               <Box gridArea="arg_1_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_1">
-                : Most of the organiser pipeline is automated (email sending, social media sharing, etc...).
+                : Customize your webpage
                 </Box>
               <Box gridArea="arg_2_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_2">
-                : Easy control on who can attend your seminars.
+                : Create public or on-registration seminars
                 </Box>
 
               <Box gridArea="arg_3_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_3">
-                : Allow potential future speakers to apply to give a talk within your community.
+                : Use integrated email tech to advertise new events with your community (can be automated)
                 </Box>
 
               <Box gridArea="arg_4_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_4">
-                : Attract like-minded people and experts from all around the world to your events.
+                : Integrated virtual cafeteria for social e-coffees (opening 45 minutes before your event and closing 2 hours after)
                 </Box>
 
               <Box gridArea="arg_5_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_5">
-                : Easy to customize and does not require maintenance.
+                : Integrated contact form for future potential speakers to apply to give a talk within your community
                 </Box>
 
               <Box gridArea="arg_6_icon">
                 <Checkmark/>
                 </Box>
               <Box gridArea="arg_6">
-                : Event creation + advertisement to your community and social media followers + registration management: <b>all can be done in less than a minute.</b>
-                </Box>                
+                : Automated tech to share your seminars on your social media
+                </Box>  
+
+              <Box gridArea="arg_7_icon">
+                <Checkmark/>
+                </Box>
+              <Box gridArea="arg_7">
+                : Publish your past seminar recordings and decide who can see them (public or community only)
+                </Box>     
+
+              <Box gridArea="arg_8_icon">
+                <Checkmark/>
+                </Box>
+              <Box gridArea="arg_8">
+                : Event creation + advertisement to your community and social media followers + registration management: <b>all in one place and done in less than a minute</b>
+                </Box>                  
             </Grid>
+
+
+
+
 
             <CreateChannelButton 
               onClick={this.toggleCreateChannelOverlay} 
