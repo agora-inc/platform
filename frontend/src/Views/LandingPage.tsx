@@ -41,13 +41,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   showDynamicTextValue() {
     // Changes every second
     var dynamicTextValueList = [
-      "Opening the doors to all online academic seminars in the world.",
-      "Democratizing access to cutting-edge research.",
-      "Leveraging modern technologies in the service of academics.",
-      "Cutting global travel of academics and fight climate change.",
-      "Empowering academics' reach and visibility.",
-      "Automating the seminar organisers' pipeline.",
-      "Bridging academic and industrial researchers."
+      "Opening the doors to all online academic seminars in the world",
+      "Democratizing access to cutting-edge research",
+      "Leveraging modern technologies in the service of academics",
+      "Cutting global travel of academics and fight climate change",
+      "Empowering academics reach and visibility",
+      "Automating the seminar organisation pipeline",
+      "Bridging academic and industrial researchers"
     ];
 
     var now = Date.now();
@@ -220,8 +220,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         >
           <Box direction="column" justify="center" style={{minWidth: "50%"}}>
             <Text size="21px" weight="bold" margin={{bottom: "24px"}} alignSelf="center"> What is an <img src={agoraLogo} style={{ height: "19px", alignSelf:"center"}}/>? </Text>
-            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a hub for a community (e.g. a reading group, seminar group, institution, etc..)</Text>
-            <Text size="14px" margin={{bottom: "6px"}}> It is the place where seminars happen and future events are advertised </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a hub for a community (e.g. a reading group, seminar group, institution, etc...)</Text>
+            <Text size="14px" margin={{bottom: "6px"}}> It is the place to mingle with the community and where seminars happen </Text>
             <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Visit and connect with any agora by becoming a member or a future speaker </Text>
           </Box>
         </Box>

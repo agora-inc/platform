@@ -74,7 +74,7 @@ export default class InformationPage extends Component<Props, State> {
                     </li>
                     <li><strong>Connect</strong> with research communities and get updated about their future seminars!&nbsp;
                       <ul>
-                        <li>If interested by a talk, easily find the seminar link (e.g. zoom link, google hangouts, etc..) on the talk card 15 minutes / 1h or 24h before the event.</li>
+                        <li>If interested by a talk, easily find the seminar link (e.g. zoom link, google hangouts, etc...) on the talk card 15 minutes / 1h or 24h before the event.</li>
                         <li>Note that some talks are open to everybody and do not require creating an agora account while other ones have restricted access (e.g. the link is only shown to people who have an agora account and who have been promoted to official member of the hosting agora)</li>
                       </ul>
                     </li>

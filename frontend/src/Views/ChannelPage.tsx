@@ -675,7 +675,7 @@ export default class ChannelPage extends Component<Props, State> {
                         talk={talk}
                         margin={{ bottom: "medium" }}
                         user={this.state.user}
-                        show={talk.id === this.state.showTalkId}
+                        // show={talk.id === this.state.showTalkId}
                       />
                     ))}
                     </div>
