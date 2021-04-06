@@ -13,7 +13,8 @@ interface Props {
   fill?: string;
   hoverIndicator?: string | boolean;
   background?: string;
-  onMouseEnter?: any
+  onMouseEnter?: any;
+  textColor?: string;
 }
 
 interface State {
@@ -27,8 +28,8 @@ export default class Button extends Component<Props, State> {
     super(props);
     this.state = {
       background:  "#0C385B",
-      hoverIndicator: true,
-      textColor: "black",
+      hoverIndicator: "#6DA3C7",
+      textColor: this.props.textColor ? this.props.textColor : "black",
     };
   }
 
@@ -37,13 +38,13 @@ export default class Button extends Component<Props, State> {
       this.setState({
         background: "#0C385B",
         hoverIndicator:"#6DA3C7",
-        textColor: ""
+        textColor: this.props.textColor ? this.props.textColor : ""
       })
     } else if (this.props.buttonType === "secondaryAction"){
       this.setState({
         background: "#F2F2F2",
         hoverIndicator: "#BAD6DB",
-        textColor: "black"}
+        textColor: this.props.textColor ? this.props.textColor : "black"}
       )
     }
     if (this.props.disabled){
