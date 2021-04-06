@@ -38,6 +38,7 @@ interface State {
   showLinkInput: boolean;
   recordingLink: string;
   isRecordingLinkHidden: boolean;
+  hasYoutubeRecording: boolean;
 }
 
 export default class PastTalkCard extends Component<Props, State> {
@@ -53,6 +54,7 @@ export default class PastTalkCard extends Component<Props, State> {
         ? this.props.talk.recording_link
         : "",
       isRecordingLinkHidden: true,
+      hasYoutubeRecording: false,
     };
   }
 
@@ -69,6 +71,12 @@ export default class PastTalkCard extends Component<Props, State> {
   componentWillMount() {
     this.checkIfSaved();
     this.isRecordingHidden();
+
+    let thumbnail = TalkService.getYoutubeThumbnail(
+      this.props.talk.recording_link,
+      this.props.talk.id
+    )
+    this.setState({ hasYoutubeRecording: thumbnail !== "" })
   }
 
   checkIfSaved = () => {
@@ -316,7 +324,7 @@ export default class PastTalkCard extends Component<Props, State> {
           gap="small"
           style={{ position: "relative" }}
         >
-          {this.props.talk.recording_link && (
+          {this.state.hasYoutubeRecording && (
             <img
               src={TalkService.getYoutubeThumbnail(
                 this.props.talk.recording_link,
@@ -328,7 +336,7 @@ export default class PastTalkCard extends Component<Props, State> {
               alignSelf: 'center'}}
             />
           )}
-          {!this.props.talk.recording_link && (
+          {!this.state.hasYoutubeRecording && (
             <img
               src={ChannelService.getAvatar(this.props.talk.channel_id)}
               height={renderMobileView ? "125px" : "48%"}

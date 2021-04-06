@@ -417,6 +417,7 @@ export default class EditTalkModal extends Component<Props, State> {
             width="170px"
             height="35px"
             text="Save as draft"
+            textColor="white"
             onClick={this.onSaveDraft}
           />
         }
