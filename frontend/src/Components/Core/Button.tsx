@@ -63,6 +63,7 @@ export default class Button extends Component<Props, State> {
         round="xsmall"
         align="center"
         justify="center"
+        alignContent="center"
         width={this.props.width}
         onClick={this.props.onClick}
         focusIndicator={false}
@@ -74,6 +75,7 @@ export default class Button extends Component<Props, State> {
           weight="bold"
           color={this.state.textColor}
           size="14px"
+          textAlign="center"
         >
           {this.props.text}
         </Text>

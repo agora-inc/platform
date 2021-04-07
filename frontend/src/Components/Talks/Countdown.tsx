@@ -143,14 +143,14 @@ export default class Countdown extends Component<
           )}
 
           {!this.shouldShowLink() && (
-            <Text size="16px" weight="bold" margin={{ top: "1px" }}>
+            <Text size="16px" weight="bold" margin={{ top: "1px" }} textAlign="center">
               {this.showTimeUntil()}
             </Text>
           )}
         </>
         )}
         {this.seminarIsFinished() && (
-          <Text size="16px" weight="bold" margin={{ top: "1px" }}>
+          <Text size="16px" weight="bold" margin={{ top: "1px" }} textAlign="center">
             This event ended.
           </Text>
         )

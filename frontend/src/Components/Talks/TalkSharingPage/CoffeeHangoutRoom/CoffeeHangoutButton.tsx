@@ -127,6 +127,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
     }
 
     render() {
+        var renderMobileView = (window.innerWidth < 800);
         return (
             <>
             {!this.cafeteriaPermanentlyClosed() && (
@@ -155,7 +156,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                 {this.cafeteriaOpened() || (
                     <Box align="center" data-tip data-for='grab_coffee_button_after'>
                         <Button
-                            width={"500px"}
+                            width={renderMobileView ? "300px" : "500px"}
                             height={"50px"}
                             onClick={()=>{}}
                             text={this.showTimeUntil()}
