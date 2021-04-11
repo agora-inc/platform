@@ -40,6 +40,7 @@
     "react-dom": "^16.13.1",
     "react-helmet": "^6.1.0",
     "react-hls": "0.0.8",
+    "react-icons": "^4.2.0",
     "react-identicon-variety-pack": "^0.2.1",
     "react-identicons": "^1.2.4",
     "react-image-crop": "^8.6.6",

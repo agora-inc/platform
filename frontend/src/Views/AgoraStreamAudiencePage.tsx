@@ -39,12 +39,13 @@ function getUserId(talkId:string, userId?:string|null){
   let key = userId || talkId
 
   let uid = window.localStorage.getItem(key)
-  if(!uid) {
+  // if(!uid) {
     uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
     window.localStorage.setItem(key, uid)
-  }
+  // }
   return uid
 }
+
 
 function useQuery(){
   return new URLSearchParams(useLocation().search)
@@ -67,7 +68,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [talkDetail, setTalkDetail] = useState({} as any)
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
   const [localVideoTrack, setLocalVideoTrack] = useState(null as any)
-  const [remoteVideoTrack, setRemoteVideoTrack] = useState(null as any)
+  const [remoteVideoTrack, setRemoteVideoTrack] = useState([] as any[])
   const [remoteScreenTrack, setRemoteScreenTrack] = useState(null as any)
   const [remoteAudioTrack, setRemoteAudioTrack] = useState(null as any)
   const [messages, setMessages] = useState<Message[]>([])
@@ -122,6 +123,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     agoraClient.setClientRole(localUser.role);
     agoraScreenShareClient.setClientRole(localUser.role);
     agoraClient.on('user-published', onClient)
+    agoraClient.on('user-unpublished', onClientStop)
     agoraScreenShareClient.on('user-published', onScreenShare)
     agoraScreenShareClient.on('user-unpublished', onScreenShareStop)
     join()
@@ -129,14 +131,27 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   async function onClient(user: any, mediaType: "audio" | "video") {
     await agoraClient.subscribe(user, mediaType);
+    setRemoteVideoTrack([...agoraClient.remoteUsers])
     if(mediaType == 'video'){
-      setRemoteVideoTrack(user.videoTrack)
       return
     }
     if(mediaType == 'audio') {
       const _remoteAudioTrack = user.audioTrack;
       _remoteAudioTrack.play();
       setRemoteAudioTrack(_remoteAudioTrack)
+      return
+    }
+  }
+  async function onClientStop(user: any, mediaType: "audio" | "video") {
+    console.log("left", agoraClient.remoteUsers)
+    setTimeout(()=>{
+      setRemoteVideoTrack([...agoraClient.remoteUsers])
+    }, 200)
+    if(mediaType == 'video'){
+      return
+    }
+    if(mediaType == 'audio') {
+      setRemoteAudioTrack(null)
       return
     }
   }
@@ -241,7 +256,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           <Box gridArea="player" justify="between" gap="small">
             <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
               style={{height: '90%', position: 'relative'}}>
-              <VideoPlayerAgora id='speaker' stream={localUser.role =='host'? localVideoTrack: remoteVideoTrack} />
+              <Box className='camera-video'>
+                {remoteVideoTrack.map((user)=>(
+                  //@ts-ignore
+                  <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} />
+                ))}
+              </Box>
+
               { isScreenAvailable && 
                   <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
               }

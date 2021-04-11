@@ -1,14 +1,15 @@
 import React, { FunctionComponent, useRef, useEffect } from "react";
-import { Box, Button } from "grommet";
+import { Box, Text } from "grommet";
 
 interface Props {
   id: string;
   stream: any;
+  mute?: boolean;
   [key:string]: any
 }
 
 
-const VideoPlayerAgora:FunctionComponent<Props> = ({id, stream, style={},  ...rest}) => {
+const VideoPlayerAgora:FunctionComponent<Props> = ({id, stream, style={}, className='', mute=false,  ...rest}) => {
 
   useEffect(()=>{
     if(stream) {
@@ -18,7 +19,9 @@ const VideoPlayerAgora:FunctionComponent<Props> = ({id, stream, style={},  ...re
 
 
   return (
-    <Box id={id} style={{position: 'relative', ...style}} {...rest}>
+    <Box id={id} style={{position: 'relative', ...style, flex: 1}} className={`${!stream?'no-video':''} ${className}`} {...rest}>
+      {!stream && <Text>No Video</Text>}
+      {mute && <Text style={{zIndex: 200, position:'absolute', bottom: 20, left: 20, background: 'white', padding: 10}} className='muted'>Muted</Text>}
     </Box>
   )
 }

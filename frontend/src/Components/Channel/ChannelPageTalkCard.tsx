@@ -39,6 +39,7 @@ interface State {
   showEdit: boolean;
   registered: boolean;
   showShadow: boolean;
+  linkCopied: boolean
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -49,6 +50,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       showEdit: false,
       registered: false,
       showShadow: false,
+      linkCopied: false
     };
   }
 
@@ -223,6 +225,16 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   toggleEdit = () => {
     this.setState({ showEdit: !this.state.showEdit });
   };
+  copyTalkUrl = () => {
+    let text = this.props.talk.link
+    var textField = document.createElement('textarea')
+    textField.innerText = text
+    document.body.appendChild(textField)
+    textField.select()
+    document.execCommand('copy')
+    textField.remove()
+    this.setState({...this.state, linkCopied: true})
+  }
 
   render() {
     return (
@@ -362,21 +374,41 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           </Box>
         </Box>
         {this.props.admin && (
-          <Box
-            onClick={() => {
-              this.toggleEdit();
-            }}
-            background="#7E1115"
-            round="xsmall"
-            pad="xsmall"
-            height="40px"
-            justify="center"
-            align="center"
-            focusIndicator={false}
-            hoverIndicator="#5A0C0F"
-            margin="10px"
-          >
-            <Text size="18px">Edit</Text>
+          <Box direction='row' flex>
+            <Box
+              onClick={() => {
+                this.toggleEdit();
+              }}
+              background="#7E1115"
+              round="xsmall"
+              pad="xsmall"
+              basis='full'
+              height="40px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+              margin="10px"
+            >
+              <Text size="18px">Edit</Text>
+            </Box>
+            <Box
+              onClick={() => {
+                this.copyTalkUrl();
+              }}
+              background="#7E1115"
+              round="xsmall"
+              pad="xsmall"
+              basis='full'
+              height="40px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#5A0C0F"
+              margin="10px"
+            >
+              <Text size="18px">{this.state.linkCopied?'Copied link': 'Copy link'}</Text>
+            </Box>
           </Box>
         )}
         {this.state.showModal && (

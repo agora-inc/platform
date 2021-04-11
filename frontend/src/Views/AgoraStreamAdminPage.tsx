@@ -13,6 +13,10 @@ import { TalkService } from "../Services/TalkService";
 import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
+import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
+import {MdScreenShare, MdStopScreenShare} from 'react-icons/md'
+
+import '../Styles/all-stream-page.css'
 
 
 interface Props {
@@ -30,16 +34,24 @@ interface Message{
   senderId: string;
   text: string
 }
+
+interface Control {
+  mic: boolean;
+  video: boolean;
+  screenShare: boolean;
+  fullscreen: boolean
+}
+
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
 const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
 
 function getUserId(talkId:string, userId?:string|null){
   let key = userId || talkId
   let uid = window.localStorage.getItem(key)
-  if(!uid) {
+  // if(!uid) {
     uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
     window.localStorage.setItem(key, uid)
-  }
+  // }
 
   return uid
 }
@@ -66,7 +78,18 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
   const [localVideoTrack, setLocalVideoTrack] = useState(null as any)
   const [localScreenTrack, setLocalScreenTrack] = useState(null as any)
+
+  const [remoteVideoTrack, setRemoteVideoTrack] = useState([] as any[])
+  const [remoteScreenTrack, setRemoteScreenTrack] = useState(null as any)
+  const [remoteAudioTrack, setRemoteAudioTrack] = useState(null as any)
+  const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
+
   const [messages, setMessages] = useState<Message[]>([])
+  const [hasStarted, setStarted] = useState(false as boolean)
+
+  const [callControl, setCallControl] = useState({
+    mic: true, video: true, screenShare: false, fullscreen: false
+  } as Control)
 
   const [state, setState] = useState({
       video: {
@@ -93,6 +116,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     if(fullscreenEl) {
       if (document.exitFullscreen) {
         document.exitFullscreen();
+        setCallControl({...callControl, fullscreen: false})
       }
       return
     }
@@ -100,6 +124,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     let element = videoContainer.current!
     if (element.requestFullscreen) {
       element.requestFullscreen();
+      setCallControl({...callControl, fullscreen: true})
     }
 
   }
@@ -117,6 +142,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     // Setting client as Speaker
     agoraClient.setClientRole(localUser.role);
     agoraScreenShareClient.setClientRole(localUser.role);
+
+    agoraClient.on('user-published', onClient)
+    agoraClient.on('user-unpublished', onClientStop)
+    agoraScreenShareClient.on('user-published', onScreenShare)
+    agoraScreenShareClient.on('user-unpublished', onScreenShareStop)
     join()
   }
 
@@ -163,13 +193,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       _messageChannel.on('ChannelMessage', on_message)
       setMessageChannel(_messageChannel)
 
-      let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-      let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-
-      setLocalAudioTrack(_localAudioTrack)
-      setLocalVideoTrack(_localVideoTrack)
-
-      await agoraClient.publish([_localAudioTrack, _localVideoTrack]);
+      await publish_camera()
+      await publish_microphone()
     }catch(e) {
       console.log(e)
     }
@@ -177,6 +202,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   async function stop_share_screen() {
       console.log("sharing stopped")
       await agoraScreenShareClient.unpublish()
+      if(localScreenTrack){
+        localScreenTrack._originMediaStreamTrack.stop()
+      }
+      setCallControl({...callControl, screenShare: false})
   }
   async function share_screen() {
     // Create a new stream for the screen share.
@@ -194,55 +223,51 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       }
       // @ts-ignore
       var _localScreenTrack = await AgoraRTC.createScreenVideoTrack(config);
+      console.log(222, _localScreenTrack)
       _localScreenTrack.on('track-ended', stop_share_screen)
-      console.log(_localScreenTrack)
+      setCallControl({...callControl, screenShare: true})
 
       setLocalScreenTrack(_localScreenTrack)
 
       await agoraScreenShareClient.publish(_localScreenTrack);
     }catch(e) {
-      console.log(agoraScreenShareClient)
       console.log("Error sharing screen", e)
     }
   }
 
-  // async function stop_sharing_video(){
-  //   //PLACEHOLDER
-  // }
+  async function unpublish_camera(){
+    if(localVideoTrack) {
+      localVideoTrack.stop()
 
-  // async function stop_sharing_screen(){
-  //   //PLACEHOLDER
-  // }
+      await agoraClient.unpublish(localVideoTrack);
+      setCallControl({...callControl, video: false})
+      setLocalVideoTrack(null)
+    }
+  }
+  async function publish_camera(){
+      let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+      setLocalVideoTrack(_localVideoTrack)
+      await agoraClient.publish([_localVideoTrack]);
+      setCallControl({...callControl, video: true})
+  }
 
-  // async function share_screen_and_audio(){
-  //   // Check if the browser supports screen sharing without an extension.
-  //   // Number.tem = ua.match(/(Chrome(?=\/))\/?(\d+)/i);
-  //   // if(parseInt(tem[2]) >= 72  && navigator.mediaDevices.getUserMedia ) {
-  //   // // Create the stream for screen sharing.
-  //   //     screenStream = AgoraRTC.createStream({
-  //   //         streamID: uid,
-  //   //         audio: false,
-  //   //         video: false,
-  //   //         screen: true,
-  //   //     });
-  //   // }
+  async function unpublish_microphone(){
+    if(localAudioTrack) {
+      localAudioTrack.stop()
 
-  //   try{
-  //     var screenStream = AgoraRTC.createScreenVideoTrack({}, "enable");
-  //     await agoraClient.publish([screenStream]);
+      await agoraClient.unpublish(localAudioTrack);
+      setCallControl({...callControl, mic: false})
+      setLocalAudioTrack(null)
+    }
+  }
+  async function publish_microphone(){
+    let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
 
-  //   }catch(e) {
-  //     console.log(e)
-  //   }
+    setLocalAudioTrack(_localAudioTrack)
+    await agoraClient.publish(_localAudioTrack);
 
-
-
-
-  // }
-
-  // async function stop_share_screen_and_audio(){
-  //   //PLACEHOLDER
-  // }
+    setCallControl({...callControl, mic: true})
+  }
 
   async function on_message(msg:any, senderId:string){
     setMessages((m)=>[...m, {senderId, text: msg.text}])
@@ -261,6 +286,56 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     }
   }
 
+  async function onClient(user: any, mediaType: "audio" | "video") {
+    await agoraClient.subscribe(user, mediaType);
+    setRemoteVideoTrack([...agoraClient.remoteUsers])
+    if(mediaType == 'video'){
+      return
+    }
+    if(mediaType == 'audio') {
+      const _remoteAudioTrack = user.audioTrack;
+      _remoteAudioTrack.play();
+      setRemoteAudioTrack(_remoteAudioTrack)
+      return
+    }
+  }
+  async function onClientStop(user: any, mediaType: "audio" | "video") {
+    console.log("left", agoraClient.remoteUsers)
+    setTimeout(()=>{
+      setRemoteVideoTrack([...agoraClient.remoteUsers])
+    }, 200)
+    if(mediaType == 'video'){
+      return
+    }
+    if(mediaType == 'audio') {
+      setRemoteAudioTrack(null)
+      return
+    }
+  }
+  async function onScreenShare(user: any, mediaType: "audio" | "video") {
+    await agoraScreenShareClient.subscribe(user, mediaType);
+    if(mediaType == 'video'){
+      setRemoteScreenTrack(user.videoTrack)
+      setScreenAvailability(true)
+      console.log("Getting screen")
+      return
+    }
+  }
+  async function onScreenShareStop(user: any, mediaType: "audio" | "video") {
+    setScreenAvailability(false)
+    setRemoteScreenTrack(null)
+    await agoraScreenShareClient.unsubscribe(user, mediaType);
+    console.log("stop share")
+  }
+
+  
+  function startTalk(){
+    setStarted(true)
+  }
+  function stopTalk(){
+    setStarted(false)
+  }
+
   useEffect(()=>{
     setup()
     return ()=>{
@@ -270,8 +345,29 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   return (
       <Box align="center">
+        <Box direction='row' flex width='50%'
+          margin={{ top: "xlarge", bottom: "xsmall" }}>
+          <Button
+            onClick={startTalk}
+            disabled={hasStarted}
+            hoverIndicator="#5A0C0F"
+            style={{background: '#7E1115', flexBasis: '100%', margin: '10px', boxShadow: 'none',
+                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'}}
+          >
+            Start
+          </Button>
+          <Button
+            onClick={stopTalk}
+            disabled={!hasStarted}
+            hoverIndicator="#5A0C0F"
+            style={{background: '#7E1115', flexBasis: '100%', margin: '10px', boxShadow: 'none',
+                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'}}
+          >
+            Stop
+          </Button>
+        </Box>
+      
         <Grid
-          margin={{ top: "xlarge", bottom: "none" }}
           // rows={["streamViewRow1", "medium"]}
           rows={["streamViewRow1"]}
           columns={["streamViewColumn1", "streamViewColumn2"]}
@@ -282,12 +378,40 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             // { name: "questions", start: [0, 1], end: [1, 1] },
           ]}
         >
-        
+          
           <Box gridArea="player" justify="between" gap="small">
-            <Box ref={videoContainer} className={`video-holder ${localUser.role}`}
+            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
               style={{height: '90%', position: 'relative'}}>
-              <VideoPlayerAgora id='speaker' stream={localVideoTrack} />
-              <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
+              <Box className='camera-video'>
+                {remoteVideoTrack.map((user)=>(
+                  //@ts-ignore
+                  <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
+                ))}
+                <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
+              </Box>
+
+              { isScreenAvailable && 
+                  <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
+              }
+
+              <Box className='call-control' direction='row'>
+                {callControl.mic?
+                  <FaMicrophone onClick={unpublish_microphone} />:
+                  <FaMicrophoneSlash onClick={publish_microphone} />
+                }
+                {callControl.video?
+                  <FaVideo onClick={unpublish_camera} />:
+                  <FaVideoSlash onClick={publish_camera} />
+                }
+                {callControl.screenShare?
+                  <MdStopScreenShare onClick={stop_share_screen} />:
+                  <MdScreenShare onClick={share_screen} />
+                }
+                {callControl.fullscreen?
+                  <FaCompress onClick={toggleFullscreen} />:
+                  <FaExpand onClick={toggleFullscreen} />
+                }
+              </Box>
             </Box>
 
             <Box direction="row" justify="between" align="start">
