@@ -6,6 +6,7 @@ import ChatBox from "../Components/Streaming/ChatBox";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
 import Tag from "../Components/Core/Tag";
 import Loading from "../Components/Core/Loading";
+import {textToLatex} from "../Components/Core/LatexRendering";
 import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
 import { StreamService } from "../Services/StreamService";
@@ -437,7 +438,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           <Box gridArea="chat" background="accent-2" round="small">
             {messages.map((msg, i)=>(
                 <Box key={i}>
-                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>{msg.text}</span>
+                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>{textToLatex(msg.text)}</span>
                 </Box>
               ))}
             <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
