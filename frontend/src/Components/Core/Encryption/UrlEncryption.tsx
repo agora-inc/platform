@@ -9,7 +9,7 @@ function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
   }
 
-export function encryptUrl(baseUrl: string, id: number, role?: string) {
+export async function encryptUrl(baseUrl: string, id: number, role?: string) {
     var data = [{id: 1}, {id: 2}]
 
     // Encrypt
@@ -32,8 +32,7 @@ export function encryptUrl(baseUrl: string, id: number, role?: string) {
     }
 }
 
-export function getIdFromUrl(encryptedUrl: string) {
-    
+export async function getIdFromUrl(encryptedUrl: string) {
     const SplitUrl = encryptedUrl.split("/")
     const encryptedEndpoint = SplitUrl[SplitUrl.length-1]
     // const basepoint = encryptedUrl.replace(encryptedEndpoint, "")
@@ -44,7 +43,7 @@ export function getIdFromUrl(encryptedUrl: string) {
     return bytes.toString(CryptoTS.enc.Utf8);
 }
 
-export function getStreamingRoleFromUrl(encryptedUrl: string) {
+export async function getStreamingRoleFromUrl(encryptedUrl: string) {
     const SplitUrl = encryptedUrl.split("/")
     const encryptedEndpoint = SplitUrl[SplitUrl.length-1]
     // const basepoint = encryptedUrl.replace(encryptedEndpoint, "")
