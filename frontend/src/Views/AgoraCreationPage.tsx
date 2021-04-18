@@ -72,7 +72,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
         : UserService.getCurrentUser(),
       loading: true,
       text: "",
-      sizeHeader: "28px",
+      sizeHeader: "32px",
       sizeItem: "16px",
       sizeText: "14px",
       agoraCreationOverlay:
@@ -149,9 +149,10 @@ export default class AgoraCreationPage extends Component<Props, State> {
         width="100vw"
         height="400vh"
         align="center"
-        margin={{ top: "10vh" }}
+        margin={{ top: "8vh" }}
+        background="color6"
         >
-        <Box width="70%" direction="column">
+        <Box width="70%" direction="column" margin={{"top": "10px"}}>
           {/* <Box
             width="98.25%"
             height="950px"
@@ -161,7 +162,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
             // gap="xsmall"
           > */}
           <Box direction="row" gap="small" margin={{bottom: "40px"}}>
-            <Text size={this.state.sizeHeader} weight="bold"> Welcome to <img src={agorastreamLogo} height="28px"/>, the centralized platform to advertise and attend academic seminars! </Text>
+            <Text size={this.state.sizeHeader} weight="bold" color="color1"> Everything you need for your seminars, all in one place</Text>
           </Box>
           <Box margin={{bottom: "32px"}}>
             <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>less than a minute</b>.
@@ -170,94 +171,166 @@ export default class AgoraCreationPage extends Component<Props, State> {
             PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
           </Text> */}
           </Box>
-
-          <Text size={this.state.sizeText} weight="bold"> What can you do with an <img src={agoraLogo} height={this.state.sizeText}/>?</Text>
-
+{/* 
+          <Text size={this.state.sizeText} weight="bold"> What can you do with an <img src={agoraLogo} height={this.state.sizeText}/>?</Text> */}
             <Grid
-              rows={['18px', '18px', '18px', '18px', '18px', '18px', '18px', '18px', '18px']}
-              columns={['20px', 'large']}
+              rows={
+                [
+                  '40px', "200px",
+                  '40px', "200px",
+                  '40px', "200px",
+                  '40px', "200px",
+                  '40px', "200px",
+                  '40px', "200px",
+
+                ]}
+              columns={['50%', "50%"]}
               gap="15px"
               margin={{left: "10px", "top": "18px"}}
               areas={[
-                { name: 'arg_1_icon', start: [0, 0], end: [0, 0] },
-                { name: 'arg_1', start: [1, 0], end: [1, 0] },
-                { name: 'arg_2_icon', start: [0, 1], end: [0, 1] },
-                { name: 'arg_2', start: [1, 1], end: [1, 1] },
-                { name: 'arg_3_icon', start: [0, 2], end: [0, 2] },
-                { name: 'arg_3', start: [1, 2], end: [1, 2] },
-                { name: 'arg_4_icon', start: [0, 3], end: [0, 3] },
-                { name: 'arg_4', start: [1, 3], end: [1, 3] },
-                { name: 'arg_5_icon', start: [0, 4], end: [0, 4] },
-                { name: 'arg_5', start: [1, 4], end: [1, 4] },
-                { name: 'arg_6_icon', start: [0, 5], end: [0, 5] },
-                { name: 'arg_6', start: [1, 5], end: [1, 5] },
-                { name: 'arg_7_icon', start: [0, 6], end: [0, 6] },
-                { name: 'arg_7', start: [1, 6], end: [1, 6] },
-                { name: 'arg_8_icon', start: [0, 7], end: [0, 7] },
-                { name: 'arg_8', start: [1, 7], end: [1, 7] },
+                { name: 'arg_1_title', start: [0, 0], end: [1, 0] },
+                { name: 'arg_1_text', start: [0, 1], end: [0, 1] },
+                { name: 'arg_1_image', start: [1, 1], end: [1, 1] },
+
+                { name: 'arg_2_title', start: [0, 2], end: [1, 2] },
+                { name: 'arg_2_text', start: [0, 3], end: [0, 3] },
+                { name: 'arg_2_image', start: [1, 3], end: [1, 3] },
+
+                { name: 'arg_3_title', start: [0, 4], end: [1, 4] },
+                { name: 'arg_3_text', start: [0, 5], end: [0, 5] },
+                { name: 'arg_3_image', start: [1, 5], end: [1, 5] },
+
+                { name: 'arg_4_title', start: [0, 6], end: [1, 6] },
+                { name: 'arg_4_text', start: [0, 7], end: [0, 7] },
+                { name: 'arg_4_image', start: [1, 7], end: [1, 7] },
+
+                { name: 'arg_5_title', start: [0, 8], end: [1, 8] },
+                { name: 'arg_5_text', start: [0, 9], end: [0, 9] },
+                { name: 'arg_5_image', start: [1, 9], end: [1, 9] },
+
+                { name: 'arg_6_title', start: [0, 10], end: [1, 10] },
+                { name: 'arg_6_text', start: [0, 11], end: [0, 11] },
+                { name: 'arg_6_image', start: [1, 11], end: [1, 11] },
+
+
               ]}
             >
-              <Box gridArea="arg_1_icon">
-                <Checkmark/>
+              <Box gridArea="arg_1_title" alignSelf="center">
+                <Text size="25px" weight="bold" color="color3">
+                  Your targetted audience is right there
+                  </Text>
+                
                 </Box>
-              <Box gridArea="arg_1">
-                : Customize your webpage
+              <Box gridArea="arg_1_text">
+                <Text size="14px">
+                  Users of <img src={agorastreamLogo} height={"14px"} width="85px"/> are <b>university students and researchers (academic and industrial)</b> coming from all over the world. Are one of these your target audience? If yes, you are in the right place.
+                </Text>
                 </Box>
-              <Box gridArea="arg_2_icon">
-                <Checkmark/>
-                </Box>
-              <Box gridArea="arg_2">
-                : Create public or on-registration seminars
-                </Box>
-
-              <Box gridArea="arg_3_icon">
-                <Checkmark/>
-                </Box>
-              <Box gridArea="arg_3">
-                : Use integrated email tech to advertise new events with your community (can be automated)
+              <Box gridArea="arg_1_image" background="orange">
+                [PLACEHOLDER GIFS]
                 </Box>
 
-              <Box gridArea="arg_4_icon">
-                <Checkmark/>
+
+
+              <Box gridArea="arg_2_title" alignContent="center">
+                <Text size="25px" weight="bold" color="color3">
+                  Organising is quick and easy
+                  </Text>
                 </Box>
-              <Box gridArea="arg_4">
-                : Integrated virtual cafeteria for social e-coffees (opening 45 minutes before your event and closing 2 hours after)
+              <Box gridArea="arg_2_text">
+                <Text size="14px">
+                  Our goal is to make organising academic seminars as <b>time-efficient</b> and <b>complete</b> as possible. On <img src={agorastreamLogo} height={"14px"} width="85px"/>, you can:
+                    <ul>
+                      <li><b>Customize your homepage</b></li>
+                      <li>Create <b>public or on-registration</b> events</li>
+                      <li><b>Send emails to your community</b> -- <i>optional; can also be automated</i></li>
+                      <li><b>Advertise your events on all your social media</b> via a couple clicks -- <i>optional; can also be automated</i></li>
+                      <li><b>Publish your past seminar recordings</b></li>
+                      <li>Use LateX format and much more!</li>
+                    </ul>
+
+                </Text>
+                </Box>
+              <Box gridArea="arg_2_image" background="orange">
+                [PLACEHOLDER GIFS]
                 </Box>
 
-              <Box gridArea="arg_5_icon">
-                <Checkmark/>
+
+
+              <Box gridArea="arg_3_title" alignContent="center">
+                <Text size="25px" weight="bold" color="color3">
+                  Allow potential future speakers to come to you
+                  </Text>
                 </Box>
-              <Box gridArea="arg_5">
-                : Integrated contact form for future potential speakers to apply to give a talk within your community
+              <Box gridArea="arg_3_text">
+                <Text size="14px">
+                  Allow potential future speakers from all around the world to apply to give a talk within your community. <img src={agorastreamLogo} height={"14px"} width="85px"/> via an in-build application form (this feature can be disabled).
+                </Text>
+                </Box>
+              <Box gridArea="arg_3_image" background="orange">
+                [PLACEHOLDER GIFS]
                 </Box>
 
-              <Box gridArea="arg_6_icon">
-                <Checkmark/>
+                <Box gridArea="arg_4_title" alignContent="center">
+                <Text size="25px" weight="bold" color="color3">
+                Integrated virtual cafeteria
+                  </Text>
                 </Box>
-              <Box gridArea="arg_6">
-                : Automated tech to share your seminars on your social media
-                </Box>  
+              <Box gridArea="arg_4_text">
+                <Text size="14px">
+                  Let your audience grab a pre/post-seminar coffee at the <img src={agoraLogo} height={"14px"}/> café
+                Have you already experienced that unpleasant awkwardness when a seminar ends? Everybody clearly wants to mingle with each others and discuss about the event! Sadly, the mainstream streaming techs just feel very limited on that regard.
+                On <img src={agorastreamLogo} height={"14px"}/>, every event has an 
 
-              <Box gridArea="arg_7_icon">
-                <Checkmark/>
+                </Text>
                 </Box>
-              <Box gridArea="arg_7">
-                : Publish your past seminar recordings and decide who can see them (public or community only)
-                </Box>     
+              <Box gridArea="arg_4_image">
+                  <video 
+                              autoPlay loop muted
+                              style={{ height: "100%", width: "auto"}}
+                              >
+                              <source src="/eCoffee/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+                  </video>
+                </Box>
 
-              <Box gridArea="arg_8_icon">
-                <Checkmark/>
+
+              <Box gridArea="arg_5_title" alignContent="center">
+                <Text size="25px" weight="bold" color="color3">
+                Use your own streaming URL or <img src={agoraLogo} height={"18px"}/> tech
+                  </Text>
                 </Box>
-              <Box gridArea="arg_8">
-                : Event creation + advertisement to your community and social media followers + registration management: <b>all in one place and done in less than a minute</b>
-                </Box>                  
+              <Box gridArea="arg_5_text">
+                <Text size="14px">
+                This can be disabled.
+                </Text>
+                </Box>
+              <Box gridArea="arg_5_image" background="orange">
+                [PLACEHOLDER GIFS]
+                </Box>
+
+              <Box gridArea="arg_6_title" alignContent="center">
+                <Text size="25px" weight="bold" color="color3">
+                  Connect online and physical audience together (Coming soon!)
+                  </Text>
+                </Box>
+              <Box gridArea="arg_6_text">
+                <Text size="14px">
+                With agora tech, physical audience can interact with their audience using their mobile app! To hear more about its development, visit [PLACEHOLDER SOCIAL MEDIA]
+                </Text>
+                </Box>
+              <Box gridArea="arg_6_image" background="orange">
+                [PLACEHOLDER GIFS]
+                </Box>
             </Grid>
+                
 
 
 
 
 
-            <CreateChannelButton 
+
+
+            {/* <CreateChannelButton 
               onClick={this.toggleCreateChannelOverlay} 
             />
             {!this.state.agoraCreationOverlay.showCreateChannelOverlay || (
@@ -268,7 +341,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 }}
                 visible={true}
                 user={this.state.user}
-              />)}
+              />)} */}
           </Box>
         </Box>
     );
