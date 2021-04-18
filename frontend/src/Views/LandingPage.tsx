@@ -52,7 +52,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
     var now = Date.now();
     // return dynamicTextValueList[now % dynamicTextValueList.length]
-    return "Home for the best online/physical academic seminars"
+    return "Home for cutting-edge online/physical academic seminars"
   }
     
 
@@ -111,8 +111,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           justify="center"
         >
           <Box direction="column" gap="30px" width="360px">
-            <Text size="16pt" weight="bold">
-              For researchers
+            <Text size="21px" weight="bold">
+              For academics
             </Text>
             
             <Box direction="row" gap="40px">
@@ -197,12 +197,46 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Link>
           </MediaQuery> */}
 
-          <Box direction="column" gap="30px" width="360px">
-            <Text size="16pt" weight="bold">
-              For seminar organizers
+          <Box direction="column" width="360px">
+            <Text size="21px" weight="bold" margin={{bottom: "30px"}}>
+              For organizers
             </Text>
 
-            <MediaQuery minDeviceWidth={800}>
+            <Text size="14px" margin={{bottom: "3px"}}> 
+              Create your events and share them to the world
+            </Text>
+            <Text size="14px" margin={{bottom: "35px"}}> 
+              in less than 10 minutes!
+            </Text>
+
+            <Link
+              to={{ pathname: "/agoras" }}
+              style={{ textDecoration: "none" }}
+            >
+              <Box
+                onClick={() => ({})}
+                direction="row"
+                background="#EEEEEE"
+                round="xsmall"
+                pad="small"
+                gap="xsmall"
+                height="50px"
+                width="275px"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#DDDDDD"
+              >
+                <Add size="30px" />
+                <Text size="16px" weight="bold" margin={{left: "3px"}}> 
+                  Publish/Host
+                </Text>
+                <Text size="16px" margin={{left: "0px"}}> 
+                  your seminars
+                </Text>
+              </Box>
+            </Link>
+
+            {/* <MediaQuery minDeviceWidth={800}>
               <Link
                 to={{ pathname: "info/agora_creation" }}
                 style={{ textDecoration: "none" }}
@@ -225,7 +259,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   <Text size="16px" margin={{top: "5px"}}> your seminars </Text>
                 </Box>
               </Link>
-            </MediaQuery>
+        </MediaQuery> */}
           </Box>
         </Box>
 
@@ -394,7 +428,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         */}
 
-        <Box width="1024px" align="center">
+        <Box width="820px" align="center">
           <FooterComponent />
         </Box>
 
