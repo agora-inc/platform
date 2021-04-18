@@ -120,7 +120,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
           <Box
             onClick={() => ({})}
             direction="row"
-            background="#EEEEEE"
+            background="#EAF1F1"
             round="xsmall"
             pad="small"
             gap="xsmall"
@@ -128,7 +128,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
             width="250px"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#DDDDDD"
+            hoverIndicator="#BAD6DB"
           >
             <Multiple size="25px" />
             <Text size="14px" weight="bold" margin={{left: "2px"}}> 

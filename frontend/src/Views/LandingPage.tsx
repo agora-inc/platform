@@ -17,6 +17,8 @@ import TrendingChannelsList from "../Components/Homepage/TrendingChannelsList";
 interface State {
   user: User | null
   showLogin: boolean
+  colorButton: string
+  colorHover: string
 }
 
 export default class LandingPage extends Component<RouteComponentProps, State> {
@@ -25,6 +27,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     this.state = {
       user: UserService.getCurrentUser(),
       showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
+      colorButton: "#EAF1F1",
+      colorHover: "#BAD6DB",
     };
   }
 
@@ -96,7 +100,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Box>
 
 
-          <Box direction="column" justify="center" alignContent="center" margin={{top: "5px"}}> 
+          <Box direction="column" justify="center" alignContent="center" margin={{top: "5px", left: "10px", right: "10px"}}> 
             <Text size="16px" weight="bold" alignSelf="center"> 
               {this.showDynamicTextValue()}
             </Text>
@@ -107,23 +111,23 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box 
           direction="row" 
           focusIndicator={false}
-          margin={{top: (window.innerWidth > 800) ? "70px" : "10px"}}
+          margin={{top: (window.innerWidth > 800) ? "70px" : "35px"}}
           justify="center"
         >
-          <Box direction="column" gap="30px" width="360px">
-            <Text size="21px" weight="bold">
+          <Box direction="column" width="360px" >
+            <Text size="21px" weight="bold" margin={{left: "10px", bottom: "30px"}}>
               For academics
             </Text>
-            
-            <Box direction="row" gap="40px">
-              <MediaQuery minDeviceWidth={800}>
+
+            <MediaQuery minDeviceWidth={800}>
+              <Box direction="row" gap="10px">
                 <Link
                   to={{ pathname: "/browse" }}
                   style={{ textDecoration: "none" }}
                 >
                   <Box
                     onClick={() => ({})}
-                    background="#DDDDDD"
+                    background={this.state.colorButton}
                     round="xsmall"
                     pad="xsmall"
                     height="120px"
@@ -131,24 +135,22 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                     justify="center"
                     align="center"
                     focusIndicator={false}
-                    hoverIndicator="#CCCCCC"
+                    hoverIndicator={this.state.colorHover}
+                    margin={{left: "10px", right: "20px"}}
                   >
                     <Search size="30px"/>
                     <Text size="16px" weight="bold" margin={{top: "10px"}}> Browse </Text>
                     <Text size="16px" margin={{top: "5px"}}> future seminars </Text>
                   </Box>
                 </Link>
-              </MediaQuery>
 
-
-              <MediaQuery minDeviceWidth={800}>
                 <Link
                   to={{ pathname: "/past" }}
                   style={{ textDecoration: "none" }}
                 >
                   <Box
                     onClick={() => ({})}
-                    background="#DDDDDD"
+                    background={this.state.colorButton}
                     round="xsmall"
                     pad="xsmall"
                     height="120px"
@@ -156,16 +158,79 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                     justify="center"
                     align="center"
                     focusIndicator={false}
-                    hoverIndicator="#CCCCCC"
+                    hoverIndicator={this.state.colorHover}
                   >
                     <Play size="30px" />
                     <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch</Text>
                     <Text size="16px" margin={{top: "5px"}}> past seminars </Text>
                   </Box>
                 </Link>
-              </MediaQuery>
-              
-            </Box>
+              </Box>
+            </MediaQuery>
+
+            <MediaQuery maxDeviceWidth={800}>
+              <Box direction="column" margin={{left: "10px"}}>
+                <Link
+                  to={{ pathname: "/browse" }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    onClick={() => ({})}
+                    direction="row"
+                    background={this.state.colorButton}
+                    round="xsmall"
+                    pad="small"
+                    gap="xsmall"
+                    height="60px"
+                    width="165px"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator={this.state.colorHover}
+                    margin={{bottom: "30px"}}
+                  >
+                    
+                    <Search size="30px"/>
+                    <Box direction="column"> 
+                      <Text size="16px" weight="bold" margin={{left: "2px", bottom: "3px"}}> 
+                        Browse
+                      </Text>
+                      <Text size="16px" margin={{left: "2px"}}> 
+                        future seminars
+                      </Text>
+                    </Box>
+                  </Box>
+                </Link>
+                <Link
+                  to={{ pathname: "/past" }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    onClick={() => ({})}
+                    direction="row"
+                    background={this.state.colorButton}
+                    round="xsmall"
+                    pad="small"
+                    gap="xsmall"
+                    height="60px"
+                    width="165px"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator={this.state.colorHover}
+                  >
+                    
+                    <Play size="30px"/>
+                    <Box direction="column"> 
+                      <Text size="16px" weight="bold" margin={{left: "2px", bottom: "3px"}}> 
+                        Watch
+                      </Text>
+                      <Text size="16px" margin={{left: "2px"}}> 
+                        past seminars
+                      </Text>
+                    </Box>
+                  </Box>
+                </Link>
+              </Box>
+            </MediaQuery>
             
           </Box>
 
@@ -206,35 +271,69 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               Create your events and share them to the world
             </Text>
             <Text size="14px" margin={{bottom: "35px"}}> 
-              in less than 10 minutes!
+              in less than 5 minutes!
             </Text>
-
-            <Link
-              to={{ pathname: "/agoras" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                onClick={() => ({})}
-                direction="row"
-                background="#EEEEEE"
-                round="xsmall"
-                pad="small"
-                gap="xsmall"
-                height="50px"
-                width="275px"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator="#DDDDDD"
+            
+            <MediaQuery minDeviceWidth={800}>
+              <Link
+                to={{ pathname: "/info/agora_creation" }}
+                style={{ textDecoration: "none" }}
               >
-                <Add size="30px" />
-                <Text size="16px" weight="bold" margin={{left: "3px"}}> 
-                  Publish/Host
-                </Text>
-                <Text size="16px" margin={{left: "0px"}}> 
-                  your seminars
-                </Text>
-              </Box>
-            </Link>
+                <Box
+                  onClick={() => ({})}
+                  direction="row"
+                  background={this.state.colorButton}
+                  round="xsmall"
+                  pad="small"
+                  gap="xsmall"
+                  height="50px"
+                  width="275px"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator={this.state.colorHover}
+                >
+                  <Add size="30px" />
+                  <Text size="16px" weight="bold" margin={{left: "3px"}}> 
+                    Publish/Host
+                  </Text>
+                  <Text size="16px" margin={{left: "0px"}}> 
+                    your seminars
+                  </Text>
+                </Box>
+              </Link>
+            </MediaQuery>
+
+            <MediaQuery maxDeviceWidth={800}>
+            <Link
+                to={{ pathname: "/info/agora_creation" }}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  onClick={() => ({})}
+                  direction="row"
+                  background={this.state.colorButton}
+                  round="xsmall"
+                  pad="small"
+                  gap="xsmall"
+                  height="60px"
+                  width="160px"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator={this.state.colorHover}
+                >
+                  
+                  <Add size="30px" />
+                  <Box direction="column"> 
+                    <Text size="16px" weight="bold" margin={{left: "5px", bottom: "3px"}}> 
+                      Publish/Host
+                    </Text>
+                    <Text size="16px" margin={{left: "5px"}}> 
+                      your seminars
+                    </Text>
+                  </Box>
+                </Box>
+              </Link>
+            </MediaQuery>
 
             {/* <MediaQuery minDeviceWidth={800}>
               <Link
@@ -281,7 +380,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box 
           direction="row" 
           gap="150px"
-          margin={{top: "75px"}}
+          margin={{top: "75px", left: "10px", right: "10px"}}
         >
           <TrendingChannelsList/>
         </Box>
