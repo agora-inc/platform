@@ -6,6 +6,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import { Talk, TalkService } from "../Services/TalkService";
 import { User, UserService } from "../Services/UserService";
 import { Topic, TopicService } from "../Services/TopicService";
+import TopicClassification from "../Components/Homepage/TopicClassification";
 import MediaQuery from "react-responsive";
 
 interface State {
@@ -203,6 +204,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
     }
   };
 
+  selectTopicMobile = (temp: Topic) => {
+    this.setState({
+      chosenTopic: temp,
+    });
+  };
+
   //   sortVideos = () => {
   //     return this.state.sortBy === "date"
   //       ? this.state.videos.sort(this.compareVideosByDate)
@@ -210,6 +217,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
   //   };
 
   render() {
+    var breakpoint_width = 992
     return (
       <Box
         pad={{ top: "10vh", bottom: "100px" }}
@@ -228,7 +236,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
             <Heading
               color="black"
               size="24px"
-              margin="none"
+              margin={{ bottom: "15px" }}
               style={{ height: "20px" }}
             >
               All previous talks
@@ -374,19 +382,60 @@ export default class AllPastTalksPage extends Component<{}, State> {
           </Box>
         </MediaQuery>
 
+        {/* B. Classification system for mobile */}
+        <MediaQuery maxDeviceWidth={992}>
+          <TopicClassification 
+            topicCallback={this.selectTopicMobile}
+            searchType="Talks"
+          />
+        </MediaQuery>
+              
+        {/* Very bad copy-pasting for mobile hack (A) */}
+          <MediaQuery minDeviceWidth={992}>
+            <Box
+              direction="row"
+              gap="1%"
+              wrap
+              margin={{ top: "20px" }}
+            >
+              {this.fetchFilteredTalks().map((talk: Talk, index: number) => (
+                <PastTalkCard talk={talk} width="24%" user={this.state.user} />
+              ))}
+            </Box>
+          </MediaQuery>
+          <MediaQuery maxDeviceWidth={992}>
+            <Box
+              direction="row"
+              gap="1%"
+              wrap
+              margin={{ top: "20px" }}
+            >
+              {this.fetchFilteredTalks().map((talk: Talk, index: number) => (
+                <PastTalkCard talk={talk} width="100%" user={this.state.user} />
+              ))}
+            </Box>
+          </MediaQuery>
 
+        </Box>
+              
+        {this.fetchFilteredTalks().length === 0 && (
           <Box
             direction="row"
-            gap="1%"
-            wrap
-            // justify="center"
-            margin={{ top: "20px" }}
+            width="280px"
+            margin="none"
+            pad="small"
+            justify="between"
+            round="xsmall"
+            align="center"
+            alignSelf="center"
+            background="#EEEEEE"
           >
-            {this.fetchFilteredTalks().map((talk: Talk, index: number) => (
-              <PastTalkCard talk={talk} width="24%" user={this.state.user} />
-            ))}
+            <Text size="12px" weight="bold" color="grey">
+              Currently no public talks in that category
+            </Text>
           </Box>
-        </Box>
+        )}
+
         {/* {this.state.videos.length !== this.state.totalNumberOfVideos && (
           <Box
             onClick={this.fetchVideos}

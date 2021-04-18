@@ -13,6 +13,7 @@ import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
 // import GlobalClassification from "../../Components/Homepage/GlobalClassification";
 import MediaQuery from "react-responsive";
+import TopicSelector from "./TopicSelector";
 
 interface Props {
   gridArea?: string;
@@ -34,20 +35,22 @@ interface State {
   allAudienceLevels: string[];
 }
 
+var emptyTopic = {
+  field: "-",
+  id: -1,
+  is_primitive_node: false,
+  parent_1_id: -1,
+  parent_2_id: -1,
+  parent_3_id: -1,
+}
+
 export default class TopicTalkList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       allTalks: [],
       allTopics: [],
-      chosenTopic: {
-        field: "-",
-        id: -1,
-        is_primitive_node: false,
-        parent_1_id: -1,
-        parent_2_id: -1,
-        parent_3_id: -1,
-      },
+      chosenTopic: emptyTopic,
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
@@ -199,6 +202,12 @@ export default class TopicTalkList extends Component<Props, State> {
     }
   };
 
+  selectTopicMobile = (temp: Topic) => {
+    this.setState({
+      chosenTopic: temp,
+    });
+  };
+
   ifTalks = () => {
     
     return (
@@ -267,6 +276,7 @@ export default class TopicTalkList extends Component<Props, State> {
 
         </Box>
 
+        {/* A. Classification system for desktop */}
         <MediaQuery minDeviceWidth={992}>
           <Box 
             width="97.5%" 
@@ -383,6 +393,14 @@ export default class TopicTalkList extends Component<Props, State> {
               )}
             </Box> 
           </Box>
+        </MediaQuery>
+
+        {/* B. Classification system for mobile */}
+        <MediaQuery maxDeviceWidth={992}>
+          <TopicClassification 
+            topicCallback={this.selectTopicMobile}
+            searchType="Talks"
+          />
         </MediaQuery>
 
         {this.fetchFilteredTalks().length === 0
