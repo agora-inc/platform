@@ -37,10 +37,8 @@ export default class Clapping extends Component<Props, State> {
         cut: [0, this.props.totalTimeClap],
       },
     });
-    console.log(this.props)
-    
     this.state.sounds[tag] = sound;
-    // this.state.sounds[tag].play("cut");
+    this.state.sounds[tag].play("cut");
   };
 
   /*
@@ -57,7 +55,7 @@ export default class Clapping extends Component<Props, State> {
     if (event.keyCode == 0 || event.keyCode == 32) {
       // Setting volume level
       this.state.sounds.clapUser.volume(
-        Math.min(this.state.sounds.clapUser.volume() + 0.05, 1.0)
+        Math.min(this.state.sounds.clapUser.volume() + 0.1, 1.0)
       );
     }
   };
@@ -69,8 +67,7 @@ export default class Clapping extends Component<Props, State> {
     }
     this.soundPlay("clapBase", this.props.startVolume);
     this.soundPlay("clapUser", 0.0);
-    console.log(this.state);
-    console.log(this.props);
+
     document.addEventListener("keypress", this.onPress);
     var nUpdates = this.props.totalTimeClap / this.props.updateFrequency;
     var countUpdates = 0;
@@ -104,8 +101,8 @@ export default class Clapping extends Component<Props, State> {
       this.state.sounds.clapUser.volume(
         Math.max(this.state.sounds.clapUser.volume() - 0.03, 0.0)
       );
-      console.log("Volume base: " + this.state.sounds.clapBase.volume());
-      console.log("Volume user: " + this.state.sounds.clapUser.volume());
+      // console.log("Volume base: " + this.state.sounds.clapBase.volume());
+      // console.log("Volume user: " + this.state.sounds.clapUser.volume());
     }, this.props.updateFrequency);
   };
 
