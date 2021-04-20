@@ -21,7 +21,7 @@ const VideoPlayerAgora:FunctionComponent<Props> = ({id, stream, style={}, classN
   return (
     <Box id={id} style={{position: 'relative', ...style, flex: 1}} className={`${!stream?'no-video':''} ${className}`} {...rest}>
       {!stream && <Text>No Video</Text>}
-      {mute && <Text style={{zIndex: 200, position:'absolute', bottom: 20, left: 20, background: 'white', padding: 10}} className='muted'>Muted</Text>}
+      {mute && <Text style={{zIndex: 200, position:'absolute', bottom: 20, left: 20, background: 'white', padding: 10, color: 'black'}} className='muted'>Muted</Text>}
     </Box>
   )
 }

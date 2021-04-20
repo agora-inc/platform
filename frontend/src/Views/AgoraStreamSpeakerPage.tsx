@@ -15,6 +15,7 @@ import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare} from 'react-icons/md'
+import {db, API} from '../Services/FirebaseService'
 
 import '../Styles/all-stream-page.css'
 
@@ -85,6 +86,9 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
 
   const [messages, setMessages] = useState<Message[]>([])
+  const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
+  
+  const [talkId, setTalkId] = useState('')
 
   const [callControl, setCallControl] = useState({
     mic: true, video: true, screenShare: false, fullscreen: false
@@ -330,11 +334,34 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
 
   useEffect(()=>{
-    setup()
+    (async ()=>{
+      setTalkId(props.match.params.talk_id)
+    })()
+  }, [])
+
+  useEffect(()=>{
+    if(!talkId) {
+      return
+    }
+    let unsubs = db.collection('talk').doc(talkId).onSnapshot(doc=>{
+      if(!doc.exists){
+        return
+      }
+      let data = doc.data() as any
+      if(data.status === 'STARTED') {
+        setTalkStatus(data.status)
+        setup()
+      }
+      if(data.status === 'ENDED') {
+        setTalkStatus(data.status)
+      }
+    })
     return ()=>{
       leave()
+      unsubs()
     }
-  }, [])
+  }, [talkId])
+
 
   return (
       <Box align="center">
@@ -434,7 +461,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </Box>
             </Box>
           </Box>
-          <Box gridArea="chat" background="accent-2" round="small">
+          <Box gridArea="chat" background="gray" round="small">
             {messages.map((msg, i)=>(
                 <Box key={i}>
                   <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>{msg.text}</span>

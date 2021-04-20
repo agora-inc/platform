@@ -51,3 +51,14 @@
     background-color: black;
     color: white;
 }
+.request-holder {
+    position: absolute;
+    right: 0;
+    padding: 10px;
+}
+.request-holder .request-item{
+    background: rgba(200, 200,200,0.7);
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}

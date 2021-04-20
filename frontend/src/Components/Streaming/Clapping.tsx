@@ -37,9 +37,10 @@ export default class Clapping extends Component<Props, State> {
         cut: [0, this.props.totalTimeClap],
       },
     });
-
+    console.log(this.props)
+    
     this.state.sounds[tag] = sound;
-    this.state.sounds[tag].play("cut");
+    // this.state.sounds[tag].play("cut");
   };
 
   /*
