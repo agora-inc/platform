@@ -546,7 +546,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             borderRadius: 7,
           }}
         />
-        <Clapping />
+        <Clapping /> 
         <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}
