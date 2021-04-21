@@ -1,46 +1,81 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
+import { timeStamp } from "node:console";
+import { min } from "moment";
 
 interface Props {
   width: string;
   height: string;
-  disabled?: boolean;
-  onClick: any;
   text: string;
+  onClick: any;
+  buttonType?: "mainAction" | "secondaryAction";
+  disabled?: boolean;
   fill?: string;
-  hoverIndicator?: string;
-  onMouseEnter?: any
+  hoverIndicator?: string | boolean;
+  background?: string;
+  onMouseEnter?: any;
+  textColor?: string;
 }
 
-export default class Button extends Component<Props> {
+interface State {
+  background: string;
+  hoverIndicator: string | boolean;
+  textColor: string;
+}
+
+export default class Button extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      background:  "#0C385B",
+      hoverIndicator: "#6DA3C7",
+      textColor: this.props.textColor ? this.props.textColor : "black",
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.buttonType === "mainAction"){
+      this.setState({
+        background: "#0C385B",
+        hoverIndicator:"#6DA3C7",
+        textColor: this.props.textColor ? this.props.textColor : ""
+      })
+    } else if (this.props.buttonType === "secondaryAction"){
+      this.setState({
+        background: "#F2F2F2",
+        hoverIndicator: "#BAD6DB",
+        textColor: this.props.textColor ? this.props.textColor : "black"}
+      )
+    }
+    if (this.props.disabled){
+      this.setState({
+        hoverIndicator: false
+      }
+      )
+    }
+  }
+
   render() {
-    const borderStyle = this.props.fill ? "none" : "2px solid black";
     return (
       <Box
         height={this.props.height}
-        background={this.props.fill || "white"}
+        background={this.props.fill ? this.props.fill : this.state.background}
         round="xsmall"
-        style={
-          !this.props.disabled
-            ? { border: borderStyle }
-            : {
-                border: borderStyle,
-                opacity: 0.4,
-                pointerEvents: "none",
-              }
-        }
         align="center"
         justify="center"
+        alignContent="center"
         width={this.props.width}
         onClick={this.props.onClick}
         focusIndicator={false}
-        hoverIndicator={this.props.hoverIndicator || true}
+        pad="xsmall"
         onMouseEnter={this.props.onMouseEnter}
+        hoverIndicator={this.state.hoverIndicator}
       >
         <Text
           weight="bold"
-          color={this.props.fill ? "white" : "black"}
+          color={this.state.textColor}
           size="14px"
+          textAlign="center"
         >
           {this.props.text}
         </Text>

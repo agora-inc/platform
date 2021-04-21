@@ -6,10 +6,11 @@ import { User } from "../../../Services/UserService";
 import { Calendar } from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
 import Countdown from "../Countdown";
+import CalendarButtons from "../CalendarButtons";
 import ShareButtons from "../../Core/ShareButtons";
 import TalkRegistrationButton from "./TalkRegistrationButton";
 import SaveForLaterButton  from "./SaveForLaterButton";
-import CalendarButtons from "../CalendarButtons";
+// import "../../../Styles/talk"
 
 interface Props {
     talk: Talk;
@@ -190,13 +191,15 @@ interface Props {
     };
 
 render() {
+    var renderMobileView = (window.innerWidth < 800);
+
     return (
         <Box direction="column" gap="small" width="100%" >
-          <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
-            <Box direction="row" width="80%" align="center" gap="10px">
-              <Calendar size="16px" />
+          <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}} >
+            <Box direction="row" width="100%" align="center" gap="10px">
+              <Calendar size={renderMobileView ? "14px" : "16px"} />
               <Text
-                size="16px"
+                size={renderMobileView ? "14px" : "16px"}
                 color="black"
                 margin={{left:"5px"}}
                 style={{ height: "20px", fontStyle: "normal" }}
@@ -208,14 +211,14 @@ render() {
               </Text>
               <CalendarButtons talk={this.props.talk}/>
             </Box>
-
             <Box
               justify="end"
-              // align="end"
+              align="end"
               // margin={{left: "10px"}}
             >
-              <ShareButtons talk={this.props.talk} width="90px" />
+              <ShareButtons talk={this.props.talk} width={renderMobileView ? "50px" : "90px"} />
             </Box>
+
 
 
               {/* <Box
@@ -267,100 +270,6 @@ render() {
                 <Countdown talk={this.props.talk} />
             )}
           </Box>
-
-
-
-          {/* {this.checkIfUserCanAccessLink() &&
-            this.props.user !== null &&
-            this.state.registered && (
-              <Box margin={{ top: "10px", bottom: "5px", left: "20px", right: "20px" }} background="#d5d5d5">
-                <Countdown talk={this.props.talk} />
-                <Box
-                  focusIndicator={false}
-                  background="#FF4040"
-                  round="xsmall"
-                  pad="xsmall"
-                  justify="center"
-                  align="center"
-                  width="20%"
-                  height="35px"
-                  onClick={this.onClick}
-                  margin={{ top: "-35px" }}
-                  alignSelf="end"
-                  hoverIndicator={true}
-                >
-                  <Text size="14px" weight="bold">
-                    Unregister
-                  </Text>
-                </Box>
-              </Box>
-            )}
-          {this.checkIfUserCanAccessLink() &&
-            this.props.user !== null &&
-            !this.state.registered && (
-              <Box 
-              margin={{ top: "5px", bottom: "5px", left: "20px", right: "20px" }}>
-                <Box>
-                  <Countdown talk={this.props.talk} />
-                </Box>
-
-              </Box>
-          )}
-          {this.checkIfUserCanAccessLink() &&
-            this.props.user == null &&
-            !this.state.registered && (
-              <Box 
-              margin={{ top: "5px", bottom: "5px", left: "20px", right: "20px" }}>
-                <Box>
-                  <Countdown talk={this.props.talk} />
-                </Box>
-              </Box>
-          )}
-          {!this.checkIfUserCanAccessLink() && this.props.user === null
-          && (
-            
-            <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
-              <SaveForLaterButton
-                talk={this.props.talk}
-              />
-              <TalkRegistrationButton
-                talk={this.props.talk}
-              />
-            </Box>
-          )}
-          {!this.checkIfUserCanAccessLink() && this.props.user !== null
-          && (
-            <Box direction="row" align="center" gap="25px" pad="25px" justify="center" background="#d5d5d5">
-              
-            <TalkRegistrationButton
-              talk={this.props.talk}
-              user={this.props.user}
-            />
-            <Text textAlign="center" weight="bold" size="16px"> 
-            {`${this.props.talk.visibility === "Members only"
-                  ? ` or become a member`
-                  : ""
-                } 
-                to attend`
-            }
-            </Text>
-            <Link to={`/${this.props.talk.channel_name}`} style={{ textDecoration: "none" }}>
-              <Box
-                className="see-more-button"
-                pad={{ vertical: "2px", horizontal: "xsmall" }}
-                round="xsmall"
-                style={{
-                  border: "2px solid #C2C2C2",
-                }}
-                direction="row"
-                align="end"
-              >      
-                <FormNextLink color="grey" />
-              </Box>
-            </Link>
-          </Box>
-        )}
-        */}
       </Box>
       
     )

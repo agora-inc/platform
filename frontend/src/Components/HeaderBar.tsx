@@ -61,9 +61,11 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           <Box style={{ minWidth: "15%" }}>
             <Link to="/" style={{ textDecoration: "none", width: 140 }}>
               <Box direction="row" align="center">
-                {/* <Logo style={{ height: "5vh", margin: 0 }} /> */}
+                <MediaQuery minDeviceWidth={992}>
                 <img src={agoraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
+                </MediaQuery>
                   <MediaQuery maxDeviceWidth={992}>
+                <img src={agoraStreamFullLogo} style={{ height: "4vh", margin: 0 }}/>
                     <Text size="xsmall" color="black">mobile</Text>
                     </MediaQuery>
               </Box>
@@ -72,6 +74,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 <Text 
                   size="12px"
                   color="grey"
+                  margin={{start: "1.6%"}}
                   style={{
                     // height: "30px",
                     overflow: "auto",

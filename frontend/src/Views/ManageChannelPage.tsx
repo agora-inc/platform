@@ -775,14 +775,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
-                  <Tab>
+                  {/* <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <SettingsOption />
                       <Text size="14px"> 
                         Details 
                       </Text>
                     </Box>
-                  </Tab>
+                  </Tab> */}
                 </TabList>
                 
 
@@ -807,7 +807,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     />
                     {this.state.showDraftInfo && (
                       <ReactTooltip id='draftInfo' place="right" effect="solid">
-                        These talks are only visible to you.
+                        These drafts are only visible to you.
                       </ReactTooltip>
                     )}
                   </Box>
@@ -824,10 +824,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       margin={{ bottom: "36px" }}
                     >
                       <Text size="14px" weight="bold" color="grey">
-                        No draft saved in{" "}
-                        {this.state.channel
-                          ? this.state.channel.name
-                          : "this channel"}
+                        Future drafts will saved here
                       </Text>
                     </Box>
                   )}
@@ -1105,9 +1102,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                           }}
                         />
                         {this.state.showMemberEmailInfo && (
-                          <ReactTooltip id='mailingListInfo' place="right" effect="solid">
+                          <ReactTooltip id='mailingListInfo' place="right" effect="solid" multiline={true}>
                             Enter the emails of the people you want to invite as member of{" "}
-                            {this.state.channel ? this.state.channel.name : "your agora"}.
+                            {this.state.channel ? this.state.channel.name : "your agora"}. <br />
+                            Example: joe@uni.ac.uk, jack@company.com
                           </ReactTooltip>
                         )}
                       </Box>
@@ -1165,7 +1163,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
                 
-
+              {/*   DETAIL SECTION: COMMENTED OUT
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
                   <Grid
                     rows={['xxsmall', 'xxsmall']}
@@ -1185,7 +1183,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         onDeleteAddress={this.onDeleteContactAddress}
                       />
                     </Box>
-                    {/* <Box gridArea="topic_change">
+                    <Box gridArea="topic_change">
                       <ChannelTopicSelector 
                         onSelectedCallback={this.selectTopic}
                         onCanceledCallback={this.cancelTopic}
@@ -1226,9 +1224,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                       )}
                       </Text>
                       </Box>
-                    </Box> */}
+                    </Box>
                   </Grid>
-                </TabPanel>
+                </TabPanel> */}
               </Tabs>
             </Box>
           </Box>

@@ -180,8 +180,8 @@ export default class TalkCard extends Component<Props, State> {
     var breakpoint_width = 992;
     return (
       <div className="talk_card_box_1" style={
-        {"width": this.props.width ? this.props.width : "32%",
-      "height": "180px"}} onClick={() => {
+        {"width": this.props.width ? this.props.width : "32%"}} 
+        onClick={() => {
             !this.state.showModal && this.toggleModal();
         }}
         >
@@ -295,12 +295,12 @@ export default class TalkCard extends Component<Props, State> {
                   width="170px"
                   height="30px"            
                 >
-                  <Text size="14px">
+                  <Text size="12px">
                     member-only
                   </Text>
                 </Box>
               }
-              {this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
+              {/*this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
                 <Box
                   round="xsmall"
                   background="#D3F930"
@@ -314,7 +314,7 @@ export default class TalkCard extends Component<Props, State> {
                     on-registration
                   </Text>
                 </Box>
-              }
+            */}
             </Box>
           </Box>
         </Box>

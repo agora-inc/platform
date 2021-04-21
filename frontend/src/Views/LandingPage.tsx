@@ -41,13 +41,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   showDynamicTextValue() {
     // Changes every second
     var dynamicTextValueList = [
-      "Opening the doors to all online academic seminars in the world.",
-      "Democratizing access to cutting-edge research.",
-      "Leveraging modern technologies in the service of academics.",
-      "Cutting global travel of academics and fight climate change.",
-      "Empowering academics' reach and visibility.",
-      "Automating the seminar organisers' pipeline.",
-      "Bridging academic and industrial researchers."
+      "Opening the doors to all online academic seminars in the world",
+      "Democratizing access to cutting-edge research",
+      "Leveraging modern technologies in the service of academics",
+      "Cutting global travel of academics and fight climate change",
+      "Empowering academics reach and visibility",
+      "Automating the seminar organisation pipeline",
+      "Bridging academic and industrial researchers"
     ];
 
     var now = Date.now();
@@ -76,7 +76,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         <video 
           autoPlay loop muted id="background-landing" 
-          style={{ width: "100%", top: "0px" }}
+          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%"}}
         >
           <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4" /> 
         </video>
@@ -85,11 +85,17 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           
           <Box direction="row" justify="center" style={{justifyContent: "center"}} margin={{top: "50px", bottom: "20px"}}>
             {/* <Logo style={{ height: "60px", width: "60px"}} /> */}
-            <img src={agoraStreamFullLogo} style={{ height: "90px"}}/>
+            <MediaQuery maxDeviceWidth={800}>
+              <img src={agoraStreamFullLogo} style={{ width: "200px", maxHeight: "40px"}}/>
+              <Text margin={{left: "5px"}} size="14px">Mobile</Text>
+            </MediaQuery>
+            <MediaQuery minDeviceWidth={800}>
+              <img src={agoraStreamFullLogo} style={{ height: "90px"}}/>
+            </MediaQuery>
           </Box>
 
 
-          <Box direction="column" justify="center" margin={{top: "5px"}}> 
+          <Box direction="column" justify="center" alignContent="center" margin={{top: "5px"}}> 
             <Text size="16px" weight="bold" alignSelf="center"> 
               {this.showDynamicTextValue()}
             </Text>
@@ -101,96 +107,108 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           direction="row" 
           gap="50px" 
           focusIndicator={false}
-          margin={{top: "70px"}}
+          margin={{top: (window.innerWidth > 800) ? "70px" : "10px"}}
         >
-          <Link
-            to={{ pathname: "/browse" }}
-            style={{ textDecoration: "none" }}
-          >
-            <Box
-              onClick={() => ({})}
-              background="#DDDDDD"
-              round="xsmall"
-              margin={{ horizontal: "small" }}
-              pad="xsmall"
-              height="130px"
-              width="176px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#CCCCCC"
+          <MediaQuery minDeviceWidth={800}>
+            <Link
+              to={{ pathname: "/browse" }}
+              style={{ textDecoration: "none" }}
             >
-              <Search size="30px"/>
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Browse </Text>
-              <Text size="16px" margin={{top: "10px"}}> future seminars </Text>
-            </Box>
-          </Link>
-          <Link
-            to={{ pathname: "/past" }}
-            style={{ textDecoration: "none" }}
-          >
-            <Box
-              onClick={() => ({})}
-              background="#DDDDDD"
-              round="xsmall"
-              margin={{ horizontal: "small" }}
-              pad="xsmall"
-              height="130px"
-              width="176px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#CCCCCC"
+              <Box
+                onClick={() => ({})}
+                background="#DDDDDD"
+                round="xsmall"
+                margin={{ horizontal: "small" }}
+                pad="xsmall"
+                height="130px"
+                width="176px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#CCCCCC"
+              >
+                <Search size="30px"/>
+                <Text size="16px" weight="bold" margin={{top: "10px"}}> Browse </Text>
+                <Text size="16px" margin={{top: "10px"}}> future seminars </Text>
+              </Box>
+            </Link>
+          </MediaQuery>
+
+
+          <MediaQuery minDeviceWidth={800}>
+            <Link
+              to={{ pathname: "/past" }}
+              style={{ textDecoration: "none" }}
             >
-              <Play size="30px" />
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch</Text>
-              <Text size="16px" margin={{top: "10px"}}> past seminars </Text>
-            </Box>
-          </Link>
-          <Link
-            to={{ pathname: "info/agora_creation" }}
-            style={{ textDecoration: "none" }}
-          >
-            <Box
-              onClick={() => ({})}
-              background="#DDDDDD"
-              round="xsmall"
-              margin={{ horizontal: "small" }}
-              pad="xsmall"
-              height="130px"
-              width="176px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#CCCCCC"
-            > 
-              <Add size="30px" />
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Create </Text>
-              <Text size="16px" margin={{top: "10px"}}> an <img src={agoraLogo} style={{ height: "14px"}}/> </Text>
-            </Box>
-          </Link>
-          <Link
-            to={{ pathname: "/agoras" }}
-            style={{ textDecoration: "none" }}
-          >
-            <Box
-              onClick={() => ({})}
-              background="#DDDDDD"
-              round="xsmall"
-              margin={{ horizontal: "small" }}
-              pad="xsmall"
-              height="130px"
-              width="176px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#CCCCCC"
+              <Box
+                onClick={() => ({})}
+                background="#DDDDDD"
+                round="xsmall"
+                margin={{ horizontal: "small" }}
+                pad="xsmall"
+                height="130px"
+                width="176px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#CCCCCC"
+              >
+                <Play size="30px" />
+                <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch</Text>
+                <Text size="16px" margin={{top: "10px"}}> past seminars </Text>
+              </Box>
+            </Link>
+          </MediaQuery>
+
+          <MediaQuery minDeviceWidth={800}>
+            <Link
+              to={{ pathname: "/agoras" }}
+              style={{ textDecoration: "none" }}
             >
-              <Multiple size="30px" />
-              <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover</Text>
-              <Text size="16px" margin={{top: "10px"}}> new <img src={agoraLogo} style={{ height: "14px"}}/>s </Text>
-            </Box>
-          </Link>
+              <Box
+                onClick={() => ({})}
+                background="#DDDDDD"
+                round="xsmall"
+                margin={{ horizontal: "small" }}
+                pad="xsmall"
+                height="130px"
+                width="176px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#CCCCCC"
+              >
+                <Multiple size="30px" />
+                <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover</Text>
+                <Text size="16px" margin={{top: "10px"}}> new <img src={agoraLogo} style={{ height: "14px"}}/>s </Text>
+              </Box>
+            </Link>
+          </MediaQuery>
+
+          <MediaQuery minDeviceWidth={800}>
+            <Link
+              to={{ pathname: "info/agora_creation" }}
+              style={{ textDecoration: "none" }}
+            >
+              <Box
+                onClick={() => ({})}
+                background="#DDDDDD"
+                round="xsmall"
+                margin={{ horizontal: "small" }}
+                pad="xsmall"
+                height="130px"
+                width="176px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#CCCCCC"
+              > 
+                <Add size="30px" />
+                <Text size="16px" weight="bold" margin={{top: "10px"}}> Publish </Text>
+                <Text size="16px" margin={{top: "10px"}}> your seminars </Text>
+              </Box>
+            </Link>
+          </MediaQuery>
         </Box>
 
 
@@ -198,12 +216,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box 
           direction="row" 
           gap="150px"
-          margin={{top: "60px"}}
+          margin={{top: "60px", left: "10px", right: "10px"}}
         >
           <Box direction="column" justify="center" style={{minWidth: "50%"}}>
             <Text size="21px" weight="bold" margin={{bottom: "24px"}} alignSelf="center"> What is an <img src={agoraLogo} style={{ height: "19px", alignSelf:"center"}}/>? </Text>
-            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a hub for a community (e.g. a reading group, seminar group, institution, etc..)</Text>
-            <Text size="14px" margin={{bottom: "6px"}}> It is the place where seminars happen and future events are advertised </Text>
+            <Text size="14px" margin={{bottom: "6px"}} weight="bold"> An <img src={agoraLogo} style={{ height: "14px", alignSelf:"center"}}/> is a hub for a community (e.g. a reading group, seminar group, institution, etc...)</Text>
+            <Text size="14px" margin={{bottom: "6px"}}> It is the place to mingle with the community and where seminars happen </Text>
             <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Visit and connect with any agora by becoming a member or a future speaker </Text>
           </Box>
         </Box>

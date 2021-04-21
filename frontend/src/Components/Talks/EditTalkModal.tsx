@@ -81,7 +81,7 @@ export default class EditTalkModal extends Component<Props, State> {
         : "",
       link: this.props.talk ? this.props.talk.link : "",
       linkAvailable: this.props.talk ? this.props.talk.link_available : false,
-      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 45,
+      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 15,
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
         : "Everybody",
@@ -323,13 +323,15 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   getDateBounds = () => {
-    const today = new Date();
-    const todayStr = today.toISOString().slice(0, 10);
+    const oneYearAgo = new Date(
+      new Date().setFullYear(new Date().getFullYear() - 1)
+    );
     const inOneYear = new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     );
+    const oneYearAgoStr = oneYearAgo.toISOString().slice(0, 10);
     const inOneYearStr = inOneYear.toISOString().slice(0, 10);
-    return [todayStr, inOneYearStr];
+    return [oneYearAgoStr, inOneYearStr];
   };
 
   isComplete = () => {
@@ -415,6 +417,7 @@ export default class EditTalkModal extends Component<Props, State> {
             width="170px"
             height="35px"
             text="Save as draft"
+            textColor="white"
             onClick={this.onSaveDraft}
           />
         }
@@ -499,7 +502,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       dropAlign={{ bottom: "top" }}
                       focusIndicator={false}
                       id="link-visibility-select"
-                      options={["General audience", "Bachelor / Master", "PhD+"]}
+                      options={["General audience", "Bachelor/Master", "PhD+"]}
                       value={this.state.audienceLevel}
                       onChange={({ option }) =>
                         this.setState({ audienceLevel: option })

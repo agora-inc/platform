@@ -110,6 +110,7 @@ export class Overlay extends Component<OverlayProps> {
                     height="35px"
                     width="170px"
                     text={this.props.submitButtonText}
+                    textColor="white"
                     onClick={this.props.onSubmitClick}
                     hoverIndicator="#6DA3C7"
                     onMouseEnter={this.props.buttonOnMouseEnter}

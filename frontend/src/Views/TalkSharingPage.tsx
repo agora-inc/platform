@@ -9,6 +9,7 @@ import "../Styles/channel-page.css";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import Countdown from "../Components/Talks/Countdown";
 import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
+import CoffeeHangoutRoom from "../Components/Talks/TalkSharingPage/CoffeeHangoutRoom";
 import { textToLatex } from "../Components/Core/LatexRendering";
 import { Helmet } from "react-helmet";
 
@@ -128,7 +129,8 @@ export default class TalkSharingPage extends Component<Props, State> {
 
   render() { 
     const talk = this.state.talk;
-
+    var renderMobileView = (window.innerWidth < 800);
+    
       return(
         <>
         <Helmet>
@@ -144,12 +146,16 @@ export default class TalkSharingPage extends Component<Props, State> {
           <meta name="twitter:description" content={talk.description} />
         </Helmet>
         <Box
-          margin={{top: "10vh", left: "20px", right: "20px"}}
+          margin={{
+            top: "10vh", 
+            left: "20px", 
+            right: "20px"
+          }}
           align="center"
         >
           <Box
-            width="60vw"
-            margin={{left: "20px", right: "20px"}}
+            width={renderMobileView ? "100vw" : "60vw"}
+            margin={{left: "20px", right: "20px", bottom: "30px"}}
           >
             <Box 
               direction="row" 
@@ -280,6 +286,10 @@ export default class TalkSharingPage extends Component<Props, State> {
               registrationStatus={this.state.registrationStatus}
               isSharingPage={true}
             />
+
+          <CoffeeHangoutRoom
+            talk={this.state.talk}
+            user={this.state.user}/>
           </Box>
         </Box>
       </>
