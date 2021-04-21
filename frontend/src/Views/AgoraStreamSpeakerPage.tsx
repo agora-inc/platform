@@ -18,7 +18,6 @@ import {MdScreenShare, MdStopScreenShare} from 'react-icons/md'
 import {db, API} from '../Services/FirebaseService'
 
 import '../Styles/all-stream-page.css'
-import Clapping from "../Components/Streaming/Clapping";
 
 
 interface Props {
@@ -486,7 +485,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             borderRadius: 7,
           }}
         />
-        <Clapping clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
         <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}

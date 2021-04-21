@@ -3,7 +3,9 @@ import { Box, Layer, Heading, Text } from "grommet";
 import { Howl } from "howler";
 
 interface Props {
+  clapOnAttach?: boolean;
   [label: string]: any;
+  onClick?: ()=>{}
 }
 
 interface State {
@@ -27,6 +29,7 @@ export default class Clapping extends Component<Props, State> {
     totalTimeOverlay: 7000.0,
     updateFrequency: 200.0,
     startVolume: 0.2,
+    clapOnAttach: false
   };
 
   soundPlay = (tag: string, vol: number) => {
@@ -41,11 +44,13 @@ export default class Clapping extends Component<Props, State> {
     this.state.sounds[tag].play("cut");
   };
 
-  /*
   componentDidMount() {
-    this.props.audio.addEventListener('ended', () => this.setState({ play: false }));
+    if(this.props.clapOnAttach){
+      this.startClapping()
+    }
   }
   
+  /*
   componentWillUnmount() {
     this.state.audio.removeEventListener('ended', () => this.setState({ play: false }));  
   }
@@ -109,7 +114,7 @@ export default class Clapping extends Component<Props, State> {
   render() {
     return (
       <Box>
-        <Box
+        {!this.props.clapOnAttach && <Box
           justify="center"
           align="center"
           pad="small"
@@ -117,13 +122,18 @@ export default class Clapping extends Component<Props, State> {
           height="60px"
           background="white"
           round="small"
-          onClick={this.startClapping}
+          onClick={()=>{
+            if(this.props.onClick) {
+              this.props.onClick()
+            }
+            this.startClapping()
+          }}
           style={{ border: "3.5px solid black" }}
         >
           <Text weight="bold" color="black" size="16px">
             Thank the speaker
           </Text>
-        </Box>
+        </Box>}
         {this.state.overlay && (
           <Layer modal={true} position="center">
             <Heading

@@ -546,7 +546,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             borderRadius: 7,
           }}
         />
-        <Clapping clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+        <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
         <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}

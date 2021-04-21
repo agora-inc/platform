@@ -23,6 +23,7 @@ const API = {
         let doc = await db.collection('talk').doc(talk_id).get()
         if(!doc.exists){
             data.status = 'NOT_STARTED'
+            data.isClapping = false
             await db.collection('talk').doc(talk_id).set(data);
             doc = await db.collection('talk').doc(talk_id).get()
         }
@@ -36,6 +37,9 @@ const API = {
         }
         let r = await db.collection('talk').doc(talk_id).update({status: 'ENDED'});
         return true
+    },
+    thankTheSpeaker: async (talk_id:string, value=true) =>{
+        let r = await db.collection('talk').doc(talk_id).update({isClapping: value});
     },
     requestMic: async (talk_id:string, user_id:string) => {
         let data = {

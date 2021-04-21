@@ -81,6 +81,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
 
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
+  const [isClapping, setClapping] = useState(false as boolean)
   
   const [talkId, setTalkId] = useState('')
   const [callControl, setCallControl] = useState({
@@ -286,6 +287,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       if(data.status === 'ENDED') {
         setTalkStatus(data.status)
       }
+      if(data.isClapping) {
+        setClapping(true)
+      }else{
+        setClapping(false)
+      }
     })
 
     let request_unsubs = db.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
@@ -420,7 +426,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
           </Box>
         </Grid>
-        <Clapping clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+        {isClapping && <Clapping clapOnAttach={true} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> }
         <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}
