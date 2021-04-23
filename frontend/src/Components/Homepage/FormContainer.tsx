@@ -112,7 +112,7 @@ export default class FormContainer extends Component<{}, State> {
             color="grey"
             onClick={() => this.setState({ showForm: true })}
           > 
-            Feedback / Report a bug
+            Contact us
           </Text>
         <Overlay
           visible={this.state.showForm}
@@ -126,7 +126,7 @@ export default class FormContainer extends Component<{}, State> {
           width={500}
           height={650}
           contentHeight="500px"
-          title="Submit feedback"
+          title="Contact us"
         >
           <Box width="100%" gap="2px">
             <TextInput
@@ -156,7 +156,7 @@ export default class FormContainer extends Component<{}, State> {
           </Box>
           <Box width="100%" gap="2px">
             <TextArea
-              placeholder="Feedback / suggestion"
+              placeholder="Enter text here"
               value={this.state.user.description}
               onChange={(e: any) => this.handleInput(e, "description")}
               rows={8}
