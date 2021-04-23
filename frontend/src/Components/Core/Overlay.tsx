@@ -10,9 +10,10 @@ interface OverlayProps {
   onEsc?: any;
   onClickOutside?: any;
   title: string;
+  disableSubmitButton?: boolean;
   submitButtonText: string;
-  cancelButtonText?: string;
   onSubmitClick: any;
+  cancelButtonText?: string;
   onCancelClick?: any;
   contentHeight: string;
   canProceed: boolean;
@@ -43,7 +44,7 @@ export class Overlay extends Component<OverlayProps> {
             width: this.props.width,
             height: this.props.height > 700 ? "82%" : this.props.height,
             borderRadius: 15,
-            border: "3.5px solid black",
+            // border: "3.5px solid black",
             padding: 0,
           }}
         >
@@ -51,7 +52,7 @@ export class Overlay extends Component<OverlayProps> {
             <Box
               justify="start"
               width="99.7%"
-              background="#F5F5F5"
+              background="#eaf1f1"
               direction="row"
               style={{
                 borderTopLeftRadius: "15px",
@@ -89,7 +90,7 @@ export class Overlay extends Component<OverlayProps> {
               align="center"
               gap="xsmall"
               width="99.7%"
-              background="#F5F5F5"
+              background="#eaf1f1"
               style={{
                 borderBottomLeftRadius: "15px",
                 borderBottomRightRadius: "15px",
@@ -101,27 +102,31 @@ export class Overlay extends Component<OverlayProps> {
             >
               <Box fill={true} pad="10px"> {this.props.deleteButton} </Box>
               <Box > {this.props.saveDraftButton} </Box>
-              <Box data-tip data-for='submitbutton' margin={{right: "32px"}}   > 
-                <Button
-                  fill="#7E1115"
-                  disabled={!this.props.canProceed}
-                  height="35px"
-                  width="170px"
-                  text={this.props.submitButtonText}
-                  onClick={this.props.onSubmitClick}
-                  hoverIndicator="#5A0C0F"
-                  onMouseEnter={this.props.buttonOnMouseEnter}
-                />
-                {!this.props.canProceed && this.props.isMissing && (
-                  <ReactTooltip id='submitbutton' place="top" effect="solid">
-                    The following fields are missing
-                    {this.props.isMissing.map((item, index) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ReactTooltip>
+              {(this.props.disableSubmitButton == true) || (
+                <Box data-tip data-for='submitbutton' margin={{right: "32px"}}   > 
+                  <Button
+                    fill="#025377"
+                    disabled={!this.props.canProceed}
+                    height="35px"
+                    width="170px"
+                    text={this.props.submitButtonText}
+                    textColor="white"
+                    onClick={this.props.onSubmitClick}
+                    hoverIndicator="#6DA3C7"
+                    onMouseEnter={this.props.buttonOnMouseEnter}
+                  />
+                  {!this.props.canProceed && this.props.isMissing && (
+                    <ReactTooltip id='submitbutton' place="top" effect="solid">
+                      The following fields are missing
+                      {this.props.isMissing.map((item, index) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ReactTooltip>
+                    )}
+                </Box>
                 )}
-              </Box>
             </Box>
+            
           </Box>
         </Layer>
       )

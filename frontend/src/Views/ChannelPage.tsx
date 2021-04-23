@@ -20,17 +20,24 @@ import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
+import { Topic, TopicService } from "../Services/TopicService";
+import ShareButtons from ".././Components/Core/ShareButtons";
+import MediaQuery from "react-responsive";
+
+// NOTE: 
+//      -"following" feature globally commented
+//      -"viewer count" feature commented for the public (only available to admin)
 
 
 interface Props {
   location: { pathname: string };
   streamId: number;
+  channel?: Channel;
 }
-
-// NOTE: "following" feature globally disabled
 
 interface State {
   channel: Channel | null;
+  channelId: number;
   role: "none" | "owner" | "member" | "follower";
   loading: boolean;
   streams: Stream[];
@@ -51,6 +58,9 @@ interface State {
     email: string,
     personalHomepage: string
   }
+  topics: Topic[];
+  topicId: number;
+  field: string;
 }
 
 export default class ChannelPage extends Component<Props, State> {
@@ -58,6 +68,7 @@ export default class ChannelPage extends Component<Props, State> {
     super(props);
     this.state = {
       channel: null,
+      channelId: 0,
       role: "none",
       loading: true,
       streams: [],
@@ -78,17 +89,34 @@ export default class ChannelPage extends Component<Props, State> {
         institution: "",
         email: "",
         personalHomepage: ""
-      }
+      },
+      topics: this.props.channel ? this.props.channel.topics : [],
+      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
+      field: "",
     };
-    // TEST: DELETE THE BELOW LINE ONCE AGORA.IO TOKEN SERVER WORKS
-    var token = StreamService.getToken("xyz", 1, 1611010057, "", "abc-55441-u1", ()=>{})
-    console.log("TOKEN TEST");
-    
   }
 
   componentWillMount() {
     window.addEventListener("scroll", this.handleScroll, true);
     this.fetchChannel();
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+        this.setState({channelId: channel.id})
+      }
+    );
+    ChannelService.getChannelTopic(
+      this.state.channelId,
+      (currentTopicId: number) => {
+        this.setState({ topicId:currentTopicId });
+      }
+    );
+    TopicService.getFieldFromId(
+      this.state.topicId,
+      (topicName: string) => {
+        this.setState({field: topicName})
+      }
+    )
   }
 
   componentWillUnmount() {
@@ -326,11 +354,11 @@ export default class ChannelPage extends Component<Props, State> {
     let border = "none";
 
     return {
-      width: "75vw",
+      width: "100%",
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
-      backgroundSize: "75vw 25vw",
+      backgroundSize: "100vw 33vw",
       border: border,
     };
   };
@@ -339,13 +367,25 @@ export default class ChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  fetchChannelTopic = () => {
+    if (this.state.topics) {
+      ChannelService.getChannelTopic(
+        this.state.channel!.id,
+        (topicId: number) => {
+          this.setState({ topicId });
+        }
+      );
+    return this.state.topicId
+    }
+  };
+
   banner = () => {
     return (
-      <Box width="75vw" background="white" round="10px">
+      <Box width="100vw" background="white" round="10px">
         <Box
           direction="row"
           justify="between"
-          height="25vw"
+          height="33vw"
         >
           <Image src={this.getImageUrl()} style={this.getCoverBoxStyle()} />
         </Box>
@@ -357,7 +397,7 @@ export default class ChannelPage extends Component<Props, State> {
           pad="16px"
         >
           <Box direction="row" align="end" gap="small">
-            <Box
+            {/* <Box
               width="100px"
               height="100px"
               round="50px"
@@ -366,7 +406,8 @@ export default class ChannelPage extends Component<Props, State> {
               align="center"
               style={{ minWidth: 100, minHeight: 100 }}
               overflow="hidden"
-            >
+            > */}
+            <div className="banner_avatar">
               {(
                 <img
                   src={
@@ -377,28 +418,45 @@ export default class ChannelPage extends Component<Props, State> {
                   width={100}
                 />
               )}
-            </Box>
+              </div>
+            {/* </Box> */}
             <Box>
-              <Text size="26px" color="black" weight="bold">
-                {this.state.channel ?.name}
-              </Text>
-              <Box height="36px"> </Box>
-              {/*<Text size="24px" color="#999999" weight="bold">
-                {this.state.followerCount} followers
-                </Text>*/}
+              <div className="banner_title">
+                  {this.state.channel ?.name}
+              </div>
+                <Box 
+                  margin={{top: "10px"}}
+                  style={{width: "300px"}}
+                  direction="column"> 
+                    <ShareButtons
+                      channel={this.state.channel}
+                      height={(window.innerWidth < 800) ? "25px" : "35px"}
+                    />
+                </Box>
+                {/*<Text size="24px" color="#999999" weight="bold">
+                  {this.state.followerCount} followers
+                  </Text>*/}
             </Box>
           </Box>
+
+          
           <Box direction="row" gap="xsmall" align="center">
+            <MediaQuery minWidth={900}>
+              <ApplyToTalkForm
+                          channelId={this.state.channel!.id}
+                          channelName={this.state.channel!.name}
+                        />
+              {!(this.state.role == "member" || this.state.role == "owner") && (
+              <RequestMembershipButton
+                channelId={this.state.channel!.id}
+                channelName={this.state.channel!.name}
+                user={this.state.user}
+              />
+              )}
+            </MediaQuery>
 
-            {!(this.state.role == "member" || this.state.role == "owner") && (
-            <RequestMembershipButton
-              channelId={this.state.channel!.id}
-              channelName={this.state.channel!.name}
-              user={this.state.user}
-            />
-            )}
 
-            {this.state.user && (
+            {/*this.state.user && (
               <Box
                 className="follow-button"
                 pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
@@ -423,7 +481,7 @@ export default class ChannelPage extends Component<Props, State> {
                   {this.state.following ? "Following" : "Follow"}
                 </Text>
               </Box>
-            )}
+              )*/}
             {this.state.bannerExtended ? (
               <FormUp
                 onClick={this.toggleBanner}
@@ -456,6 +514,27 @@ export default class ChannelPage extends Component<Props, State> {
             />
           </Text>
         )}
+
+{/*     TODO TO UNCOMMENT THIS: make overlay nice to use on mobile
+
+        <MediaQuery maxWidth={600}>
+          <Box direction="column" align="center" alignContent="center" gap = "5px" margin={{bottom: "15px"}}>
+            <ApplyToTalkForm
+                  channelId={this.state.channel!.id}
+                  channelName={this.state.channel!.name}
+                  widthButton={"200px"}
+                />
+            {!(this.state.role == "member" || this.state.role == "owner") && (
+            <RequestMembershipButton
+              channelId={this.state.channel!.id}
+              channelName={this.state.channel!.name}
+              user={this.state.user}
+              widthButton={"200px"}
+            />
+            )}
+          </Box>
+        </MediaQuery>  */}
+
       </Box>
     );
   };
@@ -463,13 +542,13 @@ export default class ChannelPage extends Component<Props, State> {
   render() {
     if (this.state.loading) {
       return (
-        <Box width="100~%" height="100%" justify="center" align="center">
+        <Box width="100%" height="100%" justify="center" align="center">
           <Loading color="black" size={50} />
         </Box>
       );
     } else {
       return (
-        <Box>
+        <Box align="center">
           {this.shouldRedirect() ? (
             <Redirect
               to={{
@@ -478,24 +557,17 @@ export default class ChannelPage extends Component<Props, State> {
               }}
             />
           ) : (
-              <Box
-                width="100%"
-                height="100%"
-                align="center"
-                margin={{ top: "100px" }}
-              >
-                {this.state.streams.length !== 0 && (
+            <div className="overall_channel_box">
+                {/* {this.state.streams.length !== 0 && (
                   <ChannelLiveNowCard
                     stream={this.state.streams[0]}
                     colour={this.state.channel!.colour}
                   />
-                )}
-                <Box width="75%" align="start" gap="20px">
+                )} */}
+
+
+                <Box width="100%" gap="20px">
                   <Box direction="row" gap="45vw">
-                    <ApplyToTalkForm
-                      channelId={this.state.channel!.id}
-                      channelName={this.state.channel!.name}
-                    />
                     {this.state.role == "member" && (
                       <Box
                         width="20vw"
@@ -504,9 +576,9 @@ export default class ChannelPage extends Component<Props, State> {
                         align="center"
                         pad="small"
                         round="xsmall"
-                        background="#F3EACE"
+                        background="#D3F930"
                       >
-                        <Text size="16px" weight="bold" color="grey">
+                        <Text size="16px" weight="bold">
                           You are a member
                         </Text>
                       </Box>
@@ -542,9 +614,10 @@ export default class ChannelPage extends Component<Props, State> {
                     weight="bold"
                     color="black"
                     margin={{ bottom: "10px" }}
+                    alignSelf="start"
                   >
                     Upcoming talks
-                </Text>
+                  </Text>
                   {this.state.talks.length === 0 && (
                     <Box
                       direction="row"
@@ -558,7 +631,7 @@ export default class ChannelPage extends Component<Props, State> {
                       margin={{ bottom: "36px" }}
                     >
                       <Text size="14px" weight="bold" color="grey">
-                        There are no upcoming talks in{" "}
+                        There are no publicly available upcoming talks in{" "}
                         {this.state.channel
                           ? this.state.channel.name
                           : "this channel"}
@@ -587,26 +660,29 @@ export default class ChannelPage extends Component<Props, State> {
                       margin={{ top: "40px" }}
                     >{`Past talks`}</Text>
                   )}
-                  <Box
+                  {/* <Box
                     direction="row"
                     width="100%"
                     wrap
                     // justify="between"
                     gap="1.5%"
                     margin={{ top: "10px" }}
-                  >
+                  > */}
+                  <div className="talk_cards_outer_box">
                     {this.state.pastTalks.map((talk: Talk) => (
                       <PastTalkCard
-                        width="31.5%"
+                        width={(window.innerWidth < 800) ? "95%" : "31.5%"}
                         talk={talk}
                         margin={{ bottom: "medium" }}
                         user={this.state.user}
-                        show={talk.id === this.state.showTalkId}
+                        // show={talk.id === this.state.showTalkId}
                       />
                     ))}
+                    </div>
                   </Box>
-                </Box>
-              </Box>
+                {/* </Box> */}
+              </div>
+              // </Box>
             )}
         </Box>
       );

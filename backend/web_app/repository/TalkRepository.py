@@ -1,19 +1,22 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
+from mailing.sendgridApi import sendgridApi
 from datetime import datetime
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
     TODO: All methods involving the "state" field must be tested.
 """
+mail_sys = sendgridApi()
 
 class TalkRepository:
-    def __init__(self, db):
+    def __init__(self, db, mail_sys=mail_sys):
         self.db = db
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)
-        self.topics = TopicRepository(db=self.db) 
+        self.topics = TopicRepository(db=self.db)
+        self.mail_sys = mail_sys
 
     def getNumberOfCurrentTalks(self):
         query = "SELECT COUNT(*) FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP"
@@ -208,7 +211,7 @@ class TalkRepository:
                                     )
                             )
                         AND Talks.end_date < CURRENT_TIMESTAMP 
-                    ORDER BY Talks.date ASC LIMIT {limit}
+                    ORDER BY Talks.date DESC LIMIT {limit}
                     OFFSET {offset}
                     '''
 
@@ -297,11 +300,11 @@ class TalkRepository:
 
     def getAvailablePastTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC;"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC;"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
-                        AND (Talks.card_visibility = 'Everybody' AND recording_link <> ''
+                        AND (Talks.card_visibility = 'Everybody'
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
                                         SELECT Channels.id FROM Channels 
@@ -389,11 +392,6 @@ class TalkRepository:
         return (talks, self.getNumberOfPastTalksForChannel(channelId))
 
     def getAllDraftedTalksForChannel(self, channelId):
-        ############################
-        #                          #
-        # TODO: Test this works    #
-        #                          #
-        ############################
         query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND published = 0"
         talks = self.db.run_query(query)
         for talk in talks:
@@ -455,42 +453,95 @@ class TalkRepository:
                 "{audience_level}"
                 );
             '''        
-        insertId = self.db.run_query(query)[0]
+        try:
+            insertId = self.db.run_query(query)[0]
 
-        if not isinstance(insertId, int):
-            raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
+            if not isinstance(insertId, int):
+                raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
 
-        tagIds = [t["id"] for t in talkTags]
-        self.tags.tagTalk(insertId, tagIds)
+            tagIds = [t["id"] for t in talkTags]
+            self.tags.tagTalk(insertId, tagIds)
 
-        return self.getTalkById(insertId)
+            # notify members / admins by email
+            self.notifyCommunityAboutNewTalk(
+                channelId, 
+                channelName, 
+                startDate, 
+                talkName, 
+                insertId, 
+                talk_speaker, 
+                talk_speaker_url)
+
+            return self.getTalkById(insertId)
+
+        except Exception as e:
+            return str(e)
 
     def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
-        query = f'''
-            UPDATE Talks 
-                SET name="{talkName}", 
-                description="{talkDescription}", 
-                date="{startDate}", 
-                end_date="{endDate}", 
-                link="{talkLink}", 
-                show_link_offset={showLinkOffset}, 
-                visibility="{visibility}", 
-                card_visibility="{cardVisibility}", 
-                topic_1_id="{topic_1_id}", 
-                topic_2_id="{topic_2_id}", 
-                topic_3_id="{topic_3_id}", 
-                talk_speaker="{talk_speaker}", 
-                talk_speaker_url="{talk_speaker_url}", 
-                published={published},
-                audience_level="{audience_level}"
-            WHERE id = {talkId};'''
-        
-        res = self.db.run_query(query)
+        try:
+            # query past talk information
+            past_talk_query = f'''
+                SELECT * FROM Talks
+                WHERE id = {talkId};
+            '''
+            old_res = self.db.run_query(past_talk_query)[0]
 
-        tagIds = [t["id"] for t in talkTags]
-        self.tags.tagTalk(talkId, tagIds)
+            old_start_date = old_res["date"]
+            old_end_date = old_res["end_date"]
+            old_url = old_res["link"]
+            old_speaker = old_res["talk_speaker"]
+            channel_id = old_res["channel_id"]
 
-        return self.getTalkById(talkId)
+            # check if date changed or if (URL changed AND talk is not public) ((because else, we dont care if URL changed as there are no registration))
+            critical_information_changed = False
+            critical_information_changed = (
+                old_start_date != startDate or
+                old_end_date != endDate or
+                (old_url != talkLink and visibility != "Everybody") or
+                old_speaker != talk_speaker
+            )
+
+            # modify current information
+            query = f'''
+                UPDATE Talks 
+                    SET name="{talkName}", 
+                    description="{talkDescription}", 
+                    date="{startDate}", 
+                    end_date="{endDate}", 
+                    link="{talkLink}", 
+                    show_link_offset={showLinkOffset}, 
+                    visibility="{visibility}", 
+                    card_visibility="{cardVisibility}", 
+                    topic_1_id="{topic_1_id}", 
+                    topic_2_id="{topic_2_id}", 
+                    topic_3_id="{topic_3_id}", 
+                    talk_speaker="{talk_speaker}", 
+                    talk_speaker_url="{talk_speaker_url}", 
+                    published={published},
+                    audience_level="{audience_level}"
+                WHERE id = {talkId};'''
+            
+            self.db.run_query(query)
+
+            tagIds = [t["id"] for t in talkTags]
+            self.tags.tagTalk(talkId, tagIds)
+
+            # notify attendees
+            if critical_information_changed:
+                self.notifyParticipantAboutTalkModification(
+                    talkId,
+                    channel_id,
+                    talkName,
+                    talkLink,
+                    startDate,
+                    endDate
+                )
+            
+            return self.getTalkById(talkId)
+
+        except Exception as e:
+            return str(e)
+
 
     def addRecordingLink(self, talkId, link):
         query = f'UPDATE Talks SET recording_link="{link}" WHERE id = {talkId}'
@@ -600,10 +651,47 @@ class TalkRepository:
     ###############################
     # Talk 
     ###############################
-    def acceptTalkRegistration(self, requestRegistrationId):
-        #TODO: TO TEST
-        accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
+    def acceptTalkRegistration(self, requestRegistrationId,):
         try:
+            # 1. get talk infos for email
+            extra_email_info_query = f'''
+                SELECT 
+                    Talks.link,
+                    Talks.id,
+                    Talks.name,
+                    Talks.channel_name,
+                    Talks.channel_id,
+                    Talks.date,
+                    TalkRegistrations.applicant_name,
+                    TalkRegistrations.email
+                FROM Talks
+                INNER JOIN TalkRegistrations
+                    ON TalkRegistrations.id = {requestRegistrationId}
+                WHERE TalkRegistrations.talk_id = Talks.id;
+            '''
+            extra_email_info = self.db.run_query(extra_email_info_query)[0]
+
+            target_email = extra_email_info["email"]
+            talk_name = extra_email_info["name"]
+            recipient_name = extra_email_info["applicant_name"]
+            talk_id = extra_email_info["id"]
+            agora_name = extra_email_info["channel_name"]
+            conference_url = extra_email_info["link"]
+            start_time = extra_email_info["date"]
+
+            # 2. Send email to applicant
+            self.mail_sys.send_confirmation_talk_registration_acceptance(
+                target_email,
+                talk_name,
+                recipient_name,
+                talk_id,
+                agora_name,
+                start_time,
+                conference_url
+            )
+
+            # 3. Flag user as registered in DB
+            accept_query = f'''UPDATE TalkRegistrations SET status='accepted' WHERE id = {requestRegistrationId};'''
             self.db.run_query(accept_query)
             return "ok"
         except Exception as e:
@@ -619,7 +707,7 @@ class TalkRepository:
         except Exception as e:
             return str(e)
 
-    def registerTalk(self, talkId, userId, name, email, website, institution):
+    def registerTalk(self, talkId, userId, applicant_name, email, website, institution, user_hour_offset):
         # get today's time GMT in format: "2020-12-31 23:59"
         dateTimeObj = datetime.now()
         timestampStr = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
@@ -628,9 +716,50 @@ class TalkRepository:
             with self.db.con.cursor() as cur:
                 cur.execute(
                     'INSERT INTO TalkRegistrations(talk_id, user_id, applicant_name, email, website, institution, registration_date) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                    [str(talkId), str(userId), name, email, website, institution, timestampStr])
+                    [str(talkId), str(userId), applicant_name, email, website, institution, timestampStr])
                 self.db.con.commit()
                 cur.close()
+
+            # A. send confirmation email to user
+            # 1) query talk info
+            talk_info = self.getTalkById(talkId)
+            talk_name = talk_info["name"]
+            agora_name = talk_info["channel_name"]
+            date_str = talk_info["date"]
+            conference_url = talk_info["link"]
+            channel_id = talk_info["channel_id"]
+
+            # 2) check userId GMT:
+            human_date_str = self.mail_sys._convert_gmt_into_human_date_str(str(date_str), float(user_hour_offset))
+
+            # 3) send email
+            self.mail_sys.send_confirmation_talk_registration_request(
+                email,
+                talk_name,
+                applicant_name,
+                talkId,
+                agora_name,
+                human_date_str,
+                conference_url)
+
+            # B. Send email to administrator
+            if website == "":
+                website = "(Not provided)"
+            admin_emails = self.channels.getEmailAddressesMembersAndAdmins(
+                channel_id, 
+                getMembersAddress=False, 
+                getAdminsAddress=True
+                )
+
+            for email in admin_emails:
+                self.mail_sys.notify_admin_talk_registration(
+                    email,
+                    agora_name, 
+                    talk_name,
+                    applicant_name,
+                    institution,
+                    website)
+
             return "ok"     
         except Exception as e:
             return str(e)
@@ -687,7 +816,75 @@ class TalkRepository:
     def getTalkRegistrationsForUser(self, userId):
         raise NotImplementedError
 
-    def isUserRegisteredForTalk(self, talkId, userId):
-        query = f'SELECT COUNT(*) FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId}'
+    def registrationStatusForTalk(self, talkId, userId):
+        query = f'SELECT status FROM TalkRegistrations WHERE user_id={userId} AND talk_id={talkId};'
         result = self.db.run_query(query)
-        return result[0]["COUNT(*)"] != 0
+        try:
+            return result["status"]
+        except:
+            return {"status": "unregistered"}
+
+    def notifyParticipantAboutTalkModification(self, talkId, channelId, talkName, talkLink, startDate, endDate):
+        try:
+            # query emails
+            community_emails = self.channels.getEmailAddressesMembersAndAdmins(
+                channelId,
+                getMembersAddress=True,
+                getAdminsAddress=True
+            )
+
+            get_emails_all_registrations = f'''
+                SELECT 
+                    email
+                FROM TalkRegistrations
+                WHERE
+                    talk_id = {talkId} AND
+                    status = 'accepted';
+            '''
+            res = self.db.run_query(get_emails_all_registrations)
+
+            participant_emails = [x["email"] for x in res]
+
+            all_emails = community_emails + participant_emails
+            
+            # get missing channel_name
+            get_agora_name_query = f'''
+                SELECT name 
+                FROM Channels
+                WHERE 
+                    id = {channelId};
+            '''
+            agora_name = self.db.run_query(get_agora_name_query)[0]["name"]
+
+            for email in all_emails:
+                self.mail_sys.send_talk_details_modification_update(
+                    email,
+                    talkName,
+                    talkId,
+                    agora_name,
+                    startDate,
+                    talkLink
+                )
+            return "ok"
+
+        except Exception as e:
+            return str(e)
+
+    def notifyCommunityAboutNewTalk(self, channelId, channelName, startDate, talkName, talkId, SpeakerName, SpeakerHomepage=""):
+        try:
+            # query all emails
+            emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=True)
+
+            for email in emails:
+                self.mail_sys.send_advertise_new_incoming_talk_for_channel(
+                    email, 
+                    channelName, 
+                    startDate, 
+                    talkName, 
+                    talkId, 
+                    SpeakerName, 
+                    SpeakerHomepage
+                )
+            return "ok"
+        except Exception as e:
+            raise Exception(f"notifyCommmunityAboutNewTalk: exception: {e}")

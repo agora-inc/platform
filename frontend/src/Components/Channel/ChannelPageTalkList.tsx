@@ -4,6 +4,7 @@ import ChannelPageTalkCard from "./ChannelPageTalkCard";
 import { User } from "../../Services/UserService";
 import { Talk, TalkService } from "../../Services/TalkService";
 import Loading from "../Core/Loading";
+import "../../Styles/topic-talks-list.css";
 
 interface Props {
   talks: Talk[];
@@ -31,7 +32,6 @@ export default class ChannelPageTalkList extends Component<Props, State> {
     };
   }
 
-
   componentWillMount() {
     // this.fetchTalks();
   }
@@ -47,22 +47,22 @@ export default class ChannelPageTalkList extends Component<Props, State> {
 
   render() {
     return (
-      <Box gap="1.5%" direction="row" width="100%" wrap>
+      <div className="talk_cards_outer_box">
         {this.props.talks.map((talk: Talk) => (
-          <ChannelPageTalkCard
-            width="31.5%"
-            talk={talk}
-            user={this.props.user}
-            role={this.props.role}
-            admin={this.props.admin}
-            onEditCallback={this.props.onEditCallback}
-            margin={{ bottom: "medium" }}
-            show={this.props.showTalkId === talk.id}
-            following={this.props.following ? this.props.following : false}
-            callback={this.props.callback}
-          />
-        ))}
-      </Box>
+            <ChannelPageTalkCard
+              width={(window.innerWidth < 800) ? "99%" : "31.5%"}
+              talk={talk}
+              user={this.props.user}
+              role={this.props.role}
+              admin={this.props.admin}
+              onEditCallback={this.props.onEditCallback}
+              margin={{ bottom: "medium" }}
+              show={this.props.showTalkId === talk.id}
+              following={this.props.following ? this.props.following : false}
+              callback={this.props.callback}
+            />
+          ))}
+    </div>
     );
   }
 }

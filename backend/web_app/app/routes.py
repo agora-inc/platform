@@ -2,28 +2,37 @@
     TODO: 
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
-
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from mailing import sendgridApi
+from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
 
-from flask import jsonify, request, send_file
+from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-users = UserRepository.UserRepository(db=agora_db, mail_sys=mail)
+mail_sys = sendgridApi.sendgridApi()
+
+users = UserRepository.UserRepository(db=agora_db, mail_sys=mail_sys)
 tags = TagRepository.TagRepository(db=agora_db)
 topics = TopicRepository.TopicRepository(db=agora_db)
 questions = QandARepository.QandARepository(db=agora_db)
 streams = StreamRepository.StreamRepository(db=agora_db)
-talks = TalkRepository.TalkRepository(db=agora_db)
+talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
 videos = VideoRepository.VideoRepository(db=agora_db)
-channels = ChannelRepository.ChannelRepository(db=agora_db)
+channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
 search = SearchRepository.SearchRepository(db=agora_db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
+sendgridApi = sendgridApi.sendgridApi()
+
+
+# BASE_API_URL = "http://localhost:8000"
+BASE_API_URL = "https://agora.stream/api"
+
 
 # --------------------------------------------
 # HELPER FUNCTIONS
@@ -257,10 +266,11 @@ def createChannel():
     name = params["name"]
     description = params["description"]
     userId = params["userId"]
+    topic1Id = params["topic1Id"]
 
-    app.logger.debug(f"New agora '{name}' created by user with id {userId}")
+    #app.logger.debug(f"New agora '{name}' created by user with id {userId}")
 
-    return jsonify(channels.createChannel(name, description, userId))
+    return jsonify(channels.createChannel(name, description, userId, topic1Id))
 
 @app.route('/channels/delete', methods=["POST"])
 def deleteChannel():
@@ -459,7 +469,10 @@ def cover():
 def getContactAddresses():
     if "channelId" in request.args: 
         channel_id = request.args.get("channelId")
-        res = channels.getContactAddresses(channel_id)
+        res = channels.getEmailAddressesMembersAndAdmins(
+            channel_id, 
+            getMembersAddress=False, 
+            getAdminsAddress=True)
         return jsonify(res)
 
 @app.route('/channels/contact/add', methods=["POST", "OPTIONS"])
@@ -524,70 +537,107 @@ def removeContactAddress():
 def sendTalkApplicationEmail():
     # NOTE: used https://wordtohtml.net/ to easily create syntax for the body
     params = request.json
+    try:
+        # query email address from administrators 
+        channel_id = params['channel_id']
+        administrator_emails = channels.getEmailAddressesMembersAndAdmins(
+            channel_id,
+            getMembersAddress=False, 
+            getAdminsAddress=True
+        )
 
-    # query email address from administrators 
-    # NOTE: we receive a list of all of admins but we only send to 1 for now; to be extended later
-    administrator_emails = channels.getContactAddresses(params['channel_id'])[0]
-
-    # handling optional field
-    if "speaker_personal_website" not in params:
-        speaker_personal_website_section = ""
-    else:
-        if "." not in params['speaker_personal_website']:
+        # handling optional field
+        if "speaker_personal_website" not in params:
             speaker_personal_website_section = ""
         else:
-            speaker_personal_website_section =  f"""
+            if "." not in params['speaker_personal_website']:
+                speaker_personal_website_section = ""
+            else:
+                speaker_personal_website_section =  f"""
+                                    <tr>
+                                        <td style="width: 45.2381%;">Personal homepage (optional)</td>
+                                        <td style="width: 54.5635%;">{params['speaker_personal_website']}</td>
+                                    </tr>"""
+            
+        if "personal_message" not in params:
+            personal_message_section = ""
+        else:
+            personal_message_section = f"""<p><strong>3. Message from the applicant:</strong></p>
+                        <p style="margin-left: 20px;">{params["personal_message"]}</p>"""
+
+        # email link
+        email_subject = f"New speaker application: agora.stream ({params['agora_name']})"
+        body_msg = f"""<p>Dear Administrator,</p>
+                        <p>{params['speaker_name']} wants to give a talk within your <b>{params['agora_name']}</b> agora community!</p>
+                        <p> </p>
+                        <p><strong>1. About the applicant:</strong></p>
+                        <table style="width: 61%; margin-right: calc(39%);">
+                            <tbody>
                                 <tr>
-                                    <td style="width: 45.2381%;">Personal homepage (optional)</td>
-                                    <td style="width: 54.5635%;">{params['speaker_personal_website']}</td>
-                                </tr>"""
+                                    <td style="width: 45.2381%;">Name</td>
+                                    <td style="width: 54.5635%;">{params['speaker_title']} {params["speaker_name"]}</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 45.2381%;">Affiliation</td>
+                                    <td style="width: 54.5635%;">{params["speaker_affiliation"]}</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 45.2381%;">Email of contact</td>
+                                    <td style="width: 54.5635%;"><a href="mailto:{params["speaker_email"]}">{params["speaker_email"]}</a></td>
+                                </tr>
+                                {speaker_personal_website_section}
+                            </tbody>
+                        </table>
+                        <p><strong>2. About the talk:</strong></p>
+                        <ul>
+                            <li>Title:  <strong>{params['talk_title']}</strong></li>
+                            <li>Abstract: <br>{params['talk_abstract']}</li>
+                            <li>Topics: {params['talk_topics']}</li>
+                        </ul>
+                        {personal_message_section}
+                        <br></br>
+                        <p>Best wishes,</p>
+                        <p>The agora.stream Team</p>
+                    """
+        for email in administrator_emails:
+            msg = Message(body_msg, sender = 'team@agora.stream', recipients = [email])
+            msg.html = body_msg
+            msg.subject = email_subject
+            mail.send(msg)
+        return "ok"
+    
+    except Exception as e:
+        return str(e)
+
+@app.route('/channel/edit/topic', methods=["POST", "OPTIONS"])
+def editChannelTopic():
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
         
-    if "personal_message" not in params:
-        personal_message_section = ""
-    else:
-        personal_message_section = f"""<p><strong>3. Message from the applicant:</strong></p>
-                    <p style="margin-left: 20px;">{params["personal_message"]}</p>"""
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
-    # email link
-    email_subject = f"New speaker application: agora.stream ({params['agora_name']})"
-    body_msg = f"""<p>Dear Administrator,</p>
-                    <p>{params['speaker_name']} wants to give a talk within your <b>{params['agora_name']}</b> agora community!</p>
-                    <p> </p>
-                    <p><strong>1. About the applicant:</strong></p>
-                    <table style="width: 61%; margin-right: calc(39%);">
-                        <tbody>
-                            <tr>
-                                <td style="width: 45.2381%;">Name</td>
-                                <td style="width: 54.5635%;">{params['speaker_title']} {params["speaker_name"]}</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 45.2381%;">Affiliation</td>
-                                <td style="width: 54.5635%;">{params["speaker_affiliation"]}</td>
-                            </tr>
-                            <tr>
-                                <td style="width: 45.2381%;">Email of contact</td>
-                                <td style="width: 54.5635%;"><a href="mailto:{params["speaker_email"]}">{params["speaker_email"]}</a></td>
-                            </tr>
-                            {speaker_personal_website_section}
-                        </tbody>
-                    </table>
-                    <p><strong>2. About the talk:</strong></p>
-                    <ul>
-                        <li>Title:  <strong>{params['talk_title']}</strong></li>
-                        <li>Abstract: <br>{params['talk_abstract']}</li>
-                        <li>Topics: {params['talk_topics']}</li>
-                    </ul>
-                    {personal_message_section}
-                    <br></br>
-                    <p>Best wishes,</p>
-                    <p>The agora.stream Team</p>
-                """
+    params = request.json
 
-    msg = Message(body_msg, sender = 'team@agora.stream', recipients = [administrator_emails])
-    msg.html = body_msg
-    msg.subject = email_subject
-    mail.send(msg)
-    return "ok"
+    #app.logger.debug(f"channel with id {params['channelId']} edited")
+    return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
+
+@app.route('/channels/topics/fetch', methods=["GET", "OPTIONS"])
+def getChannelTopic():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelTopic(channelId))
+
+@app.route('/channels/topics/all', methods=["GET"])
+def getChannelsWithTopic():
+    limit = int(request.args.get("limit"))
+    topicId = int(request.args.get("topicId"))
+    offset = int(request.args.get("offset"))
+    return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
+
 
 # --------------------------------------------
 # x Membership ROUTES
@@ -705,8 +755,6 @@ def getTalkById():
         return jsonify(talks.getTalkById(talkId))
     except Exception as e:
         return jsonify(str(e))
-
-
 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
@@ -961,7 +1009,10 @@ def registerTalk():
         email = params["email"]
         website = params["website"] if "website" in params else ""
         institution = params["institution"] if "institution" in params else ""
-        res = talks.registerTalk(talkId, userId, name, email, website, institution)
+        user_hour_offset = params["userHourOffset"]
+
+        
+        res = talks.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
         return jsonify(str(res))
 
     except Exception as e:
@@ -1052,15 +1103,15 @@ def getTalkRegistrations():
     except Exception as e:
         return jsonify(400, str(e))
 
-@app.route('/talks/isregistered', methods=["GET"])
-def isRegisteredForTalk():
+@app.route('/talks/registrationstatus', methods=["GET"])
+def registrationStatusForTalk():
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     talkId = int(request.args.get("talkId"))
     userId = int(request.args.get("userId"))
         
-    return jsonify(talks.isUserRegisteredForTalk(talkId, userId))
+    return jsonify(talks.registrationStatusForTalk(talkId, userId))
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------
@@ -1326,6 +1377,14 @@ def getTopicsOnStream():
     # return jsonify(tags.getTagsOnStream(streamId))
     raise NotImplementedError
 
+@app.route('/topics/getField', methods=["GET"])
+def getFieldFromId():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    topicId = request.args.get("topicId")
+    return jsonify(topics.getFieldFromId(topicId)) 
+
 # --------------------------------------------
 # SEARCH ROUTES
 # --------------------------------------------
@@ -1346,16 +1405,61 @@ def fullTextSearch():
 def eventLinkRedirect():
     try:
         eventId = request.args.get("eventId")
-        
+        talk_info = talks.getTalkById(eventId)
+        title = talk_info["name"]
+        description = talk_info["description"]
+        channel_name = talk_info["channel_name"]
+        channel_id = channels.getChannelByName(channel_name)["id"]
+
+        real_url = f"https://agora.stream/event/{eventId}"
+        hack_url = f"{BASE_API_URL}/event-link?eventId={eventId}"
+        image = f"{BASE_API_URL}/channels/avatar?channelId={channel_id}"
+
         res_string = f'''
             <html>
-
-                DELETE THIS LINE AND ADD THE STUFF YOU NEED INSIDE GERARDO.
-
-            window.location.href = 'https://agora.stream/event/{eventId}'
+                <head>
+                    <title>{title}</title>
+                    <meta property="title" content="{title}" />
+                    <meta name="description" content="{description}" />
+                    <meta property="og:title" content="{title}" />
+                    <meta property="og:description" content="{description}" />
+                    <meta property="og:url" content="{hack_url}" />
+                    <meta property="og:image" content="{image}" />
+                    <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
+                </head>
             </html>
         '''
-        return res_string
-
+        return render_template(res_string)
     except Exception as e:
         return str(e)
+
+@app.route('/channel-link', methods=["GET"])
+def channelLinkRedirect():
+    try:
+        channel_id = request.args.get("channelId")
+        channel_info = channels.getChannelById(channel_id)
+        name = channel_info["name"]
+        long_description = channel_info["long_description"]
+        real_url = f"https://agora.stream/{name}"
+        hack_url = f"{BASE_API_URL}/channel-link?channelId={channel_id}"
+        image = f"{BASE_API_URL}/api/channels/avatar?channelId={channel_id}"
+
+        res_string = f'''
+            <html>
+                <head>
+                    <title>{name}</title>
+                    <meta property="title" content="{name}" />
+                    <meta name="description" content="{long_description}" />
+                    <meta property="og:title" content="{name}" />
+                    <meta property="og:description" content="{long_description}" />
+                    <meta property="og:url" content="{hack_url}" />
+                    <meta property="og:image" content="{image}" />
+                    <meta property="og:type" content="article" />
+                    <meta http-equiv="refresh" content="1; URL='{real_url}'" />
+                </head>
+            </html>
+        '''
+        return render_template(res_string)
+    except Exception as e:
+        return jsonify(str(e))

@@ -1,10 +1,15 @@
 import random
 import logging
+from mailing.sendgridApi import sendgridApi
+from repository import UserRepository
 
+mail_sys = sendgridApi()
 
 class ChannelRepository:
-    def __init__(self, db):
+    def __init__(self, db, mail_sys=mail_sys):
         self.db = db
+        self.mail_sys = mail_sys
+        self.users = UserRepository.UserRepository(db=self.db)
 
     def getChannelById(self, id):
         query = f"SELECT * FROM Channels WHERE id = {id}"
@@ -46,7 +51,7 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
-    def createChannel(self, channelName, channelDescription, userId):
+    def createChannel(self, channelName, channelDescription, userId, topic_1_id):
         # colours = [
         #     "orange",
         #     "goldenrod",
@@ -60,7 +65,7 @@ class ChannelRepository:
         # ]
         colour = "#5454A0"
 
-        query = f'INSERT INTO Channels(name, long_description, colour) VALUES ("{channelName}", "{channelDescription}", "{colour}")'
+        query = f'INSERT INTO Channels(name, long_description, colour, topic_1_id) VALUES ("{channelName}", "{channelDescription}", "{colour}", "{topic_1_id}")'
         insertId = self.db.run_query(query)[0]
     
         query = f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {insertId}, "owner")'
@@ -141,7 +146,7 @@ class ChannelRepository:
         if res[0]["has_avatar"] == 1:
             return f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
         else:
-            return f"/home/cloud-user/plateform/agora/images/avatars/default.jpg"
+            return f"/home/cloud-user/plateform/agora/frontend/public/agora_default_avatar_channel_v2.png"
 
     def addAvatar(self, channelId):
         query = f'UPDATE Channels SET has_avatar=1 WHERE id = {channelId}'
@@ -213,20 +218,32 @@ class ChannelRepository:
         query = f"DELETE FROM Channels where id = {id}"
         return self.db.run_query(query)
 
-    def getEmailAddressesMembersAndAdmins(self, channelId):
-        #
-        # TODO: TEST
-        #
+    def getEmailAddressesMembersAndAdmins(self, channelId, getMembersAddress: bool, getAdminsAddress: bool):
+        if getMembersAddress:
+            if getAdminsAddress:
+                role_sql_str = "('member','owner')"
+            else:
+                role_sql_str = "(member)"
+        else:
+            if getAdminsAddress:
+                role_sql_str = "('owner')"
+            else:
+                return []
+
         email_members_and_admins_query = f'''
             SELECT email from Users t1
             INNER JOIN ChannelUsers t2
             WHERE
                 (t1.id = t2.user_id 
-                    AND (t2.role in ('member', 'admin'))
+                    AND (t2.role in {role_sql_str})
+                    AND t2.channel_id = {channelId}
                 )
             ;
             '''
-        return self.db.run_query(email_members_and_admins_query)
+        res = self.db.run_query(email_members_and_admins_query)
+
+        return [x["email"] for x in res]
+
 
     def applyMembership(self, channelId, userId, fullName, position, institution, email=None, personal_homepage=None):
         personal_homepage_var = str() if personal_homepage == None else personal_homepage
@@ -282,7 +299,26 @@ class ChannelRepository:
 
         try:
             self.db.run_query(apply_membership_insert_query)
+
+            # Send confirmation email applicant
+            agora_name = self.getChannelById(channelId)["name"]
+            self.mail_sys.send_confirmation_agora_membership_request(email, fullName, agora_name)
+
+            try:
+                # Send notification email administrator
+                admin_addresses = self.getEmailAddressesMembersAndAdmins(
+                    channelId,
+                    getMembersAddress=False, 
+                    getAdminsAddress=True
+                )
+
+                for email in admin_addresses:
+                    self.mail_sys.notify_admin_membership_application(email, agora_name)
+            except Exception as e:
+                return str(e)
+
             return "ok"
+
         except Exception as e:
             return str(e)
 
@@ -323,7 +359,7 @@ class ChannelRepository:
             '''
         res = self.db.run_query(check_membership_query)
 
-        # B. add membership
+        # B. If not, add as member
         if len(res) == 0:
             add_membership_query = f'''
             INSERT into ChannelUsers(
@@ -344,9 +380,16 @@ class ChannelRepository:
 
             res = self.db.run_query([add_membership_query, 
             remove_membership_request_query])
+        
+            # D. Send acceptance email to applicant
+            user_name = self.users.getUserById(userId)["username"]
+            user_email = self.users.getUserById(userId)["email"]
+            agora_name = self.getChannelById(channelId)["name"]
 
-            return "ok"
+            self.mail_sys.send_confirmation_agora_membership_acceptance(user_email, agora_name, user_name)
+
         return "ok"
+
     def increaseChannelViewCount(self, channelId):
         try:
             increase_counter_query = f'''
@@ -376,3 +419,26 @@ class ChannelRepository:
             return self.db.run_query(get_counter_query)[0]["total_views"]
         except Exception as e:
             return str(e)
+
+    def editChannelTopic(self, channelId, topic_1_id, topic_2_id, topic_3_id):
+        topicsQuery = f'''
+            UPDATE Channels
+                set topic_1_id="{topic_1_id}", 
+                topic_2_id="{topic_2_id}", 
+                topic_3_id="{topic_3_id}"
+            WHERE id = {channelId};
+            '''
+        try:
+            return self.db.run_query(topicsQuery)
+        except Exception as e:
+            return str(e)
+
+    def getChannelTopic(self, channelId):
+        query = f'SELECT topic_1_id FROM Channels WHERE id = {channelId}'
+        result = self.db.run_query(query)
+        return result
+
+    def getChannelsWithTopic(self, limit, topicId, offset):
+        query = f'SELECT * FROM Channels WHERE topic_1_id = {topicId} LIMIT {limit} OFFSET {offset};'
+        result = self.db.run_query(query)
+        return result

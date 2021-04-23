@@ -23,6 +23,8 @@ import { Switch } from "antd";
 import { InlineMath } from "react-katex";
 import { StatusInfo } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
+import ShareButtons from "../Core/ShareButtons";
+
 
 interface Props {
   channel: Channel | null;
@@ -31,6 +33,8 @@ interface Props {
   onCanceledCallback: any;
   onDeletedCallback?: any;
   talk?: Talk;
+  onFinishedAdvertisementCallback?: any;
+  onCanceledAdvertisementCallback?: any
 }
 
 interface State {
@@ -41,6 +45,7 @@ interface State {
   date: string;
   startTime: string;
   endTime: string;
+  linkAvailable: boolean | undefined;
   link: string;
   releaseLinkOffset: number;
   linkVisibility: string;
@@ -52,7 +57,9 @@ interface State {
   published: number,
   showCardVisibilityInfo: boolean,
   isPrevTopics: boolean[];
-  audienceLevel: string
+  audienceLevel: string;
+  showAdvertisementOverlay: boolean;
+  talkToAdvertise: Talk | null,
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -60,7 +67,7 @@ export default class EditTalkModal extends Component<Props, State> {
     super(props);
     this.state = {
       title: this.props.talk ? this.props.talk.name : "",
-      description: this.props.talk ? this.escapeDoubleQuotes(this.props.talk.description) : "",
+      description: this.props.talk ? this.props.talk.description.replace("''", "'") : "", //replace is escapeDoubleQuotes
       tags: this.props.talk ? this.props.talk.tags : [],
       loading: false,
       date: this.props.talk
@@ -73,7 +80,8 @@ export default class EditTalkModal extends Component<Props, State> {
         ? new Date(this.props.talk.end_date).toTimeString().slice(0, 5)
         : "",
       link: this.props.talk ? this.props.talk.link : "",
-      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 45,
+      linkAvailable: this.props.talk ? this.props.talk.link_available : false,
+      releaseLinkOffset: this.props.talk ? this.props.talk.show_link_offset : 15,
       linkVisibility: this.props.talk
         ? this.props.talk.visibility
         : "Everybody",
@@ -87,7 +95,9 @@ export default class EditTalkModal extends Component<Props, State> {
       published: this.props.talk ? this.props.talk.published : 0,
       showCardVisibilityInfo: false,
       isPrevTopics: this.props.talk ? this.topicExists(this.props.talk.topics) : [false, false, false],
-      audienceLevel: this.props.talk?.audience_level || "General audience"
+      audienceLevel: this.props.talk?.audience_level || "General audience",
+      showAdvertisementOverlay: false,
+      talkToAdvertise: this.props.talk ? this.props.talk : null
     };
   }
 
@@ -108,6 +118,7 @@ export default class EditTalkModal extends Component<Props, State> {
       {
         published: 1,
         loading: true,
+        showAdvertisementOverlay: true
       },
       () => {
         this.onFinish();
@@ -173,18 +184,6 @@ export default class EditTalkModal extends Component<Props, State> {
     return text.replace(/'/g, "''").replace(/"/g, "'").replace(/\\/g, "\\\\")
   }
 
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
-
-  lineBreaks = (text: string) => { 
-    if (text && text.trim()) {
-      return textToLatex(text);
-    } else {
-      return (<br></br>);
-    }
-  }
-
   onFinish = () => {
     const dateTimeStrs = this.combineDateAndTimeStrings();
     if (this.props.talk) {
@@ -205,6 +204,12 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.published,
         this.state.audienceLevel,
         (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
           this.setState(
             {
               loading: false,
@@ -234,6 +239,12 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.published,
         this.state.audienceLevel,
         (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
           this.setState(
             {
               loading: false,
@@ -312,13 +323,15 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   getDateBounds = () => {
-    const today = new Date();
-    const todayStr = today.toISOString().slice(0, 10);
+    const oneYearAgo = new Date(
+      new Date().setFullYear(new Date().getFullYear() - 1)
+    );
     const inOneYear = new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     );
+    const oneYearAgoStr = oneYearAgo.toISOString().slice(0, 10);
     const inOneYearStr = inOneYear.toISOString().slice(0, 10);
-    return [todayStr, inOneYearStr];
+    return [oneYearAgoStr, inOneYearStr];
   };
 
   isComplete = () => {
@@ -355,8 +368,26 @@ export default class EditTalkModal extends Component<Props, State> {
     return res;
   }
 
+  isInThePast = () => {
+    if (this.props.talk?.date){
+      let now = new Date;
+      var talk_date = new Date(this.props.talk.end_date);
+      return (talk_date < now)
+    }
+    else {
+      return false
+    }
+  }
+
+  hideAdvertisementOverlay = () => {
+    this.setState({
+      showAdvertisementOverlay: false}
+    )
+  }
+
   render() {
     return (
+      <>
       <Overlay
         width={1100}
         height={750}
@@ -386,6 +417,7 @@ export default class EditTalkModal extends Component<Props, State> {
             width="170px"
             height="35px"
             text="Save as draft"
+            textColor="white"
             onClick={this.onSaveDraft}
           />
         }
@@ -456,8 +488,8 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                 )}
                 {this.state.latex && (
-                  this.escapeDoubleQuotes(this.state.description).split('\n').map(
-                    (item, i) => this.lineBreaks(item)
+                  this.state.description.split('\n').map(
+                    (item, i) => textToLatex(item)
                   )
                 )}
               </Box>
@@ -477,8 +509,6 @@ export default class EditTalkModal extends Component<Props, State> {
                       }
                     />
               </Box>
-
-
 
             </OverlaySection>
             {/*<OverlaySection heading="Add a few relevant tags">
@@ -569,6 +599,20 @@ export default class EditTalkModal extends Component<Props, State> {
                 margin={{left: "large", right: "xsmall", top:"6px", bottom: "10px"}}
               > 
                 <OverlaySection heading="Link to event">
+
+                  {/* PLACEHOLDER 
+                  FOR A MULTI BOX TICKER 
+                  TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
+                  Remy
+                  */}
+
+                {/* <CheckBox
+                    checked={this.state.linkAvailable}
+                    label="interested?"
+                    onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
+                  /> */}
+
+
                 <TextInput
                     disabled={this.state.link == '_agora.stream_tech'}
                     value={this.state.link == '_agora.stream_tech'?"https://agora.stream/":this.state.link}
@@ -603,7 +647,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       </Text>
                       <StatusInfo size="small" data-tip data-for='linkinfo'/>
                       <ReactTooltip id='linkinfo' place="right" effect="solid">
-                        Decide who does not need to manually register to attend the talk. The same people will also have access to the recording if there is one.
+                        Decide who does not need to manually fill the registration request form to attend the talk. The same people will also automatically have access to the recording if there is one.
                       </ReactTooltip>
                     </Box>
                     <Select
@@ -696,6 +740,31 @@ export default class EditTalkModal extends Component<Props, State> {
           </Box>
         </Box>  
       </Overlay>
+
+      { this.state.talkToAdvertise !== null && !(this.isInThePast()) && (
+          <Overlay
+            width={400}
+            height={300}
+            visible={this.state.showAdvertisementOverlay}
+            title={"Your event got published"}
+            submitButtonText="Ok"
+            onSubmitClick={this.props.onFinishedAdvertisementCallback}
+            contentHeight="150px"
+            canProceed={true}
+            onCancelClick={this.hideAdvertisementOverlay}
+            onClickOutside={this.hideAdvertisementOverlay}
+            onEsc={this.hideAdvertisementOverlay}
+          > 
+            Your agora members have all been notified about the incoming event.
+            <ShareButtons
+              talk={this.state.talkToAdvertise}
+              channel={this.props.channel}
+              useReducedHorizontalVersion={true}
+            />
+          </Overlay>
+        )
+      }
+      </>
     );
   }
 }

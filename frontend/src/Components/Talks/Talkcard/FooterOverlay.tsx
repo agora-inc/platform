@@ -1,33 +1,28 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer, Image} from "grommet";
+import { Box, Text } from "grommet";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import { ChannelService } from "../../../Services/ChannelService";
 import { User } from "../../../Services/UserService";
-import { Link } from "react-router-dom";
-import { Tag } from "../../../Services/TagService";
-import AsyncButton from "../../Core/AsyncButton";
-import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink, Link as LinkIcon} from "grommet-icons";
+import { Calendar } from "grommet-icons";
 import { default as TagComponent } from "../../Core/Tag";
-import AddToCalendarButtons from "../AddToCalendarButtons";
 import Countdown from "../Countdown";
-import LoginModal from "../../Account/LoginModal";
-import SignUpButton from "../../Account/SignUpButton";
-import MediaQuery from "react-responsive";
-import RequestMembershipButton from "../../Channel/ApplyMembershipButton";
-import ReactTooltip from "react-tooltip";
-import EditTalkModal from "../EditTalkModal";
-import ShareButtons from "./ShareButtons";
-import TalkRegistrationButton from "../TalkRegistrationButton";
 import CalendarButtons from "../CalendarButtons";
+import ShareButtons from "../../Core/ShareButtons";
+import TalkRegistrationButton from "./TalkRegistrationButton";
+import SaveForLaterButton  from "./SaveForLaterButton";
+// import "../../../Styles/talk"
 
 interface Props {
     talk: Talk;
     user: User | null;
-    admin?: boolean;
+    role: string | undefined;
+    available: boolean;
+    registered: boolean;
+    registrationStatus: string;
+    isSharingPage: boolean;
     width?: string;
     // isCurrent?: boolean;
     following?: boolean;
-    role?: string;
     onEditCallback?: any;
     callback?: any;
   }
@@ -35,9 +30,7 @@ interface Props {
   interface State {
     showModal: boolean;
     showShadow: boolean;
-    registered: boolean;
-    available: boolean;
-    showEdit: boolean
+    showEdit: boolean;
   }
   
   export default class FooterOverlay extends Component<Props, State> {
@@ -46,22 +39,9 @@ interface Props {
       this.state = {
         showModal: false,
         showShadow: false,
-        registered: false,
-        available: true,
-        showEdit: false
+        showEdit: false,
       };
     }
-  
-    checkIfRegistered = () => {
-        this.props.user &&
-          TalkService.isRegisteredForTalk(
-            this.props.talk.id,
-            this.props.user.id,
-            (registered: any) => {
-              this.setState({ registered });
-            }
-          );
-      };
 
     onFollowClicked = () => {
       if (!this.props.following) {
@@ -105,32 +85,6 @@ interface Props {
       return `Finishing in ${deltaHour}h ${remainderMin}m`;
     };
 
-    componentWillMount() {
-      this.checkIfAvailableAndRegistered();
-    }
-  
-    checkIfAvailableAndRegistered = () => {
-      if (this.props.user) {
-        TalkService.isAvailableToUser(
-          this.props.user.id,
-          this.props.talk.id,
-          (available: boolean) => {
-            this.setState({ available }, () => {
-              if (available) {
-                this.checkIfRegistered();
-              }
-            });
-          }
-        );
-      } else {
-        this.setState({
-          available:
-            this.props.talk.visibility === "Everybody" ||
-            this.props.talk.visibility === null,
-        });
-      }
-    };
-
     register = () => {
       // this.props.user &&
       //   TalkService.registerForTalk(
@@ -160,7 +114,7 @@ interface Props {
       //     }
       //   );
     };
-
+    /*
     checkIfUserCanViewCard = () => {
       if (this.props.admin) {
         return true;
@@ -204,7 +158,7 @@ interface Props {
           }
         }
         else if (this.props.talk.visibility == "Members only") {
-          if (this.props.role === "member"){
+          if (this.props.role === "member") {
             return true;
           }
           else {
@@ -212,6 +166,7 @@ interface Props {
           }
         }
     };
+    */
   
     formatDateFull = (s: string, e: string) => {
       const start = new Date(s);
@@ -224,7 +179,7 @@ interface Props {
     };
 
     onClick = () => {
-      if (this.state.registered) {
+      if (this.props.registered) {
         this.unregister();
       } else {
         this.register();
@@ -236,36 +191,35 @@ interface Props {
     };
 
 render() {
+    var renderMobileView = (window.innerWidth < 800);
+
     return (
         <Box direction="column" gap="small" width="100%" >
-          <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}}>
-            <Box 
-              width="50%" 
-              direction="row"
+          <Box direction="row" gap="small" margin={{left: "20px", right: "20px"}} >
+            <Box direction="row" width="100%" align="center" gap="10px">
+              <Calendar size={renderMobileView ? "14px" : "16px"} />
+              <Text
+                size={renderMobileView ? "14px" : "16px"}
+                color="black"
+                margin={{left:"5px"}}
+                style={{ height: "20px", fontStyle: "normal" }}
               >
-                <Calendar size="16px" />
-                <Text
-                  size="16px"
-                  color="black"
-                  margin={{left:"5px"}}
-                  style={{ height: "20px", fontStyle: "normal" }}
-                >
-                  {this.formatDateFull(
-                    this.props.talk.date,
-                    this.props.talk.end_date
-                    )}
-                </Text>
-                <Box margin={{left: "5px"}}>
-                  <CalendarButtons talk={this.props.talk}/>
-                </Box>
+                {this.formatDateFull(
+                  this.props.talk.date,
+                  this.props.talk.end_date
+                )}
+              </Text>
+              <CalendarButtons talk={this.props.talk}/>
             </Box>
             <Box
-                width="50%"
-                align="end"
-                >
-              <ShareButtons 
-                talk={this.props.talk}
-              />
+              justify="end"
+              align="end"
+              // margin={{left: "10px"}}
+            >
+              <ShareButtons talk={this.props.talk} width={renderMobileView ? "50px" : "90px"} />
+            </Box>
+
+
 
               {/* <Box
                   onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
@@ -286,117 +240,36 @@ render() {
                 Click to copy Event URL!
               </ReactTooltip> */}
 
-            </Box>
-          </Box>
-          {this.checkIfUserCanAccessLink() &&
-            this.props.user !== null &&
-            this.state.registered && (
-              <Box margin={{ top: "10px", bottom: "5px", left: "20px", right: "20px" }} background="#d5d5d5">
-                <Countdown talk={this.props.talk} />
-                <Box
-                  focusIndicator={false}
-                  background="#FF4040"
-                  round="xsmall"
-                  pad="xsmall"
-                  justify="center"
-                  align="center"
-                  width="20%"
-                  height="35px"
-                  onClick={this.onClick}
-                  margin={{ top: "-35px" }}
-                  alignSelf="end"
-                  hoverIndicator={true}
-                >
-                  <Text size="14px" weight="bold">
-                    Unregister
-                  </Text>
-                </Box>
-              </Box>
-            )}
-          {this.checkIfUserCanAccessLink() &&
-            this.props.user !== null &&
-            !this.state.registered && (
-              <Box 
-              margin={{ top: "5px", bottom: "5px", left: "20px", right: "20px" }}>
-                <Box>
-                  <Countdown talk={this.props.talk} />
-                </Box>
-                {/* <Box
-                  onClick={this.onClick}
-                  background="#7E1115"
-                  round="xsmall"
-                  // pad="xsmall"
-                  height="30px"
-                  justify="center"
-                  align="center"
-                  focusIndicator={false}
-                  hoverIndicator="#5A0C0F"
-                  margin={{top: "10px"}}
-                >
-                  <Text size="18px">Register</Text>
-                </Box> */}
-              </Box>
-          )}
-          {this.checkIfUserCanAccessLink() &&
-            this.props.user == null &&
-            !this.state.registered && (
-              <Box 
-              margin={{ top: "5px", bottom: "5px", left: "20px", right: "20px" }}>
-                <Box>
-                  <Countdown talk={this.props.talk} />
-                </Box>
-              </Box>
-          )}
-          {!this.checkIfUserCanAccessLink() && this.props.user === null
-          && (
             
-            <Box direction="row" align="center" gap="10px" background="#d5d5d5" pad="25px" justify="center">
-              <TalkRegistrationButton
-                talk={this.props.talk}
-              />
-              <Text size="16px"> or </Text>
-              <LoginModal callback={() => {}} />
-              {/* <RequestMembershipButton
-                channelId={this.props.talk.channel_id}
-                channelName={this.props.talk.channel_name}
-                user={this.props.user}
-              /> */}
-              {/* <SignUpButton callback={() => {}} /> */}
-              <Text size="16px"> to attend </Text>
-            </Box>
-          )}
-          {!this.checkIfUserCanAccessLink() && this.props.user !== null
-          && (
-            <Box direction="row" align="center" gap="25px" pad="25px" justify="center" background="#d5d5d5">
-              
-            <TalkRegistrationButton
-              talk={this.props.talk}
-              user={this.props.user}
-            />
-            <Text textAlign="center" weight="bold" size="16px"> 
-            {`${this.props.talk.visibility === "Members only"
-                  ? ` or become a member`
-                  : ""
-                } 
-                to attend`
-            }
-            </Text>
-            <Link to={`/${this.props.talk.channel_name}`} style={{ textDecoration: "none" }}>
-              <Box
-                className="see-more-button"
-                pad={{ vertical: "2px", horizontal: "xsmall" }}
-                round="xsmall"
-                style={{
-                  border: "2px solid #C2C2C2",
-                }}
-                direction="row"
-                align="end"
-              >      
-                <FormNextLink color="grey" />
-              </Box>
-            </Link>
           </Box>
-        )}
+
+      {/* <SaveForLaterButton
+            talk={this.props.talk}
+            user={this.props.user}
+          /> */}
+
+          <Box direction="row" align="center" gap="20px" background="#d5d5d5" pad="25px" justify="center">
+            {(!this.props.isSharingPage || (
+              !(this.props.role && ["owner", "member"].includes(this.props.role)) && 
+              !this.props.registered && 
+              this.props.talk.visibility !== "Everybody")) && (
+
+                <TalkRegistrationButton
+                  talk={this.props.talk}
+                  user={this.props.user}
+                  role={this.props.role}
+                  registered={this.props.registered}
+                  registrationStatus={this.props.registrationStatus}
+                />
+            )}
+            {(this.props.isSharingPage && (
+              (this.props.role && ["owner", "member"].includes(this.props.role)) || 
+              this.props.registered || 
+              this.props.talk.visibility === "Everybody")) && (
+
+                <Countdown talk={this.props.talk} />
+            )}
+          </Box>
       </Box>
       
     )

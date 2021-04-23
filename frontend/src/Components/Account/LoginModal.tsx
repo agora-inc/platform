@@ -100,6 +100,7 @@ export default class LoginModal extends Component<Props, State> {
             border: "none",
             borderRadius: 7,
           }}
+          hoverIndicator="#BAD6DB"
         />
         <Overlay
           width={400}
@@ -139,7 +140,7 @@ export default class LoginModal extends Component<Props, State> {
             pad={{ bottom: "30px" }}
             gap="xsmall"
           >
-            <Box width="100%" gap="2px">
+            <Box width="100%" gap="2px" margin={{"top": "5px"}}>
               <TextInput
                 placeholder="Username"
                 onChange={(e) => this.setState({ username: e.target.value })}

@@ -11,6 +11,8 @@ interface Props {
   selected: string;
   channelId?: number;
   hasCover: boolean;
+  width?: string;
+  height?: string
 }
 
 interface State {
@@ -71,14 +73,16 @@ export default class ColorPicker extends Component<Props, State> {
     if (this.props.hasCover){
     remove_button =
       <Box
-        width="100%"
-        height="25px"
-        background="#FF4040"
-        round="xsmall"
-        style={{ cursor: "pointer" }}
-        align="center"
-        justify="center"
         onClick={this.onDeleteCoverClicked}
+        background="#FF4040"
+        // background="#F2F2F2"
+        round="xsmall"
+        width={this.props.width ? this.props.width : "100px"}
+        height={this.props.height ? this.props.height : "35px"}
+        justify="center"
+        align="center"
+        focusIndicator={true}
+        hoverIndicator="#DDDDDD"
       >
         <Text size="13px" weight="bold" color="white">
           Remove header
@@ -97,16 +101,13 @@ export default class ColorPicker extends Component<Props, State> {
           {this.state.options.map((option: string, index: number) => (
             <Box
               onClick={() => this.select(option)}
-              width="30px"
-              height="30px"
               round="xsmall"
-              background={option}
-              margin={{
-                right: index + (1 % 3) === 0 ? "none" : "5px",
-                left: index % 3 === 0 ? "none" : "5px",
-                top: "5px",
-                bottom: "5px",
-              }}
+              width={this.props.width ? this.props.width : "30px"}
+              height={this.props.height ? this.props.height : "30px"}
+              justify="center"
+              align="center"
+              focusIndicator={true}
+              hoverIndicator="#DDDDDD"
             ></Box>
           ))}
         </Box>
@@ -127,13 +128,14 @@ export default class ColorPicker extends Component<Props, State> {
     if (this.props.hasCover){
     remove_button =
       <Box
-        width="100%"
-        height="25px"
-        background="#FF4040"
         round="xsmall"
-        style={{ cursor: "pointer" }}
-        align="center"
+        width={this.props.width ? this.props.width : "150px"}
+        height={this.props.height ? this.props.height : "30px"}
         justify="center"
+        align="center"
+        background="#FF4040"
+        focusIndicator={true}
+        hoverIndicator="#DDDDDD"
         onClick={this.onDeleteCoverClicked}
       >
         <Text size="13px" weight="bold" color="white">
@@ -202,8 +204,9 @@ export default class ColorPicker extends Component<Props, State> {
         <ImageCropUploader
           text="Upload header"
           onUpload={this.onCoverUpload}
-          width="200px"
+          width="150px"
         />
+        <Box margin= {{ right: "xsmall" }}/>
         {remove_button}
 
       </Box>

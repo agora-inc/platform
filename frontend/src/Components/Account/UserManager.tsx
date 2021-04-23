@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Box, Button, Text, TextArea } from "grommet";
 import {UserSettings} from "grommet-icons";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import DropdownChannelButton from "../Channel/DropdownChannelButton";
 import CreateChannelButton from "../Channel/CreateChannelButton";
-import CreateChannelCard from "../Channel/CreateChannelCard";
+import CreateChannelOverlay from "../Channel/CreateChannelButton/CreateChannelOverlay";
 import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../../Styles/header.css";
@@ -15,6 +15,7 @@ import "../../Styles/antd.css";
 import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
+import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
 
 const makeProfilePublicInfo =
   "Making your profile public means that it will be shown in the 'speaker marketplace' feature of the platform, and administrators of relevant agoras may reach out to you about speaking opportunities if you have contact details in your bio. This action can be undone at any time.";
@@ -26,8 +27,9 @@ interface Props {
 interface State {
   isLoggedIn: boolean;
   user: { id: number; username: string; bio: string; public: boolean } | null;
-  channels: Channel[];
-  showCreateChannelCard: boolean;
+  adminChannels: Channel[];
+  memberChannels: Channel[];
+  showCreateChannelOverlay: boolean;
   showDropdown: boolean;
   editingBio: boolean;
 }
@@ -38,24 +40,37 @@ export default class UserManager extends Component<Props, State> {
     this.state = {
       isLoggedIn: UserService.isLoggedIn(),
       user: UserService.getCurrentUser(),
-      channels: [],
-      showCreateChannelCard: false,
+      adminChannels: [],
+      memberChannels: [],
+      showCreateChannelOverlay: false,
       showDropdown: false,
       editingBio: false,
     };
   }
 
   componentWillMount() {
-    this.fetchChannels();
+    this.fetchAdminChannels();
+    this.fetchMemberChannels();
   }
 
-  fetchChannels = () => {
+  fetchAdminChannels = () => {
     this.state.user &&
       ChannelService.getChannelsForUser(
         this.state.user.id,
         ["owner"],
-        (channels: Channel[]) => {
-          this.setState({ channels });
+        (adminChannels: Channel[]) => {
+          this.setState({ adminChannels });
+        }
+      );
+  };
+
+  fetchMemberChannels = () => {
+    this.state.user &&
+      ChannelService.getChannelsForUser(
+        this.state.user.id,
+        ["member"],
+        (memberChannels: Channel[]) => {
+          this.setState({ memberChannels });
         }
       );
   };
@@ -64,9 +79,9 @@ export default class UserManager extends Component<Props, State> {
     this.setState({ showDropdown: !this.state.showDropdown });
   };
 
-  toggleCreateChannelCard = () => {
+  toggleCreateChannelOverlay = () => {
     this.setState({
-      showCreateChannelCard: !this.state.showCreateChannelCard,
+      showCreateChannelOverlay: !this.state.showCreateChannelOverlay,
     });
   };
 
@@ -113,24 +128,27 @@ export default class UserManager extends Component<Props, State> {
   };
 
   menu = () => {
-    return this.state.showCreateChannelCard ? (
+    return this.state.showCreateChannelOverlay ? (
       <Menu
         style={{
           borderRadius: 10,
           marginTop: 5,
           overflow: "hidden",
           paddingBottom: 0,
-          height: 175,
+          //height: 175,
+          height: "100%",
           width: 350,
         }}
       >
-        <CreateChannelCard
-          onBackClicked={this.toggleCreateChannelCard}
+        <CreateChannelOverlay
+          onBackClicked={this.toggleCreateChannelOverlay}
           onComplete={() => {
-            this.fetchChannels();
-            this.toggleCreateChannelCard();
+            this.fetchAdminChannels();
+            this.fetchMemberChannels();
+            this.toggleCreateChannelOverlay();
             this.toggleDropdown();
           }}
+          visible={true}
           user={this.state.user}
         />
       </Menu>
@@ -208,7 +226,7 @@ export default class UserManager extends Component<Props, State> {
           >
             <Box
               onClick={this.toggleDropdown}
-              background="#7E1115"
+              background="#0C385B"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -217,7 +235,7 @@ export default class UserManager extends Component<Props, State> {
               align="center"
               focusIndicator={false}
               // hoverIndicator="#2433b5"
-              hoverIndicator="#5A0C0F"
+              hoverIndicator="#6DA3C7"
             >
               <Text size="14px"> My schedule </Text>
             </Box>
@@ -236,20 +254,49 @@ export default class UserManager extends Component<Props, State> {
           gap="xsmall"
         >
           <Text size="16px" color="grey">
-            Manage your Agoras
+            Manage your <img src={agoraLogo} style={{ height: "14px"}}/>s
           </Text>
           <Box
-            height={{max: "200px"}}
+            height={{max: "120px"}}
             overflow="auto"
           >
-            {this.state.channels.map((channel: Channel) => (
+            {this.state.adminChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
               onClick={this.toggleDropdown}
             />
             ))}
           </Box>
-          <CreateChannelButton onClick={this.toggleCreateChannelCard} />
+          {/*<CreateChannelButton 
+            onClick={this.toggleCreateChannelOverlay} /> */}
+
+        </Box>
+        <Menu.Divider />
+        <Box
+          margin={{
+            bottom: "medium",
+            top: "small",
+            left: "small",
+            right: "small",
+          }}
+          focusIndicator={false}
+          // style={{ pointerEvents: "none" }}
+          gap="xsmall"
+        >
+          <Text size="16px" color="grey">
+             Memberships
+          </Text>
+          <Box
+            height={{max: "120px"}}
+            overflow="auto"
+          >
+            {this.state.memberChannels.map((channel: Channel) => (
+            <DropdownChannelButton
+              channel={channel}
+              onClick={this.toggleDropdown}
+            />
+            ))}
+          </Box>
         </Box>
         <Menu.Divider />
         {/*<Text weight="bold" color="black" margin="small">
@@ -363,7 +410,8 @@ export default class UserManager extends Component<Props, State> {
               user: UserService.getCurrentUser(),
             },
             () => {
-              this.fetchChannels();
+              this.fetchAdminChannels();
+              this.fetchMemberChannels();
             }
           );
         }}
@@ -376,7 +424,8 @@ export default class UserManager extends Component<Props, State> {
               user: UserService.getCurrentUser(),
             },
             () => {
-              this.fetchChannels();
+              this.fetchAdminChannels();
+              this.fetchMemberChannels();
             }
           );
         }}

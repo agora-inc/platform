@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Box, Text, Grid, Sidebar, DropButton } from "grommet";
+import { Box, Text, Grid, Sidebar, DropButton, Layer, } from "grommet";
+import { FormNext } from "grommet-icons";
 import CustomSideBar from "../Components/Homepage/CustomSideBar";
 import Carousel from "../Components/Homepage/Carousel";
 import PopularTagsBox from "../Components/Homepage/PopularTagsBox";
@@ -83,9 +84,9 @@ export default class Home extends Component<{}, State> {
     return (
       <Box direction="row">
         {/* Only show side-bar for desktop */}
-        <MediaQuery minDeviceWidth={992}>
+        {/*<MediaQuery minDeviceWidth={992}>
           <CustomSideBar user={this.state.user} />
-        </MediaQuery>
+          </MediaQuery>*/}
 
         {/* <Box
           width="80%"

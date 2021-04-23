@@ -6,6 +6,7 @@ import { Channel, ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../../Styles/trending-channels-box.css";
 import { FormNextLink } from "grommet-icons";
+import AgoraLogo from "../../assets/general/agora_logo_v2.1.png";
 
 interface State {
   channels: Channel[];
@@ -32,17 +33,16 @@ export default class TrendingChannelsList extends Component<{}, State> {
   render() {
     return (
       <Box height="240px">
-        <Box direction="row">
+        <Box direction="row" justify="center" style={{minWidth: "50%"}} margin={{bottom: "21px"}}>
           <Text
-            size="14px"
-            weight="bold"
-            color="grey"
+            size="21px"
             margin={{ left: "small" }}
             alignSelf="center"
+            weight="bold"
           >
-            Trending agoras
+            Trending <img src={AgoraLogo} height="19px"/>s
           </Text>
-          <Link to="/agoras" style={{ fontSize: 12, marginLeft: 15 }}>
+          {/* <Link to="/agoras" style={{ fontSize: 12, marginLeft: 15 }}>
             <Box
               className="see-more-button"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
@@ -55,12 +55,12 @@ export default class TrendingChannelsList extends Component<{}, State> {
             >
               <Text color="grey" size="12px"> See all </Text>
             </Box>
-          </Link>
+          </Link> */}
 
         </Box>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
-            <Loading color="black" size={50} />
+            <Loading color="color1" size={50} />
           </Box>
         )}
         <Box margin={{ top: "2px" }} overflow="auto">
@@ -101,7 +101,7 @@ export default class TrendingChannelsList extends Component<{}, State> {
                   )}
                 </Box>
                 <Box justify="center">
-                  <Text size="14px" color="black" weight="bold">
+                  <Text size="14px" color="color1" weight="bold">
                     {channel.name}
                   </Text>
                 </Box>
