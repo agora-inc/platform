@@ -176,12 +176,12 @@ export default class AgoraCreationPage extends Component<Props, State> {
             <Grid
               rows={
                 [
-                  '40px', "200px",
-                  '40px', "200px",
-                  '40px', "200px",
-                  '40px', "200px",
-                  '40px', "200px",
-                  '40px', "200px",
+                  '40px', "220px",
+                  '40px', "220px",
+                  '40px', "220px",
+                  '40px', "220px",
+                  '40px', "220px",
+                  '40px', "220px",
 
                 ]}
               columns={['50%', "50%"]}
@@ -190,27 +190,27 @@ export default class AgoraCreationPage extends Component<Props, State> {
               areas={[
                 { name: 'arg_1_title', start: [0, 0], end: [1, 0] },
                 { name: 'arg_1_text', start: [0, 1], end: [0, 1] },
-                { name: 'arg_1_image', start: [1, 1], end: [1, 1] },
+                { name: 'arg_1_image', start: [1, 0], end: [1, 1] },
 
                 { name: 'arg_2_title', start: [0, 2], end: [1, 2] },
                 { name: 'arg_2_text', start: [0, 3], end: [0, 3] },
-                { name: 'arg_2_image', start: [1, 3], end: [1, 3] },
+                { name: 'arg_2_image', start: [1, 2], end: [1, 3] },
 
                 { name: 'arg_3_title', start: [0, 4], end: [1, 4] },
                 { name: 'arg_3_text', start: [0, 5], end: [0, 5] },
-                { name: 'arg_3_image', start: [1, 5], end: [1, 5] },
+                { name: 'arg_3_image', start: [1, 4], end: [1, 5] },
 
                 { name: 'arg_4_title', start: [0, 6], end: [1, 6] },
                 { name: 'arg_4_text', start: [0, 7], end: [0, 7] },
-                { name: 'arg_4_image', start: [1, 7], end: [1, 7] },
+                { name: 'arg_4_image', start: [1, 6], end: [1, 7] },
 
                 { name: 'arg_5_title', start: [0, 8], end: [1, 8] },
                 { name: 'arg_5_text', start: [0, 9], end: [0, 9] },
-                { name: 'arg_5_image', start: [1, 9], end: [1, 9] },
+                { name: 'arg_5_image', start: [1, 8], end: [1, 9] },
 
                 { name: 'arg_6_title', start: [0, 10], end: [1, 10] },
                 { name: 'arg_6_text', start: [0, 11], end: [0, 11] },
-                { name: 'arg_6_image', start: [1, 11], end: [1, 11] },
+                { name: 'arg_6_image', start: [1, 10], end: [1, 11] },
 
 
               ]}
@@ -221,13 +221,18 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   </Text>
                 
                 </Box>
-              <Box gridArea="arg_1_text">
+              <Box gridArea="arg_1_text" >
                 <Text size="14px">
                   Users of <img src={agorastreamLogo} height={"14px"} width="85px"/> are <b>university students and researchers (academic and industrial)</b> coming from all over the world. Are one of these your target audience? If yes, you are in the right place.
                 </Text>
                 </Box>
-              <Box gridArea="arg_1_image" background="orange">
-                [PLACEHOLDER GIFS]
+              <Box gridArea="arg_1_image" margin={{top:"10px", bottom: "10px"}}>
+                <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto"}}
+                  >
+                  <source src="https://media.giphy.com/media/V3FqlRGEaJN5kjYE0D/giphy.mp4" type="video/mp4"/> 
+                </video>
                 </Box>
 
 
@@ -241,7 +246,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 <Text size="14px">
                   Our goal is to make organising academic seminars as <b>time-efficient</b> and <b>complete</b> as possible. On <img src={agorastreamLogo} height={"14px"} width="85px"/>, you can:
                     <ul>
-                      <li><b>Customize your homepage</b></li>
+                      <li><b>Create and customize your homepage</b></li>
                       <li>Create <b>public or on-registration</b> events</li>
                       <li><b>Send emails to your community</b> -- <i>optional; can also be automated</i></li>
                       <li><b>Advertise your events on all your social media</b> via a couple clicks -- <i>optional; can also be automated</i></li>
@@ -262,13 +267,18 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   Allow potential future speakers to come to you
                   </Text>
                 </Box>
-              <Box gridArea="arg_3_text">
+              <Box gridArea="arg_3_text" margin={{top: "15px"}}>
                 <Text size="14px">
-                  Allow potential future speakers from all around the world to apply to give a talk within your community. <img src={agorastreamLogo} height={"14px"} width="85px"/> via an in-build application form (this feature can be disabled).
+                  Give the chance to potential future speakers from all around the world to apply to give a talk within your community. <img src={agorastreamLogo} height={"14px"} width="85px"/> via an in-build application form (this feature can be disabled).
                 </Text>
                 </Box>
-              <Box gridArea="arg_3_image" background="orange">
-                [PLACEHOLDER GIFS]
+              <Box gridArea="arg_3_image" margin={{top:"10px", bottom: "10px"}}>
+              <video 
+                              autoPlay loop muted
+                              style={{ height: "100%", width: "auto"}}
+                              >
+                              <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+                  </video>
                 </Box>
 
                 <Box gridArea="arg_4_title" alignContent="center">
@@ -276,7 +286,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 Integrated virtual cafeteria
                   </Text>
                 </Box>
-              <Box gridArea="arg_4_text">
+              <Box gridArea="arg_4_text" margin={{top: "15px"}}>
                 <Text size="14px">
                   Let your audience grab a pre/post-seminar coffee at the <img src={agoraLogo} height={"14px"}/> café
                 Have you already experienced that unpleasant awkwardness when a seminar ends? Everybody clearly wants to mingle with each others and discuss about the event! Sadly, the mainstream streaming techs just feel very limited on that regard.
@@ -284,42 +294,53 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
                 </Text>
                 </Box>
-              <Box gridArea="arg_4_image">
+              <Box gridArea="arg_4_image" margin={{top:"10px", bottom: "10px"}}>
                   <video 
                               autoPlay loop muted
                               style={{ height: "100%", width: "auto"}}
                               >
-                              <source src="/eCoffee/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+                              <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
                   </video>
                 </Box>
 
 
               <Box gridArea="arg_5_title" alignContent="center">
                 <Text size="25px" weight="bold" color="color3">
-                Use your own streaming URL or <img src={agoraLogo} height={"18px"}/> tech
+                  Use your own streaming URL or <img src={agoraLogo} height={"18px"}/> tech
                   </Text>
                 </Box>
-              <Box gridArea="arg_5_text">
+              <Box gridArea="arg_5_text" margin={{top: "15px"}}>
                 <Text size="14px">
-                This can be disabled.
+                  Do you already have a streaming plan? Do not worry. You can still enjoy many of the logistic features of <img src={agorastreamLogo} height={"14px"}/>: simply insert your own streaming URL during the event creation process.
                 </Text>
                 </Box>
               <Box gridArea="arg_5_image" background="orange">
-                [PLACEHOLDER GIFS]
+                  [PACEHOLDER GIF]
                 </Box>
 
               <Box gridArea="arg_6_title" alignContent="center">
                 <Text size="25px" weight="bold" color="color3">
-                  Connect online and physical audience together (Coming soon!)
+                  Host online or hybrid physical-online seminars
                   </Text>
                 </Box>
-              <Box gridArea="arg_6_text">
+              <Box gridArea="arg_6_text" margin={{top: "15px"}}>
                 <Text size="14px">
-                With agora tech, physical audience can interact with their audience using their mobile app! To hear more about its development, visit [PLACEHOLDER SOCIAL MEDIA]
+                  The <img src={agoraLogo} height={"14px"}/> streaming technology is sculpted for both online and hybrid online-physical seminars.
+                  <ul>
+                    <li><b>Clean and easy-to-use interface</b> for the speakers</li>
+                    <li><b>Augmented interface</b> for the organisers</li>
+                    <li><b>Ability for seminar participants to request the mic</b></li>
+                    <li><b>Give a round of applause</b> by pressing your space bar to broadcast a clap in the room -- <i>event triggered by an organiser only</i></li>
+                    <li><b>Online audience is automatically redirected</b> to the <img src={agoraLogo} height={"14px"}/> cafeteria once the talk is over</li>
+                    <li><b>Connect physical and online audience</b> with a mobile app</li>
+                    <li>LateX supported chat, and much more!</li>
+                  </ul>
                 </Text>
                 </Box>
               <Box gridArea="arg_6_image" background="orange">
-                [PLACEHOLDER GIFS]
+                <Text size="28px">
+                  Public release soon. Interested to try it? Contact us!
+                  </Text>
                 </Box>
             </Grid>
                 

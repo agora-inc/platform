@@ -4,7 +4,7 @@ import MediaQuery from "react-responsive";
 import { User } from "../../../Services/UserService";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import CoffeeHangoutButton from "./CoffeeHangoutRoom/CoffeeHangoutButton";
-import { time } from "node:console";
+// import { time } from "node:console";
 
 interface Props {
     user: User | null;
@@ -65,7 +65,7 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
                             autoPlay loop muted
                             style={{ height: "auto", width: "90%", marginTop: "10px", marginBottom: "10px"}}
                             >
-                            <source src="/eCoffee/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+                            <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
                         </video>
                     </Box>
                 {/* )} */}
