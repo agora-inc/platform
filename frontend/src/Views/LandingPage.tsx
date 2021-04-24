@@ -422,37 +422,32 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
                 For speakers
               </Text>
-
-              <Link
-                to={{ pathname: "/info/agora_creation" }}
-                style={{ textDecoration: "none" }}
+              
+              <Box
+                onClick={() => ({})}
+                direction="row"
+                background={this.state.colorButton}
+                round="xsmall"
+                pad="small"
+                gap="xsmall"
+                height="60px"
+                width="140px"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator={this.state.colorHover}
+                margin={{ bottom: "20px" }}
               >
-                <Box
-                  onClick={() => ({})}
-                  direction="row"
-                  background={this.state.colorButton}
-                  round="xsmall"
-                  pad="small"
-                  gap="xsmall"
-                  height="60px"
-                  width="140px"
-                  align="center"
-                  focusIndicator={false}
-                  hoverIndicator={this.state.colorHover}
-                  margin={{ bottom: "20px" }}
-                >
 
-                  <Chat size="20px" />
-                  <Box direction="column">
-                    <Text size="14px" weight="bold" margin={{ left: "5px", bottom: "3px" }}>
-                      Give
-                    </Text>
-                    <Text size="14px" margin={{ left: "5px" }}>
-                      a talk
-                    </Text>
-                  </Box>
+                <Chat size="20px" />
+                <Box direction="column">
+                  <Text size="14px" weight="bold" margin={{ left: "5px", bottom: "3px" }}>
+                    Give
+                  </Text>
+                  <Text size="14px" margin={{ left: "5px" }}>
+                    a talk
+                  </Text>
                 </Box>
-              </Link>
+              </Box>
 
               <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
                 For organizers
