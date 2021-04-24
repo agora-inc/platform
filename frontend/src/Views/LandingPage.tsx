@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { Box, Text, Heading } from "grommet";
+import { Box, Text, Heading, Layer } from "grommet";
 import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
-
 import { User, UserService } from "../Services/UserService";
-import { Search, Play, Add, Chat, Channel, ScheduleNew, Multiple } from "grommet-icons";
+import { Search, Play, Add, Chat, Close, Channel, ScheduleNew, Multiple } from "grommet-icons";
 import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
@@ -19,6 +18,7 @@ interface State {
   showLogin: boolean
   colorButton: string
   colorHover: string
+  showModalGiveATalk: boolean
 }
 
 export default class LandingPage extends Component<RouteComponentProps, State> {
@@ -29,6 +29,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
       colorButton: "#EAF1F1",
       colorHover: "#BAD6DB",
+      showModalGiveATalk: false,
     };
   }
 
@@ -58,6 +59,89 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     // return dynamicTextValueList[now % dynamicTextValueList.length]
     // "Home for cutting-edge online/physical academic seminars"
     return "Delivering hybrid academic seminars"
+  }
+
+  toggleModal = () => {
+    this.setState({ showModalGiveATalk: !this.state.showModalGiveATalk });
+  };
+
+  giveATalkOverlay() {
+    return (
+      <Layer
+        onEsc={() => {
+          this.toggleModal();
+        }}
+        onClickOutside={() => {
+          this.toggleModal();
+        }}
+        modal
+        responsive
+        animation="fadeIn"
+        style={{
+          width: 600,
+          height: 480,
+          borderRadius: 15,
+          overflow: "hidden",
+          alignSelf: "center",
+        }}
+      >
+        <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+          <Box
+            justify="start"
+            width="99.7%"
+            background="#eaf1f1"
+            direction="row"
+            style={{
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+              position: "sticky",
+              top: 0,
+              minHeight: "45px",
+              zIndex: 10,
+            }}
+          >
+            <Box pad="30px" alignSelf="center" fill={true}>
+              <Text size="16px" color="black" weight="bold"  >
+                How to give your talk in agora.stream
+              </Text>
+            </Box>
+            <Box pad="32px" alignSelf="center">
+              <Close onClick={this.toggleModal} />
+            </Box>
+          </Box>
+
+          <Box height="300px">
+
+          </Box>
+
+          <Link
+            to={{ pathname: "/agoras" }}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              onClick={() => ({})}
+              direction="row"
+              background="#EAF1F1"
+              round="xsmall"
+              pad="small"
+              gap="xsmall"
+              height="50px"
+              width="250px"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#BAD6DB"
+            >
+              <Multiple size="25px" />
+              <Text size="14px" weight="bold" margin={{left: "2px"}}> 
+                Contact the relevant <img src={agoraLogo} style={{ height: "12px", marginTop: "1px", marginRight: "-1px"}}/>s 
+              </Text>
+            </Box>
+          </Link>
+
+        </Box>
+              
+      </Layer>
+    );
   }
 
 
@@ -195,12 +279,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 For speakers
               </Text>
 
-              <Link
-                to={{ pathname: "/agoras" }}
-                style={{ textDecoration: "none" }}
-              >
+              {/*<Link
+                  to={{ pathname: "/agoras" }}
+                  style={{ textDecoration: "none" }}
+              > */}
                 <Box
-                  onClick={() => ({})}
+                  onClick={this.toggleModal}
                   background={this.state.colorButton}
                   round="xsmall"
                   pad="xsmall"
@@ -216,8 +300,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   <Text size="16px" weight="bold" margin={{ top: "10px" }}> Give </Text>
                   <Text size="16px" margin={{ top: "5px" }}> a talk </Text>
                 </Box>
-              </Link>
+              {/* </Link> */}
             </Box>
+
+            {this.state.showModalGiveATalk && (
+              this.giveATalkOverlay()
+            )}
 
             <div id="vertical-line"> {} </div>
 
