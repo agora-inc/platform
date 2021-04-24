@@ -315,7 +315,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Text>
 
               <ReactTooltip id="create-your-events" effect="solid">
-                Create your events and share them with the world in less than 5 minutes!
+                Create your events and share them with the world in less than a minute!
               </ReactTooltip>
 
               <Link
