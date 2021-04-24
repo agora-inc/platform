@@ -349,9 +349,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
 
 
-
-
-            {/* <CreateChannelButton 
+            <CreateChannelButton 
               onClick={this.toggleCreateChannelOverlay} 
             />
             {!this.state.agoraCreationOverlay.showCreateChannelOverlay || (
@@ -362,7 +360,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 }}
                 visible={true}
                 user={this.state.user}
-              />)} */}
+              />)}
           </Box>
         </Box>
     );
