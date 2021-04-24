@@ -209,7 +209,7 @@ export default class TopicTalkList extends Component<Props, State> {
   };
 
   ifTalks = () => {
-    
+
     return (
         <div className="talk_cards_outer_box">
           {/* <Box 
@@ -266,7 +266,7 @@ export default class TopicTalkList extends Component<Props, State> {
           direction="row"
           gap="medium"
           align="end"
-          margin={{ bottom: "15px" }}
+          margin={{ bottom: "15px", top: (window.innerWidth < 800 ? "30px" : "0px") }}
         >
           {this.props.title && (
             <Text size="24px" weight="bold" color="black" margin="5px">
