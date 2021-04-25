@@ -34,14 +34,14 @@ export default class TrendingChannelsList extends Component<{}, State> {
   render() {
     return (
       <Box height="290px">
-        <Box direction="row" justify="center" style={{minWidth: "50%"}} margin={{bottom: "21px"}}>
+        <Box direction="row" justify="start" style={{minWidth: "50%"}} margin={{bottom: "21px"}}>
           <ReactTooltip id="what-is-an-agora" effect="solid">
           An agora is a hub for a community -- reading group, seminar group, institution, ...
           </ReactTooltip>
           <Text
             size="21px"
             margin={{ left: "small" }}
-            alignSelf="center"
+            alignSelf="start"
             weight="bold"
           >
             Trending <img src={AgoraLogo} data-tip data-for="what-is-an-agora" height="19px" style={{marginTop: "1px", marginRight: "-1px"}}/>s
