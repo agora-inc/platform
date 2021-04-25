@@ -447,13 +447,13 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
                 <Box gridArea="plan1_1" background="color7">
                 <Text margin="5px" weight="bold" size={this.state.sizeText}>
-                  Student plan <i>(free)</i>
+                  Free plan
                     </Text>
                 </Box>
 
                 <Box gridArea="plan2_1" background="color7">
                 <Text margin="5px" weight="bold" size={this.state.sizeText}>
-                  Professor plan
+                  Premium plan
                     </Text>
                 </Box>
 
@@ -620,7 +620,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
               </Grid>
 
               <Text size={this.state.sizeText}>
-                *: Due to an overwhelming demand and to maintain a high quality experience, we are limiting the number of simulatenous active "Professor plans" and are actively working on increasing it ASAP. Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size={this.state.sizeText}/></a> and <a href="https://https://twitter.com/AgoraStream"><Twitter size={this.state.sizeText}/></a>!
+                *: Due to an overwhelming demand and to maintain a high quality experience, we are limiting the number of simulatenous active "Premium plans" and are actively working on increasing it ASAP. Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size={this.state.sizeText}/></a> and <a href="https://https://twitter.com/AgoraStream"><Twitter size={this.state.sizeText}/></a>!
               </Text>
 
 
@@ -640,7 +640,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
             <MediaQuery minDeviceWidth={1000}>
               <CreateChannelButton 
                 onClick={this.toggleCreateChannelOverlay} 
-                text={"Create your agora (Student plan)"}
+                text={"Create your agora (Free plan)"}
                 />
               {!this.state.agoraCreationOverlay.showCreateChannelOverlay || (
                 <CreateChannelOverlay
@@ -652,7 +652,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 user={this.state.user}
                 />)}
               <Box
-                data-tip data-for='professor_plan'
+                data-tip data-for='Premium_plan'
                 direction="row"
                 gap="small"
                 align="center"
@@ -671,9 +671,9 @@ export default class AgoraCreationPage extends Component<Props, State> {
               >
                 {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
                 <Text size="22.5px">🚀</Text>
-                <Text size="14px" color="white">Create an agora (Professor plan)</Text>
+                <Text size="14px" color="white">Create an agora (Premium plan)</Text>
               </Box>
-              <ReactTooltip id='professor_plan' place="bottom" effect="solid">
+              <ReactTooltip id='Premium_plan' place="bottom" effect="solid">
                   Publicly available soon.
                 </ReactTooltip>
 
