@@ -249,7 +249,7 @@ export default class TopicTalkList extends Component<Props, State> {
         round="xsmall"
         align="center"
         alignSelf="center"
-        background="#EEEEEE"
+        background="#color5"
       >
         <Text size="12px" weight="bold" color="grey">
           Currently no public talks in that category
@@ -281,7 +281,7 @@ export default class TopicTalkList extends Component<Props, State> {
           <Box 
             width="97.5%" 
             margin={{"bottom": "50px", "left": "5px"}}
-            background="#EEEEEE"
+            background="color6"
             direction="row"
             pad="12px"
             round="xsmall"
