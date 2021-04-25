@@ -264,10 +264,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </Box>
               <Box gridArea="arg_4_text" margin={{top: "15px"}}>
                 <Text size="14px">
-                  Let your audience grab a pre/post-seminar coffee at the <img src={agoraLogo} height={"14px"}/> café
-                Have you already experienced that unpleasant awkwardness when a seminar ends? Everybody clearly wants to mingle with each others and discuss about the event! Sadly, the mainstream streaming techs just feel very limited on that regard.
-                On <img src={agorastreamLogo} height={"14px"}/>, every event has an 
-
+                  Let your audience grab a pre/post-seminar coffee at the <img src={agoraLogo} height={"14px"}/> café by taking control of a 2D avatar using their arrow keys (cafeteria is open 45 minutes before the start of the event and closes 2 hours after it finishes). Allow your audience to network and mingle with each others and discuss about the event in a nice and cosy place!
                 </Text>
                 </Box>
               <Box gridArea="arg_4_image" margin={{top:"10px", bottom: "10px"}}>
@@ -320,7 +317,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </Box>
               <Box gridArea="arg_6_image" background="color2">
                 <Text size="28px" textAlign="center" margin={{top: "15px"}} weight="bold">
-                  Public release soon. <br></br>
+                Public release soon.🎊 <br></br>
                   Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size="28px"/></a> or <a href="https://https://twitter.com/AgoraStream"><Twitter size="28px"/></a>!
                   </Text>
                 </Box>
