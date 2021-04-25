@@ -102,7 +102,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           >
             <Box pad="30px" alignSelf="center" fill={true}>
               <Text size="16px" color="black" weight="bold"  >
-                How to give your talk in agora.stream
+                How to give your talk on agora.stream
               </Text>
             </Box>
             <Box pad="32px" alignSelf="center">
@@ -110,7 +110,19 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Box>
           </Box>
 
-          <Box height="300px">
+          <Box height="300px" margin={{bottom: "15px"}}>
+
+
+            <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto"}}
+                  >
+                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+            </video>
+
+
+
+
 
           </Box>
 
