@@ -3,3 +3,9 @@
   opacity: 0.1;
   z-index: -1;
 }
+
+#vertical-line {
+  border-left: 3px solid #CCCCCC;
+  margin-right: 25px;
+  margin-left: 25px;
+}

@@ -106,9 +106,9 @@ export default class Home extends Component<{}, State> {
               topicSearch={true}
               user={this.state.user}
             />
-            <MediaQuery minDeviceWidth={992}>
+            {/*<MediaQuery minDeviceWidth={992}>
               <RecentTalksList user={this.state.user} />
-            </MediaQuery>
+      </MediaQuery> */}
             {/* <RecommendedGrid /> */}
             <FooterComponent />
         </div>

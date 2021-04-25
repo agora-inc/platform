@@ -1,22 +1,24 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { Box, Text, Heading } from "grommet";
+import { Box, Text, Heading, Layer } from "grommet";
 import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
-
 import { User, UserService } from "../Services/UserService";
-import { Search, Play, Add, Channel, ScheduleNew, Multiple } from "grommet-icons";
+import { Search, Play, Add, Chat, Close, Channel, ScheduleNew, Multiple } from "grommet-icons";
 import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 import TrendingChannelsList from "../Components/Homepage/TrendingChannelsList";
-
+import ReactTooltip from "react-tooltip";
 
 
 interface State {
   user: User | null
   showLogin: boolean
+  colorButton: string
+  colorHover: string
+  showModalGiveATalk: boolean
 }
 
 export default class LandingPage extends Component<RouteComponentProps, State> {
@@ -25,6 +27,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     this.state = {
       user: UserService.getCurrentUser(),
       showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
+      colorButton: "#EAF1F1",
+      colorHover: "#BAD6DB",
+      showModalGiveATalk: false,
     };
   }
 
@@ -51,13 +56,110 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     ];
 
     var now = Date.now();
-    return dynamicTextValueList[now % dynamicTextValueList.length]
+    // return dynamicTextValueList[now % dynamicTextValueList.length]
+    // "Home for cutting-edge online/physical academic seminars"
+    return "Delivering hybrid academic seminars"
   }
-    
+
+  toggleModal = () => {
+    this.setState({ showModalGiveATalk: !this.state.showModalGiveATalk });
+  };
+
+  giveATalkOverlay() {
+    return (
+      <Layer
+        onEsc={() => {
+          this.toggleModal();
+        }}
+        onClickOutside={() => {
+          this.toggleModal();
+        }}
+        modal
+        responsive
+        animation="fadeIn"
+        style={{
+          width: 600,
+          height: 480,
+          borderRadius: 15,
+          overflow: "hidden",
+          alignSelf: "center",
+        }}
+      >
+        <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+          <Box
+            justify="start"
+            width="99.7%"
+            background="#eaf1f1"
+            direction="row"
+            style={{
+              borderTopLeftRadius: "10px",
+              borderTopRightRadius: "10px",
+              position: "sticky",
+              top: 0,
+              minHeight: "45px",
+              zIndex: 10,
+            }}
+          >
+            <Box pad="30px" alignSelf="center" fill={true}>
+              <Text size="16px" color="black" weight="bold"  >
+                How to give your talk on agora.stream
+              </Text>
+            </Box>
+            <Box pad="32px" alignSelf="center">
+              <Close onClick={this.toggleModal} />
+            </Box>
+          </Box>
+
+          <Box height="300px" margin={{bottom: "15px"}}>
+
+
+            <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto"}}
+                  >
+                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+            </video>
+
+
+
+
+
+          </Box>
+
+          <Link
+            to={{ pathname: "/agoras" }}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              onClick={() => ({})}
+              direction="row"
+              background="#EAF1F1"
+              round="xsmall"
+              pad="small"
+              gap="xsmall"
+              height="50px"
+              width="250px"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#BAD6DB"
+            >
+              <Multiple size="25px" />
+              <Text size="14px" weight="bold" margin={{left: "2px"}}> 
+                Contact the relevant <img src={agoraLogo} style={{ height: "12px", marginTop: "1px", marginRight: "-1px"}}/>s 
+              </Text>
+            </Box>
+          </Link>
+
+        </Box>
+              
+      </Layer>
+    );
+  }
+
 
   render() {
     return (
-      <Box 
+      <Box
         direction="column"
         align="center"
       >
@@ -66,154 +168,338 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           gap="small"
           align="end"
           style={{ minWidth: "90%", maxHeight: "40px" }}
-          margin={{top: "20px"}}
+          margin={{ top: "20px" }}
           justify="end"
         >
           <UserManager showLogin={this.state.showLogin} />
         </Box>
-        
-        { /* Column version */ }
 
-        <video 
-          autoPlay loop muted id="background-landing" 
-          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%"}}
+        { /* Column version */}
+
+        <video
+          autoPlay loop muted id="background-landing"
+          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
         >
-          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4" /> 
+          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4" />
         </video>
 
-        <Box direction="column" justify="center" style={{justifyContent: "center"}}>
-          
-          <Box direction="row" justify="center" style={{justifyContent: "center"}} margin={{top: "50px", bottom: "20px"}}>
-            {/* <Logo style={{ height: "60px", width: "60px"}} /> */}
-            <MediaQuery maxDeviceWidth={800}>
-              <img src={agoraStreamFullLogo} style={{ width: "200px", maxHeight: "40px"}}/>
-              <Text margin={{left: "5px"}} size="14px">Mobile</Text>
-            </MediaQuery>
-            <MediaQuery minDeviceWidth={800}>
-              <img src={agoraStreamFullLogo} style={{ height: "90px"}}/>
-            </MediaQuery>
-          </Box>
+        <Box direction="column" justify="start"> {/*style={{justifyContent: "center"}}>*/}
 
+          {/* Desktop version */}
+          <MediaQuery minDeviceWidth={800}>
+            <Box direction="row" justify="center" style={{ justifyContent: "center" }} margin={{ top: "50px", bottom: "20px" }}>
+              <img src={agoraStreamFullLogo} style={{ height: "90px" }} />
+            </Box>
+            <Box direction="column" justify="center" alignContent="center"
+              margin={{ top: "-35px", left: "215px", right: "10px", bottom: "38px" }}
+            >
+              <Text size="16px" weight="bold" alignSelf="center" color="#0C385B">
+                {this.showDynamicTextValue()}
+              </Text>
+            </Box>
+          </MediaQuery>
 
-          <Box direction="column" justify="center" alignContent="center" margin={{top: "5px"}}> 
-            <Text size="16px" weight="bold" alignSelf="center"> 
-              {this.showDynamicTextValue()}
-            </Text>
-          </Box>
+          {/* Mobile version */}
+          <MediaQuery maxDeviceWidth={800}>
+
+            <Box direction="row" justify="center" style={{ justifyContent: "center" }} margin={{ top: "50px", bottom: "20px" }}>
+              <img src={agoraStreamFullLogo} style={{ width: "200px", maxHeight: "40px" }} />
+              <Text margin={{ left: "5px" }} size="14px">Mobile</Text>
+            </Box>
+            <Box direction="column" justify="center" alignContent="center"
+              margin={{ top: "-25px", left: "61px", right: "10px", bottom: "38px" }}
+            >
+              <Text size="11px" weight="bold" alignSelf="center" color="#0C385B">
+                {this.showDynamicTextValue()}
+              </Text>
+            </Box>
+          </MediaQuery>
 
         </Box>
 
-        <Box 
-          direction="row" 
-          gap="50px" 
+        <Box
+          direction="row"
           focusIndicator={false}
-          margin={{top: (window.innerWidth > 800) ? "70px" : "10px"}}
+          margin={{
+            top: (window.innerWidth > 800) ? "80px" : "25px",
+            bottom: (window.innerWidth > 800) ? "40px" : "0px"
+          }}
+          justify="center"
         >
+
+          {/* Desktop version */}
+
           <MediaQuery minDeviceWidth={800}>
-            <Link
-              to={{ pathname: "/browse" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                onClick={() => ({})}
-                background="#DDDDDD"
-                round="xsmall"
-                margin={{ horizontal: "small" }}
-                pad="xsmall"
-                height="130px"
-                width="176px"
-                justify="center"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator="#CCCCCC"
-              >
-                <Search size="30px"/>
-                <Text size="16px" weight="bold" margin={{top: "10px"}}> Browse </Text>
-                <Text size="16px" margin={{top: "10px"}}> future seminars </Text>
+
+            <Box direction="column" width="56%" >
+
+              <Text size="21px" weight="bold" margin={{ left: "10px", bottom: "30px" }}>
+                For academics
+              </Text>
+              <Box direction="row" gap="10px">
+                <Link
+                  to={{ pathname: "/browse" }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    onClick={() => ({})}
+                    background={this.state.colorButton}
+                    round="xsmall"
+                    pad="xsmall"
+                    height="120px"
+                    width="150px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator={this.state.colorHover}
+                    margin={{ left: "10px", right: "20px" }}
+                  >
+                    <Search size="30px" />
+                    <Text size="16px" weight="bold" margin={{ top: "10px" }}> Browse </Text>
+                    <Text size="16px" margin={{ top: "5px" }}> future seminars </Text>
+                  </Box>
+                </Link>
+
+                <Link
+                  to={{ pathname: "/past" }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    onClick={() => ({})}
+                    background={this.state.colorButton}
+                    round="xsmall"
+                    pad="xsmall"
+                    height="120px"
+                    width="150px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator={this.state.colorHover}
+                  >
+                    <Play size="30px" />
+                    <Text size="16px" weight="bold" margin={{ top: "10px" }}> Watch</Text>
+                    <Text size="16px" margin={{ top: "5px" }}> past seminars </Text>
+                  </Box>
+                </Link>
               </Box>
-            </Link>
+            </Box>
+
+            <div id="vertical-line"> {} </div>
+
+            <Box direction="column" width="24%" alignSelf="center">
+              <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
+                For speakers
+              </Text>
+
+              {/*<Link
+                  to={{ pathname: "/agoras" }}
+                  style={{ textDecoration: "none" }}
+              > */}
+                <Box
+                  onClick={this.toggleModal}
+                  background={this.state.colorButton}
+                  round="xsmall"
+                  pad="xsmall"
+                  height="120px"
+                  width="150px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator={this.state.colorHover}
+                  margin={{ left: "0px" }}
+                >
+                  <Chat size="30px" />
+                  <Text size="16px" weight="bold" margin={{ top: "10px" }}> Give </Text>
+                  <Text size="16px" margin={{ top: "5px" }}> a talk </Text>
+                </Box>
+              {/* </Link> */}
+            </Box>
+
+            {this.state.showModalGiveATalk && (
+              this.giveATalkOverlay()
+            )}
+
+            <div id="vertical-line"> {} </div>
+
+            <Box direction="column" width="24%" alignSelf="center">
+              <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
+                For organizers
+              </Text>
+
+              <ReactTooltip id="create-your-events" effect="solid">
+                Create your events and share them with the world in less than a minute!
+              </ReactTooltip>
+
+              <Link
+                to={{ pathname: "/info/agora_creation" }}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  onClick={() => ({})}
+                  background={this.state.colorButton}
+                  round="xsmall"
+                  pad="xsmall"
+                  height="120px"
+                  width="150px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator={this.state.colorHover}
+                  margin={{ left: "0px" }}
+                  data-tip data-for="create-your-events"
+                >
+                  <Add size="30px" />
+                  <Text size="16px" weight="bold" margin={{ top: "10px" }}> Promote </Text>
+                  <Text size="16px" margin={{ top: "5px" }}> your seminars </Text>
+                </Box>
+              </Link>
+            </Box>
+
           </MediaQuery>
 
 
-          <MediaQuery minDeviceWidth={800}>
-            <Link
-              to={{ pathname: "/past" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                onClick={() => ({})}
-                background="#DDDDDD"
-                round="xsmall"
-                margin={{ horizontal: "small" }}
-                pad="xsmall"
-                height="130px"
-                width="176px"
-                justify="center"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator="#CCCCCC"
-              >
-                <Play size="30px" />
-                <Text size="16px" weight="bold" margin={{top: "10px"}}> Watch</Text>
-                <Text size="16px" margin={{top: "10px"}}> past seminars </Text>
-              </Box>
-            </Link>
-          </MediaQuery>
+          {/* Mobile version */}
 
-          <MediaQuery minDeviceWidth={800}>
-            <Link
-              to={{ pathname: "/agoras" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                onClick={() => ({})}
-                background="#DDDDDD"
-                round="xsmall"
-                margin={{ horizontal: "small" }}
-                pad="xsmall"
-                height="130px"
-                width="176px"
-                justify="center"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator="#CCCCCC"
-              >
-                <Multiple size="30px" />
-                <Text size="16px" weight="bold" margin={{top: "10px"}}> Discover</Text>
-                <Text size="16px" margin={{top: "10px"}}> new <img src={agoraLogo} style={{ height: "14px"}}/>s </Text>
-              </Box>
-            </Link>
-          </MediaQuery>
+          <MediaQuery maxDeviceWidth={800}>
+            <Box direction="column" width="50%" >
+              <Text size="18px" weight="bold" margin={{ left: "10px", bottom: "10px" }}>
+                For academics
+              </Text>
+              <Box direction="column" margin={{ left: "10px" }}>
+                <Link
+                  to={{ pathname: "/browse" }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    onClick={() => ({})}
+                    direction="row"
+                    background={this.state.colorButton}
+                    round="xsmall"
+                    pad="small"
+                    gap="xsmall"
+                    height="60px"
+                    width="150px"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator={this.state.colorHover}
+                    margin={{ bottom: "25px" }}
+                  >
 
-          <MediaQuery minDeviceWidth={800}>
-            <Link
-              to={{ pathname: "info/agora_creation" }}
-              style={{ textDecoration: "none" }}
-            >
+                    <Search size="20px" />
+                    <Box direction="column">
+                      <Text size="14px" weight="bold" margin={{ left: "2px", bottom: "3px" }}>
+                        Browse
+                      </Text>
+                      <Text size="14px" margin={{ left: "2px" }}>
+                        future seminars
+                      </Text>
+                    </Box>
+                  </Box>
+                </Link>
+                <Link
+                  to={{ pathname: "/past" }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    onClick={() => ({})}
+                    direction="row"
+                    background={this.state.colorButton}
+                    round="xsmall"
+                    pad="small"
+                    gap="xsmall"
+                    height="60px"
+                    width="150px"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator={this.state.colorHover}
+                  >
+
+                    <Play size="20px" />
+                    <Box direction="column">
+                      <Text size="14px" weight="bold" margin={{ left: "2px", bottom: "3px" }}>
+                        Watch
+                      </Text>
+                      <Text size="14px" margin={{ left: "2px" }}>
+                        past seminars
+                      </Text>
+                    </Box>
+                  </Box>
+                </Link>
+              </Box>
+            </Box>
+
+            <div id="vertical-line"> {} </div>
+
+            <Box direction="column" width="50%" alignSelf="center">
+              <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
+                For speakers
+              </Text>
+              
               <Box
                 onClick={() => ({})}
-                background="#DDDDDD"
+                direction="row"
+                background={this.state.colorButton}
                 round="xsmall"
-                margin={{ horizontal: "small" }}
-                pad="xsmall"
-                height="130px"
-                width="176px"
-                justify="center"
+                pad="small"
+                gap="xsmall"
+                height="60px"
+                width="140px"
                 align="center"
                 focusIndicator={false}
-                hoverIndicator="#CCCCCC"
-              > 
-                <Add size="30px" />
-                <Text size="16px" weight="bold" margin={{top: "10px"}}> Publish </Text>
-                <Text size="16px" margin={{top: "10px"}}> your seminars </Text>
+                hoverIndicator={this.state.colorHover}
+                margin={{ bottom: "20px" }}
+              >
+
+                <Chat size="20px" />
+                <Box direction="column">
+                  <Text size="14px" weight="bold" margin={{ left: "5px", bottom: "3px" }}>
+                    Give
+                  </Text>
+                  <Text size="14px" margin={{ left: "5px" }}>
+                    a talk
+                  </Text>
+                </Box>
               </Box>
-            </Link>
+
+              <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
+                For organizers
+              </Text>
+
+              <Link
+                to={{ pathname: "/info/agora_creation" }}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  onClick={() => ({})}
+                  direction="row"
+                  background={this.state.colorButton}
+                  round="xsmall"
+                  pad="small"
+                  gap="xsmall"
+                  height="60px"
+                  width="140px"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator={this.state.colorHover}
+                >
+
+                  <Add size="20px" />
+                  <Box direction="column">
+                    <Text size="14px" weight="bold" margin={{ left: "5px", bottom: "3px" }}>
+                      Promote
+                    </Text>
+                    <Text size="14px" margin={{ left: "5px" }}>
+                      your seminars
+                    </Text>
+                  </Box>
+                </Box>
+              </Link>
+            </Box>
           </MediaQuery>
         </Box>
 
 
-
-        <Box 
+        {/*<Box 
           direction="row" 
           gap="150px"
           margin={{top: "60px", left: "10px", right: "10px"}}
@@ -224,14 +510,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Text size="14px" margin={{bottom: "6px"}}> It is the place to mingle with the community and where seminars happen </Text>
             <Text size="14px" margin={{bottom: "6px"}} weight="bold"> Visit and connect with any agora by becoming a member or a future speaker </Text>
           </Box>
-        </Box>
+        </Box> */}
 
-        <Box 
-          direction="row" 
+        <Box
+          direction="row"
           gap="150px"
-          margin={{top: "50px"}}
+          margin={{ top: "75px", left: "10px", right: "10px" }}
         >
-          <TrendingChannelsList/>
+          <TrendingChannelsList />
         </Box>
 
 
@@ -376,7 +662,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         */}
 
-        <Box width="1024px" align="center">
+        <Box width="820px" align="center">
           <FooterComponent />
         </Box>
 
