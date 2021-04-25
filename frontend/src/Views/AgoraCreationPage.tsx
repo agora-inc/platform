@@ -2,43 +2,10 @@ import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid} from "grommet";
 import { Checkmark, Close, Linkedin,  Twitter} from "grommet-icons";
-import { Link } from "react-router-dom";
-import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help, Channel, PersonalComputer} from "grommet-icons";
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import agorastreamLogo from "../assets/general/agora.stream_logo_v2.1.png";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
-import ChannelCreationButton from "../Components/Channel/CreateChannelButton";
+
 import ReactTooltip from "react-tooltip";
-
-
-
-import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
-import adding_email_invitation from "../assets/getting-started/adding_members/adding_email_invitation.png";
-import email_invitation from "../assets/getting-started/adding_members/email_invitation.png";
-import registration from "../assets/getting-started/adding_members/registration.png";
-import email_registration from "../assets/getting-started/adding_members/email_registration.png";
-import member_got_added_after_registration from "../assets/getting-started/adding_members/member_got_added_after_registration.png";
-import membership_top_right from "../assets/getting-started/adding_members/membership_top_right.png";
-
-
-import accessing_link from "../assets/getting-started/accessing_link.png";
-// import agora_created_done from "../assets/getting-started/agora_created_done.png";
-// import create_agora from "../assets/getting-started/create_agora.png";
-// import create_agora_empty_page from "../assets/getting-started/create_agora_empty_page.png";
-// import create_event_done from "../assets/getting-started/create_event_done.png";
-// import customize_agora_done from "../assets/getting-started/customize_agora_done.png";
-// import homepage from "../assets/getting-started/homepage.png";
-// import internal_calendar from "../assets/getting-started/internal_calendar.png";
-// import registering from "../assets/getting-started/registering.png";
-// import talk_card_registered from "../assets/getting-started/talk_card_registered.png";
-// import top_right_panel from "../assets/getting-started/top_right_panel.png";
-// import following_agora from "../assets/getting-started/following_agora.png";
-// import homepage_following from "../assets/getting-started/homepage_following.png";
-// import admin_agora from "../assets/getting-started/admin_agora.png";
-// import top_right_panel_select_agora from "../assets/getting-started/top_right_panel_select_agora.png";
-// import watch_past_talk from "../assets/getting-started/watch_past_talk.png";
-// import LatexInput from "../Components/Streaming/LatexInput";
-import ReactPlayer from "react-player"
 import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
 
@@ -246,7 +213,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </Box>
               <Box gridArea="arg_2_text">
                 <Text size="14px">
-                  Our goal is to make organising academic seminars as <b>time-efficient</b> and <b>complete</b> as possible. On <img src={agorastreamLogo} height={"14px"} width="85px"/>, you can:
+                  Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>a minute</b>. You can also:
                     <ul>
                       <li><b>Create and customize your homepage</b></li>
                       <li>Create <b>public or on-registration</b> events</li>
@@ -258,8 +225,15 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
                 </Text>
                 </Box>
-              <Box gridArea="arg_2_image" background="orange">
-                [PLACEHOLDER GIFS]
+
+                {/* TO BE CHANGED:!!!!! */}
+              <Box gridArea="arg_2_image">
+               <video 
+                    autoPlay loop muted
+                    style={{ height: "100%", width: "auto"}}
+                    >
+                    <source src="/videos/creation_speed_1mn_agora_15sec_version_15sec_version.mp4" type="video/mp4"/> 
+                </video>
                 </Box>
 
 
@@ -346,8 +320,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </Box>
               <Box gridArea="arg_6_image" background="color2">
                 <Text size="28px" textAlign="center" margin={{top: "15px"}} weight="bold">
-                  Publicly available soon. <br></br>
-                  Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size={this.state.sizeText}/></a> or <a href="https://https://twitter.com/AgoraStream"><Twitter size={this.state.sizeText}/></a>!
+                  Public release soon. <br></br>
+                  Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size="28px"/></a> or <a href="https://https://twitter.com/AgoraStream"><Twitter size="28px"/></a>!
                   </Text>
                 </Box>
             </Grid>
@@ -578,8 +552,6 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
 
 
-
-
                 <Box gridArea="feature_9" background="color5">
                 <Text margin="5px" weight="bold" size={this.state.sizeText}>
                   Price
@@ -602,13 +574,10 @@ export default class AgoraCreationPage extends Component<Props, State> {
               </Grid>
 
               <Text size={this.state.sizeText}>
-                *: Due to an overwhelming demand and to maintain a high quality experience, we are limiting the number of simulatenous "Professor plans" and are actively working on increasing it ASAP. Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin/></a> and <a href="https://https://twitter.com/AgoraStream"><Twitter/></a>!
+                *: Due to an overwhelming demand and to maintain a high quality experience, we are limiting the number of simulatenous active "Professor plans" and are actively working on increasing it ASAP. Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size={this.state.sizeText}/></a> and <a href="https://https://twitter.com/AgoraStream"><Twitter size={this.state.sizeText}/></a>!
               </Text>
 
             </Box>
-
-
-
 
 
 
