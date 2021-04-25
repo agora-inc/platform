@@ -13,6 +13,7 @@ import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
 // import GlobalClassification from "../../Components/Homepage/GlobalClassification";
 import MediaQuery from "react-responsive";
+import TopicSelector from "./TopicSelector";
 
 interface Props {
   gridArea?: string;
@@ -34,20 +35,22 @@ interface State {
   allAudienceLevels: string[];
 }
 
+var emptyTopic = {
+  field: "-",
+  id: -1,
+  is_primitive_node: false,
+  parent_1_id: -1,
+  parent_2_id: -1,
+  parent_3_id: -1,
+}
+
 export default class TopicTalkList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       allTalks: [],
       allTopics: [],
-      chosenTopic: {
-        field: "-",
-        id: -1,
-        is_primitive_node: false,
-        parent_1_id: -1,
-        parent_2_id: -1,
-        parent_3_id: -1,
-      },
+      chosenTopic: emptyTopic,
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
@@ -199,8 +202,14 @@ export default class TopicTalkList extends Component<Props, State> {
     }
   };
 
+  selectTopicMobile = (temp: Topic) => {
+    this.setState({
+      chosenTopic: temp,
+    });
+  };
+
   ifTalks = () => {
-    
+
     return (
         <div className="talk_cards_outer_box">
           {/* <Box 
@@ -240,7 +249,7 @@ export default class TopicTalkList extends Component<Props, State> {
         round="xsmall"
         align="center"
         alignSelf="center"
-        background="#EEEEEE"
+        background="#color5"
       >
         <Text size="12px" weight="bold" color="grey">
           Currently no public talks in that category
@@ -251,13 +260,23 @@ export default class TopicTalkList extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="100%" margin={{"bottom": "50px"}}>
+      <Box 
+        width="100%" 
+        margin={{
+          "bottom": "50px",
+          "left": (window.innerWidth < 800 ? "30px" : "0px"),
+        }}
+      >
         <Box
           width="100%"
           direction="row"
           gap="medium"
           align="end"
-          margin={{ bottom: "15px" }}
+          margin={{ 
+            bottom: "15px", 
+            top: (window.innerWidth < 800 ? "30px" : "0px"), 
+            
+          }}
         >
           {this.props.title && (
             <Text size="24px" weight="bold" color="black" margin="5px">
@@ -267,11 +286,12 @@ export default class TopicTalkList extends Component<Props, State> {
 
         </Box>
 
+        {/* A. Classification system for desktop */}
         <MediaQuery minDeviceWidth={992}>
           <Box 
             width="97.5%" 
             margin={{"bottom": "50px", "left": "5px"}}
-            background="#EEEEEE"
+            background="color6"
             direction="row"
             pad="12px"
             round="xsmall"
@@ -383,6 +403,14 @@ export default class TopicTalkList extends Component<Props, State> {
               )}
             </Box> 
           </Box>
+        </MediaQuery>
+
+        {/* B. Classification system for mobile */}
+        <MediaQuery maxDeviceWidth={992}>
+          <TopicClassification 
+            topicCallback={this.selectTopicMobile}
+            searchType="Talks"
+          />
         </MediaQuery>
 
         {this.fetchFilteredTalks().length === 0

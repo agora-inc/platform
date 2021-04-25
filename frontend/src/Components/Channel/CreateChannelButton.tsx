@@ -7,7 +7,8 @@ import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
 interface Props {
   onClick: any;
   width?: string;
-  height?: string
+  height?: string;
+  text?: string;
 }
 
 interface State {
@@ -42,14 +43,15 @@ export default class CreateChannelButton extends Component<Props, State> {
         style={{
           border: "2px solid #C2C2C2",
         }}
-        hoverIndicator={true}
+        background="color1"
+        hoverIndicator="color3"
         focusIndicator={false}
         justify="start"
         margin={{top: "small"}}
       >
         {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
         <Text size="22.5px">🚀</Text>
-        <Text size="14px" color="grey"> Create an <img src={agoraLogo} style={{ height: "14px"}}/> </Text>
+        <Text size="14px" color="white">{this.props.text ? this.props.text : "Create an agora"}</Text>
         
       </Box>
     );
