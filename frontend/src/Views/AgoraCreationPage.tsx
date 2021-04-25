@@ -11,6 +11,7 @@ import "katex/dist/katex.min.css";
 
 import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
+import MediaQuery from "react-responsive";
 
 
 
@@ -112,93 +113,120 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
   render() {
     let path_image = "/home/cloud-user/plateform/agora/frontend/media/tutorial/adding_members/";
+    var renderMobileView = (window.innerWidth < 1000);
+
     return (
       <Box
         width="100vw"
-        height="500vh"
+        height="auto"
         align="center"
         margin={{ top: "8vh" }}
         background="color6"
         >
-        <Box width="70%" direction="column" margin={{"top": "10px"}}>
-          {/* <Box
-            width="98.25%"
-            height="950px"
-            background="#C8EDEC"
-            round="xsmall"
-            pad="small"
-            // gap="xsmall"
-          > */}
+        <Box width="70%" direction="column" margin={{top: "10px", bottom: "60px"}}>
           <Box direction="row" gap="small" margin={{bottom: "44px"}}>
             <Text size={this.state.sizeHeader} weight="bold" color="color1"> Everything you need for your seminars, all in one place</Text>
           </Box>
-          <Box margin={{bottom: "32px"}}>
+          {/* <Box margin={{bottom: "32px"}}>
             <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>less than a minute</b>.
              </Text>
-          {/* <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
-            PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
-          </Text> */}
-          </Box>
-{/* 
-          <Text size={this.state.sizeText} weight="bold"> What can you do with an <img src={agoraLogo} height={this.state.sizeText}/>?</Text> */}
+          </Box> */}
             <Grid
               rows={
-                [
-                  '40px', "200px",
-                  '40px', "200px",
-                  '40px', "200px",
-                  '40px', "200px",
-                  '40px', "200px",
-                  '40px', "200px",
+                renderMobileView 
+                ?  [
+                  "70px", "80px", "200px",
+                  "70px", "200px", "200px",
+                  "70px", "110px", "200px",
+                  "70px", "170px", "200px",
+                  "70px", "100px", "200px",
+                  "70px", "350px", "200px",
+                  ]
+                : [
+                    '40px', "200px",
+                    '40px', "200px",
+                    '40px', "200px",
+                    '40px', "200px",
+                    '40px', "200px",
+                    '40px', "200px",
+                  ]
+              }
 
-                ]}
-              columns={['50%', "50%"]}
+              columns={renderMobileView ? ["100%"] : ['50%', "50%"]}
               gap="15px"
-              margin={{left: "10px", "top": "18px"}}
-              areas={[
-                { name: 'arg_1_title', start: [0, 0], end: [1, 0] },
-                { name: 'arg_1_text', start: [0, 1], end: [0, 1] },
-                { name: 'arg_1_image', start: [1, 0], end: [1, 1] },
+              margin={renderMobileView ? {} : {left: "10px"}}
+              areas={ renderMobileView 
+                ?
+                  [
+                    { name: 'arg_1_title', start: [0, 0], end: [0, 0] },
+                    { name: 'arg_1_text', start: [0, 1], end: [0, 1] },
+                    { name: 'arg_1_image', start: [0, 2], end: [0, 2] },
+    
+                    { name: 'arg_2_title', start: [0, 3], end: [0, 3] },
+                    { name: 'arg_2_text', start: [0, 4], end: [0, 4] },
+                    { name: 'arg_2_image', start: [0, 5], end: [0, 5] },
+    
+                    { name: 'arg_3_title', start: [0, 6], end: [0, 6] },
+                    { name: 'arg_3_text', start: [0, 7], end: [0, 7] },
+                    { name: 'arg_3_image', start: [0, 8], end: [0, 8] },
+    
+                    { name: 'arg_4_title', start: [0, 9], end: [0, 9] },
+                    { name: 'arg_4_text', start: [0, 10], end: [0, 10] },
+                    { name: 'arg_4_image', start: [0, 11], end: [0, 11] },
+    
+                    { name: 'arg_5_title', start: [0, 12], end: [0, 12] },
+                    { name: 'arg_5_text', start: [0, 13], end: [0, 13] },
+                    { name: 'arg_5_image', start: [0, 14], end: [0, 14] },
+    
+                    { name: 'arg_6_title', start: [0, 15], end: [0, 15] },
+                    { name: 'arg_6_text', start: [0, 16], end: [0, 16] },
+                    { name: 'arg_6_image', start: [0, 17], end: [0, 17] },
+                    // NOTE THAT arg_6_image box is not the same as the other ones!
+                  ]
+                :
+                  [
+                  { name: 'arg_1_title', start: [0, 0], end: [1, 0] },
+                  { name: 'arg_1_text', start: [0, 1], end: [0, 1] },
+                  { name: 'arg_1_image', start: [1, 0], end: [1, 1] },
 
-                { name: 'arg_2_title', start: [0, 2], end: [1, 2] },
-                { name: 'arg_2_text', start: [0, 3], end: [0, 3] },
-                { name: 'arg_2_image', start: [1, 2], end: [1, 3] },
+                  { name: 'arg_2_title', start: [0, 2], end: [1, 2] },
+                  { name: 'arg_2_text', start: [0, 3], end: [0, 3] },
+                  { name: 'arg_2_image', start: [1, 2], end: [1, 3] },
 
-                { name: 'arg_3_title', start: [0, 4], end: [1, 4] },
-                { name: 'arg_3_text', start: [0, 5], end: [0, 5] },
-                { name: 'arg_3_image', start: [1, 4], end: [1, 5] },
+                  { name: 'arg_3_title', start: [0, 4], end: [1, 4] },
+                  { name: 'arg_3_text', start: [0, 5], end: [0, 5] },
+                  { name: 'arg_3_image', start: [1, 4], end: [1, 5] },
 
-                { name: 'arg_4_title', start: [0, 6], end: [1, 6] },
-                { name: 'arg_4_text', start: [0, 7], end: [0, 7] },
-                { name: 'arg_4_image', start: [1, 6], end: [1, 7] },
+                  { name: 'arg_4_title', start: [0, 6], end: [1, 6] },
+                  { name: 'arg_4_text', start: [0, 7], end: [0, 7] },
+                  { name: 'arg_4_image', start: [1, 6], end: [1, 7] },
 
-                { name: 'arg_5_title', start: [0, 8], end: [1, 8] },
-                { name: 'arg_5_text', start: [0, 9], end: [0, 9] },
-                { name: 'arg_5_image', start: [1, 8], end: [1, 9] },
+                  { name: 'arg_5_title', start: [0, 8], end: [1, 8] },
+                  { name: 'arg_5_text', start: [0, 9], end: [0, 9] },
+                  { name: 'arg_5_image', start: [1, 8], end: [1, 9] },
 
-                { name: 'arg_6_title', start: [0, 10], end: [1, 10] },
-                { name: 'arg_6_text', start: [0, 11], end: [0, 11] },
-                { name: 'arg_6_image', start: [1, 11], end: [1, 11] },
-
-                // NOTE THAT arg_6_image box is not the same as the other ones!
-
-              ]}
+                  { name: 'arg_6_title', start: [0, 10], end: [1, 10] },
+                  { name: 'arg_6_text', start: [0, 11], end: [0, 11] },
+                  { name: 'arg_6_image', start: [1, 11], end: [1, 11] },
+                  // NOTE THAT arg_6_image box is not the same as the other ones!
+              ]
+            }
             >
-              <Box gridArea="arg_1_title" alignSelf="center">
+              <Box gridArea="arg_1_title">
                 <Text size="25px" weight="bold" color="color3">
                   Your target audience is right there
                   </Text>
                 
                 </Box>
-              <Box gridArea="arg_1_text" >
+              <Box gridArea="arg_1_text">
                 <Text size="14px">
                   Users of <img src={agorastreamLogo} height={"14px"} width="85px"/> are <b>university students and researchers (academic and industrial)</b> coming from all over the world. Are one of these your target audience? If yes, you are in the right place.
                 </Text>
                 </Box>
               <Box gridArea="arg_1_image" margin={{top:"10px", bottom: "10px"}}>
                 <video 
-                  autoPlay loop muted
-                  style={{ height: "100%", width: "auto"}}
+                    autoPlay loop muted
+                    style={{ height: "100%", width: "auto"}}
                   >
                   <source src="https://media.giphy.com/media/V3FqlRGEaJN5kjYE0D/giphy.mp4" type="video/mp4"/> 
                 </video>
@@ -206,7 +234,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
 
 
-              <Box gridArea="arg_2_title" alignContent="center">
+              <Box gridArea="arg_2_title">
                 <Text size="25px" weight="bold" color="color3">
                   Organising is quick and easy
                   </Text>
@@ -238,7 +266,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
 
 
-              <Box gridArea="arg_3_title" alignContent="center">
+              <Box gridArea="arg_3_title">
                 <Text size="25px" weight="bold" color="color3">
                   Allow potential future speakers to come to you
                   </Text>
@@ -257,7 +285,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   </video>
                 </Box>
 
-                <Box gridArea="arg_4_title" alignContent="center">
+                <Box gridArea="arg_4_title">
                 <Text size="25px" weight="bold" color="color3">
                 Integrated virtual cafeteria
                   </Text>
@@ -277,7 +305,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </Box>
 
 
-              <Box gridArea="arg_5_title" alignContent="center">
+              <Box gridArea="arg_5_title">
                 <Text size="25px" weight="bold" color="color3">
                   Use your own streaming URL or <img src={agoraLogo} height={"18px"}/> tech
                   </Text>
@@ -296,7 +324,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </video>
                 </Box>
 
-              <Box gridArea="arg_6_title" alignContent="center">
+              <Box gridArea="arg_6_title">
                 <Text size="25px" weight="bold" color="color3">
                   Host online or hybrid physical-online seminars
                   </Text>
@@ -330,6 +358,23 @@ export default class AgoraCreationPage extends Component<Props, State> {
               </Text>
                 <Grid
                 rows={
+                  renderMobileView ?
+                  [
+                    '60px',
+                    '60px',
+
+                    '60px',
+                    '60px',
+                    '60px',
+
+                    '60px',
+                    '60px',
+
+                    '60px',
+                    '60px',
+                    '60px',
+                  ]
+                :
                   [
                     '40px',
                     '40px',
@@ -344,11 +389,15 @@ export default class AgoraCreationPage extends Component<Props, State> {
                     '40px',
                     '40px',
                     '40px',
-                  ]}
+                  ]
+                
+                
+                
+                }
                 style={{border: "true"}}
-                columns={['25%', "35%", "35%"]}
+                columns={renderMobileView ? ['33%', "33%", "33%"] : ['25%', "35%", "35%"]}
                 gap="15px"
-                margin={{left: "10px", "top": "18px"}}
+                margin={{top: "18px"}}
                 areas={[
                   { name: 'feature_1', start: [0, 0], end: [0, 0] },
                   { name: 'plan1_1', start: [1, 0], end: [1, 0] },
@@ -418,7 +467,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
                 <Box gridArea="plan1_2" background="color5">
                 <Text margin="5px" size={this.state.sizeText}>
-                  Up to 300 emails per month
+                  Up to 300 per month
                     </Text>
                 </Box>
 
@@ -430,7 +479,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 
                 <Box gridArea="feature_3" background="color5">
                 <Text margin="5px" size={this.state.sizeText} weight="bold">
-                  Social media sharing automation
+                  Social media automation
                     </Text>
                 </Box>
 
@@ -469,7 +518,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
                 <Box gridArea="feature_5" background="color5">
                 <Text margin="5px" size={this.state.sizeText} weight="bold">
-                  Speaker application form
+                  Integrated speaker form
                     </Text>
                 </Box>
 
@@ -516,13 +565,13 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
                 <Box gridArea="plan1_7" background="color5">
                 <Text margin="5px" size={this.state.sizeText}>
-                  Up to 50 entries per event
+                  Up to 50 people per event
                     </Text>
                 </Box>
 
                 <Box gridArea="plan2_7" background="color5">
                 <Text margin="5px" size={this.state.sizeText}>
-                  Up to 500 entries per event
+                  Up to 500 people per event
                     </Text>
                 </Box>
 
@@ -574,31 +623,36 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 *: Due to an overwhelming demand and to maintain a high quality experience, we are limiting the number of simulatenous active "Professor plans" and are actively working on increasing it ASAP. Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size={this.state.sizeText}/></a> and <a href="https://https://twitter.com/AgoraStream"><Twitter size={this.state.sizeText}/></a>!
               </Text>
 
-            </Box>
 
 
 
 
-            <Box alignContent="center" margin={{top:"50px"}}>
+            <Box margin={{top:"50px"}}>
               <Text size={this.state.sizeHeader} color="color1" weight="bold" margin={{ bottom: "25px"}}>
                 Start delivering your seminars to a worldwide community of academics and researchers!
               </Text>
 
-            <CreateChannelButton 
-              onClick={this.toggleCreateChannelOverlay} 
-              text={"Create your agora (Student plan)"}
-              />
-            {!this.state.agoraCreationOverlay.showCreateChannelOverlay || (
-              <CreateChannelOverlay
-              onBackClicked={this.toggleCreateChannelOverlay}
-              onComplete={() => {
-                this.toggleCreateChannelOverlay();
-              }}
-              visible={true}
-              user={this.state.user}
-              />)}
-            <Box
-              data-tip data-for='professor_plan'
+            <MediaQuery maxDeviceWidth={1000}>
+                <b>Log on the Desktop version to proceed.</b>
+            </MediaQuery>
+
+
+            <MediaQuery minDeviceWidth={1000}>
+              <CreateChannelButton 
+                onClick={this.toggleCreateChannelOverlay} 
+                text={"Create your agora (Student plan)"}
+                />
+              {!this.state.agoraCreationOverlay.showCreateChannelOverlay || (
+                <CreateChannelOverlay
+                onBackClicked={this.toggleCreateChannelOverlay}
+                onComplete={() => {
+                  this.toggleCreateChannelOverlay();
+                }}
+                visible={true}
+                user={this.state.user}
+                />)}
+              <Box
+                data-tip data-for='professor_plan'
                 direction="row"
                 gap="small"
                 align="center"
@@ -608,30 +662,31 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 pad="xsmall"
                 style={{
                   border: "2px solid #C2C2C2",
-                }}
-                background="color1"
-                hoverIndicator="color3"
-                focusIndicator={false}
-                justify="start"
-                margin={{top: "small"}}
-            >
-              {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
-              <Text size="22.5px">🚀</Text>
-              <Text size="14px" color="white">Create an agora (Professor plan)</Text>
-          </Box>
-          <ReactTooltip id='professor_plan' place="bottom" effect="solid">
-              Publicly available soon.
-            </ReactTooltip>
+                  }}
+                  background="color1"
+                  hoverIndicator="color3"
+                  focusIndicator={false}
+                  justify="start"
+                  margin={{top: "small"}}
+              >
+                {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
+                <Text size="22.5px">🚀</Text>
+                <Text size="14px" color="white">Create an agora (Professor plan)</Text>
+              </Box>
+              <ReactTooltip id='professor_plan' place="bottom" effect="solid">
+                  Publicly available soon.
+                </ReactTooltip>
 
 
-
-          
-            <img src="/images/academic_seminars_photo.jpeg" 
-              width="60%" 
-              style={{
-                margin: "10px",
-                alignSelf: "center"}}
-            />
+            
+              <img src="/images/academic_seminars_photo.jpeg" 
+                width="60%" 
+                style={{
+                  margin: "10px",
+                  alignSelf: "center"}}
+                  />
+            </MediaQuery>
+            </Box>
             </Box>
           </Box>
         </Box>
