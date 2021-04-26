@@ -147,7 +147,7 @@ export default class TalkRegistrationFormButton extends Component<Props, State> 
           hoverIndicator="#DDDDDD"
         >
           <Text weight="bold" size="15px">
-            {this.props.text ? this.props.text : "Register"}
+            {this.props.text ? this.props.text : "Watch"}
           </Text>
         </Box> 
         <Overlay

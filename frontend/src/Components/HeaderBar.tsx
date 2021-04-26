@@ -65,7 +65,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 <img src={agoraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
                 </MediaQuery>
                   <MediaQuery maxDeviceWidth={992}>
-                <img src={agoraStreamFullLogo} style={{ height: "4vh", margin: 0 }}/>
+                <img src={agoraStreamFullLogo} style={{ height: "3vh", marginLeft: 5 }}/>
                     <Text size="xsmall" color="black">mobile</Text>
                     </MediaQuery>
               </Box>

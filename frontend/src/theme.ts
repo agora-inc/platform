@@ -27,7 +27,13 @@ export const Theme = {
     },
     colors: {
       color1: "#0C385B",
-      selected: "eaf1f1",
+      color2: "#025377",
+      color3: "#6DA3C7",
+      color4: "7BA59E",
+      color5: "#BAD6DB",
+      color6: "#EAF1F1",
+      color7: "#D3F930",
+      selected: "#eaf1f1"
     },
     drop: {
       //background: "transparent",
@@ -99,12 +105,12 @@ export const Theme = {
     }
   },
   anchor: {
-    color: "pink",
+    color: "#eaf1f1",
   },
   hover: {
     background: {
       color: "#eaf1f1"
     },
-    color: {"dark": "white"}
+    color: {"dark": "#eaf1f1"}
   },
 };
