@@ -28,6 +28,7 @@ import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import EmailsTab from "./ManageChannelPage/EmailsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
@@ -940,7 +941,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TabPanel>
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
-
+                  <Box direction="row" margin={{bottom: "60px"}}>
+                    <EmailsTab channelId={channel!.id} />
+                  </Box>
                 </TabPanel>
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>

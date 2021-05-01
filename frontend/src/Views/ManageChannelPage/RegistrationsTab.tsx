@@ -146,9 +146,6 @@ export default class RegistrationsTab extends Component<Props, State> {
     const item = this.state.itemDetail!;
     const showItem = !!this.state.itemDetail;
 
-    console.log("auto", this.state.autoRegistration)
-    console.log("domains", this.state.acceptedDomains)
-
     var auto_accept = "Select the default option for automatically accepting people to your seminars </br></br>" +
     "The accepted people will receive two emails: <br/>" + 
     "- One <b> straight after acceptation </b> with all the event details except the link <br/>" +
@@ -173,7 +170,6 @@ export default class RegistrationsTab extends Component<Props, State> {
             <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={auto_accept} data-for='automatic-registration'/>
             <ReactTooltip id='automatic-registration' place="right" effect="solid" html={true}/>
           </Box>
-
 
           <CheckBox
             name="feature"
