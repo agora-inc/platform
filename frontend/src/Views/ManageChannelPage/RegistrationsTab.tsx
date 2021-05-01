@@ -149,10 +149,16 @@ export default class RegistrationsTab extends Component<Props, State> {
     console.log("auto", this.state.autoRegistration)
     console.log("domains", this.state.acceptedDomains)
 
+    var auto_accept = "Select the default option for automatically accepting people to your seminars </br></br>" +
+    "The accepted people will receive two emails: <br/>" + 
+    "- One <b> straight after acceptation </b> with all the event details except the link <br/>" +
+    "- One <b>24 hours before the event</b> to share the streaming URL. <br/><br/>" +
+    "If URL not available, the email is sent as soon as URL is added to event. ";
+
     var reg_details = "Accepting a registration will send two emails to the applicant: <br/>" +  
-    "- one <b>now</b> to acknowledge acceptation, <br/>" + 
-    "- another one <b>24 hours before the event</b> to share the streaming URL. <br/><br/>" + 
-    "If URL not available, email sent as soon as URL is added to event). ";
+    "- One <b>now</b> with all the event details except the link <br/>" + 
+    "- One <b>24 hours before the event</b> to share the streaming URL. <br/><br/>" + 
+    "If URL not available, the email is sent as soon as URL is added to event. ";
 
     var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
     "Example: ox.ac.uk, cam.ac.uk"
@@ -164,10 +170,8 @@ export default class RegistrationsTab extends Component<Props, State> {
             <Text size="16px" weight="bold" color="black"> 
               Automatic registration 
             </Text>
-            <StatusInfo style={{marginTop: "3px"}} size="small" data-tip data-for='automatic-registration'/>
-            <ReactTooltip id='automatic-registration' place="right" effect="solid">
-              <p>Select the default option for automatically accepting people to your seminars </p>
-            </ReactTooltip>
+            <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={auto_accept} data-for='automatic-registration'/>
+            <ReactTooltip id='automatic-registration' place="right" effect="solid" html={true}/>
           </Box>
 
 
