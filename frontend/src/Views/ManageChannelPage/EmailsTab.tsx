@@ -1,11 +1,18 @@
 import React, { Component } from "react";
-import { Box, Select, Text } from "grommet";
+import { Box, Select, Text, TextArea } from "grommet";
 import ReactTooltip from "react-tooltip";
-import { StatusInfo } from "grommet-icons";
+import { StatusInfo, Close } from "grommet-icons";
+import { prefix } from "@fortawesome/free-solid-svg-icons";
 
 
 function range(end: number) {
   return Array.from(Array(end).keys())
+}
+
+type Reminder = {
+  exist: boolean;
+  days: number;
+  hours: number; 
 }
 
 interface Props {
@@ -13,27 +20,153 @@ interface Props {
 }
 
 interface State {
-  remainder1day: string;
-  remainder1hour: string;
-  remainder2day: string;
-  remainder2hour: string;
+  reminders: Reminder[];
+  mailingList: string;
+  listEmailCorrect: string[];
+  strEmailWrong: string;
 }
 
 export default class EmailsTab extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      remainder1day: "",
-      remainder1hour: "",
-      remainder2day: "",
-      remainder2hour: "",
-    };
+      reminders: [
+        {exist: false, days: 0, hours: 0},
+        {exist: false, days: 0, hours: 0}
+      ],
+      mailingList: "",
+      listEmailCorrect: [],
+      strEmailWrong: "",
+    }
+  }
+
+  toggleReminder = (i: number) => {
+    return (
+      () => {
+        this.setState(prevState => {
+          let reminders = prevState.reminders;
+          reminders[i].exist = !reminders[i].exist;
+          return {...prevState, reminders}
+        })
+      }
+    );
+  }
+
+  pushDays = (i: number, n_days: string) => {
+    this.setState(prevState => {
+      let reminders = prevState.reminders;
+      reminders[i].days = Number(n_days);
+      return {...prevState, reminders}
+    })
+  }
+
+  pushHours = (i: number, n_hours: string) => {
+    this.setState(prevState => {
+      let reminders = prevState.reminders;
+      reminders[i].hours = Number(n_hours);
+      return {...prevState, reminders}
+    })
+  }
+
+  handleMailingList = (e: any) => {
+    let value = e.target.value;
+    this.setState({"mailingList": value});
+  };
+
+  parseMailingList = () => {
+    let listEmailCorrect = [];
+    // get all emails constructed using non-alphanumerical characters except "@", ".", "_", and "-"
+    let regExtraction = this.state.mailingList.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
+    if (regExtraction === null){
+      regExtraction = []
+    }
+
+    console.log(regExtraction)
+
+    // filtering new admissibles emails from badly formatted ones
+    let strEmailWrong = this.state.mailingList;
+    for (var email of regExtraction) {
+      listEmailCorrect.push(email.toLowerCase());
+      strEmailWrong = strEmailWrong.replace(email, "");
+    }
+    
+    console.log("step2 mailinglist state", this.state.listEmailCorrect)
+
+    // clean box if empty
+    strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
+    if (strEmailWrong.replace(/[\s]/g, "") === ""){
+      strEmailWrong = "";
+    }
+
+    // send invitations for admissible emails
+    // ChannelService.addEmailToMailingList(
+    // this.props.channelId,
+    //  listEmailCorrect,
+    //  () => {},
+    // );
+    this.setState({ listEmailCorrect });
+    this.setState({ strEmailWrong });
+    this.setState({ mailingList: strEmailWrong})
+  };
+
+  renderReminder = (j: number) => {
+    return (
+      <Box direction="row" gap="6px" align="center">
+        <Text size="16px" color="grey" margin={{right: "20px"}} > 
+          Reminder {j+1}
+        </Text>
+        {!this.state.reminders[j].exist && (
+          <Box
+            focusIndicator={false}
+            background="white"
+            round="xsmall"
+            pad={{ vertical: "2px", horizontal: "xsmall" }}
+            onClick={this.toggleReminder(j)}
+            style={{
+              width: "60px", height: "26px",
+              border: "1px solid #C2C2C2",
+            }}
+            hoverIndicator={true}
+            align="center"
+          >
+            <Text color="grey" size="small"> 
+              + Add 
+            </Text>
+          </Box>
+        )}
+        {this.state.reminders[j].exist && (
+          <Box direction="row" gap="6px" align="center" justify="center">
+            <input
+              value={this.state.reminders[j].days}
+              onChange={(e) => this.pushDays(j, e.target.value)}
+              style={{
+                width: "30px", height: "26px", padding: "4px",
+                border: "1px solid #C2C2C2", borderRadius: "5px", 
+              }}
+            />
+            <Text size="16px" color="grey" margin={{right: "15px"}}> day(s) </Text>
+            <input
+              value={this.state.reminders[j].hours}
+              onChange={(e) => this.pushHours(j, e.target.value)}
+              style={{
+                width: "30px", height: "26px", padding: "4px",
+                border: "1px solid #C2C2C2", borderRadius: "5px", 
+              }}
+            />
+            <Text size="16px" color="grey" margin={{right: "20px"}}> hour(s) </Text>
+            <Close size="20px" onClick={this.toggleReminder(j)} />
+          </Box>
+        )}
+      </Box>
+    ); 
   }
 
 
-
   render() {
-    var reminders_email = "Select the default option for sending reminder emails"
+    var reminders_email = "A reminder email will be sent to your mailing list before the start of your seminars. <br/>" + 
+    "Decide how much time before, with up to two reminders."
+    var mailing_list = "Add emails to your agora mailing list <br/>" + 
+    "Example: joe@uni.ac.uk, jack@company.com"
 
     return (
       <Box direction="column" gap="20px">
@@ -45,57 +178,91 @@ export default class EmailsTab extends Component<Props, State> {
           <ReactTooltip id='reminder-emails' place="right" effect="solid" html={true}/>
         </Box>
 
-        <Box direction="row" gap="6px">
-          <Text size="16px" color="grey" margin={{right: "20px"}} > Reminder 1 </Text>
-          <input
-            value={this.state.remainder1day}
-            onChange={(e) => this.setState({ remainder1day: e.target.value })}
-            style={{
-              width: "30px", height: "20px", border: "1.5px solid #CCCCCC", borderRadius: "3px"
-            }}
+        {this.renderReminder(0)}
+        {this.renderReminder(1)}
+
+        <Box 
+          direction="row"
+          width="100%"
+          gap="20%"
+          margin={{top: "12px"}}
+        >
+          <Box 
+            direction="column"
+            width="50%"
+            margin={{bottom: "50px"}}
+          >
+            <Box 
+              direction="row"
+              gap="small"
+              margin={{bottom: "12px" }}
+            >
+              <Text size="14px" color="grey">
+                Add people to your mailing list
+              </Text>
+              <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={mailing_list} data-for='mailing-list'/>
+              <ReactTooltip id='mailing-list' place="right" effect="solid" html={true}/>
+            </Box>
             
-          />
-          <Text size="16px" color="grey" margin={{right: "15px"}}> day(s) </Text>
-          <input
-            value={this.state.remainder1hour}
-            onChange={(e) => this.setState({ remainder1hour: e.target.value })}
-            style={{
-              width: "30px", height: "20px", border: "1.5px solid #CCCCCC", borderRadius: "3px"
-            }}
-          />
-          <Text size="16px" color="grey"> hour(s) </Text>
-        </Box>
+            <TextArea
+              placeholder="Enter your list of emails"
+              value={this.state.mailingList}
+              onChange={(e: any) => this.handleMailingList(e)}
+              rows={4}
+              style={{border: this.state.strEmailWrong.length === 0 ? "2px solid black" : "2px solid red"}}
+              data-tip data-for='email'
+            />
+            <Box direction="row" width="100%" margin={{top: "15px"}}>
+              <Box width="100%" direction="column"> 
+                {this.state.listEmailCorrect.length > 0 && (
+                  <Text color="green" size="14px" margin={{bottom: "6px"}}>
+                    Emails successfully extracted from text.
+                  </Text>
+                )}
+                {this.state.strEmailWrong.length > 0 && (
+                  <Text color="red" size="14px">
+                    Some emails are in the wrong format.
+                  </Text>
+                )}
+              </Box>
+              <Box
+                onClick={this.parseMailingList}
+                background="#0C385B"
+                round="xsmall"
+                // pad="xsmall"
+                height="30px"
+                width="18%"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#0C385B"
+              >
+                <Text size="14px"> Add </Text>
+              </Box>
+            </Box>
+          </Box>
+          <Box 
+            direction="column"
+            width="30%"
+          >
+            <Text size="14px" color="grey">
+              Your mailing list (??)
+            </Text>
+          </Box>
+        </Box> 
 
-        <Box direction="row" gap="6px">
-          <Text size="16px" color="grey" margin={{right: "20px"}} > Reminder 2 </Text>
-          <input
-            value={this.state.remainder2day}
-            onChange={(e) => this.setState({ remainder2day: e.target.value })}
-            style={{
-              width: "30px", height: "20px", border: "1.5px solid #CCCCCC", borderRadius: "3px"
-            }}
-            
-          />
-          <Text size="16px" color="grey" margin={{right: "15px"}}> day(s) </Text>
-          <input
-            value={this.state.remainder2hour}
-            onChange={(e) => this.setState({ remainder2hour: e.target.value })}
-            style={{
-              width: "30px", height: "20px", border: "1.5px solid #CCCCCC", borderRadius: "3px"
-            }}
-          />
-          <Text size="16px" color="grey"> hour(s) </Text>
-        </Box>
-
-
-
-        <Box direction="row" gap="small" margin={{ top: "40px" }}>
+        <Box direction="row" gap="small">
           <Text size="16px" weight="bold" color="black"> 
             Send custom email to your audience
           </Text>
           <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={reminders_email} data-for='reminder-emails'/>
           <ReactTooltip id='reminder-emails' place="right" effect="solid" html={true}/>
         </Box>
+        
+        <Text size="18px" weight="bold" color="#6DA3C7"> 
+          Available soon!
+        </Text>
+
       </Box>
     );
   }

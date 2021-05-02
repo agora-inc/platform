@@ -941,9 +941,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TabPanel>
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
-                  <Box direction="row" margin={{bottom: "60px"}}>
-                    <EmailsTab channelId={channel!.id} />
-                  </Box>
+                  <EmailsTab channelId={channel!.id} />
                 </TabPanel>
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
