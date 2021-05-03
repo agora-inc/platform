@@ -4,7 +4,8 @@
 """ 
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository
 from mailing import sendgridApi
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
@@ -27,6 +28,7 @@ videos = VideoRepository.VideoRepository(db=agora_db)
 channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
 search = SearchRepository.SearchRepository(db=agora_db)
 invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
+mailinglist = MailingListRepository.MailingListRepository(db=agora_db, mail_sys=mail_sys)
 sendgridApi = sendgridApi.sendgridApi()
 
 
@@ -302,6 +304,22 @@ def getInvitedMembersForChannel():
 
     channelId = int(request.args.get("channelId"))
     return jsonify(invitations.getInvitedMembersEmails(channelId))
+
+########## Mailing list methods #############
+
+@app.route('/channels/mailinglist/add', methods=["POST", "OPTIONS"])
+def addToMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+
+    return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
+
+############################################
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():

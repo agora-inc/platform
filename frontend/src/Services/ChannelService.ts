@@ -41,6 +41,29 @@ const createChannel = (
   );
 };
 
+const addToMailingList = (channelId: number, emails: string[], callback: any) => {
+  axios
+    .post(
+      baseApiUrl + `/channels/mailinglist/add`,
+      { channelId: channelId, emails: emails },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback("ok");
+    })
+    .catch(function (error) {
+      callback(error.response.data);
+    });
+};
+
+const getMailingList = (channelId: number, callback: any) => { 
+  return [];
+};
+
+const removeFromMailingList = (channelId: number, emails: string[], callback: any) => {
+
+}
+
 const addInvitedMembersToChannel = (channelId: number, emails: string[], callback: any) => {
   axios
     .post(
@@ -455,6 +478,12 @@ export const ChannelService = {
   getTrendingChannels,
   getChannelByName,
   createChannel,
+  ///////////////////////
+  // Mailing List methods
+  ///////////////////////
+  addToMailingList,
+  getMailingList,
+  removeFromMailingList,
   addInvitedMembersToChannel,
   getInvitedMembersForChannel,
   getChannelsForUser,

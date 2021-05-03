@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Select, Text, TextArea } from "grommet";
 import ReactTooltip from "react-tooltip";
 import { StatusInfo, Close } from "grommet-icons";
-import { prefix } from "@fortawesome/free-solid-svg-icons";
+import { ChannelService } from "../../Services/ChannelService";
 
 
 function range(end: number) {
@@ -38,6 +38,16 @@ export default class EmailsTab extends Component<Props, State> {
       listEmailCorrect: [],
       strEmailWrong: "",
     }
+  }
+
+  getListEmail = () => {
+    this.setState({
+      listEmailCorrect: 
+        ChannelService.getMailingList(
+          this.props.channelId,
+          () => {},
+        )
+    })
   }
 
   toggleReminder = (i: number) => {
@@ -98,12 +108,13 @@ export default class EmailsTab extends Component<Props, State> {
       strEmailWrong = "";
     }
 
-    // send invitations for admissible emails
-    // ChannelService.addEmailToMailingList(
-    // this.props.channelId,
-    //  listEmailCorrect,
-    //  () => {},
-    // );
+    // add admissible emails to database
+    ChannelService.addToMailingList(
+      this.props.channelId,
+      listEmailCorrect,
+      () => {},
+    );
+
     this.setState({ listEmailCorrect });
     this.setState({ strEmailWrong });
     this.setState({ mailingList: strEmailWrong})
