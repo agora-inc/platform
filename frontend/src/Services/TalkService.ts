@@ -397,6 +397,10 @@ const increaseViewCountForTalk = (
 
 const getTrendingTalks = (callback: any) => {
   get("talks/trending", callback);
+
+
+
+
 };
 
 

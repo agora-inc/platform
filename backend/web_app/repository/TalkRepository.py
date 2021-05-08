@@ -655,6 +655,7 @@ class TalkRepository:
         query = f'''
             SELECT 
                 Talks.name,
+                Talks.id,
                 Channels.id,
                 Channels.has_avatar,
                 TalkViewCounts.total_views
@@ -662,10 +663,13 @@ class TalkRepository:
                     WHERE (Talks.channel_id = Channels.id 
                         AND Talks.id = TalkViewCounts.talk_id
                         AND Talks.date > now())
-            ORDER by TalkViewCounts.total_views
+            ORDER by TalkViewCounts.total_views DESC
             LIMIT 5;
         '''
         result = self.db.run_query(query)
+
+        with open("/home/cloud-user/josefMAX.txt", "w") as file:
+            file.write(str(result))
 
         return result
 
