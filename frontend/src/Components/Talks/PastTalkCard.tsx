@@ -98,6 +98,12 @@ export default class PastTalkCard extends Component<Props, State> {
   };
 
   toggleModal = () => {
+    // track click of the event
+    if (!(this.state.showModal)){
+      TalkService.increaseViewCountForTalk(this.props.talk.id, () => {})
+    }
+
+    // toggle stuff
     this.setState({
       showModal: this.state.showLinkInput ? true : !this.state.showModal,
       showShadow: true,

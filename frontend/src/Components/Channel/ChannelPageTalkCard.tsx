@@ -242,6 +242,11 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   toggleModal = () => {
+    // track click of the event
+    if (!(this.state.showModal)){
+      TalkService.increaseViewCountForTalk(this.props.talk.id, () => {})
+    }
+    // toggle Modal
     this.setState({ showModal: !this.state.showModal });
   };
 

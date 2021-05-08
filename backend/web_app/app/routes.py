@@ -993,6 +993,25 @@ def isAvailable():
     talkId = int(request.args.get("talkId"))
     return jsonify(talks.isTalkAvailableToUser(talkId, userId))
 
+@app.route('/talks/trending', methods=["GET"])
+def getTrendingTalks():
+    return jsonify(talks.getTrendingTalks())
+
+# --------------------------------------------
+# TALK ANALYTICS
+# --------------------------------------------
+@app.route('/talks/viewcount/get', methods=["GET"])
+def getViewCountForTalk():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(talks.getTalkViewCount(channelId))
+
+@app.route('/talks/viewcount/add', methods=["POST"])
+def increaseViewCountForTalk():
+    params = request.json 
+    channelId = params["channelId"]
+    return jsonify(talks.increaseTalkViewCount(channelId))
+
+
 # --------------------------------------------
 # TALK ACCESS REQUESTS ROUTES
 # --------------------------------------------

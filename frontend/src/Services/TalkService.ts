@@ -374,6 +374,32 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
   get(`talks/isavailable?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+const getViewCountForTalk = (
+  talkId: number,
+  callback: any
+) => {
+  get(
+    `talks/viewcount/get?talkId=${talkId}`,
+    callback
+  );
+};
+
+const increaseViewCountForTalk = (
+  channelId: number,
+  callback: any
+) => {
+  post(
+    "talks/viewcount/add",
+    { channelId: channelId},
+    callback
+  );
+};
+
+const getTrendingTalks = (callback: any) => {
+  get("talks/trending", callback);
+};
+
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -411,6 +437,11 @@ export const TalkService = {
   registrationStatusForTalk,
   getTalkRegistrations,
   getRegisteredTalksForUser,
+  // talk views
+  increaseViewCountForTalk,
+  getViewCountForTalk,
+  // trending
+  getTrendingTalks
 };
 
 export type Talk = {
