@@ -319,6 +319,17 @@ def addToMailingList():
 
     return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
 
+@app.route('/channels/mailinglist', methods=["GET", "OPTIONS"])
+def getMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(mailinglist.getMailingList(channelId))
+
 ############################################
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
@@ -353,7 +364,6 @@ def getUsersForChannel():
 
     channelId = int(request.args.get("channelId"))
     roles = request.args.getlist("role")
-    print(roles)
     return jsonify(channels.getUsersForChannel(channelId, roles))
 
 @app.route('/channels/user/role', methods=["GET"])

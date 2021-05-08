@@ -57,7 +57,8 @@ const addToMailingList = (channelId: number, emails: string[], callback: any) =>
 };
 
 const getMailingList = (channelId: number, callback: any) => { 
-  return [];
+  const url = `channels/mailinglist?channelId=${channelId}`;
+  get(url, callback)
 };
 
 const removeFromMailingList = (channelId: number, emails: string[], callback: any) => {

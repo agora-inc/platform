@@ -16,8 +16,19 @@ class MailingListRepository:
         for email in emails:
             add_email_query = f'''
                 INSERT INTO ChannelMailingList (email, channel_id)
-                VALUES {email}, {channelId};
+                VALUES ('{email}', {channelId});
             '''
+            with open('/home/cloud-user/emails.txt', 'w') as outfile:
+                outfile.write(add_email_query)
+            
             self.db.run_query(add_email_query)
+
+    def getMailingList(self, channelId):
+        fetch_mailing_list_query = f'''
+            SELECT email FROM ChannelMailingList WHERE channel_id={channelId};
+        '''
+        res = self.db.run_query(fetch_mailing_list_query)
+        return [x["email"] for x in res] if res else []
+        
 
 

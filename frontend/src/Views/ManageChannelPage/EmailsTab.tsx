@@ -38,16 +38,16 @@ export default class EmailsTab extends Component<Props, State> {
       listEmailCorrect: [],
       strEmailWrong: "",
     }
+    this.getListEmail();
   }
 
   getListEmail = () => {
-    this.setState({
-      listEmailCorrect: 
-        ChannelService.getMailingList(
-          this.props.channelId,
-          () => {},
-        )
-    })
+    ChannelService.getMailingList(
+      this.props.channelId,
+      (listEmailCorrect: string[]) => {
+        this.setState({ listEmailCorrect });
+      }
+    )
   }
 
   toggleReminder = (i: number) => {
@@ -84,23 +84,23 @@ export default class EmailsTab extends Component<Props, State> {
   };
 
   parseMailingList = () => {
-    let listEmailCorrect = [];
+    let oldListEmail = this.state.listEmailCorrect;
     // get all emails constructed using non-alphanumerical characters except "@", ".", "_", and "-"
     let regExtraction = this.state.mailingList.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
     if (regExtraction === null){
       regExtraction = []
     }
 
-    console.log(regExtraction)
-
     // filtering new admissibles emails from badly formatted ones
+    let newListEmail = []
     let strEmailWrong = this.state.mailingList;
     for (var email of regExtraction) {
-      listEmailCorrect.push(email.toLowerCase());
+      let emailLower = email.toLowerCase();
+      if (!oldListEmail.includes(emailLower)) {
+        newListEmail.push(emailLower);
+      }
       strEmailWrong = strEmailWrong.replace(email, "");
     }
-    
-    console.log("step2 mailinglist state", this.state.listEmailCorrect)
 
     // clean box if empty
     strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
@@ -111,11 +111,11 @@ export default class EmailsTab extends Component<Props, State> {
     // add admissible emails to database
     ChannelService.addToMailingList(
       this.props.channelId,
-      listEmailCorrect,
+      newListEmail,
       () => {},
     );
 
-    this.setState({ listEmailCorrect });
+    this.setState({ listEmailCorrect: oldListEmail.concat(newListEmail) });
     this.setState({ strEmailWrong });
     this.setState({ mailingList: strEmailWrong})
   };
@@ -174,8 +174,11 @@ export default class EmailsTab extends Component<Props, State> {
 
 
   render() {
-    var reminders_email = "A reminder email will be sent to your mailing list before the start of your seminars. <br/>" + 
-    "Decide how much time before, with up to two reminders."
+    var reminders_email = "A reminder email will be sent to <br/>" + 
+    "- your mailing list <br/>" +
+    "- your followers <br/>" + 
+    "- the registered participants <br/>" + 
+    "before the start of your seminars. Decide how much time before, with up to two reminders."
     var mailing_list = "Add emails to your agora mailing list <br/>" + 
     "Example: joe@uni.ac.uk, jack@company.com"
 
@@ -183,7 +186,10 @@ export default class EmailsTab extends Component<Props, State> {
       <Box direction="column" gap="20px">
         <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
           <Text size="16px" weight="bold" color="black"> 
-            Email reminders 
+            Email reminders
+          </Text>
+          <Text size="14px" style={{fontStyle: "italic", marginTop: "1.7px"}}  color="black"> 
+            Default settings 
           </Text>
           <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={reminders_email} data-for='reminder-emails'/>
           <ReactTooltip id='reminder-emails' place="right" effect="solid" html={true}/>
@@ -195,7 +201,7 @@ export default class EmailsTab extends Component<Props, State> {
         <Box 
           direction="row"
           width="100%"
-          gap="20%"
+          gap="25%"
           margin={{top: "12px"}}
         >
           <Box 
@@ -254,11 +260,22 @@ export default class EmailsTab extends Component<Props, State> {
           </Box>
           <Box 
             direction="column"
-            width="30%"
+            width="25%"
+            
           >
-            <Text size="14px" color="grey">
-              Your mailing list (??)
+            <Text size="14px" color="grey" margin={{bottom: "12px"}}>
+              Your mailing list ({this.state.listEmailCorrect.length})
             </Text>
+            <Box
+              height="134px"
+              gap="2px" 
+              overflow="auto"
+              margin={{ bottom: "15px", left:"8px" }}
+            >
+              {this.state.listEmailCorrect.map((email: string) => (
+                <Text size="12px"> {email} </Text>
+              ))}
+            </Box>
           </Box>
         </Box> 
 
