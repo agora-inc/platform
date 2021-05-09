@@ -16,7 +16,8 @@ import ReactTooltip from "react-tooltip";
 
 type TrendingTalk = {
     id: number;
-    channel_id: number; // NOT WORKING
+    Channels: {
+        id: number}; // NOT WORKING
     channel_name: string;
     has_avatar: boolean;
     name: string;
@@ -40,13 +41,11 @@ export default class TrendingTalksList extends Component<{}, State> {
   }
 
   componentWillMount() {
-    TalkService.getTrendingTalks((trendingTalks: TrendingTalk[]) => {
+    TalkService.getTrendingTalks((trendingTalks: any[]) => {
       this.setState({
         trendingTalks: trendingTalks,
         loading: false,
       }, ()=>{
-          console.log("wesh mickael");
-          console.log(trendingTalks)
       });
     });
   }
@@ -63,7 +62,7 @@ export default class TrendingTalksList extends Component<{}, State> {
             alignSelf="start"
             weight="bold"
           >
-            Trending talks
+            Most popular incoming talks
           </Text>
 
         </Box>
@@ -73,7 +72,7 @@ export default class TrendingTalksList extends Component<{}, State> {
           </Box>
         )}
         <Box margin={{ bottom: "15px", left:"8px" }} overflow="auto">
-          {this.state.trendingTalks.map((trendingTalk: TrendingTalk) => (
+          {this.state.trendingTalks.map((trendingTalk: any) => (
             <Link
               className="channel"
               to={`/event/${trendingTalk.id}`}
@@ -99,7 +98,7 @@ export default class TrendingTalksList extends Component<{}, State> {
                   }}
                 >
                 <img
-                    src={ChannelService.getAvatar(trendingTalk.channel_id)}
+                    src={ChannelService.getAvatar(trendingTalk["Channels.id"])}
                     height={30}
                     width={30}
                 />

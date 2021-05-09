@@ -668,9 +668,6 @@ class TalkRepository:
         '''
         result = self.db.run_query(query)
 
-        with open("/home/cloud-user/josefMAX.txt", "w") as file:
-            file.write(str(result))
-
         return result
 
     def increaseTalkViewCount(self, talkId):
