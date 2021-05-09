@@ -174,7 +174,7 @@ const editTalk = (
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
-      audienceLevel: audienceLevel
+      audienceLevel: audienceLevel,
     },
     callback
   );
@@ -219,7 +219,7 @@ const scheduleTalk = (
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
-      audienceLevel: audienceLevel
+      audienceLevel: audienceLevel,
     },
     callback
   );

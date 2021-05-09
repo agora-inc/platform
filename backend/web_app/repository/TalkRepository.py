@@ -461,9 +461,10 @@ class TalkRepository:
 
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(insertId, tagIds)
+            return self.getTalkById(insertId)
 
             # notify members / admins by email
-            self.notifyCommunityAboutNewTalk(
+            """self.notifyCommunityAboutNewTalk(
                 channelId, 
                 channelName, 
                 startDate, 
@@ -471,8 +472,7 @@ class TalkRepository:
                 insertId, 
                 talk_speaker, 
                 talk_speaker_url)
-
-            return self.getTalkById(insertId)
+            """
 
         except Exception as e:
             return str(e)
@@ -493,6 +493,7 @@ class TalkRepository:
             channel_id = old_res["channel_id"]
 
             # check if date changed or if (URL changed AND talk is not public) ((because else, we dont care if URL changed as there are no registration))
+            """
             critical_information_changed = False
             critical_information_changed = (
                 old_start_date != startDate or
@@ -500,6 +501,7 @@ class TalkRepository:
                 (old_url != talkLink and visibility != "Everybody") or
                 old_speaker != talk_speaker
             )
+            """
 
             # modify current information
             query = f'''
@@ -527,15 +529,16 @@ class TalkRepository:
             self.tags.tagTalk(talkId, tagIds)
 
             # notify attendees
-            if critical_information_changed:
-                self.notifyParticipantAboutTalkModification(
-                    talkId,
-                    channel_id,
-                    talkName,
-                    talkLink,
-                    startDate,
-                    endDate
-                )
+            """
+            self.notifyParticipantAboutTalkModification(
+                talkId,
+                channel_id,
+                talkName,
+                talkLink,
+                startDate,
+                endDate
+            )
+            """
             
             return self.getTalkById(talkId)
 
