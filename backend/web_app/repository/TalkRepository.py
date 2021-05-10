@@ -652,7 +652,59 @@ class TalkRepository:
         return True
 
     ###############################
-    # Talk 
+    # Talk views
+    ###############################
+    def getTrendingTalks(self):
+        query = f'''
+            SELECT 
+                Talks.name,
+                Talks.id,
+                Channels.id,
+                Channels.has_avatar,
+                TalkViewCounts.total_views
+            FROM Talks, Channels, TalkViewCounts
+                    WHERE (Talks.channel_id = Channels.id 
+                        AND Talks.id = TalkViewCounts.talk_id
+                        AND Talks.date > now())
+            ORDER by TalkViewCounts.total_views DESC
+            LIMIT 5;
+        '''
+        result = self.db.run_query(query)
+
+        return result
+
+    def increaseTalkViewCount(self, talkId):
+        try:
+            increase_counter_query = f'''
+                UPDATE TalkViewCounts
+                    SET total_views = total_views + 1
+                    WHERE talk_id = {talkId};'''
+            res = self.db.run_query(increase_counter_query)
+
+            if type(res) == list:
+                if res[0] == 0 and res[1] == 0:
+                    initialise_counter_query = f'''
+                        INSERT INTO TalkViewCounts (talk_id, total_views) 
+                            VALUES ({talkId}, 4);
+                    '''
+                    res = self.db.run_query(initialise_counter_query)
+                    return "ok" 
+
+        except Exception as e:
+            return str(e)
+
+    def getTalkViewCount(self, talkId):
+        get_counter_query = f'''
+            SELECT * FROM TalkViewCounts 
+                WHERE talk_id = {talkId};
+            '''
+        try:
+            return self.db.run_query(get_counter_query)[0]["total_views"]
+        except Exception as e:
+            return str(e)
+
+    ###############################
+    # Talk registrations
     ###############################
     def acceptTalkRegistration(self, requestRegistrationId,):
         try:
