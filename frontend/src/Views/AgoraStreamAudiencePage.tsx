@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Grid, Text, Layer, Button } from "grommet";
+import { Box, Grid, Text, Layer, Button, TextInput } from "grommet";
 import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
 import ChatBox from "../Components/Streaming/ChatBox";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
@@ -33,7 +33,8 @@ interface State {
 }
 interface Message{
   senderId: string;
-  text: string
+  text: string;
+  name?: string
 }
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
 const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
@@ -42,10 +43,10 @@ function getUserId(talkId:string, userId?:string|null){
   let key = userId || talkId
 
   let uid = window.localStorage.getItem(key)
-  // if(!uid) {
+  if(!uid) {
     uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
     window.localStorage.setItem(key, uid)
-  // }
+  }
   return uid
 }
 
@@ -58,7 +59,8 @@ interface Control {
 }
 
 
-const AgoraStream:FunctionComponent<Props> = (props) => {
+const AgoraStreamCall:FunctionComponent<Props> = (props) => {
+  const [storedName, setStoredName] = useState(getLocalName(props.match.params.talk_id)||'')
   const videoContainer = useRef<HTMLDivElement>(null)
   const [agoraClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
   const [agoraScreenShareClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
@@ -81,7 +83,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
 
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
-  const [isClapping, setClapping] = useState(false as boolean)
+  const [isClapping, setClapping] = useState('')
+  const [hasMicRequested, setMicRequest] = useState('')
   
   const [talkId, setTalkId] = useState('')
   const [callControl, setCallControl] = useState({
@@ -130,9 +133,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     const talkId = props.match.params.talk_id
     let talk = await get_talk_by_id(talkId)
     setTalkDetail(talk)
-    agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
-      console.log('on connection state changed to ' + newState + ' reason: ' + reason);
-    });
     // Setting client as Audience
     agoraClient.setClientRole(localUser.role);
     agoraScreenShareClient.setClientRole(localUser.role);
@@ -208,6 +208,26 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     })
   }
 
+
+  async function join_live_chat(){
+    agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
+      console.log('on connection state changed to ' + newState + ' reason: ' + reason);
+    });
+    console.log('joining live chat...')
+    let {appId , uid} = localUser
+    let talkId = props.match.params.talk_id
+
+    try{
+      await agoraMessageClient.login({ uid })
+      let _messageChannel = agoraMessageClient.createChannel(talkId)
+      await agoraMessageClient.addOrUpdateLocalUserAttributes({name: storedName})
+      await _messageChannel.join()
+      _messageChannel.on('ChannelMessage', on_message)
+      setMessageChannel(_messageChannel)
+    }catch(e) {
+      console.log(e)
+    }
+  }
   async function join(){
     console.log('joining...')
     let {appId , uid} = localUser
@@ -221,17 +241,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       // @ts-ignore
       await agoraScreenShareClient.join(appId, `${talkId}-screen`, screenShareToken, uid)
 
-      await agoraMessageClient.login({ uid })
-      let _messageChannel = agoraMessageClient.createChannel(talkId)
-      await _messageChannel.join()
-      _messageChannel.on('ChannelMessage', on_message)
-      setMessageChannel(_messageChannel)
     }catch(e) {
       console.log(e)
     }
   }
 
   async function unpublish_microphone(){
+    if(hasMicRequested) {
+      API.removeRequest(hasMicRequested)
+    }
     if(localAudioTrack) {
       localAudioTrack.stop()
 
@@ -249,7 +267,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     setCallControl({...callControl, mic: true})
   }
   async function on_message(msg:any, senderId:string){
-    setMessages((m)=>[...m, {senderId, text: msg.text}])
+    let attr = await agoraMessageClient.getUserAttributes(senderId)
+    setMessages((m)=>[...m, {senderId, text: msg.text, name: attr.name ||''}])
   }
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return
@@ -258,7 +277,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     // @ts-ignore
     evt.target.value = ''
     try{
-      setMessages([...messages, {senderId: localUser.uid, text: text}])
+      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me'}])
       await messageChannel.sendMessage({text})
     }catch{
       console.log('error sending message')
@@ -268,6 +287,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   useEffect(()=>{
     (async ()=>{
       setTalkId(props.match.params.talk_id)
+      join_live_chat()
     })()
   }, [])
 
@@ -287,10 +307,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       if(data.status === 'ENDED') {
         setTalkStatus(data.status)
       }
-      if(data.isClapping) {
-        setClapping(true)
+      if(data.clapping_status) {
+        setClapping(data.clapping_status)
       }else{
-        setClapping(false)
+        setClapping('')
       }
     })
 
@@ -299,11 +319,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         let _d = d.data()
         _d.id = d.id
         return _d
-      }).filter(d=>d.requester_id === localUser.uid).find(d=>d.status === 'GRANTED')
+      }).filter(d=>d.requester_id === localUser.uid).find(d=>d.status === 'GRANTED' || d.status === 'REQUESTED')
+
+      console.log(req)
+      
+      setMicRequest('')
       if(req) {
+        setMicRequest(req.requester_id)
         console.log('GRANTED', req)
         publish_microphone()
-        API.removeRequest(req.id)
       }
     })
     return ()=>{
@@ -312,15 +336,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     }
   }, [talkId])
 
-  if(talkStatus === 'NOT_STARTED'){
-    return (
-      <Box align='center'>
-        <Grid margin={{ top: "xlarge", bottom: "none" }}>
-          <Text margin={{top: '20vh'}}>Waiting for the seminar to start by the admin.</Text>
-        </Grid>
-      </Box>
-    )
-  }
   if(talkStatus === 'ENDED'){
     return (
       <Box align='center'>
@@ -330,7 +345,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       </Box>
     )
   }
-
 
   return (
       <Box align="center">
@@ -348,27 +362,35 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         >
         
           <Box gridArea="player" justify="between" gap="small">
-            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
-              style={{height: '90%', position: 'relative'}}>
-              <Box className='camera-video'>
-                {remoteVideoTrack.map((user)=>(
-                  //@ts-ignore
-                  <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} />
-                ))}
-              </Box>
 
-              { isScreenAvailable && 
-                  <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
-              }
-              <Box className='call-control' direction='row'>
-                {callControl.mic?
-                  <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
-                  <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid)} />
+            {talkStatus === 'NOT_STARTED' ? 
+              <Box align='center'>
+                <Grid margin={{ top: "xlarge", bottom: "none" }}>
+                  <Text margin={{top: '20vh'}}>The admin is going to start the talk soon.</Text>
+                </Grid>
+              </Box>:
+              <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
+                style={{height: '90%', position: 'relative'}}>
+                <Box className='camera-video'>
+                  {remoteVideoTrack.map((user)=>(
+                    //@ts-ignore
+                    <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} />
+                  ))}
+                </Box>
+
+                { isScreenAvailable && 
+                    <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
                 }
-              </Box>
+                <Box className='call-control' direction='row'>
+                  {hasMicRequested?<Button label="Requested mic" primary size='small' />:callControl.mic?
+                    <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
+                    <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
+                  }
+                </Box>
 
-              <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
-            </Box>
+                <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
+              </Box>
+            }
 
             <Box direction="row" justify="between" align="start">
               <p
@@ -420,13 +442,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           <Box gridArea="chat" background="gray" round="small">
             {messages.map((msg, i)=>(
                 <Box key={i}>
-                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>{msg.text}</span>
+                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}><b>{msg.name}:</b> {msg.text}</span>
                 </Box>
               ))}
             <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
           </Box>
         </Grid>
-        {isClapping && <Clapping clapOnAttach={true} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> }
+        <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
         <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}
@@ -436,6 +458,40 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           margin={{ top: "-20px" }}
         />
       </Box>
+  )
+}
+
+function getLocalName(talk_id:string){
+  return  window.localStorage.getItem(`${talk_id}.user_name`)
+}
+function setLocalName(talk_id:string, name:string){
+  return  window.localStorage.setItem(`${talk_id}.user_name`, name)
+}
+
+const AgoraStream:FunctionComponent<Props> = (props) => {
+  const [name, setName] = useState('')
+  const [storedName, setStoredName] = useState(getLocalName(props.match.params.talk_id))
+
+  function join(){
+    if(!name) {
+      return
+    }
+    setLocalName(props.match.params.talk_id, name)
+    setStoredName(getLocalName(props.match.params.talk_id))
+  }
+  if(storedName) {
+    return <AgoraStreamCall {...props} />
+  }
+
+  return (
+    <Box align="center">
+      <Grid margin={{ top: "xlarge", bottom: "none" }}>
+          <Text margin={{top: '20vh'}}>Enter your name.</Text>
+          <TextInput style={{minWidth: '300px'}} placeholder='type...' value={name} onChange={(e)=> setName(e.target.value)} />
+          <Button style={{marginTop: '10px'}} label="Join" primary size='small' onClick={join} />
+      </Grid>
+
+    </Box>
   )
 }
 

@@ -4,6 +4,7 @@ import { Howl } from "howler";
 
 interface Props {
   clapOnAttach?: boolean;
+  clapOnChange?: string;
   [label: string]: any;
   onClick?: ()=>{}
 }
@@ -29,8 +30,14 @@ export default class Clapping extends Component<Props, State> {
     totalTimeOverlay: 7000.0,
     updateFrequency: 200.0,
     startVolume: 0.2,
-    clapOnAttach: false
+    clapOnAttach: false,
+    clapOnChange: ''
   };
+  componentDidUpdate(oldProps: Props) {
+    if(this.props.clapOnChange && oldProps.clapOnChange != this.props.clapOnChange) {
+      this.startClapping()
+    }
+  }
 
   soundPlay = (tag: string, vol: number) => {
     const sound = new Howl({

@@ -62,3 +62,20 @@
     padding: 10px;
     border-radius: 10px;
 }
+.agora-video-player>div{
+    display: grid;
+}
+.agora-video-player video{
+    margin: auto;
+    position: unset !important;
+    left: unset !important;
+    top: unset !important;
+}
+.agora-video-player.limit-width video{
+    width: 100% !important;
+    height: unset !important;
+  }
+  .agora-video-player.limit-height video{
+    height: 100% !important;
+    width: unset !important;
+  }

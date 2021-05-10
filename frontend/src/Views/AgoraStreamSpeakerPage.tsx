@@ -33,7 +33,8 @@ interface State {
 }
 interface Message{
   senderId: string;
-  text: string
+  text: string;
+  name?: string
 }
 
 interface Control {
@@ -137,8 +138,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   async function setup() {
     const talkId = props.match.params.talk_id
-    let talk = await get_talk_by_id(talkId)
-    setTalkDetail(talk)
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
       console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });
@@ -169,6 +168,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     // Fetch talk details
     return new Promise((res:any, rej:any)=>{
       TalkService.getTalkById(parseInt(talkId), (tk:string)=>{
+        console.log(tk)
         if(tk)
           return res(tk)
         rej()
@@ -176,7 +176,24 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
     })
   }
+  
+  async function join_live_chat(){
+    console.log('joining...')
+    let {uid} = localUser
+    let talkId = props.match.params.talk_id
+    let talk = await get_talk_by_id(talkId) as any
 
+    try{
+      await agoraMessageClient.login({ uid })
+      let _messageChannel = agoraMessageClient.createChannel(talkId)
+      await agoraMessageClient.addOrUpdateLocalUserAttributes({name: `(Speaker) ${talk.talk_speaker}`})
+      await _messageChannel.join()
+      _messageChannel.on('ChannelMessage', on_message)
+      setMessageChannel(_messageChannel)
+    }catch(e) {
+      console.log(e)
+    }
+  }
   async function join(){
     console.log('joining...')
     let {appId , uid} = localUser
@@ -189,12 +206,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       await agoraClient.join(appId, talkId, token, uid)
       // @ts-ignore
       await agoraScreenShareClient.join(appId, `${talkId}-screen`, screenSharetoken, uid)
-
-      await agoraMessageClient.login({ uid })
-      let _messageChannel = agoraMessageClient.createChannel(talkId)
-      await _messageChannel.join()
-      _messageChannel.on('ChannelMessage', on_message)
-      setMessageChannel(_messageChannel)
 
       await publish_camera()
       await publish_microphone()
@@ -273,7 +284,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   async function on_message(msg:any, senderId:string){
-    setMessages((m)=>[...m, {senderId, text: msg.text}])
+    let attr = await agoraMessageClient.getUserAttributes(senderId)
+    setMessages((m)=>[...m, {senderId, text: msg.text, name: attr.name ||''}])
   }
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return
@@ -282,7 +294,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     // @ts-ignore
     evt.target.value = ''
     try{
-      setMessages([...messages, {senderId: localUser.uid, text: text}])
+      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me'}])
       await messageChannel.sendMessage({text})
     }catch{
       console.log('error sending message')
@@ -336,6 +348,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   useEffect(()=>{
     (async ()=>{
       setTalkId(props.match.params.talk_id)
+      join_live_chat()
     })()
   }, [])
 
@@ -366,8 +379,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   return (
       <Box align="center">
       
+        <Box width='50%' align='center' margin={{ top: "xlarge", bottom: "small" }}>
+            <Text style={{fontSize: '2.2em', fontWeight: 'bold'}}>You are the speaker</Text>
+        </Box>
         <Grid
-          margin={{ top: "xlarge", bottom: "xsmall" }}
+          margin={{ bottom: "xsmall" }}
           // rows={["streamViewRow1", "medium"]}
           rows={["streamViewRow1"]}
           columns={["streamViewColumn1", "streamViewColumn2"]}
@@ -464,27 +480,12 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           <Box gridArea="chat" background="gray" round="small">
             {messages.map((msg, i)=>(
                 <Box key={i}>
-                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>{msg.text}</span>
+                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}><b>{msg.name}:</b> {msg.text}</span>
                 </Box>
               ))}
             <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
           </Box>
         </Grid>
-        <Button
-          label="Share screen"
-          onClick={share_screen}
-          style={{
-            width: 90,
-            height: 35,
-            fontSize: 15,
-            fontWeight: "bold",
-            padding: 0,
-            // margin: 6,
-            backgroundColor: "#F2F2F2",
-            border: "none",
-            borderRadius: 7,
-          }}
-        />
         <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}

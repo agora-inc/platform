@@ -39,13 +39,18 @@ const API = {
         return true
     },
     thankTheSpeaker: async (talk_id:string, value=true) =>{
-        let r = await db.collection('talk').doc(talk_id).update({isClapping: value});
+        let r = await db.collection('talk').doc(talk_id).update({isClapping: value, clapping_status: Math.floor(10000 + Math.random()*10000)});
     },
-    requestMic: async (talk_id:string, user_id:string) => {
+    requestMic: async (talk_id:string, user_id:string, user_name:string) => {
+        let req = await db.collection('requests').where('requester_id', '==', user_id).get()
+        if(req.size > 0) {
+            return false
+        }
         let data = {
             type: 'mic',
             talk_id,
             requester_id: user_id,
+            requester_name: user_name,
             status: 'REQUESTED'
         }
         let r = await db.collection('requests').add(data);
@@ -57,12 +62,13 @@ const API = {
             return
         }
         await db.collection('requests').doc(id).update({status: 'DENIED'});
-        API.removeRequest(id)
+        setTimeout(()=>{
+            API.removeRequest(id)
+        }, 5000)
     },
     removeRequest(id:string){
-        setTimeout(()=>{
-            db.collection('requests').doc(id).delete();
-        }, 5000)
+        console.log(id, 'rem')
+        db.collection('requests').doc(id).delete();
     }
 }
 
