@@ -635,9 +635,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               this.props.onEditCallback();
             }}
             onCanceledCallback={this.toggleEdit}
-            onFinishedAdvertisementCallback={() => {
-              this.toggleEdit()
-            }}
+            onFinishedAdvertisementCallback={this.toggleEdit}
             onCanceledAdvertisementCallback={this.toggleEdit}
           />
         )}

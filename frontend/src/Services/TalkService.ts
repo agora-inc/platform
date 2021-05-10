@@ -374,6 +374,14 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
   get(`talks/isavailable?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+const sendEmailonTalkScheduling = (talkId: number, callback: any) => {
+    get(`talks/sendemailschedule?talkId=${talkId}`, callback);
+};
+
+const sendEmailonTalkModification = (talkId: number, callback: any) => {
+    get(`talks/sendemailedit?talkId=${talkId}`, callback);
+};
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -403,6 +411,8 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  sendEmailonTalkScheduling,
+  sendEmailonTalkModification,
   // talk registration management
   acceptTalkRegistration,
   refuseTalkRegistration,

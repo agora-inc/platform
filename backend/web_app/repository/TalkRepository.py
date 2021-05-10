@@ -827,6 +827,22 @@ class TalkRepository:
         except:
             return {"status": "unregistered"}
 
+    def sendEmailonTalkModification(self, talkId):
+        talk = self.getTalkById(talkId)
+        if talk:
+            result = self.notifyParticipantAboutTalkModification(talkId, talk["channel_id"], talk["name"], talk["link"], talk["date"], talk["end_date"])
+            return result
+        else:
+            return "fail"
+
+    def sendEmailonTalkScheduling(self, talkId):
+        talk = self.getTalkById(talkId)
+        if talk:
+            result = self.notifyCommunityAboutNewTalk(talk["channel_id"], talk["channel_name"], talk["date"], talk["name"], talkId, talk["talk_speaker"], talk["talk_speaker_url"])
+            return result
+        else:
+            return "fail"
+
     def notifyParticipantAboutTalkModification(self, talkId, channelId, talkName, talkLink, startDate, endDate):
         try:
             # query emails

@@ -61,6 +61,7 @@ interface State {
   showAdvertisementOverlay: boolean;
   talkToAdvertise: Talk | null,
   sendEmail: boolean;
+  talkId: number | null
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -100,6 +101,7 @@ export default class EditTalkModal extends Component<Props, State> {
       showAdvertisementOverlay: false,
       talkToAdvertise: this.props.talk ? this.props.talk : null,
       sendEmail: false,
+      talkId: null,
     };
   }
 
@@ -241,6 +243,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.published,
         this.state.audienceLevel,
         (talk: Talk) => {
+          this.setState({ talkId: talk.id })
           if (this.state.talkToAdvertise !== undefined){
             this.setState({
               talkToAdvertise: talk
@@ -268,14 +271,24 @@ export default class EditTalkModal extends Component<Props, State> {
     }
   };
 
-  onFinishAdvertisement = (action: string) => {
-    if (this.state.sendEmail && action === "schedule") {
-      // TalkService.sendEmail
+  onFinishAdvertisement = () => {
+    this.hideAdvertisementOverlay()
+    if (this.state.sendEmail && !this.props.talk && this.state.talkId) {
+      TalkService.sendEmailonTalkScheduling(
+        this.state.talkId,
+        () => {}
+      );
     }
-    if (this.state.sendEmail && action === "edit") {
-      // TalkService.sendEmail
+    if (this.state.sendEmail && this.props.talk) {
+      TalkService.sendEmailonTalkModification(
+        this.props.talk.id,
+        () => {}
+      );
     }
-    this.props.onFinishedAdvertisementCallback()
+    this.setState({ sendEmail: false })
+    if (this.props.onCanceledAdvertisementCallback) {
+      this.props.onFinishedAdvertisementCallback()
+    }
   };
 
   onDeleteClicked = () => {
@@ -756,7 +769,7 @@ export default class EditTalkModal extends Component<Props, State> {
             visible={this.state.showAdvertisementOverlay}
             title={"Your event was successfully published"}
             submitButtonText="Ok"
-            onSubmitClick={this.onFinishAdvertisement("schedule")}
+            onSubmitClick={this.onFinishAdvertisement}
             contentHeight="180px"
             canProceed={true}
             onCancelClick={this.hideAdvertisementOverlay}
@@ -787,7 +800,7 @@ export default class EditTalkModal extends Component<Props, State> {
             visible={this.state.showAdvertisementOverlay}
             title={"Your event was successfully modified"}
             submitButtonText="Ok"
-            onSubmitClick={this.onFinishAdvertisement("edit")}
+            onSubmitClick={this.onFinishAdvertisement}
             contentHeight="180px"
             canProceed={true}
             onCancelClick={this.hideAdvertisementOverlay}
