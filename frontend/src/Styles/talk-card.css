@@ -16,8 +16,7 @@
 /* For mobile */
 @media all and (max-width: 992px){
     .talk_card_box_1 {
-        width: 100% !important;
-        /* height: 480px; */
+        width: 80% !important;
         position: relative;
     }
 }

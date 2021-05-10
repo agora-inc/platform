@@ -7,17 +7,17 @@ import {
   TextArea,
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
-import emailjs from "emailjs-com";
 import { Topic } from "../../Services/TopicService";
 import TopicSelector from "../Talks/TopicSelector";
 import { ChannelService } from "../../Services/ChannelService";
-import { Empty } from "antd";
+import ReactTooltip from "react-tooltip";
 
 
 
 interface Props {
-  channelId: number,
-  channelName: string
+  channelId: number;
+  channelName: string;
+  widthButton?: string
 }
 
 interface State {
@@ -36,7 +36,6 @@ interface State {
       // date: string;
     }
     showForm: boolean;
-    contactAddresses: string
 }
 
 export default class ApplyToTalkForm extends Component<Props, State> {
@@ -58,19 +57,8 @@ export default class ApplyToTalkForm extends Component<Props, State> {
         // date: "",
         },
       showForm: false,
-      contactAddresses: ""
     };
-    this.fetchContactAddresses()
   }
-
-  fetchContactAddresses = () => {
-    ChannelService.getContactAddresses(
-      this.props.channelId,
-      (contactAddresses: string) => {
-        this.setState({ contactAddresses: contactAddresses });
-      }
-    );
-  };
 
   handleInput = (e: any, key: string) => {
     let value = e.target.value;
@@ -88,7 +76,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
 
   handleFormSubmit = (e: any) => {
     // prevents the page from bein
-    this.fetchContactAddresses();
     e.preventDefault();
     let userData = this.state.user;
     this.sendApplication();
@@ -111,7 +98,6 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       };
     }
     ChannelService.sendTalkApplicationEmail(
-      // "agora_administrators_contact_email": this.state.contactAddresses,
       this.props.channelId,
       this.props.channelName,
       this.state.user.speaker_name,
@@ -233,10 +219,12 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       <Box>
         <Box
           focusIndicator={false}
-          width="12vw"
+          data-tip data-for='apply_give_talk'
+          width={this.props.widthButton ? this.props.widthButton : "12vw"}
+          height="30px"
           background="white"
           round="xsmall"
-          pad={{bottom: "3px", top: "3px", left: "18px", right: "18px"}}
+          pad={{bottom: "3px", top: "6px", left: "3px", right: "3px"}}
           onClick={() => this.setState({ showForm: true })}
           style={{
             border: "1px solid #C2C2C2",
@@ -249,8 +237,11 @@ export default class ApplyToTalkForm extends Component<Props, State> {
             color="grey"
             alignSelf="center"
           >
-            Give a talk!
+            Give a talk
           </Text>
+            <ReactTooltip id="apply_give_talk" effect="solid">
+              Want to give a seminar within '{this.props.channelName}'? Apply!
+            </ReactTooltip>
         </Box>
         <Overlay
           visible={this.state.showForm}

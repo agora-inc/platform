@@ -7,6 +7,9 @@ import Identicon from "react-identicons";
 import "../Styles/trending-channels-box.css";
 import { User } from "../Services/UserService";
 import SignUpButton from "./Account/SignUpButton";
+import AgoraLogo from "../assets/general/agora_logo_v2.png";
+
+
 
 interface Props {
   user: User | null;
@@ -68,7 +71,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
             justify="between"
           >
             <Text size="1.4rem" weight="bold" style={{"font": "italic"}}>
-              Agoras you are a member of will appear here
+              <img src={AgoraLogo} height="19px"/>s you are a member of will appear here
             </Text>
             {/* <Text size="16px" color="grey">
               Use the search bar to find channels that interest you
@@ -86,7 +89,7 @@ export default class SubscribedChannelsList extends Component<Props, State> {
                   color="grey"
                   margin={{ left: "small", top: "xsmall" }}
                 >
-                  Your Agoras
+                  Your <img src={AgoraLogo} height="13px"/>s
                 </Text>
                 {this.state.loading && (
                   <Box width="100%" height="80%" justify="center" align="center">
@@ -223,14 +226,14 @@ export default class SubscribedChannelsList extends Component<Props, State> {
             <Text size="1.2rem" weight="bold" margin={{bottom: "5px"}}>
               Join your{" "}
               {
-                <Text size="1.2rem" weight="bold" color="brand">
+                <Text size="1.2rem" weight="bold" color="color1">
                   Agora
                 </Text>
               }{" "}
               Community
             </Text>
             <Text size="14px" color="grey" weight="bold">
-              Get access to members' only events, talk recordings and many more!
+              Get access to member-only events, talk recordings and many more!
             </Text>
           </Box>
           <SignUpButton callback={() => {}} />

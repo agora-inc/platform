@@ -10,6 +10,7 @@ import { ChannelService } from "../../Services/ChannelService";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import { UserService, User } from "../../Services/UserService";
+import ReactTooltip from "react-tooltip";
 
 const titleOptions = ["Undergraduate", "Postgraduate", "PhD Candidate", "Dr", "Prof"];
 
@@ -18,7 +19,7 @@ interface Props {
   channelName: string,
   user: any,
   height?: string,
-  width?: string,
+  widthButton?: string,
 }
 
 interface State {
@@ -157,8 +158,9 @@ export default class RequestMembershipButton extends Component<Props, State> {
     return (
       <Box>
         <Box
+          data-tip data-for='membership_application_button'
           focusIndicator={false}
-          width={this.props.width ? this.props.width : "15vw"}
+          width={this.props.widthButton ? this.props.widthButton : "12vw"}
           background="white"
           round="xsmall"
           height={this.props.height ? this.props.height : "30px"}
@@ -176,8 +178,11 @@ export default class RequestMembershipButton extends Component<Props, State> {
             color="grey"
             alignSelf="center"
           >
-            Become a member!
+            Become a member
           </Text>
+          <ReactTooltip id="membership_application_button" effect="solid">
+              Get the instant access to all future seminars and past event recordings
+            </ReactTooltip>
         </Box>
   
 

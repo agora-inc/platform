@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Text } from "grommet"
 import RichTextEditor from 'react-rte';
+import "../../Styles/rich-text-editor.css";
 
 // TODO: react-rte has not been updated in the last 4 years. Write our own using
 //draft Js. 
@@ -88,6 +89,7 @@ export default class EnrichedTextEditor extends Component<Props, State> {
       {this.state.editing_mode && (        
         <>  
           <RichTextEditor
+            className="text-editor"
             value={this.state.editorValue}
             onChange={this.handleEditorChanges}
             toolbarConfig={toolbarConfig}

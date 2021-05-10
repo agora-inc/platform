@@ -32,7 +32,7 @@ export default class TermsOfService extends Component<Props, State> {
         width="100vw"
         height="100vh"
         align="center"
-        margin={{ top: "100px" }}
+        margin={{ top: "10vh" }}
       >
         <Box width="75%">
           {/* <Box

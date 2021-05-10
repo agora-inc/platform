@@ -4,10 +4,9 @@ import Identicon from "react-identicons";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { User } from "../../Services/UserService";
 import { Tag } from "../../Services/TagService";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Talk, TalkService } from "../../Services/TalkService";
 import EditTalkModal from "../Talks/EditTalkModal";
-import AddToCalendarButtons from "../Talks/AddToCalendarButtons";
 import { default as TagComponent } from "../Core/Tag";
 import { ChannelService } from "../../Services/ChannelService";
 import Countdown from "../Talks/Countdown";
@@ -19,6 +18,9 @@ import RequestMembershipButton from "./ApplyMembershipButton";
 import { thisExpression } from "@babel/types";
 import { textToLatex } from "../Core/LatexRendering";
 import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
+import MediaQuery from "react-responsive";
+import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
+
 
 interface Props {
   talk: Talk;
@@ -37,9 +39,10 @@ interface Props {
 interface State {
   showModal: boolean;
   showEdit: boolean;
+  available: boolean;
   registered: boolean;
+  registrationStatus: string;
   showShadow: boolean;
-  linkCopied: boolean
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -48,10 +51,15 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.state = {
       showModal: this.props.show ? this.props.show && !this.props.admin : false,
       showEdit: false,
+      available: false,
       registered: false,
+      registrationStatus: "",
       showShadow: false,
-      linkCopied: false
     };
+  }
+
+  componentWillMount() {
+    this.checkIfAvailableAndRegistered();
   }
 
   componentDidMount = () => {
@@ -59,13 +67,38 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.checkIfUserCanViewCard();
   };
 
+  checkIfAvailableAndRegistered = () => {
+    if (this.props.user) {
+      TalkService.isAvailableToUser(
+        this.props.user.id,
+        this.props.talk.id,
+        (available: boolean) => {
+          this.setState({ available }, () => {
+            if (available) {
+              this.checkIfRegistered();
+            }
+          });
+        }
+      );
+    } else {
+      this.setState({
+        available:
+          this.props.talk.visibility === "Everybody" ||
+          this.props.talk.visibility === null,
+      });
+    }
+  };
+
   checkIfRegistered = () => {
     this.props.user &&
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: boolean) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"),
+            registrationStatus: status,
+           });
         }
       );
   };
@@ -97,13 +130,11 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       }
   };
 
-
-
-  checkIfUserCanViewCard = () => {
+  checkIfUserCanViewCard = (): boolean => {
     if (this.props.admin) {
       return true;
     }
-    else
+    else {
       if (this.props.talk.card_visibility == "Everybody") {
         return true;
       }
@@ -123,6 +154,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           return false;
         }
       }
+      else {
+        return false;
+      }
+    }
   };
 
   register = () => {
@@ -190,18 +225,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
 
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
-
-  lineBreaks = (text: string) => { 
-    if (text && text.trim()) {
-      return textToLatex(text);
-    } else {
-      return (<br></br>);
-    }
-  }
-
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
     const now = new Date();
@@ -223,26 +246,31 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   toggleEdit = () => {
-    this.setState({ showEdit: !this.state.showEdit });
+    this.setState({ 
+      showEdit: !this.state.showEdit
+    });
   };
-  copyTalkUrl = () => {
-    let text = this.props.talk.link
-    var textField = document.createElement('textarea')
-    textField.innerText = text
-    document.body.appendChild(textField)
-    textField.select()
-    document.execCommand('copy')
-    textField.remove()
-    this.setState({...this.state, linkCopied: true})
-  }
 
   render() {
+    var renderMobileView = (window.innerWidth < 800);
+    // {((window.innerWidth < 800) && this.state.showModal) ? "860px" : "180px"}
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
-        height={this.props.admin ? "240px" : "180px"}
+        // height={this.props.admin 
+        //   ? ((renderMobileView && this.state.showModal) ? "1000px" : "240px")
+        //   : ((renderMobileView && this.state.showModal) ? "560px" : "180px")}
         focusIndicator={false}
-        style={{ position: "relative" }}
+        height="100%"
+        style={{ 
+          position: "relative",
+          maxHeight: this.props.admin 
+            ? ((renderMobileView && this.state.showModal) ? "240px" : "240px")
+            : ((renderMobileView && this.state.showModal) ? "600px" : "600px"),
+          minHeight: this.props.admin 
+          ? ((renderMobileView && this.state.showModal) ? "240px" : "240px")
+          : ((renderMobileView && this.state.showModal) ? "180px" : "180px"),
+        }}
         margin={{ bottom: "small" }}
       >
         <Box
@@ -344,17 +372,32 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               {this.props.talk.card_visibility === "Members only" &&
                 <Box
                   round="xsmall"
-                  background="#C2C2C2"
+                  background="#EAF1F1"
                   pad="xsmall"
                   justify="center"
                   align="center"
                   width="160px"
                 >
-                  <Text size="14px">
-                    Members only
+                  <Text size="12px">
+                    member-only
                   </Text>
                 </Box>
               }
+              {/*this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
+                <Box
+                  round="xsmall"
+                  background="#D3F930"
+                  pad="small"
+                  justify="center"
+                  align="center"
+                  width="170px"
+                  height="30px"             
+                >
+                  <Text size="14px" style={{ fontStyle: "normal" }}>
+                    on-registration
+                  </Text>
+                </Box>
+            */}
             </Box>
             {this.state.showShadow && (
               <Box
@@ -368,217 +411,216 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   left: 8,
                   opacity: 0.5,
                 }}
-                background={this.props.talk.channel_colour}
+                background="#6DA3C7"
               ></Box>
             )}
           </Box>
         </Box>
         {this.props.admin && (
-          <Box direction='row' flex>
-            <Box
-              onClick={() => {
-                this.toggleEdit();
-              }}
-              background="#7E1115"
-              round="xsmall"
-              pad="xsmall"
-              basis='full'
-              height="40px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#5A0C0F"
-              margin="10px"
-            >
-              <Text size="18px">Edit</Text>
-            </Box>
-            <Box
-              onClick={() => {
-                this.copyTalkUrl();
-              }}
-              background="#7E1115"
-              round="xsmall"
-              pad="xsmall"
-              basis='full'
-              height="40px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#5A0C0F"
-              margin="10px"
-            >
-              <Text size="18px">{this.state.linkCopied?'Copied link': 'Copy link'}</Text>
-            </Box>
+          <Box
+            onClick={() => {
+              this.toggleEdit();
+            }}
+            background="#0C385B"
+            round="xsmall"
+            pad="xsmall"
+            height="40px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator="#0C385B"
+            margin="10px"
+          >
+            <Text size="18px">Edit</Text>
           </Box>
         )}
         {this.state.showModal && (
-          <Layer
-            onEsc={() => {
-              this.toggleModal();
-              this.setState({ showShadow: false });
-            }}
-            onClickOutside={() => {
-              this.toggleModal();
-              this.setState({ showShadow: false });
-            }}
-            modal
-            responsive
-            animation="fadeIn"
-            style={{
-              width: 640,
-              height: this.state.registered ? 640 : 540,
-              borderRadius: 15,
-              overflow: "hidden",
-            }}
-          >
-            <Box
-              //align="center"
-              pad="25px"
-              // width="100%"
-              height="80%"
-              justify="between"
-              gap="xsmall"
+          <>
+          <MediaQuery maxDeviceWidth={800}>
+            <MobileTalkCardOverlay
+              talk={this.props.talk}
+              pastOrFutureTalk="future"
+              user={this.props.user}
+              registered={this.state.registered}
+              role={this.props.role}
+              registrationStatus={this.state.registrationStatus}
+            />
+          </MediaQuery>
+
+          <MediaQuery minDeviceWidth={800}>
+            <Layer
+              onEsc={() => {
+                this.toggleModal();
+                this.setState({ showShadow: false });
+              }}
+              onClickOutside={() => {
+                this.toggleModal();
+                this.setState({ showShadow: false });
+              }}
+              modal
+              responsive
+              animation="fadeIn"
+              style={{
+                width: 640,
+                height: this.state.registered ? 640 : 540,
+                borderRadius: 15,
+                overflow: "hidden",
+                alignSelf: "center",
+              }}
             >
               <Box
-                style={{ minHeight: "200px", maxHeight: "540px" }}
-                direction="column"
+                //align="center"
+                pad="25px"
+                // width="100%"
+                height="80%"
+                justify="between"
+                gap="xsmall"
               >
-                <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
-                  <Link
-                    className="channel"
-                    to={`/${this.props.talk.channel_name}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Box
-                      direction="row"
-                      gap="xsmall"
-                      align="center"
-                      round="xsmall"
-                      pad={{ vertical: "6px", horizontal: "6px" }}
+                <Box
+                  style={{ minHeight: "200px", maxHeight: "540px" }}
+                  direction="column"
+                >
+                  <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
+                    <Link
+                      className="channel"
+                      to={`/${this.props.talk.channel_name}`}
+                      style={{ textDecoration: "none" }}
                     >
                       <Box
-                        justify="center"
+                        direction="row"
+                        gap="xsmall"
                         align="center"
-                        background="#efeff1"
-                        overflow="hidden"
-                        style={{
-                          minHeight: 30,
-                          minWidth: 30,
-                          borderRadius: 15,
-                        }}
+                        round="xsmall"
+                        pad={{ vertical: "6px", horizontal: "6px" }}
                       >
-                        {!this.props.talk.has_avatar && (
-                          <Identicon
-                            string={this.props.talk.channel_name}
-                            size={30}
-                          />
-                        )}
-                        {!!this.props.talk.has_avatar && (
-                          <img
-                            src={ChannelService.getAvatar(
-                              this.props.talk.channel_id
-                            )}
-                            height={30}
-                            width={30}
-                          />
-                        )}
+                        <Box
+                          justify="center"
+                          align="center"
+                          background="#efeff1"
+                          overflow="hidden"
+                          style={{
+                            minHeight: 30,
+                            minWidth: 30,
+                            borderRadius: 15,
+                          }}
+                        >
+                          {!this.props.talk.has_avatar && (
+                            <Identicon
+                              string={this.props.talk.channel_name}
+                              size={30}
+                            />
+                          )}
+                          {!!this.props.talk.has_avatar && (
+                            <img
+                              src={ChannelService.getAvatar(
+                                this.props.talk.channel_id
+                              )}
+                              height={30}
+                              width={30}
+                            />
+                          )}
+                        </Box>
+                        <Box justify="between">
+                          <Text weight="bold" size="18px" color="grey">
+                            {this.props.talk.channel_name}
+                          </Text>
+                        </Box>
                       </Box>
-                      <Box justify="between">
-                        <Text weight="bold" size="18px" color="grey">
-                          {this.props.talk.channel_name}
+                    </Link>
+                  </Box>
+                  <Text
+                    weight="bold"
+                    size="18px"
+                    color="black"
+                    style={{
+                      minHeight: "50px",
+                      maxHeight: "120px",
+                      overflowY: "auto",
+                    }}
+                    margin={{ bottom: "20px", top: "10px" }}
+                  >
+                    {this.props.talk.name}
+                  </Text>
+
+                  {this.props.talk.talk_speaker_url && (
+                    <a href={this.props.talk.talk_speaker_url} target="_blank">
+                      <Box
+                        direction="row"
+                        gap="small"
+                        onClick={() => {}}
+                        hoverIndicator={true}
+                        pad={{ left: "6px", top: "4px" }}
+                      >
+                        <UserExpert size="14px" />
+                        <Text
+                          size="14px"
+                          color="black"
+                          style={{
+                            height: "24px",
+                            overflow: "auto",
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {this.props.talk.talk_speaker
+                            ? this.props.talk.talk_speaker
+                            : "TBA"}
                         </Text>
                       </Box>
-                    </Box>
-                  </Link>
-                </Box>
-                <Text
-                  weight="bold"
-                  size="18px"
-                  color="black"
-                  style={{
-                    minHeight: "50px",
-                    maxHeight: "120px",
-                    overflowY: "auto",
-                  }}
-                  margin={{ bottom: "20px", top: "10px" }}
-                >
-                  {this.props.talk.name}
-                </Text>
+                    </a>
+                  )}
 
-                {this.props.talk.talk_speaker_url && (
-                  <a href={this.props.talk.talk_speaker_url} target="_blank">
-                    <Box
-                      direction="row"
-                      gap="small"
-                      onClick={() => {}}
-                      hoverIndicator={true}
-                      pad={{ left: "6px", top: "4px" }}
-                    >
+                  {!this.props.talk.talk_speaker_url && (
+                    <Box direction="row" gap="small">
                       <UserExpert size="14px" />
                       <Text
                         size="14px"
                         color="black"
                         style={{
-                          height: "24px",
+                          height: "30px",
                           overflow: "auto",
                           fontStyle: "italic",
                         }}
+                        margin={{ bottom: "10px" }}
                       >
                         {this.props.talk.talk_speaker
                           ? this.props.talk.talk_speaker
                           : "TBA"}
                       </Text>
                     </Box>
-                  </a>
-                )}
-
-                {!this.props.talk.talk_speaker_url && (
-                  <Box direction="row" gap="small">
-                    <UserExpert size="14px" />
-                    <Text
-                      size="14px"
-                      color="black"
-                      style={{
-                        height: "30px",
-                        overflow: "auto",
-                        fontStyle: "italic",
-                      }}
-                      margin={{ bottom: "10px" }}
-                    >
-                      {this.props.talk.talk_speaker
-                        ? this.props.talk.talk_speaker
-                        : "TBA"}
-                    </Text>
-                  </Box>
-                )}
-                <Box
-                  style={{
-                    minHeight: "50px",
-                    maxHeight: "200px",
-                    overflowY: "auto",
-                  }}
-                  margin={{ top: "10px", bottom: "10px" }}
-                  direction="column"
-                >
-                  {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
-                    (item, i) => this.lineBreaks(item)
                   )}
+                  <Box
+                    style={{
+                      minHeight: "50px",
+                      maxHeight: "200px",
+                      overflowY: "auto",
+                    }}
+                    margin={{ top: "10px", bottom: "10px" }}
+                    direction="column"
+                  >
+                    {this.props.talk.description.split('\n').map(
+                      (item, i) => textToLatex(item)
+                    )}
+                  </Box>
                 </Box>
-              </Box>
-              </Box>
-              <FooterOverlay
-                talk={this.props.talk}
-                user={this.props.user}
-                admin={this.props.admin}
-                role={this.props.role}
-                width={this.props.width}
-                // isCurrent?: boolean;
-                // show?: boolean;
-                following={this.props.following}
-                onEditCallback={this.props.onEditCallback}
-                callback={this.props.callback}
-              />
-          </Layer>
+                </Box>
+                <FooterOverlay
+                  talk={this.props.talk}
+                  user={this.props.user}
+                  isSharingPage={false}
+                  registered={this.state.registered}
+                  registrationStatus={this.state.registrationStatus}
+                  role={this.props.admin ? "owner" : this.props.role} 
+                  available={this.state.available}
+                  width={this.props.width}
+                  // isCurrent?: boolean;
+                  // show?: boolean;
+                  following={this.props.following}
+                  onEditCallback={this.props.onEditCallback}
+                  callback={this.props.callback}
+                />
+            </Layer>
+          </MediaQuery>
+          </>
         )}
         {this.props.admin && this.state.showEdit && (
           <EditTalkModal
@@ -586,7 +628,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             channel={null}
             talk={this.props.talk}
             onFinishedCallback={() => {
-              this.toggleEdit();
               this.props.onEditCallback();
             }}
             onDeletedCallback={() => {
@@ -594,6 +635,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               this.props.onEditCallback();
             }}
             onCanceledCallback={this.toggleEdit}
+            onFinishedAdvertisementCallback={() => {
+              this.toggleEdit()
+            }}
+            onCanceledAdvertisementCallback={this.toggleEdit}
           />
         )}
       </Box>

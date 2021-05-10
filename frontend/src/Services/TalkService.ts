@@ -254,6 +254,9 @@ const registerForTalk = (
   website: any, 
   institution: string, 
   callback: any) => {
+  var now = new Date();
+  var userHourOffset = - now.getTimezoneOffset() / 60;
+  // (NOTE: userHourOffset=-3 if user browser is in GMT-3 right now)
   post(
     "talks/requestaccess/register",
     {
@@ -262,7 +265,8 @@ const registerForTalk = (
       name: name,
       email: email,
       website: website,
-      institution: institution
+      institution: institution,
+      userHourOffset: userHourOffset
     },
     callback
   );
@@ -282,10 +286,10 @@ const unRegisterForTalk = (talkId: number, userId: any, callback: any) => {
 const getRegisteredTalksForUser = (userId: number, callback: any) => {
   get(`talks/registered?userId=${userId}`, callback);
 };
-              
-              
-const isRegisteredForTalk = (talkId: number, userId: number, callback: any) => {
-  get(`talks/isregistered?talkId=${talkId}&userId=${userId}`, callback);
+    
+
+const registrationStatusForTalk = (talkId: number, userId: number, callback: any) => {
+  get(`talks/registrationstatus?talkId=${talkId}&userId=${userId}`, callback);
 };
 
 const acceptTalkRegistration = (requestRegistrationId: number, callback: any) => {
@@ -404,7 +408,7 @@ export const TalkService = {
   refuseTalkRegistration,
   registerForTalk,
   unRegisterForTalk,
-  isRegisteredForTalk,
+  registrationStatusForTalk,
   getTalkRegistrations,
   getRegisteredTalksForUser,
 };
@@ -420,6 +424,7 @@ export type Talk = {
   end_date: string;
   description: string;
   link: string;
+  link_available?: boolean;
   recording_link: string;
   tags: Tag[];
   show_link_offset: number;

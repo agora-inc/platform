@@ -4,20 +4,16 @@ import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Tag } from "../../Services/TagService";
 import AsyncButton from "../Core/AsyncButton";
 import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
 import { default as TagComponent } from "../Core/Tag";
-import AddToCalendarButtons from "./AddToCalendarButtons";
 import Countdown from "./Countdown";
-import LoginModal from "../Account/LoginModal";
-import SignUpButton from "../Account/SignUpButton";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
 import { textToLatex } from "../Core/LatexRendering";
-
+import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import FooterOverlay from "./Talkcard/FooterOverlay";
-import CalendarButtons from "./CalendarButtons";
+import { thisExpression } from "@babel/types";
 
 interface Props {
   talk: Talk;
@@ -30,6 +26,7 @@ interface State {
   showModal: boolean;
   showShadow: boolean;
   registered: boolean;
+  registrationStatus: string;
   available: boolean;
   role: string
 }
@@ -41,27 +38,28 @@ export default class TalkCard extends Component<Props, State> {
       showModal: false,
       showShadow: false,
       registered: false,
+      registrationStatus: "",
       available: true,
       role: "none"
     };
+  }
+
+  componentWillMount() {
     this.fetchRoleInChannel();
+    this.checkIfAvailableAndRegistered();
   }
   
   fetchRoleInChannel = () => {
-    if (this.props.user !== null){
-    ChannelService.getRoleInChannel(
-      this.props.user?.id, 
-      this.props.talk.channel_id, 
-      (role: "none" | "owner" | "member" | "follower") => {
-        this.setState(
-          {role: role})
+    if (this.props.user !== null) {
+      ChannelService.getRoleInChannel(
+        this.props.user.id, 
+        this.props.talk.channel_id, 
+        (role: "none" | "owner" | "member" | "follower") => {
+          this.setState(
+            {role: role})
         })
       }
     }
-    
-  escapeDoubleQuotes = (text: string) => {
-    return text.replace("''", "'")
-  }
 
   formatDate = (d: string) => {
     const date = new Date(d);
@@ -79,15 +77,6 @@ export default class TalkCard extends Component<Props, State> {
     const timeEndStr = end.toTimeString().slice(0, 5);
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
-
-
-  lineBreaks = (text: string) => { 
-    if (text && text.trim()) {
-      return textToLatex(text);
-    } else {
-      return (<br></br>);
-    }
-  }
 
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
@@ -108,11 +97,6 @@ export default class TalkCard extends Component<Props, State> {
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
   };
-
-  componentWillMount() {
-    this.checkIfAvailableAndRegistered();
-  }
-
 
   // method here for mobile
   checkIfAvailableAndRegistered = () => {
@@ -140,11 +124,14 @@ export default class TalkCard extends Component<Props, State> {
   // method here for mobile
   checkIfRegistered = () => {
     this.props.user &&
-      TalkService.isRegisteredForTalk(
+      TalkService.registrationStatusForTalk(
         this.props.talk.id,
         this.props.user.id,
-        (registered: any) => {
-          this.setState({ registered });
+        (status: string) => {
+          this.setState({ 
+            registered: (status === "accepted"),
+            registrationStatus: status 
+          });
         }
       );
   };
@@ -191,14 +178,18 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   render() {
-    var breakpoint_width = 992;
+    var renderMobileView = (window.innerWidth < 800);
     return (
-      <div className="talk_card_box_1" style={
-        {"width": this.props.width ? this.props.width : "32%",
-      "height": "180px"}} onClick={() => {
-            !this.state.showModal && this.toggleModal();
+      <Box 
+        className="talk_card_box_1"
+        focusIndicator={false}
+        height="100%"
+        style={{
+          maxHeight: renderMobileView && this.state.showModal ? "600px" : "180px",
+          position: "relative",
+          width: this.props.width ? this.props.width : "32%",
         }}
-        >
+      >
         {/* <Box
       //   width={this.props.width ? this.props.width : "32%"}
       //   onClick={() => {
@@ -214,7 +205,8 @@ export default class TalkCard extends Component<Props, State> {
               this.setState({ showShadow: false });
             }
           }}
-          height="100%"
+          onClick={this.toggleModal}
+          height="180px"
           width="100%"
           background="white"
           round="xsmall"
@@ -302,23 +294,39 @@ export default class TalkCard extends Component<Props, State> {
               {this.props.talk.card_visibility === "Members only" && 
                 <Box
                   round="xsmall"
-                  background="#C2C2C2"
+                  background="#EAF1F1"
                   pad="small"
                   justify="center"
                   align="center"
-                  width="250px"             
+                  width="170px"
+                  height="30px"            
                 >
-                  <Text size="14px">
-                    Members only
+                  <Text size="12px">
+                    member-only
                   </Text>
                 </Box>
               }
+              {/*this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
+                <Box
+                  round="xsmall"
+                  background="#D3F930"
+                  pad="small"
+                  justify="center"
+                  align="center"
+                  width="170px"
+                  height="30px"             
+                >
+                  <Text size="14px" style={{ fontStyle: "normal" }}>
+                    on-registration
+                  </Text>
+                </Box>
+            */}
             </Box>
           </Box>
         </Box>
         {this.state.showShadow && (
           <Box
-            height="100%"
+            height="180px"
             width="100%"
             round="xsmall"
             style={{
@@ -328,7 +336,7 @@ export default class TalkCard extends Component<Props, State> {
               left: 8,
               opacity: 0.5,
             }}
-            background={this.props.talk.channel_colour}
+            background="#6DA3C7"
           ></Box>
         )}
         {this.state.showModal && 
@@ -336,7 +344,7 @@ export default class TalkCard extends Component<Props, State> {
           {/* //
           // A. DESKTOP OVERLAY (HACK)
           // */}
-          <MediaQuery minDeviceWidth={breakpoint_width}>
+          <MediaQuery minDeviceWidth={800}>
             <Layer
               onEsc={() => {
                 this.toggleModal();
@@ -473,8 +481,8 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
-                      (item, i) => this.lineBreaks(item)
+                    {this.props.talk.description.split('\n').map(
+                      (item, i) => textToLatex(item)
                     )}
                   </Box>
                 </Box>
@@ -484,288 +492,31 @@ export default class TalkCard extends Component<Props, State> {
                   talk={this.props.talk}
                   user={this.props.user}
                   role={this.state.role}
+                  available={this.state.available}
+                  registered={this.state.registered}
+                  registrationStatus={this.state.registrationStatus}
+                  isSharingPage={false}
                 />
             </Layer>
           </MediaQuery>
-
-
-
 
           
           {/* //
           // B. MOBILE OVERLAY (HACK; copy-pasting code is ugly (R))
           // */}
-         <MediaQuery maxDeviceWidth={breakpoint_width}>
-            <Layer
-              onClick={() => {
-                this.toggleModal();
-                this.setState({ showShadow: false });
-              }}
-              modal
-              responsive
-              animation="fadeIn"
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: 15,
-                overflow: "hidden",
-              }}
-            >
-              <Box
-                //align="center"
-                pad="25px"
-                // width="100%"
-                height="100%"
-                justify="between"
-                gap="small"
-              >
-                <Box
-                  style={{ minHeight: "200px", maxHeight: "400px", marginTop:"50px"}}
-                  direction="column"
-                >
-                  <Box direction="row" gap="xsmall" style={{ minHeight: "30px", marginTop:"10px"}}>
-                    {/* <Link
-                      className="channel"
-                      to={`/${this.props.talk.channel_name}`}
-                      style={{ textDecoration: "none" }}
-                    > */}
-                      <Box
-                        direction="row"
-                        gap="small"
-                        align="center"
-                        round="xsmall"
-                        pad={{ vertical: "6px", horizontal: "6px" }}
-                      >
-                        <Box
-                          justify="center"
-                          align="center"
-                          background="#efeff1"
-                          overflow="hidden"
-                          style={{
-                            minHeight: 30,
-                            minWidth: 30,
-                            borderRadius: 15,
-                          }}
-                        >
-                            <img
-                              src={ChannelService.getAvatar(
-                                this.props.talk.channel_id
-                              )}
-                              height={30}
-                              width={30}
-                            />
-                        </Box>
-                        <Box justify="between">
-                          <Text weight="bold" size="18px" color="grey">
-                            {this.props.talk.channel_name}
-                          </Text>
-                        </Box>
-                      </Box>
-                    {/* </Link> */}
-                  </Box>
-                  <Text
-                    weight="bold"
-                    size="21px"
-                    color="black"
-                    style={{
-                      minHeight: "50px",
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                    }}
-                    margin={{ bottom: "20px", top: "30px" }}
-                  >
-                    {this.props.talk.name}
-                  </Text>
-
-                  {this.props.talk.talk_speaker_url && (
-                    <a href={this.props.talk.talk_speaker_url} target="_blank">
-                      <Box
-                        direction="row"
-                        gap="small"
-                        onClick={() => {}}
-                        hoverIndicator={true}
-                        pad={{ left: "6px", top: "4px" }}
-                      >
-                        <UserExpert size="18px" />
-                        <Text
-                          size="18px"
-                          color="black"
-                          style={{
-                            height: "24px",
-                            overflow: "auto",
-                            fontStyle: "italic",
-                          }}
-                        >
-                          {this.props.talk.talk_speaker
-                            ? this.props.talk.talk_speaker
-                            : "TBA"}
-                        </Text>
-                      </Box>
-                    </a>
-                  )}
-
-                  {!this.props.talk.talk_speaker_url && (
-                    <Box direction="row" gap="small">
-                      <UserExpert size="18px" />
-                      <Text
-                        size="18px"
-                        color="black"
-                        style={{
-                          height: "30px",
-                          overflow: "auto",
-                          fontStyle: "italic",
-                        }}
-                        margin={{ bottom: "10px" }}
-                      >
-                        {this.props.talk.talk_speaker
-                          ? this.props.talk.talk_speaker
-                          : "TBA"}
-                      </Text>
-                    </Box>
-                  )}
-                  
-                  <Box
-                    style={{
-                      minHeight: "50px",
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                    }}
-                    margin={{ top: "10px", bottom: "10px" }}
-                  >
-                    {this.escapeDoubleQuotes(this.props.talk.description).split('\n').map(
-                      (item, i) => <Text size="16px" color="black"> {item} </Text>
-                    )}
-                  </Box>
-                </Box>
-                <Box direction="column" gap="small">
-                  <Box direction="row" gap="small" height="30px">
-                    <Box 
-                      direction="row" 
-                      gap="small" 
-                      alignSelf="center"
-                      width="100%"
-                    >
-                      <Calendar size="18px"  />
-                      <Text
-                        size="18px"
-                        color="black"
-                      >
-                        {this.formatDateFull(
-                          this.props.talk.date,
-                          this.props.talk.end_date
-                        )}
-                      </Text>
-                    </Box>
-                    {/*this.props.talk.card_visibility === "Members only" && 
-                      <Box
-                        round="xsmall"
-                        background="#C2C2C2"
-                        pad="small"
-                        justify="center"
-                        align="center"
-                        width="33%"                
-                      >
-                        <Text size="14px">
-                          Members only
-                        </Text>
-                      </Box>
-                        */}
-                  </Box>
-                  {this.state.available && (
-                    <Box margin={{ top: "10px", bottom: "20px" }}>
-                      <Countdown talk={this.props.talk} />
-                      {/* {this.props.user !== null && this.state.registered && (
-                      <Box
-                        focusIndicator={false}
-                        background="#FF4040"
-                        round="xsmall"
-                        pad="xsmall"
-                        justify="center"
-                        align="center"
-                        width="20%"
-                        height="35px"
-                        onClick={this.onClick}
-                        margin={{ top: "-35px" }}
-                        alignSelf="end"
-                        hoverIndicator={true}
-                      >
-                        <Text size="14px" weight="bold">
-                          Unregister
-                        </Text>
-                      </Box>
-                      )
-                      } */}
-                    </Box>
-                  )}
-                  {/* {this.state.available &&
-                    this.props.user !== null &&
-                    !this.state.registered && (
-                      <Box
-                        onClick={this.onClick}
-                        background="#7E1115"
-                        round="xsmall"
-                        pad="xsmall"
-                        height="40px"
-                        justify="center"
-                        align="center"
-                        focusIndicator={false}
-                        hoverIndicator="#5A0C0F"
-                      >
-                        <Text size="18px">Register</Text>
-                      </Box>
-                    )} */}
-                  {!this.state.available && this.props.user === null && (
-                    <Text>Link available to members  followers only.</Text>
-                    // <Box direction="row" align="center" gap="10px">
-                    //   <LoginModal callback={() => {}} />
-                    //   <Text size="18px"> or </Text>
-                    //   <SignUpButton callback={() => {}} />
-                    //   <Text size="18px"> to register </Text>
-                    // </Box>
-                  )}
-
-                  {/*
-                    <Box
-                      direction="row"
-                      width="100%"
-                      margin="none"
-                      pad="small"
-                      justify="center"
-                      round="xsmall"
-                      align="center"
-                      alignSelf="center"
-                      background="#F3EACE"
-                  >
-                    <Text size="18px" weight="bold" color="grey">
-                      Log in to register
-                    </Text>
-                  </Box>
-                    */}
-                </Box>
-              </Box>
-              {!this.state.available && (
-                <Box
-                  background="#d5d5d5"
-                  pad="small"
-                  align="center"
-                  justify="center"
-                >
-                  <Text textAlign="center" weight="bold">
-                    {`Sorry, the link to the talk is only available to ${
-                      this.props.talk.visibility === "Followers and members"
-                        ? "followers and members"
-                        : "members"
-                    }
-                    of ${this.props.talk.channel_name}`}
-                  </Text>
-                </Box>
-              )}
-            </Layer>
+          <MediaQuery maxDeviceWidth={800}>
+            <MobileTalkCardOverlay
+              talk={this.props.talk}
+              pastOrFutureTalk="future"
+              user={this.props.user}
+              registered={this.state.registered}
+              registrationStatus={this.state.registrationStatus}
+            />
           </MediaQuery>
+
           </>
         }
-      {/* </Box> */}
-      </div>
+      </Box>
     );
   }
 }

@@ -26,8 +26,14 @@ export const Theme = {
       calendarSize: "192px",
     },
     colors: {
-      brand: "#7E1115",
-      selected: "F5F5F5",
+      color1: "#0C385B",
+      color2: "#025377",
+      color3: "#6DA3C7",
+      color4: "7BA59E",
+      color5: "#BAD6DB",
+      color6: "#EAF1F1",
+      color7: "#D3F930",
+      selected: "#eaf1f1"
     },
     drop: {
       //background: "transparent",
@@ -38,12 +44,12 @@ export const Theme = {
     },
     focus: {
       border: {
-        color: "#5454A0",
+        color: "#0C385B",
       }
     }
   },
   tab: {
-    color: "#F5F5F5",
+    color: "#eaf1f1",
     active: { color: "black" },
     margin: {
       vertical: "none",
@@ -57,7 +63,7 @@ export const Theme = {
       side: "bottom",
       size: "medium",
       color: {
-        light: "#F5F5F5",
+        light: "#eaf1f1",
       },
       active: {
         color: {
@@ -65,7 +71,7 @@ export const Theme = {
         },
       },
       hover: {
-        color: "#F5F5F5"
+        color: "#eaf1f1"
       },
     },
   },
@@ -99,12 +105,12 @@ export const Theme = {
     }
   },
   anchor: {
-    color: "pink",
+    color: "#eaf1f1",
   },
   hover: {
     background: {
-      color: "#F5F5F5"
+      color: "#eaf1f1"
     },
-    color: {"dark": "white"}
+    color: {"dark": "#eaf1f1"}
   },
 };

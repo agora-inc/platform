@@ -9,6 +9,7 @@ interface Props {
   // onClick: () => void;
   onUpload: (file: File) => void;
   width?: string;
+  height?: string;
 }
 
 interface State {
@@ -41,30 +42,30 @@ export default class ImageCropUploader extends Component<Props, State> {
 
   render() {
     return (
-      <Box style={{ position: "relative" }} width={this.props.width}>
+      <Box 
+        style={{ position: "relative", border: "solid black 1px", cursor: "pointer" }}
+        round="xsmall"
+        width={this.props.width ? this.props.width : "150px"}
+        height={this.props.height ? this.props.height : "30px"}
+        justify="center"
+        align="center"
+        background="#EAF1F1"
+        focusIndicator={true}
+        hoverIndicator="#DDDDDD"
+        data-tip data-for='link_to_talk_info'
+      >
         <input
           type="file"
           accept="image/*"
           className="input-hidden"
           onChange={this.onFileChange}
         ></input>
-        <Box 
-          width={this.props.width || "200px"}
-          height="30px"
-          background="white"
-          round="xsmall"
-          style={{ border: "solid black 2px", cursor: "pointer" }}
-          align="center"
-          justify="center"
-        >
           <Text size="14px" weight="bold" color="black">
-            {this.props.text} 
-              <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
-            <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
+            {this.props.text + " "} 
+            <ReactTooltip id='link_to_talk_info' place="bottom" effect="solid">
               <p>Recommended dim: 1500x500px</p>
             </ReactTooltip>
           </Text>
-        </Box>
         <CropImageModal
           visible={this.state.showModal}
           src={this.state.src}

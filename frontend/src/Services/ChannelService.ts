@@ -1,5 +1,6 @@
 import { baseApiUrl } from "../config";
 import axios from "axios";
+import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
 
 const getAllChannels = (limit: number, offset: number, callback: any) => {
@@ -18,7 +19,8 @@ const createChannel = (
   name: string,
   description: string,
   userId: number,
-  callback: any
+  callback: any,
+  topics: Topic[],
 ) => {
   // default description if none
   if (description == "") {
@@ -30,7 +32,11 @@ const createChannel = (
 
   post(
     `channels/create`,
-    { name: name, description: description, userId: userId },
+    { name: name,
+      description: description,
+      userId: userId,
+      topic1Id: topics.length > 0 ? topics[0].id : null,
+    },
     callback
   );
 };
@@ -216,11 +222,9 @@ const updateLongChannelDescription = (
   newDescription: string,
   callback: any
 ) => {
-  var newDescriptionUtf8 = unescape( encodeURIComponent(newDescription));
-  // var newDescriptionUtf8withoutDoubleQuote = newDescriptionUtf8.replace("\"", "\'")
   post(
     "channels/updatelongdescription",
-    { channelId: channelId, newDescription: newDescriptionUtf8 },
+    { channelId: channelId, newDescription: newDescription },
     callback
   );
 };
@@ -313,6 +317,39 @@ const removeCover = (channelId: number, callback: any) => {
 const deleteAgora = (id: number, callback: any) => {
   post("channels/delete", { id }, callback);
 };
+
+////////////////////////
+// Channel Topic methods
+////////////////////////
+
+const editChannelTopic = (
+  channelId: Number,
+  topics: Topic[],
+  callback: any
+) => {
+  post(
+    '/channel/edit/topic',
+    {
+    channelId: channelId,
+    topic1Id: topics.length > 0 ? topics[0].id : null,
+    topic2Id: topics.length > 1 ? topics[1].id : null,
+    topic3Id: topics.length > 2 ? topics[2].id : null,
+    },
+    callback
+  );
+};
+
+const getChannelTopic = (channelId: Number, callback: any) => {
+  get(`channels/topics/fetch?channelId=${channelId}`, callback);
+};
+
+const getChannelsWithTopic = (limit: number, topicId: number, offset: number, callback: any) => {
+  get(`channels/topics/all?limit=${limit}&topicId=${topicId}&offset=${offset}`, callback);
+};
+
+/*const getChannelTopic = (channelId: number) => {
+  return baseApiUrl + `channels/topics/fetch?channelId=${channelId}`;
+};*/
 
 ///////////////////////
 // Membership methods
@@ -410,6 +447,7 @@ export type Channel = {
   colour: string;
   has_avatar: boolean;
   has_cover: boolean;
+  topics: Topic[];
 };
 
 export const ChannelService = {
@@ -438,6 +476,12 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
+  ////////////////////////
+  // Channel Topic methods
+  ////////////////////////
+  editChannelTopic,
+  getChannelTopic,
+  getChannelsWithTopic,
   /////////////////////
   // membership methods
   /////////////////////
