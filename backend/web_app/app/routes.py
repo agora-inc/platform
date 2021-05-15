@@ -929,6 +929,28 @@ def scheduleTalk():
     app.logger.debug(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
     return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"]))
 
+@app.route('/talks/sendemailedit', methods=["GET", "OPTIONS"])
+def sendEmailonTalkModification():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+        
+    talk_id = int(request.args.get("talkId"))
+    return jsonify(talks.sendEmailonTalkModification(talk_id))
+
+@app.route('/talks/sendemailschedule', methods=["GET", "OPTIONS"])
+def sendEmailonTalkScheduling():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+        
+    talk_id = int(request.args.get("talkId"))
+    return jsonify(talks.sendEmailonTalkScheduling(talk_id))
+
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 def editTalk():
     logRequest(request)
@@ -1020,6 +1042,25 @@ def isAvailable():
     userId = int(request.args.get("userId"))
     talkId = int(request.args.get("talkId"))
     return jsonify(talks.isTalkAvailableToUser(talkId, userId))
+
+@app.route('/talks/trending', methods=["GET"])
+def getTrendingTalks():
+    return jsonify(talks.getTrendingTalks())
+
+# --------------------------------------------
+# TALK ANALYTICS
+# --------------------------------------------
+@app.route('/talks/viewcount/get', methods=["GET"])
+def getViewCountForTalk():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(talks.getTalkViewCount(channelId))
+
+@app.route('/talks/viewcount/add', methods=["POST"])
+def increaseViewCountForTalk():
+    params = request.json 
+    channelId = params["channelId"]
+    return jsonify(talks.increaseTalkViewCount(channelId))
+
 
 # --------------------------------------------
 # TALK ACCESS REQUESTS ROUTES
