@@ -263,7 +263,7 @@ class TalkRepository:
 
     def getAvailableCurrentTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND date < CURRENT_TIMESTAMP AND TIMESTAMPADD(MINUTE, 30, end_date) > CURRENT_TIMESTAMP ORDER BY date"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
@@ -285,7 +285,7 @@ class TalkRepository:
                                         )
                                     )
                             )
-                        AND Talks.date < CURRENT_TIMESTAMP AND Talks.end_date > CURRENT_TIMESTAMP
+                        AND Talks.date < CURRENT_TIMESTAMP AND TIMESTAMPADD(MINUTE, 30, Talks.end_date) > CURRENT_TIMESTAMP
                     ORDER BY Talks.date
                     '''
 
@@ -300,7 +300,7 @@ class TalkRepository:
 
     def getAvailablePastTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC;"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND TIMESTAMPADD(MINUTE, 30, end_date) < CURRENT_TIMESTAMP ORDER BY date DESC;"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
@@ -322,7 +322,7 @@ class TalkRepository:
                                         )
                                     )
                             )
-                        AND Talks.end_date < CURRENT_TIMESTAMP 
+                        AND TIMESTAMPADD(MINUTE, 30, Talks.end_date) < CURRENT_TIMESTAMP
                     ORDER BY Talks.date DESC;
                     '''
         
@@ -338,7 +338,7 @@ class TalkRepository:
 
 
     def getAllCurrentTalks(self, limit, offset):
-        query = f"SELECT * FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
+        query = f"SELECT * FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND TIMESTAMPADD(MINUTE, 30, end_date) > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset};"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -348,7 +348,7 @@ class TalkRepository:
         return (talks, self.getNumberOfCurrentTalks())
 
     def getAllPastTalks(self, limit, offset):
-        query = f"SELECT * FROM Talks WHERE published = 1 AND end_date < CURRENT_TIMESTAMP AND recording_link IS NOT NULL ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
+        query = f"SELECT * FROM Talks WHERE published = 1 AND TIMESTAMPADD(MINUTE, 30, end_date) < CURRENT_TIMESTAMP AND recording_link IS NOT NULL ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -381,7 +381,7 @@ class TalkRepository:
         return talks
 
     def getAllPastTalksForChannel(self, channelId):
-        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP AND published = 1"
+        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP AND published = 1 ORDER BY Talks.date DESC;"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
