@@ -24,6 +24,7 @@ import { InlineMath } from "react-katex";
 import { StatusInfo } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
+import { UrlEncryption } from "../Core/Encryption/UrlEncryption";
 
 
 interface Props {
@@ -218,6 +219,7 @@ export default class EditTalkModal extends Component<Props, State> {
               this.props.onFinishedCallback();
             }
           );
+          this.onEditStreamingLinkCallback(talk)
         }
       );
     } else {
@@ -261,10 +263,41 @@ export default class EditTalkModal extends Component<Props, State> {
               });
             }
           );
+          // Encode URL
+          console.log(talk.link)
+
+          this.onEditStreamingLinkCallback(talk)
         }
       );
     }
   };
+
+  onEditStreamingLinkCallback = (talk: Talk) => {
+    // If user uses agora.steam streaming tech, we add encoded URL on callback.
+    if (talk.link == 'https://_agora.stream_tech'){
+      const dateTimeStrs = this.combineDateAndTimeStrings();
+      var encryptedUrl = UrlEncryption.encryptIdAndRoleInUrl("livestream", talk.id)
+      TalkService.editTalk(
+        talk.id,
+        this.escapeSingleQuotes(this.state.title),
+        this.escapeSingleQuotes(this.state.description),
+        dateTimeStrs[0],
+        dateTimeStrs[1],
+        this.validLink(encryptedUrl),
+        this.state.tags,
+        this.state.releaseLinkOffset,
+        this.state.linkVisibility,
+        this.state.cardVisibility,
+        this.state.topics,
+        this.escapeSingleQuotes(this.state.talkSpeaker),
+        this.state.talkSpeakerURL,
+        this.state.published,
+        this.state.audienceLevel,
+        () => {}
+      );
+    }
+  }
+
 
   onDeleteClicked = () => {
     if (!this.props.talk) {
@@ -622,7 +655,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 <CheckBox 
                   checked={this.state.link == '_agora.stream_tech'} 
                   label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
-                  onChange={(e) => this.setState({ link: e.target.checked?'_agora.stream_tech':'' })}/>
+                  onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}/>
 
                   <Text
                     size="14px" 

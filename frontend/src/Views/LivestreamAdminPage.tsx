@@ -22,8 +22,9 @@ import Clapping from "../Components/Streaming/Clapping";
 
 
 interface Props {
-  location: { pathname: string; state: { video: Video } };
-  match: {params: {talk_id: string}};
+  // location: { pathname: string; state: { video: Video } };
+  // match: {params: {talk_id: string}};
+  talkId: number;
 }
 
 interface State {
@@ -75,7 +76,14 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         talkId: "",
         role: 'host',
         name: 'Prof. Patric',
-        uid: getUserId(props.match.params.talk_id, useQuery().get('dummy'))
+        uid: getUserId(props.talkId.toString(), useQuery().get('dummy'))
+        //
+        //
+        //
+        //
+        // CHECK THIS BIT!
+        //
+        //
       } as any)
   const [talkDetail, setTalkDetail] = useState({} as any)
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
@@ -148,7 +156,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setTimeover(true)
       }
       if(Date.now() > end + 15*60*1000) {
-        API.endSeminar(props.match.params.talk_id)
+        API.endSeminar(props.talkId.toString())
       }
     }, 1000)
 
@@ -156,7 +164,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }, [talkDetail])
 
   async function setup() {
-    const talkId = props.match.params.talk_id
+    const talkId = props.talkId.toString()
     let talk = await get_talk_by_id(talkId)
     setTalkDetail(talk)
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
@@ -203,7 +211,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   async function join_live_chat(){
     console.log('joining...')
     let {appId , uid} = localUser
-    let talkId = props.match.params.talk_id
+    let talkId = props.talkId.toString()
 
     try{
       await agoraMessageClient.login({ uid })
@@ -219,7 +227,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   async function join(){
     console.log('joining...')
     let {appId , uid} = localUser
-    let talkId = props.match.params.talk_id
+    let talkId = props.talkId.toString()
     let token = await get_token_for_talk(talkId)
     let screenSharetoken = await get_token_for_talk(`${talkId}-screen`)
 
@@ -246,7 +254,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   async function share_screen() {
     // Create a new stream for the screen share.
     let {appId , uid} = localUser
-    let talkId = props.match.params.talk_id
+    let talkId = props.talkId.toString()
 
     try{
       const config = {
@@ -386,7 +394,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     (async ()=>{
-      setTalkId(props.match.params.talk_id)
+      setTalkId(props.talkId.toString())
       join_live_chat()
     })()
   }, [])
