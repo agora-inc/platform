@@ -17,7 +17,6 @@ export function encryptIdAndRoleInUrl(endpoint: string, id: number, role?: strin
     var baseUrl = basePoint + "/" + endpoint;
 
     // Encrypt
-    // var encodedEndpoint = CryptoTS.AES.encrypt(JSON.stringify(data), 'secret key 123');
     const encodedId = CryptoTS.AES.encrypt(id.toString(), sk).toString();
     var encodedRole = ""
     if (role === null){
@@ -38,24 +37,14 @@ export function encryptIdAndRoleInUrl(endpoint: string, id: number, role?: strin
     }
 }
 
-export function getIdFromUrl(encryptedUrl: string) {
-    const endpointPlusEncryption = encryptedUrl.replace(basePoint + "/", "")
-
-    // console.log("test1:")
-    // console.log(endpointPlusEncryption)
-
-    const SplitUrl = endpointPlusEncryption.split("/")
-    const endpoint = SplitUrl[0]
-
-    const encryptedPart = endpointPlusEncryption.replace(endpoint + "/", "")
-    // const basepoint = encryptedUrl.replace(encryptedEndpoint, "")
+export function getIdFromEncryptedEndpoint(encryptedUrl: string) {
+    /// NOTE: encryptedUrl is only the encoded endpoint, not the full URL.
+    const encryptedPart = encryptedUrl.replace(basePoint + "/", "")
 
     // console.log("test2:")
     // console.log(encryptedPart)
 
-
     const encryptedId = encryptedPart.split(sep)[0];
-
 
     // console.log("test3:")
     // console.log(encryptedId)
@@ -69,12 +58,9 @@ export function getIdFromUrl(encryptedUrl: string) {
     return res
 }
 
-export function getRoleFromUrl(encryptedUrl: string) {
-    const SplitUrl = encryptedUrl.split("/")
-    const encryptedEndpoint = SplitUrl[SplitUrl.length-1]
-    // const basepoint = encryptedUrl.replace(encryptedEndpoint, "")
-
-    const encryptedRole = encryptedEndpoint.split(sep)[1]
+export function getRoleFromEncryptedEndpoint(encryptedUrl: string) {
+    /// NOTE: encryptedUrl is only the encoded endpoint, not the full URL.
+    const encryptedRole = encryptedUrl.split(sep)[1]
 
     var bytes  = CryptoTS.AES.decrypt(encryptedRole.toString(), sk);
     return bytes.toString(CryptoTS.enc.Utf8);
@@ -83,6 +69,6 @@ export function getRoleFromUrl(encryptedUrl: string) {
 
 export const UrlEncryption = {
     encryptIdAndRoleInUrl,
-    getIdFromUrl,
-    getRoleFromUrl
+    getIdFromEncryptedEndpoint,
+    getRoleFromEncryptedEndpoint
   };

@@ -402,7 +402,7 @@ const getTrendingTalks = (callback: any) => {
 
 
 const getUserRoleInTalk = (talkId: number, userId: number, callback: any) => {
-  // query channelId
+  // query channelId of talk
 
 
   //
