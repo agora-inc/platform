@@ -667,11 +667,44 @@ class TalkRepository:
                         AND Talks.id = TalkViewCounts.talk_id
                         AND Talks.date > now())
             ORDER by TalkViewCounts.total_views DESC
-            LIMIT 5;
+            LIMIT 20;
         '''
-        result = self.db.run_query(query)
+        res = self.db.run_query(query)
 
-        return result
+        with open("/home/cloud-user/test/so_takaoOG.txt", "w") as file:
+            file.write(str(res))
+
+        # HACK: to prevent same agora having 5 talks, we query 20 future talks and limit to 2 max per agora.
+        try:
+            HARD_LIMIT = 2
+            filtered_results = []
+            counter_ag = {}
+            for talk in res:
+                agora_id = talk["Channels.id"]
+
+                if len(filtered_results) >= 5:
+                    pass
+                else:
+                    if agora_id in counter_ag:
+                        if counter_ag[agora_id] >= HARD_LIMIT:
+                            pass
+                        else:
+                            filtered_results.append(talk)
+                            counter_ag[agora_id] += 1
+                    else:
+                        filtered_results.append(talk)
+                        counter_ag[agora_id] = 1
+
+            with open("/home/cloud-user/test/so_takao1.txt", "w") as file:
+                file.write(str(filtered_results))
+
+            return filtered_results
+
+        except Exception as e:
+            with open("/home/cloud-user/test/so_takaoErr.txt", "w") as file:
+                file.write(str(e))
+        
+        
 
     def increaseTalkViewCount(self, talkId):
         try:
