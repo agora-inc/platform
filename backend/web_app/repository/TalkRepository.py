@@ -978,7 +978,7 @@ class TalkRepository:
     def notifyCommunityAboutNewTalk(self, channelId, channelName, startDate, talkName, talkId, SpeakerName, SpeakerHomepage=""):
         try:
             # query all emails
-            emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=True)
+            emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=False)
 
             for email in emails:
                 self.mail_sys.send_advertise_new_incoming_talk_for_channel(
