@@ -99,7 +99,7 @@ class emailAcademicFetcher:
             # B. Check/add institution
             check_existence_institution = f'''
                 SELECT id FROM Institutions
-                WHERE name = "{institution["name"]}";
+                WHERE name = "{self._pp_string(institution["name"])}";
             '''
 
             res = self.db.run_query(check_existence_institution)
@@ -138,6 +138,7 @@ class emailAcademicFetcher:
 
             res = self.db.run_query(existing_domains_query)
             existing_domains = [i["domain"] for i in res]
+            # print(existing_domains)
 
             domains = institution["domains"]
             for domain in domains:
@@ -149,6 +150,11 @@ class emailAcademicFetcher:
                 # ii) if not, 
                 else:
                     print(f'''Adding new domain: {domain} for {institution["name"]}''')
+
+                    print(domain)
+                    print(domains)
+
+
                     insert_domain_query = f'''
                         INSERT INTO InstitutionsEmailDomains (
                             domain,
@@ -168,10 +174,10 @@ class emailAcademicFetcher:
 
 
 if __name__ == "__main__":
-    txt = input("This script is going to run for several minutes. Are you sure you want to proceed?")
-    if txt == "":
-        sys.exit()
-    elif txt[0].lower() != "y":
-        sys.exit()
+    # txt = input("This script is going to run for several minutes. Are you sure you want to proceed?")
+    # if txt == "":
+    #     sys.exit()
+    # elif txt[0].lower() != "y":
+    #     sys.exit()
     obj = emailAcademicFetcher()
     obj.integrate_world_unis_domain_json_into_db()
