@@ -61,7 +61,8 @@ interface State {
   showAdvertisementOverlay: boolean;
   talkToAdvertise: Talk | null,
   sendEmail: boolean;
-  talkId: number | null
+  talkId: number | null;
+  activeSection: number;
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -102,6 +103,7 @@ export default class EditTalkModal extends Component<Props, State> {
       talkToAdvertise: this.props.talk ? this.props.talk : null,
       sendEmail: false,
       talkId: null,
+      activeSection: 1,
     };
   }
 
@@ -412,6 +414,7 @@ export default class EditTalkModal extends Component<Props, State> {
 
   render() {
     console.log("email?", this.state.sendEmail)
+    const numbers = [1, 2, 3, 4]
     return (
       <>
       <Overlay
@@ -449,6 +452,44 @@ export default class EditTalkModal extends Component<Props, State> {
         }
         buttonOnMouseEnter={this.isMissing}
       >
+        <Box direction="row" align="center" margin={{top: "3px"}}>
+          {numbers.map( (i: number) => {
+            <Box 
+              width="32px" 
+              height="32px"
+              round="16px" 
+              onClick={() => this.setState({activeSection: 1})} 
+              background={this.state.activeSection === i ? "#6DA3C7" : "white"}
+              justify="center"
+              align="center"
+              border={{color: "#6DA3C7"}}
+              hoverIndicator="#6DA3C7"
+              focusIndicator={false}
+            >
+              <Text color="black" size="14px"> 1 </Text> 
+            </Box> 
+            <hr style={{width: "100px", height: "0.1px", backgroundColor: "black", borderColor: "black" }} />
+          })}
+          <Box 
+            width="32px" 
+            height="32px"
+            round="16px" 
+            onClick={() => this.setState({activeSection: 2})} 
+            background="EAF1F1"
+            justify="center"
+            align="center"
+            style={{border: "1px solid"}}
+            hoverIndicator=""
+            focusIndicator={false}
+          >
+            <Text color="black" size="14px"> 2 </Text> 
+          </Box> 
+        </Box>
+        <Box direction="row" align="center" gap="114px" margin={{top: "-20px"}}>
+          <Text size="12px"> Ffff </Text>
+          <Text size="12px"> Ffff </Text>
+        </Box>
+
         <Box direction="row"> 
           <Box 
             direction="column" 

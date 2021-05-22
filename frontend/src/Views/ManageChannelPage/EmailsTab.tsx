@@ -279,7 +279,7 @@ export default class EmailsTab extends Component<Props, State> {
           </Box>
         </Box> 
 
-        <Box direction="row" gap="small">
+        {/* <Box direction="row" gap="small">
           <Text size="16px" weight="bold" color="black"> 
             Send custom email to your audience
           </Text>
@@ -289,9 +289,8 @@ export default class EmailsTab extends Component<Props, State> {
         
         <Text size="18px" weight="bold" color="#6DA3C7"> 
           Available soon!
-        </Text>
-
-      </Box>
+        </Text> */}
+      </Box> 
     );
   }
 }
