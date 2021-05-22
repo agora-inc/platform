@@ -453,12 +453,13 @@ export default class EditTalkModal extends Component<Props, State> {
         buttonOnMouseEnter={this.isMissing}
       >
         <Box direction="row" align="center" margin={{top: "3px"}}>
-          {numbers.map( (i: number) => {
+          {numbers.map( (i: number) => (
+            <>
             <Box 
               width="32px" 
               height="32px"
               round="16px" 
-              onClick={() => this.setState({activeSection: 1})} 
+              onClick={() => this.setState({activeSection: i})} 
               background={this.state.activeSection === i ? "#6DA3C7" : "white"}
               justify="center"
               align="center"
@@ -469,7 +470,8 @@ export default class EditTalkModal extends Component<Props, State> {
               <Text color="black" size="14px"> 1 </Text> 
             </Box> 
             <hr style={{width: "100px", height: "0.1px", backgroundColor: "black", borderColor: "black" }} />
-          })}
+            </>
+          ))}
           <Box 
             width="32px" 
             height="32px"
