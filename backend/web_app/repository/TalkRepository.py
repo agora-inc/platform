@@ -959,3 +959,42 @@ class TalkRepository:
             return "ok"
         except Exception as e:
             raise Exception(f"notifyCommmunityAboutNewTalk: exception: {e}")
+
+    
+    def isEmailAutoAcceptedToTalk(self, email, talk_id):
+        # check talk id configs
+        auto_accept_config_request = f'''
+                SELECT 
+                    autoAcceptVerifiedAcademics, 
+                    autoAcceptCustom,
+                    manualAccept 
+                FROM Talks
+                WHERE
+                    talk_id = {talk_id} AND
+                    status = 'accepted';
+            '''
+        # with open("/home/cloud-user/test/jimmy1.txt", "w") as file:
+        #     file.write(str(auto_accept_config_request))
+
+        try:
+            auto_accept_config = self.db.run_query(auto_accept_config_request)
+
+            autoAcceptVerifiedAcademics = auto_accept_config["auto_accept_config"]
+            autoAcceptCustom = auto_accept_config["autoAcceptCustom"]
+
+            email_ending = email.split("@")[1]
+
+            if autoAcceptVerifiedAcademics:
+                check_query = f'''
+                    SELECT 
+                        WIP (CURRENTLY POPULATING VERIFIED ACADEMIC EMAILS)
+                '''
+
+            # with open("/home/cloud-user/test/jimmy2.txt", "w") as file:
+            #     file.write(str(auto_accept_config))
+
+        except Exception as e:
+            
+            # with open("/home/cloud-user/test/jimmyerr.txt", "w") as file:
+            #     file.write(str(e))
+
