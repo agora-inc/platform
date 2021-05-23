@@ -415,7 +415,7 @@ class TalkRepository:
             return
 
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_verified_academics, auto_accept_custom_institutions):
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_verified_academics, auto_accept_custom_institutions, customInstitutionsIds):
         query = f'''
             INSERT INTO Talks (
                 channel_id, 
@@ -468,10 +468,14 @@ class TalkRepository:
 
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(insertId, tagIds)
+            
+            # add customInstitutions for auto-acceptance
+            self.editAutoAcceptanceCustomInstitutions(insertId, customInstitutionsIds)
+
             return self.getTalkById(insertId)
 
-            # notify members / admins by email
-            """self.notifyCommunityAboutNewTalk(
+            # notify members by email
+            self.notifyCommunityAboutNewTalk(
                 channelId, 
                 channelName, 
                 startDate, 
@@ -479,7 +483,6 @@ class TalkRepository:
                 insertId, 
                 talk_speaker, 
                 talk_speaker_url)
-            """
 
         except Exception as e:
             return str(e)
@@ -1014,7 +1017,7 @@ class TalkRepository:
     def notifyCommunityAboutNewTalk(self, channelId, channelName, startDate, talkName, talkId, SpeakerName, SpeakerHomepage=""):
         try:
             # query all emails
-            emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=True)
+            emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=False)
 
             for email in emails:
                 self.mail_sys.send_advertise_new_incoming_talk_for_channel(

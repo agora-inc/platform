@@ -927,7 +927,7 @@ def scheduleTalk():
             params[topic_key] = "NULL" 
 
     app.logger.debug(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
-    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptVerifiedAcademics"], params["autoAcceptCustomInstitutions"]))
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptVerifiedAcademics"], params["autoAcceptCustomInstitutions"], params["customInstitutionsIds"]))
 
 @app.route('/talks/sendemailedit', methods=["GET", "OPTIONS"])
 def sendEmailonTalkModification():
@@ -965,7 +965,7 @@ def editTalk():
     app.logger.debug(f"Talk with id {params['talkId']} edited")
     return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptVerifiedAcademics"], params["autoAcceptCustomInstitutions"]))
 
-@app.route('/talks/editCustomInstitutions', methods=['POST', 'OPTIONS']):
+@app.route('/talks/editCustomInstitutions', methods=['POST', 'OPTIONS'])
 def editAutoAcceptanceCustomInstitutions():
     if request.mdethod == "OPTIONS":
         return jsonify("ok")
