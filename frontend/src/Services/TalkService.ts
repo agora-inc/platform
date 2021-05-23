@@ -153,6 +153,9 @@ const editTalk = (
   talkSpeakerURL: string,
   published: number,
   audienceLevel: string,
+  autoAcceptVerifiedAcademics: boolean,
+  autoAcceptCustomInstitutions: boolean,
+  customInstitutionsIds: number[] | number,
   callback: any
 ) => {
   post(
@@ -175,8 +178,13 @@ const editTalk = (
       talkSpeakerURL: talkSpeakerURL,
       published: published,
       audienceLevel: audienceLevel,
+      autoAcceptVerifiedAcademics: autoAcceptVerifiedAcademics,
+      autoAcceptCustomInstitutions: autoAcceptCustomInstitutions
     },
-    callback
+    () => {
+      editAutoAcceptanceCustomInstitutions(talkId, customInstitutionsIds, () => {});
+      callback
+    }
   );
 };
 
@@ -197,6 +205,9 @@ const scheduleTalk = (
   talkSpeakerURL: string,
   published: number,
   audienceLevel: string,
+  autoAcceptVerifiedAcademics: boolean,
+  autoAcceptCustomInstitutions: boolean,
+  customInstitutionsIds: number[],
   callback: any
 ) => {
   post(
@@ -220,6 +231,9 @@ const scheduleTalk = (
       talkSpeakerURL: talkSpeakerURL,
       published: published,
       audienceLevel: audienceLevel,
+      autoAcceptVerifiedAcademics: autoAcceptVerifiedAcademics,
+      autoAcceptCustomInstitutions: autoAcceptCustomInstitutions,
+      customInstitutionsIds: customInstitutionsIds
     },
     callback
   );
@@ -407,6 +421,18 @@ const sendEmailonTalkModification = (talkId: number, callback: any) => {
     get(`talks/sendemailedit?talkId=${talkId}`, callback);
 };
 
+const editAutoAcceptanceCustomInstitutions = (talkId: number, institution_ids: number | number[], callback:any) => {
+  post(
+    "talks/editCustomInstitutions",
+    {
+      talkId: talkId,
+      institution_ids: institution_ids,
+    },
+    callback
+  );
+}
+
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -427,6 +453,7 @@ export const TalkService = {
   getAvailableCurrentTalksForChannel,
   getAvailablePastTalksForChannel,
   editTalk,
+  editAutoAcceptanceCustomInstitutions,
   scheduleTalk,
   deleteTalk,
   addRecordingLink,
