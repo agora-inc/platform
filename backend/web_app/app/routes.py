@@ -967,7 +967,7 @@ def editTalk():
 
 @app.route('/talks/editCustomInstitutions', methods=['POST', 'OPTIONS']):
 def editAutoAcceptanceCustomInstitutions():
-    if request.method == "OPTIONS":
+    if request.mdethod == "OPTIONS":
         return jsonify("ok")
         
     if not checkAuth(request.headers.get('Authorization')):

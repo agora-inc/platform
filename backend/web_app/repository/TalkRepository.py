@@ -1,7 +1,7 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
-from repository.EmailRepository import EmailRepository
+from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime
 
@@ -17,7 +17,7 @@ class TalkRepository:
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)
         self.topics = TopicRepository(db=self.db)
-        self.emails = EmailRepository(db=self.db)
+        self.institutions = InstitutionRepository(db=self.db)
         self.mail_sys = mail_sys
 
     def getNumberOfCurrentTalks(self):
@@ -1051,7 +1051,7 @@ class TalkRepository:
             autoAcceptCustom = auto_accept_config["auto_accept_custom_institutions"]
 
             if autoAcceptVerifiedAcademics:
-                autoAccepted = self.emails.isEmailVerifiedAcademicEmail(email)
+                autoAccepted = self.institutions.isEmailVerifiedAcademicEmail(email)
 
                 if autoAccepted:
                     return autoAccepted
