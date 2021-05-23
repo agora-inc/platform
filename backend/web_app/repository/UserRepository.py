@@ -135,6 +135,20 @@ class UserRepository:
 
         return self.getUserById(userId)
 
+    def UserIsVerifiedAcademics(self, userId):
+        # query academic email account
+        get_academic_email = f'''
+            SELECT email FROM Users WHERE user_id = {userId};
+        '''
+
+        res = self.db.run_query(get_academic_email)["email"]
+
+        # check if in verified domains
+
+
+        
+
+
     def authenticate(self, username, password):
         user = self.getUser(username)
 
