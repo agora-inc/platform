@@ -8,6 +8,7 @@ import {
   Calendar,
   MaskedInput,
   Select,
+  Layer,
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import Button from "../Core/Button";
@@ -21,10 +22,16 @@ import "../../Styles/edit-talk-modal.css";
 import { textToLatex } from "../Core/LatexRendering";
 import { Switch } from "antd";
 import { InlineMath } from "react-katex";
-import { StatusInfo } from "grommet-icons";
+import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
 
+
+type Reminder = {
+  exist: boolean;
+  days: number;
+  hours: number; 
+}
 
 interface Props {
   channel: Channel | null;
@@ -66,7 +73,7 @@ interface State {
   onRegistration: boolean;
   autoAccept: string;
   acceptedDomains: string[];
-
+  reminders: Reminder[];
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -111,6 +118,10 @@ export default class EditTalkModal extends Component<Props, State> {
       onRegistration: false,
       autoAccept: "Everybody",
       acceptedDomains: [],
+      reminders: [
+        {exist: false, days: 0, hours: 0},
+        {exist: false, days: 0, hours: 0}
+      ],
     };
   }
 
@@ -425,11 +436,111 @@ export default class EditTalkModal extends Component<Props, State> {
     });
   }
 
+  pushDays = (i: number, n_days: string) => {
+    this.setState(prevState => {
+      let reminders = prevState.reminders;
+      reminders[i].days = Number(n_days);
+      return {...prevState, reminders}
+    })
+  }
+
+  pushHours = (i: number, n_hours: string) => {
+    this.setState(prevState => {
+      let reminders = prevState.reminders;
+      reminders[i].hours = Number(n_hours);
+      return {...prevState, reminders}
+    })
+  }
+
   hideAdvertisementOverlay = () => {
     this.setState({
       showAdvertisementOverlay: false}
     )
   }
+
+  toggleReminder = (i: number) => {
+    return (
+      () => {
+        this.setState(prevState => {
+          let reminders = prevState.reminders;
+          reminders[i].exist = !reminders[i].exist;
+          return {...prevState, reminders}
+        })
+      }
+    );
+  }
+
+  renderReminder = (j: number) => {
+    return (
+      <Box direction="row" gap="6px" align="center">
+        <Text size="13px" color="grey" margin={{right: "20px"}} > 
+          Reminder {j+1}
+        </Text>
+        {!this.state.reminders[j].exist && (
+          <Box
+            focusIndicator={false}
+            background="white"
+            round="xsmall"
+            pad={{ vertical: "2px", horizontal: "xsmall" }}
+            onClick={this.toggleReminder(j)}
+            style={{
+              width: "60px", height: "26px",
+              border: "1px solid #C2C2C2",
+            }}
+            hoverIndicator={true}
+            align="center"
+          >
+            <Text color="grey" size="small"> 
+              + Add 
+            </Text>
+          </Box>
+        )}
+        {this.state.reminders[j].exist && (
+          <Box direction="row" gap="6px" align="center" justify="center">
+            <input
+              value={this.state.reminders[j].days}
+              onChange={(e) => this.pushDays(j, e.target.value)}
+              style={{
+                width: "30px", height: "26px", padding: "4px",
+                border: "1px solid #C2C2C2", borderRadius: "5px", 
+              }}
+            />
+            <Text size="16px" color="grey" margin={{right: "15px"}}> day(s) </Text>
+            <input
+              value={this.state.reminders[j].hours}
+              onChange={(e) => this.pushHours(j, e.target.value)}
+              style={{
+                width: "30px", height: "26px", padding: "4px",
+                border: "1px solid #C2C2C2", borderRadius: "5px", 
+              }}
+            />
+            <Text size="16px" color="grey" margin={{right: "20px"}}> hour(s) </Text>
+            <Close size="20px" onClick={this.toggleReminder(j)} />
+          </Box>
+        )}
+      </Box>
+    ); 
+  }
+
+  renderArrowButton = (prev: boolean) => {
+    let incr = prev ? -1 : 1;
+    return (
+      <Box
+        round="xsmall"
+        pad={{ vertical: "4px", horizontal: "4px" }}
+        style={{
+          width: "36px",
+          border: "1px solid #BBBBBB",
+        }}
+        margin={{left: prev ? "36px" : "0px", right: prev ? "0px" : "36px"}}
+        onClick={() => this.setState((prevState: any) => ({activeSection: prevState.activeSection+incr}))} 
+      >
+      {prev && <LinkPrevious color="#BBBBBB" size="26px" />}
+      {!prev && <LinkNext color="#BBBBBB" size="26px" />}
+    </Box>
+    );
+  }
+
 
   render() {
     var auto_accept = "Select the default option for automatically accepting people to your seminars </br></br>" +
@@ -444,41 +555,56 @@ export default class EditTalkModal extends Component<Props, State> {
 
     return (
       <>
-      <Overlay
-        width={650}
-        height={650}
-        visible={this.props.visible}
-        title={this.props.talk ? "Edit talk" : "New talk"}
-        submitButtonText="Publish"
-        onSubmitClick={this.onFinishClicked}
-        contentHeight="500px"
-        canProceed={this.isComplete()}
-        isMissing={this.isMissing()}
-        onCancelClick={this.props.onCanceledCallback}
-        onClickOutside={this.props.onCanceledCallback}
-        onEsc={this.props.onCanceledCallback}
-        deleteButton={
-          this.props.talk ? (
-            <Button
-              fill="#FF4040"
-              width="90px"
-              height="35px"
-              text="Delete"
-              onClick={this.onDeleteClicked}
-            />
-          ) : null
-        }
-        saveDraftButton={
-          <Button
-            width="170px"
-            height="35px"
-            text="Save as draft"
-            textColor="white"
-            onClick={this.onSaveDraft}
-          />
-        }
-        buttonOnMouseEnter={this.isMissing}
-      >
+      {this.props.visible && (
+        <Layer
+          onEsc={this.props.onCanceledCallback}
+          onClickOutside={this.props.onCanceledCallback}
+          modal
+          responsive
+          animation="fadeIn"
+          style={{
+            width: 650,
+            height: "75%",
+            borderRadius: 15,
+            // border: "3.5px solid black",
+            padding: 0,
+          }}
+        >
+          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+            <Box
+              justify="start"
+              width="99.7%"
+              background="#eaf1f1"
+              direction="row"
+              style={{
+                borderTopLeftRadius: "15px",
+                borderTopRightRadius: "15px",
+                position: "sticky",
+                top: 0,
+                minHeight: "55px",
+                zIndex: 10,
+              }}
+            >
+              <Box pad="30px" alignSelf="center" fill={true}>
+                <Text size="16px" color="black" weight="bold"  >
+                  {this.props.talk ? "Edit talk" : "New talk"}
+                </Text>
+              </Box>
+              <Box pad="32px" alignSelf="center">
+                <Close onClick={this.props.onCanceledCallback} />
+              </Box>
+            </Box>
+            
+            <Box
+              width="100%"
+              align="center"
+              pad={{ horizontal: "30px" }}
+              gap="30px"
+              margin={{ top: "20px" }}
+              overflow="auto"
+              style={{ minHeight: "500px" }}
+            >
+
         <Box direction="row" justify="center" align="center" gap="60px" margin={{top: "0px"}}>
           <Text weight="bold" color="grey" size="13px"> Information </Text>
           <Text weight="bold" color="grey" size="13px"> Time </Text>
@@ -638,7 +764,7 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 3 && (
-          <Box direction="column" width="65%" gap="10px">
+          <Box direction="column" width="70%" gap="10px">
             <Box direction="row" gap="5px" > 
               <Text size="13px" weight="bold"> Link to event </Text>
               <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
@@ -717,19 +843,136 @@ export default class EditTalkModal extends Component<Props, State> {
             {!this.state.onRegistration && (
               <Text size="13px"> Your event is public, and the link to your talk will be shown on agora.stream 15 minutes before the start. </Text>
             )}
+          </Box>
+        )}
+        
+        {this.state.activeSection === 4 && (
+          <Box direction="column" width="70%" gap="10px">
+            <Text size="13px" weight="bold" color="black">
+              Topics
+            </Text>
+            <TopicSelector 
+              onSelectedCallback={this.selectTopic}
+              onCanceledCallback={this.cancelTopic}
+              isPrevTopics={this.state.isPrevTopics}
+              prevTopics={this.props.talk ? this.props.talk.topics : []} 
+              size="small" 
+            />
 
+            <Text size="13px" weight="bold" color="black">
+              Target audience
+            </Text>
+            <Select
+              dropAlign={{ bottom: "top" }}
+              focusIndicator={false}
+              id="link-visibility-select"
+              options={["General audience", "Bachelor/Master", "PhD+"]}
+              value={this.state.audienceLevel}
+              onChange={({ option }) =>
+                this.setState({ audienceLevel: option })
+              }
+            />
+          </Box>
+        )}
 
+        {this.state.activeSection === 5 && this.props.channel && (
+          <Box direction="column" width="70%" gap="10px">
+            <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
+              Email reminders
+            </Text>
+            {this.renderReminder(0)}
+            {this.renderReminder(1)}
+
+            <Text size="13px" weight="bold" color="black" margin={{ top: "24px" }}> 
+              To whom?
+            </Text>
 
           </Box>
         )}
 
+            </Box>
+            <Box
+              direction="row"
+              justify="start"
+              align="center"
+              gap="xsmall"
+              width="99.7%"
+              background="#eaf1f1"
+              style={{
+                borderBottomLeftRadius: "15px",
+                borderBottomRightRadius: "15px",
+                position: "sticky",
+                bottom: 0,
+                minHeight: "60px",
+                zIndex: 10,
+              }}
+            >
+              {this.state.activeSection === 1 && (
+                <>
+                <Box width={this.props.talk ? "47%" : "90%" } />
+                {this.props.talk && (
+                  <>
+                  <Button
+                    fill="#FF4040"
+                    width="90px"
+                    height="35px"
+                    text="Delete"
+                    onClick={this.onDeleteClicked}
+                  />
+                  <Box width="30%" /> 
+                  </>
+                )}
+                
+                {this.renderArrowButton(false)}
+                </>
+              )}
 
+              {this.state.activeSection > 1 && this.state.activeSection < 5 && (
+                <>
+                  {this.renderArrowButton(true)}
+                  <Box width="80%" />
+                  {this.renderArrowButton(false)}
+                  </>
+              )}
 
-
-
-
-
-
+              {this.state.activeSection === 5 && (
+                <>
+                {this.renderArrowButton(true)}
+                <Box width="50%" />
+                <Button
+                  width="140px"
+                  height="35px"
+                  text="Save as draft"
+                  textColor="white"
+                  onClick={this.onSaveDraft}
+                />
+                <Box data-tip data-for='submitbutton' margin={{left: "24px", right: "32px"}}> 
+                  <Button
+                    fill="#025377"
+                    disabled={!this.isComplete()}
+                    height="35px"
+                    width="140px"
+                    text="Publish"
+                    textColor="white"
+                    onClick={this.onFinishClicked}
+                    hoverIndicator="#6DA3C7"
+                    onMouseEnter={this.isMissing}
+                  />
+                  {!this.isComplete() && this.isMissing() && (
+                    <ReactTooltip id='submitbutton' place="top" effect="solid">
+                      The following fields are missing
+                      {this.isMissing().map((item, index) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ReactTooltip>
+                  )}
+                </Box>
+                </>
+              )}
+            </Box>  
+          </Box>
+        </Layer>
+        )}
 
         {/* <Box direction="row"> 
           <Box 
@@ -1038,7 +1281,6 @@ export default class EditTalkModal extends Component<Props, State> {
                     label="interested?"
                     onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
                   /> */}
-      </Overlay>
       
       { /* Overlay when creating a new talk */
         this.state.talkToAdvertise !== null && !this.isInThePast() && !this.props.talk && (
