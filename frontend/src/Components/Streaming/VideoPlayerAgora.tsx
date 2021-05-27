@@ -15,13 +15,18 @@ const VideoPlayerAgora:FunctionComponent<Props> = ({id, stream, style={}, classN
 
   useEffect(()=>{
     let a:any = null
+    console.log(stream)
     if(stream) {
       stream.play(id)
       clearInterval(a)
       a= setInterval(()=>{
         if(!el.current) return
+        let video = el.current.querySelector('video')
+        if(!video) return
+
         let viewR = el.current.clientHeight/(el.current.clientWidth + 0.01)
-        let videoR = stream._videoHeight / stream._videoWidth
+        let videoR = video.clientHeight / video.clientWidth
+
         if(viewR < videoR){
           setLimitSide('limit-height')
         }else {

@@ -57,12 +57,13 @@ function useQuery(){
 interface Control {
   mic: boolean
 }
+AgoraRTC.setLogLevel(4)
 
 
 const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   const [storedName, setStoredName] = useState(getLocalName(props.match.params.talk_id)||'')
   const videoContainer = useRef<HTMLDivElement>(null)
-  const [agoraClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
+  const [agoraClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8",  }))
   const [agoraScreenShareClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
   const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
   const [messageChannel, setMessageChannel] = useState(null as any)
@@ -85,11 +86,13 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
   const [isClapping, setClapping] = useState('')
   const [hasMicRequested, setMicRequest] = useState('')
+  const [isUnpublishFromRemote, unpublishFromRemote] = useState('')
   
   const [talkId, setTalkId] = useState('')
   const [callControl, setCallControl] = useState({
     mic: false
   } as Control)
+
 
   const [state, setState] = useState({
       video: {
@@ -246,10 +249,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     }
   }
 
+  useEffect(()=>{
+    unpublish_microphone()
+  }, [isUnpublishFromRemote])
+
   async function unpublish_microphone(){
+    console.log('unp mic', localAudioTrack)
     if(hasMicRequested) {
       API.removeRequest(hasMicRequested)
     }
+
+    setMicRequest('')
     if(localAudioTrack) {
       localAudioTrack.stop()
 
@@ -325,9 +335,12 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       
       setMicRequest('')
       if(req) {
-        setMicRequest(req.requester_id)
-        console.log('GRANTED', req)
-        publish_microphone()
+        setMicRequest(req.id)
+        if(req.status === 'GRANTED') {
+          publish_microphone()
+        }
+      }else{
+        unpublishFromRemote(Math.random().toString())
       }
     })
     return ()=>{
@@ -382,7 +395,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                     <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
                 }
                 <Box className='call-control' direction='row'>
-                  {hasMicRequested?<Button label="Requested mic" primary size='small' />:callControl.mic?
+                  {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
                     <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
                     <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
                   }
