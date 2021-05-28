@@ -175,7 +175,7 @@ const editTalk = (
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
-      audienceLevel: audienceLevel
+      audienceLevel: audienceLevel,
     },
     callback
   );
@@ -220,7 +220,7 @@ const scheduleTalk = (
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
-      audienceLevel: audienceLevel
+      audienceLevel: audienceLevel,
     },
     callback
   );
@@ -408,6 +408,13 @@ const getUserRoleInTalk = (talkId: number, userId: number, callback: any) => {
   //
 } 
 
+const sendEmailonTalkScheduling = (talkId: number, callback: any) => {
+    get(`talks/sendemailschedule?talkId=${talkId}`, callback);
+};
+
+const sendEmailonTalkModification = (talkId: number, callback: any) => {
+    get(`talks/sendemailedit?talkId=${talkId}`, callback);
+};
 
 export const TalkService = {
   getTalkById,
@@ -438,6 +445,8 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  sendEmailonTalkScheduling,
+  sendEmailonTalkModification,
   // talk registration management
   acceptTalkRegistration,
   refuseTalkRegistration,

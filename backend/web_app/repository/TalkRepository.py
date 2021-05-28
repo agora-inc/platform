@@ -263,7 +263,7 @@ class TalkRepository:
 
     def getAvailableCurrentTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND date < CURRENT_TIMESTAMP AND TIMESTAMPADD(MINUTE, 30, end_date) > CURRENT_TIMESTAMP ORDER BY date"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
@@ -285,7 +285,7 @@ class TalkRepository:
                                         )
                                     )
                             )
-                        AND Talks.date < CURRENT_TIMESTAMP AND Talks.end_date > CURRENT_TIMESTAMP
+                        AND Talks.date < CURRENT_TIMESTAMP AND TIMESTAMPADD(MINUTE, 30, Talks.end_date) > CURRENT_TIMESTAMP
                     ORDER BY Talks.date
                     '''
 
@@ -300,7 +300,7 @@ class TalkRepository:
 
     def getAvailablePastTalksForChannel(self, channelId, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC;"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND TIMESTAMPADD(MINUTE, 30, end_date) < CURRENT_TIMESTAMP ORDER BY date DESC;"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 AND channel_id = {channelId}
@@ -322,7 +322,7 @@ class TalkRepository:
                                         )
                                     )
                             )
-                        AND Talks.end_date < CURRENT_TIMESTAMP 
+                        AND TIMESTAMPADD(MINUTE, 30, Talks.end_date) < CURRENT_TIMESTAMP
                     ORDER BY Talks.date DESC;
                     '''
         
@@ -338,7 +338,7 @@ class TalkRepository:
 
 
     def getAllCurrentTalks(self, limit, offset):
-        query = f"SELECT * FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
+        query = f"SELECT * FROM Talks WHERE published = 1 AND date < CURRENT_TIMESTAMP AND TIMESTAMPADD(MINUTE, 30, end_date) > CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset};"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -348,7 +348,7 @@ class TalkRepository:
         return (talks, self.getNumberOfCurrentTalks())
 
     def getAllPastTalks(self, limit, offset):
-        query = f"SELECT * FROM Talks WHERE published = 1 AND end_date < CURRENT_TIMESTAMP AND recording_link IS NOT NULL ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
+        query = f"SELECT * FROM Talks WHERE published = 1 AND TIMESTAMPADD(MINUTE, 30, end_date) < CURRENT_TIMESTAMP AND recording_link IS NOT NULL ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -381,7 +381,7 @@ class TalkRepository:
         return talks
 
     def getAllPastTalksForChannel(self, channelId):
-        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP AND published = 1"
+        query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND end_date < CURRENT_TIMESTAMP AND published = 1 ORDER BY Talks.date DESC;"
         talks = self.db.run_query(query)
         for talk in talks:
             channel = self.channels.getChannelById(talk["channel_id"])
@@ -461,9 +461,10 @@ class TalkRepository:
 
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(insertId, tagIds)
+            return self.getTalkById(insertId)
 
             # notify members / admins by email
-            self.notifyCommunityAboutNewTalk(
+            """self.notifyCommunityAboutNewTalk(
                 channelId, 
                 channelName, 
                 startDate, 
@@ -471,8 +472,7 @@ class TalkRepository:
                 insertId, 
                 talk_speaker, 
                 talk_speaker_url)
-
-            return self.getTalkById(insertId)
+            """
 
         except Exception as e:
             return str(e)
@@ -493,6 +493,7 @@ class TalkRepository:
             channel_id = old_res["channel_id"]
 
             # check if date changed or if (URL changed AND talk is not public) ((because else, we dont care if URL changed as there are no registration))
+            """
             critical_information_changed = False
             critical_information_changed = (
                 old_start_date != startDate or
@@ -500,6 +501,7 @@ class TalkRepository:
                 (old_url != talkLink and visibility != "Everybody") or
                 old_speaker != talk_speaker
             )
+            """
 
             # modify current information
             query = f'''
@@ -527,15 +529,16 @@ class TalkRepository:
             self.tags.tagTalk(talkId, tagIds)
 
             # notify attendees
-            if critical_information_changed:
-                self.notifyParticipantAboutTalkModification(
-                    talkId,
-                    channel_id,
-                    talkName,
-                    talkLink,
-                    startDate,
-                    endDate
-                )
+            """
+            self.notifyParticipantAboutTalkModification(
+                talkId,
+                channel_id,
+                talkName,
+                talkLink,
+                startDate,
+                endDate
+            )
+            """
             
             return self.getTalkById(talkId)
 
@@ -649,7 +652,93 @@ class TalkRepository:
         return True
 
     ###############################
-    # Talk 
+    # Talk views
+    ###############################
+    def getTrendingTalks(self):
+        query = f'''
+            SELECT 
+                Talks.name,
+                Talks.id,
+                Channels.id,
+                Channels.has_avatar,
+                TalkViewCounts.total_views
+            FROM Talks, Channels, TalkViewCounts
+                    WHERE (Talks.channel_id = Channels.id 
+                        AND Talks.id = TalkViewCounts.talk_id
+                        AND Talks.date > now())
+            ORDER by TalkViewCounts.total_views DESC
+            LIMIT 20;
+        '''
+        res = self.db.run_query(query)
+
+        with open("/home/cloud-user/test/so_takaoOG.txt", "w") as file:
+            file.write(str(res))
+
+        # HACK: to prevent same agora having 5 talks, we query 20 future talks and limit to 2 max per agora.
+        try:
+            HARD_LIMIT_PER_AGORA = 3
+            TOTAL_N_TALK = 7
+            filtered_results = []
+            counter_ag = {}
+            for talk in res:
+                agora_id = talk["Channels.id"]
+
+                if len(filtered_results) >= TOTAL_N_TALK:
+                    pass
+                else:
+                    if agora_id in counter_ag:
+                        if counter_ag[agora_id] >= HARD_LIMIT_PER_AGORA:
+                            pass
+                        else:
+                            filtered_results.append(talk)
+                            counter_ag[agora_id] += 1
+                    else:
+                        filtered_results.append(talk)
+                        counter_ag[agora_id] = 1
+
+            with open("/home/cloud-user/test/so_takao1.txt", "w") as file:
+                file.write(str(filtered_results))
+
+            return filtered_results
+
+        except Exception as e:
+            with open("/home/cloud-user/test/so_takaoErr.txt", "w") as file:
+                file.write(str(e))
+        
+        
+
+    def increaseTalkViewCount(self, talkId):
+        try:
+            increase_counter_query = f'''
+                UPDATE TalkViewCounts
+                    SET total_views = total_views + 1
+                    WHERE talk_id = {talkId};'''
+            res = self.db.run_query(increase_counter_query)
+
+            if type(res) == list:
+                if res[0] == 0 and res[1] == 0:
+                    initialise_counter_query = f'''
+                        INSERT INTO TalkViewCounts (talk_id, total_views) 
+                            VALUES ({talkId}, 4);
+                    '''
+                    res = self.db.run_query(initialise_counter_query)
+                    return "ok" 
+
+        except Exception as e:
+            return str(e)
+
+    def getTalkViewCount(self, talkId):
+        get_counter_query = f'''
+            SELECT * FROM TalkViewCounts 
+                WHERE talk_id = {talkId};
+            '''
+        try:
+            return self.db.run_query(get_counter_query)[0]["total_views"]
+        except Exception as e:
+            return str(e)
+
+    ###############################
+    # Talk registrations
     ###############################
     def acceptTalkRegistration(self, requestRegistrationId,):
         try:
@@ -824,6 +913,22 @@ class TalkRepository:
         except:
             return {"status": "unregistered"}
 
+    def sendEmailonTalkModification(self, talkId):
+        talk = self.getTalkById(talkId)
+        if talk:
+            result = self.notifyParticipantAboutTalkModification(talkId, talk["channel_id"], talk["name"], talk["link"], talk["date"], talk["end_date"])
+            return result
+        else:
+            return "fail"
+
+    def sendEmailonTalkScheduling(self, talkId):
+        talk = self.getTalkById(talkId)
+        if talk:
+            result = self.notifyCommunityAboutNewTalk(talk["channel_id"], talk["channel_name"], talk["date"], talk["name"], talkId, talk["talk_speaker"], talk["talk_speaker_url"])
+            return result
+        else:
+            return "fail"
+
     def notifyParticipantAboutTalkModification(self, talkId, channelId, talkName, talkLink, startDate, endDate):
         try:
             # query emails
@@ -873,7 +978,7 @@ class TalkRepository:
     def notifyCommunityAboutNewTalk(self, channelId, channelName, startDate, talkName, talkId, SpeakerName, SpeakerHomepage=""):
         try:
             # query all emails
-            emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=True)
+            emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=False)
 
             for email in emails:
                 self.mail_sys.send_advertise_new_incoming_talk_for_channel(
