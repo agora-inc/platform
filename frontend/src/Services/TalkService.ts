@@ -1,8 +1,9 @@
 import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
-import EmailContactManagement from "../Components/Channel/EmailContactManagement";
-import Identicon from "@polkadot/react-identicon/icons/Polkadot";
+import { ChannelService } from "./ChannelService";
+import { UserService} from "./UserService";
+
 
 const getTalkById = (talkId: number, callback: any) => {
   get(`talk/info?id=${talkId}`, callback);
@@ -374,6 +375,40 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
   get(`talks/isavailable?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+const getViewCountForTalk = (
+  talkId: number,
+  callback: any
+) => {
+  get(
+    `talks/viewcount/get?talkId=${talkId}`,
+    callback
+  );
+};
+
+const increaseViewCountForTalk = (
+  channelId: number,
+  callback: any
+) => {
+  post(
+    "talks/viewcount/add",
+    { channelId: channelId},
+    callback
+  );
+};
+
+const getTrendingTalks = (callback: any) => {
+  get("talks/trending", callback);
+};
+
+
+const getUserRoleInTalk = (talkId: number, userId: number, callback: any) => {
+  // query channelId of talk
+
+
+  //
+} 
+
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -411,6 +446,11 @@ export const TalkService = {
   registrationStatusForTalk,
   getTalkRegistrations,
   getRegisteredTalksForUser,
+  // talk views
+  increaseViewCountForTalk,
+  getViewCountForTalk,
+  // trending
+  getTrendingTalks
 };
 
 export type Talk = {

@@ -1,45 +1,48 @@
-import React, { FunctionComponent, useRef, useEffect } from "react";
-import { Box, Button } from "grommet";
+import React, { FunctionComponent, useRef, useEffect, useState } from "react";
+import { Box, Text } from "grommet";
 
 interface Props {
   id: string;
   stream: any;
+  mute?: boolean;
   [key:string]: any
 }
 
 
-const VideoPlayerAgora:FunctionComponent<Props> = ({id, stream, style={},  ...rest}) => {
-  const videoContainer = useRef<HTMLDivElement>(null)
+const VideoPlayerAgora:FunctionComponent<Props> = ({id, stream, style={}, className='', mute=false,  ...rest}) => {
+  const el = useRef<HTMLDivElement>(null)
+  const [limitSide, setLimitSide] = useState('limit-width' as any)
 
   useEffect(()=>{
+    let a:any = null
+    console.log(stream)
     if(stream) {
       stream.play(id)
+      clearInterval(a)
+      a= setInterval(()=>{
+        if(!el.current) return
+        let video = el.current.querySelector('video')
+        if(!video) return
+
+        let viewR = el.current.clientHeight/(el.current.clientWidth + 0.01)
+        let videoR = video.clientHeight / video.clientWidth
+
+        if(viewR < videoR){
+          setLimitSide('limit-height')
+        }else {
+          setLimitSide('limit-width')
+        }
+      }, 1000)
     }
+    return ()=> clearInterval(a)
   }, [stream])
 
-  function toggleFullscreen() {
-    let fullscreenEl = document.fullscreenElement
-    if(fullscreenEl) {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-      return
-    }
-
-    console.log(videoContainer)
-    let element = videoContainer.current!
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    }
-
-  }
 
 
   return (
-    <Box style={{position: 'relative', ...style}} {...rest}>
-      <Box ref={videoContainer} style={{display: 'flex', flex: 1}} id={id}>
-      </Box>
-      <Button style={{position: 'absolute', right: '5px', top: '5px'}} label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
+    <Box ref={el} id={id} style={{position: 'relative', ...style, flex: 1}} className={`agora-video-player ${!stream?'no-video':''} ${limitSide} ${className}`} {...rest}>
+      {!stream && <Text>No Video</Text>}
+      {mute && <Text style={{zIndex: 200, position:'absolute', bottom: 20, left: 20, background: 'white', padding: 10, color: 'black'}} className='muted'>Muted</Text>}
     </Box>
   )
 }
