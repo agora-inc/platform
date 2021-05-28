@@ -61,6 +61,8 @@ interface State {
   audienceLevel: string;
   showAdvertisementOverlay: boolean;
   talkToAdvertise: Talk | null,
+  sendEmail: boolean;
+  talkId: number | null
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -98,7 +100,9 @@ export default class EditTalkModal extends Component<Props, State> {
       isPrevTopics: this.props.talk ? this.topicExists(this.props.talk.topics) : [false, false, false],
       audienceLevel: this.props.talk?.audience_level || "General audience",
       showAdvertisementOverlay: false,
-      talkToAdvertise: this.props.talk ? this.props.talk : null
+      talkToAdvertise: this.props.talk ? this.props.talk : null,
+      sendEmail: false,
+      talkId: null,
     };
   }
 
@@ -241,6 +245,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.published,
         this.state.audienceLevel,
         (talk: Talk) => {
+          this.setState({ talkId: talk.id })
           if (this.state.talkToAdvertise !== undefined){
             this.setState({
               talkToAdvertise: talk
@@ -298,6 +303,25 @@ export default class EditTalkModal extends Component<Props, State> {
     }
   }
 
+  onFinishAdvertisement = () => {
+    this.hideAdvertisementOverlay()
+    if (this.state.sendEmail && !this.props.talk && this.state.talkId) {
+      TalkService.sendEmailonTalkScheduling(
+        this.state.talkId,
+        () => {}
+      );
+    }
+    if (this.state.sendEmail && this.props.talk) {
+      TalkService.sendEmailonTalkModification(
+        this.props.talk.id,
+        () => {}
+      );
+    }
+    this.setState({ sendEmail: false })
+    if (this.props.onCanceledAdvertisementCallback) {
+      this.props.onFinishedAdvertisementCallback()
+    }
+  };
 
   onDeleteClicked = () => {
     if (!this.props.talk) {
@@ -419,6 +443,7 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   render() {
+    console.log("email?", this.state.sendEmail)
     return (
       <>
       <Overlay
@@ -773,26 +798,65 @@ export default class EditTalkModal extends Component<Props, State> {
           </Box>
         </Box>  
       </Overlay>
-
-      { this.state.talkToAdvertise !== null && !(this.isInThePast()) && (
+      
+      { /* Overlay when creating a new talk */
+        this.state.talkToAdvertise !== null && !this.isInThePast() && !this.props.talk && (
           <Overlay
-            width={400}
-            height={300}
+            width={450}
+            height={330}
             visible={this.state.showAdvertisementOverlay}
-            title={"Your event got published"}
+            title={"Your event was successfully published"}
             submitButtonText="Ok"
-            onSubmitClick={this.props.onFinishedAdvertisementCallback}
-            contentHeight="150px"
+            onSubmitClick={this.onFinishAdvertisement}
+            contentHeight="180px"
             canProceed={true}
             onCancelClick={this.hideAdvertisementOverlay}
-            onClickOutside={this.hideAdvertisementOverlay}
+            // onClickOutside={this.hideAdvertisementOverlay}
             onEsc={this.hideAdvertisementOverlay}
           > 
-            Your agora members have all been notified about the incoming event.
+            <Box margin={{top: "10px", bottom: "20px"}}>
+              <CheckBox
+                label="Check the box to send an email to your agora members about the incoming event"
+                onChange={() => this.setState(prevState => ({sendEmail: !prevState.sendEmail}))}
+              />
+            </Box>
+            
             <ShareButtons
               talk={this.state.talkToAdvertise}
               channel={this.props.channel}
               useReducedHorizontalVersion={true}
+              width="180px"
+            />
+          </Overlay>
+        )
+      }
+      { /* Overlay when editing an existing talk */
+        this.state.talkToAdvertise !== null && !this.isInThePast() && this.props.talk && (
+          <Overlay
+            width={450}
+            height={330}
+            visible={this.state.showAdvertisementOverlay}
+            title={"Your event was successfully modified"}
+            submitButtonText="Ok"
+            onSubmitClick={this.onFinishAdvertisement}
+            contentHeight="180px"
+            canProceed={true}
+            onCancelClick={this.hideAdvertisementOverlay}
+            // onClickOutside={this.hideAdvertisementOverlay}
+            onEsc={this.hideAdvertisementOverlay}
+          >
+            <Box margin={{top: "10px", bottom: "20px"}}>
+              <CheckBox
+                label="Check the box to send an email to your agora members about the changes to your event"
+                onChange={() => this.setState(prevState => ({sendEmail: !prevState.sendEmail}))}
+              />
+            </Box>
+
+            <ShareButtons
+              talk={this.state.talkToAdvertise}
+              channel={this.props.channel}
+              useReducedHorizontalVersion={true}
+              width="180px"
             />
           </Overlay>
         )
