@@ -156,7 +156,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setTimeover(true)
       }
       if(Date.now() > end + 15*60*1000) {
-        API.endSeminar(props.talkId.toString())
+        // API.endSeminar(props.match.params.talk_id)
       }
     }, 1000)
 
@@ -172,7 +172,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     });
     // Setting client as Speaker
     // await agoraClient.setClientRole(localUser.role);
-    // await agoraScreenShareClient.setClientRole(localUser.role);4
+    // await agoraScreenShareClient.setClientRole(localUser.role);
 
 
     agoraClient.on('user-published', onClient)
