@@ -74,6 +74,7 @@ interface State {
   autoAccept: string;
   acceptedDomains: string[];
   reminders: Reminder[];
+  reminderEmailGroup: string[]; 
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -122,6 +123,7 @@ export default class EditTalkModal extends Component<Props, State> {
         {exist: false, days: 0, hours: 0},
         {exist: false, days: 0, hours: 0}
       ],
+      reminderEmailGroup: [],
     };
   }
 
@@ -522,6 +524,18 @@ export default class EditTalkModal extends Component<Props, State> {
     ); 
   }
 
+  toggleReminderEmailGroup = (group: string) => {
+    if (this.state.reminderEmailGroup.includes(group)) {
+      this.setState(prevState => ({
+        reminderEmailGroup: prevState.reminderEmailGroup.filter(e => e != group)
+      }))
+    } else {
+      this.setState(prevState => ({
+        reminderEmailGroup: [group, ...prevState.reminderEmailGroup]
+      }))
+    }
+  }
+
   renderArrowButton = (prev: boolean) => {
     let incr = prev ? -1 : 1;
     return (
@@ -886,6 +900,27 @@ export default class EditTalkModal extends Component<Props, State> {
             <Text size="13px" weight="bold" color="black" margin={{ top: "24px" }}> 
               To whom?
             </Text>
+            <CheckBox
+              label="Talk participants"
+              checked={this.state.reminderEmailGroup.includes("Participants")}
+              onChange={() => this.toggleReminderEmailGroup("Participants")}
+            />
+            <Box direction="row" gap="10px">
+              <CheckBox
+                label="Your mailing list"
+                checked={this.state.reminderEmailGroup.includes("MailingList")}
+                onChange={() => this.toggleReminderEmailGroup("MailingList")}
+              />
+              <StatusInfo size="small" data-tip data-for='mailing-list-reminder'/>
+              <ReactTooltip id='mailing-list-reminder' place="right" effect="solid">
+                <Text size="12px"> Securely upload your mailing list in the tab 'Mailing List' in your agora. </Text>
+              </ReactTooltip>
+            </Box>
+            <CheckBox
+              label="Your followers"
+              checked={this.state.reminderEmailGroup.includes("Followers")}
+              onChange={() => this.toggleReminderEmailGroup("Followers")}
+            />
 
           </Box>
         )}

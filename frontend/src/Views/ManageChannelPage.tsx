@@ -750,7 +750,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <MailOption />
                       <Text size="14px"> 
-                        Send emails 
+                        Mailing list 
                       </Text>
                     </Box>
                     

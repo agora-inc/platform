@@ -184,7 +184,7 @@ export default class EmailsTab extends Component<Props, State> {
 
     return (
       <Box direction="column" gap="20px">
-        <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
+        { /* <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
           <Text size="16px" weight="bold" color="black"> 
             Email reminders
           </Text>
@@ -197,6 +197,7 @@ export default class EmailsTab extends Component<Props, State> {
 
         {this.renderReminder(0)}
         {this.renderReminder(1)}
+    */}
 
         <Box 
           direction="row"
