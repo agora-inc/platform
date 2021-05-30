@@ -1,23 +1,23 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Box, Grid, Text, Layer, Button } from "grommet";
-import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
-import ChatBox from "../Components/Streaming/ChatBox";
-import ChannelIdCard from "../Components/Channel/ChannelIdCard";
-import Tag from "../Components/Core/Tag";
-import Loading from "../Components/Core/Loading";
+import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
+import ChatBox from "../../Components/Streaming/ChatBox";
+import ChannelIdCard from "../../Components/Channel/ChannelIdCard";
+import Tag from "../../Components/Core/Tag";
+import Loading from "../../Components/Core/Loading";
 import { View } from "grommet-icons";
-import { Video, VideoService } from "../Services/VideoService";
-import { StreamService } from "../Services/StreamService";
-import { TalkService } from "../Services/TalkService";
-import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
+import { Video, VideoService } from "../../Services/VideoService";
+import { StreamService } from "../../Services/StreamService";
+import { TalkService } from "../../Services/TalkService";
+import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare} from 'react-icons/md'
-import {db, API} from '../Services/FirebaseService'
+import {db, API} from '../../Services/FirebaseService'
 
-import '../Styles/all-stream-page.css'
+import '../../Styles/all-stream-page.css'
 
 
 interface Props {
