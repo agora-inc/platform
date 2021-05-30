@@ -1,6 +1,7 @@
 import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
+import { Reminder } from "../Components/Talks/EditTalkModal";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import Identicon from "@polkadot/react-identicon/icons/Polkadot";
 
@@ -153,6 +154,8 @@ const editTalk = (
   talkSpeakerURL: string,
   published: number,
   audienceLevel: string,
+  reminders: Reminder[],
+  reminderEmailGroup: string[], 
   callback: any
 ) => {
   post(
@@ -175,6 +178,9 @@ const editTalk = (
       talkSpeakerURL: talkSpeakerURL,
       published: published,
       audienceLevel: audienceLevel,
+      reminder1: reminders[0].exist ? 24*reminders[0].days + reminders[0].hours : null,
+      reminder2: reminders[1].exist ? 24*reminders[1].days + reminders[1].hours : null,
+      reminderEmailGroup: reminderEmailGroup, 
     },
     callback
   );
@@ -197,6 +203,8 @@ const scheduleTalk = (
   talkSpeakerURL: string,
   published: number,
   audienceLevel: string,
+  reminders: Reminder[],
+  reminderEmailGroup: string[], 
   callback: any
 ) => {
   post(
@@ -220,6 +228,9 @@ const scheduleTalk = (
       talkSpeakerURL: talkSpeakerURL,
       published: published,
       audienceLevel: audienceLevel,
+      reminder1: reminders[0].exist ? 24*reminders[0].days + reminders[0].hours : null,
+      reminder2: reminders[1].exist ? 24*reminders[1].days + reminders[1].hours : null,
+      reminderEmailGroup: reminderEmailGroup, 
     },
     callback
   );

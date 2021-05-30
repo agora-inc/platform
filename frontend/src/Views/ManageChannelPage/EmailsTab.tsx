@@ -179,8 +179,7 @@ export default class EmailsTab extends Component<Props, State> {
     "- your followers <br/>" + 
     "- the registered participants <br/>" + 
     "before the start of your seminars. Decide how much time before, with up to two reminders."
-    var mailing_list = "Add emails to your agora mailing list <br/>" + 
-    "Example: joe@uni.ac.uk, jack@company.com"
+    var mailing_list = "Separate emails with a comma";
 
     return (
       <Box direction="column" gap="20px">
@@ -215,15 +214,15 @@ export default class EmailsTab extends Component<Props, State> {
               gap="small"
               margin={{bottom: "12px" }}
             >
-              <Text size="14px" color="grey">
-                Add people to your mailing list
+              <Text size="16px" color="black" weight="bold">
+                Add contacts
               </Text>
               <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={mailing_list} data-for='mailing-list'/>
               <ReactTooltip id='mailing-list' place="right" effect="solid" html={true}/>
             </Box>
             
             <TextArea
-              placeholder="Enter your list of emails"
+              placeholder="joe@uni.ac.uk, jack@company.com"
               value={this.state.mailingList}
               onChange={(e: any) => this.handleMailingList(e)}
               rows={4}
@@ -264,17 +263,17 @@ export default class EmailsTab extends Component<Props, State> {
             width="25%"
             
           >
-            <Text size="14px" color="grey" margin={{bottom: "12px"}}>
+            <Text size="16px" color="black" weight="bold" margin={{bottom: "12px"}}>
               Your mailing list ({this.state.listEmailCorrect.length})
             </Text>
             <Box
               height="134px"
-              gap="2px" 
+              gap="4px" 
               overflow="auto"
               margin={{ bottom: "15px", left:"8px" }}
             >
               {this.state.listEmailCorrect.map((email: string) => (
-                <Text size="12px"> {email} </Text>
+                <Text size="13px" color="grey"> {email} </Text>
               ))}
             </Box>
           </Box>

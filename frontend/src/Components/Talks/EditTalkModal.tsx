@@ -27,7 +27,7 @@ import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
 
 
-type Reminder = {
+export type Reminder = {
   exist: boolean;
   days: number;
   hours: number; 
@@ -229,6 +229,8 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.talkSpeakerURL,
         this.state.published,
         this.state.audienceLevel,
+        this.state.reminders,
+        this.state.reminderEmailGroup, 
         (talk: Talk) => {
           if (this.state.talkToAdvertise !== undefined){
             this.setState({
@@ -264,6 +266,8 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.talkSpeakerURL,
         this.state.published,
         this.state.audienceLevel,
+        this.state.reminders,
+        this.state.reminderEmailGroup, 
         (talk: Talk) => {
           this.setState({ talkId: talk.id })
           if (this.state.talkToAdvertise !== undefined){
@@ -590,20 +594,22 @@ export default class EditTalkModal extends Component<Props, State> {
               width="99.7%"
               background="#eaf1f1"
               direction="row"
+              height="10vw"
               style={{
                 borderTopLeftRadius: "15px",
                 borderTopRightRadius: "15px",
                 position: "sticky",
                 top: 0,
-                minHeight: "55px",
+                // minHeight: "6%",
                 zIndex: 10,
               }}
             >
-              <Box pad="30px" alignSelf="center" fill={true}>
+              <Box pad="30px" alignSelf="center">
                 <Text size="16px" color="black" weight="bold"  >
                   {this.props.talk ? "Edit talk" : "New talk"}
                 </Text>
               </Box>
+              <Box width="67%"></Box>
               <Box pad="32px" alignSelf="center">
                 <Close onClick={this.props.onCanceledCallback} />
               </Box>
@@ -616,7 +622,8 @@ export default class EditTalkModal extends Component<Props, State> {
               gap="30px"
               margin={{ top: "20px" }}
               overflow="auto"
-              style={{ minHeight: "500px" }}
+              height="78vw"
+              // style={{ minHeight: "500px" }}
             >
 
         <Box direction="row" justify="center" align="center" gap="60px" margin={{top: "0px"}}>
@@ -933,12 +940,13 @@ export default class EditTalkModal extends Component<Props, State> {
               gap="xsmall"
               width="99.7%"
               background="#eaf1f1"
+              height="10vw"
               style={{
                 borderBottomLeftRadius: "15px",
                 borderBottomRightRadius: "15px",
                 position: "sticky",
                 bottom: 0,
-                minHeight: "60px",
+                // minHeight: "60px",
                 zIndex: 10,
               }}
             >

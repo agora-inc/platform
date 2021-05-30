@@ -413,7 +413,7 @@ class TalkRepository:
             return
 
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, reminder1, reminder2, reminderEmailGroup):
         query = f'''
             INSERT INTO Talks (
                 channel_id, 
@@ -473,9 +473,57 @@ class TalkRepository:
                 talk_speaker, 
                 talk_speaker_url)
             """
-
         except Exception as e:
             return str(e)
+
+        # Email reminders
+        to_talk_participants = int("Participants" in reminderEmailGroup)
+        to_mailing_list = int("MailingList" in reminderEmailGroup)
+        to_followers = int("Followers" in reminderEmailGroup)
+
+        if reminder1:
+            reminder1_time = startDate - reminder1
+            query_reminder_1 = f'''
+                INSERT INTO EmailReminders (
+                    channel_id,
+                    talk_id,
+                    time,
+                    to_talk_participants,
+                    to_mailing_list,
+                    to_followers
+                ) VALUES (
+                    {channelId},
+                    {insertId},
+                    "{reminder1_time}",
+                    {to_talk_participants},
+                    {to_mailing_list},
+                    {to_followers},
+                );
+            '''
+            self.db.run_query(query_reminder_1)
+        
+        if reminder2:
+            reminder2_time = startDate - reminder2
+            query_reminder_2 = f'''
+                INSERT INTO EmailReminders (
+                    channel_id,
+                    talk_id,
+                    time,
+                    to_talk_participants,
+                    to_mailing_list,
+                    to_followers
+                ) VALUES (
+                    {channelId},
+                    {insertId},
+                    "{reminder2_time}",
+                    {to_talk_participants},
+                    {to_mailing_list},
+                    {to_followers},
+                );
+            '''
+            self.db.run_query(query_reminder_2)
+
+
 
     def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
         try:
