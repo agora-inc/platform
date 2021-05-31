@@ -582,7 +582,7 @@ export default class EditTalkModal extends Component<Props, State> {
           animation="fadeIn"
           style={{
             width: 650,
-            height: "75%",
+            height: window.innerHeight > 1200 ? "900px" : "75%",
             borderRadius: 15,
             // border: "3.5px solid black",
             padding: 0,
@@ -620,7 +620,7 @@ export default class EditTalkModal extends Component<Props, State> {
               align="center"
               pad={{ horizontal: "30px" }}
               gap="30px"
-              margin={{ top: "20px" }}
+              margin={{ top: "20px", bottom: "20px" }}
               overflow="auto"
               height="78vw"
               // style={{ minHeight: "500px" }}
@@ -831,7 +831,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 />
                 <CheckBox
                   name="bug"
-                  label="Only academics"
+                  label="All verified academics"
                   checked={this.state.autoAccept == "academics"}
                   onChange={() => this.handleCheckBox("academics")}
                 />

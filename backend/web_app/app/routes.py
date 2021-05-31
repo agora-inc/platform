@@ -924,7 +924,7 @@ def scheduleTalk():
 
     for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
         if topic_key not in params:
-            params[topic_key] = "NULL" 
+            params[topic_key] = 0
 
     app.logger.debug(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
     return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
@@ -962,8 +962,12 @@ def editTalk():
 
     params = request.json
 
+    for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
+        if topic_key not in params:
+            params[topic_key] = 0
+
     app.logger.debug(f"Talk with id {params['talkId']} edited")
-    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"]))
+    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():

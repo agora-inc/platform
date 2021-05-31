@@ -2,7 +2,7 @@ from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
 from mailing.sendgridApi import sendgridApi
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
@@ -452,7 +452,7 @@ class TalkRepository:
                 {published},
                 "{audience_level}"
                 );
-            '''        
+            '''    
         try:
             insertId = self.db.run_query(query)[0]
 
@@ -461,8 +461,7 @@ class TalkRepository:
 
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(insertId, tagIds)
-            return self.getTalkById(insertId)
-
+           
             # notify members / admins by email
             """self.notifyCommunityAboutNewTalk(
                 channelId, 
@@ -473,59 +472,68 @@ class TalkRepository:
                 talk_speaker, 
                 talk_speaker_url)
             """
+            # Email reminders
+            to_talk_participants = int("Participants" in reminderEmailGroup)
+            to_mailing_list = int("MailingList" in reminderEmailGroup)
+            to_followers = int("Followers" in reminderEmailGroup)
+
+            start_date_dt = datetime.strptime(startDate, "%Y-%m-%d %H:%M")
+
+            if reminder1:
+                reminder1_delta = timedelta(hours=reminder1) 
+                reminder1_time = (start_date_dt - reminder1_delta).strftime("%Y-%m-%d %H:%M")
+                query_reminder_1 = f'''
+                    INSERT INTO EmailReminders (
+                        channel_id,
+                        talk_id,
+                        time,
+                        to_talk_participants,
+                        to_mailing_list,
+                        to_followers
+                    ) VALUES (
+                        {channelId},
+                        {insertId},
+                        "{reminder1_time}",
+                        {to_talk_participants},
+                        {to_mailing_list},
+                        {to_followers},
+                    );
+                '''
+                import json
+                with open('/home/cloud-user/roger-schedule.json', 'w') as outfile:
+                    json.dump(query_reminder_1, outfile)
+                self.db.run_query(query_reminder_1)
+            
+            if reminder2:
+                reminder2_delta = timedelta(hours=reminder2) 
+                reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M:%S")
+                query_reminder_2 = f'''
+                    INSERT INTO EmailReminders (
+                        channel_id,
+                        talk_id,
+                        time,
+                        to_talk_participants,
+                        to_mailing_list,
+                        to_followers
+                    ) VALUES (
+                        {channelId},
+                        {insertId},
+                        "{reminder2_time}",
+                        {to_talk_participants},
+                        {to_mailing_list},
+                        {to_followers},
+                    );
+                '''
+                self.db.run_query(query_reminder_2)
+
+            return self.getTalkById(insertId)
+
         except Exception as e:
             return str(e)
 
-        # Email reminders
-        to_talk_participants = int("Participants" in reminderEmailGroup)
-        to_mailing_list = int("MailingList" in reminderEmailGroup)
-        to_followers = int("Followers" in reminderEmailGroup)
-
-        if reminder1:
-            reminder1_time = startDate - reminder1
-            query_reminder_1 = f'''
-                INSERT INTO EmailReminders (
-                    channel_id,
-                    talk_id,
-                    time,
-                    to_talk_participants,
-                    to_mailing_list,
-                    to_followers
-                ) VALUES (
-                    {channelId},
-                    {insertId},
-                    "{reminder1_time}",
-                    {to_talk_participants},
-                    {to_mailing_list},
-                    {to_followers},
-                );
-            '''
-            self.db.run_query(query_reminder_1)
-        
-        if reminder2:
-            reminder2_time = startDate - reminder2
-            query_reminder_2 = f'''
-                INSERT INTO EmailReminders (
-                    channel_id,
-                    talk_id,
-                    time,
-                    to_talk_participants,
-                    to_mailing_list,
-                    to_followers
-                ) VALUES (
-                    {channelId},
-                    {insertId},
-                    "{reminder2_time}",
-                    {to_talk_participants},
-                    {to_mailing_list},
-                    {to_followers},
-                );
-            '''
-            self.db.run_query(query_reminder_2)
 
 
-
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level):
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, reminder1, reminder2, reminderEmailGroup):
         try:
             # query past talk information
             past_talk_query = f'''
@@ -587,12 +595,46 @@ class TalkRepository:
                 endDate
             )
             """
-            
-            return self.getTalkById(talkId)
 
         except Exception as e:
             return str(e)
+            
+        # Email reminders
+        to_talk_participants = int("Participants" in reminderEmailGroup)
+        to_mailing_list = int("MailingList" in reminderEmailGroup)
+        to_followers = int("Followers" in reminderEmailGroup)
+        
+        import json
+        with open('/home/cloud-user/roger1.json', 'w') as outfile:
+            json.dump(str(to_talk_participants) + str(to_mailing_list) + str(to_followers), outfile)
 
+        if reminder1:
+            reminder1_time = startDate - reminder1
+            query_reminder_1 = f'''
+                UPDATE EmailReminders SET
+                    channel_id={channelId},
+                    talk_id={talkId},
+                    time="{reminder1_time}",
+                    to_talk_participants={to_talk_participants},
+                    to_mailing_list={to_mailing_list},
+                    to_followers={to_followers};
+                '''
+            self.db.run_query(query_reminder_1)
+        
+        if reminder2:
+            reminder2_time = startDate - reminder2
+            query_reminder_2 = f'''
+                UPDATE EmailReminders SET
+                    channel_id={channelId},
+                    talk_id={talkId},
+                    time="{reminder1_time}",
+                    to_talk_participants={to_talk_participants},
+                    to_mailing_list={to_mailing_list},
+                    to_followers={to_followers};
+                '''
+            self.db.run_query(query_reminder_2)
+            
+        return self.getTalkById(talkId) 
 
     def addRecordingLink(self, talkId, link):
         query = f'UPDATE Talks SET recording_link="{link}" WHERE id = {talkId}'
