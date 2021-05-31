@@ -1441,7 +1441,7 @@ def fullTextSearch():
     return jsonify(results)
 
 # --------------------------------------------
-# METATAG ROUTES (this is a hack)
+# METATAG ROUTES (this is a hack for link sharing on social media)
 # --------------------------------------------
 @app.route('/event-link', methods=["GET"])
 def eventLinkRedirect():
