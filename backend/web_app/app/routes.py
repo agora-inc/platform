@@ -4,7 +4,7 @@
 """ 
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
+from repository import UserRepository, QandARepository, CreditRepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
 from mailing import sendgridApi
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
@@ -25,6 +25,7 @@ streams = StreamRepository.StreamRepository(db=agora_db)
 talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
 videos = VideoRepository.VideoRepository(db=agora_db)
 channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
+credits = CreditRepository.CreditRepository(db=agora_db, mail_sys=mail_sys)
 search = SearchRepository.SearchRepository(db=agora_db)
 invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
 sendgridApi = sendgridApi.sendgridApi()
@@ -1502,5 +1503,68 @@ def channelLinkRedirect():
             </html>
         '''
         return render_template(res_string)
+    except Exception as e:
+        return jsonify(str(e))
+
+# --------------------------------------------
+# CREDITS
+# --------------------------------------------
+@app.route('/credits/talk/used', methods=["GET"])
+def getUsedStreamCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getUsedStreamCreditForTalk(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/channel/available', methods=["GET"])
+def getAvailableStreamCreditForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        return jsonify(credits.getAvailableStreamCreditForChannel(channel_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/available', methods=["GET"])
+def getAvailableStreamCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getAvailableStreamCreditForTalk(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/add', methods=["GET"])
+def addStreamCreditToTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        increment = request.args.get("increment")
+
+        return jsonify(credits.addStreamCreditToTalk(talk_id, increment))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/channel/add', methods=["GET"])
+def addStreamingCreditToChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        increment = request.args.get("increment")
+
+        return jsonify(credits.addStreamingCreditToChannel(channel_id, increment))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/increment', methods=["GET"])
+def upgradeStreamTalkByOne():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.upgradeStreamTalkByOne(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/max_audience', methods=["GET"])
+def getMaxAudienceForCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getMaxAudienceForCreditForTalk(talk_id))
     except Exception as e:
         return jsonify(str(e))
