@@ -1051,6 +1051,24 @@ def isAvailable():
 def getTrendingTalks():
     return jsonify(talks.getTrendingTalks())
 
+
+@app.route('/talks/reminders/time', methods=["GET"])
+def getReminderTime():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    talkId = int(request.args.get("talkId"))
+    return jsonify(talks.getReminderTime(talkId))
+
+@app.route('/talks/reminders/group', methods=["GET"])
+def getReminderGroup():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    talkId = int(request.args.get("talkId"))
+    return jsonify(talks.getReminderGroup(talkId))
+
+
 # --------------------------------------------
 # TALK ANALYTICS
 # --------------------------------------------

@@ -125,6 +125,24 @@ export default class EditTalkModal extends Component<Props, State> {
       ],
       reminderEmailGroup: [],
     };
+    this.getReminders();
+  }
+
+  getReminders = () => {
+    if (this.props.talk) {
+      TalkService.getReminderTime(
+        this.props.talk.id, 
+        (reminders: Reminder[]) => {
+          this.setState({ reminders })
+        }
+      )
+      TalkService.getReminderGroup(
+        this.props.talk.id, 
+        (reminderEmailGroup: string[]) => {
+          this.setState({ reminderEmailGroup })
+        }
+      )
+    }
   }
 
   topicExists = (topics: Topic[]) => {
@@ -896,7 +914,7 @@ export default class EditTalkModal extends Component<Props, State> {
           </Box>
         )}
 
-        {this.state.activeSection === 5 && this.props.channel && (
+        {this.state.activeSection === 5 && (
           <Box direction="column" width="70%" gap="10px">
             <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
               Email reminders

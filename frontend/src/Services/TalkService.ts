@@ -418,6 +418,14 @@ const sendEmailonTalkModification = (talkId: number, callback: any) => {
     get(`talks/sendemailedit?talkId=${talkId}`, callback);
 };
 
+const getReminderTime = (talkId: number, callback: any) => {
+  get(`talks/reminders/time?talkId=${talkId}`, callback);
+};
+
+const getReminderGroup = (talkId: number, callback: any) => {
+  get(`talks/reminders/group?talkId=${talkId}`, callback);
+};
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -449,6 +457,8 @@ export const TalkService = {
   isAvailableToUser,
   sendEmailonTalkScheduling,
   sendEmailonTalkModification,
+  getReminderTime,
+  getReminderGroup,
   // talk registration management
   acceptTalkRegistration,
   refuseTalkRegistration,

@@ -496,12 +496,9 @@ class TalkRepository:
                         "{reminder1_time}",
                         {to_talk_participants},
                         {to_mailing_list},
-                        {to_followers},
+                        {to_followers}
                     );
                 '''
-                import json
-                with open('/home/cloud-user/roger-schedule.json', 'w') as outfile:
-                    json.dump(query_reminder_1, outfile)
                 self.db.run_query(query_reminder_1)
             
             if reminder2:
@@ -521,7 +518,7 @@ class TalkRepository:
                         "{reminder2_time}",
                         {to_talk_participants},
                         {to_mailing_list},
-                        {to_followers},
+                        {to_followers}
                     );
                 '''
                 self.db.run_query(query_reminder_2)
@@ -604,10 +601,6 @@ class TalkRepository:
         to_mailing_list = int("MailingList" in reminderEmailGroup)
         to_followers = int("Followers" in reminderEmailGroup)
         
-        import json
-        with open('/home/cloud-user/roger1.json', 'w') as outfile:
-            json.dump(str(to_talk_participants) + str(to_mailing_list) + str(to_followers), outfile)
-
         if reminder1:
             reminder1_time = startDate - reminder1
             query_reminder_1 = f'''
@@ -635,6 +628,35 @@ class TalkRepository:
             self.db.run_query(query_reminder_2)
             
         return self.getTalkById(talkId) 
+
+    def getReminderTime(self, talkId):
+        query = f'SELECT EmailReminders.delta_time FROM EmailReminders WHERE talk_id = {talkId};'  
+        res = self.db.run_query(query)
+
+        # Reminders
+        reminders = [{"exist": False, "days": 0, "hours": 0}, {"exist": False, "days": 0, "hours": 0}]
+        for i, e in enumerate(res):
+            reminders[i]["exist"] = True
+            reminders[i]["days"] = int(e["delta_time"]) // 24
+            reminders[i]["hours"] = int(e["delta_time"]) % 24
+
+        return reminders
+
+    def getReminderGroup(self, talkId):
+        query = f'SELECT EmailReminders.to_talk_participants, EmailReminders.to_mailing_list, EmailReminders.to_followers FROM EmailReminders WHERE talk_id = {talkId};'  
+        res = self.db.run_query(query)
+
+        # Groups
+        groups = []
+        if len(res) > 0:
+            if res[0]["to_talk_participants"]: 
+                groups.append("Participants")
+            if res[0]["to_mailing_list"]:
+                groups.append("MailingList")
+            if res[0]["to_followers"]:
+                groups.append("Followers")
+
+        return groups
 
     def addRecordingLink(self, talkId, link):
         query = f'UPDATE Talks SET recording_link="{link}" WHERE id = {talkId}'
