@@ -449,12 +449,12 @@ const getReminderGroup = (talkId: number, callback: any) => {
   get(`talks/reminders/group?talkId=${talkId}`, callback);
 };
 
-const editAutoAcceptanceCustomInstitutions = (talkId: number, institution_ids: number | number[], callback:any) => {
+const editAutoAcceptanceCustomInstitutions = (talkId: number, institutionIds: number | number[], callback:any) => {
   post(
     "talks/editCustomInstitutions",
     {
       talkId: talkId,
-      institution_ids: institution_ids,
+      institutionIds: institutionIds,
     },
     callback
   );

@@ -600,12 +600,16 @@ class TalkRepository:
                     talk_speaker_url="{talk_speaker_url}", 
                     published={published},
                     audience_level="{audience_level}",
-                    auto_accept_group={auto_accept_group},
+                    auto_accept_group="{auto_accept_group}",
                     auto_accept_custom_institutions={auto_accept_custom_institutions}
 
                 WHERE id = {talkId};'''
             
-            self.db.run_query(query)
+            res = self.db.run_query(query)
+
+            with open("/home/cloud-user/test/mj1.txt", "w") as file:
+                file.write(str(res))
+
 
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(talkId, tagIds)
@@ -623,6 +627,8 @@ class TalkRepository:
             """
 
         except Exception as e:
+            with open("/home/cloud-user/test/champagneerr_editroute.txt", "w") as file:
+                file.write(str(e))
             return str(e)
             
         # Email reminders
@@ -659,17 +665,30 @@ class TalkRepository:
         return self.getTalkById(talkId) 
 
     def getReminderTime(self, talkId):
-        query = f'SELECT EmailReminders.delta_time FROM EmailReminders WHERE talk_id = {talkId};'  
-        res = self.db.run_query(query)
 
-        # Reminders
-        reminders = [{"exist": False, "days": 0, "hours": 0}, {"exist": False, "days": 0, "hours": 0}]
-        for i, e in enumerate(res):
-            reminders[i]["exist"] = True
-            reminders[i]["days"] = int(e["delta_time"]) // 24
-            reminders[i]["hours"] = int(e["delta_time"]) % 24
 
-        return reminders
+        with open("/home/cloud-user/test/web1.txt", "w") as file:
+            file.write("in")
+
+        try:
+            query = f'SELECT delta_time FROM EmailReminders WHERE talk_id = {talkId};'  
+            res = self.db.run_query(query)
+
+            with open("/home/cloud-user/test/web2.txt", "w") as file:
+                file.write(str(res))
+
+
+            # Reminders
+            reminders = [{"exist": False, "days": 0, "hours": 0}, {"exist": False, "days": 0, "hours": 0}]
+            for i, e in enumerate(res):
+                reminders[i]["exist"] = True
+                reminders[i]["days"] = int(e["delta_time"]) // 24
+                reminders[i]["hours"] = int(e["delta_time"]) % 24
+
+            return reminders
+        except Exception as e:
+
+            return str(e)
 
     def getReminderGroup(self, talkId):
         query = f'SELECT EmailReminders.to_talk_participants, EmailReminders.to_mailing_list, EmailReminders.to_followers FROM EmailReminders WHERE talk_id = {talkId};'  
