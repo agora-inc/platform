@@ -55,6 +55,8 @@ class sendgridApi:
         try:
             date_original = datetime.datetime.strptime(gmt_string, date_original_format_1)
         except:
+            with open("/home/cloud-user/jeanpierreraffarin.txt", "w") as file:
+                file.write("ca pete la")
             date_original = datetime.datetime.strptime(gmt_string, date_original_format_2)
 
         # Add offset

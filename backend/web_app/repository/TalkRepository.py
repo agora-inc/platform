@@ -1002,7 +1002,40 @@ class TalkRepository:
         dateTimeObj = datetime.now()
         timestampStr = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
 
+
+        # timestampStr = dateTimeObj.strptime(dateTimeObj, "%Y-%m-%d %H:%M:%S")
+
+        with open("/home/cloud-user/test/apollo1.txt", "w") as file:
+            file.write("in")
+
+
+
+
+
+
+
+
         userIsAutoAcceptedToTalk = self.isEmailAutoAcceptedToTalk(email, talkId)
+
+        with open("/home/cloud-user/test/apolloTEST.txt", "w") as file:
+                file.write(email + "\n" + str(userIsAutoAcceptedToTalk))
+        #
+        #
+        #
+        #
+        #  
+        #
+        # self.isEmailAutoAcceptedToTalk DOES NOT WORK; TO DEBUG
+        #
+        #
+        #
+        #
+        #
+
+
+
+
+
 
         try:
             status = "accepted" if userIsAutoAcceptedToTalk else "pending"
@@ -1024,7 +1057,15 @@ class TalkRepository:
             channel_id = talk_info["channel_id"]
 
             # 2) check userId GMT:
+
+            with open("/home/cloud-user/test/apollo2.txt", "w") as file:
+                file.write("in")
+
             human_date_str = self.mail_sys._convert_gmt_into_human_date_str(str(date_str), float(user_hour_offset))
+
+            with open("/home/cloud-user/test/apollo3.txt", "w") as file:
+                file.write("in")
+
 
             # 3) send email applicant (either acknowledgment application OR confirmation attendence)
             if not userIsAutoAcceptedToTalk:
@@ -1218,21 +1259,25 @@ class TalkRepository:
             raise Exception(f"notifyCommmunityAboutNewTalk: exception: {e}")
 
     
-    def isEmailAutoAcceptedToTalk(self, email, talk_id):
         # fetch configs from talk
+    def isEmailAutoAcceptedToTalk(self, email, talk_id):
         auto_accept_config_request = f'''
                 SELECT 
                     auto_accept_group, 
-                    auto_accept_custom_institutions,
+                    auto_accept_custom_institutions
                 FROM Talks
-                WHERE
-                    talk_id = {talk_id} AND
-                    status = 'accepted';
+                WHERE id = {talk_id};
             '''
         autoAccepted = False
         # check conditions
         try:
             auto_accept_config = self.db.run_query(auto_accept_config_request)
+            
+            with open("/home/cloud-user/test/apollo01_req.txt", "w") as file:
+                file.write(str(auto_accept_config_request))
+
+            with open("/home/cloud-user/test/apollo01_ans.txt", "w") as file:
+                file.write(str(auto_accept_config))
 
             autoAcceptGroup = auto_accept_config["auto_accept_group"]
             autoAcceptCustom = auto_accept_config["auto_accept_custom_institutions"]

@@ -1132,7 +1132,6 @@ def registerTalk():
         institution = params["institution"] if "institution" in params else ""
         user_hour_offset = params["userHourOffset"]
 
-        
         res = talks.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
         return jsonify(str(res))
 
