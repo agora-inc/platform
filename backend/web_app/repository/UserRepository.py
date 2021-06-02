@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
 import jwt
+from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
 
 # for emails
@@ -16,6 +17,7 @@ class User:
     def __init__(self, username, password):
         self.username = username
         self.password = generate_password_hash(password)
+        self.ManagementEmails = InstitutionRepository(db=self.db)
 
 class UserRepository:
     def __init__(self, db, mail_sys=mail_sys):
@@ -134,6 +136,19 @@ class UserRepository:
             return 500, str(e)
 
         return self.getUserById(userId)
+
+    def UserIsVerifiedAcademics(self, userId):
+        # query academic email account
+        get_academic_email = f'''
+            SELECT email FROM Users WHERE user_id = {userId};
+        '''
+        email = self.db.run_query(get_academic_email)["email"]
+
+        # check if in verified domains
+        if email is None:
+            return False
+        else:
+            return self.emails.
 
     def authenticate(self, username, password):
         user = self.getUser(username)

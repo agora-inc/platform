@@ -156,6 +156,9 @@ const editTalk = (
   audienceLevel: string,
   reminders: Reminder[],
   reminderEmailGroup: string[], 
+  autoAcceptVerifiedAcademics: boolean,
+  autoAcceptCustomInstitutions: boolean,
+  customInstitutionsIds: number[] | number,
   callback: any
 ) => {
   post(
@@ -181,8 +184,13 @@ const editTalk = (
       reminder1: reminders[0].exist ? 24*reminders[0].days + reminders[0].hours : null,
       reminder2: reminders[1].exist ? 24*reminders[1].days + reminders[1].hours : null,
       reminderEmailGroup: reminderEmailGroup, 
+      autoAcceptVerifiedAcademics: autoAcceptVerifiedAcademics,
+      autoAcceptCustomInstitutions: autoAcceptCustomInstitutions
     },
-    callback
+    () => {
+      editAutoAcceptanceCustomInstitutions(talkId, customInstitutionsIds, () => {});
+      callback
+    }
   );
 };
 
@@ -205,6 +213,9 @@ const scheduleTalk = (
   audienceLevel: string,
   reminders: Reminder[],
   reminderEmailGroup: string[], 
+  autoAcceptVerifiedAcademics: boolean,
+  autoAcceptCustomInstitutions: boolean,
+  customInstitutionsIds: number[],
   callback: any
 ) => {
   post(
@@ -231,6 +242,9 @@ const scheduleTalk = (
       reminder1: reminders[0].exist ? 24*reminders[0].days + reminders[0].hours : null,
       reminder2: reminders[1].exist ? 24*reminders[1].days + reminders[1].hours : null,
       reminderEmailGroup: reminderEmailGroup, 
+      autoAcceptVerifiedAcademics: autoAcceptVerifiedAcademics,
+      autoAcceptCustomInstitutions: autoAcceptCustomInstitutions,
+      customInstitutionsIds: customInstitutionsIds
     },
     callback
   );
@@ -426,6 +440,18 @@ const getReminderGroup = (talkId: number, callback: any) => {
   get(`talks/reminders/group?talkId=${talkId}`, callback);
 };
 
+const editAutoAcceptanceCustomInstitutions = (talkId: number, institution_ids: number | number[], callback:any) => {
+  post(
+    "talks/editCustomInstitutions",
+    {
+      talkId: talkId,
+      institution_ids: institution_ids,
+    },
+    callback
+  );
+}
+
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -446,6 +472,7 @@ export const TalkService = {
   getAvailableCurrentTalksForChannel,
   getAvailablePastTalksForChannel,
   editTalk,
+  editAutoAcceptanceCustomInstitutions,
   scheduleTalk,
   deleteTalk,
   addRecordingLink,
