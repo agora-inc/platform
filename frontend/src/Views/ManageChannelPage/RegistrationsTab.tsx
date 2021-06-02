@@ -59,7 +59,7 @@ export default class RegistrationsTab extends Component<Props, State> {
       pendingRegistrationList: [],
       acceptedRegistrationList: [],
       refusedRegistrationList: [],
-      autoRegistration: "everyone",
+      autoRegistration: "Everybody",
       acceptedDomains: [],
     };
     this.fetchData();
@@ -174,14 +174,14 @@ export default class RegistrationsTab extends Component<Props, State> {
           <CheckBox
             name="feature"
             label="Everyone"
-            checked={this.state.autoRegistration == "everyone"}
-            onChange={() => this.handleCheckBox("everyone")}
+            checked={this.state.autoRegistration == "Everybody"}
+            onChange={() => this.handleCheckBox("Everybody")}
           />
           <CheckBox
             name="bug"
             label="Only academics"
-            checked={this.state.autoRegistration == "academics"}
-            onChange={() => this.handleCheckBox("academics")}
+            checked={this.state.autoRegistration == "Academics"}
+            onChange={() => this.handleCheckBox("Academics")}
           />
           
           <Box direction="row" gap="0px"> 

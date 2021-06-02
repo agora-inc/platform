@@ -17,13 +17,13 @@ class User:
     def __init__(self, username, password):
         self.username = username
         self.password = generate_password_hash(password)
-        self.ManagementEmails = InstitutionRepository(db=self.db)
 
 class UserRepository:
     def __init__(self, db, mail_sys=mail_sys):
         self.db = db
         self.secret = b'\xccu\x9e2\xda\xe8\x16\x8a\x137\xde@G\xc7T\xf1\x16\xca\x05\xee\xa7\xa4\x98\x05'
         self.mail_sys = mail_sys
+        self.institutions = InstitutionRepository(db=self.db)
 
     def getAllUsers(self):
         query = "SELECT * FROM Users"
@@ -148,7 +148,7 @@ class UserRepository:
         if email is None:
             return False
         else:
-            return self.emails.
+            return self.institutions.isEmailVerifiedAcademicEmail(email)
 
     def authenticate(self, username, password):
         user = self.getUser(username)

@@ -415,7 +415,7 @@ class TalkRepository:
             return
 
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_verified_academics, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup):
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup):
         query = f'''
             INSERT INTO Talks (
                 channel_id, 
@@ -435,7 +435,7 @@ class TalkRepository:
                 talk_speaker_url, 
                 published,
                 audience_level,
-                auto_accept_verified_academics, 
+                auto_accept_group, 
                 auto_accept_custom_institutions
                 ) 
             VALUES (
@@ -456,19 +456,32 @@ class TalkRepository:
                 "{talk_speaker_url}", 
                 {published},
                 "{audience_level}",
-                {auto_accept_verified_academics}, 
+                "{auto_accept_group}", 
                 {auto_accept_custom_institutions}
                 );
             '''    
         try:
-            insertId = self.db.run_query(query)[0]
 
+            with open("/home/cloud-user/test/bouteille1.txt", "w") as file:
+                file.write(str(query))
+
+            res = self.db.run_query(query)
+
+            insertId = res[0]
+
+            with open("/home/cloud-user/test/bouteille2.txt", "w") as file:
+                file.write("in")
+
+    
             if not isinstance(insertId, int):
                 raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
 
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(insertId, tagIds)
             
+            with open("/home/cloud-user/test/bouteille3.txt", "w") as file:
+                file.write("in")
+
             # add customInstitutions for auto-acceptance
             self.editAutoAcceptanceCustomInstitutions(insertId, customInstitutionsIds)
 
@@ -481,6 +494,9 @@ class TalkRepository:
                 insertId, 
                 talk_speaker, 
                 talk_speaker_url)
+
+            with open("/home/cloud-user/test/bouteille4.txt", "w") as file:
+                file.write("in")
 
             # Email reminders
             to_talk_participants = int("Participants" in reminderEmailGroup)
@@ -536,9 +552,11 @@ class TalkRepository:
             return self.getTalkById(insertId)
 
         except Exception as e:
+            with open("/home/cloud-user/test/bouteilleerr.txt", "w") as file:
+                file.write(str(e))
             return str(e)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_verified_academics, auto_accept_custom_institutions, reminder1, reminder2, reminderEmailGroup):
+    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, reminder1, reminder2, reminderEmailGroup):
         try:
             # query past talk information
             past_talk_query = f'''
@@ -552,7 +570,7 @@ class TalkRepository:
             # old_end_date = old_res["end_date"]
             # old_url = old_res["link"]
             # old_speaker = old_res["talk_speaker"]
-            # old_auto_accept_verified_academics = old_res["auto_accept_verified_academics"]
+            # auto_accept_group = old_res["auto_accept_group"]
             # old_auto_accept_custom_institutions = old_res["auto_accept_custom_institutions"]
 
             # check if date changed or if (URL changed AND talk is not public) ((because else, we dont care if URL changed as there are no registration))
@@ -582,7 +600,7 @@ class TalkRepository:
                     talk_speaker_url="{talk_speaker_url}", 
                     published={published},
                     audience_level="{audience_level}",
-                    auto_accept_verified_academics={auto_accept_verified_academics},
+                    auto_accept_group={auto_accept_group},
                     auto_accept_custom_institutions={auto_accept_custom_institutions}
 
                 WHERE id = {talkId};'''
@@ -692,7 +710,7 @@ class TalkRepository:
                 return str(e)
 
             # add new ones
-            institution_list = [int(institution_ids)] if isinstance(institution_ids) == int else [int(i) for i in institution_ids]
+            institution_list = [int(institution_ids)] if isinstance(institution_ids, int) else [int(i) for i in institution_ids]
             for instit_id in institution_list:
                 add_query = f'''
                     INSERT INTO CustomInstitutionsAutoAccept (
@@ -1160,17 +1178,22 @@ class TalkRepository:
         try:
             # query all emails
             emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=False)
-
-            for email in emails:
-                self.mail_sys.send_advertise_new_incoming_talk_for_channel(
-                    email, 
-                    channelName, 
-                    startDate, 
-                    talkName, 
-                    talkId, 
-                    SpeakerName, 
-                    SpeakerHomepage
-                )
+            
+            with open("/home/cloud-user/test/bouteille_emails.txt", "w") as file:
+                file.write(str(emails) + "   " + str(isinstance(emails,list)))
+            
+            
+            if isinstance(emails,list):
+                for email in emails:
+                    self.mail_sys.send_advertise_new_incoming_talk_for_channel(
+                        email, 
+                        channelName, 
+                        startDate, 
+                        talkName, 
+                        talkId, 
+                        SpeakerName, 
+                        SpeakerHomepage
+                    )
             return "ok"
         except Exception as e:
             raise Exception(f"notifyCommmunityAboutNewTalk: exception: {e}")
@@ -1180,7 +1203,7 @@ class TalkRepository:
         # fetch configs from talk
         auto_accept_config_request = f'''
                 SELECT 
-                    auto_accept_verified_academics, 
+                    auto_accept_group, 
                     auto_accept_custom_institutions,
                 FROM Talks
                 WHERE
@@ -1192,16 +1215,17 @@ class TalkRepository:
         try:
             auto_accept_config = self.db.run_query(auto_accept_config_request)
 
-            autoAcceptVerifiedAcademics = auto_accept_config["auto_accept_verified_academics"]
+            autoAcceptGroup = auto_accept_config["auto_accept_group"]
             autoAcceptCustom = auto_accept_config["auto_accept_custom_institutions"]
 
-            if autoAcceptVerifiedAcademics:
-                autoAccepted = self.institutions.isEmailVerifiedAcademicEmail(email)
+            if autoAcceptGroup == "Everybody":
+                autoAccepted = True
 
-                if autoAccepted:
-                    return autoAccepted
+            elif autoAcceptGroup == "Academics":
+                if not autoAccepted:
+                    autoAccepted = self.institutions.isEmailVerifiedAcademicEmail(email)
 
-            elif autoAcceptCustom:
+            if autoAcceptCustom:
                 email_ending = email.split("@")[1]
                 check_custom_query = f'''
                     SELECT 
@@ -1214,13 +1238,11 @@ class TalkRepository:
                 '''
                 res = self.db.run_query(check_custom_query)
                 domain_list = [i["domain"] for i in res]
-                autoAccepted = (email_ending in domain_list)
-
-                if autoAccepted:
-                    return autoAccepted
+                if not autoAccepted:
+                    autoAccepted = (email_ending in domain_list)
             
-            else:
-                return False
+            return autoAccepted
+
 
         except Exception as e:
             return {"error": str(e)}

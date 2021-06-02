@@ -223,7 +223,7 @@ class ChannelRepository:
             if getAdminsAddress:
                 role_sql_str = "('member','owner')"
             else:
-                role_sql_str = "(member)"
+                role_sql_str = "('member')"
         else:
             if getAdminsAddress:
                 role_sql_str = "('owner')"
@@ -241,6 +241,11 @@ class ChannelRepository:
             ;
             '''
         res = self.db.run_query(email_members_and_admins_query)
+
+        
+        with open("/home/cloud-user/test/bouteille_test_22.txt", "w") as file:
+            file.write("res = " + str(res) + ";;;;" + str(email_members_and_admins_query))
+
 
         return [x["email"] for x in res]
 

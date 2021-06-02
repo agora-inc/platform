@@ -71,10 +71,20 @@ interface State {
   talkId: number | null;
   activeSection: number;
   onRegistration: boolean;
-  autoAccept: string;
-  acceptedDomains: string[];
+
+  // reminders  
   reminders: Reminder[];
-  reminderEmailGroup: string[]; 
+  reminderEmailGroup: string[];
+  
+  // automatic acceptance
+  autoAcceptEnabled: boolean,
+  autoAcceptGroup: "Everybody" | "Academics" | "None";
+  autoAcceptCustomInstitutions: boolean, 
+  
+  // acceptedDomains: string[];
+  //(below will be added when we will allow addition of extra institutions)
+  // autoAcceptVerifiedAcademics: boolean, 
+  // customInstitutionsIds: number | number[]
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -117,13 +127,17 @@ export default class EditTalkModal extends Component<Props, State> {
       talkId: null,
       activeSection: 1,
       onRegistration: false,
-      autoAccept: "Everybody",
-      acceptedDomains: [],
+
+      // email reminders
       reminders: [
         {exist: false, days: 0, hours: 0},
         {exist: false, days: 0, hours: 0}
       ],
       reminderEmailGroup: [],
+      // automatic acceptance
+      autoAcceptEnabled: false,
+      autoAcceptGroup: "Everybody",
+      autoAcceptCustomInstitutions: false,
     };
     this.getReminders();
   }
@@ -247,6 +261,11 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.talkSpeakerURL,
         this.state.published,
         this.state.audienceLevel,
+        this.state.autoAcceptGroup,
+        // this.state.autoAcceptCustomInstitutions,
+        // this.state.customInstitutionsIds,
+        false, 
+        [],
         this.state.reminders,
         this.state.reminderEmailGroup, 
         (talk: Talk) => {
@@ -279,11 +298,16 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.releaseLinkOffset,
         this.state.linkVisibility,
         this.state.cardVisibility,
-        this.state.topics,
+        this.state.topics.length == 0 ? [] : this.state.topics, // Hack
         this.escapeSingleQuotes(this.state.talkSpeaker),
         this.state.talkSpeakerURL,
         this.state.published,
         this.state.audienceLevel,
+        this.state.autoAcceptGroup,
+        // this.state.autoAcceptCustomInstitutions,
+        // this.state.customInstitutionsIds,
+        false, 
+        [],
         this.state.reminders,
         this.state.reminderEmailGroup, 
         (talk: Talk) => {
@@ -448,17 +472,17 @@ export default class EditTalkModal extends Component<Props, State> {
     }
   }
 
-  handleCheckBox = (name: string) => {
+  handleCheckBox = (name: "Everybody" | "Academics" | "None") => {
     this.setState({
-      autoAccept: name
+      autoAcceptGroup: name
     });
   };
 
-  parseList = (e: any) => {
-    this.setState({
-      acceptedDomains: e.target.value.split(',')
-    });
-  }
+  // parseList = (e: any) => {
+  //   this.setState({
+  //     acceptedDomains: e.target.value.split(',')
+  //   });
+  // }
 
   pushDays = (i: number, n_days: string) => {
     this.setState(prevState => {
@@ -538,7 +562,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 border: "1px solid #C2C2C2", borderRadius: "5px", 
               }}
             />
-            <Text size="16px" color="grey" margin={{right: "20px"}}> hour(s) </Text>
+            <Text size="16px" color="grey" margin={{right: "20px"}}> hour(s) before </Text>
             <Close size="20px" onClick={this.toggleReminder(j)} />
           </Box>
         )}
@@ -825,7 +849,14 @@ export default class EditTalkModal extends Component<Props, State> {
                 checkedChildren="Yes" 
                 unCheckedChildren="No"
                 onChange={(checked: boolean) => {
-                  this.setState({ onRegistration: checked });
+                  this.setState({ 
+                    onRegistration: checked,
+                    autoAcceptGroup: "None"
+                  });
+                  // close sub-switch
+                  if (!checked){
+                    this.setState({ autoAcceptEnabled: checked });
+                  }
                 }}
                 size="default"
               />
@@ -834,49 +865,71 @@ export default class EditTalkModal extends Component<Props, State> {
             {this.state.onRegistration && (
               <Box margin={{bottom: "60px"}} gap="15px">
                 <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
-                  <Text size="13px" color="black"> 
-                    Select how you want to accept participants
+                  <Text size="13px" weight="bold"> 
+                    Automatically accept some users?
                   </Text>
+                  <Switch
+                      checked={this.state.autoAcceptEnabled}
+                      checkedChildren="Yes" 
+                      unCheckedChildren="No"
+                      onChange={(checked: boolean) => {
+                        this.setState({ 
+                          autoAcceptEnabled: checked,
+                         });
+                         if (!checked){
+                           this.setState({
+                             autoAcceptGroup: "None"
+                           })
+                         }
+                      }}
+                      size="default"
+                  />
                   <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={auto_accept} data-for='automatic-registration'/>
                   <ReactTooltip id='automatic-registration' place="right" effect="solid" html={true}/>
                 </Box>
       
-                <CheckBox
-                  name="feature"
-                  label="Everyone"
-                  checked={this.state.autoAccept == "everyone"}
-                  onChange={() => this.handleCheckBox("everyone")}
-                />
-                <CheckBox
-                  name="bug"
-                  label="All verified academics"
-                  checked={this.state.autoAccept == "academics"}
-                  onChange={() => this.handleCheckBox("academics")}
-                />
-                
-                <Box direction="row" gap="0px"> 
+                {this.state.autoAcceptEnabled && (
+                  <>
                   <CheckBox
-                    id="checkbox-domains"
+                    name="feature"
+                    label="Everyone"
+                    checked={this.state.autoAcceptGroup == "Everybody"}
+                    onChange={() => this.handleCheckBox("Everybody")}
+                  />
+                  <CheckBox
                     name="bug"
-                    label="Only emails ending by: "
-                    checked={this.state.autoAccept == "domains"}
-                    onChange={() => this.handleCheckBox("domains")}
+                    label="Verified academic emails only"
+                    checked={this.state.autoAcceptGroup == "Academics"}
+                    onChange={() => this.handleCheckBox("Academics")}
                   />
-                  <StatusInfo style={{marginTop: "14px", marginRight: "10px"}} size="small" data-tip={domains_list} data-for='domains_list'/>
-                  <ReactTooltip id='domains_list' place="bottom" effect="solid" html={true} />
-                  <TextInput
-                    placeholder="List of domains"
-                    value={this.state.acceptedDomains.join(',')}
-                    onChange={(e: any) => e ? this.parseList(e) : ""}
-                    style={{width: "200px"}}
-                  />
-                </Box>
-                <CheckBox
-                  name="bug"
-                  label="Manually accept participants"
-                  checked={this.state.autoAccept == "manual"}
-                  onChange={() => this.handleCheckBox("manual")}
-                />
+                
+                  {/* NOTE: Later, people will be able to pick institutions from list. 
+                  
+                  <Box direction="row" gap="0px"> 
+                    <CheckBox
+                      id="checkbox-domains"
+                      name="bug"
+                      label="Only emails ending by: "
+                      checked={this.state.autoAcceptGroup == "domains"}
+                      onChange={() => this.handleCheckBox("domains")}
+                    />
+                    <StatusInfo style={{marginTop: "14px", marginRight: "10px"}} size="small" data-tip={domains_list} data-for='domains_list'/>
+                    <ReactTooltip id='domains_list' place="bottom" effect="solid" html={true} />
+                    <TextInput
+                      placeholder="List of domains"
+                      value={this.state.acceptedDomains.join(',')}
+                      onChange={(e: any) => e ? this.parseList(e) : ""}
+                      style={{width: "200px"}}
+                    />
+                  </Box> */}
+                  {/* <CheckBox
+                    name="bug"
+                    label="Manually accept participants"
+                    checked={this.state.autoAcceptGroup == "None"}
+                    onChange={() => this.handleCheckBox("None")}
+                  /> */}
+                </>
+                )}
               </Box>
             )}
             {!this.state.onRegistration && (
