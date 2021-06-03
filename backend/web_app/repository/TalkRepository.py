@@ -1301,6 +1301,17 @@ class TalkRepository:
                     ;
                 '''
                 res = self.db.run_query(check_custom_query)
+
+                #
+                #
+                #
+                #
+                # DEBUGGING IN PROGRESS 
+                #
+                #
+                #
+                #
+                 
                 domain_list = [i["domain"] for i in res]
                 if not autoAccepted:
                     autoAccepted = (email_ending in domain_list)
