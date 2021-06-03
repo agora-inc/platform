@@ -18,8 +18,6 @@ class MailingListRepository:
                 INSERT INTO ChannelMailingList (email, channel_id)
                 VALUES ('{email}', {channelId});
             '''
-            with open('/home/cloud-user/emails.txt', 'w') as outfile:
-                outfile.write(add_email_query)
             
             self.db.run_query(add_email_query)
 

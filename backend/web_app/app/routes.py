@@ -922,10 +922,6 @@ def scheduleTalk():
 
     params = request.json
 
-
-    with open("/home/cloud-user/test/wesh123.txt", "w") as file:
-        file.write(str(params))
-
     for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
         if topic_key not in params:
             params[topic_key] = 0
@@ -965,22 +961,16 @@ def editTalk():
         return exceptions.Unauthorized("Authorization header invalid or not present")
     try:
         params = request.json
-        with open("/home/cloud-user/test/champagne1.txt", "w") as file:
-            file.write(str(params))
 
         for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
             if topic_key not in params:
                 params[topic_key] = 0
 
-        with open("/home/cloud-user/test/champagne1.txt", "w") as file:
-            file.write(str(params))
-
         app.logger.debug(f"Talk with id {params['talkId']} edited")
         return jsonify(talks.editTalk(params["channelId"], params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
 
     except Exception as e:
-        with open("/home/cloud-user/test/champagneerr.txt", "w") as file:
-            file.write(str(e))
+        return str(e)
 
 
 
@@ -993,9 +983,6 @@ def editAutoAcceptanceCustomInstitutions():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-
-    with open("/home/cloud-user/test/kobe_0.txt", "w") as file:
-        file.write("in")
 
     return jsonify(talks.editAutoAcceptanceCustomInstitutions(params["talkId"], params["institutionIds"]))
 
