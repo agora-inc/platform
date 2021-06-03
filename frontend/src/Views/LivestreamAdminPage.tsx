@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { Box, Grid, Text, Layer, Button, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
 import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
 import ChatBox from "../Components/Streaming/ChatBox";
@@ -10,6 +10,7 @@ import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
 import { StreamService } from "../Services/StreamService";
 import { TalkService } from "../Services/TalkService";
+import { ChannelService } from "../Services/ChannelService";
 import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
@@ -127,6 +128,12 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       overlay: false,
   })
 
+  async function fetchTalkDetails() {
+    const talkId = props.talkId.toString()
+    let talk = await get_talk_by_id(talkId)
+    setTalkDetail(talk)
+  }
+
   function toggleFullscreen() {
     let fullscreenEl = document.fullscreenElement
     if(fullscreenEl) {
@@ -163,17 +170,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     return ()=> clearInterval(loop)
   }, [talkDetail])
 
+
+
   async function setup() {
-    const talkId = props.talkId.toString()
-    let talk = await get_talk_by_id(talkId)
-    setTalkDetail(talk)
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
       console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });
     // Setting client as Speaker
     // await agoraClient.setClientRole(localUser.role);
     // await agoraScreenShareClient.setClientRole(localUser.role);
-
 
     agoraClient.on('user-published', onClient)
     agoraClient.on('user-unpublished', onClientStop)
@@ -396,6 +401,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     (async ()=>{
       setTalkId(props.talkId.toString())
       join_live_chat()
+      fetchTalkDetails()
     })()
   }, [])
 
@@ -430,35 +436,98 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       request_unsubs()
     }
   }, [talkId])
-
   return (
       <Box align="center">
-        {isTimeover && <Box margin={{ top: "xlarge", bottom: "xsmall" }} style={{ zIndex: 1000, background: 'red', color: 'white',
-                                    padding: '10px', borderRadius: '4px'}}>
-            {talkStatus === 'ENDED'?<Text>Talk ended</Text>:
-            <Text>Seminar time over. It will end automatically in 15 mins.</Text>}
-          </Box>}
-        <Box direction='row' flex width='50%'
-          margin={{ top: isTimeover?"xsmall":"xlarge", bottom: "xsmall" }}>
-          <Button
-            onClick={startTalk}
-            disabled={(talkStatus === 'STARTED')}
-            hoverIndicator="#5A0C0F"
-            style={{background: '#7E1115', flexBasis: '100%', margin: '10px', boxShadow: 'none',
-                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'}}
+        {isTimeover && (
+          <Box 
+            margin={{ top: "xlarge", bottom: "xsmall" }} 
+            style={{ 
+              zIndex: 1000, background: 'red', color: 'white',
+              padding: '10px', borderRadius: '4px'
+            }}
           >
-            {talkStatus === 'ENDED'? 'Restart': 'Start'}
-          </Button>
-          <Button
-            onClick={stopTalk}
-            disabled={talkStatus !== 'STARTED'}
-            hoverIndicator="#5A0C0F"
-            style={{background: '#7E1115', flexBasis: '100%', margin: '10px', boxShadow: 'none',
-                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'}}
+            {talkStatus === 'ENDED' ? <Text> Talk ended </Text> : 
+            <Text>Seminar time over. It will end automatically in 15 mins.</Text> }
+          </Box>
+        )}
+
+  
+          {/*<Link
+            className="channel"
+            to={`/${talkDetail.channel_name}`}
+            style={{ textDecoration: "none" }}
           >
-            Stop
-          </Button>
-        </Box>
+            <Box
+              direction="row"
+              gap="xsmall"
+              align="start"
+              round="xsmall"
+              pad={{ vertical: "6px", horizontal: "6px" }}
+            >
+              <Box
+                justify="center"
+                align="center"
+                background="#efeff1"
+                overflow="hidden"
+                style={{
+                  minHeight: 30,
+                  minWidth: 30,
+                  borderRadius: 15,
+                }}
+              >
+                  <img
+                    src={ChannelService.getAvatar(
+                      talkDetail.channel_id
+                    )}
+                    height={30}
+                    width={30}
+                  />
+              </Box>
+              <Box justify="between">
+                <Text weight="bold" size="16px" color="grey">
+                  {talkDetail.channel_name}
+                </Text>
+              </Box>
+            </Box>
+                    </Link> */}
+
+          <Box 
+            direction='row' flex width='30%'
+            justify="end"
+            gap="100px"
+            margin={{ 
+              top: isTimeover ? "xsmall" : "xlarge", 
+              bottom: "xsmall" 
+            }}
+          >
+                    
+            <Button
+              onClick={startTalk}
+              disabled={(talkStatus === 'STARTED')}
+              hoverIndicator="#6DA3C7"
+              focusIndicator={false}
+              style={{
+                background: "#0C385B", flexBasis: '100%', margin: '10px', // boxShadow: 'none',
+                color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'
+              }}
+            >
+              <Text size="14px" weight="bold"> {talkStatus === 'ENDED'? 'Restart': 'Start'} </Text>
+              
+            </Button>
+
+            <Button
+              onClick={stopTalk}
+              disabled={talkStatus !== 'STARTED'}
+              hoverIndicator="#6DA3C7"
+              focusIndicator={false}
+              style={{
+                background: "#0C385B", flexBasis: '100%', margin: '10px', // boxShadow: 'none',
+                color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'
+              }}
+            >
+            <Text size="14px" weight="bold"> Stop </Text>
+            </Button>
+          </Box>
       
         <Grid
           // rows={["streamViewRow1", "medium"]}
@@ -507,48 +576,38 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </Box>
             </Box>
 
-            <Box direction="row" justify="between" align="start">
-              <p
-                style={{
-                  padding: 0,
-                  margin: 0,
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  // color: "black",
-                  maxWidth: "65%",
-                }}
+            <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="20px">
+              <Text
+                size="18px"
+                weight="bold"
+                style={{width: "45%"}}
               >
                 {talkDetail.name}
-              </p>
-              <br />
-              <p
-                style={{
-                  padding: 0,
-                  margin: 0,
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  // color: "black",
-                  maxWidth: "65%",
-                }}
+              </Text>
+              <Text
+                size="18px"
+                weight="bold"
+                style={{width: "25%"}}
               >
-                Speaker: {talkDetail.talk_speaker}
-              </p>
+                {talkDetail.talk_speaker}
+              </Text>
 
               <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+
               <Box
                 direction="row"
                 gap="small"
                 justify="end"
-                style={{ minWidth: "35%" }}
+                style={{ width: "10%" }}
               >
-                <ChannelIdCard channelName={state.video!.channel_name} />
-                <Box direction="row" align="center" gap="xxsmall">
-                  <View color="black" size="40px" />
+                {/* <ChannelIdCard channelName={state.video!.channel_name} /> */}
+                <Box direction="row" align="center" gap="5px">
+                  <View color="black" size="30px" />
                   {state.viewCount === -1 && (
                     <Loading color="grey" size={34} />
                   )}
                   {state.viewCount !== -1 && (
-                    <Text size="34px" weight="bold">
+                    <Text size="20px" weight="bold">
                       {state.viewCount}
                     </Text>
                   )}
