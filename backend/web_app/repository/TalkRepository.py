@@ -515,14 +515,16 @@ class TalkRepository:
                         time,
                         to_talk_participants,
                         to_mailing_list,
-                        to_followers
+                        to_followers,
+                        delta_time
                     ) VALUES (
                         {channelId},
                         {insertId},
                         "{reminder1_time}",
                         {to_talk_participants},
                         {to_mailing_list},
-                        {to_followers}
+                        {to_followers},
+                        {reminder1}
                     );
                 '''
                 self.db.run_query(query_reminder_1)
@@ -537,14 +539,16 @@ class TalkRepository:
                         time,
                         to_talk_participants,
                         to_mailing_list,
-                        to_followers
+                        to_followers,
+                        delta_time
                     ) VALUES (
                         {channelId},
                         {insertId},
                         "{reminder2_time}",
                         {to_talk_participants},
                         {to_mailing_list},
-                        {to_followers}
+                        {to_followers},
+                        {reminder2}
                     );
                 '''
                 self.db.run_query(query_reminder_2)
@@ -556,7 +560,7 @@ class TalkRepository:
                 file.write(str(e))
             return str(e)
 
-    def editTalk(self, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, reminder1, reminder2, reminderEmailGroup):
+    def editTalk(self, channelId, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, reminder1, reminder2, reminderEmailGroup):
         try:
             # query past talk information
             past_talk_query = f'''
@@ -635,31 +639,66 @@ class TalkRepository:
         to_talk_participants = int("Participants" in reminderEmailGroup)
         to_mailing_list = int("MailingList" in reminderEmailGroup)
         to_followers = int("Followers" in reminderEmailGroup)
+
+        start_date_dt = datetime.strptime(startDate, "%Y-%m-%d %H:%M")
+        
+        with open("/home/cloud-user/test/reminderrr.txt", "w") as file:
+            file.write(str(reminder1) + "----" + str(reminder2))
+
+        query_delete = f'DELETE FROM EmailReminders WHERE channel_id={channel_id} AND talk_id={talkId};'
+        self.db.run_query(query_delete)
+
         
         if reminder1:
-            reminder1_time = startDate - reminder1
+            reminder1_delta = timedelta(hours=reminder1) 
+            reminder1_time = (start_date_dt - reminder1_delta).strftime("%Y-%m-%d %H:%M")
             query_reminder_1 = f'''
-                UPDATE EmailReminders SET
-                    channel_id={channel_id},
-                    talk_id={talkId},
-                    time="{reminder1_time}",
-                    to_talk_participants={to_talk_participants},
-                    to_mailing_list={to_mailing_list},
-                    to_followers={to_followers};
-                '''
+                INSERT INTO EmailReminders (
+                    channel_id,
+                    talk_id,
+                    time,
+                    to_talk_participants,
+                    to_mailing_list,
+                    to_followers,
+                    delta_time
+                ) VALUES (
+                    {channelId},
+                    {talkId},
+                    "{reminder1_time}",
+                    {to_talk_participants},
+                    {to_mailing_list},
+                    {to_followers},
+                    {reminder1}
+                );
+            '''
             self.db.run_query(query_reminder_1)
+            
         
         if reminder2:
-            reminder2_time = startDate - reminder2
+            reminder2_delta = timedelta(hours=reminder2) 
+            reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M:%S")
             query_reminder_2 = f'''
-                UPDATE EmailReminders SET
-                    channel_id={channel_id},
-                    talk_id={talkId},
-                    time="{reminder2_time}",
-                    to_talk_participants={to_talk_participants},
-                    to_mailing_list={to_mailing_list},
-                    to_followers={to_followers};
-                '''
+                INSERT INTO EmailReminders (
+                    channel_id,
+                    talk_id,
+                    time,
+                    to_talk_participants,
+                    to_mailing_list,
+                    to_followers,
+                    delta_time
+                ) VALUES (
+                    {channelId},
+                    {talkId},
+                    "{reminder2_time}",
+                    {to_talk_participants},
+                    {to_mailing_list},
+                    {to_followers},
+                    {reminder2}
+                );
+            '''
+            with open("/home/cloud-user/test/reminder2.txt", "w") as file:
+                file.write(query_reminder_2)
+
             self.db.run_query(query_reminder_2)
             
         return self.getTalkById(talkId) 

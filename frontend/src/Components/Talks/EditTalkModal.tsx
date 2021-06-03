@@ -246,6 +246,7 @@ export default class EditTalkModal extends Component<Props, State> {
     const dateTimeStrs = this.combineDateAndTimeStrings();
     if (this.props.talk) {
       TalkService.editTalk(
+        this.props.talk.channel_id,
         this.props.talk.id,
         this.escapeSingleQuotes(this.state.title),
         this.escapeSingleQuotes(this.state.description),

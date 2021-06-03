@@ -139,6 +139,7 @@ const getAvailablePastTalksForChannel = (
 };
 
 const editTalk = (
+  channelId: number,
   talkId: number,
   talkName: string,
   talkDescription: string,
@@ -166,6 +167,7 @@ const editTalk = (
   post(
     "talks/edit",
     {
+      channelId: channelId,
       talkId: talkId,
       talkName: talkName,
       talkDescription: talkDescription,
