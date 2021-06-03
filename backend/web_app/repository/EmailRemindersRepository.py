@@ -36,53 +36,65 @@ class EmailRemindersRepository:
             start_date_dt = datetime.strptime(startDate, "%Y-%m-%d %H:%M")
 
             if reminder1:
-                reminder1_delta = timedelta(hours=reminder1) 
-                reminder1_time = (start_date_dt - reminder1_delta).strftime("%Y-%m-%d %H:%M")
-                query_reminder_1 = f'''
-                    INSERT INTO EmailReminders (
-                        talk_id,
-                        time,
-                        to_talk_participants,
-                        to_mailing_list,
-                        to_followers,
-                        delta_time,
-                        status
-                    ) VALUES (
-                        {talkId},
-                        "{reminder1_time}",
-                        {to_talk_participants},
-                        {to_mailing_list},
-                        {to_followers},
-                        {reminder1},
-                        "pending"
-                    );
-                '''
-                self.db.run_query(query_reminder_1)
+                reminder1_delta = timedelta(hours=reminder1)
+                reminder1_time_raw = (start_date_dt - reminder1_delta)
+
+                # check time not in past
+                now = datetime.now()
+                if now < reminder1_time_raw:
+                    reminder1_time = reminder1_time_raw.strftime("%Y-%m-%d %H:%M")
+
+                    query_reminder_1 = f'''
+                        INSERT INTO EmailReminders (
+                            talk_id,
+                            time,
+                            to_talk_participants,
+                            to_mailing_list,
+                            to_followers,
+                            delta_time,
+                            status
+                        ) VALUES (
+                            {talkId},
+                            "{reminder1_time}",
+                            {to_talk_participants},
+                            {to_mailing_list},
+                            {to_followers},
+                            {reminder1},
+                            "pending"
+                        );
+                    '''
+                    self.db.run_query(query_reminder_1)
                 
             if reminder2:
                 reminder2_delta = timedelta(hours=reminder2) 
-                reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M")
-                query_reminder_2 = f'''
-                    INSERT INTO EmailReminders (
-                        talk_id,
-                        time,
-                        to_talk_participants,
-                        to_mailing_list,
-                        to_followers,
-                        delta_time,
-                        status
-                    ) VALUES (
-                        {talkId},
-                        "{reminder2_time}",
-                        {to_talk_participants},
-                        {to_mailing_list},
-                        {to_followers},
-                        {reminder2},
-                        "pending"
-                    );
-                '''
+                reminder2_time_raw = (start_date_dt - reminder2_delta)
 
-                self.db.run_query(query_reminder_2)
+                # check time not in past
+                now = datetime.now()
+                if now < reminder2_time_raw:
+                    reminder2_time = reminder2_time_raw.strftime("%Y-%m-%d %H:%M")
+
+                    query_reminder_2 = f'''
+                        INSERT INTO EmailReminders (
+                            talk_id,
+                            time,
+                            to_talk_participants,
+                            to_mailing_list,
+                            to_followers,
+                            delta_time,
+                            status
+                        ) VALUES (
+                            {talkId},
+                            "{reminder2_time}",
+                            {to_talk_participants},
+                            {to_mailing_list},
+                            {to_followers},
+                            {reminder2},
+                            "pending"
+                        );
+                    '''
+
+                    self.db.run_query(query_reminder_2)
 
             return "ok"
 
