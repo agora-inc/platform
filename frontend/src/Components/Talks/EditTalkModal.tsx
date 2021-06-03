@@ -905,7 +905,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     checked={this.state.autoAcceptGroup == "Academics"}
                     onChange={() => this.handleCheckBox("Academics")}
                   />
-                  <Text size="13px" margin={{top: "20px"}}><i>Everybody else will need a manual approvement.</i></Text>
+                  <Text size="13px" margin={{top: "20px"}}><i>Everybody else will need to be manually approved.</i></Text>
                 
                   {/* NOTE: Later, people will be able to pick institutions from list. 
                   
