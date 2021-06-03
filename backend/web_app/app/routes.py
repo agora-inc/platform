@@ -4,7 +4,7 @@
 """ 
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository
 from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository
 from mailing import sendgridApi
 from flask import jsonify, request, send_file
@@ -24,6 +24,7 @@ topics = TopicRepository.TopicRepository(db=agora_db)
 questions = QandARepository.QandARepository(db=agora_db)
 streams = StreamRepository.StreamRepository(db=agora_db)
 talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
+emailReminders = EmailRemindersRepository.EmailRemindersRepository(db=agora_db, mail_sys=mail_sys)
 videos = VideoRepository.VideoRepository(db=agora_db)
 channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
 search = SearchRepository.SearchRepository(db=agora_db)
@@ -1075,7 +1076,7 @@ def getReminderTime():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     talkId = int(request.args.get("talkId"))
-    return jsonify(talks.getReminderTime(talkId))
+    return jsonify(emailReminders.getReminderTime(talkId))
 
 @app.route('/talks/reminders/group', methods=["GET"])
 def getReminderGroup():
@@ -1083,7 +1084,7 @@ def getReminderGroup():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     talkId = int(request.args.get("talkId"))
-    return jsonify(talks.getReminderGroup(talkId))
+    return jsonify(emailReminders.getReminderGroup(talkId))
 
 
 # --------------------------------------------

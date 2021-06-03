@@ -162,8 +162,6 @@ const editTalk = (
   reminderEmailGroup: string[], 
   callback: any
 ) => {
-  console.log("wesh ma gueule")
-  console.log(topics)
   post(
     "talks/edit",
     {

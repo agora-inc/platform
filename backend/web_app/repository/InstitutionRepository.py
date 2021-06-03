@@ -6,7 +6,7 @@ class InstitutionRepository:
         self.db = db
 
     def isEmailVerifiedAcademicEmail(self, email):
-        email_ending = email.split("@")
+        email_ending = email.split("@")[1]
 
         check_academic_query = f'''
             SELECT 

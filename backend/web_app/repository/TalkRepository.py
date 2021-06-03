@@ -2,6 +2,8 @@ from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
 from repository.InstitutionRepository import InstitutionRepository
+from repository.EmailRemindersRepository import EmailRemindersRepository
+
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 
@@ -18,6 +20,7 @@ class TalkRepository:
         self.tags = TagRepository(db=self.db)
         self.topics = TopicRepository(db=self.db)
         self.institutions = InstitutionRepository(db=self.db)
+        self.email_reminders = EmailRemindersRepository(db=self.db)
         self.mail_sys = mail_sys
 
     def getNumberOfCurrentTalks(self):
@@ -461,17 +464,8 @@ class TalkRepository:
                 );
             '''    
         try:
-
-            with open("/home/cloud-user/test/bouteille1.txt", "w") as file:
-                file.write(str(query))
-
             res = self.db.run_query(query)
-
             insertId = res[0]
-
-            with open("/home/cloud-user/test/bouteille2.txt", "w") as file:
-                file.write("in")
-
     
             if not isinstance(insertId, int):
                 raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
@@ -479,9 +473,6 @@ class TalkRepository:
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(insertId, tagIds)
             
-            with open("/home/cloud-user/test/bouteille3.txt", "w") as file:
-                file.write("in")
-
             # add customInstitutions for auto-acceptance
             self.editAutoAcceptanceCustomInstitutions(insertId, customInstitutionsIds)
 
@@ -495,69 +486,12 @@ class TalkRepository:
                 talk_speaker, 
                 talk_speaker_url)
 
-            with open("/home/cloud-user/test/bouteille4.txt", "w") as file:
-                file.write("in")
-
             # Email reminders
-            to_talk_participants = int("Participants" in reminderEmailGroup)
-            to_mailing_list = int("MailingList" in reminderEmailGroup)
-            to_followers = int("Followers" in reminderEmailGroup)
-
-            start_date_dt = datetime.strptime(startDate, "%Y-%m-%d %H:%M")
-
-            if reminder1:
-                reminder1_delta = timedelta(hours=reminder1) 
-                reminder1_time = (start_date_dt - reminder1_delta).strftime("%Y-%m-%d %H:%M")
-                query_reminder_1 = f'''
-                    INSERT INTO EmailReminders (
-                        channel_id,
-                        talk_id,
-                        time,
-                        to_talk_participants,
-                        to_mailing_list,
-                        to_followers,
-                        delta_time
-                    ) VALUES (
-                        {channelId},
-                        {insertId},
-                        "{reminder1_time}",
-                        {to_talk_participants},
-                        {to_mailing_list},
-                        {to_followers},
-                        {reminder1}
-                    );
-                '''
-                self.db.run_query(query_reminder_1)
-            
-            if reminder2:
-                reminder2_delta = timedelta(hours=reminder2) 
-                reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M")
-                query_reminder_2 = f'''
-                    INSERT INTO EmailReminders (
-                        channel_id,
-                        talk_id,
-                        time,
-                        to_talk_participants,
-                        to_mailing_list,
-                        to_followers,
-                        delta_time
-                    ) VALUES (
-                        {channelId},
-                        {insertId},
-                        "{reminder2_time}",
-                        {to_talk_participants},
-                        {to_mailing_list},
-                        {to_followers},
-                        {reminder2}
-                    );
-                '''
-                self.db.run_query(query_reminder_2)
+            self.email_reminders.addEmailReminders(insertId, startDate, reminderEmailGroup, reminder1, reminder2)
 
             return self.getTalkById(insertId)
 
         except Exception as e:
-            with open("/home/cloud-user/test/bouteilleerr.txt", "w") as file:
-                file.write(str(e))
             return str(e)
 
     def editTalk(self, channelId, talkId, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, reminder1, reminder2, reminderEmailGroup):
@@ -609,11 +543,15 @@ class TalkRepository:
 
                 WHERE id = {talkId};'''
             
-            res = self.db.run_query(query)
+            self.db.run_query(query)
 
-            with open("/home/cloud-user/test/mj1.txt", "w") as file:
-                file.write(str(res))
-
+            # Update Email reminders
+            self.email_reminders.updateEmailReminders(
+                talkId, 
+                startDate, 
+                reminderEmailGroup, 
+                reminder1, 
+                reminder2)
 
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(talkId, tagIds)
@@ -631,119 +569,10 @@ class TalkRepository:
             """
 
         except Exception as e:
-            with open("/home/cloud-user/test/champagneerr_editroute.txt", "w") as file:
-                file.write(str(e))
             return str(e)
-            
-        # Email reminders
-        to_talk_participants = int("Participants" in reminderEmailGroup)
-        to_mailing_list = int("MailingList" in reminderEmailGroup)
-        to_followers = int("Followers" in reminderEmailGroup)
-
-        start_date_dt = datetime.strptime(startDate, "%Y-%m-%d %H:%M")
-        
-        with open("/home/cloud-user/test/reminderrr.txt", "w") as file:
-            file.write(str(reminder1) + "----" + str(reminder2))
-
-        query_delete = f'DELETE FROM EmailReminders WHERE channel_id={channel_id} AND talk_id={talkId};'
-        self.db.run_query(query_delete)
-
-        
-        if reminder1:
-            reminder1_delta = timedelta(hours=reminder1) 
-            reminder1_time = (start_date_dt - reminder1_delta).strftime("%Y-%m-%d %H:%M")
-            query_reminder_1 = f'''
-                INSERT INTO EmailReminders (
-                    channel_id,
-                    talk_id,
-                    time,
-                    to_talk_participants,
-                    to_mailing_list,
-                    to_followers,
-                    delta_time
-                ) VALUES (
-                    {channelId},
-                    {talkId},
-                    "{reminder1_time}",
-                    {to_talk_participants},
-                    {to_mailing_list},
-                    {to_followers},
-                    {reminder1}
-                );
-            '''
-            self.db.run_query(query_reminder_1)
-            
-        
-        if reminder2:
-            reminder2_delta = timedelta(hours=reminder2) 
-            reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M")
-            query_reminder_2 = f'''
-                INSERT INTO EmailReminders (
-                    channel_id,
-                    talk_id,
-                    time,
-                    to_talk_participants,
-                    to_mailing_list,
-                    to_followers,
-                    delta_time
-                ) VALUES (
-                    {channelId},
-                    {talkId},
-                    "{reminder2_time}",
-                    {to_talk_participants},
-                    {to_mailing_list},
-                    {to_followers},
-                    {reminder2}
-                );
-            '''
-            with open("/home/cloud-user/test/reminder2.txt", "w") as file:
-                file.write(query_reminder_2)
-
-            self.db.run_query(query_reminder_2)
-            
+           
         return self.getTalkById(talkId) 
 
-    def getReminderTime(self, talkId):
-
-
-        with open("/home/cloud-user/test/web1.txt", "w") as file:
-            file.write("in")
-
-        try:
-            query = f'SELECT delta_time FROM EmailReminders WHERE talk_id = {talkId};'  
-            res = self.db.run_query(query)
-
-            with open("/home/cloud-user/test/web2.txt", "w") as file:
-                file.write(str(res))
-
-
-            # Reminders
-            reminders = [{"exist": False, "days": 0, "hours": 0}, {"exist": False, "days": 0, "hours": 0}]
-            for i, e in enumerate(res):
-                reminders[i]["exist"] = True
-                reminders[i]["days"] = int(e["delta_time"]) // 24
-                reminders[i]["hours"] = int(e["delta_time"]) % 24
-
-            return reminders
-        except Exception as e:
-
-            return str(e)
-
-    def getReminderGroup(self, talkId):
-        query = f'SELECT EmailReminders.to_talk_participants, EmailReminders.to_mailing_list, EmailReminders.to_followers FROM EmailReminders WHERE talk_id = {talkId};'  
-        res = self.db.run_query(query)
-
-        # Groups
-        groups = []
-        if len(res) > 0:
-            if res[0]["to_talk_participants"]: 
-                groups.append("Participants")
-            if res[0]["to_mailing_list"]:
-                groups.append("MailingList")
-            if res[0]["to_followers"]:
-                groups.append("Followers")
-
-        return groups
     def editAutoAcceptanceCustomInstitutions(self, talk_id, institution_ids):
         """Method to edit the custom institutions auto-accepted for a talk.
 
@@ -911,9 +740,6 @@ class TalkRepository:
         '''
         res = self.db.run_query(query)
 
-        with open("/home/cloud-user/test/so_takaoOG.txt", "w") as file:
-            file.write(str(res))
-
         # HACK: to prevent same agora having 5 talks, we query 20 future talks and limit to 2 max per agora.
         try:
             HARD_LIMIT_PER_AGORA = 3
@@ -936,14 +762,10 @@ class TalkRepository:
                         filtered_results.append(talk)
                         counter_ag[agora_id] = 1
 
-            with open("/home/cloud-user/test/so_takao1.txt", "w") as file:
-                file.write(str(filtered_results))
-
             return filtered_results
 
         except Exception as e:
-            with open("/home/cloud-user/test/so_takaoErr.txt", "w") as file:
-                file.write(str(e))
+            raise Exception(e)
         
         
 
@@ -1041,40 +863,7 @@ class TalkRepository:
         dateTimeObj = datetime.now()
         timestampStr = dateTimeObj.strftime("%Y-%m-%d %H:%M:%S")
 
-
-        # timestampStr = dateTimeObj.strptime(dateTimeObj, "%Y-%m-%d %H:%M:%S")
-
-        with open("/home/cloud-user/test/apollo1.txt", "w") as file:
-            file.write("in")
-
-
-
-
-
-
-
-
         userIsAutoAcceptedToTalk = self.isEmailAutoAcceptedToTalk(email, talkId)
-
-        with open("/home/cloud-user/test/apolloTEST.txt", "w") as file:
-                file.write(email + "\n" + str(userIsAutoAcceptedToTalk))
-        #
-        #
-        #
-        #
-        #  
-        #
-        # self.isEmailAutoAcceptedToTalk DOES NOT WORK; TO DEBUG
-        #
-        #
-        #
-        #
-        #
-
-
-
-
-
 
         try:
             status = "accepted" if userIsAutoAcceptedToTalk else "pending"
@@ -1095,18 +884,7 @@ class TalkRepository:
             conference_url = talk_info["link"]
             channel_id = talk_info["channel_id"]
 
-            # 2) check userId GMT:
-
-            with open("/home/cloud-user/test/apollo2.txt", "w") as file:
-                file.write("in")
-
-            human_date_str = self.mail_sys._convert_gmt_into_human_date_str(str(date_str), float(user_hour_offset))
-
-            with open("/home/cloud-user/test/apollo3.txt", "w") as file:
-                file.write("in")
-
-
-            # 3) send email applicant (either acknowledgment application OR confirmation attendence)
+            # 2) send email applicant (either acknowledgment application OR confirmation attendence)
             if not userIsAutoAcceptedToTalk:
                 self.mail_sys.send_confirmation_talk_registration_request(
                     email,
@@ -1114,8 +892,10 @@ class TalkRepository:
                     applicant_name,
                     talkId,
                     agora_name,
-                    human_date_str,
-                    conference_url)
+                    date_str,
+                    conference_url,
+                    user_hour_offset
+                    )
 
             else:
                 self.mail_sys.send_confirmation_talk_registration_acceptance(
@@ -1124,10 +904,11 @@ class TalkRepository:
                     applicant_name,
                     talkId,
                     agora_name,
-                    human_date_str,
-                    conference_url
+                    date_str,
+                    conference_url,
+                    user_hour_offset
                 )
-                
+
             # B. Send email to administrator (dont send email admin if auto accepted)
             if not userIsAutoAcceptedToTalk:
                 if website == "":
@@ -1278,10 +1059,6 @@ class TalkRepository:
             # query all emails
             emails = self.channels.getEmailAddressesMembersAndAdmins(channelId, getMembersAddress=True, getAdminsAddress=False)
             
-            with open("/home/cloud-user/test/bouteille_emails.txt", "w") as file:
-                file.write(str(emails) + "   " + str(isinstance(emails,list)))
-            
-            
             if isinstance(emails,list):
                 for email in emails:
                     self.mail_sys.send_advertise_new_incoming_talk_for_channel(
@@ -1310,14 +1087,8 @@ class TalkRepository:
         autoAccepted = False
         # check conditions
         try:
-            auto_accept_config = self.db.run_query(auto_accept_config_request)
+            auto_accept_config = self.db.run_query(auto_accept_config_request)[0]
             
-            with open("/home/cloud-user/test/apollo01_req.txt", "w") as file:
-                file.write(str(auto_accept_config_request))
-
-            with open("/home/cloud-user/test/apollo01_ans.txt", "w") as file:
-                file.write(str(auto_accept_config))
-
             autoAcceptGroup = auto_accept_config["auto_accept_group"]
             autoAcceptCustom = auto_accept_config["auto_accept_custom_institutions"]
 
@@ -1341,22 +1112,12 @@ class TalkRepository:
                 '''
                 res = self.db.run_query(check_custom_query)
 
-                #
-                #
-                #
-                #
-                # DEBUGGING IN PROGRESS 
-                #
-                #
-                #
-                #
-                 
                 domain_list = [i["domain"] for i in res]
                 if not autoAccepted:
                     autoAccepted = (email_ending in domain_list)
-            
+    
             return autoAccepted
 
-
         except Exception as e:
+
             return {"error": str(e)}

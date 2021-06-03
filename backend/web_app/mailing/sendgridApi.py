@@ -55,8 +55,6 @@ class sendgridApi:
         try:
             date_original = datetime.datetime.strptime(gmt_string, date_original_format_1)
         except:
-            with open("/home/cloud-user/jeanpierreraffarin.txt", "w") as file:
-                file.write("ca pete la")
             date_original = datetime.datetime.strptime(gmt_string, date_original_format_2)
 
         # Add offset
@@ -100,52 +98,67 @@ class sendgridApi:
     ##############################
     # B. User talk notifications #
     ##############################
-    def send_confirmation_talk_registration_request(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None):
+    def send_confirmation_talk_registration_request(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None, user_hour_offset=None):
         template_id = "d-7778766bf8764d379f19bf2822aa38c2"
+        try:
+            human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
+            if user_hour_offset is not None:
+                human_readable_date = self._convert_gmt_into_human_date_str(date_str, user_hour_offset)
 
-        dynamic_template_data={
-                            "talk_name": talk_name,
-                            "recipient_name": recipient_name,
-                            "talk_id": talk_id,
-                            "agora_name": agora_name,
-                            "date": date_str
-                        }
+            dynamic_template_data={
+                                "talk_name": talk_name,
+                                "recipient_name": recipient_name,
+                                "talk_id": talk_id,
+                                "agora_name": agora_name,
+                                "date": human_readable_date
+                            }
 
-        if conference_url is None or conference_url == "":
-            dynamic_template_data["conference_url"] = "Shared later."
-        else:
-            dynamic_template_data["conference_url"] = conference_url
+            if conference_url is None or conference_url == "":
+                dynamic_template_data["conference_url"] = "Shared later."
+            else:
+                dynamic_template_data["conference_url"] = conference_url
 
-        response = self._post_sendgrid_request(
-            target_email=target_email,
-            dynamic_template_data=dynamic_template_data,
-            template_id=template_id
-        )
-        return response
+            response = self._post_sendgrid_request(
+                target_email=target_email,
+                dynamic_template_data=dynamic_template_data,
+                template_id=template_id
+            )
+            return response
+        except Exception as e:
+            raise Exception(e)
 
-    def send_confirmation_talk_registration_acceptance(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None):
+    def send_confirmation_talk_registration_acceptance(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None, user_hour_offset=None):
         template_id = "d-e2791dbf94084474b5dd50b15a8ea372"
-        human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
-        
-        dynamic_template_data={
-                            "talk_name": talk_name,
-                            "recipient_name": recipient_name,
-                            "talk_id": talk_id,
-                            "agora_name": agora_name,
-                            "date_str": human_readable_date
-                        }
 
-        if conference_url is None or conference_url == "":
-            dynamic_template_data["conference_url"] = "To be shared."
-        else:
-            dynamic_template_data["conference_url"] = conference_url
+        try:
+            human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
+            
+            if user_hour_offset is not None:
+                human_readable_date = self._convert_gmt_into_human_date_str(date_str, user_hour_offset)
 
-        response = self._post_sendgrid_request(
-            target_email=target_email,
-            dynamic_template_data=dynamic_template_data,
-            template_id=template_id
-        )
-        return response
+
+            dynamic_template_data={
+                                "talk_name": talk_name,
+                                "recipient_name": recipient_name,
+                                "talk_id": talk_id,
+                                "agora_name": agora_name,
+                                "date_str": human_readable_date
+                            }
+
+            if conference_url is None or conference_url == "":
+                dynamic_template_data["conference_url"] = "To be shared."
+            else:
+                dynamic_template_data["conference_url"] = conference_url
+
+            response = self._post_sendgrid_request(
+                target_email=target_email,
+                dynamic_template_data=dynamic_template_data,
+                template_id=template_id
+            )
+            return response
+
+        except Exception as e:
+            raise Exception(e)
 
     def send_talk_details_full(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url):
         template_id = "d-d789a156a6f94442851b056ca5d7b620"
