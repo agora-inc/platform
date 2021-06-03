@@ -531,7 +531,7 @@ class TalkRepository:
             
             if reminder2:
                 reminder2_delta = timedelta(hours=reminder2) 
-                reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M:%S")
+                reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M")
                 query_reminder_2 = f'''
                     INSERT INTO EmailReminders (
                         channel_id,
@@ -676,7 +676,7 @@ class TalkRepository:
         
         if reminder2:
             reminder2_delta = timedelta(hours=reminder2) 
-            reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M:%S")
+            reminder2_time = (start_date_dt - reminder2_delta).strftime("%Y-%m-%d %H:%M")
             query_reminder_2 = f'''
                 INSERT INTO EmailReminders (
                     channel_id,
