@@ -6,6 +6,7 @@ import ChatBox from "../Components/Streaming/ChatBox";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
 import Tag from "../Components/Core/Tag";
 import Loading from "../Components/Core/Loading";
+import { textToLatex } from "../Components/Core/LatexRendering";
 import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
 import { StreamService } from "../Services/StreamService";
@@ -625,7 +626,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                       {msg.name}
                     </Text>
                     <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
-                      {msg.text}
+                      {textToLatex(msg.text)}
                     </Text>
                   </Box>
                   // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
