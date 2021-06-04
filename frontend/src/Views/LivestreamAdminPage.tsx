@@ -437,7 +437,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     }
   }, [talkId])
   return (
-      <Box align="center">
+      <Box style={{position: "absolute", left: "40px", top: "5px"}} margin={{bottom: "50px"}}>
         {isTimeover && (
           <Box 
             margin={{ top: "xlarge", bottom: "xsmall" }} 
@@ -451,63 +451,64 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
         )}
 
-  
-          {/*<Link
-            className="channel"
-            to={`/${talkDetail.channel_name}`}
-            style={{ textDecoration: "none" }}
-          >
-            <Box
-              direction="row"
-              gap="xsmall"
-              align="start"
-              round="xsmall"
-              pad={{ vertical: "6px", horizontal: "6px" }}
-            >
-              <Box
-                justify="center"
-                align="center"
-                background="#efeff1"
-                overflow="hidden"
-                style={{
-                  minHeight: 30,
-                  minWidth: 30,
-                  borderRadius: 15,
-                }}
-              >
-                  <img
-                    src={ChannelService.getAvatar(
-                      talkDetail.channel_id
-                    )}
-                    height={30}
-                    width={30}
-                  />
-              </Box>
-              <Box justify="between">
-                <Text weight="bold" size="16px" color="grey">
-                  {talkDetail.channel_name}
-                </Text>
-              </Box>
-            </Box>
-                    </Link> */}
-
           <Box 
-            direction='row' flex width='30%'
-            justify="end"
-            gap="100px"
+            direction='row'
+            gap="40px"
             margin={{ 
               top: isTimeover ? "xsmall" : "xlarge", 
-              bottom: "xsmall" 
+              bottom: "15px" 
             }}
+            width="70%"
+            align="center"
           >
-                    
+            <Link
+              className="channel"
+              to={`/${talkDetail.channel_name}`}
+              style={{ textDecoration: "none", width: "40%"}}
+            >
+              <Box
+                direction="row"
+                gap="xsmall"
+                align="center"
+                round="xsmall"
+                pad={{ vertical: "6px", horizontal: "6px" }}
+              >
+                <Box
+                  justify="center"
+                  align="center"
+                  background="#efeff1"
+                  overflow="hidden"
+                  style={{
+                    minHeight: 30,
+                    minWidth: 30,
+                    borderRadius: 15,
+                  }}
+                >
+                    <img
+                      src={ChannelService.getAvatar(
+                        talkDetail.channel_id
+                      )}
+                      height={30}
+                      width={30}
+                    />
+                </Box>
+                <Box justify="between">
+                  <Text weight="bold" size="16px" color="grey">
+                    {talkDetail.channel_name}
+                  </Text>
+                </Box>
+              </Box>
+            </Link>
+            <Box width="40%" />
+                      
             <Button
               onClick={startTalk}
               disabled={(talkStatus === 'STARTED')}
               hoverIndicator="#6DA3C7"
               focusIndicator={false}
+              
               style={{
-                background: "#0C385B", flexBasis: '100%', margin: '10px', // boxShadow: 'none',
+                background: "#0C385B", width: "120px",
                 color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'
               }}
             >
@@ -521,7 +522,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               hoverIndicator="#6DA3C7"
               focusIndicator={false}
               style={{
-                background: "#0C385B", flexBasis: '100%', margin: '10px', // boxShadow: 'none',
+                background: "#0C385B", width: "120px",
                 color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'
               }}
             >
@@ -530,18 +531,18 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
       
         <Grid
-          // rows={["streamViewRow1", "medium"]}
-          rows={["streamViewRow1"]}
+          rows={["streamViewRow1", "streamViewRow2", "streamView3"]}
           columns={["streamViewColumn1", "streamViewColumn2"]}
           gap="medium"
           areas={[
-            { name: "player", start: [0, 0], end: [0, 0] },
+            { name: "player", start: [0, 0], end: [0, 1] },
             { name: "chat", start: [1, 0], end: [1, 0] },
-            // { name: "questions", start: [0, 1], end: [1, 1] },
+            { name: "requests", start: [1, 1], end: [1, 2] },
+            { name: "description", start: [0, 2], end: [0, 2] },
           ]}
         >
           
-          <Box gridArea="player" justify="between" gap="small">
+          <Box gridArea="player" justify="between" gap="small" height="40vw">
             <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
               style={{height: '90%', position: 'relative'}}>
               <Box className='camera-video'>
@@ -576,7 +577,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </Box>
             </Box>
 
-            <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="20px">
+            <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="5px">
               <Text
                 size="18px"
                 weight="bold"
@@ -615,28 +616,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </Box>
             </Box>
           </Box>
-          <Box gridArea="chat" background="gray" round="small">
+          
+          <Box gridArea="chat" background="gray" round="small" height="20vw">
             {messages.map((msg, i)=>(
                 <Box key={i}>
                   <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}><b>{msg.name}:</b> {msg.text}</span>
                 </Box>
               ))}
-            <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
+            <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' />
           </Box>
-        </Grid>
-        
-        <Grid
-          // rows={["streamViewRow1", "medium"]}
-          rows={["streamViewRow1"]}
-          columns={["streamViewColumn1", "streamViewColumn2"]}
-          gap="medium"
-          areas={[
-            { name: "player", start: [0, 0], end: [0, 0] },
-            { name: "chat", start: [1, 0], end: [1, 0] },
-            // { name: "questions", start: [0, 1], end: [1, 1] },
-          ]}
-        >
-          <Box direction='column' flex width='70vw'>
+
+          <Box gridArea="requests" direction='column' height="20vw">   {/*flex width='70vw'>*/}
             <Text style={{fontWeight: 'bold'}}>Requests for mic</Text>
             <Table>
               <TableBody>
@@ -650,16 +640,21 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </TableBody>
             </Table>
           </Box>
-        </Grid>
 
-        <DescriptionAndQuestions
+          <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
+            <Text size="12px"> {talkDetail.description} </Text>
+          </Box>
+
+        {/* <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}
           description={state.video!.description}
           videoId={state.video.id}
           streamer={false}
-          margin={{ top: "-20px" }}
-        />
+        /> */}
+        </Grid>
+      
+
       </Box>
   )
 }

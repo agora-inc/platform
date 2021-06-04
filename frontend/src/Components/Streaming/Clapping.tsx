@@ -138,7 +138,7 @@ export default class Clapping extends Component<Props, State> {
           }}
           // style={{ border: "3.5px solid black" }}
         >
-          <Text weight="bold" color="black" size="16px">
+          <Text weight="bold" color="black" size="14px">
             Thank the speaker
           </Text>
         </Box>}
