@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Box, Grid, Text, Layer, Button, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
+import { Box, Grid, Text, Layer, Button, Table, TableHeader, TableRow, TableCell, TableBody, TextInput } from "grommet";
 import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
 import ChatBox from "../Components/Streaming/ChatBox";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
@@ -458,7 +458,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               top: isTimeover ? "xsmall" : "xlarge", 
               bottom: "15px" 
             }}
-            width="70%"
+            width="72%"
             align="center"
           >
             <Link
@@ -499,7 +499,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                 </Box>
               </Box>
             </Link>
-            <Box width="40%" />
+            <Box width="30.1%" />
                       
             <Button
               onClick={startTalk}
@@ -616,25 +616,58 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </Box>
             </Box>
           </Box>
-          
-          <Box gridArea="chat" background="gray" round="small" height="20vw">
-            {messages.map((msg, i)=>(
-                <Box key={i}>
-                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}><b>{msg.name}:</b> {msg.text}</span>
-                </Box>
-              ))}
-            <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' />
+          <Box gridArea="chat" background="#EAF1F1" round="small" height="20vw" margin={{bottom: "10px"}}>
+            {/* <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Chat</Text> */}
+            <Box height="90%" gap="2px">
+              {messages.map((msg, i)=>(
+                  <Box alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap="2px">
+                    <Text size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                      {msg.name}
+                    </Text>
+                    <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                      {msg.text}
+                    </Text>
+                  </Box>
+                  // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
+                ))}
+            </Box>
+            <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
+            {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
           </Box>
 
           <Box gridArea="requests" direction='column' height="20vw">   {/*flex width='70vw'>*/}
-            <Text style={{fontWeight: 'bold'}}>Requests for mic</Text>
+            <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Requests for mic</Text>
             <Table>
               <TableBody>
                 {micRequests.map((req, i)=>(
                   <TableRow key={i} className='request-item'>
-                    <TableCell>{req.requester_name || req.requester_id}</TableCell>
-                    {req.status ==='REQUESTED' && <Button margin={{left: '10px'}} label="Grant" primary size='small' onClick={()=>API.grantRequest(req.id, true)} />}
-                    <Button margin={{left: '10px'}} label={req.status =='GRANTED'?'Revoke':'Deny'} primary size='small' onClick={()=>API.grantRequest(req.id, false)} />
+                    <TableCell>
+                      <Text weight="bold" size="14px"> {req.requester_name || req.requester_id} </Text>
+                    </TableCell>
+                    {req.status ==='REQUESTED' && (
+                      <Button 
+                        margin={{left: '10px'}}
+                        onClick={()=>API.grantRequest(req.id, true)} 
+                        hoverIndicator="#6DA3C7"
+                        focusIndicator={true}
+                        style={{
+                          background: "#0C385B", width: "90px",
+                          color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
+                        }}
+                      >
+                        <Text size="14px" weight="bold"> Accept </Text>
+                      </Button>
+                    )}
+                    <Button 
+                      margin={{left: '30px'}} 
+                      onClick={()=>API.grantRequest(req.id, false)}
+                      style={{
+                        background: "#FF4040", width: "90px",
+                        color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
+                      }}
+                    >
+                      <Text size="14px" weight="bold"> {req.status =='GRANTED' ? 'Remove': 'Refuse'} </Text>
+                    </Button>
                   </TableRow>
                 ))}
               </TableBody>

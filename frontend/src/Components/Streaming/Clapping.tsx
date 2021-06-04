@@ -130,6 +130,7 @@ export default class Clapping extends Component<Props, State> {
           background="#EAF1F1"
           hoverIndicator="#BAD6DB"
           round="small"
+          style={{border: "0.5px solid"}}
           onClick={()=>{
             if(this.props.onClick) {
               this.props.onClick()
