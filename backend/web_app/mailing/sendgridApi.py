@@ -287,6 +287,22 @@ class sendgridApi:
         )
         return response
 
+    def send_reminder_new_incoming_talk_for_channel(self, target_email, agora_name, date_str, talk_name, talk_id, speaker_name, speaker_homepage=None):
+        # TODO: get local time from browser of users and convert time into his local time 
+        template_id = "d-74a1ea572df2402a84c0c2199d892257"
+        human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
+        response = self._post_sendgrid_request(
+            target_email=target_email,
+            dynamic_template_data={
+                    "agora_name": agora_name,
+                    "date_str": human_readable_date,
+                    "talk_name": talk_name,
+                    "talk_id": talk_id,
+                    "speaker_name": speaker_name
+                },
+            template_id=template_id
+        )
+        return response
 #################
 # TESTING CELL: #
 #################

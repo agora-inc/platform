@@ -1,6 +1,7 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TopicRepository import TopicRepository
 from repository.InstitutionRepository import InstitutionRepository
+from repository.TalkRepository import TalkRepository
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 
@@ -16,6 +17,7 @@ class EmailRemindersRepository:
         self.channels = ChannelRepository(db=db)
         self.topics = TopicRepository(db=self.db)
         self.institutions = InstitutionRepository(db=self.db)
+        self.talks = TalkRepository(db=self.db)
         self.mail_sys = mail_sys
 
     def deleteEmailRemindersForTalk(self, talkId):
@@ -156,7 +158,19 @@ class EmailRemindersRepository:
             ;
             '''
         reminderIds = self.db.run_query(get_reminders_query)
-        
+
+
+        # get info talk
+        talk_info = self.talks.getTalkById(talkId)
+
+        if talk_info is None:
+            raise Exception("sendEmailReminders: no talk ID with id={talkId}")
+
+        agora_name = talk_info["channel_name"]
+        date_str = talk_info["date"]
+        talk_name = talk_info["name"]
+        speaker_name = talk_info["talk_speaker"] 
+
         if isinstance(reminderIds, list):
             for reminderId in reminderIds:
                 try:
@@ -166,18 +180,13 @@ class EmailRemindersRepository:
                     # send
                     for email in emails:
                         # CHECK IF POSSIBLE TO SEND ALL EMAILS AT HE SAME TIME (better for error handling)
-                        #
-                        #
-                        #
-                        #
-                        #
-                        #
-                        #  WIN
-                        #
-                        #
-                        #
-                        #
-                        self.mail_sys.
+                        self.mail_sys.send_reminder_new_incoming_talk_for_channel(
+                            email, 
+                            agora_name, 
+                            date_str, 
+                            talk_name, 
+                            talkId, 
+                            speaker_name)
 
                     # update status to sent
                     sent_update_query = f'''
