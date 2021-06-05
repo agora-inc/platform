@@ -84,8 +84,8 @@ class EmailRemindersRepository:
                             delta_time,
                             status
                         ) VALUES (
-                            {talkId},
                             "{reminder2_time}",
+                            {talkId},
                             {to_talk_participants},
                             {to_mailing_list},
                             {to_followers},
@@ -142,3 +142,125 @@ class EmailRemindersRepository:
                 groups.append("Followers")
 
         return groups
+
+    def sendEmailReminders(self, talkId, delta_time_window):
+        # get reminders whose time_sending are within [time_sending-delta_time_window; time_sending + delta_time_window]
+        get_reminders_query = f'''
+            SELECT id from EmailReminders
+            WHERE (
+                time < DATE(NOW() - INTERVAL {delta_time_window} HOURS)
+             AND time > DATE(NOW() - INTERVAL {delta_time_window} HOURS)
+             )
+             AND status != "sent"
+             AND talk_id = {talkId}
+            ;
+            '''
+        reminderIds = self.db.run_query(get_reminders_query)
+        
+        if isinstance(reminderIds, list):
+            for reminderId in reminderIds:
+                try:
+                    # Query audience emails
+                    emails = self.getEmailsForReminders(reminderId)
+
+                    # send
+                    for email in emails:
+                        # CHECK IF POSSIBLE TO SEND ALL EMAILS AT HE SAME TIME (better for error handling)
+                        #
+                        #
+                        #
+                        #
+                        #
+                        #
+                        #  WIN
+                        #
+                        #
+                        #
+                        #
+                        self.mail_sys.
+
+                    # update status to sent
+                    sent_update_query = f'''
+                        UPDATE EmailReminders
+                        SET 
+                            status="sent",
+                        WHERE id = {reminderId};
+                        '''
+                    self.db.run_query(sent_update_query)
+
+                except Exception as e:
+                    # update status to error
+                    error_update_query = f'''
+                    UPDATE EmailReminders
+                    SET 
+                        status="error",
+                        error_msg={str(e)}
+                    WHERE id = {reminderId};
+                    '''
+                    self.db.run_query(error_update_query)
+
+        return "ok"
+
+    def getEmailsForReminders(self, reminderId):
+        # query reminder
+        reminder_query = f'''
+            SELECT t1.to_talk_participants, t1.to_mailing_list, t1.to_followers, t2.channel_id FROM EmailReminders t1
+            INNER JOIN Talks t2
+            WHERE t1.id = {reminderId}
+                AND t1.talk_id = t2.id
+            ;
+        '''
+
+        res = self.db.run_query(reminder_query)
+        if res is not None:
+            res = res[0]
+            send_to_participants = res["to_talk_participants"]
+            send_to_mailing_list = res["to_mailing_list"] 
+            send_to_followers = res["to_followers"]
+
+            talk_id = res["talk_id"]
+            channel_id = res["channel_id"]
+            
+            emails = []
+
+            if send_to_participants:
+                get_participant_emails_query = f'''
+                    SELECT email from TalkRegistrations
+                    WHERE talk_id = {talk_id}
+                    AND status in ("accepted","pending");
+                '''
+                res = self.db.run_query(get_participant_emails_query)
+
+                with open("/home/cloud-user/getEmailsForReminders_participants.txt", "w") as file:
+                    file.write(str(res))
+
+                emails = emails + res
+
+            if send_to_mailing_list:
+                get_mailing_list_emails_query = f'''
+                    SELECT email from ChannelMailingList
+                    WHERE channel_id = {channel_id};
+                '''
+                res = self.db.run_query(get_mailing_list_emails_query)
+
+                with open("/home/cloud-user/getEmailsForReminders_mailing_list.txt", "w") as file:
+                    file.write(str(res))
+
+                emails = emails + res
+
+
+            if send_to_followers:
+                get_followers_emails_query = f'''
+                    SELECT email from 
+                '''
+                res = self.db.run_query(get_followers_emails_query)
+
+                with open("/home/cloud-user/getEmailsForReminders_followers.txt", "w") as file:
+                    file.write(str(res))
+
+                emails = emails + res
+
+
+        return emails
+
+        
