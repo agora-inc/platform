@@ -6,6 +6,7 @@ from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from app.databases import agora_db
 
+
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
     TODO: All methods involving the "state" field must be tested.
@@ -15,10 +16,10 @@ mail_sys = sendgridApi()
 class EmailRemindersRepository:
     def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
-        self.channels = ChannelRepository(db=self.db)
-        self.topics = TopicRepository(db=self.db)
-        self.institutions = InstitutionRepository(db=self.db)
-        self.talks = TalkRepository(db=self.db)
+        self.channels = ChannelRepository()
+        self.topics = TopicRepository()
+        self.institutions = InstitutionRepository()
+        self.talks = TalkRepository()
         self.mail_sys = mail_sys
 
     def deleteEmailRemindersForTalk(self, talkId):
