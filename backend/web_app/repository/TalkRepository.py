@@ -6,6 +6,7 @@ from repository.EmailRemindersRepository import EmailRemindersRepository
 
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
+from app.databases import agora_db
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
@@ -14,7 +15,7 @@ from datetime import datetime, timedelta
 mail_sys = sendgridApi()
 
 class TalkRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)

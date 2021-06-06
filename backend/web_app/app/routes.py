@@ -6,7 +6,6 @@ from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository
 from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository
-from mailing import sendgridApi
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -16,21 +15,19 @@ from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-mail_sys = sendgridApi.sendgridApi()
 
-users = UserRepository.UserRepository(db=agora_db, mail_sys=mail_sys)
-tags = TagRepository.TagRepository(db=agora_db)
-topics = TopicRepository.TopicRepository(db=agora_db)
-questions = QandARepository.QandARepository(db=agora_db)
-streams = StreamRepository.StreamRepository(db=agora_db)
-talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
-emailReminders = EmailRemindersRepository.EmailRemindersRepository(db=agora_db, mail_sys=mail_sys)
-videos = VideoRepository.VideoRepository(db=agora_db)
-channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
-search = SearchRepository.SearchRepository(db=agora_db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
-mailinglist = MailingListRepository.MailingListRepository(db=agora_db, mail_sys=mail_sys)
-sendgridApi = sendgridApi.sendgridApi()
+users = UserRepository.UserRepository()
+tags = TagRepository.TagRepository()
+topics = TopicRepository.TopicRepository()
+questions = QandARepository.QandARepository()
+streams = StreamRepository.StreamRepository()
+talks = TalkRepository.TalkRepository()
+emailReminders = EmailRemindersRepository.EmailRemindersRepository()
+videos = VideoRepository.VideoRepository()
+channels = ChannelRepository.ChannelRepository()
+search = SearchRepository.SearchRepository()
+invitations = InvitedUsersRepository.InvitedUsersRepository()
+mailinglist = MailingListRepository.MailingListRepository()
 
 
 # BASE_API_URL = "http://localhost:8000"

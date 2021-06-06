@@ -4,6 +4,7 @@ from repository.InstitutionRepository import InstitutionRepository
 from repository.TalkRepository import TalkRepository
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
+from app.databases import agora_db
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
@@ -12,9 +13,9 @@ from datetime import datetime, timedelta
 mail_sys = sendgridApi()
 
 class EmailRemindersRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
-        self.channels = ChannelRepository(db=db)
+        self.channels = ChannelRepository(db=self.db)
         self.topics = TopicRepository(db=self.db)
         self.institutions = InstitutionRepository(db=self.db)
         self.talks = TalkRepository(db=self.db)
@@ -145,21 +146,7 @@ class EmailRemindersRepository:
 
         return groups
 
-    def sendEmailReminders(self, talkId, delta_time_window):
-        # get reminders whose time_sending are within [time_sending-delta_time_window; time_sending + delta_time_window]
-        get_reminders_query = f'''
-            SELECT id from EmailReminders
-            WHERE (
-                time < DATE(NOW() - INTERVAL {delta_time_window} HOURS)
-             AND time > DATE(NOW() - INTERVAL {delta_time_window} HOURS)
-             )
-             AND status != "sent"
-             AND talk_id = {talkId}
-            ;
-            '''
-        reminderIds = self.db.run_query(get_reminders_query)
-
-
+    def sendEmailsForReminder(self, reminderId, talkId):
         # get info talk
         talk_info = self.talks.getTalkById(talkId)
 
@@ -171,46 +158,42 @@ class EmailRemindersRepository:
         talk_name = talk_info["name"]
         speaker_name = talk_info["talk_speaker"] 
 
-        if isinstance(reminderIds, list):
-            for reminderId in reminderIds:
-                try:
-                    # Query audience emails
-                    emails = self.getEmailsForReminders(reminderId)
+        try:
+            # Query audience emails
+            emails = self.mail_sys.getEmailsForReminders(reminderId)
 
-                    # send
-                    for email in emails:
-                        # CHECK IF POSSIBLE TO SEND ALL EMAILS AT HE SAME TIME (better for error handling)
-                        self.mail_sys.send_reminder_new_incoming_talk_for_channel(
-                            email, 
-                            agora_name, 
-                            date_str, 
-                            talk_name, 
-                            talkId, 
-                            speaker_name)
+            # send
+            for email in emails:
+                self.mail_sys.send_reminder_new_incoming_talk_for_channel(
+                    email, 
+                    agora_name, 
+                    date_str, 
+                    talk_name, 
+                    talkId, 
+                    speaker_name)
 
-                    # update status to sent
-                    sent_update_query = f'''
-                        UPDATE EmailReminders
-                        SET 
-                            status="sent",
-                        WHERE id = {reminderId};
-                        '''
-                    self.db.run_query(sent_update_query)
+            # update status to sent
+            sent_update_query = f'''
+                UPDATE EmailReminders
+                SET 
+                    status="sent",
+                WHERE id = {reminderId};
+                '''
+            self.db.run_query(sent_update_query)
+            return "ok"
 
-                except Exception as e:
-                    # update status to error
-                    error_update_query = f'''
-                    UPDATE EmailReminders
-                    SET 
-                        status="error",
-                        error_msg={str(e)}
-                    WHERE id = {reminderId};
-                    '''
-                    self.db.run_query(error_update_query)
+        except Exception as e:
+            # update status to error
+            error_update_query = f'''
+            UPDATE EmailReminders
+            SET 
+                status="error",
+                error_msg={str(e)}
+            WHERE id = {reminderId};
+            '''
+            self.db.run_query(error_update_query)
 
-        return "ok"
-
-    def getEmailsForReminders(self, reminderId):
+    def getEmailsForReminder(self, reminderId):
         # query reminder
         reminder_query = f'''
             SELECT t1.to_talk_participants, t1.to_mailing_list, t1.to_followers, t2.channel_id FROM EmailReminders t1
@@ -219,7 +202,6 @@ class EmailRemindersRepository:
                 AND t1.talk_id = t2.id
             ;
         '''
-
         res = self.db.run_query(reminder_query)
         if res is not None:
             res = res[0]
@@ -266,10 +248,24 @@ class EmailRemindersRepository:
 
                 with open("/home/cloud-user/getEmailsForReminders_followers.txt", "w") as file:
                     file.write(str(res))
-
                 emails = emails + res
-
 
         return emails
 
+    def getReminderIdsToBeSent(self, delta_time_window):
+        # get reminders whose time_sending are within [time_sending-delta_time_window; time_sending + delta_time_window]
+        get_reminders_query = f'''
+            SELECT id from EmailReminders
+            WHERE (
+                time < DATE(NOW() - INTERVAL {delta_time_window} HOURS)
+                AND time > DATE(NOW() - INTERVAL {delta_time_window} HOURS)
+                )
+                AND status != "sent"
+            ;
+        '''
+        res = self.db.run_query(get_reminders_query)
         
+        if res is None:
+            return []
+        else:
+            return res
