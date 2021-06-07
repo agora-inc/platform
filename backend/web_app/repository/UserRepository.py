@@ -151,8 +151,11 @@ class UserRepository:
         else:
             return self.institutions.isEmailVerifiedAcademicEmail(email)
 
-    def authenticate(self, username, password):
-        user = self.getUser(username)
+    def authenticate(self, credential, password):
+        if "@" in credential:
+            user = self.getUserByEmail(credential)
+        else:
+            user = self.getUser(credential)
 
         if user != None and check_password_hash(user["password_hash"], password):
             return user 
