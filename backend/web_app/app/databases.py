@@ -8,10 +8,8 @@ class SqlDatabase:
         self.user = "admin"
         self.password = "123.qwe.asd"
         self.db = "apollo"
-
         self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.
                                 DictCursor)
-
         
     def open_connection(self):
         """Connect to MySQL Database."""
