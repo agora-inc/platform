@@ -162,7 +162,7 @@ export default class RegistrationsTab extends Component<Props, State> {
 
     return (
       <Box direction="column">
-        <Box margin={{bottom: "60px"}} gap="15px">
+        {/* <Box margin={{bottom: "60px"}} gap="15px">
           <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
             <Text size="16px" weight="bold" color="black"> 
               Automatic registration 
@@ -204,7 +204,7 @@ export default class RegistrationsTab extends Component<Props, State> {
 
           </Box>
 
-        </Box>
+        </Box> */}
 
         {(!showItem && (this.state.pendingRegistrationList.length == 0)) &&
             (<Text size="14px">No pending applications.</Text>
