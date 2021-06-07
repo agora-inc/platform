@@ -3,11 +3,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
 import jwt
+from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
 
 # for emails
 from flask_mail import Message
 from flask import render_template
+from app.databases import agora_db
 
 
 mail_sys = sendgridApi()
@@ -18,10 +20,11 @@ class User:
         self.password = generate_password_hash(password)
 
 class UserRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.secret = b'\xccu\x9e2\xda\xe8\x16\x8a\x137\xde@G\xc7T\xf1\x16\xca\x05\xee\xa7\xa4\x98\x05'
         self.mail_sys = mail_sys
+        self.institutions = InstitutionRepository(db=self.db)
 
     def getAllUsers(self):
         query = "SELECT * FROM Users"
@@ -134,6 +137,19 @@ class UserRepository:
             return 500, str(e)
 
         return self.getUserById(userId)
+
+    def UserIsVerifiedAcademics(self, userId):
+        # query academic email account
+        get_academic_email = f'''
+            SELECT email FROM Users WHERE user_id = {userId};
+        '''
+        email = self.db.run_query(get_academic_email)["email"]
+
+        # check if in verified domains
+        if email is None:
+            return False
+        else:
+            return self.institutions.isEmailVerifiedAcademicEmail(email)
 
     def authenticate(self, username, password):
         user = self.getUser(username)
