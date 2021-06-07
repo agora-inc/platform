@@ -998,11 +998,11 @@ export default class EditTalkModal extends Component<Props, State> {
                 <Text size="12px"> Securely upload your mailing list in the tab 'Mailing List' in your agora. </Text>
               </ReactTooltip>
             </Box>
-            <CheckBox
+            {/* <CheckBox
               label="Your followers"
               checked={this.state.reminderEmailGroup.includes("Followers")}
               onChange={() => this.toggleReminderEmailGroup("Followers")}
-            />
+            /> */}
 
           </Box>
         )}
