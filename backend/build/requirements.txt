@@ -50,7 +50,6 @@ parsedatetime==2.4
 pbr==3.1.1
 Pillow==5.1.0
 pip==9.0.1
-pprint==0.1
 pyasn1==0.4.2
 pyasn1-modules==0.2.1
 pycparser==2.20
@@ -85,7 +84,7 @@ urllib3==1.22
 virtualenv==15.1.0
 Werkzeug==1.0.1
 wheel==0.30.0
-wrapt==1.12.1
+wrapt==1.11.1
 #zope.component==4.3.0
 #zope.event==4.2.0
 #zope.hookable==4.0.4

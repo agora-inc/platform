@@ -1,7 +1,7 @@
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
 sys.path.insert(1, '/home/cloud-user/plateform/agora/backend/web_app/app')
-sys.path.insert(1, '/home/cloud-user/plateform/agora/backend/web_app/repository')
+sys.path.insert(1, '/home/cloud-user/plateform/agora/backend/web_app')
 
 
 try:
@@ -11,7 +11,7 @@ except Exception as e:
         file.write(str(e) + "\n" + str(sys.path))
 
 try:
-    from EmailRemindersRepository import EmailRemindersRepository
+    from repository.EmailRemindersRepository import EmailRemindersRepository
     emailReminders = EmailRemindersRepository(db=agora_db)
 except Exception as e:
     with open("/home/cloud-user/test/crontab/hohoerr.txt", "w") as file:

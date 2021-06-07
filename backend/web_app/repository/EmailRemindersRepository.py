@@ -1,7 +1,6 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TopicRepository import TopicRepository
 from repository.InstitutionRepository import InstitutionRepository
-from repository.TalkRepository import TalkRepository
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from app.databases import agora_db
@@ -19,7 +18,6 @@ class EmailRemindersRepository:
         self.channels = ChannelRepository()
         self.topics = TopicRepository()
         self.institutions = InstitutionRepository()
-        self.talks = TalkRepository()
         self.mail_sys = mail_sys
 
     def deleteEmailRemindersForTalk(self, talkId):
@@ -148,8 +146,9 @@ class EmailRemindersRepository:
         return groups
 
     def sendEmailsForReminder(self, reminderId, talkId):
-        # get info talk
-        talk_info = self.talks.getTalkById(talkId)
+        # NOTE: Copied from getTalkById from backend/web_app/repository/TalkRepository.py)
+        query = f'SELECT * FROM Talks WHERE id = {talkId};'
+        talk_info = self.db.run_query(query)[0]
 
         if talk_info is None:
             raise Exception("sendEmailReminders: no talk ID with id={talkId}")
