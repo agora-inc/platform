@@ -8,13 +8,17 @@ class SqlDatabase:
         self.user = "admin"
         self.password = "123.qwe.asd"
         self.db = "apollo"
+
         self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.
                                 DictCursor)
+
+        
     def open_connection(self):
         """Connect to MySQL Database."""
         try:
             if self.con is None:
                 self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.DictCursor)
+        
         except pymysql.MySQLError as e:
             logging.error(e)
             sys.exit()
@@ -27,7 +31,7 @@ class SqlDatabase:
             try:
                 self.open_connection()
                 with self.con.cursor() as cur:
-                    if 'SELECT' in query:
+                    if 'SELECT' in query or 'select' in query:
                         records = []
                         cur.execute(query)
                         result = cur.fetchall()
