@@ -150,20 +150,24 @@ def authenticate():
         return jsonify("ok")
     logRequest(request)
     params = request.json
-    username = params['username']
-    password = params['password']
-    user = users.authenticate(username, password)
 
-    if not user:
-        app.logger.debug(f"Unsuccessful login for user {username} (incorrect username or password)")
+    password = params['password']
+    credential = params['credential']
+
+    user = users.authenticate(credential, password)
+
+    if user:
+        app.logger.debug(f"Successful login for username: {credential}")
+    else:
+        app.logger.debug(f"Unsuccessful login for username {credential} (incorrect username or password)")
         return exceptions.Unauthorized("Incorrect username or password")
 
-    app.logger.debug(f"Successful login for user {username}")
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
 
     return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
+
 
 @app.route('/refreshtoken', methods=["POST"])
 def refreshAccessToken():

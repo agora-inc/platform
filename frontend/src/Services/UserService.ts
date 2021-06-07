@@ -33,11 +33,11 @@ const register = (
     });
 };
 
-const login = (username: string, password: string, callback: any) => {
+const login = (credential: string, password: string, callback: any) => {
   axios
     .post(
       baseApiUrl + "/users/authenticate",
-      { username: username, password: password },
+      { credential: credential, password: password },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
