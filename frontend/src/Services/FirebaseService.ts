@@ -66,10 +66,24 @@ const API = {
             API.removeRequest(id)
         }, 5000)
     },
-    removeRequest(id:string){
-        console.log(id, 'rem')
+    removeRequest(id:string) {
         db.collection('requests').doc(id).delete();
-    }
+    },
+    slideShare: async(talk_id:string) => {
+        let req = await db.collection('slide').where('talk_id', '==', talk_id).get()
+        console.log(req)
+        if(req.size > 0) {
+            return req.docs[0]
+        }
+        return await db.collection('slide').add({pageNumber: 1, talk_id});
+    },
+    slideNavigate: async (id:string, pageNumber:number=1) => {
+        await db.collection('slide').doc(id).update({pageNumber});
+    },
+    slideStop: async (id:string) => {
+        await db.collection('slide').doc(id).delete();
+    },
+
 }
 
 export { firebase, db, API };

@@ -374,6 +374,34 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
   get(`talks/isavailable?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+const uploadSlide = async (talkId: string, image: File) => {
+  // const data = new FormData();
+  // data.append("channelId", channelId.toString());
+  // data.append("image", image);
+  // // console.log(data.get("image"));
+  // // HACK: we had the ts argument to prevent from caching.
+  // let current_time = Math.floor(new Date().getTime() / 5000);
+  // return await axios.post(baseApiUrl + "/channels/avatar?ts=" + current_time, data)
+  return {url: 'https://arxiv.org/pdf/2106.01369.pdf'}
+};
+
+const getSlide = async (talklId: string) => {
+  // const data = new FormData();
+  // data.append("channelId", channelId.toString());
+  // let current_time = Math.floor(new Date().getTime() / 5000);
+  // return await axios.post(baseApiUrl + "/channels/avatar?ts=" + current_time, data)
+  return {url: 'https://arxiv.org/pdf/2106.01369.pdf'}
+};
+const removeSlide = async (talkId: string) => {
+  // const data = new FormData();
+  // data.append("channelId", channelId.toString());
+  // let current_time = Math.floor(new Date().getTime() / 5000);
+  // return await axios.post(baseApiUrl + "/channels/avatar?ts=" + current_time, data)
+  return true
+};
+
+
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -411,6 +439,9 @@ export const TalkService = {
   registrationStatusForTalk,
   getTalkRegistrations,
   getRegisteredTalksForUser,
+  uploadSlide,
+  getSlide,
+  removeSlide,
 };
 
 export type Talk = {

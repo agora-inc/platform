@@ -14,10 +14,11 @@ import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
-import {MdScreenShare, MdStopScreenShare} from 'react-icons/md'
+import {MdScreenShare, MdStopScreenShare, MdSlideshow, MdClear} from 'react-icons/md'
 import {db, API} from '../Services/FirebaseService'
 
 import '../Styles/all-stream-page.css'
+import PDFViewer from "../Components/PDFViewer";
 
 
 interface Props {
@@ -41,6 +42,7 @@ interface Control {
   mic: boolean;
   video: boolean;
   screenShare: boolean;
+  slideShare: boolean;
   fullscreen: boolean
 }
 
@@ -90,9 +92,12 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
   
   const [talkId, setTalkId] = useState('')
+  const [slideShareId, setSlideShareId] = useState('')
+
+  const [slideUrl, setSlideUrl] = useState('')
 
   const [callControl, setCallControl] = useState({
-    mic: true, video: true, screenShare: false, fullscreen: false
+    mic: true, video: true, screenShare: false, fullscreen: false, slideShare: false
   } as Control)
 
   const [state, setState] = useState({
@@ -223,8 +228,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
   async function share_screen() {
     // Create a new stream for the screen share.
-    let {appId , uid} = localUser
-    let talkId = props.match.params.talk_id
 
     try{
       const config = {
@@ -347,6 +350,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     (async ()=>{
+      let {url} = await TalkService.getSlide(props.match.params.talk_id)
+      setSlideUrl(url)
       setTalkId(props.match.params.talk_id)
       join_live_chat()
     })()
@@ -369,12 +374,24 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setTalkStatus(data.status)
       }
     })
+
     return ()=>{
       leave()
       unsubs()
     }
   }, [talkId])
 
+  async function slideShare(slideShare: boolean) {
+    if(slideShare) {
+      let req = await API.slideShare(talkId) as any
+      setSlideShareId(req.id)
+      setCallControl({...callControl, slideShare: true})
+    }else{
+      let req = await API.slideStop(slideShareId) as any
+      setSlideShareId('')
+      setCallControl({...callControl, slideShare: false})
+    }
+  }
 
   return (
       <Box align="center">
@@ -396,7 +413,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         >
           
           <Box gridArea="player" justify="between" gap="small">
-            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
+            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable||callControl.slideShare?'screen-share':''}`}
               style={{height: '90%', position: 'relative'}}>
               <Box className='camera-video'>
                 {remoteVideoTrack.map((user)=>(
@@ -408,6 +425,9 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
               { isScreenAvailable && 
                   <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
+              }
+              {callControl.slideShare &&
+                <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={true} />
               }
 
               <Box className='call-control' direction='row'>
@@ -422,6 +442,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                 {callControl.screenShare?
                   <MdStopScreenShare onClick={stop_share_screen} />:
                   <MdScreenShare onClick={share_screen} />
+                }
+                {callControl.slideShare?
+                  <MdClear onClick={()=> slideShare(false)} />:
+                  <MdSlideshow onClick={()=> slideShare(true)} />
                 }
                 {callControl.fullscreen?
                   <FaCompress onClick={toggleFullscreen} />:

@@ -72,6 +72,7 @@ interface State {
   saveButtonFade: boolean;
   topicId: number;
   field: string;
+  slideUrl?: string;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -111,6 +112,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       saveButtonFade: false,
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
+      slideUrl: ""
     };
   }
 
@@ -220,6 +222,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchTalks();
     this.fetchDrafts();
     this.storeUserData();
+    this.fetchSlide()
   };
 
   fetchChannelViewCount = () => {
@@ -430,6 +433,19 @@ export default class ManageChannelPage extends Component<Props, State> {
       user.id,
       () => {}
     );
+  };
+
+  onSlideUpload = async (e: any) => {
+    console.log(e.target.files[0]);
+    await TalkService.uploadSlide(this.state.channel!.id.toString(), e.target.files[0])
+    await this.fetchSlide()
+  };
+  fetchSlide = async () => {
+    let {url} = await TalkService.getSlide(this.state.channel!.id.toString())
+    this.setState({slideUrl: url})
+  };
+  deleteSlide = async () => {
+    await TalkService.removeSlide(this.state.channel!.id.toString())
   };
 
   onFileChosen = (e: any) => {
@@ -712,7 +728,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </Box>
               )}
               {this.banner()}
+              
+              <Box margin={{ top: "10px", bottom: "20px" }}>
+                <Text>Upload Slides</Text>
+                <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>
+                <ImageUploader
+                  text="Upload slide"
+                  onUpload={this.onSlideUpload}
+                  />
 
+              </Box>
 
               <Box margin={{ top: "10px", bottom: "20px" }}>
                 <Text
