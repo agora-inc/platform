@@ -35,10 +35,11 @@ interface State {
   viewCount: number;
   overlay: boolean;
 }
-interface Message{
+interface Message {
   senderId: string;
   text: string;
-  name?: string
+  name?: string;
+  first: boolean;
 }
 
 interface Control {
@@ -320,7 +321,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   async function on_message(msg:any, senderId:string){
     let attr = await agoraMessageClient.getUserAttributes(senderId)
-    setMessages((m)=>[...m, {senderId, text: msg.text, name: attr.name ||''}])
+    setMessages((m) => {
+      let first = m.length === 0 ? true : m[m.length-1].senderId !== senderId
+      return [...m, {senderId, text: msg.text, name: attr.name ||'', first: first}]
+    })
   }
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return
@@ -328,10 +332,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     let text = evt.target.value
     // @ts-ignore
     evt.target.value = ''
-    try{
-      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Admin'}])
+    try {
+      let first = messages.length === 0 ? true : messages[messages.length-1].senderId !== localUser.uid
+      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Admin', first: first}])
       await messageChannel.sendMessage({text})
-    }catch{
+    } catch{
       console.log('error sending message')
     }
   }
@@ -619,12 +624,14 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
           <Box gridArea="chat" background="#EAF1F1" round="small" height="20vw" margin={{bottom: "10px"}}>
             {/* <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Chat</Text> */}
-            <Box height="90%" gap="2px">
+            <Box height="90%" flex={true} gap="2px" overflow="auto">
               {messages.map((msg, i)=>(
-                  <Box alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap="2px">
-                    <Text size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
-                      {msg.name}
-                    </Text>
+                  <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "0px"}>
+                    { msg.first && (
+                      <Text color="#0C385B" size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                        {msg.name}
+                      </Text>
+                    )}
                     <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
                       {textToLatex(msg.text)}
                     </Text>
