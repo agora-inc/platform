@@ -1,8 +1,8 @@
 import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
-import EmailContactManagement from "../Components/Channel/EmailContactManagement";
-import Identicon from "@polkadot/react-identicon/icons/Polkadot";
+import { baseApiUrl } from "../config";
+import axios from "axios";
 
 const getTalkById = (talkId: number, callback: any) => {
   get(`talk/info?id=${talkId}`, callback);
@@ -374,32 +374,38 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
   get(`talks/isavailable?talkId=${talkId}&userId=${userId}`, callback);
 };
 
-const uploadSlide = async (talkId: string, image: File) => {
+//////////////////
+// Slides management
+//////////////////
+const uploadSlide = async (talkId: number, slides: File, callback: any) => {
   // const data = new FormData();
-  // data.append("channelId", channelId.toString());
-  // data.append("image", image);
-  // // console.log(data.get("image"));
-  // // HACK: we had the ts argument to prevent from caching.
-  // let current_time = Math.floor(new Date().getTime() / 5000);
-  // return await axios.post(baseApiUrl + "/channels/avatar?ts=" + current_time, data)
+  // data.append("talkId", talkId.toString());
+  // data.append("slides", slides);
+  // axios.post(baseApiUrl + "/talks/slides", data,       {
+  //   headers: {
+  //     "Access-Control-Allow-Origin": "*",
+  //   },
+  // }).then(function (response) {
+  //   callback(response.data);
+  // });
   return {url: 'https://arxiv.org/pdf/2106.01369.pdf'}
 };
 
-const getSlide = async (talklId: string) => {
-  // const data = new FormData();
-  // data.append("channelId", channelId.toString());
-  // let current_time = Math.floor(new Date().getTime() / 5000);
-  // return await axios.post(baseApiUrl + "/channels/avatar?ts=" + current_time, data)
+const getSlide = async (talkId: string) => {
+  // return baseApiUrl + `/talks/slides?talkId=${talkId}`;
   return {url: 'https://arxiv.org/pdf/2106.01369.pdf'}
 };
-const removeSlide = async (talkId: string) => {
-  // const data = new FormData();
-  // data.append("channelId", channelId.toString());
-  // let current_time = Math.floor(new Date().getTime() / 5000);
-  // return await axios.post(baseApiUrl + "/channels/avatar?ts=" + current_time, data)
+const removeSlide = async (talkId: string, callback: any) => {
+  // axios
+  //   .delete(baseApiUrl + "/talks/slides", {
+  //     headers: { "Access-Control-Allow-Origin": "*" },
+  //     data: {
+  //       talkId: talkId,
+  //     },
+  //   })
+  //   .then(() => callback());
   return true
 };
-
 
 
 export const TalkService = {
@@ -431,7 +437,7 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
-  // talk registration management
+  // Talk registration management
   acceptTalkRegistration,
   refuseTalkRegistration,
   registerForTalk,
@@ -439,6 +445,7 @@ export const TalkService = {
   registrationStatusForTalk,
   getTalkRegistrations,
   getRegisteredTalksForUser,
+  // Slides management
   uploadSlide,
   getSlide,
   removeSlide,

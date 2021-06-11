@@ -3,6 +3,7 @@ from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime
+import os
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
@@ -888,3 +889,32 @@ class TalkRepository:
             return "ok"
         except Exception as e:
             raise Exception(f"notifyCommmunityAboutNewTalk: exception: {e}")
+
+    # --------------------------------------------
+    # Talks: presentation slides methods
+    # --------------------------------------------
+    def addSlides(self, talkId):
+        query = f'UPDATE Talks SET has_slides=1 WHERE id = {talkId};'
+        self.db.run_query(query)
+
+    def getSlidesLocation(self, talkId):
+        # NOTE: only supports .pdf for now
+        query = f'SELECT has_slides FROM Talks WHERE id = {talkId};'
+        res = self.db.run_query(query)
+
+        if res[0]["has_slides"] == 1:
+            return f"/home/cloud-user/plateform/agora/slides/{talkId}.pdf"
+        else:
+            return "no slides found."
+
+    def removeSlides(self, talkId):
+        query = f'UPDATE Talks SET has_slides=0 WHERE id = {talkId}'
+        self.db.run_query(query)
+
+        file_path = self.getSlidesLocation(talkId)
+        try:
+            os.remove(file_path)
+            return "ok"
+        except Exception as e:
+            app.logger.error("Error removing or closing downloaded file handle", e)
+            return str(e)
