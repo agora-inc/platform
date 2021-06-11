@@ -350,7 +350,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     (async ()=>{
-      let {url} = await TalkService.getSlide(props.match.params.talk_id)
+      let {url} = await TalkService.getSlide(Number(props.match.params.talk_id))
       setSlideUrl(url)
       setTalkId(props.match.params.talk_id)
       join_live_chat()

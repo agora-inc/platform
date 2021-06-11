@@ -391,11 +391,11 @@ const uploadSlide = async (talkId: number, slides: File, callback: any) => {
   return {url: 'https://arxiv.org/pdf/2106.01369.pdf'}
 };
 
-const getSlide = async (talkId: string) => {
+const getSlide = async (talkId: number) => {
   // return baseApiUrl + `/talks/slides?talkId=${talkId}`;
   return {url: 'https://arxiv.org/pdf/2106.01369.pdf'}
 };
-const removeSlide = async (talkId: string, callback: any) => {
+const removeSlide = async (talkId: number, callback: any) => {
   // axios
   //   .delete(baseApiUrl + "/talks/slides", {
   //     headers: { "Access-Control-Allow-Origin": "*" },

@@ -437,15 +437,15 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   onSlideUpload = async (e: any) => {
     console.log(e.target.files[0]);
-    await TalkService.uploadSlide(this.state.channel!.id.toString(), e.target.files[0])
+    await TalkService.uploadSlide(this.state.channel!.id, e.target.files[0], ()=>{})
     await this.fetchSlide()
   };
   fetchSlide = async () => {
-    let {url} = await TalkService.getSlide(this.state.channel!.id.toString())
+    let {url} = await TalkService.getSlide(this.state.channel!.id)
     this.setState({slideUrl: url})
   };
   deleteSlide = async () => {
-    await TalkService.removeSlide(this.state.channel!.id.toString())
+    await TalkService.removeSlide(this.state.channel!.id, () => {})
   };
 
   onFileChosen = (e: any) => {
