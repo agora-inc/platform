@@ -903,7 +903,7 @@ class TalkRepository:
         res = self.db.run_query(query)
 
         if res[0]["has_slides"] == 1:
-            return f"/home/cloud-user/plateform/agora/slides/{talkId}.pdf"
+            return f"/home/cloud-user/plateform/agora/storage/slides/{talkId}.pdf"
         else:
             return "no slides found."
 

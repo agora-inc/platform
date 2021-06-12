@@ -152,7 +152,7 @@ export default class Clapping extends Component<Props, State> {
                 right: "100px",
               }}
             >
-              Press the space bar to clap
+              Press "space" to clap
             </Heading>
           </Layer>
         )}

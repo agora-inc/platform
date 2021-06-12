@@ -388,23 +388,29 @@ const uploadSlide = async (talkId: number, slides: File, callback: any) => {
   // }).then(function (response) {
   //   callback(response.data);
   // });
-  return {url: 'https://arxiv.org/pdf/2106.01369.pdf'}
+  // return {url: 'http://www.hairer.org/notes/slides_ICM.pdf'}
+  return {url: 'https://arxiv.org/pdf/1908.05659.pdf'}
 };
 
 const getSlide = async (talkId: number) => {
-  // return baseApiUrl + `/talks/slides?talkId=${talkId}`;
-  return {url: 'https://arxiv.org/pdf/2106.01369.pdf'}
+  // var CACHE_DELAY = 500
+  // let current_time = Math.floor(new Date().getTime() / 1000) * CACHE_DELAY;
+
+  // return { url: baseApiUrl + `/talks/slides?talkId=${talkId}&ts=` + current_time};
+  // return {url: 'http://www.hairer.org/notes/slides_ICM.pdf'}
+  return {url: 'https://arxiv.org/pdf/1908.05659.pdf'}
 };
+
 const removeSlide = async (talkId: number, callback: any) => {
-  // axios
-  //   .delete(baseApiUrl + "/talks/slides", {
-  //     headers: { "Access-Control-Allow-Origin": "*" },
-  //     data: {
-  //       talkId: talkId,
-  //     },
-  //   })
-  //   .then(() => callback());
-  return true
+  axios
+    .delete(baseApiUrl + "/talks/slides", {
+      headers: { "Access-Control-Allow-Origin": "*" },
+      data: {
+        talkId: talkId,
+      },
+    })
+    .then(() => callback());
+  // return true
 };
 
 
