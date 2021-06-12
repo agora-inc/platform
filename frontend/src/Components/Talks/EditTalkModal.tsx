@@ -606,11 +606,12 @@ export default class EditTalkModal extends Component<Props, State> {
 
 
   render() {
-    var auto_accept = "Select the default option for automatically accepting people to your seminars </br></br>" +
-    "The accepted people will receive two emails: <br/>" + 
-    "- One <b> straight after acceptation </b> with all the event details except the link <br/>" +
-    "- One <b>24 hours before the event</b> to share the streaming URL. <br/><br/>" +
-    "If URL not available, the email is sent as soon as URL is added to event. ";
+    // var auto_accept = "Select the default option for automatically accepting people to your seminars </br></br>" +
+    // "The accepted people will receive two emails: <br/>" + 
+    // "- One <b> straight after acceptation </b> with all the event details except the link <br/>" +
+    // "- One <b>24 hours before the event</b> to share the streaming URL. <br/><br/>" +
+    // "If URL not available, the email is sent as soon as URL is added to event. ";
+    var auto_accept = "'Automatically accepting a registration' means that the person registering to your event will automatically receive its details by email if they belong to one of the below group.";
     var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
     "Example: ox.ac.uk, cam.ac.uk"
 
