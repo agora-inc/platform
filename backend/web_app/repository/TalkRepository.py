@@ -744,7 +744,7 @@ class TalkRepository:
         # HACK: to prevent same agora having 5 talks, we query 20 future talks and limit to 2 max per agora.
         try:
             HARD_LIMIT_PER_AGORA = 3
-            TOTAL_N_TALK = 7
+            TOTAL_N_TALK = 5
             filtered_results = []
             counter_ag = {}
             for talk in res:
