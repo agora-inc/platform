@@ -19,3 +19,4 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 
 from app import routes
+# from . import routes
