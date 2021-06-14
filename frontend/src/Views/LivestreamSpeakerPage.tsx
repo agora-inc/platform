@@ -142,6 +142,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   async function setup() {
     const talkId = props.talkId.toString()
+    let talk = await get_talk_by_id(talkId)
+    setTalkDetail(talk)
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
       console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });

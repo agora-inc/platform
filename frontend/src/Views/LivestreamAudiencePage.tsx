@@ -103,7 +103,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         channel_id: -1,
         channel_name: "",
         channel_colour: "",
-        name: "Speaker",
+        name: "Audience",
         description: "",
         tags: [],
         image_url: "",
