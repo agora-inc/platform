@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Text } from "grommet";
+import { Box, Text, Button } from "grommet";
 
 interface Props {
   text: string;
@@ -11,26 +11,21 @@ export default class SlidesUploader extends Component<Props> {
   render() {
     return (
       <Box style={{ position: "relative" }} width={this.props.width}>
-        <input 
+        <input
             type="file" 
             name="upload" 
+            id='upload'
             accept="application/pdf"
             className="input-hidden"
             onChange={this.props.onUpload}
         ></input>
-        <Box 
-          width={this.props.width || "100px"}
-          height="25px"
-          background="white"
-          round="xsmall"
-          style={{ border: "solid black 1px", cursor: "pointer" }}
-          align="center"
-          justify="center"
+        <label
+          htmlFor='upload'
+          style={{background: '#7E1115', flexBasis: '100%', padding: '10px', boxShadow: 'none', minWidth: '100px',
+                    color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px', width: this.props.width}}
         >
-          <Text size="13px" weight="bold" color="black">
-            {this.props.text}
-          </Text>
-        </Box>
+          {this.props.text}
+        </label>
       </Box>
     );
   }

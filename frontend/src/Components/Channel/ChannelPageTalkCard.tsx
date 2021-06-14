@@ -20,6 +20,7 @@ import { textToLatex } from "../Core/LatexRendering";
 import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 import MediaQuery from "react-responsive";
 import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
+import SlidesUploader from "../Core/SlidesUploader";
 
 
 interface Props {
@@ -43,6 +44,7 @@ interface State {
   registered: boolean;
   registrationStatus: string;
   showShadow: boolean;
+  slideUrl?: string;
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -55,6 +57,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showShadow: false,
+      slideUrl: ''
     };
   }
 
@@ -65,6 +68,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   componentDidMount = () => {
     this.checkIfUserCanAccessLink();
     this.checkIfUserCanViewCard();
+    this.fetchSlide()
   };
 
   checkIfAvailableAndRegistered = () => {
@@ -259,6 +263,15 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     });
   };
 
+  onSlideUpload = async (e: any) => {
+    await TalkService.uploadSlide(this.props.talk.id, e.target.files[0], ()=>{})
+    await this.fetchSlide()
+  };
+  fetchSlide = async () => {
+    let {url} = await TalkService.getSlide(this.props.talk.id)
+    this.setState({slideUrl: url})
+  };
+
   render() {
     var renderMobileView = (window.innerWidth < 800);
     // {((window.innerWidth < 800) && this.state.showModal) ? "860px" : "180px"}
@@ -424,6 +437,19 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             )}
           </Box>
         </Box>
+        {
+          
+          <Box margin={{ top: "10px", bottom: "20px" }}>
+          {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
+          {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
+          {this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>}
+          
+          <SlidesUploader
+            text="Upload slide"
+            onUpload={this.onSlideUpload}
+            />
+          </Box>
+        }
         {this.props.admin && (
           <Box
             onClick={() => {

@@ -14,6 +14,7 @@ import EditTalkModal from "../Talks/EditTalkModal";
 import { textToLatex } from "../Core/LatexRendering";
 import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import MediaQuery from "react-responsive";
+import SlidesUploader from "../Core/SlidesUploader";
 
 
 interface Props {
@@ -39,6 +40,7 @@ interface State {
   recordingLink: string;
   isRecordingLinkHidden: boolean;
   hasYoutubeRecording: boolean;
+  slideUrl?: string;
 }
 
 export default class PastTalkCard extends Component<Props, State> {
@@ -57,6 +59,16 @@ export default class PastTalkCard extends Component<Props, State> {
       hasYoutubeRecording: false,
     };
   }
+
+  onSlideUpload = async (e: any) => {
+    await TalkService.uploadSlide(this.props.talk.id, e.target.files[0], ()=>{})
+    await this.fetchSlide()
+  };
+  fetchSlide = async () => {
+    let {url} = await TalkService.getSlide(this.props.talk.id)
+    this.setState({slideUrl: url})
+  };
+
 
   formatDateFull = (s: string, e: string) => {
     const start = new Date(s);
@@ -219,6 +231,16 @@ export default class PastTalkCard extends Component<Props, State> {
               </Text>
             </Box>
           </a>
+          <Box margin={{ top: "10px", bottom: "20px" }}>
+            {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
+            {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
+            {this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>}
+            
+            <SlidesUploader
+              text="Upload slide"
+              onUpload={this.onSlideUpload}
+              />
+          </Box>
           <Box
             onClick={this.onClick}
             background="white"
@@ -264,6 +286,17 @@ export default class PastTalkCard extends Component<Props, State> {
               </Text>
             </Box>
           </a>
+
+          <Box margin={{ top: "10px", bottom: "20px" }}>
+            {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
+            {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
+            {this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>}
+            
+            <SlidesUploader
+              text="Upload slide"
+              onUpload={this.onSlideUpload}
+              />
+          </Box>
           {this.props.user && (
             <Box
               background="white"

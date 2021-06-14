@@ -18,7 +18,6 @@ import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
-import SlidesUploader from "../Components/Core/SlidesUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, 
@@ -75,7 +74,6 @@ interface State {
   saveButtonFade: boolean;
   topicId: number;
   field: string;
-  slideUrl?: string;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -115,7 +113,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       saveButtonFade: false,
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
-      slideUrl: "localhost:8000/talks/slides?talkId=160"
     };
   }
 
@@ -225,7 +222,6 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchTalks();
     this.fetchDrafts();
     this.storeUserData();
-    this.fetchSlide()
   };
 
   fetchChannelViewCount = () => {
@@ -438,15 +434,6 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
-  onSlideUpload = async (e: any) => {
-    console.log(e.target.files[0]);
-    await TalkService.uploadSlide(this.state.channel!.id, e.target.files[0], ()=>{})
-    await this.fetchSlide()
-  };
-  fetchSlide = async () => {
-    let {url} = await TalkService.getSlide(this.state.channel!.id)
-    this.setState({slideUrl: url})
-  };
   deleteSlide = async () => {
     await TalkService.removeSlide(this.state.channel!.id, () => {})
   };
@@ -732,17 +719,6 @@ export default class ManageChannelPage extends Component<Props, State> {
               )}
               {this.banner()}
               
-              <Box margin={{ top: "10px", bottom: "20px" }}>
-                <Text>Upload Slides</Text>
-                {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
-                {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-                <Text><a href={"http://localhost:8000/talks/slides?talkId=151"} target='_blank'>Download</a></Text>
-                
-                <SlidesUploader
-                  text="Upload slide"
-                  onUpload={this.onSlideUpload}
-                  />
-              </Box>
 
               <Box margin={{ top: "10px", bottom: "20px" }}>
                 <Text
