@@ -358,6 +358,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         _d.id = d.id
         return _d
       })
+      console.log(req)
       if(req.length == 0){
         toggleSlide(false)
         setSlideShareId('')

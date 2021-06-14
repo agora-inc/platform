@@ -74,8 +74,25 @@
 .agora-video-player.limit-width video{
     width: 100% !important;
     height: unset !important;
-  }
-  .agora-video-player.limit-height video{
+}
+.agora-video-player.limit-height video{
     height: 100% !important;
     width: unset !important;
-  }
+}
+
+.pdf-control{
+    top: 0;
+    position: absolute;
+    left: 0;
+}
+.pdf-viewer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pdf-viewer.limit-height{
+    flex-direction: column;
+}
+.pdf-viewer.limit-height{
+    flex-direction: row;
+}

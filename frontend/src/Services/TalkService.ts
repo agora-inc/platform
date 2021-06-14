@@ -377,17 +377,16 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
 //////////////////
 // Slides management
 //////////////////
-const uploadSlide = async (talkId: number, slides: File, callback: any) => {
-  // const data = new FormData();
-  // data.append("talkId", talkId.toString());
-  // data.append("slides", slides);
-  // axios.post(baseApiUrl + "/talks/slides", data,       {
-  //   headers: {
-  //     "Access-Control-Allow-Origin": "*",
-  //   },
-  // }).then(function (response) {
-  //   callback(response.data);
-  // });
+const uploadSlide = async (talkId: number, slides: File) => {
+  const data = new FormData();
+  data.append("talkId", talkId.toString());
+  data.append("slides", slides);
+  let res = await axios.post(baseApiUrl + "/talks/slides", data,       {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+  console.log(res)
   // return {url: 'http://www.hairer.org/notes/slides_ICM.pdf'}
   return {url: 'https://arxiv.org/pdf/1908.05659.pdf'}
 };
@@ -401,16 +400,16 @@ const getSlide = async (talkId: number) => {
   return {url: 'https://arxiv.org/pdf/1908.05659.pdf'}
 };
 
-const removeSlide = async (talkId: number, callback: any) => {
-  axios
+const removeSlide = async (talkId: number) => {
+  let res = await axios
     .delete(baseApiUrl + "/talks/slides", {
       headers: { "Access-Control-Allow-Origin": "*" },
       data: {
         talkId: talkId,
       },
     })
-    .then(() => callback());
-  // return true
+    
+  return true
 };
 
 
