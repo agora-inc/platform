@@ -334,7 +334,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     evt.target.value = ''
     try {
       let first = messages.length === 0 ? true : messages[messages.length-1].senderId !== localUser.uid
-      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Admin', first: first}])
+      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me', first: first}])
       await messageChannel.sendMessage({text})
     } catch{
       console.log('error sending message')
@@ -449,7 +449,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             margin={{ top: "xlarge", bottom: "xsmall" }} 
             style={{ 
               zIndex: 1000, background: 'red', color: 'white',
-              padding: '10px', borderRadius: '4px'
+              padding: '10px', borderRadius: '4px', width: "50%"
             }}
           >
             {talkStatus === 'ENDED' ? <Text> Talk ended </Text> : 

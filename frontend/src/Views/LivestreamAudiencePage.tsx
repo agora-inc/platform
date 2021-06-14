@@ -530,7 +530,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
             </Box>
           </Box>
           <Box gridArea="chat" background="#EAF1F1" round="small" height="36vw" margin={{bottom: "10px"}}>
-            {/* <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Chat</Text> */}
             <Box flex={true} height="94%" gap="2px" overflow="auto">
               {messages.map((msg, i)=>(
                   <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "-2px"}>
@@ -543,11 +542,9 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                       {textToLatex(msg.text)}
                     </Text>
                   </Box>
-                  // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
                 ))}
             </Box>
             <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
-            {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
           </Box>
 
           <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
