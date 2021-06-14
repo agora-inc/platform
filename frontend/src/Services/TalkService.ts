@@ -430,16 +430,16 @@ const getSlide = async (talkId: number) => {
   return {url: 'https://arxiv.org/pdf/1908.05659.pdf'}
 };
 
-const removeSlide = async (talkId: number, callback: any) => {
-  axios
+const removeSlide = async (talkId: number) => {
+  let res = await axios
     .delete(baseApiUrl + "/talks/slides", {
       headers: { "Access-Control-Allow-Origin": "*" },
       data: {
         talkId: talkId,
       },
     })
-    .then(() => callback());
-  // return true
+    
+  return true
 };
 
 const getViewCountForTalk = (

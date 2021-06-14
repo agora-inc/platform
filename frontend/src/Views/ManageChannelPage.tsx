@@ -435,7 +435,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   deleteSlide = async () => {
-    await TalkService.removeSlide(this.state.channel!.id, () => {})
+    await TalkService.removeSlide(this.state.channel!.id)
   };
 
   onFileChosen = (e: any) => {
