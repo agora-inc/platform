@@ -10,6 +10,7 @@ import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 import TrendingChannelsList from "../Components/Homepage/TrendingChannelsList";
+import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
 import ReactTooltip from "react-tooltip";
 
 
@@ -517,7 +518,19 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           gap="150px"
           margin={{ top: "75px", left: "10px", right: "10px" }}
         >
-          <TrendingChannelsList />
+          {/* <TrendingChannelsList /> */}
+
+
+
+          {/* WIP */}
+          {/* WIP */}
+          {/* WIP */}
+          {/* WIP */}
+          {/* WIP */}
+
+
+
+          <TrendingTalksList />
         </Box>
 
 
