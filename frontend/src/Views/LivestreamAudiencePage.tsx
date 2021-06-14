@@ -449,13 +449,46 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                     <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
                 }
                 <Box className='call-control' direction='row'>
-                  {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
-                    <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
-                    <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
+                  {hasMicRequested || callControl.mic?!callControl.mic?
+                    <Button 
+                      label="Mic requested" 
+                      style={{
+                        background: "#BAD6DB", color: 'grey', fontSize: "14px", fontWeight: "bold",
+                        textAlign: 'center', borderRadius: '6px', width: "145px", height: "35px"
+                      }}
+                    /> :
+                    <Button 
+                      label="Give-up mic" 
+                      onClick={unpublish_microphone}
+                      style={{
+                        background: "#FF4040", color: 'white', fontSize: "14px", fontWeight: "bold",
+                        textAlign: 'center', borderRadius: '6px', width: "130px", height: "35px"
+                      }} 
+                    /> :
+                    <Button 
+                      label="Request mic" 
+                      onClick={()=>API.requestMic(talkId, localUser.uid, storedName)}
+                      style={{
+                        background: "#BAD6DB", color: 'grey', fontSize: "14px", fontWeight: "bold",
+                        textAlign: 'center', borderRadius: '6px', width: "135px", height: "35px"
+                      }} 
+                    />
                   }
                 </Box>
+                
+                <Button
+                  className='full-screen-button'
+                  primary size='small'
+                  onClick={toggleFullscreen}
+                  focusIndicator={true}
+                  style={{
+                    background: "#EAF1F1", borderRadius: '6px',
+                    height: "35px", width: "105px", textAlign: 'center'
+                  }}
+                >
+                  <Text size="14px" color="grey">Fullscreen</Text>
+                </Button>
 
-                <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
               </Box>
             }
 
