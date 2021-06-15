@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image, Grid } from "grommet";
+import { Box, Text, TextArea, Image, Grid, Layer } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -21,7 +21,7 @@ import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, 
-  MailOption, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
+  MailOption, SettingsOption, Group, DocumentText, Resources, Close } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -74,6 +74,7 @@ interface State {
   saveButtonFade: boolean;
   topicId: number;
   field: string;
+  showModalPricing: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -113,6 +114,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       saveButtonFade: false,
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
+      showModalPricing: false,
     };
   }
 
@@ -474,6 +476,10 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  toggleModalPricing = () => {
+    this.setState({ showModalPricing: !this.state.showModalPricing });
+  };
+
   SavedButtonClicked = () => {
     this.setState({ topicSaved: true });
     this.setState({ saveButtonFade: true});
@@ -715,24 +721,88 @@ export default class ManageChannelPage extends Component<Props, State> {
               )}
               {this.banner()}
 
-
-              <Box margin={{ top: "10px", bottom: "20px" }}>
+              <Box direction="row" align="start"  margin={{ top: "10px", bottom: "10px" }}>
                 <Text
-                    size="24px"
-                    weight="bold"
-                    color="black"
-                    margin={{ top: "10px", bottom: "10px" }}
-                  >
-                    {<UserAdmin />} {`Administrator panel`}{" "}
-                  </Text>
-                  <Text size="14">
-                    For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="color1">
-                      <Text color="color1" weight="bold" size="14px">
-                      getting-started page.
-                      </Text>
-                    </Link>
-                    </Text>
+                  size="24px"
+                  weight="bold"
+                  color="black"
+                  style={{width: "69vw"}}
+                >
+                  {<UserAdmin />} {`Administrator panel`}{" "}
+                </Text>
+
+              <Box
+                onClick={this.toggleModalPricing}
+                background="#0C385B"
+                round="xsmall"
+                pad="xsmall"
+                width="160px"
+                height="40px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#6DA3C7"
+              >
+                  <Text size="14px" weight="bold"> Pricing options </Text>
                 </Box>
+              </Box>
+
+              {this.state.showModalPricing && (
+                <Layer
+                  onEsc={this.toggleModalPricing}
+                  onClickOutside={this.toggleModalPricing}
+                  modal
+                  responsive
+                  animation="fadeIn"
+                  style={{
+                    width: "500px",
+                    height: "65%",
+                    borderRadius: 15,
+                    padding: 0,
+                  }}
+                >
+                  <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+                    <Box
+                      justify="start"
+                      width="99.7%"
+                      background="#eaf1f1"
+                      direction="row"
+                      margin={{bottom: "20px"}}
+                      style={{
+                        borderTopLeftRadius: "15px",
+                        borderTopRightRadius: "15px",
+                        position: "sticky",
+                        top: 0,
+                        height: "60px",
+                        zIndex: 10,
+                      }}
+                    >
+                      <Box alignSelf="center" fill={true} pad="20px" >
+                        <Text size="16px" color="black" weight="bold" >
+                          Pricing plans
+                        </Text>
+                      </Box>
+                      <Box pad="32px" alignSelf="center">
+                        <Close onClick={this.toggleModalPricing} />
+                      </Box>
+                    </Box>
+
+                    Your current plan: free
+
+                  </Box>
+                </Layer>
+              )}
+              
+
+
+              <Text size="14" margin={{ bottom: "20px" }}>
+                For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="color1">
+                  <Text color="color1" weight="bold" size="14px">
+                  getting-started page.
+                  </Text>
+                </Link>
+              </Text>
+              
 
 
               <Tabs>
