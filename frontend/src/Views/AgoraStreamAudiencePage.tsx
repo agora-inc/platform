@@ -352,7 +352,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       }
     })
 
-    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(snaps=>{
+    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
         _d.id = d.id
@@ -364,6 +364,9 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         setSlideShareId('')
         return
       }
+      let {url} = await TalkService.getSlide(Number(props.match.params.talk_id))
+      setSlideUrl(url)
+      
       setSlideShareId(req[0].id)
       toggleSlide(true)
     })

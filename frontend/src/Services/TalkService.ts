@@ -415,11 +415,9 @@ const uploadSlide = async (talkId: number, slides: File, callback: any) => {
   const data = new FormData();
   data.append("talkId", talkId.toString());
   data.append("slides", slides);
-  let ret = await axios.post(baseApiUrl + "/talks/slides", data,       {
-    })
-  console.log(ret)
-  // return {url: 'http://www.hairer.org/notes/slides_ICM.pdf'}
-  return {url: 'https://arxiv.org/pdf/1908.05659.pdf'}
+  let ret = await axios.post(baseApiUrl + "/talks/slides", data)
+
+  return await getSlide(talkId)
 };
 
 const getSlide = async (talkId: number) => {
@@ -427,7 +425,6 @@ const getSlide = async (talkId: number) => {
   let current_time = Math.floor(new Date().getTime() / 1000) * CACHE_DELAY;
 
   return { url: baseApiUrl + `/talks/slides?talkId=${talkId}&ts=` + current_time};
-  return {url: 'https://arxiv.org/pdf/1908.05659.pdf'}
 };
 
 const removeSlide = async (talkId: number) => {

@@ -52,10 +52,10 @@ const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
 function getUserId(talkId:string, userId?:string|null){
   let key = userId || talkId
   let uid = window.localStorage.getItem(key)
-  // if(!uid) {
+  if(!uid) {
     uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
     window.localStorage.setItem(key, uid)
-  // }
+  }
 
   return uid
 }
@@ -93,12 +93,18 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   
   const [talkId, setTalkId] = useState('')
   const [slideShareId, setSlideShareId] = useState('')
+  const [isSlideVisible, toggleSlide] = useState(false)
 
   const [slideUrl, setSlideUrl] = useState('')
 
-  const [callControl, setCallControl] = useState({
+  const [callControl, _setCallControl] = useState({
     mic: true, video: true, screenShare: false, fullscreen: false, slideShare: false
   } as Control)
+  const [cc, setCallControl] = useState({} as any)
+
+  useEffect(()=>{
+    _setCallControl({...callControl, ...cc})
+  }, [cc])
 
   const [state, setState] = useState({
       video: {
@@ -125,7 +131,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     if(fullscreenEl) {
       if (document.exitFullscreen) {
         document.exitFullscreen();
-        setCallControl({...callControl, fullscreen: false})
+        setCallControl({ fullscreen: false})
       }
       return
     }
@@ -133,7 +139,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     let element = videoContainer.current!
     if (element.requestFullscreen) {
       element.requestFullscreen();
-      setCallControl({...callControl, fullscreen: true})
+      setCallControl({fullscreen: true})
     }
 
   }
@@ -224,7 +230,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       if(localScreenTrack){
         localScreenTrack._originMediaStreamTrack.stop()
       }
-      setCallControl({...callControl, screenShare: false})
+      setCallControl({screenShare: false})
   }
   async function share_screen() {
     // Create a new stream for the screen share.
@@ -242,7 +248,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       var _localScreenTrack = await AgoraRTC.createScreenVideoTrack(config);
       console.log(222, _localScreenTrack)
       _localScreenTrack.on('track-ended', stop_share_screen)
-      setCallControl({...callControl, screenShare: true})
+      setCallControl({screenShare: true})
 
       setLocalScreenTrack(_localScreenTrack)
 
@@ -265,7 +271,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
       setLocalVideoTrack(_localVideoTrack)
       await agoraClient.publish([_localVideoTrack]);
-      setCallControl({...callControl, video: true})
+      setCallControl({video: true})
   }
 
   async function unpublish_microphone(){
@@ -273,7 +279,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       localAudioTrack.stop()
 
       await agoraClient.unpublish(localAudioTrack);
-      setCallControl({...callControl, mic: false})
+      setCallControl({mic: false})
       setLocalAudioTrack(null)
     }
   }
@@ -283,7 +289,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     setLocalAudioTrack(_localAudioTrack)
     await agoraClient.publish(_localAudioTrack);
 
-    setCallControl({...callControl, mic: true})
+    setCallControl({mic: true})
   }
 
   async function on_message(msg:any, senderId:string){
@@ -375,21 +381,52 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       }
     })
 
+    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
+      let req = snaps.docs.filter(d=>d.exists).map(d=>{
+        let _d = d.data()
+        _d.id = d.id
+        return _d
+      })
+      if(req.length == 0){
+        toggleSlide(false)
+        setSlideShareId('')
+        return
+      }
+      let {url} = await TalkService.getSlide(Number(props.match.params.talk_id))
+      setSlideUrl(url)
+      console.log(req[0], localUser.uid)
+      if(req[0].user_id === localUser.uid) {
+        console.log('okay')
+        setSlideShareId(req[0].id)
+        toggleSlide(false)
+        setCallControl({slideShare: true})
+      }else{
+        console.log("haha")
+        setSlideShareId(req[0].id)
+        toggleSlide(true)
+
+        setCallControl({ slideShare: false})
+      }
+      
+    })
+
+
     return ()=>{
       leave()
       unsubs()
+      slide_unsubs()
     }
   }, [talkId])
 
   async function slideShare(slideShare: boolean) {
     if(slideShare) {
-      let req = await API.slideShare(talkId) as any
+      let req = await API.slideShare(localUser.uid, talkId) as any
       setSlideShareId(req.id)
-      setCallControl({...callControl, slideShare: true})
+      setCallControl({slideShare: true})
     }else{
       let req = await API.slideStop(slideShareId) as any
       setSlideShareId('')
-      setCallControl({...callControl, slideShare: false})
+      setCallControl({slideShare: false})
     }
   }
 
@@ -413,7 +450,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         >
           
           <Box gridArea="player" justify="between" gap="small">
-            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable||callControl.slideShare?'screen-share':''}`}
+            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${(isScreenAvailable||callControl.slideShare||isSlideVisible)?'screen-share':''}`}
               style={{height: '90%', position: 'relative'}}>
               <Box className='camera-video'>
                 {remoteVideoTrack.map((user)=>(
@@ -426,8 +463,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               { isScreenAvailable && 
                   <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
               }
-              {callControl.slideShare &&
-                <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={true} />
+              {(callControl.slideShare || isSlideVisible) &&
+                <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} />
               }
 
               <Box className='call-control' direction='row'>
@@ -443,9 +480,9 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                   <MdStopScreenShare onClick={stop_share_screen} />:
                   <MdScreenShare onClick={share_screen} />
                 }
-                {callControl.slideShare?
+                {!isSlideVisible && (callControl.slideShare?
                   <MdClear onClick={()=> slideShare(false)} />:
-                  <MdSlideshow onClick={()=> slideShare(true)} />
+                  <MdSlideshow onClick={()=> slideShare(true)} />)
                 }
                 {callControl.fullscreen?
                   <FaCompress onClick={toggleFullscreen} />:

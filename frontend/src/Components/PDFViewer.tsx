@@ -59,18 +59,34 @@ export default function({presenter=false, ...props}:Props) {
   }, [livePageNumber, isLive])
 
   useEffect(()=>{
-    if(presenter) return
+    if(presenter) {
+      if(props.slideShareId) {
+        db.collection('slide').doc(props.slideShareId).get()
+        .then((doc)=>{
+          let data = doc.data()
+          if(data) {
+            setLivePageNumber(data.pageNumber)
+          }
+        })
+      }
+
+      return
+    }
+
 
     let slide_unsubs = db.collection('slide').doc(props.slideShareId).onSnapshot(snaps=>{
       let data = snaps.data() as any
-      setLivePageNumber(data.pageNumber)
+      console.log(data)
+      if(data) {
+        setLivePageNumber(data.pageNumber)
+      }
     })
 
     return ()=>{
       slide_unsubs()
     }
 
-  }, [props.slideShareId])
+  }, [props.slideShareId, presenter])
 
   useEffect(()=>{
     let a:any = null

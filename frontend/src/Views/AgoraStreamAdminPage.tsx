@@ -53,10 +53,10 @@ const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
 function getUserId(talkId:string, userId?:string|null){
   let key = userId || talkId
   let uid = window.localStorage.getItem(key)
-  // if(!uid) {
+  if(!uid) {
     uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
     window.localStorage.setItem(key, uid)
-  // }
+  }
 
   return uid
 }
@@ -101,9 +101,14 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   const [slideUrl, setSlideUrl] = useState('')
 
-  const [callControl, setCallControl] = useState({
+  const [callControl, _setCallControl] = useState({
     mic: true, video: true, screenShare: false, fullscreen: false, slideShare: false
   } as Control)
+  const [cc, setCallControl] = useState({} as any)
+
+  useEffect(()=>{
+    _setCallControl({...callControl, ...cc})
+  }, [cc])
 
   const [state, setState] = useState({
       video: {
@@ -130,7 +135,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     if(fullscreenEl) {
       if (document.exitFullscreen) {
         document.exitFullscreen();
-        setCallControl({...callControl, fullscreen: false})
+        setCallControl({fullscreen: false})
       }
       return
     }
@@ -138,7 +143,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     let element = videoContainer.current!
     if (element.requestFullscreen) {
       element.requestFullscreen();
-      setCallControl({...callControl, fullscreen: true})
+      setCallControl({fullscreen: true})
     }
 
   }
@@ -247,7 +252,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       if(localScreenTrack){
         localScreenTrack._originMediaStreamTrack.stop()
       }
-      setCallControl({...callControl, screenShare: false})
+      setCallControl({screenShare: false})
   }
   async function share_screen() {
     // Create a new stream for the screen share.
@@ -267,7 +272,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       var _localScreenTrack = await AgoraRTC.createScreenVideoTrack(config);
       console.log(222, _localScreenTrack)
       _localScreenTrack.on('track-ended', stop_share_screen)
-      setCallControl({...callControl, screenShare: true})
+      setCallControl({screenShare: true})
 
       setLocalScreenTrack(_localScreenTrack)
 
@@ -282,7 +287,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       localVideoTrack.stop()
 
       await agoraClient.unpublish(localVideoTrack);
-      setCallControl({...callControl, video: false})
+      setCallControl({ video: false})
       setLocalVideoTrack(null)
     }
   }
@@ -290,7 +295,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
       setLocalVideoTrack(_localVideoTrack)
       await agoraClient.publish([_localVideoTrack]);
-      setCallControl({...callControl, video: true})
+      setCallControl({video: true})
   }
 
   async function unpublish_microphone(){
@@ -298,7 +303,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       localAudioTrack.stop()
 
       await agoraClient.unpublish(localAudioTrack);
-      setCallControl({...callControl, mic: false})
+      setCallControl({mic: false})
       setLocalAudioTrack(null)
     }
   }
@@ -307,7 +312,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     setLocalAudioTrack(_localAudioTrack)
     await agoraClient.publish(_localAudioTrack);
 
-    setCallControl({...callControl, mic: true})
+    setCallControl({mic: true})
   }
 
   async function on_message(msg:any, senderId:string){
@@ -426,7 +431,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     })
 
 
-    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(snaps=>{
+    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
         _d.id = d.id
@@ -437,8 +442,21 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setSlideShareId('')
         return
       }
-      setSlideShareId(req[0].id)
-      toggleSlide(true)
+      let {url} = await TalkService.getSlide(Number(props.match.params.talk_id))
+      setSlideUrl(url)
+
+      if(req[0].user_id === localUser.uid) {
+        console.log('okay')
+        setSlideShareId(req[0].id)
+        toggleSlide(false)
+        setCallControl({slideShare: true})
+      }else{
+        console.log("haha")
+        setSlideShareId(req[0].id)
+        toggleSlide(true)
+
+        setCallControl({ slideShare: false})
+      }
     })
 
     return ()=>{
@@ -451,13 +469,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   async function slideShare(slideShare: boolean) {
     if(slideShare) {
-      let req = await API.slideShare(talkId) as any
+      let req = await API.slideShare(localUser.uid, talkId) as any
       setSlideShareId(req.id)
-      setCallControl({...callControl, slideShare: true})
+      setCallControl({slideShare: true})
     }else{
       let req = await API.slideStop(slideShareId) as any
       setSlideShareId('')
-      setCallControl({...callControl, slideShare: false})
+      setCallControl({slideShare: false})
     }
   }
 
