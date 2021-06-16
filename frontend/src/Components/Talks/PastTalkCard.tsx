@@ -15,6 +15,7 @@ import { textToLatex } from "../Core/LatexRendering";
 import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import MediaQuery from "react-responsive";
 import SlidesUploader from "../Core/SlidesUploader";
+import FileDownloader from "../Core/FileDownloader";
 
 
 interface Props {
@@ -89,6 +90,7 @@ export default class PastTalkCard extends Component<Props, State> {
       this.props.talk.id
     )
     this.setState({ hasYoutubeRecording: thumbnail !== "" })
+    this.fetchSlide()
   }
 
   checkIfSaved = () => {
@@ -234,7 +236,8 @@ export default class PastTalkCard extends Component<Props, State> {
           <Box margin={{ top: "10px", bottom: "20px" }}>
             {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
             {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-            {this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>}
+            
+            <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
             
             <SlidesUploader
               text="Upload slide"
@@ -290,7 +293,8 @@ export default class PastTalkCard extends Component<Props, State> {
           <Box margin={{ top: "10px", bottom: "20px" }}>
             {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
             {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-            {this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>}
+            
+            <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
             
             <SlidesUploader
               text="Upload slide"
@@ -860,6 +864,7 @@ export default class PastTalkCard extends Component<Props, State> {
           //   )}
           // </Layer>
         )}
+        <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
         {this.props.admin && (
           <Box
             onClick={() => {
