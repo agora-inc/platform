@@ -1,6 +1,10 @@
 import stripe
 
 
+# https://www.youtube.com/watch?v=XKWJFpZYVAQ
+# https://www.youtube.com/watch?v=cC9jK3WntR8
+
+
 # https://stripe.com/docs/api/connected_accounts?lang=python
 # https://stripe.com/docs/checkout/integration-builder
 
