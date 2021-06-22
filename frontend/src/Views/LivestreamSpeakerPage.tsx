@@ -520,8 +520,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                 justify="end"
                 style={{ width: "10%" }}
               >
-                {/* <ChannelIdCard channelName={state.video!.channel_name} /> */}
-                <Box direction="row" align="center" gap="5px">
+                {/* <Box direction="row" align="center" gap="5px">
                   <View color="black" size="30px" />
                   {state.viewCount === -1 && (
                     <Loading color="grey" size={34} />
@@ -531,7 +530,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                       {state.viewCount}
                     </Text>
                   )}
-                </Box>
+                </Box>*/}
               </Box>
             </Box>
           </Box>

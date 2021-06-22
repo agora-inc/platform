@@ -677,10 +677,10 @@ export default class EditTalkModal extends Component<Props, State> {
                     placeholder="https://zoom.us/1234"
                     onChange={(e) => this.setState({ link: e.target.value })}
                   />
-                <CheckBox 
+                {/* <CheckBox 
                   checked={this.state.link == '_agora.stream_tech'} 
                   label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
-                  onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}/>
+                onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}/> */}
 
                   <Text
                     size="14px" 
