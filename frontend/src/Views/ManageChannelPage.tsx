@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image, Grid, Layer } from "grommet";
+import { Box, Text, TextArea, Image, Grid, Layer, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
+import { Switch } from "antd";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -21,7 +22,7 @@ import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, 
-  MailOption, SettingsOption, Group, DocumentText, Resources, Close } from "grommet-icons";
+  MailOption, SettingsOption, Group, DocumentText, Resources, Close, Checkmark, FormNextLink } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -75,6 +76,8 @@ interface State {
   topicId: number;
   field: string;
   showModalPricing: boolean;
+  fullAutomationBig: boolean;
+  excellenceBig: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -115,6 +118,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
       showModalPricing: false,
+      fullAutomationBig: false,
+      excellenceBig: false,
     };
   }
 
@@ -755,7 +760,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   responsive
                   animation="fadeIn"
                   style={{
-                    width: "500px",
+                    width: "1000px",
                     height: "65%",
                     borderRadius: 15,
                     padding: 0,
@@ -787,8 +792,268 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Box>
                     </Box>
 
-                    Your current plan: free
+                    <Box width="95%"> 
 
+                      <Text size="14px" style={{fontStyle: "italic"}} margin={{bottom: "20px"}}> 
+                        Select "Big" if you have an audiance of more than 30 people. 
+                      </Text> 
+
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableCell scope="col" border="bottom">
+                            </TableCell>
+
+                            <TableCell scope="col" border="bottom" width="120px">
+                              Free  
+                            </TableCell>
+
+                            <TableCell direction="row" gap="10px" align="center" scope="col" border="bottom" width="170px">
+                              Full automation
+                              <Switch
+                                checked={this.state.fullAutomationBig}
+                                checkedChildren="Big" 
+                                unCheckedChildren="Small"
+                                onChange={(checked: boolean) => {
+                                  this.setState({ fullAutomationBig: checked });
+                                }}
+                                size="default"
+                              />
+                            </TableCell>
+
+                            <TableCell direction="row" gap="10px" align="center" scope="col" border="bottom"  width="150px">
+                              Excellence
+                              <Switch
+                                checked={this.state.excellenceBig}
+                                checkedChildren="Big" 
+                                unCheckedChildren="Small"
+                                onChange={(checked: boolean) => {
+                                  this.setState({ excellenceBig: checked });
+                                }}
+                                size="default"
+                              />
+                            </TableCell>
+
+                            <TableCell scope="col" border={{size: "0px"}} width="60px" />
+
+                          </TableRow>
+                        </TableHeader>
+
+                        <TableBody style={{marginTop: "50px"}} >
+
+                          <TableRow style={{alignSelf: "center"}}>
+                            <TableCell scope="row">
+                              <Text weight="bold" size="14px"> Automatic regstration </Text>
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell scope="row">
+                              <Text weight="bold" size="14px"> Posting on social media </Text>
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell scope="row">
+                              <Text weight="bold" size="14px"> Email reminders </Text>
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Text size="14px"> 100 emails / month </Text> 
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell scope="row">
+                              <Text weight="bold" size="14px"> agora streaming tech </Text>
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Box
+                                direction="row"
+                                justify="center"
+                                align="center"
+                                pad="small"
+                                focusIndicator={false}
+                                height="30px"
+                                background="#EAF1F1"
+                                hoverIndicator="#BAD6DB"
+                                round="small"
+                                onClick={()=>{}}
+                              >
+                                <FormNextLink size="25px" color="black" />
+                                <Text weight="bold" color="black" size="14px">
+                                  Watch demo
+                                </Text>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell direction="column" scope="row">
+                              <Text weight="bold" size="14px"> Automatic upload </Text> 
+                              <Text weight="bold" size="14px"> slides + recording </Text>
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell scope="row">
+                              <Text weight="bold" size="14px"> Virtual cafeteria </Text>
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Text size="14px"> For 2 seminars / month </Text>
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Box
+                                direction="row"
+                                justify="center"
+                                align="center"
+                                pad="small"
+                                focusIndicator={false}
+                                height="30px"
+                                background="#EAF1F1"
+                                hoverIndicator="#BAD6DB"
+                                round="small"
+                                onClick={()=>{}}
+                              >
+                                <FormNextLink size="25px" color="black" />
+                                <Text weight="bold" color="black" size="14px">
+                                  Watch demo
+                                </Text>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell/>
+                            <TableCell/>
+                            <TableCell margin={{top: "20px"}}>  
+                              <Box
+                                onClick={this.toggleModalPricing}
+                                background="#0C385B"
+                                round="xsmall"
+                                pad="xsmall"
+                                width="160px"
+                                height="40px"
+                                justify="center"
+                                align="center"
+                                focusIndicator={false}
+                                hoverIndicator="#6DA3C7"
+                              >
+                                <Text size="14px" weight="bold"> £10 / month  </Text>
+                              </Box>
+                            </TableCell>
+                            <TableCell margin={{top: "20px"}}>                                
+                              <Box
+                                onClick={this.toggleModalPricing}
+                                background="#0C385B"
+                                round="xsmall"
+                                pad="xsmall"
+                                width="160px"
+                                height="40px"
+                                justify="center"
+                                align="center"
+                                focusIndicator={false}
+                                hoverIndicator="#6DA3C7"
+                              >
+                                <Text size="14px" weight="bold"> £50 / month  </Text>
+                              </Box> 
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell/>
+                            <TableCell/>
+                            <TableCell> <Text size="14px" weight="bold"> or </Text> </TableCell>
+                            <TableCell> <Text size="14px" weight="bold"> or </Text> </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell/>
+                            <TableCell/>
+                            <TableCell>                                
+                              <Box
+                                onClick={this.toggleModalPricing}
+                                background="#0C385B"
+                                round="xsmall"
+                                pad="xsmall"
+                                width="160px"
+                                height="40px"
+                                justify="center"
+                                align="center"
+                                focusIndicator={false}
+                                hoverIndicator="#6DA3C7"
+                              >
+                                <Text size="14px" weight="bold"> £4 / event  </Text>
+                              </Box>  
+                            </TableCell>
+                            <TableCell>                                
+                              <Box
+                                onClick={this.toggleModalPricing}
+                                background="#0C385B"
+                                round="xsmall"
+                                pad="xsmall"
+                                width="160px"
+                                height="40px"
+                                justify="center"
+                                align="center"
+                                focusIndicator={false}
+                                hoverIndicator="#6DA3C7"
+                              >
+                                <Text size="14px" weight="bold"> £20 / event  </Text>
+                              </Box>  
+                            </TableCell>
+                          </TableRow>
+
+                        </TableBody>
+                      </Table>
+                    </Box>
                   </Box>
                 </Layer>
               )}
