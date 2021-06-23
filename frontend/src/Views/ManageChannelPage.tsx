@@ -76,8 +76,8 @@ interface State {
   topicId: number;
   field: string;
   showModalPricing: boolean;
-  fullAutomationBig: boolean;
-  excellenceBig: boolean;
+  pricingOptionBig: boolean;
+  pricingOptionMonthly: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -118,8 +118,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
       showModalPricing: false,
-      fullAutomationBig: false,
-      excellenceBig: false,
+      pricingOptionBig: false,
+      pricingOptionMonthly: true,
     };
   }
 
@@ -794,9 +794,35 @@ export default class ManageChannelPage extends Component<Props, State> {
 
                     <Box width="95%"> 
 
-                      <Text size="14px" style={{fontStyle: "italic"}} margin={{bottom: "20px"}}> 
-                        Select "Big" if you have an audiance of more than 30 people. 
-                      </Text> 
+                      <Box direction="row" gap="10px" align="center" margin={{bottom: "20px"}}> 
+                        <Text size="14px" style={{fontStyle: "italic"}} > 
+                          Select "Big" if you have an audience of more than 30 people:
+                        </Text>
+                        <Switch
+                          checked={this.state.pricingOptionBig}
+                          checkedChildren="Big" 
+                          unCheckedChildren="Small"
+                          onChange={(checked: boolean) => {
+                            this.setState({ pricingOptionBig: checked });
+                          }}
+                          size="default"
+                        /> 
+                      </Box>
+
+                      <Box direction="row" gap="10px" align="center" margin={{bottom: "30px"}}> 
+                        <Text size="14px" style={{fontStyle: "italic"}}> 
+                          Select the plan frequency:
+                        </Text>
+                        <Switch
+                          checked={this.state.pricingOptionMonthly}
+                          checkedChildren="per month" 
+                          unCheckedChildren="per event"
+                          onChange={(checked: boolean) => {
+                            this.setState({ pricingOptionMonthly: checked });
+                          }}
+                          size="default"
+                        /> 
+                      </Box>
 
                       <Table>
                         <TableHeader>
@@ -805,33 +831,15 @@ export default class ManageChannelPage extends Component<Props, State> {
                             </TableCell>
 
                             <TableCell scope="col" border="bottom" width="120px">
-                              Free  
+                              <Text size="14px" weight="bold"> Free </Text>  
                             </TableCell>
 
-                            <TableCell direction="row" gap="10px" align="center" scope="col" border="bottom" width="170px">
-                              Full automation
-                              <Switch
-                                checked={this.state.fullAutomationBig}
-                                checkedChildren="Big" 
-                                unCheckedChildren="Small"
-                                onChange={(checked: boolean) => {
-                                  this.setState({ fullAutomationBig: checked });
-                                }}
-                                size="default"
-                              />
+                            <TableCell scope="col" border="bottom" width="170px">
+                              <Text size="14px" weight="bold"> Full automation </Text>
                             </TableCell>
 
-                            <TableCell direction="row" gap="10px" align="center" scope="col" border="bottom"  width="150px">
-                              Excellence
-                              <Switch
-                                checked={this.state.excellenceBig}
-                                checkedChildren="Big" 
-                                unCheckedChildren="Small"
-                                onChange={(checked: boolean) => {
-                                  this.setState({ excellenceBig: checked });
-                                }}
-                                size="default"
-                              />
+                            <TableCell scope="col" border="bottom" width="150px">
+                              <Text size="14px" weight="bold"> Excellence </Text>
                             </TableCell>
 
                             <TableCell scope="col" border={{size: "0px"}} width="60px" />
@@ -843,7 +851,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
                           <TableRow style={{alignSelf: "center"}}>
                             <TableCell scope="row">
-                              <Text weight="bold" size="14px"> Automatic regstration </Text>
+                              <Text weight="bold" size="14px"> Automatized regstration </Text>
                             </TableCell>
                             <TableCell scope="row">
                               <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
@@ -888,7 +896,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
                           <TableRow>
                             <TableCell scope="row">
-                              <Text weight="bold" size="14px"> agora streaming tech </Text>
+                              <Text weight="bold" size="14px"> <img src={agoraLogo} style={{ height: "14px", marginTop: "1px", marginRight: "-1px"}} /> streaming tech </Text>
                             </TableCell>
                             <TableCell scope="row">
                               <Close size="25px" color="red" style={{alignSelf: "center"}} />
@@ -1004,50 +1012,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                               >
                                 <Text size="14px" weight="bold"> £50 / month  </Text>
                               </Box> 
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell/>
-                            <TableCell/>
-                            <TableCell> <Text size="14px" weight="bold"> or </Text> </TableCell>
-                            <TableCell> <Text size="14px" weight="bold"> or </Text> </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell/>
-                            <TableCell/>
-                            <TableCell>                                
-                              <Box
-                                onClick={this.toggleModalPricing}
-                                background="#0C385B"
-                                round="xsmall"
-                                pad="xsmall"
-                                width="160px"
-                                height="40px"
-                                justify="center"
-                                align="center"
-                                focusIndicator={false}
-                                hoverIndicator="#6DA3C7"
-                              >
-                                <Text size="14px" weight="bold"> £4 / event  </Text>
-                              </Box>  
-                            </TableCell>
-                            <TableCell>                                
-                              <Box
-                                onClick={this.toggleModalPricing}
-                                background="#0C385B"
-                                round="xsmall"
-                                pad="xsmall"
-                                width="160px"
-                                height="40px"
-                                justify="center"
-                                align="center"
-                                focusIndicator={false}
-                                hoverIndicator="#6DA3C7"
-                              >
-                                <Text size="14px" weight="bold"> £20 / event  </Text>
-                              </Box>  
                             </TableCell>
                           </TableRow>
 
