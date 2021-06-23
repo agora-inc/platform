@@ -522,8 +522,14 @@ class TalkRepository:
                     published={published},
                     audience_level="{audience_level}"
                 WHERE id = {talkId};'''
+
+            with open("/home/cloud-user/test/query-edit-1.txt", "w") as file:
+                file.write(query)
             
             self.db.run_query(query)
+
+            with open("/home/cloud-user/test/query-edit-2.txt", "w") as file:
+                file.write(query)
 
             tagIds = [t["id"] for t in talkTags]
             self.tags.tagTalk(talkId, tagIds)
@@ -543,6 +549,8 @@ class TalkRepository:
             return self.getTalkById(talkId)
 
         except Exception as e:
+            with open("/home/cloud-user/test/query-edit-3.txt", "w") as file:
+                file.write(str(e))
             return str(e)
 
 

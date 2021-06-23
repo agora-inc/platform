@@ -7,7 +7,6 @@ import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
 // import StreamPage from "./Views/StreamPage";
 import TagPage from "./Views/TagPage";
-import Streaming from "./Views/Streaming";
 import AllVideosPage from "./Views/AllVideosPage";
 import HeaderBar from "./Components/HeaderBar";
 import { Theme } from "./theme";
@@ -26,7 +25,7 @@ import AllAgorasPage from "./Views/AllAgorasPage";
 import AgoraCreationPage from "./Views/AgoraCreationPage";
 import TalkSharingPage from "./Views/TalkSharingPage";
 import AvatarPage from "./Views/AvatarPage";
-import LiveStreamPage from "./Views/LiveStreamPage";
+import LivestreamPage from "./Views/Livestream/LivestreamPage";
 import {useTracking} from './Components/Core/Analytics/useTracking';
 
 function App() {
@@ -44,7 +43,7 @@ function App() {
           {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
 
-          <Route path="/livestream/:encoded_endpoint" component={LiveStreamPage} />
+          <Route path="/livestream/:encoded_endpoint" component={LivestreamPage} />
 
           <Route path="/video" component={VideoPage} />
           {/* <Route path="/stream" component={StreamPage} /> */}

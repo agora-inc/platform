@@ -1,23 +1,25 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { Box, Grid, Text, Layer, Button, TextInput } from "grommet";
-import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
-import ChatBox from "../Components/Streaming/ChatBox";
-import ChannelIdCard from "../Components/Channel/ChannelIdCard";
-import Tag from "../Components/Core/Tag";
-import Loading from "../Components/Core/Loading";
+import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
+import ChatBox from "../../Components/Streaming/ChatBox";
+import ChannelIdCard from "../../Components/Channel/ChannelIdCard";
+import Tag from "../../Components/Core/Tag";
+import Loading from "../../Components/Core/Loading";
+import { textToLatex } from "../../Components/Core/LatexRendering";
 import { View } from "grommet-icons";
-import { Video, VideoService } from "../Services/VideoService";
-import { StreamService } from "../Services/StreamService";
-import { TalkService } from "../Services/TalkService";
-import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
+import { Video, VideoService } from "../../Services/VideoService";
+import { StreamService } from "../../Services/StreamService";
+import { TalkService } from "../../Services/TalkService";
+import { ChannelService } from "../../Services/ChannelService";
+import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
-import {db, API} from '../Services/FirebaseService'
+import {db, API} from '../../Services/FirebaseService'
 
-import '../Styles/all-stream-page.css'
+import '../../Styles/all-stream-page.css'
 import { FaMicrophone } from "react-icons/fa";
-import Clapping from "../Components/Streaming/Clapping";
+import Clapping from "../../Components/Streaming/Clapping";
 
 
 interface Props {
@@ -32,10 +34,11 @@ interface State {
   viewCount: number;
   overlay: boolean;
 }
-interface Message{
+interface Message {
   senderId: string;
   text: string;
-  name?: string
+  name?: string;
+  first: boolean;
 }
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
 const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
@@ -101,7 +104,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         channel_id: -1,
         channel_name: "",
         channel_colour: "",
-        name: "Speaker",
+        name: "Audience",
         description: "",
         tags: [],
         image_url: "",
@@ -279,7 +282,10 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   }
   async function on_message(msg:any, senderId:string){
     let attr = await agoraMessageClient.getUserAttributes(senderId)
-    setMessages((m)=>[...m, {senderId, text: msg.text, name: attr.name ||''}])
+    setMessages((m) => {
+      let first = m.length === 0 ? true : m[m.length-1].senderId !== senderId
+      return [...m, {senderId, text: msg.text, name: attr.name ||'', first: first}]
+    })
   }
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return
@@ -287,10 +293,11 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     let text = evt.target.value
     // @ts-ignore
     evt.target.value = ''
-    try{
-      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me'}])
+    try {
+      let first = messages.length === 0 ? true : messages[messages.length-1].senderId !== localUser.uid
+      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me', first: first}])
       await messageChannel.sendMessage({text})
-    }catch{
+    } catch{
       console.log('error sending message')
     }
   }
@@ -361,21 +368,68 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   }
 
   return (
-      <Box align="center">
+      <Box style={{position: "absolute", left: "40px", top: "5px"}} margin={{bottom: "50px"}}>
+        <Box 
+          direction='row'
+          gap="40px"
+          margin={{ 
+            top: "xlarge", 
+            bottom: "15px" 
+          }}
+          width="72%"
+          align="center"
+        >
+          <Link
+            className="channel"
+            to={`/${talkDetail.channel_name}`}
+            style={{ textDecoration: "none", width: "40%"}}
+          >
+            <Box
+              direction="row"
+              gap="xsmall"
+              align="center"
+              round="xsmall"
+              pad={{ vertical: "6px", horizontal: "6px" }}
+            >
+              <Box
+                justify="center"
+                align="center"
+                background="#efeff1"
+                overflow="hidden"
+                style={{
+                  minHeight: 30,
+                  minWidth: 30,
+                  borderRadius: 15,
+                }}
+              >
+                  <img
+                    src={ChannelService.getAvatar(
+                      talkDetail.channel_id
+                    )}
+                    height={30}
+                    width={30}
+                  />
+              </Box>
+              <Box justify="between">
+                <Text weight="bold" size="16px" color="grey">
+                  {talkDetail.channel_name}
+                </Text>
+              </Box>
+            </Box>
+          </Link>
+        </Box>
         <Grid
-          margin={{ top: "xlarge", bottom: "none" }}
-          // rows={["streamViewRow1", "medium"]}
-          rows={["streamViewRow1"]}
+          rows={["streamViewRow1", "streamViewRow2"]}
           columns={["streamViewColumn1", "streamViewColumn2"]}
           gap="medium"
           areas={[
-            { name: "player", start: [0, 0], end: [0, 0] },
-            { name: "chat", start: [1, 0], end: [1, 0] },
-            // { name: "questions", start: [0, 1], end: [1, 1] },
+            { name: "player", start: [0, 0], end: [0, 1] },
+            { name: "chat", start: [1, 0], end: [1, 1] },
+            { name: "description", start: [0, 1], end: [0, 1] },
           ]}
         >
         
-          <Box gridArea="player" justify="between" gap="small">
+          <Box gridArea="player" justify="between" gap="small" height="40vw">
 
             {talkStatus === 'NOT_STARTED' ? 
               <Box align='center'>
@@ -396,81 +450,116 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                     <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
                 }
                 <Box className='call-control' direction='row'>
-                  {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
-                    <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
-                    <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
+                  {hasMicRequested || callControl.mic?!callControl.mic?
+                    <Button 
+                      label="Mic requested" 
+                      style={{
+                        background: "#BAD6DB", color: 'grey', fontSize: "14px", fontWeight: "bold",
+                        textAlign: 'center', borderRadius: '6px', width: "145px", height: "35px"
+                      }}
+                    /> :
+                    <Button 
+                      label="Give-up mic" 
+                      onClick={unpublish_microphone}
+                      style={{
+                        background: "#FF4040", color: 'white', fontSize: "14px", fontWeight: "bold",
+                        textAlign: 'center', borderRadius: '6px', width: "130px", height: "35px"
+                      }} 
+                    /> :
+                    <Button 
+                      label="Request mic" 
+                      onClick={()=>API.requestMic(talkId, localUser.uid, storedName)}
+                      style={{
+                        background: "#BAD6DB", color: 'grey', fontSize: "14px", fontWeight: "bold",
+                        textAlign: 'center', borderRadius: '6px', width: "135px", height: "35px"
+                      }} 
+                    />
                   }
                 </Box>
+                
+                <Button
+                  className='full-screen-button'
+                  primary size='small'
+                  onClick={toggleFullscreen}
+                  focusIndicator={true}
+                  style={{
+                    background: "#EAF1F1", borderRadius: '6px',
+                    height: "35px", width: "105px", textAlign: 'center'
+                  }}
+                >
+                  <Text size="14px" color="grey">Fullscreen</Text>
+                </Button>
 
-                <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
               </Box>
             }
 
-            <Box direction="row" justify="between" align="start">
-              <p
-                style={{
-                  padding: 0,
-                  margin: 0,
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  // color: "black",
-                  maxWidth: "65%",
-                }}
+            <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="5px">
+              <Text
+                size="18px"
+                weight="bold"
+                style={{width: "45%"}}
               >
                 {talkDetail.name}
-              </p>
-              <br />
-              <p
-                style={{
-                  padding: 0,
-                  margin: 0,
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  // color: "black",
-                  maxWidth: "65%",
-                }}
+              </Text>
+              <Text
+                size="18px"
+                weight="bold"
+                style={{width: "25%"}}
               >
-                Speaker: {talkDetail.talk_speaker}
-              </p>
+                {talkDetail.talk_speaker}
+              </Text>
+
               <Box
                 direction="row"
                 gap="small"
                 justify="end"
-                style={{ minWidth: "35%" }}
+                style={{ width: "10%" }}
               >
-                <ChannelIdCard channelName={state.video!.channel_name} />
-                <Box direction="row" align="center" gap="xxsmall">
-                  <View color="black" size="40px" />
+                {/* <Box direction="row" align="center" gap="5px">
+                  <View color="black" size="30px" />
                   {state.viewCount === -1 && (
                     <Loading color="grey" size={34} />
                   )}
                   {state.viewCount !== -1 && (
-                    <Text size="34px" weight="bold">
+                    <Text size="20px" weight="bold">
                       {state.viewCount}
                     </Text>
                   )}
-                </Box>
+                </Box> */}
               </Box>
             </Box>
           </Box>
-          <Box gridArea="chat" background="gray" round="small">
-            {messages.map((msg, i)=>(
-                <Box key={i}>
-                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}><b>{msg.name}:</b> {msg.text}</span>
-                </Box>
-              ))}
-            <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
+          <Box gridArea="chat" background="#EAF1F1" round="small" height="36vw" margin={{bottom: "10px"}}>
+            <Box flex={true} height="94%" gap="2px" overflow="auto">
+              {messages.map((msg, i)=>(
+                  <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "-2px"}>
+                    { msg.first && (
+                      <Text color="#0C385B" size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                        {msg.name}
+                      </Text>
+                    )}
+                    <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                      {textToLatex(msg.text)}
+                    </Text>
+                  </Box>
+                ))}
+            </Box>
+            <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
+          </Box>
+
+          <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
+            <Text size="12px"> {talkDetail.description} </Text>
           </Box>
         </Grid>
-        <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
-        <DescriptionAndQuestions
+
+        {/* <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}
           description={state.video!.description}
           videoId={state.video.id}
           streamer={false}
           margin={{ top: "-20px" }}
-        />
+        /> */}
       </Box>
   )
 }
