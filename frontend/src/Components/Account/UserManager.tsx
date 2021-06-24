@@ -16,6 +16,9 @@ import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
+import DonorButton from "../Pricing/DonorButton"
+
+
 
 const makeProfilePublicInfo =
   "Making your profile public means that it will be shown in the 'speaker marketplace' feature of the platform, and administrators of relevant agoras may reach out to you about speaking opportunities if you have contact details in your bio. This action can be undone at any time.";
@@ -181,7 +184,7 @@ export default class UserManager extends Component<Props, State> {
           >
             <UserSettings size="medium"/>
           </Box>
-          <Text weight="bold" size="20px">
+          <Text weight="bold" size="20px" color="grey">
             {this.state.user?.username}
           </Text>
         </Box>
@@ -374,8 +377,29 @@ export default class UserManager extends Component<Props, State> {
     );
   };
 
+  dynamicGreetings= () => {
+      // random greetings
+      var dynamicGreetingsList = [
+        "Good morning, ",
+        "Greetings, ",
+        "Buenos dias, ",
+        "Bonjour, ",
+        "Buongiorno, ",
+        "哈囉, ",
+        "Guten Tag, "
+      ];
+      var now = new Date;
+      var day = now.getDay()
+      return dynamicGreetingsList[day % dynamicGreetingsList.length]
+  }
+
+
   loggedInStuff = (username: string) => {
     return (
+      <>
+      <Box margin={{right:"43px"}}>
+        <DonorButton callback={()=>{}}/>
+      </Box>
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
@@ -385,22 +409,31 @@ export default class UserManager extends Component<Props, State> {
       >
         <Button
           style={{
-            height: 40,
-            width: 40,
+            height: "100%",
+            width: "100%",
             // borderRadius: 20,
             overflow: "hidden",
           }}
+          
           focusIndicator={false}
           onClick={this.toggleDropdown}
         >
-          <UserSettings size="medium"/>
+          <Box direction="row" gap="small">
+            <Text size="14px" margin={{right: "15px", top: "3.43px"}} color="grey">
+              {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
+              <b>{this.state.user?.username}!</b>
+            </Text>
+              <UserSettings size="medium"/>
+          </Box>
         </Button>
       </Dropdown>
+      </>
     );
   };
 
   loggedOutStuff = (
     <Box direction="row" align="center" justify="center" gap="xsmall">
+      <DonorButton callback={()=>{}}/>
       <LoginModal
         open={this.props.showLogin}
         callback={() => {

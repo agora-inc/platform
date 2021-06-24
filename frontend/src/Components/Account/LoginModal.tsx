@@ -75,7 +75,7 @@ export default class LoginModal extends Component<Props, State> {
   isMissing = () => {
     let res: string[] = []
     if (this.state.username === "") {
-      res.push("Username")
+      res.push("Username or email address")
     }
     if (this.state.password === "") {
       res.push("Password")
@@ -142,7 +142,7 @@ export default class LoginModal extends Component<Props, State> {
           >
             <Box width="100%" gap="2px" margin={{"top": "5px"}}>
               <TextInput
-                placeholder="Username"
+                placeholder="Username or email address"
                 onChange={(e) => this.setState({ username: e.target.value })}
               />
             </Box>

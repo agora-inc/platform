@@ -4,8 +4,8 @@
 """ 
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, CreditRepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
-from mailing import sendgridApi
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -15,20 +15,20 @@ from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-mail_sys = sendgridApi.sendgridApi()
 
-users = UserRepository.UserRepository(db=agora_db, mail_sys=mail_sys)
-tags = TagRepository.TagRepository(db=agora_db)
-topics = TopicRepository.TopicRepository(db=agora_db)
-questions = QandARepository.QandARepository(db=agora_db)
-streams = StreamRepository.StreamRepository(db=agora_db)
-talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
-videos = VideoRepository.VideoRepository(db=agora_db)
-channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
-credits = CreditRepository.CreditRepository(db=agora_db, mail_sys=mail_sys)
-search = SearchRepository.SearchRepository(db=agora_db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
-sendgridApi = sendgridApi.sendgridApi()
+users = UserRepository.UserRepository()
+tags = TagRepository.TagRepository()
+topics = TopicRepository.TopicRepository()
+questions = QandARepository.QandARepository()
+streams = StreamRepository.StreamRepository()
+talks = TalkRepository.TalkRepository()
+emailReminders = EmailRemindersRepository.EmailRemindersRepository()
+videos = VideoRepository.VideoRepository()
+channels = ChannelRepository.ChannelRepository()
+search = SearchRepository.SearchRepository()
+invitations = InvitedUsersRepository.InvitedUsersRepository()
+mailinglist = MailingListRepository.MailingListRepository()
+credits = CreditRepository.CreditRepository()
 
 
 # BASE_API_URL = "http://localhost:8000"
@@ -151,20 +151,24 @@ def authenticate():
         return jsonify("ok")
     logRequest(request)
     params = request.json
-    username = params['username']
-    password = params['password']
-    user = users.authenticate(username, password)
 
-    if not user:
-        app.logger.debug(f"Unsuccessful login for user {username} (incorrect username or password)")
+    password = params['password']
+    credential = params['credential']
+
+    user = users.authenticate(credential, password)
+
+    if user:
+        app.logger.debug(f"Successful login for username: {credential}")
+    else:
+        app.logger.debug(f"Unsuccessful login for username {credential} (incorrect username or password)")
         return exceptions.Unauthorized("Incorrect username or password")
 
-    app.logger.debug(f"Successful login for user {username}")
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
 
     return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
+
 
 @app.route('/refreshtoken', methods=["POST"])
 def refreshAccessToken():
@@ -304,6 +308,33 @@ def getInvitedMembersForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(invitations.getInvitedMembersEmails(channelId))
 
+########## Mailing list methods #############
+
+@app.route('/channels/mailinglist/add', methods=["POST", "OPTIONS"])
+def addToMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+
+    return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
+
+@app.route('/channels/mailinglist', methods=["GET", "OPTIONS"])
+def getMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(mailinglist.getMailingList(channelId))
+
+############################################
+
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():
     if request.method == "OPTIONS":
@@ -336,7 +367,6 @@ def getUsersForChannel():
 
     channelId = int(request.args.get("channelId"))
     roles = request.args.getlist("role")
-    print(roles)
     return jsonify(channels.getUsersForChannel(channelId, roles))
 
 @app.route('/channels/user/role', methods=["GET"])
@@ -897,10 +927,10 @@ def scheduleTalk():
 
     for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
         if topic_key not in params:
-            params[topic_key] = "NULL" 
+            params[topic_key] = 0
 
     app.logger.debug(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
-    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"]))
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["customInstitutionsIds"],  params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
 
 @app.route('/talks/sendemailedit', methods=["GET", "OPTIONS"])
 def sendEmailonTalkModification():
@@ -932,15 +962,36 @@ def editTalk():
         
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
+    try:
+        params = request.json
+
+        for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
+            if topic_key not in params:
+                params[topic_key] = 0
+
+        app.logger.debug(f"Talk with id {params['talkId']} edited")
+        return jsonify(talks.editTalk(params["channelId"], params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
+
+    except Exception as e:
+        return str(e)
+
+
+
+@app.route('/talks/editCustomInstitutions', methods=['POST', 'OPTIONS'])
+def editAutoAcceptanceCustomInstitutions():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
 
-    app.logger.debug(f"Talk with id {params['talkId']} edited")
-    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"]))
+    return jsonify(talks.editAutoAcceptanceCustomInstitutions(params["talkId"], params["institutionIds"]))
+
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():
-    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -1020,6 +1071,24 @@ def isAvailable():
 def getTrendingTalks():
     return jsonify(talks.getTrendingTalks())
 
+
+@app.route('/talks/reminders/time', methods=["GET"])
+def getReminderTime():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    talkId = int(request.args.get("talkId"))
+    return jsonify(emailReminders.getReminderTime(talkId))
+
+@app.route('/talks/reminders/group', methods=["GET"])
+def getReminderGroup():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    talkId = int(request.args.get("talkId"))
+    return jsonify(emailReminders.getReminderGroup(talkId))
+
+
 # --------------------------------------------
 # TALK ANALYTICS
 # --------------------------------------------
@@ -1053,7 +1122,6 @@ def registerTalk():
         institution = params["institution"] if "institution" in params else ""
         user_hour_offset = params["userHourOffset"]
 
-        
         res = talks.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
         return jsonify(str(res))
 
