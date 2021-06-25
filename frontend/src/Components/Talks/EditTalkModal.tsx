@@ -913,7 +913,7 @@ export default class EditTalkModal extends Component<Props, State> {
               >
 
               <Text size="13px" weight="bold" color="#CCCCCC">
-                The agora link will be sent to you via email.
+                The link will be sent to you via email.
               </Text>
               
               </Box>
