@@ -38,54 +38,59 @@ class StripeApi:
             )
         return {
             'checkout_session_id': session['id'], 
-            'checkout_public_key': self.public_api_key
         }
 
     def get_session_tier1_sub(self, aud_size=str, url_success="", url_cancel=""):
         if aud_size == "small":
-            price_id = "111111111111"
+            price_id = "price_1J4uivLrLOIeFgs2B0dhssIO"
         elif aud_size == "big":
-            price_id = "11111111"
+            price_id = "price_1J6NdvLrLOIeFgs2SDdOo8Qk"
         else:
             raise Exception("subscribe_doctoral_subscription (StripeApi): aud_size must be 'big' or 'small'.")
         
-        return self._create_checkout_session(price_id, 'payment', url_success, url_cancel)
+        session = self._create_checkout_session(price_id, 'payment', url_success, url_cancel)
+        return {
+            'checkout_session_id': session['id'], 
+            }
 
     def get_session_tier2_sub(self, aud_size=str, url_success="", url_cancel=""):
         if aud_size == "small":
-            price_id = "111111111111"
+            price_id = "price_1J6NeWLrLOIeFgs2GGFTN1Ua"
         elif aud_size == "big":
-            price_id = "11111111"
+            price_id = "price_1J6NfNLrLOIeFgs2uLY37fUq"
         else:
             raise Exception("subscribe_doctoral_subscription (StripeApi): aud_size must be 'big' or 'small'.")
         
-        return self._create_checkout_session(price_id, 'payment', url_success, url_cancel)
+        session = self._create_checkout_session(price_id, 'payment', url_success, url_cancel)
+        return {
+            'checkout_session_id': session['id'], 
+        }
 
     def get_session_tier1_credits(self, aud_size: str, url_success="", url_cancel="", n_credits=1):
         if aud_size == "small":
-            price_id = "111111111111"
+            price_id = "price_1J6NW3LrLOIeFgs2bjQ3RqvD"
         elif aud_size == "big":
-            price_id = "11111111"
+            price_id = "price_1J6NbILrLOIeFgs2QK8rlqEk"
         else:
             raise Exception("subscribe_doctoral_subscription (StripeApi): aud_size must be 'big' or 'small'.")
         
-        return self._create_checkout_session(price_id, 'payment', url_success, url_cancel, n_credits)
+        session = self._create_checkout_session(price_id, 'payment', url_success, url_cancel, n_credits)
+        return {
+            'checkout_session_id': session['id'], 
+        }
 
     def get_session_tier2_credits(self, aud_size: str, url_success="", url_cancel="", n_credits=1):
         if aud_size == "small":
-            price_id = "111111111111"
+            price_id = "price_1J6NYDLrLOIeFgs2YXXiiX0v"
         elif aud_size == "big":
-            price_id = "11111111"
+            price_id = "price_1J6NadLrLOIeFgs2R6QS2BKS"
         else:
             raise Exception("subscribe_doctoral_subscription (StripeApi): aud_size must be 'big' or 'small'.")
 
-        return self._create_checkout_session(price_id, 'payment', url_success, url_cancel, n_credits)
-
-    def requestPayment(self):
-        raise NotImplementedError
+        session = self._create_checkout_session(price_id, 'payment', url_success, url_cancel, n_credits)
+        return {
+            'checkout_session_id': session['id'], 
+        }
 
     def checkSubscriptionStatus(self):
-        raise NotImplementedError
-
-    def stopSubscription(self):
         raise NotImplementedError

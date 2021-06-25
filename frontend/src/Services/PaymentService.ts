@@ -11,7 +11,7 @@ export interface PaymentData {
     channelId: number;
   }
 
-const getCheckoutSession = (
+const createCheckoutSession = (
     plan: string, 
     mode: "credits" | "sub", 
     audSize: "small" | "big", 
@@ -27,13 +27,13 @@ const getCheckoutSession = (
         callback);
     }
     else {
-        return "getCheckoutSession: error occured; plan has an invalid format."
+        return "createCheckoutSession: error occured; plan has an invalid format."
     }
 };
 
 export const PaymentService = {
     // stream credits
-    getCheckoutSession
+    createCheckoutSession
 };
 
 // plan = request.args.get("plan") # = tier1 and tier2

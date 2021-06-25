@@ -34,8 +34,6 @@ import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
-import { StripeContainer } from "../Components/Pricing/PaymentForm/StripeContainer"
-
 interface Props {
   location: any;
   match: any;
@@ -718,7 +716,6 @@ export default class ManageChannelPage extends Component<Props, State> {
               {this.banner()}
 
               <Box margin={{ top: "10px", bottom: "20px" }}>
-              <StripeContainer/>
                 <Text
                     size="24px"
                     weight="bold"

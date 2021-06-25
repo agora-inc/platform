@@ -2,7 +2,7 @@
 import React from "react"
 import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
-import { PaymentForm } from "../PaymentForm/PaymentForm";
+import { PaymentForm } from "../Payment/PaymentForm";
 import { stripePublicKey } from "../../../config";
 
 const stripeTestPromise = loadStripe(stripePublicKey)

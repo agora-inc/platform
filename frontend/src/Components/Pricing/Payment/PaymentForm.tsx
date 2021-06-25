@@ -62,7 +62,7 @@ export const PaymentForm = () => {
         console.log('[error]', error);
         } else {
         console.log('[PaymentMethod]', paymentMethod);
-        PaymentService.getCheckoutSession(
+        PaymentService.createCheckoutSession(
             plan,
             mode,
             audSize,

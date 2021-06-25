@@ -10,7 +10,7 @@ from repository import ChannelRepository, SearchRepository, TopicRepository, Inv
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
-import StripeApi from payment.apis.StripeApi
+from payment.apis.StripeApi import StripeApi
 from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
@@ -1689,5 +1689,5 @@ def handleFailedTransaction():
 @app.route('/payment/check_subscription_status', methods=["GET"])
 def checkSubscriptionStatus():
     # TODO:
-    # - check using Stripe if a subscription is active and previous payment worked.
+    # - check using Stripe if a subscription is active and previous payment
     raise NotImplementedError
