@@ -896,15 +896,32 @@ export default class EditTalkModal extends Component<Props, State> {
               </ReactTooltip> 
             </Box>
 
-            <TextInput
-              value={this.state.link}
-              placeholder="https://zoom.us/1234"
-              onChange={(e) => this.setState({ link: e.target.value })}
-            />
+            {this.state.link !== '_agora.stream_tech' && ( 
+              <TextInput
+                value={this.state.link}
+                placeholder="https://zoom.us/1234"
+                onChange={(e) => this.setState({ link: e.target.value })}
+              />
+            )}
+            {this.state.link === '_agora.stream_tech' && ( 
+              <Box
+                height="40px"
+                round="3px"
+                pad="small"
+                justify="center"
+                style={{border: "1px solid #BBBBBB"}}
+              >
+
+              <Text size="13px" weight="bold" color="#CCCCCC">
+                The agora link will be sent to you via email.
+              </Text>
+              
+              </Box>
+            )}
 
             <CheckBox 
               checked={this.state.link == '_agora.stream_tech'} 
-              label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+              label={'Host on Agora.stream'} 
               onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}
             /> 
 
