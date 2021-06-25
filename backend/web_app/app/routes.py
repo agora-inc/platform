@@ -2,6 +2,7 @@
     TODO: 
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
+from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository
@@ -9,7 +10,7 @@ from repository import ChannelRepository, SearchRepository, TopicRepository, Inv
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
-
+import StripeApi from payment.apis.StripeApi
 from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
@@ -29,7 +30,7 @@ search = SearchRepository.SearchRepository()
 invitations = InvitedUsersRepository.InvitedUsersRepository()
 mailinglist = MailingListRepository.MailingListRepository()
 credits = CreditRepository.CreditRepository()
-
+paymentsApi = StripeApi()
 
 # BASE_API_URL = "http://localhost:8000"
 BASE_API_URL = "https://agora.stream/api"
@@ -1636,3 +1637,57 @@ def getMaxAudienceForCreditForTalk():
         return jsonify(credits.getMaxAudienceForCreditForTalk(talk_id))
     except Exception as e:
         return jsonify(str(e))
+
+# --------------------------------------------
+# PAYMENTS & SUBSCRIPTIONS
+# --------------------------------------------
+@app.route('/payment/create-checkout-session', methods=["GET"])
+def getStripeSession():
+    plan = request.args.get("plan") # = tier1 and tier2
+    mode = request.args.get("mode") # = 'credits' or 'sub'
+    quantity = request.args.get("quantity") # = 'credits' or 'sub'
+    aud_size = request.args.get("audienceSize")
+    channel_id = request.args.get("channelId")
+
+    try:
+        channel_name = channels.getChannelById(channel_id)["name"]
+    except Exception as e:
+        return jsonify(400, f"getStripeSession: invalid channelId ({channel_id})")
+
+    success_url = os.path.join(BASE_API_URL, "success", channel_name, mode, plan)
+    url_cancel = os.path.join(BASE_API_URL, "fail", channel_name, mode, plan)
+
+    if plan == "tier1":
+        if mode == "credits": 
+            res = paymentsApi.get_session_tier1_credits(aud_size, success_url, url_cancel, quantity)
+        elif mode == "sub":
+            res = paymentsApi.get_session_tier1_sub(aud_size, success_url, url_cancel)
+
+    elif plan == "tier2":
+        if mode == "credits": 
+            res = paymentsApi.get_session_tier2_credits(aud_size, success_url, url_cancel, quantity)
+        elif mode == "sub":
+            res = paymentsApi.get_session_tier2_sub(aud_size, success_url, url_cancel)
+    else:
+        return jsonify(400, f"getStripeSession: invalid plan ({plan})")
+
+    try:
+        return jsonify(res)
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/payment/handle_successful_transaction', methods=["GET"])
+def handleSuccessfulTransaction():
+    # TODO:
+    # - add credits in DB or subscription
+    raise NotImplementedError
+
+@app.route('/payment/handle_failed_transaction', methods=["GET"])
+def handleFailedTransaction():
+    raise NotImplementedError
+
+@app.route('/payment/check_subscription_status', methods=["GET"])
+def checkSubscriptionStatus():
+    # TODO:
+    # - check using Stripe if a subscription is active and previous payment worked.
+    raise NotImplementedError
