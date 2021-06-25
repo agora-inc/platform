@@ -20,13 +20,15 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, 
+  MailOption, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import EmailsTab from "./ManageChannelPage/EmailsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
@@ -744,6 +746,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Tab>
                   <Tab>
+                  <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <MailOption />
+                      <Text size="14px"> 
+                        Mailing list 
+                      </Text>
+                    </Box>
+                    
+                  </Tab>
+                  <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <Group />
                       <Text size="14px"> 
@@ -751,14 +763,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
-                  {/*<Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <MailOption />
-                      <Text size="24px"> 
-                        Mailing list 
-                      </Text>
-                    </Box>
-                  </Tab>*/}
+
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <Resources />
@@ -768,6 +773,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Tab>
                   <Tab>
+                    <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <DocumentText />
                       <Text size="14px"> 
@@ -934,6 +940,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
 
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                  <EmailsTab channelId={channel!.id} />
+                </TabPanel>
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="column">
