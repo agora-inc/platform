@@ -32,8 +32,10 @@ mailinglist = MailingListRepository.MailingListRepository()
 credits = CreditRepository.CreditRepository()
 paymentsApi = StripeApi()
 
-# BASE_API_URL = "http://localhost:8000"
-BASE_API_URL = "https://agora.stream/api"
+BASE_URL = "http://localhost:8000"
+# BASE_URL = "https://agora.stream/"
+
+BASE_API_URL = BASE_URL + "api"
 
 
 # --------------------------------------------
@@ -1654,8 +1656,8 @@ def getStripeSession():
     except Exception as e:
         return jsonify(400, f"getStripeSession: invalid channelId ({channel_id})")
 
-    success_url = os.path.join(BASE_API_URL, "success", channel_name, mode, plan)
-    url_cancel = os.path.join(BASE_API_URL, "fail", channel_name, mode, plan)
+    success_url = os.path.join(BASE_URL, "success", channel_name, mode, plan)
+    url_cancel = os.path.join(BASE_URL, "fail", channel_name, mode, plan)
 
 
 
