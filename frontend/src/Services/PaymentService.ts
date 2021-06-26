@@ -31,9 +31,34 @@ const createCheckoutSession = (
     }
 };
 
+const handleSuccessfulTransaction = (
+    plan: string, 
+    mode: "credits" | "sub", 
+    audSize: "small" | "big", 
+    quantity: number = 1, 
+    channelId: number) => {
+    
+}
+
+const handleFailedTransaction = (
+    plan: string, 
+    mode: "credits" | "sub", 
+    audSize: "small" | "big", 
+    quantity: number = 1, 
+    channelId: number) => {
+
+}
+
+
+
+
+
 export const PaymentService = {
     // stream credits
-    createCheckoutSession
+    createCheckoutSession,
+    // Post-transactions
+    handleSuccessfulTransaction,
+    handleFailedTransaction
 };
 
 // plan = request.args.get("plan") # = tier1 and tier2

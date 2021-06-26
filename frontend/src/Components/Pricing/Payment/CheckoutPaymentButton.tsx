@@ -4,17 +4,9 @@ import { PaymentService, PaymentData } from "../../../Services/PaymentService";
 import { stripePublicKey } from "../../../config"
 import { Text, Box } from "grommet";
 
-
 interface Props extends PaymentData{
     text: string
 }
-
-// const CheckoutPaymentButton = () => {    
-//     const [plan, setPlan] = useState<PaymentData["plan"]>("tier1");
-//     const [mode, setMode] = useState<PaymentData["mode"]>("sub");
-//     const [audSize, setAudSize] = useState<PaymentData["audSize"]>("small");
-//     const [quantity, setQuantity] = useState<PaymentData["quantity"]>(1);
-//     const [channelId, setChannelId] = useState<PaymentData["channelId"]>(123);
 
 const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {    
     const [plan, setPlan] = useState<PaymentData["plan"]>(props.plan);
@@ -24,17 +16,6 @@ const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
     const [channelId, setChannelId] = useState<PaymentData["channelId"]>(props.channelId);
     
     const stripePromise = loadStripe(stripePublicKey);
-
-    const button = document.querySelector("checkout_button")!
-
-    // useEffect(() => {
-    //     // Similar to componentDidMount and componentDidUpdate:
-    //     button.addEventListener('click', event => onClick());
-
-    //     // Similar to componentDidUnmount
-    //     return () => {
-    //         button.removeEventListener('click', event => onClick())}
-    // });
 
     const onClick = async () => {
         PaymentService.createCheckoutSession(
@@ -63,6 +44,25 @@ const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
                         // If `redirectToCheckout` fails due to a browser or network
                         // error, display the localized error message to your customer
                         // using `result.error.message`.
+                        if (result.error){
+                            PaymentService.handleFailedTransaction(
+                                plan,
+                                mode,
+                                audSize,
+                                quantity,
+                                channelId,
+                            )
+                        } 
+                        else {
+                            PaymentService.handleSuccessfulTransaction(
+                                plan,
+                                mode,
+                                audSize,
+                                quantity,
+                                channelId,
+                            )
+                        }
+
                     });
                 }
             }

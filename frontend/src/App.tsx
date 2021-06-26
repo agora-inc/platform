@@ -26,6 +26,7 @@ import AgoraCreationPage from "./Views/AgoraCreationPage";
 import TalkSharingPage from "./Views/TalkSharingPage";
 import AvatarPage from "./Views/AvatarPage";
 import LivestreamPage from "./Views/Livestream/LivestreamPage";
+import AfterTransaction from "./Views/AfterTransaction"
 import {useTracking} from './Components/Core/Analytics/useTracking';
 
 function App() {
@@ -42,6 +43,8 @@ function App() {
           <Route exact path="/agoras" component={AllAgorasPage} />
           {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
+
+          <Route path="/thankyou/:status" component={AfterTransaction} />
 
           <Route path="/livestream/:encoded_endpoint" component={LivestreamPage} />
 

@@ -35,7 +35,11 @@ import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
+
+
 import CheckoutPaymentButton from "../Components/Pricing/Payment/CheckoutPaymentButton";
+
+
 
 interface Props {
   location: any;
@@ -470,11 +474,11 @@ export default class ManageChannelPage extends Component<Props, State> {
     let border = "none";
 
     return {
-      width: "75vw",
+      width: "100%",
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
-      backgroundSize: "75vw 25vw",
+      backgroundSize: "100vw 33vw",
       border: border,
     };
   };
@@ -1006,7 +1010,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                                 audSize="small"
                                 quantity={1}
                                 channelId={this.state.channel!.id}
-                                text={"9999 pounds per mont"}
+                                text={"9999 CHF"}
                               />
 
                               

@@ -16,6 +16,7 @@ from flask_mail import Message
 from werkzeug import exceptions
 import os
 
+import stripe
 
 users = UserRepository.UserRepository()
 tags = TagRepository.TagRepository()
@@ -238,8 +239,12 @@ def updatePublic():
 # --------------------------------------------
 @app.route('/channels/channel', methods=["GET"])
 def getChannelByName():
-    name = request.args.get("name")
-    return jsonify(channels.getChannelByName(name))
+    if "name" in request.args:
+        name = request.args.get("name")
+        return jsonify(channels.getChannelByName(name))
+    elif "id" in request.args:
+        id = request.args.get("id")
+        return jsonify(channels.getChannelById(id))
 
 @app.route('/channels/all', methods=["GET"])
 def getAllChannels():
@@ -1647,21 +1652,12 @@ def getMaxAudienceForCreditForTalk():
 def getStripeSession():
     plan = request.args.get("plan") # = tier1 and tier2
     mode = request.args.get("mode") # = 'credits' or 'sub'
-    quantity = request.args.get("quantity") # = 'small' or 'big'
-    aud_size = request.args.get("audSize")
+    quantity = request.args.get("quantity")
+    aud_size = request.args.get("audSize") # = 'small' or 'big'
     channel_id = request.args.get("channelId")
 
-    try:
-        channel_name = channels.getChannelById(channel_id)["name"]
-    except Exception as e:
-        return jsonify(400, f"getStripeSession: invalid channelId ({channel_id})")
-
-    success_url = os.path.join(BASE_URL, "success", channel_name, mode, plan)
-    url_cancel = os.path.join(BASE_URL, "fail", channel_name, mode, plan)
-
-
-
-
+    success_url = os.path.join(BASE_URL, "thankyou", "success", channel_id, mode, plan)
+    url_cancel = os.path.join(BASE_URL, "thankyou", "error", channel_id, mode, plan)
 
     try:
         if plan == "tier1":
@@ -1678,21 +1674,65 @@ def getStripeSession():
         else:
             return jsonify(400, f"getStripeSession: invalid plan ({plan})")
             
-    except Exception as e:
-        return jsonify(str(e))
-
-
-
-    try:
         return jsonify(res)
     except Exception as e:
         return jsonify(str(e))
 
+@app.route('/stripe_webhook', methods=['POST'])
+def stripe_webhook():
+    print('WEBHOOK CALLED')
+
+    if request.content_length > 1024 * 1024:
+        print('REQUEST TOO BIG')
+        abort(400)
+    payload = request.get_data()
+    sig_header = request.environ.get('HTTP_STRIPE_SIGNATURE')
+    endpoint_secret = 'YOUR_ENDPOINT_SECRET'
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, apendpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        print('INVALID PAYLOAD')
+        return {}, 400
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        print('INVALID SIGNATURE')
+        return {}, 400
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        print(session)
+        line_items = stripe.checkout.Session.list_line_items(session['id'], limit=1)
+        print(line_items['data'][0]['description'])
+        # get payment_intent into DB
+
+    # WIP: GET SUBSCRIPTION RENEWAL EVENTS THERE
+    #
+    #
+    elif event["type"] == "checkout.session.subscription.renewal MAYBE???????":
+        pass
+
+    return {}
+
 @app.route('/payment/handle_successful_transaction', methods=["GET"])
 def handleSuccessfulTransaction():
-    # TODO:
-    # - add credits in DB or subscription
-    raise NotImplementedError
+    plan = request.args.get("plan") # = tier1 and tier2
+    mode = request.args.get("mode") # = 'credits' or 'sub'
+    quantity = request.args.get("quantity")
+    aud_size = request.args.get("audSize") # = 'small' or 'big'
+    channel_id = request.args.get("channelId")
+    
+    # Add in DB
+    if mode == "credits":
+        raise NotImplementedError
+
+    elif mode == "sub":
+
 
 @app.route('/payment/handle_failed_transaction', methods=["GET"])
 def handleFailedTransaction():
