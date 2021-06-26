@@ -31,37 +31,33 @@ const createCheckoutSession = (
     }
 };
 
-const handleSuccessfulTransaction = (
-    plan: string, 
-    mode: "credits" | "sub", 
-    audSize: "small" | "big", 
-    quantity: number = 1, 
-    channelId: number) => {
+// const handleSuccessfulTransaction = (
+//     plan: string, 
+//     mode: "credits" | "sub", 
+//     audSize: "small" | "big", 
+//     quantity: number = 1, 
+//     channelId: number,
+//     checkoutSessionId: string
+//     ) => {
     
-}
+// }
 
-const handleFailedTransaction = (
-    plan: string, 
-    mode: "credits" | "sub", 
-    audSize: "small" | "big", 
-    quantity: number = 1, 
-    channelId: number) => {
+// const handleFailedTransaction = (
+//     plan: string, 
+//     mode: "credits" | "sub", 
+//     audSize: "small" | "big", 
+//     quantity: number = 1, 
+//     channelId: number,
+//     checkoutSessionId: string
+//     ) => {
 
-}
-
-
-
+// }
 
 
 export const PaymentService = {
     // stream credits
     createCheckoutSession,
     // Post-transactions
-    handleSuccessfulTransaction,
-    handleFailedTransaction
+    // handleSuccessfulTransaction,
+    // handleFailedTransaction
 };
-
-// plan = request.args.get("plan") # = tier1 and tier2
-// mode = request.args.get("mode") # = 'credits' or 'sub'
-// aud_size = request.args.get("audienceSize")
-// channel_name = request.args.get("channel_name")

@@ -1678,6 +1678,7 @@ def getStripeSession():
     except Exception as e:
         return jsonify(str(e))
 
+# NOTE: below is to handle responses from Stripe after checkouts (e.g. payment successful or subscription renewal).
 @app.route('/stripe_webhook', methods=['POST'])
 def stripe_webhook():
     print('WEBHOOK CALLED')
@@ -1703,43 +1704,52 @@ def stripe_webhook():
         print('INVALID SIGNATURE')
         return {}, 400
 
-    # Handle the checkout.session.completed event
+    # A. Handle successfull checkout sessions
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         print(session)
         line_items = stripe.checkout.Session.list_line_items(session['id'], limit=1)
         print(line_items['data'][0]['description'])
-        # get payment_intent into DB
+        # get payment_intent and store in DB
 
-    # WIP: GET SUBSCRIPTION RENEWAL EVENTS THERE
     #
+    # WIP
     #
-    elif event["type"] == "checkout.session.subscription.renewal MAYBE???????":
+    # B. Handle failed checkout sessions 
+    if event['type'] == 'checkout.session.failed; CHECK NAME EVENT ON STRIPE API':
+        pass
+
+    #
+    # WIP
+    #
+    # C. Handle successfull subscription renewals
+    elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
+        pass
+
+    #
+    # WIP
+    #
+    # C. Handle failed subscription renewals
+    elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
         pass
 
     return {}
 
-@app.route('/payment/handle_successful_transaction', methods=["GET"])
-def handleSuccessfulTransaction():
-    plan = request.args.get("plan") # = tier1 and tier2
-    mode = request.args.get("mode") # = 'credits' or 'sub'
-    quantity = request.args.get("quantity")
-    aud_size = request.args.get("audSize") # = 'small' or 'big'
-    channel_id = request.args.get("channelId")
+# @app.route('/payment/handle_successful_transaction', methods=["GET"])
+# def handleSuccessfulTransaction():
+#     plan = request.args.get("plan") # = tier1 and tier2
+#     mode = request.args.get("mode") # = 'credits' or 'sub'
+#     quantity = request.args.get("quantity")
+#     aud_size = request.args.get("audSize") # = 'small' or 'big'
+#     channel_id = request.args.get("channelId")
     
-    # Add in DB
-    if mode == "credits":
-        raise NotImplementedError
+#     # Add in DB
+#     if mode == "credits":
+#         raise NotImplementedError
 
-    elif mode == "sub":
+#     elif mode == "sub":
 
 
-@app.route('/payment/handle_failed_transaction', methods=["GET"])
-def handleFailedTransaction():
-    raise NotImplementedError
-
-@app.route('/payment/check_subscription_status', methods=["GET"])
-def checkSubscriptionStatus():
-    # TODO:
-    # - check using Stripe if a subscription is active and previous payment
-    raise NotImplementedError
+# @app.route('/payment/handle_failed_transaction', methods=["GET"])
+# def handleFailedTransaction():
+#     raise NotImplementedError
