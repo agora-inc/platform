@@ -79,7 +79,10 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "plugin:react-hooks/recommended"
+    ]
   },
   "browserslist": {
     "production": [

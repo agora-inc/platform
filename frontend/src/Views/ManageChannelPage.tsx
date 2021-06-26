@@ -35,6 +35,8 @@ import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
+import CheckoutPaymentButton from "../Components/Pricing/Payment/CheckoutPaymentButton";
+
 interface Props {
   location: any;
   match: any;
@@ -982,7 +984,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                             <TableCell/>
                             <TableCell/>
                             <TableCell margin={{top: "20px"}}>  
-                              <Box
+                              {/* <Box
                                 onClick={this.toggleModalPricing}
                                 background="#0C385B"
                                 round="xsmall"
@@ -995,7 +997,19 @@ export default class ManageChannelPage extends Component<Props, State> {
                                 hoverIndicator="#6DA3C7"
                               >
                                 <Text size="14px" weight="bold"> £10 / month  </Text>
-                              </Box>
+                              </Box> */}
+
+
+                              <CheckoutPaymentButton
+                                plan="tier1"
+                                mode="sub"
+                                audSize="small"
+                                quantity={1}
+                                channelId={this.state.channel!.id}
+                                text={"9999 pounds per mont"}
+                              />
+
+                              
                             </TableCell>
                             <TableCell margin={{top: "20px"}}>                                
                               <Box

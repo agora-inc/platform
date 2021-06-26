@@ -1,29 +1,40 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, FunctionComponent } from "react"
 import { loadStripe } from "@stripe/stripe-js";
 import { PaymentService, PaymentData } from "../../../Services/PaymentService";
 import { stripePublicKey } from "../../../config"
+import { Text, Box } from "grommet";
 
 
-export const CheckoutButton = () => {    
-    const [plan, setPlan] = useState<PaymentData["plan"]>("tier1");
-    const [mode, setMode] = useState<PaymentData["mode"]>("sub");
-    const [audSize, setAudSize] = useState<PaymentData["audSize"]>("small");
-    const [quantity, setQuantity] = useState<PaymentData["quantity"]>(1);
-    const [channelId, setChannelId] = useState<PaymentData["channelId"]>(123);
+interface Props extends PaymentData{
+    text: string
+}
+
+// const CheckoutPaymentButton = () => {    
+//     const [plan, setPlan] = useState<PaymentData["plan"]>("tier1");
+//     const [mode, setMode] = useState<PaymentData["mode"]>("sub");
+//     const [audSize, setAudSize] = useState<PaymentData["audSize"]>("small");
+//     const [quantity, setQuantity] = useState<PaymentData["quantity"]>(1);
+//     const [channelId, setChannelId] = useState<PaymentData["channelId"]>(123);
+
+const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {    
+    const [plan, setPlan] = useState<PaymentData["plan"]>(props.plan);
+    const [mode, setMode] = useState<PaymentData["mode"]>(props.mode);
+    const [audSize, setAudSize] = useState<PaymentData["audSize"]>(props.audSize);
+    const [quantity, setQuantity] = useState<PaymentData["quantity"]>(props.quantity);
+    const [channelId, setChannelId] = useState<PaymentData["channelId"]>(props.channelId);
     
     const stripePromise = loadStripe(stripePublicKey);
 
     const button = document.querySelector("checkout_button")!
 
-    useEffect(() => {
-        
-        // Similar to componentDidMount and componentDidUpdate:
-        button.addEventListener('click', event => onClick());
+    // useEffect(() => {
+    //     // Similar to componentDidMount and componentDidUpdate:
+    //     button.addEventListener('click', event => onClick());
 
-        // Similar to componentDidUnmount
-        return () => {
-            button.removeEventListener('click', event => onClick())}
-      });
+    //     // Similar to componentDidUnmount
+    //     return () => {
+    //         button.removeEventListener('click', event => onClick())}
+    // });
 
     const onClick = async () => {
         PaymentService.createCheckoutSession(
@@ -59,12 +70,22 @@ export const CheckoutButton = () => {
     }
     
     return (
-        <>
-            <form onSubmit={onClick}>
-                {/* <button type="submit" disabled={!stripe}>
-                Checkout
-                </button> */}
-            </form>
-        </>
+        <Box
+            onClick={onClick}
+            background="#0C385B"
+            round="xsmall"
+            pad="xsmall"
+            width="160px"
+            height="40px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator="#6DA3C7"
+            alignSelf="center"
+        >
+            <Text size="14px" weight="bold">{props.text}</Text>
+        </Box>
     );
 }
+
+export default CheckoutPaymentButton

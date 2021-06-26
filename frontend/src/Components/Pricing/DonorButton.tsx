@@ -26,7 +26,6 @@ export default class DonorButton extends Component<Props, State> {
     this.setState({
       showModal: !this.state.showModal,
     }, ()=> {
-        console.log("here is the state: ", this.state.showModal)
     });
   };
 

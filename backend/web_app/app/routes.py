@@ -1645,8 +1645,8 @@ def getMaxAudienceForCreditForTalk():
 def getStripeSession():
     plan = request.args.get("plan") # = tier1 and tier2
     mode = request.args.get("mode") # = 'credits' or 'sub'
-    quantity = request.args.get("quantity") # = 'credits' or 'sub'
-    aud_size = request.args.get("audienceSize")
+    quantity = request.args.get("quantity") # = 'small' or 'big'
+    aud_size = request.args.get("audSize")
     channel_id = request.args.get("channelId")
 
     try:
@@ -1657,19 +1657,29 @@ def getStripeSession():
     success_url = os.path.join(BASE_API_URL, "success", channel_name, mode, plan)
     url_cancel = os.path.join(BASE_API_URL, "fail", channel_name, mode, plan)
 
-    if plan == "tier1":
-        if mode == "credits": 
-            res = paymentsApi.get_session_tier1_credits(aud_size, success_url, url_cancel, quantity)
-        elif mode == "sub":
-            res = paymentsApi.get_session_tier1_sub(aud_size, success_url, url_cancel)
 
-    elif plan == "tier2":
-        if mode == "credits": 
-            res = paymentsApi.get_session_tier2_credits(aud_size, success_url, url_cancel, quantity)
-        elif mode == "sub":
-            res = paymentsApi.get_session_tier2_sub(aud_size, success_url, url_cancel)
-    else:
-        return jsonify(400, f"getStripeSession: invalid plan ({plan})")
+
+
+
+    try:
+        if plan == "tier1":
+            if mode == "credits": 
+                res = paymentsApi.get_session_tier1_credits(aud_size, success_url, url_cancel, quantity)
+            elif mode == "sub":
+                res = paymentsApi.get_session_tier1_sub(aud_size, success_url, url_cancel)
+
+        elif plan == "tier2":
+            if mode == "credits": 
+                res = paymentsApi.get_session_tier2_credits(aud_size, success_url, url_cancel, quantity)
+            elif mode == "sub":
+                res = paymentsApi.get_session_tier2_sub(aud_size, success_url, url_cancel)
+        else:
+            return jsonify(400, f"getStripeSession: invalid plan ({plan})")
+            
+    except Exception as e:
+        return jsonify(str(e))
+
+
 
     try:
         return jsonify(res)

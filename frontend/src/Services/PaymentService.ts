@@ -23,7 +23,7 @@ const createCheckoutSession = (
     }
     if (plan == "tier1" || plan == "tier2"){
     get(
-        `/payment/create-checkout-session?plan=${plan}&mode=${mode}&audSize=${audSize}&quantity=${quantity}&channelId=${channelId}`, 
+        `payment/create-checkout-session?plan=${plan}&mode=${mode}&audSize=${audSize}&quantity=${quantity}&channelId=${channelId}`, 
         callback);
     }
     else {
