@@ -1,11 +1,14 @@
 import React, { useState } from "react"
 import {CardElement, useStripe, useElements, ElementsConsumer} from '@stripe/react-stripe-js';
 import { PaymentService, PaymentData } from "../../../Services/PaymentService";
-import { Select } from "grommet";
 
 
-// NOTE: in-house payment UI that does not redirect to stripe. Will be integrated later (Remy).
-
+/////////////////////////////
+// NOT FUNCTIONAL (WIP).
+/////////////////////////////
+// Skeletton of our homemade payment UI form (this one won't redirect to stripe). 
+// This will be integrated later (Remy).
+/////////////////////////////
 const CARD_OPTIONS = {
     "hidePostalCode": true,
 	style: {
@@ -27,9 +30,7 @@ const CARD_OPTIONS = {
 }
 
 export const PaymentForm = () => {    
-    const [plan, setPlan] = useState<PaymentData["plan"]>("tier1");
-    const [mode, setMode] = useState<PaymentData["mode"]>("sub");
-    const [audSize, setAudSize] = useState<PaymentData["audSize"]>("small");
+    const [productId, setProductId] = useState<PaymentData["productId"]>(1);
     const [quantity, setQuantity] = useState<PaymentData["quantity"]>(1);
     const [channelId, setChannelId] = useState<PaymentData["channelId"]>(123);
 
@@ -62,12 +63,10 @@ export const PaymentForm = () => {
         console.log('[error]', error);
         } else {
         console.log('[PaymentMethod]', paymentMethod);
-        PaymentService.createCheckoutSession(
-            plan,
-            mode,
-            audSize,
+        PaymentService.createCheckoutSessionFromId(
+            productId,
             quantity,
-            channelId,
+            channelId!,
             () => {}
         )
         }
@@ -75,11 +74,6 @@ export const PaymentForm = () => {
 
     return (
         <>
-            <Select
-                options={["small", "big"]}
-                value={audSize}
-                onChange={({ option }) => setAudSize(option)}
-            />
             <form onSubmit={handleSubmit}>
                 <CardElement options={CARD_OPTIONS}/>
                 <button type="submit" disabled={!stripe}>

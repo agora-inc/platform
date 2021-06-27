@@ -24,11 +24,26 @@ class SubscriptionRepository:
 
     def addSubscription(self, channel_id, plan, aud_size, payment_id):
 
+
+
+
+    def extendSubscriptionByOneMonth(self, channel_id):
+        extension_query = f'''
+            UPDATE Subscriptions
+            SET end_time = DATE_ADD(NOW(), INTERVAL 1 MONTH)
+            WHERE (
+                channel_id = {channel_id}
+                )
+            ;
+        '''
+        try: 
+            self.db.run_query(extension_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
+
+    def upgradeSubscription(self, channel_id, plan):
         pass
 
-    def removeSubscription(self):
-        pass
-
-    def checkIfSubscriptionHasBeenPaid(self, channel_id):
-        # query stripe to check that
+    def removeSubscription(self, channel_id):
         pass

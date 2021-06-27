@@ -2,62 +2,79 @@
 // import axios from "axios";
 // import { Topic } from "../Services/TopicService";
 import { get } from "../Middleware/httpMiddleware";
+import { ProductService } from "./ProductService";
 
 export interface PaymentData {
-    plan: "tier1" | "tier2";
-    mode: "sub";
-    audSize: "small" | "big";
+    productId: number;
     quantity: number;
-    channelId: number;
-  }
+    channelId?: number;
+    userId?: number
+}
 
-const createCheckoutSession = (
-    plan: string, 
-    mode: "credits" | "sub", 
-    audSize: "small" | "big", 
+const createCheckoutSessionFromStreamingFeatures = (
+    tier: "tier1" | "tier2", 
+    productType: "subscription" | "credit",
+    audSize: "small" | "big",
     quantity: number = 1, 
     channelId: number, 
     callback: any) => {
     if (quantity < 0){
         quantity = 1
     }
-    if (plan == "tier1" || plan == "tier2"){
-    get(
-        `payment/create-checkout-session?plan=${plan}&mode=${mode}&audSize=${audSize}&quantity=${quantity}&channelId=${channelId}`, 
-        callback);
-    }
-    else {
-        return "createCheckoutSession: error occured; plan has an invalid format."
-    }
+    // get product_id
+    ProductService.getStreamingProductIdByFeatures(
+        tier, audSize, productType, (res : {product_id : string}) => {
+            createCheckoutSessionFromId(
+                Number(res.product_id), quantity, channelId, () => {}
+            )
+
+        }
+    )
 };
 
-// const handleSuccessfulTransaction = (
-//     plan: string, 
-//     mode: "credits" | "sub", 
-//     audSize: "small" | "big", 
-//     quantity: number = 1, 
-//     channelId: number,
-//     checkoutSessionId: string
-//     ) => {
+const createCheckoutSessionFromId = (
+    productId: number,
+    quantity: number = 1, 
+    channelId: number, 
+    callback: any) => {
+    if (quantity < 0){
+        quantity = 1
+    }
+    get(
+        `payment/create-checkout-session?productId=${productId}&quantity=${quantity}&channelId=${channelId}`, 
+        callback);
+};
+
+
+
+const handleSuccessfulTransaction = (
+    tier: string, 
+    productType: "subscription" | "credit",
+    audSize: "small" | "big", 
+    quantity: number = 1, 
+    channelId: number,
+    checkoutSessionId: string
+    ) => {
     
-// }
+}
 
-// const handleFailedTransaction = (
-//     plan: string, 
-//     mode: "credits" | "sub", 
-//     audSize: "small" | "big", 
-//     quantity: number = 1, 
-//     channelId: number,
-//     checkoutSessionId: string
-//     ) => {
-
-// }
+const handleFailedTransaction = (
+    tier: string, 
+    productType: "subscription" | "credit",
+    audSize: "small" | "big", 
+    quantity: number = 1, 
+    channelId: number,
+    checkoutSessionId: string
+    ) => {
+}
 
 
 export const PaymentService = {
-    // stream credits
-    createCheckoutSession,
+    // checkout sessions
+    createCheckoutSessionFromId,
+    createCheckoutSessionFromStreamingFeatures,
+
     // Post-transactions
-    // handleSuccessfulTransaction,
-    // handleFailedTransaction
+    handleSuccessfulTransaction,
+    handleFailedTransaction
 };

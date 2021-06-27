@@ -6,7 +6,7 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -31,12 +31,15 @@ search = SearchRepository.SearchRepository()
 invitations = InvitedUsersRepository.InvitedUsersRepository()
 mailinglist = MailingListRepository.MailingListRepository()
 credits = CreditRepository.CreditRepository()
+products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 
-BASE_URL = "http://localhost:8000"
+
+BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://agora.stream/"
 
-BASE_API_URL = BASE_URL + "api"
+# BASE_API_URL = "https://agora.stream/api"
+BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
@@ -1583,6 +1586,34 @@ def channelLinkRedirect():
         return jsonify(str(e))
 
 # --------------------------------------------
+# Products
+# --------------------------------------------
+@app.route('/products/streaming', methods=["GET"])
+def getStreamingProductById():
+    with open("/home/cloud-user/test/tieri_enri1.txt", "w") as file:
+            file.write("in")
+    err = ""
+    try:
+        product_id = request.args.get("productId")
+        return jsonify(
+            products.getStreamingProductById(product_id)
+            )
+    except Exception as e:
+        err = str(e) + "; "
+
+    try:
+        tier = request.args.get("tier") # = tier1 and tier2
+        product_type = request.args.get("productType") # = 'credits' or 'sub'
+        aud_size = request.args.get("audienceSize") # = 'small' or 'big'
+        return jsonify(
+            products.getStreamingProductIdByFeatures(tier, product_type, aud_size)
+            )
+    except Exception as e:
+        err += str(e)
+
+    return jsonify(e)
+
+# --------------------------------------------
 # CREDITS
 # --------------------------------------------
 @app.route('/credits/talk/used', methods=["GET"])
@@ -1649,31 +1680,21 @@ def getMaxAudienceForCreditForTalk():
 # PAYMENTS & SUBSCRIPTIONS
 # --------------------------------------------
 @app.route('/payment/create-checkout-session', methods=["GET"])
-def getStripeSession():
-    plan = request.args.get("plan") # = tier1 and tier2
-    mode = request.args.get("mode") # = 'credits' or 'sub'
+def getStripeSessionForProduct():
+    product_id = request.args.get("productId")
     quantity = request.args.get("quantity")
-    aud_size = request.args.get("audSize") # = 'small' or 'big'
     channel_id = request.args.get("channelId")
 
-    success_url = os.path.join(BASE_URL, "thankyou", "success", channel_id, mode, plan)
-    url_cancel = os.path.join(BASE_URL, "thankyou", "error", channel_id, mode, plan)
-
+    success_url = os.path.join(BASE_URL, "thankyou", "success", channel_id)
+    url_cancel = os.path.join(BASE_URL, "thankyou", "error", channel_id)
     try:
-        if plan == "tier1":
-            if mode == "credits": 
-                res = paymentsApi.get_session_tier1_credits(aud_size, success_url, url_cancel, quantity)
-            elif mode == "sub":
-                res = paymentsApi.get_session_tier1_sub(aud_size, success_url, url_cancel)
-
-        elif plan == "tier2":
-            if mode == "credits": 
-                res = paymentsApi.get_session_tier2_credits(aud_size, success_url, url_cancel, quantity)
-            elif mode == "sub":
-                res = paymentsApi.get_session_tier2_sub(aud_size, success_url, url_cancel)
-        else:
-            return jsonify(400, f"getStripeSession: invalid plan ({plan})")
-            
+        # Only streaming products for now (future: add extra arg to classify them) (Remy)
+        res = paymentsApi.get_session_for_streaming_products(
+            product_id,
+            success_url,
+            url_cancel,
+            quantity
+        )
         return jsonify(res)
     except Exception as e:
         return jsonify(str(e))
@@ -1694,12 +1715,21 @@ def stripe_webhook():
         event = paymentsApi._construct_event_from_raw(payload, sig_header)
 
         # A. Handle successfull checkout sessions
-        if event['type'] == 'checkout.session.completed':
+        if event['type'] == 'checkout.session.async_payment_succeeded':
             paymentsApi.handle_completed_checkout(event)
 
         # B. Handle failed checkout sessions 
-        if event['type'] == 'checkout.session.failed; CHECK NAME EVENT ON STRIPE API':
+        elif event['type'] == 'checkout.session.async_payment_failed':
             paymentsApi.handle_failed_checkout(event)
+
+
+        #
+        #
+        # WIP: for subscriptions:
+        # https://stripe.com/docs/billing/subscriptions/webhooks
+        #
+        #
+
 
         # C. Handle successfull subscription renewals
         elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":

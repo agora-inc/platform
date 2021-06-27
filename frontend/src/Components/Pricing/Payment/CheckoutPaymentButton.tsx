@@ -1,29 +1,22 @@
-import React, { useEffect, useState, FunctionComponent } from "react"
+import React, { useState, FunctionComponent } from "react"
 import { loadStripe } from "@stripe/stripe-js";
 import { PaymentService, PaymentData } from "../../../Services/PaymentService";
 import { stripePublicKey } from "../../../config"
 import { Text, Box } from "grommet";
 
 interface Props extends PaymentData{
-    text: string
+    text?: string
 }
 
 const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {    
-    const [plan, setPlan] = useState<PaymentData["plan"]>(props.plan);
-    const [mode, setMode] = useState<PaymentData["mode"]>(props.mode);
-    const [audSize, setAudSize] = useState<PaymentData["audSize"]>(props.audSize);
-    const [quantity, setQuantity] = useState<PaymentData["quantity"]>(props.quantity);
-    const [channelId, setChannelId] = useState<PaymentData["channelId"]>(props.channelId);
-    
     const stripePromise = loadStripe(stripePublicKey);
 
     const onClick = async () => {
-        PaymentService.createCheckoutSession(
-            plan,
-            mode,
-            audSize,
-            quantity,
-            channelId,
+        // create checkout
+        PaymentService.createCheckoutSessionFromId(
+            props.productId,
+            props.quantity,
+            props.channelId!,
             async (data: {
                 checkout_public_key: string, 
                 checkout_session_id: string
@@ -45,24 +38,25 @@ const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
                         // error, display the localized error message to your customer
                         // using `result.error.message`.
                         if (result.error){
-                            PaymentService.handleFailedTransaction(
-                                plan,
-                                mode,
-                                audSize,
-                                quantity,
-                                channelId,
-                            )
+                            // PaymentService.handleFailedTransaction(
+                            //     tier,
+                            //     productType,
+                            //     audSize,
+                            //     quantity,
+                            //     channelId,
+                            //     data.checkout_session_id
+                            // )
                         } 
                         else {
-                            PaymentService.handleSuccessfulTransaction(
-                                plan,
-                                mode,
-                                audSize,
-                                quantity,
-                                channelId,
-                            )
+                            // PaymentService.handleSuccessfulTransaction(
+                            //     tier,
+                            //     productType,
+                            //     audSize,
+                            //     quantity,
+                            //     channelId,
+                            //     data.checkout_session_id
+                            // )
                         }
-
                     });
                 }
             }

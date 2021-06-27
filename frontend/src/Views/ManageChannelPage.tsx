@@ -36,7 +36,7 @@ import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
 
-
+import StreamingCheckoutPaymentButton from "../Components/Pricing/Payment/StreamingCheckoutPaymentButton";
 import CheckoutPaymentButton from "../Components/Pricing/Payment/CheckoutPaymentButton";
 
 
@@ -1004,14 +1004,22 @@ export default class ManageChannelPage extends Component<Props, State> {
                               </Box> */}
 
 
-                              <CheckoutPaymentButton
-                                plan="tier1"
-                                mode="sub"
-                                audSize="small"
+                              {/* <StreamingCheckoutPaymentButton
+                                tier={"tier1"}
+                                productType="subscription"
+                                audienceSize="small"
                                 quantity={1}
                                 channelId={this.state.channel!.id}
-                                text={"9999 CHF"}
-                              />
+                                text={"999.-/mois"}
+                              /> */}
+
+
+                                <CheckoutPaymentButton
+                                  productId={1}
+                                  quantity={1}
+                                  text={"994./mois"}
+                                  channelId={44}
+                                />
 
                               
                             </TableCell>

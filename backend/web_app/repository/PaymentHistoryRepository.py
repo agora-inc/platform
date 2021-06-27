@@ -4,7 +4,7 @@ from app.databases import agora_db
 
 mail_sys = sendgridApi()
 
-class PaymentRepository:
+class PaymentHistoryRepository:
     def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.mail_sys = mail_sys
@@ -15,8 +15,8 @@ class PaymentRepository:
         # self.institutions = InstitutionRepository(db=self.db)
         # self.email_reminders = EmailRemindersRepository(db=self.db)
 
-    def addPayment(self, channel_id, plan, mode, aud_size, payment_id):
+    def addPayment(self, channel_id, plan, mode, aud_size, payment_id, type):
         pass
 
-    def getPaymentsForChannel(self):
+    def getPaymentsForChannelWithin(self):
         pass

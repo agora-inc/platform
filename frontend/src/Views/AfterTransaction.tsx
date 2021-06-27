@@ -11,8 +11,6 @@ interface Props extends RouteComponentProps {
   
   interface State {
       status: string,
-      mode: string,
-      plan: string,
       channel: Channel,
       dataIsFetched: boolean
   }
@@ -22,8 +20,6 @@ interface Props extends RouteComponentProps {
       super(props);
       this.state = {
           status : "pending",
-          mode : this.props.location.pathname.split("/")[4].toLowerCase(),
-          plan : this.props.location.pathname.split("/")[5].toLowerCase(),
           channel: {
             id: Number(this.props.location.pathname.split("/")[3]),
             name: "",
