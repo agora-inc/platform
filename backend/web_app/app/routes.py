@@ -1688,52 +1688,31 @@ def stripe_webhook():
         abort(400)
     payload = request.get_data()
     sig_header = request.environ.get('HTTP_STRIPE_SIGNATURE')
-    endpoint_secret = 'YOUR_ENDPOINT_SECRET'
-    event = None
 
     try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, apendpoint_secret
-        )
-    except ValueError as e:
-        # Invalid payload
-        print('INVALID PAYLOAD')
+        # Handling of all the responses
+        event = paymentsApi._construct_event_from_raw(payload, sig_header)
+
+        # A. Handle successfull checkout sessions
+        if event['type'] == 'checkout.session.completed':
+            paymentsApi.handle_completed_checkout(event)
+
+        # B. Handle failed checkout sessions 
+        if event['type'] == 'checkout.session.failed; CHECK NAME EVENT ON STRIPE API':
+            paymentsApi.handle_failed_checkout(event)
+
+        # C. Handle successfull subscription renewals
+        elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
+            paymentsApi.handle_successful_subscription_renewal(event)
+
+        # C. Handle successfull subscription renewals
+        elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
+            paymentsApi.handle_failed_subscription_renewal(event)
+
+        return {}
+
+    except Exception:
         return {}, 400
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        print('INVALID SIGNATURE')
-        return {}, 400
-
-    # A. Handle successfull checkout sessions
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        print(session)
-        line_items = stripe.checkout.Session.list_line_items(session['id'], limit=1)
-        print(line_items['data'][0]['description'])
-        # get payment_intent and store in DB
-
-    #
-    # WIP
-    #
-    # B. Handle failed checkout sessions 
-    if event['type'] == 'checkout.session.failed; CHECK NAME EVENT ON STRIPE API':
-        pass
-
-    #
-    # WIP
-    #
-    # C. Handle successfull subscription renewals
-    elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
-        pass
-
-    #
-    # WIP
-    #
-    # C. Handle failed subscription renewals
-    elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
-        pass
-
-    return {}
 
 # @app.route('/payment/handle_successful_transaction', methods=["GET"])
 # def handleSuccessfulTransaction():

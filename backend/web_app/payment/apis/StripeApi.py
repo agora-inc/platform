@@ -15,6 +15,46 @@ class StripeApi:
         self.secret_api_key = "sk_test_51Iw99yLrLOIeFgs2pUoBjwUWPlbIB5mon6FkAMf1Dyf0SOyzARZ0vuqUcNvlOAQubBrXhcXH2fDG5X56erlyCWvQ00JsRaRN9Y"
         stripe.api_key = self.secret_api_key
 
+    ###################
+    # EVENT HANDLING
+    ###################
+    def _construct_event(self, payload, sig_header):
+        try:
+            event = stripe.Webhook.construct_event(payload, sig_header, self.secret_api_key)
+        except ValueError as e:
+            # Invalid payload
+            print('INVALID PAYLOAD')
+            return {}, 400
+        except stripe.error.SignatureVerificationError as e:
+            # Invalid signature
+            print('INVALID SIGNATURE')
+            return {}, 400
+
+    def handle_completed_checkout():
+        # A. Handle successfull checkout sessions
+        session = event['data']['object']
+        print(session)
+        line_items = stripe.checkout.Session.list_line_items(session['id'], limit=1)
+        print(line_items['data'][0]['description'])
+        # get payment_intent and store in DB
+
+    def handle_failed_checkout():
+        if event['type'] == 'checkout.session.failed; CHECK NAME EVENT ON STRIPE API':
+            raise NotImplementedError()
+
+    def handle_successful_subscription_renewal():
+        elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
+            raise NotImplementedError()
+
+
+    def handle_failed_subscription_renewal():
+        elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
+            raise NotImplementedError()
+
+
+    ###################
+    # CHECKOUT PAGE
+    ###################
     def _create_checkout_session(self, pricing_id: str, pricing_mode: str, url_success="", url_cancel="", quantity=1):
         """Stripe create session wrapper
 
@@ -80,6 +120,3 @@ class StripeApi:
             raise Exception("subscribe_doctoral_subscription (StripeApi): aud_size must be 'big' or 'small'.")
 
         return self._create_checkout_session(price_id, 'payment', url_success, url_cancel, n_credits)
-
-    def checkSubscriptionStatus(self):
-        raise NotImplementedError
