@@ -12,7 +12,7 @@ import "katex/dist/katex.min.css";
 import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 import MediaQuery from "react-responsive";
-
+import PricingPlans from "../Views/PricingPlans";
 
 
 interface Props {
@@ -125,7 +125,9 @@ export default class AgoraCreationPage extends Component<Props, State> {
         >
         <Box width="70%" direction="column" margin={{top: "10px", bottom: "60px"}}>
           <Box direction="row" gap="small" margin={{bottom: "44px"}}>
-            <Text size={this.state.sizeHeader} weight="bold" color="color1"> Everything you need for your seminars, all in one place</Text>
+            <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
+              The easiest way to organize your seminars
+            </Text>
           </Box>
           {/* <Box margin={{bottom: "32px"}}>
             <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>less than a minute</b>.
@@ -140,20 +142,18 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   "70px", "110px", "200px",
                   "70px", "170px", "200px",
                   "70px", "100px", "200px",
-                  "70px", "350px", "200px",
                   ]
                 : [
-                    '40px', "200px",
-                    '40px', "200px",
-                    '40px', "200px",
-                    '40px', "200px",
-                    '40px', "200px",
-                    '40px', "200px",
+                    '10px', "200px",
+                    '10px', "200px",
+                    '10px', "200px",
+                    '10px', "200px",
+                    '10px', "200px",
                   ]
               }
 
               columns={renderMobileView ? ["100%"] : ['50%', "50%"]}
-              gap="15px"
+              gap="40px"
               margin={renderMobileView ? {} : {left: "10px"}}
               areas={ renderMobileView 
                 ?
@@ -177,11 +177,6 @@ export default class AgoraCreationPage extends Component<Props, State> {
                     { name: 'arg_5_title', start: [0, 12], end: [0, 12] },
                     { name: 'arg_5_text', start: [0, 13], end: [0, 13] },
                     { name: 'arg_5_image', start: [0, 14], end: [0, 14] },
-    
-                    { name: 'arg_6_title', start: [0, 15], end: [0, 15] },
-                    { name: 'arg_6_text', start: [0, 16], end: [0, 16] },
-                    { name: 'arg_6_image', start: [0, 17], end: [0, 17] },
-                    // NOTE THAT arg_6_image box is not the same as the other ones!
                   ]
                 :
                   [
@@ -189,26 +184,21 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   { name: 'arg_1_text', start: [0, 1], end: [0, 1] },
                   { name: 'arg_1_image', start: [1, 0], end: [1, 1] },
 
-                  { name: 'arg_2_title', start: [0, 2], end: [1, 2] },
-                  { name: 'arg_2_text', start: [0, 3], end: [0, 3] },
-                  { name: 'arg_2_image', start: [1, 2], end: [1, 3] },
+                  { name: 'arg_2_title', start: [1, 2], end: [1, 2] },
+                  { name: 'arg_2_text', start: [1, 3], end: [1, 3] },
+                  { name: 'arg_2_image', start: [0, 2], end: [0, 3] },
 
                   { name: 'arg_3_title', start: [0, 4], end: [1, 4] },
                   { name: 'arg_3_text', start: [0, 5], end: [0, 5] },
                   { name: 'arg_3_image', start: [1, 4], end: [1, 5] },
 
-                  { name: 'arg_4_title', start: [0, 6], end: [1, 6] },
-                  { name: 'arg_4_text', start: [0, 7], end: [0, 7] },
-                  { name: 'arg_4_image', start: [1, 6], end: [1, 7] },
+                  { name: 'arg_4_title', start: [1, 6], end: [1, 6] },
+                  { name: 'arg_4_text', start: [1, 7], end: [1, 7] },
+                  { name: 'arg_4_image', start: [0, 6], end: [0, 7] },
 
                   { name: 'arg_5_title', start: [0, 8], end: [1, 8] },
                   { name: 'arg_5_text', start: [0, 9], end: [0, 9] },
                   { name: 'arg_5_image', start: [1, 8], end: [1, 9] },
-
-                  { name: 'arg_6_title', start: [0, 10], end: [1, 10] },
-                  { name: 'arg_6_text', start: [0, 11], end: [0, 11] },
-                  { name: 'arg_6_image', start: [1, 11], end: [1, 11] },
-                  // NOTE THAT arg_6_image box is not the same as the other ones!
               ]
             }
             >
@@ -219,8 +209,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 
                 </Box>
               <Box gridArea="arg_1_text">
-                <Text size="14px">
-                  Users of <img src={agorastreamLogo} height={"14px"} width="85px"/> are <b>university students and researchers (academic and industrial)</b> coming from all over the world. Are one of these your target audience? If yes, you are in the right place.
+                <Text size="18px">
+                  Our users are <b>university students and researchers </b> from all over the world, hungry to know about the latest research.
                 </Text>
                 </Box>
               <Box gridArea="arg_1_image" margin={{top:"10px", bottom: "10px"}}>
@@ -236,23 +226,38 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_2_title">
                 <Text size="25px" weight="bold" color="color3">
-                  Organising is quick and easy
+                  Organising seminars has never been quicker
                   </Text>
                 </Box>
               <Box gridArea="arg_2_text">
-                <Text size="14px">
-                  Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>a minute</b>. You can also:
-                    <ul>
-                      <li><b>Create and customize your homepage</b></li>
-                      <li>Create <b>public or on-registration</b> events</li>
-                      <li><b>Send emails to your community</b> -- <i>optional; can also be automated</i></li>
-                      <li><b>Advertise your events on all your social media</b> via a couple clicks -- <i>optional; can also be automated</i></li>
-                      <li><b>Publish your past seminar recordings</b></li>
-                      <li>Use LateX format and much more!</li>
-                    </ul>
-
+                <Text size="18px">
+                  Create your <img src={agoraLogo} height="14px"/> and your seminars in <b>a minute</b>. Also:
                 </Text>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> Customize your homepage </Text>
                 </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> Create <b>public or on-registration</b> events </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> Send emails to your community </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> Advertise your events on social media with a few clicks  </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> Publish your past seminar recordings  </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> LateX formatting  </Text>
+                </Box>
+              </Box>
 
                 {/* TO BE CHANGED:!!!!! */}
               <Box gridArea="arg_2_image">
@@ -268,63 +273,90 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_3_title">
                 <Text size="25px" weight="bold" color="color3">
-                  Allow potential future speakers to come to you
+                  Future speakers are coming to your door
                   </Text>
                 </Box>
               <Box gridArea="arg_3_text" margin={{top: "15px"}}>
-                <Text size="14px">
-                  Give the chance to potential future speakers from all around the world to apply to give a talk within your community via an in-build application form (this feature can be disabled).
+                <Text size="18px">
+                  You can allow potential future speakers <b> from all around the world </b> to apply to give a talk to your community.
                 </Text>
                 </Box>
               <Box gridArea="arg_3_image" margin={{top:"10px", bottom: "10px"}}>
-              <video 
-                              autoPlay loop muted
-                              style={{ height: "100%", width: "auto"}}
-                              >
-                              <source src="/videos/talk_application.mp4" type="video/mp4"/> 
-                  </video>
-                </Box>
+                <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto"}}
+                >
+                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+                </video>
+              </Box>
 
-                <Box gridArea="arg_4_title">
+              <Box gridArea="arg_4_title">
                 <Text size="25px" weight="bold" color="color3">
-                Integrated virtual cafeteria
-                  </Text>
-                </Box>
-              <Box gridArea="arg_4_text" margin={{top: "15px"}}>
-                <Text size="14px">
-                  Let your audience grab a pre/post-seminar coffee at the <img src={agoraLogo} height={"14px"}/> café by taking control of a 2D avatar using their arrow keys (cafeteria is open 45 minutes before the start of the event and closes 2 hours after it finishes). Allow your audience to network and mingle with each others and discuss about the event in a nice and cosy place!
+                  Integrated virtual cafeteria
                 </Text>
-                </Box>
+              </Box>
+              <Box gridArea="arg_4_text" margin={{top: "15px"}}>
+                <Text size="18px">
+                  Your audience can grab a virtual coffee at the <img src={agoraLogo} height={"14px"}/> café 15 minutes before the start and 1 hour after the end of your seminar. 
+                </Text>
+                <Text size="18px" margin={{top: "10px"}}>
+                  Networking and mingling with each other is <b> fun and intuitive </b>, a cozy place to chat about the event!
+                </Text>
+              </Box>
               <Box gridArea="arg_4_image" margin={{top:"10px", bottom: "10px"}}>
-                  <video 
-                              autoPlay loop muted
-                              style={{ height: "100%", width: "auto"}}
-                              >
-                              <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
-                  </video>
-                </Box>
-
+                <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto"}}
+                >
+                  <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+                </video>
+              </Box>
 
               <Box gridArea="arg_5_title">
                 <Text size="25px" weight="bold" color="color3">
-                  Use your own streaming URL or <img src={agoraLogo} height={"18px"}/> tech
-                  </Text>
-                </Box>
-              <Box gridArea="arg_5_text" margin={{top: "15px"}}>
-                <Text size="14px">
-                  Do you already have a streaming plan? Do not worry. You can still enjoy many of the logistic features of <img src={agorastreamLogo} height={"14px"}/>: simply insert your own streaming URL during the event creation process.
+                  Use the new <img src={agoraLogo} height={"18px"}/> streaming tool!
                 </Text>
+              </Box>
+              <Box gridArea="arg_5_text" margin={{top: "15px"}}>
+                <Text size="18px">
+                  We built an in-house streaming technology sculpted for online and hybrid academic seminars:
+                </Text>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> Clean and easy-to-use interface for speakers </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> <b> Upload slides </b> to allow participants can go back and forth </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> Participants can request the mic and you have the control </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> LateX supported chat </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkmark size="18px" />
+                  <Text> Give a round of applause by pressing your space bar to broadcast a clap in the room </Text>
+                </Box>
+
+                {/*<Text size="18px" margin={{top: "10px"}}>
+                  If you already have a streaming plan, just enter the link to your event and everyone will be redirected to it.
+          </Text> */}
+
                 </Box>
               <Box gridArea="arg_5_image"  margin={{top:"10px", bottom: "10px"}}>
                 <video 
-                    autoPlay loop muted
-                    style={{ height: "100%", width: "auto"}}
-                    >
-                    <source src="/videos/url_streaming_homemade_or_agora.mp4" type="video/mp4"/> 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto"}}
+                >
+                  <source src="/videos/url_streaming_homemade_or_agora.mp4" type="video/mp4"/> 
                 </video>
-                </Box>
+              </Box>
 
-              <Box gridArea="arg_6_title">
+              {/* <Box gridArea="arg_6_title">
                 <Text size="25px" weight="bold" color="color3">
                   Host online or hybrid physical-online seminars
                   </Text>
@@ -348,296 +380,24 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 Public release soon.🎊 <br></br>
                   Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size="28px"/></a> or <a href="https://https://twitter.com/AgoraStream"><Twitter size="28px"/></a>!
                   </Text>
-                </Box>
+          </Box> */}
             </Grid>
                 
 
-            <Box alignContent="center" margin={{top:"50px"}}>
-              <Text size={this.state.sizeHeader} color="color1" weight="bold">
-                Pricing
-              </Text>
-                <Grid
-                rows={
-                  renderMobileView ?
-                  [
-                    '60px',
-                    '60px',
-
-                    '60px',
-                    '60px',
-                    '60px',
-
-                    '60px',
-                    '60px',
-
-                    '60px',
-                    '60px',
-                    '60px',
-                  ]
-                :
-                  [
-                    '40px',
-                    '40px',
-
-                    '40px',
-                    '40px',
-                    '40px',
-
-                    '40px',
-                    '40px',
-
-                    '40px',
-                    '40px',
-                    '40px',
-                  ]
-                
-                
-                
-                }
-                style={{border: "true"}}
-                columns={renderMobileView ? ['33%', "33%", "33%"] : ['25%', "35%", "35%"]}
-                gap="15px"
-                margin={{top: "18px"}}
-                areas={[
-                  { name: 'feature_1', start: [0, 0], end: [0, 0] },
-                  { name: 'plan1_1', start: [1, 0], end: [1, 0] },
-                  { name: 'plan2_1', start: [2, 0], end: [2, 0] },
-
-                  { name: 'feature_2', start: [0, 1], end: [0, 1] },
-                  { name: 'plan1_2', start: [1, 1], end: [1, 1] },
-                  { name: 'plan2_2', start: [2, 1], end: [2, 1] },
-
-                  { name: 'feature_3', start: [0, 2], end: [0, 2] },
-                  { name: 'plan1_3', start: [1, 2], end: [1, 2] },
-                  { name: 'plan2_3', start: [2, 2], end: [2, 2] },
-
-                  { name: 'feature_4', start: [0, 3], end: [0, 3] },
-                  { name: 'plan1_4', start: [1, 3], end: [1, 3] },
-                  { name: 'plan2_4', start: [2, 3], end: [2, 3] },
-
-                  { name: 'feature_5', start: [0, 4], end: [0, 4] },
-                  { name: 'plan1_5', start: [1, 4], end: [1, 4] },
-                  { name: 'plan2_5', start: [2, 4], end: [2, 4] },
-
-                  { name: 'feature_6', start: [0, 5], end: [0, 5] },
-                  { name: 'plan1_6', start: [1, 5], end: [1, 5] },
-                  { name: 'plan2_6', start: [2, 5], end: [2, 5] },
-
-                  
-                  { name: 'feature_7', start: [0, 6], end: [0, 6] },
-                  { name: 'plan1_7', start: [1, 6], end: [1, 6] },
-                  { name: 'plan2_7', start: [2, 6], end: [2, 6] },
-                  
-                  { name: 'feature_8', start: [0, 7], end: [0, 7] },
-                  { name: 'plan1_8', start: [1, 7], end: [1, 7] },
-                  { name: 'plan2_8', start: [2, 7], end: [2, 7] },
-                  
-                  { name: 'feature_9', start: [0, 8], end: [0, 8] },
-                  { name: 'plan1_9', start: [1, 8], end: [1, 8] },
-                  { name: 'plan2_9', start: [2, 8], end: [2, 8] },
-
-                ]}
-              >
-                
-                {/* <Box gridArea="feature_1" background="blue">
-                  <Text>
-                    Plan
-                    </Text>
-                </Box> */}
-
-                <Box gridArea="plan1_1" background="color7">
-                <Text margin="5px" weight="bold" size={this.state.sizeText}>
-                  Free plan
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan2_1" background="color7">
-                <Text margin="5px" weight="bold" size={this.state.sizeText}>
-                  Premium plan
-                    </Text>
-                </Box>
-
-
-
-                <Box gridArea="feature_2" background="color5">
-                <Text margin="5px" size={this.state.sizeText} weight="bold">
-                  Emails
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan1_2" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  Up to 300 per month
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan2_2" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  Unlimited
-                    </Text>
-                </Box>
-                
-                <Box gridArea="feature_3" background="color5">
-                <Text margin="5px" size={this.state.sizeText} weight="bold">
-                  Social media automation
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan1_3" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  <Checkmark/>
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan2_3" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  <Checkmark/>
-                    </Text>
-                </Box>
-
-
-                <Box gridArea="feature_4" background="color5">
-                <Text margin="5px" size={this.state.sizeText} weight="bold">
-                  Custom streaming
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan1_4" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  <Checkmark/>
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan2_4" background="color5">
-                <Text margin="5px" weight="bold" size={this.state.sizeText}>
-                  <Checkmark/>
-                    </Text>
-                </Box>
-
-
-
-                <Box gridArea="feature_5" background="color5">
-                <Text margin="5px" size={this.state.sizeText} weight="bold">
-                  Integrated speaker form
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan1_5" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  <Checkmark/>
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan2_5" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  <Checkmark/>
-                    </Text>
-                </Box>
-
-
-
-                <Box gridArea="feature_6" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  <img src={agoraLogo} height={"14px"}/> <i>streaming tech</i>
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan1_6" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                    <Close/>
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan2_6" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  <Checkmark/>
-                    </Text>
-                </Box>
-
-
-
-
-                <Box gridArea="feature_7" background="color5">
-                <Text margin="5px" size={this.state.sizeText} weight="bold">
-                  Virtual cafeteria
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan1_7" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  Up to 50 people per event
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan2_7" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                  Up to 500 people per event
-                    </Text>
-                </Box>
-
-
-
-                <Box gridArea="feature_8" background="color5">
-                <Text margin="5px" size={this.state.sizeText} weight="bold">
-                  Hybrid events
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan1_8" background="color5">
-                <Text margin="5px" size={this.state.sizeText}>
-                    <Close/>
-                    </Text>
-                </Box>
-
-                <Box gridArea="plan2_8" background="color5" alignContent="center">
-                <Text margin="5px" size={this.state.sizeText}>
-                    <Checkmark/>
-                    </Text>
-                </Box>
-
-
-
-
-                <Box gridArea="feature_9" background="color5">
-                <Text margin="5px" weight="bold" size={this.state.sizeText}>
-                  Price
-                  </Text>
-                </Box>
-
-                <Box gridArea="plan1_9" background="color5">
-                  <Text margin="5px" weight="bold" size={this.state.sizeText}>
-                    Free
-                  </Text>
-                </Box>
-
-                <Box gridArea="plan2_9" background="color5">
-                  <Text margin="5px" weight="bold" size={this.state.sizeText}>
-                    TBA (pricing per event and/or per month)*
-                  </Text>
-                </Box>
-
-
-              </Grid>
-
-              <Text size={this.state.sizeText}>
-                *: Due to an overwhelming demand and to maintain a high quality experience, we are limiting the number of simulatenous active "Premium plans" and are actively working on increasing it ASAP. Stay tuned by following us on <a href="https://linkedin.com/company/agorastream"><Linkedin size={this.state.sizeText}/></a> and <a href="https://https://twitter.com/AgoraStream"><Twitter size={this.state.sizeText}/></a>!
-              </Text>
-
-
-
-
+            <Box alignContent="center" margin={{top:"100px"}}>
+              <PricingPlans 
+                callback={() => {}}
+                headerTitle={true}
+              />
 
             <Box margin={{top:"50px"}}>
-              <Text size={this.state.sizeHeader} color="color1" weight="bold" margin={{ bottom: "25px"}}>
-                Start delivering your seminars to a worldwide community of academics and researchers!
-              </Text>
 
             <MediaQuery maxDeviceWidth={1000}>
                 <b>Log on the Desktop version to proceed.</b>
             </MediaQuery>
 
 
-            <MediaQuery minDeviceWidth={1000}>
+            {/* <MediaQuery minDeviceWidth={1000}>
               <CreateChannelButton 
                 onClick={this.toggleCreateChannelOverlay} 
                 text={"Create your agora (Free plan)"}
@@ -669,7 +429,6 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   justify="start"
                   margin={{top: "small"}}
               >
-                {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
                 <Text size="22.5px">🚀</Text>
                 <Text size="14px" color="white">Create an agora (Premium plan)</Text>
               </Box>
@@ -685,7 +444,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   margin: "10px",
                   alignSelf: "center"}}
                   />
-            </MediaQuery>
+            </MediaQuery> */}
             </Box>
             </Box>
           </Box>

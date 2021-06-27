@@ -350,7 +350,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   data-tip data-for="create-your-events"
                 >
                   <Add size="30px" />
-                  <Text size="16px" weight="bold" margin={{ top: "10px" }}> Promote </Text>
+                  <Text size="16px" weight="bold" margin={{ top: "10px" }}> Post </Text>
                   <Text size="16px" margin={{ top: "5px" }}> your seminars </Text>
                 </Box>
               </Link>
@@ -487,7 +487,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   <Add size="20px" />
                   <Box direction="column">
                     <Text size="14px" weight="bold" margin={{ left: "5px", bottom: "3px" }}>
-                      Promote
+                      Post
                     </Text>
                     <Text size="14px" margin={{ left: "5px" }}>
                       your seminars
