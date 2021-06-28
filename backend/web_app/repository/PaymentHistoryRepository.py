@@ -15,8 +15,36 @@ class PaymentHistoryRepository:
         # self.institutions = InstitutionRepository(db=self.db)
         # self.email_reminders = EmailRemindersRepository(db=self.db)
 
-    def addPayment(self, channel_id, plan, mode, aud_size, payment_id, type):
-        pass
+    def addPayment(self, user_id, status, stripe_payment_id):
+        # get productId associated with the stripe_product_id
+
+
+
+
+
+        #
+        add_query = f'''
+            INSERT INTO PaymentHistory(
+                stripe_id,
+                user_id,
+                status,
+                stripe_payment_id
+            )
+            VALUES (
+                stripe_id,
+                {user_id},
+                {channel_id},
+                "active",
+                {stripe_payment_id}
+            )
+            ;
+        '''
+        try: 
+            self.db.run_query(extension_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
+
 
     def getPaymentsForChannelWithin(self):
         pass

@@ -3,8 +3,6 @@
 # from repository.TopicRepository import TopicRepository
 # from repository.InstitutionRepository import InstitutionRepository
 # from repository.EmailRemindersRepository import EmailRemindersRepository
-from repository.PaymentRepository import PaymentRepository
-
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from app.databases import agora_db
@@ -22,12 +20,32 @@ class SubscriptionRepository:
         # self.institutions = InstitutionRepository(db=self.db)
         # self.email_reminders = EmailRemindersRepository(db=self.db)
 
-    def addSubscription(self, channel_id, plan, aud_size, payment_id):
+    def addStreamingSubscription(self, channel_id, payment_id):
+        add_query = f'''
+            INSERT INTO Subscriptions(
+                start_time,
+                end_time,
+                channel_id,
+                product_id,
+                status
+            )
+            VALUES (
+                NOW(),
+                DATE_ADD(NOW(), INTERVAL 1 MONTH),
+                {channel_id},
+                product_id,
+                "active"
+            )
+            ;
+        '''
+        try: 
+            self.db.run_query(extension_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
 
 
-
-
-    def extendSubscriptionByOneMonth(self, channel_id):
+    def extendStreamingSubscriptionByOneMonth(self, channel_id):
         extension_query = f'''
             UPDATE Subscriptions
             SET end_time = DATE_ADD(NOW(), INTERVAL 1 MONTH)
@@ -42,8 +60,33 @@ class SubscriptionRepository:
         except Exception as e:
             return str(e)
 
-    def upgradeSubscription(self, channel_id, plan):
-        pass
+    def changeStreamingSubscription(self, channel_id, product_id):
+        change_query = f'''
+            UPDATE Subscriptions
+            SET end_time = DATE_ADD(NOW(), INTERVAL 1 MONTH)
+            AND product_id = {product_id}
+            WHERE (
+                channel_id = {channel_id}
+                )
+            ;
+        '''
+        try: 
+            self.db.run_query(extension_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
 
-    def removeSubscription(self, channel_id):
-        pass
+    def stopSubscription(self, channel_id):
+        stop_query = f'''
+            UPDATE Subscriptions
+            SET status = "interrupted"
+            WHERE (
+                channel_id = {channel_id}
+                )
+            ;
+        '''
+        try: 
+            self.db.run_query(stop_query)
+            return "ok"
+        except Exception as e:
+            return str(e)

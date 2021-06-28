@@ -5,7 +5,7 @@
 from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, SubscriptionRepository
 from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
@@ -33,6 +33,7 @@ mailinglist = MailingListRepository.MailingListRepository()
 credits = CreditRepository.CreditRepository()
 products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
+subscriptions = SubscriptionRepository.SubscriptionRepository()
 
 
 BASE_URL = "http://localhost:3000"
@@ -1702,7 +1703,80 @@ def getStripeSessionForProduct():
 # NOTE: below is to handle responses from Stripe after checkouts (e.g. payment successful or subscription renewal).
 @app.route('/stripe_webhook', methods=['POST'])
 def stripe_webhook():
+    '''
+    Example of events:
+        {
+            "api_version": "2020-08-27",
+            "created": 1624828893,
+            "data": {
+                "object": {
+                "amount": 2500,
+                "amount_capturable": 0,
+                "amount_received": 0,
+                "application": null,
+                "application_fee_amount": null,
+                "canceled_at": null,
+                "cancellation_reason": null,
+                "capture_method": "automatic",
+                "charges": {
+                    "data": [],
+                    "has_more": false,
+                    "object": "list",
+                    "total_count": 0,
+                    "url": "/v1/charges?payment_intent=pi_1J75Q1LrLOIeFgs2PKHZaujy"
+                },
+                "client_secret": "pi_1J75Q1LrLOIeFgs2PKHZaujy_secret_QZOvaIvbKMAfKAotLXvITfxKB",
+                "confirmation_method": "automatic",
+                "created": 1624828893,
+                "currency": "gbp",
+                "customer": "cus_JkabLwn0veozYH",
+                "description": "Subscription creation",
+                "id": "pi_1J75Q1LrLOIeFgs2PKHZaujy",
+                "invoice": "in_1J75Q1LrLOIeFgs2SAWssgjW",
+                "last_payment_error": null,
+                "livemode": false,
+                "metadata": {},
+                "next_action": null,
+                "object": "payment_intent",
+                "on_behalf_of": null,
+                "payment_method": null,
+                "payment_method_options": {
+                    "card": {
+                    "installments": null,
+                    "network": null,
+                    "request_three_d_secure": "automatic"
+                    }
+                },
+                "payment_method_types": [
+                    "card"
+                ],
+                "receipt_email": null,
+                "review": null,
+                "setup_future_usage": null,
+                "shipping": null,
+                "source": null,
+                "statement_descriptor": null,
+                "statement_descriptor_suffix": null,
+                "status": "requires_payment_method",
+                "transfer_data": null,
+                "transfer_group": null
+                }
+            },
+            "id": "evt_1J75Q5LrLOIeFgs2ePflGd6w",
+            "livemode": false,
+            "object": "event",
+            "pending_webhooks": 2,
+            "request": {
+                "id": "req_29FGcWjEha5t78",
+                "idempotency_key": null
+            },
+            "type": "payment_intent.created"
+        }
+    '''
     print('WEBHOOK CALLED')
+
+    with open("/home/cloud-user/test/zizou0.txt", "w") as file:
+        file.write("in")
 
     if request.content_length > 1024 * 1024:
         print('REQUEST TOO BIG')
@@ -1712,53 +1786,87 @@ def stripe_webhook():
 
     try:
         # Handling of all the responses
-        event = paymentsApi._construct_event_from_raw(payload, sig_header)
+        event = paymentsApi._construct_stripe_event_from_raw(payload, sig_header)
 
-        # A. Handle successfull checkout sessions
-        if event['type'] == 'checkout.session.async_payment_succeeded':
+        # A. Handle successfull checkout sessions (Sent when a customer clicks the Pay or Subscribe button in Checkout, informing you of a new purchase.)
+        if event['type'] == 'checkout.session.completed':
+            # Payment is successful and the subscription is created.
+            # You should provision the subscription and save the customer ID to your database.
+            with open("/home/cloud-user/test/stripe/checkout_session_completed.txt", "w") as file:
+                file.write(str(event))
+
+
+            payment_intent = event["data"]["payment_intent"]
+
+
+            payment_status = event["data"]["payment_status"]
+            payment_mode = event["data"]["mode"] # either 'payment' or 'subscription'
+
+            customer_email = event["data"]["customer_email"]
+            stripe_product_id = event["data"]["lines"]["data"][0]["price"]
+            hosted_invoice_url = event["data"]["hosted_invoice_url"]
+
+
+            # TODO: store agora product_id AND stripe_product_id
+
+            # A. If subscription: get subscription_id and email address
+            # if new: add in db
+
+
+
+            # if existing, update status and end_date
+            start_time = event["data"]["period"]["start"]
+            end_time = event["data"]["period"]["end"]
+            status = event["data"]["plan"]["active"] # boolean
+
+            # B. If credits, not implemented.
+
+            # C. Send an email to let them know that they paid (?)
             paymentsApi.handle_completed_checkout(event)
 
-        # B. Handle failed checkout sessions 
-        elif event['type'] == 'checkout.session.async_payment_failed':
+        # B. Handle paid invoice (Sent each billing interval when a payment succeeds.) 
+        elif event['type'] == 'invoice.paid':
+
+            with open("/home/cloud-user/test/stripe/invoice_paid.txt", "w") as file:
+                file.write(str(event))
+
+
+            # Continue to provision the subscription as payments continue to be made.
+            # Store the status in your database and check when a user accesses your service.
+            # This approach helps you avoid hitting rate limits.
+            payment_intent = event["data"]["payment_intent"]
+            payment_status = event["data"]["payment_status"]
+            payment_mode = event["data"]["mode"] # either 'payment' or 'subscription'
+            customer_email = event["data"]["customer_email"]
+
+            stripe_product_id = event["data"]["lines"]["data"]["price"]
+
+
+
+
+
             paymentsApi.handle_failed_checkout(event)
 
-
-        #
-        #
-        # WIP: for subscriptions:
-        # https://stripe.com/docs/billing/subscriptions/webhooks
-        #
-        #
+        # C. Handle paid invoice (	Sent each billing interval if there is an issue with your customer’s payment method.)
+        elif event['type'] == 'invoice.payment_failed':
+            with open("/home/cloud-user/test/stripe/invoice_payment_failed.txt", "w") as file:
+                file.write(str(event))
 
 
-        # C. Handle successfull subscription renewals
-        elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
-            paymentsApi.handle_successful_subscription_renewal(event)
 
-        # C. Handle successfull subscription renewals
-        elif event["type"] == "checkout.session.subscription.renewal.success CHECK NAME EVENT ON STRIPE API":
+            # The payment failed or the customer does not have a valid payment method.
+            # The subscription becomes past_due. Notify your customer and send them to the
+            # customer portal to update their payment information.
+            subscriptions.addStreamingSubscription()
+            paymentsApi.handle_failed_checkout(event)
+
+        # D. Handle successfull subscription renewals
+        elif event["type"] == "subscription_schedule.updated":
             paymentsApi.handle_failed_subscription_renewal(event)
 
         return {}
 
-    except Exception:
+    except Exception as e:
+        with open("/home/cloud-user/test/zizouErr1.txt", "w") as file:
+            file.write(str(e))
         return {}, 400
-
-# @app.route('/payment/handle_successful_transaction', methods=["GET"])
-# def handleSuccessfulTransaction():
-#     plan = request.args.get("plan") # = tier1 and tier2
-#     mode = request.args.get("mode") # = 'credits' or 'sub'
-#     quantity = request.args.get("quantity")
-#     aud_size = request.args.get("audSize") # = 'small' or 'big'
-#     channel_id = request.args.get("channelId")
-    
-#     # Add in DB
-#     if mode == "credits":
-#         raise NotImplementedError
-
-#     elif mode == "sub":
-
-
-# @app.route('/payment/handle_failed_transaction', methods=["GET"])
-# def handleFailedTransaction():
-#     raise NotImplementedError

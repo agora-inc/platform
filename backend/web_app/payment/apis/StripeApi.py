@@ -12,25 +12,24 @@ class StripeApi:
     def __init__(self):
         self.public_api_key = "pk_test_51Iw99yLrLOIeFgs2F3sI5NMIe1kBXsF77aYrMCR3TuYhISPeVsZhTNDA1XM6BPOU3twkiVzOS7VaYLeYHnxlPdyo00ffb4tyAZ"
         self.secret_api_key = "sk_test_51Iw99yLrLOIeFgs2pUoBjwUWPlbIB5mon6FkAMf1Dyf0SOyzARZ0vuqUcNvlOAQubBrXhcXH2fDG5X56erlyCWvQ00JsRaRN9Y"
+        self.endpoint_secret = "whsec_E2qdIOIiKLZd8GjTAiMpdBmBl7yhDh8b"
         stripe.api_key = self.secret_api_key
         self.products = ProductRepository.ProductRepository()
 
     ###################
     # EVENT HANDLING
     ###################
-    def _construct_event(self, payload, sig_header):
+    def _construct_stripe_event_from_raw(self, payload, sig_header):
         try:
-            event = stripe.Webhook.construct_event(payload, sig_header, self.secret_api_key)
+            return stripe.Webhook.construct_event(payload, sig_header, self.endpoint_secret)
         except ValueError as e:
             # Invalid payload
-            print('INVALID PAYLOAD')
-            return {}, 400
+            return {'INVALID PAYLOAD'}, 400
         except stripe.error.SignatureVerificationError as e:
             # Invalid signature
-            print('INVALID SIGNATURE')
-            return {}, 400
+            return {'INVALID SIGNATURE'}, 400
 
-    def handle_completed_checkout():
+    def handle_completed_checkout(self, event):
         # A. Handle successfull checkout sessions
         session = event['data']['object']
         print(session)
@@ -38,16 +37,15 @@ class StripeApi:
         print(line_items['data'][0]['description'])
         # get payment_intent and store in DB
 
-    def handle_failed_checkout():
+    def handle_failed_checkout(self):
         raise NotImplementedError
 
-    def handle_successful_subscription_renewal():
+    def handle_successful_subscription_renewal(self):
         raise NotImplementedError
 
 
     def handle_failed_subscription_renewal():
         raise NotImplementedError
-
 
     ###################
     # CHECKOUT PAGE
@@ -74,21 +72,17 @@ class StripeApi:
                 success_url=url_success,
                 cancel_url=url_cancel
             )
+
+        with open("/home/cloud-user/test/stripe/whole_session.txt", "w") as file:
+            file.write(str(session))
+
+
         return {
             'checkout_session_id': session['id'], 
         }
 
     def get_session_for_streaming_products(self, product_id, url_success="", url_cancel="", quantity=1):
         res = self.products.getStreamingProductById(product_id)
-
-        with open("/home/cloud-user/test/thierryenri.txt", "w") as file:
-            file.write(str(res))
-            #
-            #
-            # WIP
-            #
-            #
-            #
 
         try:
             if res["product_type"] == "subscription":
