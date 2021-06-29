@@ -126,7 +126,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
           >
             <img src={agoraStreamFullLogo} style={{ height: "45px" }} /> 
             <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{top: "3px"}} > 
-              The easiest way to organize your seminars
+              Everything you need to organize your seminars, all in one place
             </Text>
           </Box>
           {/* <Box margin={{bottom: "32px"}}>
@@ -197,8 +197,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
               ]
             }
             >
-              <Box gridArea="arg_1_text"  justify="center">
-                <Text size="25px" weight="bold" color="color3">
+              <Box gridArea="arg_1_text" justify="center">
+                <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
                   Your target audience is right there
                 </Text>
                 <Text size="18px">
@@ -214,8 +214,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </video>
               </Box>
 
-              <Box gridArea="arg_2_text"  justify="center">
-                <Text size="25px" weight="bold" color="color3">
+              <Box gridArea="arg_2_text" justify="center">
+                <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
                   Organising seminars has never been faster
                 </Text>
                 <Text size="18px">
@@ -258,8 +258,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
               </Box>
 
 
-              <Box gridArea="arg_7_text"  justify="center" >
-                <Text size="25px" weight="bold" color="color3">
+              <Box gridArea="arg_7_text" justify="center" >
+                <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
                   Automatic email reminders
                 </Text>
                 <Text size="18px">
@@ -278,8 +278,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </video>
               </Box>
 
-              <Box gridArea="arg_6_text"  justify="center">
-                <Text size="25px" weight="bold" color="color3">
+              <Box gridArea="arg_6_text" justify="center">
+                <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
                   Automatized registration
                 </Text>
                 <Text size="18px">
@@ -299,8 +299,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
               </Box>
 
 
-              <Box gridArea="arg_3_text"  justify="center">
-                <Text size="25px" weight="bold" color="color3">
+              <Box gridArea="arg_3_text" justify="center">
+                <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
                   Future speakers are coming to your door
                 </Text>
                 <Text size="18px">
