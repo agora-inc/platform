@@ -63,7 +63,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         </Box>
       )}
 
-      <Box width="95%" margin={{left: "20px"}} > 
+      <Box width="95%" margin={{left: "0px"}} > 
 
         <Box direction="row" gap="10px" align="center" margin={{bottom: "20px", left: "10px"}}> 
           <Text size="14px" style={{fontStyle: "italic"}} > 

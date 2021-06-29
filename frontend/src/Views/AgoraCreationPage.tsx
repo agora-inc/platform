@@ -132,18 +132,27 @@ export default class AgoraCreationPage extends Component<Props, State> {
           {/* <Box margin={{bottom: "32px"}}>
             <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>less than a minute</b>.
              </Text>
+                               "70px", "80px", "200px",
+                  "70px", "200px", "200px",
+                  "70px", "110px", "200px",
+                  "70px", "170px", "200px",
+                  "70px", "100px", "200px",
           </Box> */}
             <Grid
               rows={
                 renderMobileView 
                 ?  [
-                  "70px", "80px", "200px",
-                  "70px", "200px", "200px",
-                  "70px", "110px", "200px",
-                  "70px", "170px", "200px",
-                  "70px", "100px", "200px",
+                  "50px", "80px", "200px",
+                  "50px", "250px", "200px",
+                  "50px", "90px", "200px",
+                  "50px", "170px", "200px",
+                  "50px", "350px", "200px",
+                  "30px", "170px", "200px",
+                  "30px", "170px", "200px",
                   ]
                 : [
+                    '10px', "200px",
+                    '10px', "200px",
                     '10px', "200px",
                     '10px', "200px",
                     '10px', "200px",
@@ -177,6 +186,14 @@ export default class AgoraCreationPage extends Component<Props, State> {
                     { name: 'arg_5_title', start: [0, 12], end: [0, 12] },
                     { name: 'arg_5_text', start: [0, 13], end: [0, 13] },
                     { name: 'arg_5_image', start: [0, 14], end: [0, 14] },
+
+                    { name: 'arg_6_title', start: [0, 15], end: [0, 15] },
+                    { name: 'arg_6_text', start: [0, 16], end: [0, 16] },
+                    { name: 'arg_6_image', start: [0, 17], end: [0, 17] },
+
+                    { name: 'arg_7_title', start: [0, 18], end: [0, 18] },
+                    { name: 'arg_7_text', start: [0, 19], end: [0, 19] },
+                    { name: 'arg_7_image', start: [0, 20], end: [0, 20] },
                   ]
                 :
                   [
@@ -199,6 +216,14 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   { name: 'arg_5_title', start: [0, 8], end: [1, 8] },
                   { name: 'arg_5_text', start: [0, 9], end: [0, 9] },
                   { name: 'arg_5_image', start: [1, 8], end: [1, 9] },
+
+                  { name: 'arg_6_title', start: [1, 10], end: [1, 10] },
+                  { name: 'arg_6_text', start: [1, 11], end: [1, 11] },
+                  { name: 'arg_6_image', start: [0, 10], end: [0, 11] },
+
+                  { name: 'arg_7_title', start: [0, 12], end: [1, 12] },
+                  { name: 'arg_7_text', start: [0, 13], end: [0, 13] },
+                  { name: 'arg_7_image', start: [1, 12], end: [1, 13] },
               ]
             }
             >
@@ -353,6 +378,50 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   style={{ height: "100%", width: "auto"}}
                 >
                   <source src="/videos/url_streaming_homemade_or_agora.mp4" type="video/mp4"/> 
+                </video>
+              </Box>
+
+              <Box gridArea="arg_6_title">
+                <Text size="25px" weight="bold" color="color3">
+                  Automatized registration
+                </Text>
+              </Box>
+              <Box gridArea="arg_6_text" margin={{top: "15px"}}>
+                <Text size="18px">
+                  As an organizer, you can decide to automatically accept a certain group of people <b> everyone, only verified academics, people from your institution, etc. </b>
+                </Text>
+                <Text size="18px" margin={{top: "10px"}}>
+                  For the others, manually accepting them is made very easy and intuitive!
+                </Text>
+              </Box>
+              <Box gridArea="arg_6_image" margin={{top:"10px", bottom: "10px"}}>
+                <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto"}}
+                >
+                  <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+                </video>
+              </Box>
+
+              <Box gridArea="arg_7_title">
+                <Text size="25px" weight="bold" color="color3">
+                  Automatic email reminders
+                </Text>
+              </Box>
+              <Box gridArea="arg_7_text" margin={{top: "15px"}}>
+                <Text size="18px">
+                  You can decide to remind your community about upcoming event <b> without any work! </b>
+                </Text>
+                <Text size="18px" margin={{top: "10px"}}>
+                  Simply choose the time and the group of people you want to send the reminder to, be it <b> all your followers, your mailing list or only the registered participants </b>.
+                </Text>
+              </Box>
+              <Box gridArea="arg_7_image" margin={{top:"10px", bottom: "10px"}}>
+                <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto"}}
+                >
+                  <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
                 </video>
               </Box>
 
