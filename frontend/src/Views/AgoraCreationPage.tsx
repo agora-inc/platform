@@ -119,7 +119,11 @@ export default class AgoraCreationPage extends Component<Props, State> {
         // background="color6"
         >
         <Box width={renderMobileView ? "85%" : "70%"} direction="column" margin={{top: "10px"}}>
-          <Box direction="row" gap="25px" margin={{bottom: "44px"}}>
+          <Box 
+            direction={window.innerWidth > 800 ? "row" : "column"} 
+            gap={window.innerWidth > 800 ? "25px" : "10px"} 
+            margin={{bottom: "44px"}}
+          >
             <img src={agoraStreamFullLogo} style={{ height: "45px" }} /> 
             <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{top: "3px"}} > 
               The easiest way to organize your seminars

@@ -678,7 +678,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         */}
 
-        <Box width="70%" align="center">
+        <Box width={window.innerWidth > 800 ? "70%" : "90%"} align="center">
           <FooterComponent />
         </Box>
 
