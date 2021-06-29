@@ -9,33 +9,29 @@ class PaymentHistoryRepository:
         self.db = db
         self.mail_sys = mail_sys
 
-        # self.channels = ChannelRepository(db=db)
-        # self.tags = TagRepository(db=self.db)
-        # self.topics = TopicRepository(db=self.db)
-        # self.institutions = InstitutionRepository(db=self.db)
-        # self.email_reminders = EmailRemindersRepository(db=self.db)
-
-    def addPayment(self, user_id, status, stripe_payment_id):
+    def addPendingPayment(self, channel_subscription_id, stripe_customer_id, hosted_invoice_url, customer_email, user_id, status):
         # get productId associated with the stripe_product_id
-
-
-
-
-
-        #
         add_query = f'''
             INSERT INTO PaymentHistory(
-                stripe_id,
-                user_id,
+                user_id
+                stripe_customer_id, 
+                customer_email,
+                hosted_invoice_url, 
+                invoice_date,
                 status,
-                stripe_payment_id
+                product_class
+                channel_subscription_id
             )
             VALUES (
-                stripe_id,
-                {user_id},
-                {channel_id},
-                "active",
-                {stripe_payment_id}
+                {user_id}
+                "{stripe_customer_id}"",
+                "{customer_email}",
+                "{hosted_invoice_url}"",
+                NOW(),
+                "{payment_status}"
+                "channel_subscription",
+                "{channel_subscription_id}",
+
             )
             ;
         '''
@@ -45,6 +41,16 @@ class PaymentHistoryRepository:
         except Exception as e:
             return str(e)
 
+    def updateSuccessfulPayment(self):
+        # if first payment, update status of previous pending payment into active
+
+        # if new payment for a new invoice, add a new line
+        raise NotImplementedError
+
+    
+
+    def updateTransactionIntoPaid(self, product_id, productId, checkout_session, channel_id):
+        # check if user
 
     def getPaymentsForChannelWithin(self):
         pass

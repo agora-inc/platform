@@ -1,8 +1,8 @@
 // import { baseApiUrl } from "../config";
 // import axios from "axios";
 // import { Topic } from "../Services/TopicService";
-import { get } from "../Middleware/httpMiddleware";
-import { ProductService } from "./ProductService";
+import { get, post } from "../Middleware/httpMiddleware";
+import { StreamingProductService } from "./StreamingProductService";
 
 export interface PaymentData {
     productId: number;
@@ -15,6 +15,7 @@ const createCheckoutSessionFromStreamingFeatures = (
     tier: "tier1" | "tier2", 
     productType: "subscription" | "credit",
     audSize: "small" | "big",
+    userId: number,
     quantity: number = 1, 
     channelId: number, 
     callback: any) => {
@@ -22,10 +23,10 @@ const createCheckoutSessionFromStreamingFeatures = (
         quantity = 1
     }
     // get product_id
-    ProductService.getStreamingProductIdByFeatures(
+    StreamingProductService.getStreamingProductIdByFeatures(
         tier, audSize, productType, (res : {product_id : string}) => {
             createCheckoutSessionFromId(
-                Number(res.product_id), quantity, channelId, () => {}
+                Number(res.product_id), userId, quantity, channelId, () => {}
             )
 
         }
@@ -34,47 +35,45 @@ const createCheckoutSessionFromStreamingFeatures = (
 
 const createCheckoutSessionFromId = (
     productId: number,
+    userId: number,
     quantity: number = 1, 
     channelId: number, 
     callback: any) => {
-    if (quantity < 0){
-        quantity = 1
-    }
-    get(
-        `payment/create-checkout-session?productId=${productId}&quantity=${quantity}&channelId=${channelId}`, 
-        callback);
+    // TODO: generalisation for later:
+    // productClass = products.getProductlassFromId(product_id)
+    var productClass = "channelSubscription"
+    if (productClass == "channelSubscription"){
+        if (quantity < 0){
+            quantity = 1
+        }
+        get(
+            `payment/create-checkout-session?productId=${productId}&quantity=${quantity}&channelId=${channelId}&userId=${userId}`, 
+            callback);
+        }
 };
 
-
-
-const handleSuccessfulTransaction = (
-    tier: string, 
-    productType: "subscription" | "credit",
-    audSize: "small" | "big", 
-    quantity: number = 1, 
-    channelId: number,
-    checkoutSessionId: string
-    ) => {
-    
-}
-
-const handleFailedTransaction = (
-    tier: string, 
-    productType: "subscription" | "credit",
-    audSize: "small" | "big", 
-    quantity: number = 1, 
-    channelId: number,
-    checkoutSessionId: string
-    ) => {
-}
+const storeCheckoutSessionId = (
+    productId: number,
+    userId: number,
+    checkoutSessionId: number,
+    data: any,
+    callback: any) => {
+    // if its a subscription, we create a line in DB. Else, nothing
+    post("payment/handlecheckout",
+            {   productId: productId,
+                userId: userId,
+                checkoutSessionId: checkoutSessionId,
+                data: data
+            }, () => {
+                callback()
+            }
+        )
+};
 
 
 export const PaymentService = {
     // checkout sessions
+    storeCheckoutSessionId,
     createCheckoutSessionFromId,
     createCheckoutSessionFromStreamingFeatures,
-
-    // Post-transactions
-    handleSuccessfulTransaction,
-    handleFailedTransaction
-};
+}

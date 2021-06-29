@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FunctionComponent } from "react"
 import { PaymentData } from "../../../Services/PaymentService";
-import { ProductService, StreamingProduct, StreamingProductFeatures } from "../../../Services/ProductService"
+import { StreamingProductService, StreamingProduct, StreamingProductFeatures } from "../../../Services/StreamingProductService"
 import CheckoutPaymentButton from "./CheckoutPaymentButton";
 
 interface Props extends StreamingProductFeatures{
@@ -23,13 +23,13 @@ const StreamingCheckoutPaymentButton:FunctionComponent<Props> = (props) => {
         if (props.text){
             setButtonText(props.text)
         }
-        ProductService.getStreamingProductIdByFeatures(
+        StreamingProductService.getStreamingProductIdByFeatures(
             tier, audienceSize, productType, (data: {id: string}) => {
                 console.log("Here is the answer to getStreamingProductIdByFeatures!", data)
                 setProductId(Number(data.id));
                 // If no price text, query price text automatically from DB
                 if (!props.text){
-                    ProductService.getStreamingProductById(Number(data.id), 
+                    StreamingProductService.getStreamingProductById(Number(data.id), 
                         (data: StreamingProduct) => {
                             if (data.productType == "subscription"){
                                 setButtonText(data.priceInDollars + " $ / month")

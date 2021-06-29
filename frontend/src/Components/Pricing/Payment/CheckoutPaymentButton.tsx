@@ -5,7 +5,9 @@ import { stripePublicKey } from "../../../config"
 import { Text, Box } from "grommet";
 
 interface Props extends PaymentData{
-    text?: string
+    userId: number;
+    text?: string;
+    channelId?: number
 }
 
 const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {    
@@ -15,6 +17,7 @@ const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
         // create checkout
         PaymentService.createCheckoutSessionFromId(
             props.productId,
+            props.userId,
             props.quantity,
             props.channelId!,
             async (data: {
@@ -28,6 +31,8 @@ const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
                     return;
                 }
                 else {
+                    console.log(data.checkout_session_id)
+                    // report "initiated" transaction
                     stripe.redirectToCheckout({
                         // Make the id field from the Checkout Session creation API response
                         // available to this file, so you can provide it as parameter here
@@ -48,16 +53,9 @@ const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
                             // )
                         } 
                         else {
-                            // PaymentService.handleSuccessfulTransaction(
-                            //     tier,
-                            //     productType,
-                            //     audSize,
-                            //     quantity,
-                            //     channelId,
-                            //     data.checkout_session_id
-                            // )
-                        }
-                    });
+                            // CHECK FIRST IF ITS A SUBSCRIPTION
+                            // add pending payment in DB for product id
+                    };
                 }
             }
         )

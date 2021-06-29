@@ -35,8 +35,9 @@ const getStreamingProductIdByFeatures = (
     callback: any) => {
   get(`products/streaming?tier=${tier}&audienceSize=${audienceSize}&productType=${product_type}`, callback);
 };
-    
-export const ProductService = {
+
+
+export const StreamingProductService = {
     getProductById,
     // Streaming products
     getStreamingProductById,

@@ -5,7 +5,7 @@
 from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, SubscriptionRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository
 from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
@@ -33,8 +33,8 @@ mailinglist = MailingListRepository.MailingListRepository()
 credits = CreditRepository.CreditRepository()
 products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
-subscriptions = SubscriptionRepository.SubscriptionRepository()
-
+channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
+paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://agora.stream/"
@@ -1680,99 +1680,78 @@ def getMaxAudienceForCreditForTalk():
 # --------------------------------------------
 # PAYMENTS & SUBSCRIPTIONS
 # --------------------------------------------
+# @app.route('/payment/initiated', methods=["POST"])
+# def handleInitiatedTransaction():
+#     if request.method == "OPTIONS":
+#         return jsonify("ok")
+
+#     params = request.json
+#     product_id = request.args.get("productId")
+#     user_id = request.args.get("userId")
+#     checkout_session = params["checkoutSession"]
+#     data =  params["data"]
+
+#     product_class = "channel_subscription"
+#     # TODO: generalisation for later:
+#     # product_class = products.getClass(product_id)
+
+#     # A. If StreamingSubscription, add a line in DB
+#     if product_class == "channel_subscription"
+#     res = channelSubscriptions.handleInitiatedSubscription(
+#         product_id,
+#         user_id,
+#         checkout_session,
+#         data["channelId"]
+#     )
+
+#     # B. Other products
+#     else:
+#         raise NotImplementedError
+#     # TODO: If credits, get data["quantity"] (Remy)
+
+#     return "ok"
+
 @app.route('/payment/create-checkout-session', methods=["GET"])
 def getStripeSessionForProduct():
     product_id = request.args.get("productId")
+    user_id = request.args.get("userId")
     quantity = request.args.get("quantity")
-    channel_id = request.args.get("channelId")
 
-    success_url = os.path.join(BASE_URL, "thankyou", "success", channel_id)
-    url_cancel = os.path.join(BASE_URL, "thankyou", "error", channel_id)
     try:
-        # Only streaming products for now (future: add extra arg to classify them) (Remy)
-        res = paymentsApi.get_session_for_streaming_products(
-            product_id,
-            success_url,
-            url_cancel,
-            quantity
-        )
-        return jsonify(res)
+        # TODO: generalisation for later:
+        # product_class = products.getProductlassFromId(product_id)
+        product_class = "channel_subscription"
+
+        if product_class == "channel_subscription":
+            channel_id = request.args.get("channelId")
+            
+            success_url = os.path.join(BASE_URL, "thankyou", "success", channel_id)
+            url_cancel = os.path.join(BASE_URL, "thankyou", "error", channel_id)
+            
+            # Create checkout session
+            res = paymentsApi.get_session_for_streaming_products(
+                product_id,
+                success_url,
+                url_cancel,
+                quantity
+            )
+
+            # Store checkoutId in DB
+            channelSubscriptions._addCheckoutSubscription(
+                product_id,
+                res["checkout_session_id"],
+                channel_id,
+                user_id
+                )
+            
+            return jsonify(res)
     except Exception as e:
         return jsonify(str(e))
+        
 
 # NOTE: below is to handle responses from Stripe after checkouts (e.g. payment successful or subscription renewal).
 @app.route('/stripe_webhook', methods=['POST'])
 def stripe_webhook():
-    '''
-    Example of events:
-        {
-            "api_version": "2020-08-27",
-            "created": 1624828893,
-            "data": {
-                "object": {
-                "amount": 2500,
-                "amount_capturable": 0,
-                "amount_received": 0,
-                "application": null,
-                "application_fee_amount": null,
-                "canceled_at": null,
-                "cancellation_reason": null,
-                "capture_method": "automatic",
-                "charges": {
-                    "data": [],
-                    "has_more": false,
-                    "object": "list",
-                    "total_count": 0,
-                    "url": "/v1/charges?payment_intent=pi_1J75Q1LrLOIeFgs2PKHZaujy"
-                },
-                "client_secret": "pi_1J75Q1LrLOIeFgs2PKHZaujy_secret_QZOvaIvbKMAfKAotLXvITfxKB",
-                "confirmation_method": "automatic",
-                "created": 1624828893,
-                "currency": "gbp",
-                "customer": "cus_JkabLwn0veozYH",
-                "description": "Subscription creation",
-                "id": "pi_1J75Q1LrLOIeFgs2PKHZaujy",
-                "invoice": "in_1J75Q1LrLOIeFgs2SAWssgjW",
-                "last_payment_error": null,
-                "livemode": false,
-                "metadata": {},
-                "next_action": null,
-                "object": "payment_intent",
-                "on_behalf_of": null,
-                "payment_method": null,
-                "payment_method_options": {
-                    "card": {
-                    "installments": null,
-                    "network": null,
-                    "request_three_d_secure": "automatic"
-                    }
-                },
-                "payment_method_types": [
-                    "card"
-                ],
-                "receipt_email": null,
-                "review": null,
-                "setup_future_usage": null,
-                "shipping": null,
-                "source": null,
-                "statement_descriptor": null,
-                "statement_descriptor_suffix": null,
-                "status": "requires_payment_method",
-                "transfer_data": null,
-                "transfer_group": null
-                }
-            },
-            "id": "evt_1J75Q5LrLOIeFgs2ePflGd6w",
-            "livemode": false,
-            "object": "event",
-            "pending_webhooks": 2,
-            "request": {
-                "id": "req_29FGcWjEha5t78",
-                "idempotency_key": null
-            },
-            "type": "payment_intent.created"
-        }
-    '''
     print('WEBHOOK CALLED')
 
     with open("/home/cloud-user/test/zizou0.txt", "w") as file:
@@ -1792,77 +1771,114 @@ def stripe_webhook():
         if event['type'] == 'checkout.session.completed':
             # Payment is successful and the subscription is created.
             # You should provision the subscription and save the customer ID to your database.
-            with open("/home/cloud-user/test/stripe/checkout_session_completed.txt", "w") as file:
-                file.write(str(event))
+            checkout_id = event["data"]["id"]
 
+            # TODO: generalisation for later:
+            # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
+            # product_class = products.getProductlassFromStripeId(stripe_product_id)
+            product_class = "channel_subscription"
 
-            payment_intent = event["data"]["payment_intent"]
+            # 1. If StreamingSubscription, add a line in DB and add customer in PaymentHistory
+            if product_class == "channel_subscription"
+                stripe_subscription_id = event["data"]["subscription"]
+                try:
+                    channelSubscriptions._addStripeSubscriptionId(
+                        checkout_id,
+                        stripe_subscription_id
+                    )
+                    
+                    # 2. Add pending payment
+                    data = channelSubscriptions.getSubscriptionFromCheckoutId(checkout_id)[0]
+                    channel_subscription_id = ["id"]
+                    user_id = data["user_id"]
+                    stripe_customer_id = event["data"]["customer_id"]
+                    customer_email = event["data"]["customer_email"]
 
+                    payment_status = event["data"]["payment_status"]
 
-            payment_status = event["data"]["payment_status"]
-            payment_mode = event["data"]["mode"] # either 'payment' or 'subscription'
+                    paymentHistory.addPendingPayment(
+                        channel_subscription_id, 
+                        stripe_customer_id, 
+                        hosted_invoice_url, 
+                        customer_email,
+                        user_id,
+                        payment_status
+                    )
+                except:
+                    return "Error in pre-checkout management (no channel_id found)"
 
-            customer_email = event["data"]["customer_email"]
-            stripe_product_id = event["data"]["lines"]["data"][0]["price"]
-            hosted_invoice_url = event["data"]["hosted_invoice_url"]
+            # # B. If credits, not implemented.
+            else:
+                return NotImplementedError
 
-
-            # TODO: store agora product_id AND stripe_product_id
-
-            # A. If subscription: get subscription_id and email address
-            # if new: add in db
-
-
-
-            # if existing, update status and end_date
-            start_time = event["data"]["period"]["start"]
-            end_time = event["data"]["period"]["end"]
-            status = event["data"]["plan"]["active"] # boolean
-
-            # B. If credits, not implemented.
-
-            # C. Send an email to let them know that they paid (?)
-            paymentsApi.handle_completed_checkout(event)
-
-        # B. Handle paid invoice (Sent each billing interval when a payment succeeds.) 
+        # B. Handle paid invoice 
+        # (Stripe: "Sent each billing interval when a payment succeeds."") 
         elif event['type'] == 'invoice.paid':
-
-            with open("/home/cloud-user/test/stripe/invoice_paid.txt", "w") as file:
-                file.write(str(event))
-
-
             # Continue to provision the subscription as payments continue to be made.
             # Store the status in your database and check when a user accesses your service.
             # This approach helps you avoid hitting rate limits.
-            payment_intent = event["data"]["payment_intent"]
-            payment_status = event["data"]["payment_status"]
-            payment_mode = event["data"]["mode"] # either 'payment' or 'subscription'
-            customer_email = event["data"]["customer_email"]
+
+            # TODO: generalisation for later:
+            # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
+            # product_class = products.getProductlassFromStripeId(stripe_product_id)
+            product_class = "channel_subscription"
 
             stripe_product_id = event["data"]["lines"]["data"]["price"]
 
+            # 1. Update subscription into active
+            if product_class == "channel_subscription"
+                stripe_subscription_id = event["type"]["data"]["subscription"]
+
+                start_time = event["data"]["period"]["start"]
+                end_time = event["data"]["period"]["end"]
+                status = event["data"]["plan"]["active"] # boolean
+
+                #
+                #
+                # TODO: check meaning of status ("active", i.e. has been paid or subcription will renew?)
+                #
+                channelSubscriptions.handleSubscriptionPayment(
+                    stripe_subscription_id,
+                    start_time,
+                    end_time,
+                    status
+                )
+
+                # 2. Add invoice + update payment 
+                stripe_payment_id = event["data"]["payment_intent"]
+                payment_status = event["data"]["payment_status"]
+
+                with open("/home/cloud-user/test/stripe/invoice_paid.txt", "w") as file:
+                    file.write(str(event))
+
+                # TODO: WIP
+                paymentHistory.updateSuccessfulPayment()
 
 
+            # # 3. Send an email to let them know that they paid (?)
+            # paymentsApi.handle_completed_checkout(event)
 
 
             paymentsApi.handle_failed_checkout(event)
 
-        # C. Handle paid invoice (	Sent each billing interval if there is an issue with your customer’s payment method.)
+        # C. Handle paid invoice 
+        # (Stripe: "Sent each billing interval if there is an issue with your customer’s payment method.")
         elif event['type'] == 'invoice.payment_failed':
             with open("/home/cloud-user/test/stripe/invoice_payment_failed.txt", "w") as file:
                 file.write(str(event))
-
-
-
             # The payment failed or the customer does not have a valid payment method.
             # The subscription becomes past_due. Notify your customer and send them to the
             # customer portal to update their payment information.
-            subscriptions.addStreamingSubscription()
+
+
+
+            # update subscription status into unpaid
+            # see when to stop querying for money
+
+
+            channelSubscriptions.addStreamingSubscription()
             paymentsApi.handle_failed_checkout(event)
 
-        # D. Handle successfull subscription renewals
-        elif event["type"] == "subscription_schedule.updated":
-            paymentsApi.handle_failed_subscription_renewal(event)
 
         return {}
 
