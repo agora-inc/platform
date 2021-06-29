@@ -7,6 +7,7 @@ import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
 interface Props {
   headerTitle: boolean
+  showDemo: boolean
   callback: any;
 }
 interface State {
@@ -57,7 +58,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       )}
       {this.props.headerTitle && (
         <Box align="start" margin={{bottom: "40px"}} >
-          <Text size="25px" weight="bold" color="color3" textAlign="start">
+          <Text size="32px" weight="bold" color="color1"> 
             Pricing plans
           </Text>
         </Box>
@@ -113,7 +114,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <Text size="14px" weight="bold"> Excellence </Text>
               </TableCell>
 
-              <TableCell scope="col" border={{size: "0px"}} width="60px" />
+              {this.props.showDemo && <TableCell scope="col" border={{size: "0px"}} width="60px" />}
 
             </TableRow>
           </TableHeader>
@@ -178,25 +179,27 @@ export default class ManageChannelPage extends Component<Props, State> {
               <TableCell scope="row">
                 <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
               </TableCell>
-              <TableCell scope="row">
-                <Box
-                  direction="row"
-                  justify="center"
-                  align="center"
-                  pad="small"
-                  focusIndicator={false}
-                  height="30px"
-                  background="#EAF1F1"
-                  hoverIndicator="#BAD6DB"
-                  round="small"
-                  onClick={()=>{}}
-                >
-                  <FormNextLink size="25px" color="black" />
-                  <Text weight="bold" color="black" size="14px">
-                    Watch demo
-                  </Text>
-                </Box>
-              </TableCell>
+              {this.props.showDemo && (
+                <TableCell scope="row">
+                  <Box
+                    direction="row"
+                    justify="center"
+                    align="center"
+                    pad="small"
+                    focusIndicator={false}
+                    height="30px"
+                    background="#EAF1F1"
+                    hoverIndicator="#BAD6DB"
+                    round="small"
+                    onClick={()=>{}}
+                  >
+                    <FormNextLink size="25px" color="black" />
+                    <Text weight="bold" color="black" size="14px">
+                      Watch demo
+                    </Text>
+                  </Box>
+                </TableCell>
+              )}
             </TableRow>
 
             <TableRow>
@@ -228,25 +231,27 @@ export default class ManageChannelPage extends Component<Props, State> {
               <TableCell scope="row">
                 <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
               </TableCell>
-              <TableCell scope="row">
-                <Box
-                  direction="row"
-                  justify="center"
-                  align="center"
-                  pad="small"
-                  focusIndicator={false}
-                  height="30px"
-                  background="#EAF1F1"
-                  hoverIndicator="#BAD6DB"
-                  round="small"
-                  onClick={()=>{}}
-                >
-                  <FormNextLink size="25px" color="black" />
-                  <Text weight="bold" color="black" size="14px">
-                    Watch demo
-                  </Text>
-                </Box>
-              </TableCell>
+              {this.props.showDemo && (
+                <TableCell scope="row">
+                  <Box
+                    direction="row"
+                    justify="center"
+                    align="center"
+                    pad="small"
+                    focusIndicator={false}
+                    height="30px"
+                    background="#EAF1F1"
+                    hoverIndicator="#BAD6DB"
+                    round="small"
+                    onClick={()=>{}}
+                  >
+                    <FormNextLink size="25px" color="black" />
+                    <Text weight="bold" color="black" size="14px">
+                      Watch demo
+                    </Text>
+                  </Box>
+                </TableCell>
+              )}
             </TableRow>
 
             <TableRow>

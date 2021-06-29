@@ -764,6 +764,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 >
                   <PricingPlans 
                     callback={this.toggleModalPricing}
+                    showDemo={true}
                     headerTitle={false} 
                   />
 

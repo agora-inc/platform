@@ -11,6 +11,7 @@ import "../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 import TrendingChannelsList from "../Components/Homepage/TrendingChannelsList";
 import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
+import AgoraCreationPage from "../Views/AgoraCreationPage";
 import ReactTooltip from "react-tooltip";
 
 
@@ -531,8 +532,10 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
           <TrendingTalksList />
+
         </Box>
 
+        <AgoraCreationPage  />
 
 
         { /*
@@ -675,7 +678,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         */}
 
-        <Box width="820px" align="center">
+        <Box width="70%" align="center">
           <FooterComponent />
         </Box>
 
