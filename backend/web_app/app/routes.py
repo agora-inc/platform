@@ -1752,11 +1752,48 @@ def getStripeSessionForProduct():
 # NOTE: below is to handle responses from Stripe after checkouts (e.g. payment successful or subscription renewal).
 @app.route('/stripe_webhook', methods=['POST'])
 def stripe_webhook():
-    print('WEBHOOK CALLED')
+    '''
+    For details, see: https://stripe.com/docs/billing/subscriptions/overview#subscription-events
+    and https://codenebula.io/stripe/node.js/2019/05/02/using-stripe-webhooks-to-handle-failed-subscription-payments-node-js/
 
-    with open("/home/cloud-user/test/zizou0.txt", "w") as file:
-        file.write("in")
+    Tracked situations, associated stripe events, and summary logic:
+        - 1. checkout to pay subscription:
+            - 'checkout.session.completed'
+            - logic: use "checkout_id" to add "subscription_id" to line in DB with "checkout" status
 
+        - 2. payment first subscription: 
+            - 'invoice.paid'
+            - logic: grab "subscription_id" and update status in ChannelSubscription as "active"
+
+        # Ignore 3; taken care in the Dashboard (email is sent to user with stripe retrial link. See: https://support.stripe.com/questions/handling-recurring-payments-that-require-customer-action)
+        # - 3. failure payment first subscription: 
+        #     -'invoice.payment_action_required' (= needs action from customer)
+        #     - logic: send email 
+        #     - invoice.payment_failed
+        #     - logic: db 'status' in ChannelSubscription is "unpaid"
+
+        - 4. successful renewal subscription: 
+            - customer.subscription.updated (subscription status is "active")
+            - logic: if status is "active", update line.
+
+        - 5. failure renewal subscription: 
+            - customer.subscription.updated (subscription status becomes "past_due". After 4 trials, it becomes "unpaid": this is set in dashboard https://dashboard.stripe.com/settings/billing/automatic)
+            - logic:
+                # - if past_due: change subscription status in DB as "pending_payment"  
+                - if past_due: do nothing
+                - after 4 trials: change subscription status into "unpaid"
+
+        - 6. cancellation subscription or upgrade plans: 
+            - customer.subscription.updated (subscription status becomes "cancelled")
+            - logic: update subscription line into 'cancelled'
+
+    Handling:
+        - 'checkout.session.completed' (1)
+        - 'invoice.paid' (2)
+        - 'customer.subscription.updated' (4, 5, 6)
+    
+    NOTE: we do not track payments internally (see dashboard Stripe for that)
+    '''
     if request.content_length > 1024 * 1024:
         print('REQUEST TOO BIG')
         abort(400)
@@ -1767,10 +1804,11 @@ def stripe_webhook():
         # Handling of all the responses
         event = paymentsApi._construct_stripe_event_from_raw(payload, sig_header)
 
-        # A. Handle successfull checkout sessions (Sent when a customer clicks the Pay or Subscribe button in Checkout, informing you of a new purchase.)
+        # NOTE: for workflow for all subscription events, 
+        # see https://stripe.com/docs/billing/subscriptions/overview#subscription-events) 
+
+        # A. Handle successful checkout sessions (Sent when a customer clicks the Pay or Subscribe button in Checkout, informing you of a new purchase.)
         if event['type'] == 'checkout.session.completed':
-            # Payment is successful and the subscription is created.
-            # You should provision the subscription and save the customer ID to your database.
             checkout_id = event["data"]["id"]
 
             # TODO: generalisation for later:
@@ -1779,106 +1817,70 @@ def stripe_webhook():
             product_class = "channel_subscription"
 
             # 1. If StreamingSubscription, add a line in DB and add customer in PaymentHistory
-            if product_class == "channel_subscription"
+            if product_class == "channel_subscription":
                 stripe_subscription_id = event["data"]["subscription"]
-                try:
-                    channelSubscriptions._addStripeSubscriptionId(
-                        checkout_id,
-                        stripe_subscription_id
-                    )
-                    
-                    # 2. Add pending payment
-                    data = channelSubscriptions.getSubscriptionFromCheckoutId(checkout_id)[0]
-                    channel_subscription_id = ["id"]
-                    user_id = data["user_id"]
-                    stripe_customer_id = event["data"]["customer_id"]
-                    customer_email = event["data"]["customer_email"]
+                channelSubscriptions._addStripeSubscriptionId(
+                    checkout_id,
+                    stripe_subscription_id
+                )
+                
+                # Add pending payment
+                # data = channelSubscriptions.getSubscriptionFromCheckoutId(checkout_id)[0]
+                # channel_subscription_id = data["subscription"]
+                # hosted_invoice_url = data["hosted_invoice_url"]
+                # user_id = data["user_id"]
+                # stripe_customer_id = event["data"]["customer_id"]
+                # customer_email = event["data"]["customer_email"]
+                # payment_status = event["data"]["payment_status"]
+                # paymentHistory.addPendingPayment(
+                #     user_id,
+                #     stripe_customer_id, 
+                #     customer_email,
+                #     hosted_invoice_url, 
+                #     payment_status
+                #     channel_subscription_id, 
+                # )
 
-                    payment_status = event["data"]["payment_status"]
-
-                    paymentHistory.addPendingPayment(
-                        channel_subscription_id, 
-                        stripe_customer_id, 
-                        hosted_invoice_url, 
-                        customer_email,
-                        user_id,
-                        payment_status
-                    )
-                except:
-                    return "Error in pre-checkout management (no channel_id found)"
-
-            # # B. If credits, not implemented.
+            # 2. If credits, not implemented.
             else:
                 return NotImplementedError
 
         # B. Handle paid invoice 
-        # (Stripe: "Sent each billing interval when a payment succeeds."") 
         elif event['type'] == 'invoice.paid':
-            # Continue to provision the subscription as payments continue to be made.
-            # Store the status in your database and check when a user accesses your service.
-            # This approach helps you avoid hitting rate limits.
-
             # TODO: generalisation for later:
             # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
             # product_class = products.getProductlassFromStripeId(stripe_product_id)
             product_class = "channel_subscription"
-
             stripe_product_id = event["data"]["lines"]["data"]["price"]
 
-            # 1. Update subscription into active
+            #  Update subscription into active
             if product_class == "channel_subscription"
                 stripe_subscription_id = event["type"]["data"]["subscription"]
 
-                start_time = event["data"]["period"]["start"]
-                end_time = event["data"]["period"]["end"]
-                status = event["data"]["plan"]["active"] # boolean
-
-                #
-                #
-                # TODO: check meaning of status ("active", i.e. has been paid or subcription will renew?)
-                #
-                channelSubscriptions.handleSubscriptionPayment(
-                    stripe_subscription_id,
-                    start_time,
-                    end_time,
-                    status
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, status="active"
                 )
 
-                # 2. Add invoice + update payment 
-                stripe_payment_id = event["data"]["payment_intent"]
-                payment_status = event["data"]["payment_status"]
-
-                with open("/home/cloud-user/test/stripe/invoice_paid.txt", "w") as file:
-                    file.write(str(event))
-
-                # TODO: WIP
-                paymentHistory.updateSuccessfulPayment()
-
-
-            # # 3. Send an email to let them know that they paid (?)
-            # paymentsApi.handle_completed_checkout(event)
-
-
-            paymentsApi.handle_failed_checkout(event)
-
-        # C. Handle paid invoice 
+        # C. Subscriptions that are changed into cancelled (Stripe dashboard: after 30 days unpaid. https://dashboard.stripe.com/settings/billing/automatic)
+        #  - Cancelled subscriptions
         # (Stripe: "Sent each billing interval if there is an issue with your customer’s payment method.")
-        elif event['type'] == 'invoice.payment_failed':
-            with open("/home/cloud-user/test/stripe/invoice_payment_failed.txt", "w") as file:
-                file.write(str(event))
-            # The payment failed or the customer does not have a valid payment method.
-            # The subscription becomes past_due. Notify your customer and send them to the
-            # customer portal to update their payment information.
+        elif event['type'] == "customer.subscription.updated":
+            stripe_subscription_id = event["data"]["subscription"]
+            subscription_status = event["type"]["data"]
 
+            if subscription_status == "active":
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, status="active"
+                )
 
+            elif subscription_status == "past_due":
+                # do nothing here 
+                pass
 
-            # update subscription status into unpaid
-            # see when to stop querying for money
-
-
-            channelSubscriptions.addStreamingSubscription()
-            paymentsApi.handle_failed_checkout(event)
-
+            elif subscription_status == "cancelled":
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, status="cancelled"
+                )
 
         return {}
 

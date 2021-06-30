@@ -9,7 +9,7 @@ class PaymentHistoryRepository:
         self.db = db
         self.mail_sys = mail_sys
 
-    def addPendingPayment(self, channel_subscription_id, stripe_customer_id, hosted_invoice_url, customer_email, user_id, status):
+    def addPendingPayment(self, user_id,stripe_customer_id, customer_email,hosted_invoice_url, payment_status, channel_subscription_id):
         # get productId associated with the stripe_product_id
         add_query = f'''
             INSERT INTO PaymentHistory(

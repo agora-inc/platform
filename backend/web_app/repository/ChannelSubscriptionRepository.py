@@ -20,6 +20,10 @@ class ChannelSubscriptionRepository:
         # self.institutions = InstitutionRepository(db=self.db)
         # self.email_reminders = EmailRemindersRepository(db=self.db)
 
+
+    ################################
+    # Backend Stripe only methods  #
+    ################################
     def _addCheckoutSubscription(self, product_id, checkout_session, user_id):
         '''
             Add subscription for channel_id in "checkout" status 
@@ -44,7 +48,7 @@ class ChannelSubscriptionRepository:
             ;
         '''
         try: 
-            self.db.run_query(extension_query)
+            self.db.run_query(add_query)
             return "ok"
         except Exception as e:
             return str(e)
@@ -63,6 +67,22 @@ class ChannelSubscriptionRepository:
         
         return "ok"
 
+    def _handleSuccessfulPayment(self, stripe_subscription_id, start_time, end_time):
+        '''
+            Extends duration of subscription
+        '''
+        update_query = f'''
+            UPDATE ChannelSubscriptions
+            SET end_time={end_time}
+                AND start_time={start_time}
+                AND status="active
+            WHERE stripe_subscription_id="{stripe_subscription_id}";
+        '''
+        try:
+            return self.db.run_query(query)
+        except Exception as e:
+            return "e"
+
     def getChannelSubscriptionFromCheckoutId(self, checkoutId):
         query = f'''
             SELECT * FROM ChannelSubscriptions
@@ -73,51 +93,39 @@ class ChannelSubscriptionRepository:
         except Exception as e:
             return "e"
 
-    def updateSubscriptionStatus(self, stripe_subscription_id, status, end_time):
-        update_query = f'''
-            UPDATE ChannelSubscriptions
-            SET end_time={end_time},
-                status="{status}"
-            WHERE stripe_subscription_id="{stripe_subscription_id}";
-        '''
-
-
-
-    # def extendStreamingSubscriptionByOneMonth(self, channel_id):
-    #     extension_query = f'''
-    #         UPDATE Subscriptions
-    #         SET end_time = DATE_ADD(NOW(), INTERVAL 1 MONTH)
-    #         WHERE (
-    #             channel_id = {channel_id}
-    #             )
-    #         ;
-    #     '''
-    #     try: 
-    #         self.db.run_query(extension_query)
-    #         return "ok"
-    #     except Exception as e:
-    #         return str(e)
-
     def getActiveSubscription(self, channelId):
         # return [{"subscription": "product", "status": "sdjf"}]
+        pass
 
-
-
-    def changeStreamingSubscription(self, channel_id, product_id):
-        change_query = f'''
-            UPDATE ChannelSubscriptions
-            SET end_time = DATE_ADD(NOW(), INTERVAL 1 MONTH)
-            AND product_id = {product_id}
-            WHERE (
-                channel_id = {channel_id}
-                )
-            ;
-        '''
-        try: 
-            self.db.run_query(extension_query)
-            return "ok"
-        except Exception as e:
-            return str(e)
+    def updateSubscriptionStatus(self, status, channel_subscription_id=None, stripe_subscription_id=None):
+        if stripe_subscription_id is not None:
+            update_query = f'''
+                UPDATE ChannelSubscriptions
+                SET status={status}
+                WHERE (
+                    stripe_subscription_id = {stripe_subscription_id}
+                    )
+                ;
+            '''
+            try: 
+                self.db.run_query(update_query)
+                return "ok"
+            except Exception as e:
+                return str(e)
+        elif channel_subscription_id is not None:
+            update_query = f'''
+                UPDATE ChannelSubscriptions
+                SET status={status}
+                WHERE (
+                    id = {channel_subscription_id}
+                    )
+                ;
+            '''
+            try: 
+                self.db.run_query(update_query)
+                return "ok"
+            except Exception as e:
+                return str(e)
 
     def stopSubscription(self, channel_id):
         stop_query = f'''
