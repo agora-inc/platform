@@ -112,6 +112,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
     return (
       <Box
+        id="pricing"
         width="100vw"
         height="auto"
         align="center"
@@ -253,7 +254,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_7_text" justify="center" >
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Automatic email reminders
+                  Send automatic email reminders
                 </Text>
                 <Text size="18px">
                   You can decide to remind your community about upcoming event <b> without any work! </b>
@@ -273,10 +274,10 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_6_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Automatized registration
+                  Handle the registration without pain
                 </Text>
                 <Text size="18px">
-                  As an organizer, you can decide to automatically accept a certain group of people <b> everyone, only verified academics, people from your institution, etc. </b>
+                  As an organizer, you can decide to automatically accept certains group of people <b> everyone, only verified academics, only people from your institution, etc. </b>
                 </Text>
                 <Text size="18px" margin={{top: "10px"}}>
                   For the others, manually accepting them is made very easy and intuitive!
@@ -294,10 +295,13 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_3_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Future speakers are coming to your door
+                  Finding speakers has never been easier
                 </Text>
                 <Text size="18px">
                   You can allow potential future speakers <b> from all around the world </b> to apply to give a talk to your community.
+                </Text>
+                <Text size="18px" margin={{top: "10px"}}>
+                  Speakers fill out a form stating the <b> title and the abstract </b> of their talk, and you decide whether it's a fit.
                 </Text>
               </Box>
               <Box gridArea="arg_3_image" >
@@ -414,7 +418,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
           <Box width={renderMobileView ? "95%" : "70%"} alignContent="center" margin={{top: renderMobileView ? "0px" : "100px", left: "10px"}}>
               <PricingPlans 
                 callback={() => {}}
-                showDemo={!renderMobileView}
+                showDemo={false}
                 headerTitle={true}
               />
 
