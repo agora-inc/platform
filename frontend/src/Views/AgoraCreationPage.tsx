@@ -119,16 +119,9 @@ export default class AgoraCreationPage extends Component<Props, State> {
         // background="color6"
         >
         <Box width={renderMobileView ? "85%" : "70%"} direction="column" margin={{top: "10px"}}>
-          <Box 
-            direction={window.innerWidth > 800 ? "row" : "column"} 
-            gap={window.innerWidth > 800 ? "25px" : "10px"} 
-            margin={{bottom: "44px"}}
-          >
-            <img src={agoraStreamFullLogo} style={{ height: "45px" }} /> 
-            <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{top: "3px"}} > 
+            <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{bottom: "44px"}} > 
               Everything you need to organize your seminars, all in one place
             </Text>
-          </Box>
           {/* <Box margin={{bottom: "32px"}}>
             <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>less than a minute</b>.
              </Text>
@@ -216,10 +209,10 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_2_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Organising seminars has never been faster
+                  Publish your seminars in 1 minute
                 </Text>
                 <Text size="18px">
-                  Create your <img src={agoraLogo} height="14px"/> and your seminars in <b>a minute</b>. Also:
+                  Create your <img src={agoraLogo} height="14px"/>  to:
                 </Text>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Checkmark size="18px" />
@@ -266,7 +259,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   You can decide to remind your community about upcoming event <b> without any work! </b>
                 </Text>
                 <Text size="18px" margin={{top: "10px"}}>
-                  Simply choose the time and the group of people you want to send the reminder to, be it <b> all your followers, your mailing list or only the registered participants </b>.
+                  Simply choose the time and the group of people you want to send the reminder to, be it <b> all your followers, your mailing list or only the registered participants. </b>
                 </Text>
               </Box>
               <Box gridArea="arg_7_image">
@@ -397,13 +390,13 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_4_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Integrated virtual cafeteria
+                  Let your audience mingle in the virtual cafeteria
                 </Text>
                 <Text size="18px">
                   Your audience can grab a virtual coffee at the <img src={agoraLogo} height={"14px"}/> café 15 minutes before the start and 1 hour after the end of your seminar. 
                 </Text>
                 <Text size="18px" margin={{top: "10px"}}>
-                  Networking and mingling with each other is <b> fun and intuitive </b>, a cozy place to chat about the event!
+                  Networking and mingling with each other is <b> fun and intuitive, </b> a cozy place to chat about the event!
                 </Text>
               </Box>
               <Box gridArea="arg_4_image">

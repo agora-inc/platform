@@ -48,7 +48,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         >
           <Box alignSelf="center" fill={true} pad="20px" >
             <Text size="16px" color="black" weight="bold" >
-              Pricing plans
+              Empower your research group!
             </Text>
           </Box>
           <Box pad="32px" alignSelf="center">
@@ -59,7 +59,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       {this.props.headerTitle && (
         <Box align="start" margin={{bottom: "40px"}} >
           <Text size="32px" weight="bold" color="color1"> 
-            Pricing plans
+            Empower your research group!
           </Text>
         </Box>
       )}
