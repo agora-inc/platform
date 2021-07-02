@@ -1,11 +1,13 @@
 import React, { useEffect, useState, FunctionComponent } from "react"
 import { PaymentData } from "../../../Services/PaymentService";
+import { User } from "../../../Services/UserService";
 import { StreamingProductService, StreamingProduct, StreamingProductFeatures } from "../../../Services/StreamingProductService"
 import CheckoutPaymentButton from "./CheckoutPaymentButton";
 
 interface Props extends StreamingProductFeatures{
     channelId: number;
     text?: string;
+    user: User
 }
 
 const StreamingCheckoutPaymentButton:FunctionComponent<Props> = (props) => {    
@@ -44,6 +46,7 @@ const StreamingCheckoutPaymentButton:FunctionComponent<Props> = (props) => {
 
     return (
         <CheckoutPaymentButton
+            userId={props.user.id}
             productId={productId!}
             quantity={quantity}
             channelId={channelId}

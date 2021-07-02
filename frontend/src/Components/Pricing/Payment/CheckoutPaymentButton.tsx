@@ -1,7 +1,7 @@
 import React, { useState, FunctionComponent } from "react"
 import { loadStripe } from "@stripe/stripe-js";
 import { PaymentService, PaymentData } from "../../../Services/PaymentService";
-import { stripePublicKey } from "../../../config"
+import { stripePublicKey } from "../../../config";
 import { Text, Box } from "grommet";
 
 interface Props extends PaymentData{
@@ -38,24 +38,16 @@ const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
                         // available to this file, so you can provide it as parameter here
                         // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
                         sessionId: data.checkout_session_id
-                    }).then(function (result) {
-                        // If `redirectToCheckout` fails due to a browser or network
-                        // error, display the localized error message to your customer
-                        // using `result.error.message`.
-                        if (result.error){
-                            // PaymentService.handleFailedTransaction(
-                            //     tier,
-                            //     productType,
-                            //     audSize,
-                            //     quantity,
-                            //     channelId,
-                            //     data.checkout_session_id
-                            // )
-                        } 
-                        else {
-                            // CHECK FIRST IF ITS A SUBSCRIPTION
-                            // add pending payment in DB for product id
-                    };
+                    })
+                    // .then(function (result) {
+                    //     // If `redirectToCheckout` fails due to a browser or network
+                    //     // error, display the localized error message to your customer
+                    //     // using `result.error.message`.
+                    //     if (result.error){
+                    //     } 
+                    //     else {
+                    //     };
+                    // }
                 }
             }
         )

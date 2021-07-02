@@ -41,16 +41,11 @@ class PaymentHistoryRepository:
         except Exception as e:
             return str(e)
 
-    def updateSuccessfulPayment(self):
-        # if first payment, update status of previous pending payment into active
-
-        # if new payment for a new invoice, add a new line
+    def updatePaymentStatus(self):
         raise NotImplementedError
 
-    
-
     def updateTransactionIntoPaid(self, product_id, productId, checkout_session, channel_id):
-        # check if user
+        raise NotImplementedError
 
-    def getPaymentsForChannelWithin(self):
-        pass
+    def getPaymentsForChannel(self):
+        raise NotImplementedError

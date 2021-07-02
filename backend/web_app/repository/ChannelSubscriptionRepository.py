@@ -24,7 +24,7 @@ class ChannelSubscriptionRepository:
     ################################
     # Backend Stripe only methods  #
     ################################
-    def _addCheckoutSubscription(self, product_id, checkout_session, user_id):
+    def _addCheckoutSubscription(self, product_id, checkout_session, channel_id, user_id):
         '''
             Add subscription for channel_id in "checkout" status 
             (Necessary so that channel_id and user_id can retrieved later in the stripe webhook)
@@ -99,16 +99,36 @@ class ChannelSubscriptionRepository:
 
     def updateSubscriptionStatus(self, status, channel_subscription_id=None, stripe_subscription_id=None):
         if stripe_subscription_id is not None:
-            update_query = f'''
-                UPDATE ChannelSubscriptions
-                SET status={status}
-                WHERE (
-                    stripe_subscription_id = {stripe_subscription_id}
-                    )
-                ;
-            '''
             try: 
+                update_query = f'''
+                    UPDATE ChannelSubscriptions
+                    SET status={status}
+                    WHERE (
+                        stripe_subscription_id = {stripe_subscription_id}
+                        )
+                    ;
+                '''
                 self.db.run_query(update_query)
+
+                if status == "active":
+                    delete_past_checkout_queries_for_product = f'''
+                        DELETE FROM ChannelSubscriptions
+                        WHERE 
+                            product_id IN (
+                                SELECT product_id FROM ChannelSubscriptions
+                                WHERE (status='active' 
+                                    AND stripe_subscription_id = {stripe_subscription_id})
+                                )
+                            AND status='checkout';
+                    '''
+
+
+                with open("/home/cloud-user/test/delete_sql_query.txt", "w") as file:
+                    file.write(delete_past_checkout_queries_for_product)
+
+
+                self.db.run_query(delete_past_checkout_queries_for_product)
+
                 return "ok"
             except Exception as e:
                 return str(e)

@@ -1,10 +1,12 @@
-import React, { useState } from "react"
+import React, { useState, FunctionComponent } from "react"
+import { User } from "../../../Services/UserService";
 import {CardElement, useStripe, useElements, ElementsConsumer} from '@stripe/react-stripe-js';
 import { PaymentService, PaymentData } from "../../../Services/PaymentService";
+import { Select } from "grommet";
 
 
 /////////////////////////////
-// NOT FUNCTIONAL (WIP).
+// Does not work (WIP).
 /////////////////////////////
 // Skeletton of our homemade payment UI form (this one won't redirect to stripe). 
 // This will be integrated later (Remy).
@@ -29,7 +31,13 @@ const CARD_OPTIONS = {
 	}
 }
 
-export const PaymentForm = () => {    
+interface Props {
+    user: User
+}
+
+
+
+export const PaymentForm:FunctionComponent<Props> = (props) => {    
     const [productId, setProductId] = useState<PaymentData["productId"]>(1);
     const [quantity, setQuantity] = useState<PaymentData["quantity"]>(1);
     const [channelId, setChannelId] = useState<PaymentData["channelId"]>(123);
@@ -65,6 +73,7 @@ export const PaymentForm = () => {
         console.log('[PaymentMethod]', paymentMethod);
         PaymentService.createCheckoutSessionFromId(
             productId,
+            props.user.id,
             quantity,
             channelId!,
             () => {}

@@ -10,9 +10,9 @@ const stripeTestPromise = loadStripe(stripePublicKey)
 export function StripeContainer() {
 	return (
 		<Elements stripe={stripeTestPromise}>
-			<PaymentForm 
-			// plan={"tier1"} mode={"sub"} audSize={"small"} quantity={1} channelId={132}
-			/>
+			{/* <PaymentForm 
+			plan={"tier1"} mode={"sub"} audSize={"small"} quantity={1} channelId={132}
+			/> */}
 		</Elements>
 	)
 }

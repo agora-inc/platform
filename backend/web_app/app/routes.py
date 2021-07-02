@@ -6,7 +6,7 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -34,7 +34,7 @@ credits = CreditRepository.CreditRepository()
 products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
-paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
+# paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://agora.stream/"
@@ -1749,12 +1749,12 @@ def getStripeSessionForProduct():
         return jsonify(str(e))
         
 
-# NOTE: below is to handle responses from Stripe after checkouts (e.g. payment successful or subscription renewal).
+# NOTE: handling of responses Stripe after checkouts and invoices
 @app.route('/stripe_webhook', methods=['POST'])
 def stripe_webhook():
     '''
-    For details, see: https://stripe.com/docs/billing/subscriptions/overview#subscription-events
-    and https://codenebula.io/stripe/node.js/2019/05/02/using-stripe-webhooks-to-handle-failed-subscription-payments-node-js/
+    Hack to handle events easily: https://codenebula.io/stripe/node.js/2019/05/02/using-stripe-webhooks-to-handle-failed-subscription-payments-node-js/
+    Full doc: https://stripe.com/docs/billing/subscriptions/overview#subscription-events
 
     Tracked situations, associated stripe events, and summary logic:
         - 1. checkout to pay subscription:
@@ -1809,6 +1809,8 @@ def stripe_webhook():
 
         # A. Handle successful checkout sessions (Sent when a customer clicks the Pay or Subscribe button in Checkout, informing you of a new purchase.)
         if event['type'] == 'checkout.session.completed':
+            with open("/home/cloud-user/test/checkout_session_completed.txt", "w") as file:
+                file.write(str(event))
             checkout_id = event["data"]["id"]
 
             # TODO: generalisation for later:
@@ -1847,15 +1849,16 @@ def stripe_webhook():
 
         # B. Handle paid invoice 
         elif event['type'] == 'invoice.paid':
+            with open("/home/cloud-user/test/invoice_paid.txt", "w") as file:
+                file.write(str(event))
             # TODO: generalisation for later:
             # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
             # product_class = products.getProductlassFromStripeId(stripe_product_id)
             product_class = "channel_subscription"
-            stripe_product_id = event["data"]["lines"]["data"]["price"]
 
             #  Update subscription into active
-            if product_class == "channel_subscription"
-                stripe_subscription_id = event["type"]["data"]["subscription"]
+            if product_class == "channel_subscription":
+                stripe_subscription_id = event["data"]["object"]["subscription"]
 
                 channelSubscriptions.updateSubscriptionStatus(
                     stripe_subscription_id=stripe_subscription_id, status="active"
@@ -1865,8 +1868,17 @@ def stripe_webhook():
         #  - Cancelled subscriptions
         # (Stripe: "Sent each billing interval if there is an issue with your customer’s payment method.")
         elif event['type'] == "customer.subscription.updated":
-            stripe_subscription_id = event["data"]["subscription"]
-            subscription_status = event["type"]["data"]
+            with open("/home/cloud-user/test/customer_subscription_updated.txt", "w") as file:
+                file.write(str(event))
+
+            stripe_subscription_id = event["data"]["object"]["id"]
+            subscription_status = event["data"]["object"]["status"]
+
+            with open("/home/cloud-user/test/customer_subscription_updated1.txt", "w") as file:
+                file.write(str(stripe_subscription_id))
+
+            with open("/home/cloud-user/test/customer_subscription_updated2.txt", "w") as file:
+                file.write(str(subscription_status))
 
             if subscription_status == "active":
                 channelSubscriptions.updateSubscriptionStatus(

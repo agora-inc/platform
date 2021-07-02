@@ -1015,6 +1015,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
 
                                 <CheckoutPaymentButton
+                                  userId={this.state.user!.id}
                                   productId={1}
                                   quantity={1}
                                   text={"994./mois"}
