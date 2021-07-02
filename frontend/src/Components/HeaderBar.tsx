@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import { Box, Text, Button, Heading, Grommet, TextInput } from "grommet";
+import { Box, Text, Layer, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 
 import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
-
-
 import { Link } from "react-router-dom";
 import UserManager from "./Account/UserManager";
 import FormContainer from "./Homepage/FormContainer";
@@ -24,7 +22,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
     this.state = {
       showLogin:
         new URL(window.location.href).searchParams.get("showLogin") === "true",
-    };
+      };
   }
 
   componentDidUpdate(prevProps: RouteComponentProps) {
@@ -135,6 +133,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             <UserManager showLogin={this.state.showLogin} />
           </MediaQuery> 
           </Box>
+
         </Box>
       );
     } else {

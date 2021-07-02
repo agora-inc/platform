@@ -16,6 +16,7 @@ import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
+import DonorButton from "../Pricing/DonorButton"
 
 
 
@@ -395,6 +396,10 @@ export default class UserManager extends Component<Props, State> {
 
   loggedInStuff = (username: string) => {
     return (
+      <>
+      <Box margin={{right:"43px"}}>
+        <DonorButton callback={()=>{}}/>
+      </Box>
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
@@ -413,7 +418,7 @@ export default class UserManager extends Component<Props, State> {
           focusIndicator={false}
           onClick={this.toggleDropdown}
         >
-          <Box direction="row">
+          <Box direction="row" gap="small">
             <Text size="14px" margin={{right: "15px", top: "3.43px"}} color="grey">
               {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
               <b>{this.state.user?.username}!</b>
@@ -422,11 +427,13 @@ export default class UserManager extends Component<Props, State> {
           </Box>
         </Button>
       </Dropdown>
+      </>
     );
   };
 
   loggedOutStuff = (
     <Box direction="row" align="center" justify="center" gap="xsmall">
+      <DonorButton callback={()=>{}}/>
       <LoginModal
         open={this.props.showLogin}
         callback={() => {
