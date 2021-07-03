@@ -274,7 +274,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_6_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Handle the registration without pain
+                  A couple clicks to handle all registrations
                 </Text>
                 <Text size="18px">
                   As an organizer, you can decide to automatically accept certains group of people <b> everyone, only verified academics, only people from your institution, etc. </b>
@@ -316,7 +316,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "150px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-                Benefit from our streaming technology sculpted for academic seminars
+                No more switching between tools!
               </Text>
             </Box>
 
@@ -357,7 +357,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_5_text">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom:"20px"}}>
-                  Use the new <img src={agoraLogo} height={"18px"}/> streaming tool!
+                  Streaming technology made by academics for academics
                 </Text>
                 <Text size="18px">
                   We built an in-house streaming technology sculpted for online and hybrid academic seminars:

@@ -48,7 +48,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         >
           <Box alignSelf="center" fill={true} pad="20px" >
             <Text size="16px" color="black" weight="bold" >
-              Empower your research group!
+              Empower your community!
             </Text>
           </Box>
           <Box pad="32px" alignSelf="center">
@@ -59,7 +59,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       {this.props.headerTitle && (
         <Box align="start" margin={{bottom: "40px"}} >
           <Text size="32px" weight="bold" color="color1"> 
-            Empower your research group!
+            Empower your community now!
           </Text>
         </Box>
       )}
@@ -123,7 +123,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
             <TableRow style={{alignSelf: "center"}}>
               <TableCell scope="row">
-                <Text weight="bold" size="14px"> Automatized regstration </Text>
+                <Text weight="bold" size="14px"> Automatized registration </Text>
               </TableCell>
               <TableCell scope="row">
                 <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
