@@ -6,7 +6,9 @@
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from app.databases import agora_db
+from payment.apis import StripeApi 
 
+stripeApi = StripeApi()
 mail_sys = sendgridApi()
 
 class ChannelSubscriptionRepository:
@@ -20,6 +22,53 @@ class ChannelSubscriptionRepository:
         # self.institutions = InstitutionRepository(db=self.db)
         # self.email_reminders = EmailRemindersRepository(db=self.db)
 
+
+    def getActiveSubscriptionId(self, channel_id, product_id):
+        get_query = f'''SELECT * FROM ChannelSubscriptions
+                    WHERE status="active"
+                        AND channel_id = {channel_id}
+                        AND product_id = {product_id};
+        '''
+        return self.db.run_query(get_query)
+
+    def getActiveSubscriptions(self, channelId):
+        get_query = f'''SELECT * FROM ChannelSubscriptions
+                    WHERE status="active";
+        '''
+        return self.db.run_query(get_query)
+        
+    def updateSubscriptionStatus(self, status, channel_subscription_id=None, stripe_subscription_id=None):
+        try:
+            if stripe_subscription_id is not None:
+                update_query = f'''
+                    UPDATE ChannelSubscriptions
+                    SET status="{status}"
+                    WHERE stripe_subscription_id = "{stripe_subscription_id}";                    ;
+                '''
+                self.db.run_query(update_query)
+                return "ok"
+            elif channel_subscription_id is not None:
+                update_query = f'''
+                    UPDATE ChannelSubscriptions
+                    SET status="{status}""
+                    WHERE id = {channel_subscription_id};
+                '''
+                self.db.run_query(update_query)
+                return "ok"
+        except Exception as e:
+            return str(e)
+
+    def cancelSubscription(self, subscription_id):
+        try: 
+            stop_query = f'''
+                UPDATE ChannelSubscriptions
+                SET status = "interrupted"
+                WHERE subscription_id = {subscription_id};
+            '''
+            self.db.run_query(stop_query)
+            return "ok"
+        except Exception as e:
+            return str(e)
 
     ################################
     # Backend Stripe only methods  #
@@ -61,8 +110,8 @@ class ChannelSubscriptionRepository:
         update_query = f'''
             UPDATE ChannelSubscriptions
                 SET stripe_subscription_id="{stripe_subscription_id}"
-            WHERE checkout_id={checkout_id};
-            '''
+            WHERE stripe_checkout_id="{checkout_id}";'''
+
         self.db.run_query(update_query)
         
         return "ok"
@@ -83,81 +132,6 @@ class ChannelSubscriptionRepository:
         except Exception as e:
             return "e"
 
-    def getChannelSubscriptionFromCheckoutId(self, checkoutId):
-        query = f'''
-            SELECT * FROM ChannelSubscriptions
-            WHERE stripe_checkout_id = {checkoutId};
-        '''
-        try:
-            return self.db.run_query(query)
-        except Exception as e:
-            return "e"
-
-    def getActiveSubscription(self, channelId):
-        # return [{"subscription": "product", "status": "sdjf"}]
+    def _delete_checkout_entries(self):
+        # check if 
         pass
-
-    def updateSubscriptionStatus(self, status, channel_subscription_id=None, stripe_subscription_id=None):
-        if stripe_subscription_id is not None:
-            try: 
-                update_query = f'''
-                    UPDATE ChannelSubscriptions
-                    SET status={status}
-                    WHERE (
-                        stripe_subscription_id = {stripe_subscription_id}
-                        )
-                    ;
-                '''
-                self.db.run_query(update_query)
-
-                if status == "active":
-                    delete_past_checkout_queries_for_product = f'''
-                        DELETE FROM ChannelSubscriptions
-                        WHERE 
-                            product_id IN (
-                                SELECT product_id FROM ChannelSubscriptions
-                                WHERE (status='active' 
-                                    AND stripe_subscription_id = {stripe_subscription_id})
-                                )
-                            AND status='checkout';
-                    '''
-
-
-                with open("/home/cloud-user/test/delete_sql_query.txt", "w") as file:
-                    file.write(delete_past_checkout_queries_for_product)
-
-
-                self.db.run_query(delete_past_checkout_queries_for_product)
-
-                return "ok"
-            except Exception as e:
-                return str(e)
-        elif channel_subscription_id is not None:
-            update_query = f'''
-                UPDATE ChannelSubscriptions
-                SET status={status}
-                WHERE (
-                    id = {channel_subscription_id}
-                    )
-                ;
-            '''
-            try: 
-                self.db.run_query(update_query)
-                return "ok"
-            except Exception as e:
-                return str(e)
-
-    def stopSubscription(self, channel_id):
-        stop_query = f'''
-            UPDATE ChannelSubscriptions
-            SET status = "interrupted"
-            WHERE (
-                channel_id = {channel_id}
-                )
-            ;
-        '''
-        try: 
-            self.db.run_query(stop_query)
-            return "ok"
-        except Exception as e:
-            return str(e)

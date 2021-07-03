@@ -320,33 +320,6 @@ def getInvitedMembersForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(invitations.getInvitedMembersEmails(channelId))
 
-########## Mailing list methods #############
-
-@app.route('/channels/mailinglist/add', methods=["POST", "OPTIONS"])
-def addToMailingList():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-        
-    # if not checkAuth(request.headers.get('Authorization')):
-    #     return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    params = request.json
-
-    return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
-
-@app.route('/channels/mailinglist', methods=["GET", "OPTIONS"])
-def getMailingList():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    channelId = int(request.args.get("channelId"))
-    return jsonify(mailinglist.getMailingList(channelId))
-
-############################################
-
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():
     if request.method == "OPTIONS":
@@ -681,6 +654,29 @@ def getChannelsWithTopic():
     offset = int(request.args.get("offset"))
     return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
 
+# --------------------------------------------
+# x mailing list methods
+# --------------------------------------------
+@app.route('/channels/mailinglist/add', methods=["POST", "OPTIONS"])
+def addToMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
+    params = request.json
+
+    return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
+
+@app.route('/channels/mailinglist', methods=["GET", "OPTIONS"])
+def getMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(mailinglist.getMailingList(channelId))
 
 # --------------------------------------------
 # x Membership ROUTES
@@ -1591,8 +1587,6 @@ def channelLinkRedirect():
 # --------------------------------------------
 @app.route('/products/streaming', methods=["GET"])
 def getStreamingProductById():
-    with open("/home/cloud-user/test/tieri_enri1.txt", "w") as file:
-            file.write("in")
     err = ""
     try:
         product_id = request.args.get("productId")
@@ -1678,39 +1672,48 @@ def getMaxAudienceForCreditForTalk():
         return jsonify(str(e))
 
 # --------------------------------------------
-# PAYMENTS & SUBSCRIPTIONS
+# SUBSCRIPTIONS
 # --------------------------------------------
-# @app.route('/payment/initiated', methods=["POST"])
-# def handleInitiatedTransaction():
-#     if request.method == "OPTIONS":
-#         return jsonify("ok")
+@app.route('/subscriptions/channel', methods=["GET"])
+def getActiveSubscriptionForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        product_id = request.args.get("productId")
 
-#     params = request.json
-#     product_id = request.args.get("productId")
-#     user_id = request.args.get("userId")
-#     checkout_session = params["checkoutSession"]
-#     data =  params["data"]
+        return jsonify(channelSubscriptions.getActiveSubscriptionId(channel_id, talk_id))
+    except Exception as e:
+        return jsonify(str(e))
 
-#     product_class = "channel_subscription"
-#     # TODO: generalisation for later:
-#     # product_class = products.getClass(product_id)
+@app.route('/subscriptions/channel/all', methods=["GET"])
+def getAllActiveSubscriptionsForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        return jsonify(channelSubscriptions.getActiveSubscriptions(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
 
-#     # A. If StreamingSubscription, add a line in DB
-#     if product_class == "channel_subscription"
-#     res = channelSubscriptions.handleInitiatedSubscription(
-#         product_id,
-#         user_id,
-#         checkout_session,
-#         data["channelId"]
-#     )
+@app.route('/subscriptions/channel/cancel', methods=["GET"])
+def cancelSubscriptionForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        product_id = request.args.get("productId")
 
-#     # B. Other products
-#     else:
-#         raise NotImplementedError
-#     # TODO: If credits, get data["quantity"] (Remy)
+        # get subscription_id
+        subscription_id = channelSubscription.getActiveSubscriptionId(channel_id, product_id)
 
-#     return "ok"
+        # set stop subscription date in stripe
+        paymentsApi.stopSubscriptionRenewal(subscription_id)
 
+        # status to "interrupted" in DB 
+        channelSubscriptions.interruptSubscription(subscription_id)
+        
+        return "ok"
+    except Exception as e:
+        return jsonify(str(e))
+
+# --------------------------------------------
+# PAYMENTS
+# --------------------------------------------
 @app.route('/payment/create-checkout-session', methods=["GET"])
 def getStripeSessionForProduct():
     product_id = request.args.get("productId")
@@ -1747,10 +1750,9 @@ def getStripeSessionForProduct():
             return jsonify(res)
     except Exception as e:
         return jsonify(str(e))
-        
 
 # NOTE: handling of responses Stripe after checkouts and invoices
-@app.route('/stripe_webhook', methods=['POST'])
+@app.route('/payment/stripe_webhook', methods=['POST'])
 def stripe_webhook():
     '''
     Hack to handle events easily: https://codenebula.io/stripe/node.js/2019/05/02/using-stripe-webhooks-to-handle-failed-subscription-payments-node-js/
@@ -1790,13 +1792,15 @@ def stripe_webhook():
     Handling:
         - 'checkout.session.completed' (1)
         - 'invoice.paid' (2)
-        - 'customer.subscription.updated' (4, 5, 6)
+        - 'customer.subscription.updated' (4, 5)
+        - 'customer.subscription.deleted' (6)
     
     NOTE: we do not track payments internally (see dashboard Stripe for that)
     '''
+    # Request too big (protection mechanism; Remy)
     if request.content_length > 1024 * 1024:
-        print('REQUEST TOO BIG')
         abort(400)
+
     payload = request.get_data()
     sig_header = request.environ.get('HTTP_STRIPE_SIGNATURE')
 
@@ -1804,53 +1808,28 @@ def stripe_webhook():
         # Handling of all the responses
         event = paymentsApi._construct_stripe_event_from_raw(payload, sig_header)
 
-        # NOTE: for workflow for all subscription events, 
-        # see https://stripe.com/docs/billing/subscriptions/overview#subscription-events) 
-
         # A. Handle successful checkout sessions (Sent when a customer clicks the Pay or Subscribe button in Checkout, informing you of a new purchase.)
         if event['type'] == 'checkout.session.completed':
-            with open("/home/cloud-user/test/checkout_session_completed.txt", "w") as file:
-                file.write(str(event))
-            checkout_id = event["data"]["id"]
+            checkout_id = event["data"]["object"]["id"]
 
             # TODO: generalisation for later:
             # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
             # product_class = products.getProductlassFromStripeId(stripe_product_id)
             product_class = "channel_subscription"
 
-            # 1. If StreamingSubscription, add a line in DB and add customer in PaymentHistory
+            # 1. If StreamingSubscription: add a line in DB and add customer in PaymentHistory
             if product_class == "channel_subscription":
-                stripe_subscription_id = event["data"]["subscription"]
+                stripe_subscription_id = event["data"]["object"]["subscription"]
                 channelSubscriptions._addStripeSubscriptionId(
                     checkout_id,
                     stripe_subscription_id
                 )
-                
-                # Add pending payment
-                # data = channelSubscriptions.getSubscriptionFromCheckoutId(checkout_id)[0]
-                # channel_subscription_id = data["subscription"]
-                # hosted_invoice_url = data["hosted_invoice_url"]
-                # user_id = data["user_id"]
-                # stripe_customer_id = event["data"]["customer_id"]
-                # customer_email = event["data"]["customer_email"]
-                # payment_status = event["data"]["payment_status"]
-                # paymentHistory.addPendingPayment(
-                #     user_id,
-                #     stripe_customer_id, 
-                #     customer_email,
-                #     hosted_invoice_url, 
-                #     payment_status
-                #     channel_subscription_id, 
-                # )
-
-            # 2. If credits, not implemented.
+            # 2. If credits
             else:
                 return NotImplementedError
 
         # B. Handle paid invoice 
         elif event['type'] == 'invoice.paid':
-            with open("/home/cloud-user/test/invoice_paid.txt", "w") as file:
-                file.write(str(event))
             # TODO: generalisation for later:
             # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
             # product_class = products.getProductlassFromStripeId(stripe_product_id)
@@ -1864,21 +1843,11 @@ def stripe_webhook():
                     stripe_subscription_id=stripe_subscription_id, status="active"
                 )
 
-        # C. Subscriptions that are changed into cancelled (Stripe dashboard: after 30 days unpaid. https://dashboard.stripe.com/settings/billing/automatic)
-        #  - Cancelled subscriptions
+        # C. Changes of status of subscription
         # (Stripe: "Sent each billing interval if there is an issue with your customer’s payment method.")
         elif event['type'] == "customer.subscription.updated":
-            with open("/home/cloud-user/test/customer_subscription_updated.txt", "w") as file:
-                file.write(str(event))
-
             stripe_subscription_id = event["data"]["object"]["id"]
             subscription_status = event["data"]["object"]["status"]
-
-            with open("/home/cloud-user/test/customer_subscription_updated1.txt", "w") as file:
-                file.write(str(stripe_subscription_id))
-
-            with open("/home/cloud-user/test/customer_subscription_updated2.txt", "w") as file:
-                file.write(str(subscription_status))
 
             if subscription_status == "active":
                 channelSubscriptions.updateSubscriptionStatus(
@@ -1891,12 +1860,20 @@ def stripe_webhook():
 
             elif subscription_status == "cancelled":
                 channelSubscriptions.updateSubscriptionStatus(
-                    stripe_subscription_id=stripe_subscription_id, status="cancelled"
-                )
+                    stripe_subscription_id=stripe_subscription_id, 
+                    status="cancelled"
+                    )
+
+        # C. Subscriptions that are changed into cancelled (Stripe dashboard: after 30 days unpaid. https://dashboard.stripe.com/settings/billing/automatic)
+        #  - Cancelled subscriptions
+        elif event['type'] == "customer.subscription.deleted":
+            stripe_subscription_id = event["data"]["object"]["id"]
+
+            channelSubscriptions.updateSubscriptionStatus(
+                stripe_subscription_id=stripe_subscription_id, status="cancelled"
+            )
 
         return {}
 
     except Exception as e:
-        with open("/home/cloud-user/test/zizouErr1.txt", "w") as file:
-            file.write(str(e))
         return {}, 400
