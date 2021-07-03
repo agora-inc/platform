@@ -354,6 +354,7 @@ export default class EditTalkModal extends Component<Props, State> {
       const dateTimeStrs = this.combineDateAndTimeStrings();
       var encryptedUrl = UrlEncryption.encryptIdAndRoleInUrl("livestream", talk.id)
       TalkService.editTalk(
+        talk.channel_id,
         talk.id,
         this.escapeSingleQuotes(this.state.title),
         this.escapeSingleQuotes(this.state.description),
@@ -369,7 +370,30 @@ export default class EditTalkModal extends Component<Props, State> {
         this.state.talkSpeakerURL,
         this.state.published,
         this.state.audienceLevel,
-        () => {}
+        this.state.autoAcceptGroup,
+        // this.state.autoAcceptCustomInstitutions,
+        // this.state.customInstitutionsIds,
+        false, 
+        [],
+        this.state.reminders,
+        this.state.reminderEmailGroup, 
+        (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
+          this.setState(
+            {
+              loading: false,
+            },
+            () => {
+              this.props.onFinishedCallback();
+            }
+          );
+          this.onEditStreamingLinkCallback(talk)
+        }
       );
     }
   }
@@ -872,11 +896,34 @@ export default class EditTalkModal extends Component<Props, State> {
               </ReactTooltip> 
             </Box>
 
-            <TextInput
-              value={this.state.link}
-              placeholder="https://zoom.us/1234"
-              onChange={(e) => this.setState({ link: e.target.value })}
-            />
+            {this.state.link !== '_agora.stream_tech' && ( 
+              <TextInput
+                value={this.state.link}
+                placeholder="https://zoom.us/1234"
+                onChange={(e) => this.setState({ link: e.target.value })}
+              />
+            )}
+            {this.state.link === '_agora.stream_tech' && ( 
+              <Box
+                height="40px"
+                round="3px"
+                pad="small"
+                justify="center"
+                style={{border: "1px solid #BBBBBB"}}
+              >
+
+              <Text size="13px" weight="bold" color="#CCCCCC">
+                The link will be sent to you via email.
+              </Text>
+              
+              </Box>
+            )}
+
+            <CheckBox 
+              checked={this.state.link == '_agora.stream_tech'} 
+              label={'Host on Agora.stream'} 
+              onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}
+            /> 
 
             <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
               <Text size="13px" weight="bold"> Registration required? </Text>
@@ -1300,7 +1347,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 <CheckBox 
                   checked={this.state.link == '_agora.stream_tech'} 
                   label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
-                  onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}/>
+                onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}/> 
 
                   <Text
                     size="14px" 

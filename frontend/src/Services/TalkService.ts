@@ -2,6 +2,7 @@ import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
 import { Reminder } from "../Components/Talks/EditTalkModal";
+import { Reminder } from "../Components/Talks/EditTalkModal";
 
 const getTalkById = (talkId: number, callback: any) => {
   get(`talk/info?id=${talkId}`, callback);
