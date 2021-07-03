@@ -437,19 +437,16 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             )}
           </Box>
         </Box>
-        {
           
-          <Box margin={{ top: "10px", bottom: "20px" }}>
           {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
           {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-          {this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>}
+          {/* this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text> */}
           
-          <SlidesUploader
+          {/*<SlidesUploader
             text="Upload slide"
             onUpload={this.onSlideUpload}
-            />
-          </Box>
-        }
+          />*/}
+
         {this.props.admin && (
           <Box
             onClick={() => {

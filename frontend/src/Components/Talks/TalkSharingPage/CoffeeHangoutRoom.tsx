@@ -51,24 +51,23 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
         return (
             <>
                 {/* {!this.cafeteriaPermanentlyClosed() || ( */}
-                    <Box align="center" background="#BAD6DB" margin={{top:"20px"}}>
-                        <Text size="21px" weight="bold" margin={{top:"20px", bottom: "10px"}}>
-                            {/* Waiting for the start or looking to mingle after the seminar? Grab an e-coffee with other the other participants! */}
-                            {/* Want to grab a pre/post seminar coffee and have chat with the seminar participants and speakers? */}
-                            Grab a pre/post seminar coffee!
+                <Box align="center" margin={{top:"100px"}}>
+                    <Box direction="row" gap="30px" align="center"> 
+                        <Text size="18px" weight="bold" margin={{top:"20px", bottom: "10px"}}>
+                            Meet the participants in the coffee room after the seminar!
                         </Text>
                         <CoffeeHangoutButton
                             talk={this.props.talk}
                             user={this.props.user}
                         />
-                        <video 
-                            autoPlay loop muted
-                            style={{ height: "auto", width: "90%", marginTop: "10px", marginBottom: "10px"}}
-                            >
-                            <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
-                        </video>
                     </Box>
-                {/* )} */}
+                    <video 
+                        autoPlay loop muted
+                        style={{ height: "auto", width: "90%", marginTop: "10px", marginBottom: "10px"}}
+                        >
+                        <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+                    </video>
+                </Box>
             </>
         )
     }
