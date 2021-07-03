@@ -1,6 +1,9 @@
 import random
 import logging
 from repository.ChannelRepository import ChannelRepository
+from mailing.sendgridApi import sendgridApi
+from app.databases import agora_db
+mail_sys = sendgridApi()
 
 # for emails
 from flask_mail import Message
@@ -8,7 +11,7 @@ from flask import render_template
 
 
 class InvitedUsersRepository:
-    def __init__(self, db, mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.mail_sys = mail_sys
         self.channels = ChannelRepository(db=db)

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image, Grid } from "grommet";
+import { Box, Text, TextArea, Image, Grid, Layer } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -18,15 +18,18 @@ import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
+import PricingPlans from "../Views/PricingPlans";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, 
+  MailOption, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import EmailsTab from "./ManageChannelPage/EmailsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
@@ -72,6 +75,7 @@ interface State {
   saveButtonFade: boolean;
   topicId: number;
   field: string;
+  showModalPricing: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -111,6 +115,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       saveButtonFade: false,
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
+      showModalPricing: false,
     };
   }
 
@@ -472,6 +477,10 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  toggleModalPricing = () => {
+    this.setState({ showModalPricing: !this.state.showModalPricing });
+  };
+
   SavedButtonClicked = () => {
     this.setState({ topicSaved: true });
     this.setState({ saveButtonFade: true});
@@ -713,24 +722,65 @@ export default class ManageChannelPage extends Component<Props, State> {
               )}
               {this.banner()}
 
-
-              <Box margin={{ top: "10px", bottom: "20px" }}>
+              <Box direction="row" align="start"  margin={{ top: "10px", bottom: "10px" }}>
                 <Text
-                    size="24px"
-                    weight="bold"
-                    color="black"
-                    margin={{ top: "10px", bottom: "10px" }}
-                  >
-                    {<UserAdmin />} {`Administrator panel`}{" "}
+                  size="24px"
+                  weight="bold"
+                  color="black"
+                  style={{width: "69vw"}}
+                >
+                  {<UserAdmin />} {`Administrator panel`}{" "}
+                </Text>
+
+                {/* <Box
+                  onClick={this.toggleModalPricing}
+                  background="#0C385B"
+                  round="xsmall"
+                  pad="xsmall"
+                  width="160px"
+                  height="40px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator="#6DA3C7"
+                >
+                  <Text size="14px" weight="bold"> Pricing options </Text>
+                </Box> */}
+              </Box>
+
+              {this.state.showModalPricing && (
+                <Layer
+                  onEsc={this.toggleModalPricing}
+                  onClickOutside={this.toggleModalPricing}
+                  modal
+                  responsive
+                  animation="fadeIn"
+                  style={{
+                    width: "1000px",
+                    height: "65%",
+                    borderRadius: 15,
+                    padding: 0,
+                  }}
+                >
+                  <PricingPlans 
+                    callback={this.toggleModalPricing}
+                    showDemo={true}
+                    headerTitle={false} 
+                  />
+
+                </Layer>
+              )}
+              
+
+
+              <Text size="14" margin={{ bottom: "20px" }}>
+                For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="color1">
+                  <Text color="color1" weight="bold" size="14px">
+                  getting-started page.
                   </Text>
-                  <Text size="14">
-                    For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="color1">
-                      <Text color="color1" weight="bold" size="14px">
-                      getting-started page.
-                      </Text>
-                    </Link>
-                    </Text>
-                </Box>
+                </Link>
+              </Text>
+              
 
 
               <Tabs>
@@ -744,6 +794,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Tab>
                   <Tab>
+                  <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <MailOption />
+                      <Text size="14px"> 
+                        Mailing list 
+                      </Text>
+                    </Box>
+                    
+                  </Tab>
+                  <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <Group />
                       <Text size="14px"> 
@@ -751,14 +811,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
-                  {/*<Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <MailOption />
-                      <Text size="24px"> 
-                        Mailing list 
-                      </Text>
-                    </Box>
-                  </Tab>*/}
+
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <Resources />
@@ -768,6 +821,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Tab>
                   <Tab>
+                    <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <DocumentText />
                       <Text size="14px"> 
@@ -934,6 +988,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
 
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                  <EmailsTab channelId={channel!.id} />
+                </TabPanel>
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="column">

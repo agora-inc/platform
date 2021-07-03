@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, DataTable, Text } from "grommet";
+import { Box, DataTable, Text, CheckBox, TextInput, Grommet } from "grommet";
 import { TalkService } from "../../Services/TalkService";
 import ReactTooltip from "react-tooltip";
 import { StatusInfo } from "grommet-icons";
@@ -24,6 +24,7 @@ const columns: any[] = [
   },
 ];
 
+
 type Registration = {
   id: number;
   talk_id: number;
@@ -46,6 +47,8 @@ interface State {
   acceptedRegistrationList: Registration[],
   refusedRegistrationList: Registration[]
   itemDetail?: Registration,
+  autoRegistration: string;
+  acceptedDomains: string[];
 }
 
 export default class RegistrationsTab extends Component<Props, State> {
@@ -55,7 +58,9 @@ export default class RegistrationsTab extends Component<Props, State> {
       allRegistrationList: [],
       pendingRegistrationList: [],
       acceptedRegistrationList: [],
-      refusedRegistrationList: []
+      refusedRegistrationList: [],
+      autoRegistration: "Everybody",
+      acceptedDomains: [],
     };
     this.fetchData();
   }
@@ -80,6 +85,18 @@ export default class RegistrationsTab extends Component<Props, State> {
   handleClickRow = (ev: any) => {
     let item: Registration = ev.datum;
     this.setState({ itemDetail: item });
+  }
+
+  handleCheckBox = (name: string) => {
+    this.setState({
+      autoRegistration: name
+    });
+  };
+
+  parseList = (e: any) => {
+    this.setState({
+      acceptedDomains: e.target.value.split(',')
+    });
   }
 
   accept = () => {
@@ -129,11 +146,66 @@ export default class RegistrationsTab extends Component<Props, State> {
     const item = this.state.itemDetail!;
     const showItem = !!this.state.itemDetail;
 
-    // console.log("item", item);
+    var auto_accept = "Select the default option for automatically accepting people to your seminars </br></br>" +
+    "The accepted people will receive two emails: <br/>" + 
+    "- One <b> straight after acceptation </b> with all the event details except the link <br/>" +
+    "- One <b>24 hours before the event</b> to share the streaming URL. <br/><br/>" +
+    "If URL not available, the email is sent as soon as URL is added to event. ";
 
+    var reg_details = "Accepting a registration will send two emails to the applicant: <br/>" +  
+    "- One <b>now</b> with all the event details except the link <br/>" + 
+    "- One <b>24 hours before the event</b> to share the streaming URL. <br/><br/>" + 
+    "If URL not available, the email is sent as soon as URL is added to event. ";
+
+    var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
+    "Example: ox.ac.uk, cam.ac.uk"
 
     return (
       <Box direction="column">
+        {/* <Box margin={{bottom: "60px"}} gap="15px">
+          <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
+            <Text size="16px" weight="bold" color="black"> 
+              Automatic registration 
+            </Text>
+            <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={auto_accept} data-for='automatic-registration'/>
+            <ReactTooltip id='automatic-registration' place="right" effect="solid" html={true}/>
+          </Box>
+
+          <CheckBox
+            name="feature"
+            label="Everyone"
+            checked={this.state.autoRegistration == "Everybody"}
+            onChange={() => this.handleCheckBox("Everybody")}
+          />
+          <CheckBox
+            name="bug"
+            label="Only academics"
+            checked={this.state.autoRegistration == "Academics"}
+            onChange={() => this.handleCheckBox("Academics")}
+          />
+          
+          <Box direction="row" gap="0px"> 
+            <CheckBox
+              id="checkbox-domains"
+              name="bug"
+              label="Only emails ending by: "
+              checked={this.state.autoRegistration == "domains"}
+              onChange={() => this.handleCheckBox("domains")}
+            />
+            <StatusInfo style={{marginTop: "14px", marginRight: "10px"}} size="small" data-tip={domains_list} data-for='domains_list'/>
+            <ReactTooltip id='domains_list' place="bottom" effect="solid" html={true} />
+            <TextInput
+              placeholder="List of domains"
+              value={this.state.acceptedDomains.join(',')}
+              onChange={(e: any) => e ? this.parseList(e) : ""}
+              style={{width: "200px"}}
+            />
+
+
+          </Box>
+
+        </Box> */}
+
         {(!showItem && (this.state.pendingRegistrationList.length == 0)) &&
             (<Text size="14px">No pending applications.</Text>
         )}
@@ -142,13 +214,11 @@ export default class RegistrationsTab extends Component<Props, State> {
           (
           <>
           <Box direction="row" gap="small" margin={{ bottom: "12px" }}>
-            <Text size="14px" weight="bold" color="black">
-              Registration details
+            <Text size="16px" weight="bold" color="black">
+              Manual registration
             </Text>
-            <StatusInfo size="small" data-tip data-for='reg_details_info'/>
-                      <ReactTooltip id='reg_details_info' place="right" effect="solid">
-                       <p>Accepting a registration will send two emails to the applicant: one <b>now</b> to acknowledge acceptation; another one <b>24 hours before the event</b> to share the streaming URL (if URL not available, email sent as soon as URL is added to event). </p>
-                      </ReactTooltip>
+            <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={reg_details} data-for='reg_details_info'/>
+            <ReactTooltip id='reg_details_info' place="right" effect="solid" html={true} />
           </Box>
           <Box direction="row" 
             width="60%"
@@ -158,7 +228,7 @@ export default class RegistrationsTab extends Component<Props, State> {
             style={{ minHeight: "140px" }}
           >
             {(!showItem && (this.state.pendingRegistrationList.length > 0)) &&
-                (<Text size="14px"> Manage seminar registrations by selecting an item from the pending registration list.</Text>
+                (<Text size="14px" color="grey" style={{fontStyle: "italic"}}> Select an item from the pending registration list.</Text>
             )}
 
             {showItem &&
@@ -199,13 +269,13 @@ export default class RegistrationsTab extends Component<Props, State> {
           </Box>
           </>)}
         <Box direction="row" gap="small" margin={{ top: "24px", bottom: "12px" }}>
-          <Text size="14px" weight="bold" color="black">
+          <Text size="14px" weight="bold" color="grey">
             Pending registrations
           </Text>
-          <StatusInfo size="small" data-tip data-for='pending_reg_info'/>
-                      <ReactTooltip id='pending_reg_info' place="right" effect="solid">
-                       <p>Registrations for incoming events only is displayed </p>
-                      </ReactTooltip>
+          <StatusInfo style={{marginTop: "3px"}} size="small" data-tip data-for='pending_reg_info'/>
+          <ReactTooltip id='pending_reg_info' place="right" effect="solid">
+            <p>Registrations for incoming events only is displayed </p>
+          </ReactTooltip>
         </Box>
         <DataTable
           columns={columns}
@@ -218,7 +288,7 @@ export default class RegistrationsTab extends Component<Props, State> {
         {(this.state.acceptedRegistrationList.length > 0) && (
           <>
           <Box direction="row" gap="small" margin={{ top: "45px", bottom: "12px" }}>
-            <Text size="14px" weight="bold" color="black" style={{fontStyle: "italic"}}>
+            <Text size="14px" weight="bold" color="grey" style={{fontStyle: "italic"}}>
               Accepted registrations
             </Text>
           </Box>
@@ -234,7 +304,7 @@ export default class RegistrationsTab extends Component<Props, State> {
         {(this.state.refusedRegistrationList.length > 0) && (
         <>
           <Box direction="row" gap="small" margin={{ top: "45px", bottom: "12px" }}>
-            <Text size="14px" weight="bold" color="black" style={{fontStyle: "italic"}}>
+            <Text size="14px" weight="bold" color="grey" style={{fontStyle: "italic"}}>
               Refused registrations
             </Text>
           </Box>

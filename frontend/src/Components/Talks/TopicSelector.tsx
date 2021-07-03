@@ -219,7 +219,7 @@ export default class TopicSelector extends Component<Props, State> {
           pad={{ vertical: "2px", horizontal: "xsmall" }}
           onClick={this.onAddTopicShown(choice)}
           style={{
-            width: "10%",
+            width: "15%",
             border: "1px solid #C2C2C2",
           }}
           hoverIndicator={true}

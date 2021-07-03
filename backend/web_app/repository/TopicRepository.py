@@ -1,11 +1,12 @@
 import logging
+from app.databases import agora_db
 
 
 class TopicRepository:
     """Manages graph classification of topics in the following MYSQL table:
         -ClassificationGraphNodes: complete list of nodes
     """
-    def __init__(self, db):
+    def __init__(self, db=agora_db):
         self.db = db
 
     def getFieldFromId(self, topicId):
