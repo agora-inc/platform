@@ -732,20 +732,20 @@ export default class ManageChannelPage extends Component<Props, State> {
                   {<UserAdmin />} {`Administrator panel`}{" "}
                 </Text>
 
-              <Box
-                onClick={this.toggleModalPricing}
-                background="#0C385B"
-                round="xsmall"
-                pad="xsmall"
-                width="160px"
-                height="40px"
-                justify="center"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator="#6DA3C7"
-              >
+                {/* <Box
+                  onClick={this.toggleModalPricing}
+                  background="#0C385B"
+                  round="xsmall"
+                  pad="xsmall"
+                  width="160px"
+                  height="40px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator="#6DA3C7"
+                >
                   <Text size="14px" weight="bold"> Pricing options </Text>
-                </Box>
+                </Box> */}
               </Box>
 
               {this.state.showModalPricing && (
