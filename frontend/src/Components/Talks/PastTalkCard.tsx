@@ -212,57 +212,66 @@ export default class PastTalkCard extends Component<Props, State> {
   getButtons = () => {
     if (this.props.admin) {
       return (
-        <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
-          <a
-            href={this.state.recordingLink}
-            target="_blank"
-            style={{ width: "100%" }}
-          >
+        <Box direction="column">  
+          <Box gap="small" direction="row" margin={{ top: "10px", bottom: "10px" }}>
+            <a
+              href={this.state.recordingLink}
+              target="_blank"
+              style={{ width: "35%" }}
+            >
+              <Box
+                background="#0C385B"
+                round="xsmall"
+                height="40px"
+                width="100%"
+                justify="center"
+                align="start"
+                focusIndicator={false}
+                hoverIndicator="#0C385B"
+              >
+                <Text alignSelf="center" size="14px">
+                  Watch talk
+                </Text>
+              </Box>
+            </a>
+            <Box width="30%" />
+            <Box width="35%" height="40px">
+              {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
+              {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
+            
+              <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
+              
+            </Box>
+
+          </Box>
+          <Box gap="small" direction="row" margin={{ bottom: "10px" }}>
             <Box
-              background="#0C385B"
+              onClick={this.onClick}
+              background="white"
               round="xsmall"
-              height="40px"
-              width="50%"
+              height="30px"
+              width="35%"
               justify="center"
               align="start"
               focusIndicator={false}
-              hoverIndicator="#0C385B"
+              hoverIndicator={true}
+              style={{
+                border: "1px solid #C2C2C2",
+              }}
             >
-              <Text alignSelf="center" size="16px">
-                Watch talk
+              <Text alignSelf="center" size="14px" weight="bold">
+                {this.state.showLinkInput
+                  ? "Save link recording"
+                  : "Enter link recording"}
               </Text>
             </Box>
-          </a>
-          <Box margin={{ top: "10px", bottom: "20px" }}>
-            {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
-            {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-            
-            <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
-            
-            <SlidesUploader
-              text="Upload slide"
-              onUpload={this.onSlideUpload}
+            <Box width="30%" />
+            <Box width="35%" height="30px">
+              <SlidesUploader
+                text="Upload slides"
+                onUpload={this.onSlideUpload}
               />
-          </Box>
-          <Box
-            onClick={this.onClick}
-            background="white"
-            round="xsmall"
-            height="40px"
-            width="50%"
-            justify="center"
-            align="start"
-            focusIndicator={false}
-            hoverIndicator={true}
-            style={{
-              border: "1px solid #C2C2C2",
-            }}
-          >
-            <Text alignSelf="center" size="16px">
-              {this.state.showLinkInput
-                ? "Save link recording"
-                : "Enter link recording"}
-            </Text>
+            </Box>  
           </Box>
         </Box>
       );
@@ -290,37 +299,14 @@ export default class PastTalkCard extends Component<Props, State> {
             </Box>
           </a>
 
-          <Box margin={{ top: "10px", bottom: "20px" }}>
+          <Box width="50%" height="40px">
             {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
             {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
             
             <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
             
-            <SlidesUploader
-              text="Upload slide"
-              onUpload={this.onSlideUpload}
-              />
+
           </Box>
-          {this.props.user && (
-            <Box
-              background="white"
-              round="xsmall"
-              justify="center"
-              align="center"
-              height="40px"
-              width="50%"
-              onClick={this.onSaveTalkClicked}
-              style={{
-                border: "1px solid #C2C2C2",
-              }}
-              focusIndicator={false}
-              hoverIndicator={true}
-            >
-              <Text alignSelf="center" color="grey" size="14px">
-                {this.state.saved ? "Save talk": "Remove from saved"}
-              </Text>
-            </Box>
-          )}
         </Box>
       );
     } else {
@@ -487,8 +473,8 @@ export default class PastTalkCard extends Component<Props, State> {
               style={{
                 width: 640,
                 height:
-                  this.state.showLinkInput
-                    ? 540
+                  this.props.admin
+                    ? (this.state.showLinkInput ? 600 : 560)
                     : 500,
                 borderRadius: 15,
                 overflow: "hidden",
@@ -600,7 +586,8 @@ export default class PastTalkCard extends Component<Props, State> {
                 <Box
                   direction="column"
                   gap="small"
-                  height={this.state.showLinkInput ? "130px" : (this.props.talk.recording_link || this.props.admin ? "100px" : "30px")}
+                  height={this.props.admin ? (this.state.showLinkInput ? "190px" : "130px") : (this.props.talk.recording_link ? "90px" : "30px" ) }
+                  // height={this.state.showLinkInput ? "190px" : (this.props.talk.recording_link || this.props.admin ? "160px" : "90px")}
                 //style={{ minHeight: "90px", maxHeight: "150px" }}
                 >
                   <Box direction="row" gap="small">
@@ -678,7 +665,7 @@ export default class PastTalkCard extends Component<Props, State> {
                   justify="center"
                 >
                   <Text textAlign="center" weight="bold">
-                    {`The recording is only available to ${
+                    {`The recording and slides are only available to ${
                       this.props.talk.visibility === "Followers and members"
                         ? "followers and members"
                         : "members"
@@ -864,7 +851,6 @@ export default class PastTalkCard extends Component<Props, State> {
           //   )}
           // </Layer>
         )}
-        <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
         {this.props.admin && (
           <Box
             onClick={() => {

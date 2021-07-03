@@ -8,24 +8,35 @@ interface Props {
 }
 
 export default class SlidesUploader extends Component<Props> {
+  constructor(props: Props) {
+    super(props);
+  }
   render() {
     return (
-      <Box style={{ position: "relative" }} width={this.props.width}>
+      <Box
+        background="white"
+        round="xsmall"
+        height="30px"
+        width="100%"
+        justify="center"
+        align="center"
+        focusIndicator={false}
+        hoverIndicator={true}
+        style={{
+          border: "1px solid #C2C2C2",
+        }}
+      >
         <input
-            type="file" 
-            name="upload" 
-            id='upload'
-            accept="application/pdf"
-            className="input-hidden"
-            onChange={this.props.onUpload}
-        ></input>
-        <label
-          htmlFor='upload'
-          style={{background: '#7E1115', flexBasis: '100%', padding: '10px', boxShadow: 'none', minWidth: '100px',
-                    color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px', width: this.props.width}}
-        >
-          {this.props.text}
-        </label>
+          width="100%"
+          type="file" 
+          name="upload" 
+          id='upload'
+          accept="application/pdf"
+          className="input-hidden"
+          onChange={this.props.onUpload}
+        />
+         <Text size="14px" weight="bold"> {this.props.text} </Text>
+
       </Box>
     );
   }
