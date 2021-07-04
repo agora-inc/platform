@@ -211,7 +211,7 @@ export default class PastTalkCard extends Component<Props, State> {
 
   getButtons = () => {
     if (this.props.admin) {
-      console.log(this.state.recordingLink)
+      console.log(document.getElementById("upload"))
       return (
         <Box direction="column">  
           <Box gap="small" direction="row" margin={{ top: "10px", bottom: "10px" }}>
@@ -294,42 +294,39 @@ export default class PastTalkCard extends Component<Props, State> {
           </Box>
         </Box>
       );
-    } else if (this.props.talk.recording_link && !this.state.isRecordingLinkHidden) {
+    } else {
       return (
         <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
-          <a
-            href={this.props.talk.recording_link}
-            target="_blank"
-            style={{ width: "100%" }}
-          >
-            <Box
-              background="#0C385B"
-              round="xsmall"
-              height="40px"
-              width="50%"
-              justify="center"
-              align="start"
-              focusIndicator={false}
-              hoverIndicator="#0C385B"
+          {this.props.talk.recording_link && !this.state.isRecordingLinkHidden && (
+            <a
+              href={this.props.talk.recording_link}
+              target="_blank"
+              style={{ width: "35%" }}
             >
-              <Text alignSelf="center" size="14px">
-                Watch talk
-              </Text>
-            </Box>
-          </a>
-
-          <Box width="50%" height="40px">
+              <Box
+                background="#0C385B"
+                round="xsmall"
+                height="40px"
+                width="100%"
+                justify="center"
+                align="start"
+                focusIndicator={false}
+                hoverIndicator="#0C385B"
+              >
+                <Text alignSelf="center" size="14px">
+                  Watch talk
+                </Text>
+              </Box>
+            </a>
+          )}
+          <Box width={this.props.talk.recording_link && !this.state.isRecordingLinkHidden ? "30%" : "65%"} />
+          <Box width="35%" height="40px">
             {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
             {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-            
             <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
-            
-
           </Box>
         </Box>
       );
-    } else {
-      return;
     }
   };
 
@@ -605,7 +602,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 <Box
                   direction="column"
                   gap="small"
-                  height={this.props.admin ? (this.state.showLinkInput ? "190px" : "130px") : (this.props.talk.recording_link ? "90px" : "30px" ) }
+                  height={this.props.admin ? (this.state.showLinkInput ? "190px" : "130px") : "90px" }
                   // height={this.state.showLinkInput ? "190px" : (this.props.talk.recording_link || this.props.admin ? "160px" : "90px")}
                 //style={{ minHeight: "90px", maxHeight: "150px" }}
                 >
