@@ -3,13 +3,19 @@ import { Redirect } from "react-router-dom";
 import { Box, Text, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
+import { Video, VideoService } from "../Services/VideoService";
 import { Stream, StreamService } from "../Services/StreamService";
 import { Talk, TalkService } from "../Services/TalkService";
+import Identicon from "react-identicons";
 import Loading from "../Components/Core/Loading";
 import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
 import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
+import VideoCard from "../Components/Streaming/VideoCard";
+import ChannelLiveNowCard from "../Components/Channel/ChannelLiveNowCard";
 import "../Styles/channel-page.css";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
+import AboutUs from "../Components/Channel/AboutUs";
+import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
@@ -17,9 +23,6 @@ import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton
 import { Topic, TopicService } from "../Services/TopicService";
 import ShareButtons from ".././Components/Core/ShareButtons";
 import MediaQuery from "react-responsive";
-import { baseApiUrl } from "../config";
-
-
 
 // NOTE: 
 //      -"following" feature globally commented
