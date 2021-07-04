@@ -25,6 +25,7 @@ import { InlineMath } from "react-katex";
 import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
+import PricingPlans from "../../Views/PricingPlans";
 
 
 export type Reminder = {
@@ -80,6 +81,9 @@ interface State {
   autoAcceptEnabled: boolean,
   autoAcceptGroup: "Everybody" | "Academics" | "None";
   autoAcceptCustomInstitutions: boolean, 
+
+  showModalPricing: boolean,
+  subscriptionPlan: string,
   
   // acceptedDomains: string[];
   //(below will be added when we will allow addition of extra institutions)
@@ -138,6 +142,9 @@ export default class EditTalkModal extends Component<Props, State> {
       autoAcceptEnabled: false,
       autoAcceptGroup: "Everybody",
       autoAcceptCustomInstitutions: false,
+
+      subscriptionPlan: "free", // "free", "endtoend", "excellence"
+      showModalPricing: false, 
     };
     this.getReminders();
   }
@@ -510,15 +517,19 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   toggleReminder = (i: number) => {
-    return (
-      () => {
-        this.setState(prevState => {
-          let reminders = prevState.reminders;
-          reminders[i].exist = !reminders[i].exist;
-          return {...prevState, reminders}
-        })
-      }
-    );
+    if (this.state.subscriptionPlan !== "free") {
+      return (
+        () => {
+          this.setState(prevState => {
+            let reminders = prevState.reminders;
+            reminders[i].exist = !reminders[i].exist;
+            return {...prevState, reminders}
+          })
+        }
+      );
+    } else {
+      return ;
+    }
   }
 
   renderReminder = (j: number) => {
@@ -574,16 +585,22 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   toggleReminderEmailGroup = (group: string) => {
-    if (this.state.reminderEmailGroup.includes(group)) {
-      this.setState(prevState => ({
-        reminderEmailGroup: prevState.reminderEmailGroup.filter(e => e != group)
-      }))
-    } else {
-      this.setState(prevState => ({
-        reminderEmailGroup: [group, ...prevState.reminderEmailGroup]
-      }))
+    if (this.state.subscriptionPlan !== "free") {
+      if (this.state.reminderEmailGroup.includes(group)) {
+        this.setState(prevState => ({
+          reminderEmailGroup: prevState.reminderEmailGroup.filter(e => e != group)
+        }))
+      } else {
+        this.setState(prevState => ({
+          reminderEmailGroup: [group, ...prevState.reminderEmailGroup]
+        }))
+      }
     }
   }
+
+  toggleModalPricing = () => {
+    this.setState({ showModalPricing: !this.state.showModalPricing });
+  };
 
   renderArrowButton = (prev: boolean) => {
     let incr = prev ? -1 : 1;
@@ -973,7 +990,8 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 5 && (
-          <Box direction="column" width="70%" gap="10px">
+          <>
+          <Box direction="column" width="70%" gap="10px" background={this.state.subscriptionPlan === "free" ? "#CCCCCC" : "white"} pad="10px" >
             <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
               Email reminders
             </Text>
@@ -1004,8 +1022,52 @@ export default class EditTalkModal extends Component<Props, State> {
               checked={this.state.reminderEmailGroup.includes("Followers")}
               onChange={() => this.toggleReminderEmailGroup("Followers")}
             /> */}
-
           </Box>
+          
+          <Box width="70%" margin={{top: "40px"}} gap="15px"> 
+            <Text size="14px" color="grey">
+              You are currently under the Free plan. Upgrade to use the automatic email reminders 
+            </Text> 
+            <Box
+              onClick={this.toggleModalPricing}
+              background="#0C385B"
+              round="xsmall"
+              pad="xsmall"
+              width="160px"
+              height="40px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#6DA3C7"
+            >
+              <Text size="14px" weight="bold"> Pricing options </Text>
+            </Box>
+            {this.state.showModalPricing && (
+              <Layer
+                onEsc={this.toggleModalPricing}
+                onClickOutside={this.toggleModalPricing}
+                modal
+                responsive
+                animation="fadeIn"
+                style={{
+                  width: "1000px",
+                  height: "65%",
+                  borderRadius: 15,
+                  padding: 0,
+                }}
+              >
+                <PricingPlans 
+                  callback={this.toggleModalPricing}
+                  showDemo={true}
+                  headerTitle={false} 
+                />
+
+              </Layer>
+            )}
+          </Box>
+          </>
+
+
         )}
 
             </Box>
