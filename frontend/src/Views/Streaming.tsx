@@ -8,7 +8,7 @@ import StreamerVideoPlayer from "../Components/Streaming/StreamerVideoPlayer";
 import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
 import ChatBox from "../Components/Streaming/ChatBox";
 import AsyncButton from "../Components/Core/AsyncButton";
-import "../Styles/streaming.css";
+import "../../Styles/streaming.css";
 import adapter from "webrtc-adapter";
 import { WebRTCAdaptor } from "../Streaming/webrtc_adaptor";
 import { antmediaWebSocketUrl } from "../config";

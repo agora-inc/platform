@@ -20,11 +20,10 @@ export default class DescriptionAndQuestions extends Component<Props> {
 
   render() {
     return (
-      <Box width="91vw" margin={this.props.margin} pad="none">
+      <Box width="72%" margin={this.props.margin} pad="none">
         <Tabs justify="start" style={{ marginBottom: 12 }}>
           <Tab
             title="Description"
-            style={{ marginRight: 12, marginBottom: 12 }}
           >
             <Box
               height="100%"
@@ -41,7 +40,7 @@ export default class DescriptionAndQuestions extends Component<Props> {
               <Text size="24px">{this.props.description}</Text>
             </Box>
           </Tab>
-          <Tab title="Questions" style={{ marginBottom: 12 }}>
+          <Tab title="Questions">
             <QandA
               streamId={this.props.streamId}
               videoId={this.props.videoId}

@@ -21,6 +21,9 @@ import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 import MediaQuery from "react-responsive";
 import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import SlidesUploader from "../Core/SlidesUploader";
+import CopyUrlButton from "../Core/ShareButtons/CopyUrlButton";
+import { encryptIdAndRoleInUrl } from "../Core/Encryption/UrlEncryption"
+import { basePoint } from "../../config";
 
 
 interface Props {
@@ -274,7 +277,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
 
   render() {
     var renderMobileView = (window.innerWidth < 800);
-    // {((window.innerWidth < 800) && this.state.showModal) ? "860px" : "180px"}
+    var agoraTalk = this.props.talk.link.includes( basePoint + "/livestream")
+
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
@@ -448,22 +452,31 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           />*/}
 
         {this.props.admin && (
-          <Box
-            onClick={() => {
-              this.toggleEdit();
-            }}
-            background="#0C385B"
-            round="xsmall"
-            pad="xsmall"
-            height="40px"
-            justify="center"
-            align="center"
-            focusIndicator={false}
-            hoverIndicator="#0C385B"
-            margin="10px"
-          >
-            <Text size="18px">Edit</Text>
-          </Box>
+          <Box direction="row" gap="10px" margin={{top: "10px"}}>
+            <Box
+              onClick={() => {
+                this.toggleEdit();
+              }}
+              width={agoraTalk ? "50%" : "100%"}
+              background="#0C385B"
+              round="xsmall"
+              pad="xsmall"
+              height="40px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#0C385B"
+              
+            >
+              <Text size="16px">Edit</Text>
+            </Box>
+            {agoraTalk && <CopyUrlButton 
+              url={encryptIdAndRoleInUrl("livestream", this.props.talk.id, "speaker")}
+              text={"Link for speaker"} 
+              height="40px"
+              width="50%"
+            /> }
+            </Box>
         )}
         {this.state.showModal && (
           <>

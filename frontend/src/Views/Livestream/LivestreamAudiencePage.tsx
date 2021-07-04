@@ -1,30 +1,31 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Box, Grid, Text, Layer, Button, TextInput } from "grommet";
-import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
-import ChatBox from "../Components/Streaming/ChatBox";
-import ChannelIdCard from "../Components/Channel/ChannelIdCard";
-import Tag from "../Components/Core/Tag";
-import Loading from "../Components/Core/Loading";
+import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
+import ChatBox from "../../Components/Streaming/ChatBox";
+import ChannelIdCard from "../../Components/Channel/ChannelIdCard";
+import Tag from "../../Components/Core/Tag";
+import Loading from "../../Components/Core/Loading";
 import { View } from "grommet-icons";
-import { Video, VideoService } from "../Services/VideoService";
-import { StreamService } from "../Services/StreamService";
-import { TalkService } from "../Services/TalkService";
-import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
+import { Video, VideoService } from "../../Services/VideoService";
+import { StreamService } from "../../Services/StreamService";
+import { TalkService } from "../../Services/TalkService";
+import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
-import {db, API} from '../Services/FirebaseService'
+import {db, API} from '../../Services/FirebaseService'
 
-import '../Styles/all-stream-page.css'
+import '../../Styles/all-stream-page.css'
 import { FaMicrophone } from "react-icons/fa";
-import Clapping from "../Components/Streaming/Clapping";
-import { ChannelService } from "../Services/ChannelService";
-import PDFViewer from "../Components/PDFViewer";
+import Clapping from "../../Components/Streaming/Clapping";
+import { ChannelService } from "../../Services/ChannelService";
+import PDFViewer from "../../Components/PDFViewer";
 
 
 interface Props {
-  location: { pathname: string; state: { video: Video } };
-  match: {params: {talk_id: string}};
+  // location: { pathname: string; state: { video: Video } };
+  // match: {params: {talk_id: string}};
+  talkId: number;
 }
 
 interface State {
@@ -63,7 +64,7 @@ AgoraRTC.setLogLevel(4)
 
 
 const AgoraStreamCall:FunctionComponent<Props> = (props) => {
-  const [storedName, setStoredName] = useState(getLocalName(props.match.params.talk_id)||'')
+  const [storedName, setStoredName] = useState(getLocalName(props.talkId.toString())||'')
   const videoContainer = useRef<HTMLDivElement>(null)
   const [agoraClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8",  }))
   const [agoraScreenShareClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
@@ -74,7 +75,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         talkId: "",
         role: 'audience',
         name: 'Prof. Patric',
-        uid: getUserId(props.match.params.talk_id, useQuery().get('dummy'))
+        uid: getUserId(props.talkId.toString(), useQuery().get('dummy'))
       } as any)
   const [talkDetail, setTalkDetail] = useState({} as any)
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
@@ -140,8 +141,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   async function setup() {
     console.log(props)
-    const talkId = props.match.params.talk_id
-    let talk = await get_talk_by_id(talkId)
+    const talkId = props.talkId
+    let talk = await get_talk_by_id(talkId.toString())
     setTalkDetail(talk)
     // Setting client as Audience
     agoraClient.setClientRole(localUser.role);
@@ -225,7 +226,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     });
     console.log('joining live chat...')
     let {appId , uid} = localUser
-    let talkId = props.match.params.talk_id
+    let talkId = props.talkId.toString()
 
     try{
       await agoraMessageClient.login({ uid })
@@ -241,7 +242,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   async function join(){
     console.log('joining...')
     let {appId , uid} = localUser
-    let talkId = props.match.params.talk_id
+    let talkId = props.talkId.toString()
     let token = await get_token_for_talk(talkId)
     let screenShareToken = await get_token_for_talk(`${talkId}-screen`)
 
@@ -303,9 +304,9 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     (async ()=>{
-      let {url} = await TalkService.getSlide(Number(props.match.params.talk_id))
+      let {url} = await TalkService.getSlide(Number(props.talkId))
       setSlideUrl(url)
-      setTalkId(props.match.params.talk_id)
+      setTalkId(props.talkId.toString())
       join_live_chat()
     })()
   }, [])
@@ -364,7 +365,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         setSlideShareId('')
         return
       }
-      let {url} = await TalkService.getSlide(Number(props.match.params.talk_id))
+      let {url} = await TalkService.getSlide(Number(props.talkId))
       setSlideUrl(url)
       
       setSlideShareId(req[0].id)
@@ -513,14 +514,14 @@ function setLocalName(talk_id:string, name:string){
 
 const AgoraStream:FunctionComponent<Props> = (props) => {
   const [name, setName] = useState('')
-  const [storedName, setStoredName] = useState(getLocalName(props.match.params.talk_id))
+  const [storedName, setStoredName] = useState(getLocalName(props.talkId.toString()))
 
   function join(){
     if(!name) {
       return
     }
-    setLocalName(props.match.params.talk_id, name)
-    setStoredName(getLocalName(props.match.params.talk_id))
+    setLocalName(props.talkId.toString(), name)
+    setStoredName(getLocalName(props.talkId.toString()))
   }
   if(storedName) {
     return <AgoraStreamCall {...props} />

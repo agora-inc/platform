@@ -424,7 +424,8 @@ const getSlide = async (talkId: number) => {
   var CACHE_DELAY = 500
   let current_time = Math.floor(new Date().getTime() / 1000) * CACHE_DELAY;
 
-  return { url: baseApiUrl + `/talks/slides?talkId=${talkId}&ts=` + current_time};
+  // return { url: baseApiUrl + `/talks/slides?talkId=${talkId}&ts=` + current_time};
+  return { url: "https://arxiv.org/pdf/1806.07366.pdf"};
 };
 
 const removeSlide = async (talkId: number) => {
