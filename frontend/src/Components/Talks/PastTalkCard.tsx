@@ -211,19 +211,38 @@ export default class PastTalkCard extends Component<Props, State> {
 
   getButtons = () => {
     if (this.props.admin) {
+      console.log(this.state.recordingLink)
       return (
         <Box direction="column">  
           <Box gap="small" direction="row" margin={{ top: "10px", bottom: "10px" }}>
-            <a
-              href={this.state.recordingLink}
-              target="_blank"
-              style={{ width: "35%" }}
-            >
+            {this.state.recordingLink !== "" && (
+              <a
+                href={this.state.recordingLink}
+                target="_blank"
+                style={{ width: "35%" }}
+              >
+                <Box
+                  background="#0C385B"
+                  round="xsmall"
+                  height="40px"
+                  width="100%"
+                  justify="center"
+                  align="start"
+                  focusIndicator={false}
+                  hoverIndicator="#0C385B"
+                >
+                  <Text alignSelf="center" size="14px">
+                    Watch talk
+                  </Text>
+                </Box>
+              </a>
+            )}
+            {this.state.recordingLink === "" && (
               <Box
                 background="#0C385B"
                 round="xsmall"
                 height="40px"
-                width="100%"
+                width="35%"
                 justify="center"
                 align="start"
                 focusIndicator={false}
@@ -233,7 +252,7 @@ export default class PastTalkCard extends Component<Props, State> {
                   Watch talk
                 </Text>
               </Box>
-            </a>
+            )}
             <Box width="30%" />
             <Box width="35%" height="40px">
               {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
