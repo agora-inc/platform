@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image, Grid, Layer, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
-import { Switch } from "antd";
+import { Box, Text, TextArea, Image, Grid, Layer } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -19,10 +18,11 @@ import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
+import PricingPlans from "../Views/PricingPlans";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, 
-  MailOption, SettingsOption, Group, DocumentText, Resources, Close, Checkmark, FormNextLink } from "grommet-icons";
+  MailOption, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -82,8 +82,6 @@ interface State {
   topicId: number;
   field: string;
   showModalPricing: boolean;
-  pricingOptionBig: boolean;
-  pricingOptionMonthly: boolean;
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -124,8 +122,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
       showModalPricing: false,
-      pricingOptionBig: false,
-      pricingOptionMonthly: true,
     };
   }
 
@@ -742,20 +738,20 @@ export default class ManageChannelPage extends Component<Props, State> {
                   {<UserAdmin />} {`Administrator panel`}{" "}
                 </Text>
 
-              <Box
-                onClick={this.toggleModalPricing}
-                background="#0C385B"
-                round="xsmall"
-                pad="xsmall"
-                width="160px"
-                height="40px"
-                justify="center"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator="#6DA3C7"
-              >
+                {/* <Box
+                  onClick={this.toggleModalPricing}
+                  background="#0C385B"
+                  round="xsmall"
+                  pad="xsmall"
+                  width="160px"
+                  height="40px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator="#6DA3C7"
+                >
                   <Text size="14px" weight="bold"> Pricing options </Text>
-                </Box>
+                </Box> */}
               </Box>
 
               {this.state.showModalPricing && (
@@ -772,280 +768,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                     padding: 0,
                   }}
                 >
-                  <Box align="center" width="100%" style={{ overflowY: "auto" }}>
-                    <Box
-                      justify="start"
-                      width="99.7%"
-                      background="#eaf1f1"
-                      direction="row"
-                      margin={{bottom: "20px"}}
-                      style={{
-                        borderTopLeftRadius: "15px",
-                        borderTopRightRadius: "15px",
-                        position: "sticky",
-                        top: 0,
-                        height: "60px",
-                        zIndex: 10,
-                      }}
-                    >
-                      <Box alignSelf="center" fill={true} pad="20px" >
-                        <Text size="16px" color="black" weight="bold" >
-                          Pricing plans
-                        </Text>
-                      </Box>
-                      <Box pad="32px" alignSelf="center">
-                        <Close onClick={this.toggleModalPricing} />
-                      </Box>
-                    </Box>
+                  <PricingPlans 
+                    callback={this.toggleModalPricing}
+                    showDemo={true}
+                    headerTitle={false} 
+                  />
 
-                    <Box width="95%"> 
-
-                      <Box direction="row" gap="10px" align="center" margin={{bottom: "20px"}}> 
-                        <Text size="14px" style={{fontStyle: "italic"}} > 
-                          Select "Big" if you have an audience of more than 30 people:
-                        </Text>
-                        <Switch
-                          checked={this.state.pricingOptionBig}
-                          checkedChildren="Big" 
-                          unCheckedChildren="Small"
-                          onChange={(checked: boolean) => {
-                            this.setState({ pricingOptionBig: checked });
-                          }}
-                          size="default"
-                        /> 
-                      </Box>
-
-                      <Box direction="row" gap="10px" align="center" margin={{bottom: "30px"}}> 
-                        <Text size="14px" style={{fontStyle: "italic"}}> 
-                          Select the plan frequency:
-                        </Text>
-                        <Switch
-                          checked={this.state.pricingOptionMonthly}
-                          checkedChildren="per month" 
-                          unCheckedChildren="per event"
-                          onChange={(checked: boolean) => {
-                            this.setState({ pricingOptionMonthly: checked });
-                          }}
-                          size="default"
-                        /> 
-                      </Box>
-
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableCell scope="col" border="bottom">
-                            </TableCell>
-
-                            <TableCell scope="col" border="bottom" width="120px">
-                              <Text size="14px" weight="bold"> Free </Text>  
-                            </TableCell>
-
-                            <TableCell scope="col" border="bottom" width="170px">
-                              <Text size="14px" weight="bold"> Full automation </Text>
-                            </TableCell>
-
-                            <TableCell scope="col" border="bottom" width="150px">
-                              <Text size="14px" weight="bold"> Excellence </Text>
-                            </TableCell>
-
-                            <TableCell scope="col" border={{size: "0px"}} width="60px" />
-
-                          </TableRow>
-                        </TableHeader>
-
-                        <TableBody style={{marginTop: "50px"}} >
-
-                          <TableRow style={{alignSelf: "center"}}>
-                            <TableCell scope="row">
-                              <Text weight="bold" size="14px"> Automatized regstration </Text>
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell scope="row">
-                              <Text weight="bold" size="14px"> Posting on social media </Text>
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell scope="row">
-                              <Text weight="bold" size="14px"> Email reminders </Text>
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Text size="14px"> 100 emails / month </Text> 
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell scope="row">
-                              <Text weight="bold" size="14px"> <img src={agoraLogo} style={{ height: "14px", marginTop: "1px", marginRight: "-1px"}} /> streaming tech </Text>
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Box
-                                direction="row"
-                                justify="center"
-                                align="center"
-                                pad="small"
-                                focusIndicator={false}
-                                height="30px"
-                                background="#EAF1F1"
-                                hoverIndicator="#BAD6DB"
-                                round="small"
-                                onClick={()=>{}}
-                              >
-                                <FormNextLink size="25px" color="black" />
-                                <Text weight="bold" color="black" size="14px">
-                                  Watch demo
-                                </Text>
-                              </Box>
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell direction="column" scope="row">
-                              <Text weight="bold" size="14px"> Automatic upload </Text> 
-                              <Text weight="bold" size="14px"> slides + recording </Text>
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell scope="row">
-                              <Text weight="bold" size="14px"> Virtual cafeteria </Text>
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Close size="25px" color="red" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Text size="14px"> For 2 seminars / month </Text>
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Box
-                                direction="row"
-                                justify="center"
-                                align="center"
-                                pad="small"
-                                focusIndicator={false}
-                                height="30px"
-                                background="#EAF1F1"
-                                hoverIndicator="#BAD6DB"
-                                round="small"
-                                onClick={()=>{}}
-                              >
-                                <FormNextLink size="25px" color="black" />
-                                <Text weight="bold" color="black" size="14px">
-                                  Watch demo
-                                </Text>
-                              </Box>
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell/>
-                            <TableCell/>
-                            <TableCell margin={{top: "20px"}}>  
-                              {/* <Box
-                                onClick={this.toggleModalPricing}
-                                background="#0C385B"
-                                round="xsmall"
-                                pad="xsmall"
-                                width="160px"
-                                height="40px"
-                                justify="center"
-                                align="center"
-                                focusIndicator={false}
-                                hoverIndicator="#6DA3C7"
-                              >
-                                <Text size="14px" weight="bold"> £10 / month  </Text>
-                              </Box> */}
-
-
-                              {/* <StreamingCheckoutPaymentButton
-                                tier={"tier1"}
-                                productType="subscription"
-                                audienceSize="small"
-                                quantity={1}
-                                channelId={this.state.channel!.id}
-                                text={"999.-/mois"}
-                              /> */}
-
-
-                                <CheckoutPaymentButton
-                                  userId={this.state.user!.id}
-                                  productId={1}
-                                  quantity={1}
-                                  text={"994./mois"}
-                                  channelId={44}
-                                />
-
-                              
-                            </TableCell>
-                            <TableCell margin={{top: "20px"}}>                                
-                              <Box
-                                onClick={this.toggleModalPricing}
-                                background="#0C385B"
-                                round="xsmall"
-                                pad="xsmall"
-                                width="160px"
-                                height="40px"
-                                justify="center"
-                                align="center"
-                                focusIndicator={false}
-                                hoverIndicator="#6DA3C7"
-                              >
-                                <Text size="14px" weight="bold"> £50 / month  </Text>
-                              </Box> 
-                            </TableCell>
-                          </TableRow>
-
-                        </TableBody>
-                      </Table>
-                    </Box>
-                  </Box>
                 </Layer>
               )}
               
