@@ -1,0 +1,81 @@
+.video-holder>div{
+    height: 100%;
+}
+.video-holder .full-screen-button{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+.video-holder>.camera-video{flex-direction: row;
+    
+}
+.audience.screen-share>#speaker{
+    position: absolute !important;
+    width: 100px;
+    height: 80px !important;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+}
+.screen-share>.camera-video{
+    position: absolute !important;
+    height: 80px !important;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+    flex-direction: row;
+}
+.screen-share>.camera-video >.camera{
+    position: relative;
+    width: 100px;
+    margin-left: 5px;
+}
+.call-control {
+    position: absolute;
+    bottom: 10px;
+    z-index: 100;
+    height: unset !important;
+    background-color: rgba(0, 0, 0, 0.2);
+    left: 50%;
+    transform: translateX(-50%);
+}
+.call-control svg {
+    color: white;
+    padding: 10px;
+    flex: 1;
+    font-size: 40px;
+    margin: 5px;
+    cursor: pointer;
+}
+.no-video {
+    background-color: black;
+    color: white;
+}
+.request-holder {
+    position: absolute;
+    right: 0;
+    padding: 10px;
+}
+.request-holder .request-item{
+    background: rgba(200, 200,200,0.7);
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+.agora-video-player>div{
+    display: grid;
+}
+.agora-video-player video{
+    margin: auto;
+    position: unset !important;
+    left: unset !important;
+    top: unset !important;
+}
+.agora-video-player.limit-width video{
+    width: 100% !important;
+    height: unset !important;
+  }
+  .agora-video-player.limit-height video{
+    height: 100% !important;
+    width: unset !important;
+  }

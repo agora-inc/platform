@@ -1,20 +1,26 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Box, Grid, Text, Layer, Button } from "grommet";
 import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
 import ChatBox from "../Components/Streaming/ChatBox";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
 import Tag from "../Components/Core/Tag";
 import Loading from "../Components/Core/Loading";
+import {textToLatex} from "../Components/Core/LatexRendering";
 import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
+import { StreamService } from "../Services/StreamService";
+import { TalkService } from "../Services/TalkService";
 import VideoPlayerAgora from "../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 
+import '../Styles/all-stream-page.css'
+
 
 interface Props {
   location: { pathname: string; state: { video: Video } };
-  match: {params: {room_id: string}};
+  match: {params: {talk_id: string}};
 }
 
 interface State {
@@ -25,31 +31,49 @@ interface State {
 }
 interface Message{
   senderId: string;
-  text: string,
+  text: string
 }
-
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
 const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
 
+function getUserId(talkId:string, userId?:string|null){
+  let key = userId || talkId
+
+  let uid = window.localStorage.getItem(key)
+  // if(!uid) {
+    uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
+    window.localStorage.setItem(key, uid)
+  // }
+  return uid
+}
+
+
+function useQuery(){
+  return new URLSearchParams(useLocation().search)
+}
+
 
 const AgoraStream:FunctionComponent<Props> = (props) => {
+  const videoContainer = useRef<HTMLDivElement>(null)
   const [agoraClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
+  const [agoraScreenShareClient] = useState(AgoraRTC.createClient({ mode: "live", codec: "vp8" }))
   const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
   const [messageChannel, setMessageChannel] = useState(null as any)
   const [localUser, setLocalUser] = useState({
         appId: APP_ID,
-        channel: "",
-        token: '006f68f8f99e18d4c76b7e03b2505f08ee3IABpOfC4oGQL6yjRYJ0mrE9AKao79dSPOMHQtvvKvX5tl1t/ioMAAAAAEABXvn0Ft0wCYAEAAQC3TAJg',
+        talkId: "",
         role: 'audience',
-        name: "",
-        uid: 'abc-55441-u2'
+        name: 'Prof. Patric',
+        uid: getUserId(props.match.params.talk_id, useQuery().get('dummy'))
       } as any)
+  const [talkDetail, setTalkDetail] = useState({} as any)
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
   const [localVideoTrack, setLocalVideoTrack] = useState(null as any)
-  const [remoteVideoTrack, setRemoteVideoTrack] = useState(null as any)
+  const [remoteVideoTrack, setRemoteVideoTrack] = useState([] as any[])
+  const [remoteScreenTrack, setRemoteScreenTrack] = useState(null as any)
   const [remoteAudioTrack, setRemoteAudioTrack] = useState(null as any)
   const [messages, setMessages] = useState<Message[]>([])
-
+  const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
 
   const [state, setState] = useState({
       video: {
@@ -57,7 +81,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         channel_id: -1,
         channel_name: "",
         channel_colour: "",
-        name: "",
+        name: "Speaker",
         description: "",
         tags: [],
         image_url: "",
@@ -71,19 +95,45 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       overlay: false,
   })
 
-  function setup() {
+  function toggleFullscreen() {
+    let fullscreenEl = document.fullscreenElement
+    if(fullscreenEl) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+      return
+    }
+
+    let element = videoContainer.current!
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    }
+
+  }
+
+
+  async function setup() {
+    console.log(props)
+    const talkId = props.match.params.talk_id
+    let talk = await get_talk_by_id(talkId)
+    setTalkDetail(talk)
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
       console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });
+    // Setting client as Audience
     agoraClient.setClientRole(localUser.role);
+    agoraScreenShareClient.setClientRole(localUser.role);
     agoraClient.on('user-published', onClient)
+    agoraClient.on('user-unpublished', onClientStop)
+    agoraScreenShareClient.on('user-published', onScreenShare)
+    agoraScreenShareClient.on('user-unpublished', onScreenShareStop)
     join()
   }
 
   async function onClient(user: any, mediaType: "audio" | "video") {
     await agoraClient.subscribe(user, mediaType);
+    setRemoteVideoTrack([...agoraClient.remoteUsers])
     if(mediaType == 'video'){
-      setRemoteVideoTrack(user.videoTrack)
       return
     }
     if(mediaType == 'audio') {
@@ -93,22 +143,74 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       return
     }
   }
-
-  async function get_token_for_room(roomId: string) {
-    // TODO: make api call to get token
-    return localUser.token
+  async function onClientStop(user: any, mediaType: "audio" | "video") {
+    console.log("left", agoraClient.remoteUsers)
+    setTimeout(()=>{
+      setRemoteVideoTrack([...agoraClient.remoteUsers])
+    }, 200)
+    if(mediaType == 'video'){
+      return
+    }
+    if(mediaType == 'audio') {
+      setRemoteAudioTrack(null)
+      return
+    }
   }
+  async function onScreenShare(user: any, mediaType: "audio" | "video") {
+    await agoraScreenShareClient.subscribe(user, mediaType);
+    if(mediaType == 'video'){
+      setRemoteScreenTrack(user.videoTrack)
+      setScreenAvailability(true)
+      console.log("Getting screen")
+      return
+    }
+  }
+  async function onScreenShareStop(user: any, mediaType: "audio" | "video") {
+    setScreenAvailability(false)
+    setRemoteScreenTrack(null)
+    await agoraScreenShareClient.unsubscribe(user, mediaType);
+    console.log("stop share")
+  }
+
+  async function get_token_for_talk(talkId: string) {
+    // Get dynamic access token
+    return new Promise((res:any, rej:any)=>{
+      StreamService.getToken(talkId, 1, Math.floor(Date.now()/1000 + 600 ), null, localUser.uid, (tk:string)=>{
+        if(tk)
+          return res(tk)
+        rej()
+      })
+
+    })
+  }
+
+  async function get_talk_by_id(talkId: string) {
+    // Fetch talk details
+    return new Promise((res:any, rej:any)=>{
+      TalkService.getTalkById(parseInt(talkId), (tk:string)=>{
+        if(tk)
+          return res(tk)
+        rej()
+      })
+
+    })
+  }
+
   async function join(){
     console.log('joining...')
-    let {appId, uid } = localUser
-    let roomId = props.match.params.room_id
-    let token = await get_token_for_room(roomId)
+    let {appId , uid} = localUser
+    let talkId = props.match.params.talk_id
+    let token = await get_token_for_talk(talkId)
+    let screenShareToken = await get_token_for_talk(`${talkId}-screen`)
 
     try{
-      await agoraClient.join(appId, roomId, token, uid)
+      // @ts-ignore
+      await agoraClient.join(appId, talkId, token, uid)
+      // @ts-ignore
+      await agoraScreenShareClient.join(appId, `${talkId}-screen`, screenShareToken, uid)
 
       await agoraMessageClient.login({ uid })
-      let _messageChannel = agoraMessageClient.createChannel(roomId)
+      let _messageChannel = agoraMessageClient.createChannel(talkId)
       await _messageChannel.join()
       _messageChannel.on('ChannelMessage', on_message)
       setMessageChannel(_messageChannel)
@@ -117,7 +219,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     }
   }
   async function on_message(msg:any, senderId:string){
-    setMessages((m)=>[...m, {senderId, text: msg.text }])
+    setMessages((m)=>[...m, {senderId, text: msg.text}])
   }
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return
@@ -126,13 +228,12 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     // @ts-ignore
     evt.target.value = ''
     try{
-      setMessages([...messages, {senderId: localUser.uid, text: text }])
+      setMessages([...messages, {senderId: localUser.uid, text: text}])
       await messageChannel.sendMessage({text})
     }catch{
       console.log('error sending message')
     }
   }
-
 
   useEffect(()=>{
     setup()
@@ -154,20 +255,47 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         >
         
           <Box gridArea="player" justify="between" gap="small">
-            <VideoPlayerAgora style={{height: '90%'}} id='ad' stream={localUser.role =='host'? localVideoTrack: remoteVideoTrack} />
+            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
+              style={{height: '90%', position: 'relative'}}>
+              <Box className='camera-video'>
+                {remoteVideoTrack.map((user)=>(
+                  //@ts-ignore
+                  <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} />
+                ))}
+              </Box>
+
+              { isScreenAvailable && 
+                  <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
+              }
+
+              <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
+            </Box>
 
             <Box direction="row" justify="between" align="start">
               <p
                 style={{
                   padding: 0,
                   margin: 0,
-                  fontSize: "34px",
+                  fontSize: "24px",
                   fontWeight: "bold",
                   // color: "black",
                   maxWidth: "65%",
                 }}
               >
-                {state.video!.name}
+                {talkDetail.name}
+              </p>
+              <br />
+              <p
+                style={{
+                  padding: 0,
+                  margin: 0,
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  // color: "black",
+                  maxWidth: "65%",
+                }}
+              >
+                Speaker: {talkDetail.talk_speaker}
               </p>
               <Box
                 direction="row"
@@ -191,10 +319,9 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             </Box>
           </Box>
           <Box gridArea="chat" background="accent-2" round="small">
-
             {messages.map((msg, i)=>(
                 <Box key={i}>
-                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>{msg.text}</span>
+                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>{textToLatex(msg.text)}</span>
                 </Box>
               ))}
             <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />

@@ -3,7 +3,10 @@ import { Box, Layer, Heading, Text } from "grommet";
 import { Howl } from "howler";
 
 interface Props {
+  clapOnAttach?: boolean;
+  clapOnChange?: string;
   [label: string]: any;
+  onClick?: ()=>{}
 }
 
 interface State {
@@ -27,7 +30,14 @@ export default class Clapping extends Component<Props, State> {
     totalTimeOverlay: 7000.0,
     updateFrequency: 200.0,
     startVolume: 0.2,
+    clapOnAttach: false,
+    clapOnChange: ''
   };
+  componentDidUpdate(oldProps: Props) {
+    if(this.props.clapOnChange && oldProps.clapOnChange != this.props.clapOnChange) {
+      this.startClapping()
+    }
+  }
 
   soundPlay = (tag: string, vol: number) => {
     const sound = new Howl({
@@ -37,16 +47,17 @@ export default class Clapping extends Component<Props, State> {
         cut: [0, this.props.totalTimeClap],
       },
     });
-
     this.state.sounds[tag] = sound;
     this.state.sounds[tag].play("cut");
   };
 
-  /*
   componentDidMount() {
-    this.props.audio.addEventListener('ended', () => this.setState({ play: false }));
+    if(this.props.clapOnAttach){
+      this.startClapping()
+    }
   }
   
+  /*
   componentWillUnmount() {
     this.state.audio.removeEventListener('ended', () => this.setState({ play: false }));  
   }
@@ -56,7 +67,7 @@ export default class Clapping extends Component<Props, State> {
     if (event.keyCode == 0 || event.keyCode == 32) {
       // Setting volume level
       this.state.sounds.clapUser.volume(
-        Math.min(this.state.sounds.clapUser.volume() + 0.05, 1.0)
+        Math.min(this.state.sounds.clapUser.volume() + 0.1, 1.0)
       );
     }
   };
@@ -68,8 +79,7 @@ export default class Clapping extends Component<Props, State> {
     }
     this.soundPlay("clapBase", this.props.startVolume);
     this.soundPlay("clapUser", 0.0);
-    console.log(this.state);
-    console.log(this.props);
+
     document.addEventListener("keypress", this.onPress);
     var nUpdates = this.props.totalTimeClap / this.props.updateFrequency;
     var countUpdates = 0;
@@ -103,29 +113,36 @@ export default class Clapping extends Component<Props, State> {
       this.state.sounds.clapUser.volume(
         Math.max(this.state.sounds.clapUser.volume() - 0.03, 0.0)
       );
-      console.log("Volume base: " + this.state.sounds.clapBase.volume());
-      console.log("Volume user: " + this.state.sounds.clapUser.volume());
+      // console.log("Volume base: " + this.state.sounds.clapBase.volume());
+      // console.log("Volume user: " + this.state.sounds.clapUser.volume());
     }, this.props.updateFrequency);
   };
 
   render() {
     return (
       <Box>
-        <Box
+        {!this.props.clapOnAttach && <Box
           justify="center"
           align="center"
           pad="small"
           focusIndicator={false}
-          height="60px"
-          background="white"
+          height="50px"
+          background="#EAF1F1"
+          hoverIndicator="#BAD6DB"
           round="small"
-          onClick={this.startClapping}
-          style={{ border: "3.5px solid black" }}
+          style={{border: "0.5px solid"}}
+          onClick={()=>{
+            if(this.props.onClick) {
+              this.props.onClick()
+            }
+            this.startClapping()
+          }}
+          // style={{ border: "3.5px solid black" }}
         >
-          <Text weight="bold" color="black" size="16px">
+          <Text weight="bold" color="black" size="14px">
             Thank the speaker
           </Text>
-        </Box>
+        </Box>}
         {this.state.overlay && (
           <Layer modal={true} position="center">
             <Heading

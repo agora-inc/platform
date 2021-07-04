@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import {
   Box,
-  CheckBox,
   Text,
   TextInput,
   TextArea,
+  CheckBox,
   Calendar,
   MaskedInput,
   Select,
@@ -25,6 +25,7 @@ import { InlineMath } from "react-katex";
 import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
+import { UrlEncryption } from "../Core/Encryption/UrlEncryption";
 
 
 export type Reminder = {
@@ -285,6 +286,7 @@ export default class EditTalkModal extends Component<Props, State> {
               this.props.onFinishedCallback();
             }
           );
+          this.onEditStreamingLinkCallback(talk)
         }
       );
     } else {
@@ -337,10 +339,64 @@ export default class EditTalkModal extends Component<Props, State> {
               });
             }
           );
+          // Encode URL
+          console.log(talk.link)
+
+          this.onEditStreamingLinkCallback(talk)
         }
       );
     }
   };
+
+  onEditStreamingLinkCallback = (talk: Talk) => {
+    // If user uses agora.steam streaming tech, we add encoded URL on callback.
+    if (talk.link == 'https://_agora.stream_tech'){
+      const dateTimeStrs = this.combineDateAndTimeStrings();
+      var encryptedUrl = UrlEncryption.encryptIdAndRoleInUrl("livestream", talk.id)
+      TalkService.editTalk(
+        talk.channel_id,
+        talk.id,
+        this.escapeSingleQuotes(this.state.title),
+        this.escapeSingleQuotes(this.state.description),
+        dateTimeStrs[0],
+        dateTimeStrs[1],
+        this.validLink(encryptedUrl),
+        this.state.tags,
+        this.state.releaseLinkOffset,
+        this.state.linkVisibility,
+        this.state.cardVisibility,
+        this.state.topics,
+        this.escapeSingleQuotes(this.state.talkSpeaker),
+        this.state.talkSpeakerURL,
+        this.state.published,
+        this.state.audienceLevel,
+        this.state.autoAcceptGroup,
+        // this.state.autoAcceptCustomInstitutions,
+        // this.state.customInstitutionsIds,
+        false, 
+        [],
+        this.state.reminders,
+        this.state.reminderEmailGroup, 
+        (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
+          this.setState(
+            {
+              loading: false,
+            },
+            () => {
+              this.props.onFinishedCallback();
+            }
+          );
+          this.onEditStreamingLinkCallback(talk)
+        }
+      );
+    }
+  }
 
   onFinishAdvertisement = () => {
     this.hideAdvertisementOverlay()
@@ -840,11 +896,34 @@ export default class EditTalkModal extends Component<Props, State> {
               </ReactTooltip> 
             </Box>
 
-            <TextInput
-              value={this.state.link}
-              placeholder="https://zoom.us/1234"
-              onChange={(e) => this.setState({ link: e.target.value })}
-            />
+            {this.state.link !== '_agora.stream_tech' && ( 
+              <TextInput
+                value={this.state.link}
+                placeholder="https://zoom.us/1234"
+                onChange={(e) => this.setState({ link: e.target.value })}
+              />
+            )}
+            {this.state.link === '_agora.stream_tech' && ( 
+              <Box
+                height="40px"
+                round="3px"
+                pad="small"
+                justify="center"
+                style={{border: "1px solid #BBBBBB"}}
+              >
+
+              <Text size="13px" weight="bold" color="#CCCCCC">
+                The link will be sent to you via email.
+              </Text>
+              
+              </Box>
+            )}
+
+            <CheckBox 
+              checked={this.state.link == '_agora.stream_tech'} 
+              label={'Host on Agora.stream'} 
+              onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}
+            /> 
 
             <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
               <Text size="13px" weight="bold"> Registration required? </Text>
@@ -1260,10 +1339,16 @@ export default class EditTalkModal extends Component<Props, State> {
 
 
                 <TextInput
-                    value={this.state.link}
+                    disabled={this.state.link == '_agora.stream_tech'}
+                    value={this.state.link == '_agora.stream_tech'?"https://agora.stream/":this.state.link}
                     placeholder="https://zoom.us/1234"
                     onChange={(e) => this.setState({ link: e.target.value })}
                   />
+                <CheckBox 
+                  checked={this.state.link == '_agora.stream_tech'} 
+                  label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+                onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}/> 
+
                   <Text
                     size="14px" 
                     weight="bold" 

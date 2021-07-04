@@ -7,7 +7,6 @@ import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
 // import StreamPage from "./Views/StreamPage";
 import TagPage from "./Views/TagPage";
-import Streaming from "./Views/Streaming";
 import AllVideosPage from "./Views/AllVideosPage";
 import HeaderBar from "./Components/HeaderBar";
 import { Theme } from "./theme";
@@ -26,10 +25,8 @@ import AllAgorasPage from "./Views/AllAgorasPage";
 import AgoraCreationPage from "./Views/AgoraCreationPage";
 import TalkSharingPage from "./Views/TalkSharingPage";
 import AvatarPage from "./Views/AvatarPage";
-import AgoraStreamSpeakerPage from "./Views/AgoraStreamSpeakerPage";
-import AgoraStreamAudiencePage from "./Views/AgoraStreamAudiencePage";
+import LivestreamPage from "./Views/Livestream/LivestreamPage";
 import {useTracking} from './Components/Core/Analytics/useTracking';
-
 
 function App() {
   // // Initialize google analytics page view tracking
@@ -45,14 +42,15 @@ function App() {
           <Route exact path="/agoras" component={AllAgorasPage} />
           {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
-          <Route path="/agora/:room_id/speaker/" component={AgoraStreamSpeakerPage} />
-          <Route path="/agora/:room_id/" component={AgoraStreamAudiencePage} />
+
+          <Route path="/livestream/:encoded_endpoint" component={LivestreamPage} />
+
           <Route path="/video" component={VideoPage} />
           {/* <Route path="/stream" component={StreamPage} /> */}
           <Route path={`/:name/manage`} component={ManageChannelPage} />
           <Route path="/tag" component={TagPage} />
           <Route path="/event/:name" component={TalkSharingPage}/>
-          <Route path="/streaming" component={Streaming} />
+          {/* <Route path="/streaming" component={Streaming} /> */}
           <Route path="/preferences" component={Preferences} />
           <Route path="/schedule" component={Schedule} />
           <Route path="/saved" component={SavedTalksPage} />
