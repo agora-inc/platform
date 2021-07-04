@@ -465,15 +465,18 @@ class TalkRepository:
                 );
             '''    
         try:
-            res = self.db.run_query(query)
-            insertId = res[0]
-    
+            self.db.open_connection()
+            cursor = self.db.con.cursor()
+            cursor.execute(query)
+            self.db.con.commit()
+            insertId = cursor.lastrowid
+
             if not isinstance(insertId, int):
                 raise AssertionError("scheduleTalk: insertion failed, didnt return an id.")
 
-            tagIds = [t["id"] for t in talkTags]
-            self.tags.tagTalk(insertId, tagIds)
-            
+            # tagIds = [t["id"] for t in talkTags]
+            # self.tags.tagTalk(insertId, tagIds)
+
             # add customInstitutions for auto-acceptance
             self.editAutoAcceptanceCustomInstitutions(insertId, customInstitutionsIds)
 
@@ -543,7 +546,7 @@ class TalkRepository:
                     auto_accept_custom_institutions={auto_accept_custom_institutions}
 
                 WHERE id = {talkId};'''
-            
+
             self.db.run_query(query)
 
             # Update Email reminders
