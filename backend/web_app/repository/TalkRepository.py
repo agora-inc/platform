@@ -546,7 +546,7 @@ class TalkRepository:
                     auto_accept_custom_institutions={auto_accept_custom_institutions}
 
                 WHERE id = {talkId};'''
-
+            
             self.db.run_query(query)
 
             # Update Email reminders

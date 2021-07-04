@@ -1,6 +1,3 @@
-import { basePoint } from "../../../config";
-
-
 var CryptoTS = require("crypto-ts");
 
 const sep = "w3b45t5sqjl2sk452i3t5sqjl2i3w"
@@ -12,11 +9,11 @@ function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
   }
 
-export function encryptIdAndRoleInUrl(endpoint: string, id: number, role?: string) {
-    // Example of endpoint: "event", "streaming", etc..
-    var baseUrl = basePoint + "/" + endpoint;
+export async function encryptUrl(baseUrl: string, id: number, role?: string) {
+    var data = [{id: 1}, {id: 2}]
 
     // Encrypt
+    // var encodedEndpoint = CryptoTS.AES.encrypt(JSON.stringify(data), 'secret key 123');
     const encodedId = CryptoTS.AES.encrypt(id.toString(), sk).toString();
     var encodedRole = ""
     if (role === null){
@@ -25,11 +22,9 @@ export function encryptIdAndRoleInUrl(endpoint: string, id: number, role?: strin
     
     encodedRole = CryptoTS.AES.encrypt(role, sk).toString()
     
-
     var encodedEndpoint = encodedId.concat(sep, encodedRole);
 
     let lastChar = baseUrl.charAt(baseUrl.length-1);
-    
     if (lastChar == "/"){
         return baseUrl + encodedEndpoint
     } else {
@@ -37,38 +32,25 @@ export function encryptIdAndRoleInUrl(endpoint: string, id: number, role?: strin
     }
 }
 
-export function getIdFromEncryptedEndpoint(encryptedUrl: string) {
-    /// NOTE: encryptedUrl is only the encoded endpoint, not the full URL.
-    const encryptedPart = encryptedUrl.replace(basePoint + "/", "")
+export async function getIdFromUrl(encryptedUrl: string) {
+    const SplitUrl = encryptedUrl.split("/")
+    const encryptedEndpoint = SplitUrl[SplitUrl.length-1]
+    // const basepoint = encryptedUrl.replace(encryptedEndpoint, "")
 
-    // console.log("test2:")
-    // console.log(encryptedPart)
-
-    const encryptedId = encryptedPart.split(sep)[0];
-
-    // console.log("test3:")
-    // console.log(encryptedId)
+    const encryptedId = encryptedEndpoint.split(sep)[0];
 
     var bytes  = CryptoTS.AES.decrypt(encryptedId.toString(), sk);
-    var res = bytes.toString(CryptoTS.enc.Utf8);
-
-    // console.log("test4:")
-    // console.log(res)
-
-    return res
+    return bytes.toString(CryptoTS.enc.Utf8);
 }
 
-export function getRoleFromEncryptedEndpoint(encryptedUrl: string) {
-    /// NOTE: encryptedUrl is only the encoded endpoint, not the full URL.
-    const encryptedRole = encryptedUrl.split(sep)[1]
+export async function getStreamingRoleFromUrl(encryptedUrl: string) {
+    const SplitUrl = encryptedUrl.split("/")
+    const encryptedEndpoint = SplitUrl[SplitUrl.length-1]
+    // const basepoint = encryptedUrl.replace(encryptedEndpoint, "")
+
+    const encryptedRole = encryptedEndpoint.split(sep)[1]
 
     var bytes  = CryptoTS.AES.decrypt(encryptedRole.toString(), sk);
     return bytes.toString(CryptoTS.enc.Utf8);
 }
 
-
-export const UrlEncryption = {
-    encryptIdAndRoleInUrl,
-    getIdFromEncryptedEndpoint,
-    getRoleFromEncryptedEndpoint
-  };

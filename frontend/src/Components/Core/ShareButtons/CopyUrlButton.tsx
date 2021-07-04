@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { Box, Text } from "grommet";
+import { Box } from "grommet";
 import ReactTooltip from "react-tooltip";
 import {Link as LinkIcon} from "grommet-icons";
 
 interface Props {
   url: string;
-  text?: string;
   height?: string;
   width?: string;
 }
@@ -27,8 +26,7 @@ export default class CopyUrlButton extends Component<Props, {}> {
         focusIndicator={true}
         hoverIndicator={{color: "#62DB69"}}
         >
-          {!this.props.text && <LinkIcon style={{width: 18, height: 18, stroke: "white"}} />}
-          {this.props.text && <Text size="16px" color="white"> {this.props.text} </Text> }
+            <LinkIcon style={{width: 18, height: 18, stroke: "white"}} />
         </Box>
         <ReactTooltip id="save_url_event" effect="solid">
             Click to copy URL
