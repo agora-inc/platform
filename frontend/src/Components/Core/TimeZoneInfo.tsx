@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import moment from "moment";
-import "../Styles/tooltip.css";
+import "../../Styles/tooltip.css";
 
 type State = {
   time: string;

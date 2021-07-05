@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import { Box, Text, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 import { Dropdown, Menu } from "antd";
-import { Channel, ChannelService } from "../Services/ChannelService";
-import { Stream } from "../Services/StreamService";
-import { Video } from "../Services/VideoService";
-import { Talk } from "../Services/TalkService";
-import { Tag } from "../Services/TagService";
-import { SearchService } from "../Services/SearchService";
+import { Channel, ChannelService } from "../../Services/ChannelService";
+import { Stream } from "../../Services/StreamService";
+import { Video } from "../../Services/VideoService";
+import { Talk } from "../../Services/TalkService";
+import { Tag } from "../../Services/TagService";
+import { SearchService } from "../../Services/SearchService";
 import Identicon from "react-identicons";
 
 interface State {

@@ -36,8 +36,8 @@ import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
 
-import StreamingCheckoutPaymentButton from "../Components/Pricing/Payment/StreamingCheckoutPaymentButton";
-import CheckoutPaymentButton from "../Components/Pricing/Payment/CheckoutPaymentButton";
+import StreamingCheckoutPaymentButton from "../Components/Channel/ChannelSubscriptionsButtons/StreamingCheckoutPaymentButton";
+import CheckoutPaymentButton from "../Components/Channel/ChannelSubscriptionsButtons/CheckoutPaymentButton";
 
 
 
