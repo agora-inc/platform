@@ -6,7 +6,7 @@
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from app.databases import agora_db
-from payment.apis import StripeApi 
+from payment.apis.StripeApi import StripeApi 
 
 stripeApi = StripeApi()
 mail_sys = sendgridApi()
@@ -33,7 +33,8 @@ class ChannelSubscriptionRepository:
 
     def getActiveSubscriptions(self, channelId):
         get_query = f'''SELECT * FROM ChannelSubscriptions
-                    WHERE status="active";
+                    WHERE status="active"
+                    AND channel_id = {channelId};
         '''
         return self.db.run_query(get_query)
         
