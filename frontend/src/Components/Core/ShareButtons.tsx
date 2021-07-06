@@ -43,9 +43,11 @@ interface Props {
     urlLink = () => {
       if (this.props.talk) {
         return `https://agora.stream/event/${this.props.talk.id}`
-      } else {
+      } else if (this.props.channel){
         const name = this.props.channel.name.replace(/\s/g, '%20')
         return `https://agora.stream/${name}`
+      } else {
+        return 'https://agora.stream/'
       }
     }
 

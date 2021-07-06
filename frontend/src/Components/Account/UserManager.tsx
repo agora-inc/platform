@@ -16,7 +16,7 @@ import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
-import DonorButton from "../Pricing/DonorButton"
+import DonorButton from "../Homepage/DonorButton"
 
 
 
