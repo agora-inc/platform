@@ -6,8 +6,8 @@ import CheckoutPaymentButton from "./CheckoutPaymentButton";
 
 interface Props extends StreamingProductFeatures{
     channelId: number;
-    text?: string;
     user: User
+    text?: string;
 }
 
 const StreamingCheckoutPaymentButton:FunctionComponent<Props> = (props) => {    

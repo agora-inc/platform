@@ -1598,7 +1598,7 @@ def getStreamingProductById():
 
     try:
         tier = request.args.get("tier") # = tier1 and tier2
-        product_type = request.args.get("productType") # = 'credits' or 'sub'
+        product_type = request.args.get("productType") # = 'credits' or 'subscription'
         aud_size = request.args.get("audienceSize") # = 'small' or 'big'
         return jsonify(
             products.getStreamingProductIdByFeatures(tier, product_type, aud_size)
@@ -1718,7 +1718,7 @@ def cancelAllSubscriptionsForChannel():
 
         # A. get all active channel subscriptions and cancel all of them
         # get subscription_id
-        subscriptions = channelSubscriptions.getActiveSubscriptionId(channel_id)
+        subscriptions = channelSubscriptions.getActiveSubscriptions(channel_id)
         for subscription in subscriptions:
             sub_id = subscription["stripe_subscription_id"]
 
@@ -1820,7 +1820,7 @@ def stripe_webhook():
     '''
     # Request too big (protection mechanism; Remy)
     if request.content_length > 1024 * 1024:
-        abort(400)
+        return 400
 
     payload = request.get_data()
     sig_header = request.environ.get('HTTP_STRIPE_SIGNATURE')

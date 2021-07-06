@@ -35,9 +35,8 @@ import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
-
 import StreamingCheckoutPaymentButton from "../Components/Channel/ChannelSubscriptionsButtons/StreamingCheckoutPaymentButton";
-import CheckoutPaymentButton from "../Components/Channel/ChannelSubscriptionsButtons/CheckoutPaymentButton";
+import CancelSubscriptionsButton from "../Components/Channel/ChannelSubscriptionsButtons/CancelSubscriptionsButton";
 
 
 
@@ -383,9 +382,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       listEmailCorrect.push(email.toLowerCase())};
       strEmailWrong = strEmailWrong.replace(email, "");
     }
-    
-    console.log("step2 mailinglist state", this.state.listEmailCorrect)
-
 
     // clean box if empty
     strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
@@ -493,7 +489,9 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.editChannelTopic(
       this.state.channel!.id,
       this.state.topics,
-      () => {console.log("channel topic saved");}
+      () => {
+        // console.log("channel topic saved");
+      }
     );
     return (
       <Box></Box>
@@ -681,6 +679,7 @@ export default class ManageChannelPage extends Component<Props, State> {
             />
           </>
         )}
+        
       </Box>
     );
   };
@@ -753,6 +752,42 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Text size="14px" weight="bold"> Pricing options </Text>
                 </Box> */}
               </Box>
+
+
+
+
+
+
+              
+              {this.state.user && 
+              (
+                <>
+                  <StreamingCheckoutPaymentButton
+                    channelId={this.state.channelId}
+                    user={this.state.user}
+                    audienceSize={"big"}
+                    tier={"tier1"}
+                    productType={"subscription"}
+                    quantity={1}
+                    text={"vasy subscribe mec"}
+                  />
+                  <CancelSubscriptionsButton
+                  channelId={this.state.channelId}
+                  
+                  />
+              </>
+              )}
+
+
+
+
+
+
+
+
+
+
+
 
               {this.state.showModalPricing && (
                 <Layer
