@@ -422,15 +422,22 @@ class TopicRepository:
 # UNIT TEST
 if __name__ == "__main__":
     import pymysql
-    class Database:
+    import os
+    from os.path import join, dirname
+    from dotenv import load_dotenv
 
+    dotenv_path = join(dirname(__file__), '.env')
+    load_dotenv(dotenv_path)
+
+    class Database:
         def __init__(self):
-            self.host = "apollo-2.c91ghtqneybi.eu-west-2.rds.amazonaws.com"
-            self.user = "admin"
-            self.password = "123.qwe.asd"
-            self.db = "apollo"
-            self.con = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, cursorclass=pymysql.cursors.
+            host = os.environ.get('host')
+            user = os.environ.get('user')
+            password = os.environ.get('password')
+            db = os.environ.get('db')
+            self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.
                                     DictCursor)
+
         def open_connection(self):
             """Connect to MySQL Database."""
             try:
