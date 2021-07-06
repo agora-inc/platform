@@ -645,35 +645,31 @@ export default class EditTalkModal extends Component<Props, State> {
           animation="fadeIn"
           style={{
             width: 650,
-            height: window.innerHeight > 1200 ? "900px" : "75%",
+            maxHeight: "75%",
             borderRadius: 15,
             // border: "3.5px solid black",
             padding: 0,
           }}
         >
-          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+          <Box align="center" width="100%">
             <Box
               justify="start"
               width="99.7%"
               background="#eaf1f1"
               direction="row"
-              height="10vw"
               style={{
+                minHeight: "50px",
                 borderTopLeftRadius: "15px",
                 borderTopRightRadius: "15px",
-                position: "sticky",
-                top: 0,
-                // minHeight: "6%",
-                zIndex: 10,
               }}
             >
-              <Box pad="30px" alignSelf="center">
+              <Box pad="20px" alignSelf="center">
                 <Text size="16px" color="black" weight="bold"  >
                   {this.props.talk ? "Edit talk" : "New talk"}
                 </Text>
               </Box>
               <Box width="67%"></Box>
-              <Box pad="32px" alignSelf="center">
+              <Box pad="20px" alignSelf="center">
                 <Close onClick={this.props.onCanceledCallback} />
               </Box>
             </Box>
@@ -682,21 +678,19 @@ export default class EditTalkModal extends Component<Props, State> {
               width="100%"
               align="center"
               pad={{ horizontal: "30px" }}
-              gap="30px"
+              gap="5px"
               margin={{ top: "20px", bottom: "20px" }}
               overflow="auto"
-              height="78vw"
-              // style={{ minHeight: "500px" }}
             >
 
-        <Box direction="row" justify="center" align="center" gap="60px" margin={{top: "0px"}}>
+        <Box direction="row" justify="center" align="center" gap="60px" style={{minHeight: "30px"}}>
           <Text weight="bold" color="grey" size="13px"> Information </Text>
           <Text weight="bold" color="grey" size="13px"> Time </Text>
           <Text weight="bold" color="grey" size="13px"> Participants </Text>
           <Text weight="bold" color="grey" size="13px"> Filters </Text>
           <Text weight="bold" color="grey" size="13px"> Reminders </Text>
         </Box>
-        <Box direction="row" align="center" margin={{top: "-20px"}}>
+        <Box direction="row" align="center" margin={{bottom: "20px"}} style={{minHeight: "30px"}}>
           {numbers.map( (i: number) => (
             <>
             <Box 
@@ -719,7 +713,9 @@ export default class EditTalkModal extends Component<Props, State> {
         </Box>
 
         {this.state.activeSection === 1 && (
-          <Box direction="column" width="70%" gap="10px">
+          <Box direction="column" width="70%" gap="10px" 
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
             <Box width="100%">
               <TextInput
                 placeholder="Title"
@@ -783,7 +779,9 @@ export default class EditTalkModal extends Component<Props, State> {
           </Box>
         )}
         {this.state.activeSection === 2 && (
-          <Box direction="column" width="55%" gap="10px">
+          <Box direction="column" width="55%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
             <Calendar
               date={this.state.date}
               bounds={this.getDateBounds()}
@@ -848,7 +846,9 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 3 && (
-          <Box direction="column" width="70%" gap="10px">
+          <Box direction="column" width="70%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
             <Box direction="row" gap="5px" > 
               <Text size="13px" weight="bold"> Link to event </Text>
               <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
@@ -862,6 +862,25 @@ export default class EditTalkModal extends Component<Props, State> {
               placeholder="https://zoom.us/1234"
               onChange={(e) => this.setState({ link: e.target.value })}
             />
+
+            <Box background={this.state.subscriptionPlan !== "excellence" ? "#EEEEEE" : "white"}
+              pad="10px" round="6px" gap="10px"
+            >
+              {this.state.subscriptionPlan !== "excellence" && (
+                <Text size="14px" color="grey" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
+                  Upgrade to the Excellence plan to use our streaming technology sculpted for academic seminars. 
+                </Text> 
+              )}
+              <CheckBox 
+                checked={this.state.link == '_agora.stream_tech'} 
+                label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+                onChange={(e) => {
+                  if (this.state.subscriptionPlan === "excellence") {
+                    this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })
+                  }
+                }}
+              /> 
+            </Box>
 
             <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
               <Text size="13px" weight="bold"> Registration required? </Text>
@@ -961,7 +980,9 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
         
         {this.state.activeSection === 4 && (
-          <Box direction="column" width="70%" gap="10px">
+          <Box direction="column" width="70%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
             <Text size="13px" weight="bold" color="black">
               Topics
             </Text>
@@ -990,82 +1011,90 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 5 && (
-          <>
-          <Box direction="column" width="70%" gap="10px" background={this.state.subscriptionPlan === "free" ? "#CCCCCC" : "white"} pad="10px" >
-            <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
-              Email reminders
-            </Text>
-            {this.renderReminder(0)}
-            {this.renderReminder(1)}
-
-            <Text size="13px" weight="bold" color="black" margin={{ top: "24px" }}> 
-              To whom?
-            </Text>
-            <CheckBox
-              label="Talk participants"
-              checked={this.state.reminderEmailGroup.includes("Participants")}
-              onChange={() => this.toggleReminderEmailGroup("Participants")}
-            />
-            <Box direction="row" gap="10px">
-              <CheckBox
-                label="Your mailing list"
-                checked={this.state.reminderEmailGroup.includes("MailingList")}
-                onChange={() => this.toggleReminderEmailGroup("MailingList")}
-              />
-              <StatusInfo size="small" data-tip data-for='mailing-list-reminder'/>
-              <ReactTooltip id='mailing-list-reminder' place="right" effect="solid">
-                <Text size="12px"> Securely upload your mailing list in the tab 'Mailing List' in your agora. </Text>
-              </ReactTooltip>
-            </Box>
-            {/* <CheckBox
-              label="Your followers"
-              checked={this.state.reminderEmailGroup.includes("Followers")}
-              onChange={() => this.toggleReminderEmailGroup("Followers")}
-            /> */}
-          </Box>
-          
-          <Box width="70%" margin={{top: "40px"}} gap="15px"> 
-            <Text size="14px" color="grey">
-              You are currently under the Free plan. Upgrade to use the automatic email reminders 
-            </Text> 
-            <Box
-              onClick={this.toggleModalPricing}
-              background="#0C385B"
-              round="xsmall"
-              pad="xsmall"
-              width="160px"
-              height="40px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#6DA3C7"
+          <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px"}} align="center">
+            <Box 
+              direction="column" gap="10px" 
+              background={this.state.subscriptionPlan === "free" ? "#EEEEEE" : "white"}
+              pad="10px" round="6px" 
             >
-              <Text size="14px" weight="bold"> Pricing options </Text>
-            </Box>
-            {this.state.showModalPricing && (
-              <Layer
-                onEsc={this.toggleModalPricing}
-                onClickOutside={this.toggleModalPricing}
-                modal
-                responsive
-                animation="fadeIn"
-                style={{
-                  width: "1000px",
-                  height: "65%",
-                  borderRadius: 15,
-                  padding: 0,
-                }}
-              >
-                <PricingPlans 
-                  callback={this.toggleModalPricing}
-                  showDemo={true}
-                  headerTitle={false} 
-                />
+              {this.state.subscriptionPlan === "free" && (
+                <Text size="14px" color="grey" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
+                  You are currently under the Free plan. Upgrade to use the automatic email reminders 
+                </Text>
+              )}
+              <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
+                Email reminders
+              </Text>
+              {this.renderReminder(0)}
+              {this.renderReminder(1)}
 
-              </Layer>
+              <Text size="13px" weight="bold" color="black" margin={{ top: "24px" }}> 
+                To whom?
+              </Text>
+              <CheckBox
+                label="Talk participants"
+                checked={this.state.reminderEmailGroup.includes("Participants")}
+                onChange={() => this.toggleReminderEmailGroup("Participants")}
+              />
+              <Box direction="row" gap="10px" margin={{bottom: "10px"}}>
+                <CheckBox
+                  label="Your mailing list"
+                  checked={this.state.reminderEmailGroup.includes("MailingList")}
+                  onChange={() => this.toggleReminderEmailGroup("MailingList")}
+                />
+                <StatusInfo size="small" data-tip data-for='mailing-list-reminder'/>
+                <ReactTooltip id='mailing-list-reminder' place="right" effect="solid">
+                  <Text size="12px"> Securely upload your mailing list in the tab 'Mailing List' in your agora. </Text>
+                </ReactTooltip>
+              </Box>
+              {/* <CheckBox
+                label="Your followers"
+                checked={this.state.reminderEmailGroup.includes("Followers")}
+                onChange={() => this.toggleReminderEmailGroup("Followers")}
+              /> */}
+            </Box>
+            
+            {this.state.subscriptionPlan === "free" && (
+              <Box margin={{top: "30px"}} gap="15px"> 
+                <Box
+                  onClick={this.toggleModalPricing}
+                  background="#EEEEEE"
+                  round="xsmall"
+                  pad="xsmall"
+                  width="160px"
+                  height="40px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator="#BAD6DB"
+                >
+                  <Text size="14px" weight="bold"> Pricing options </Text>
+                </Box>
+                {this.state.showModalPricing && (
+                  <Layer
+                    onEsc={this.toggleModalPricing}
+                    onClickOutside={this.toggleModalPricing}
+                    modal
+                    responsive
+                    animation="fadeIn"
+                    style={{
+                      width: "1000px",
+                      height: "65%",
+                      borderRadius: 15,
+                      padding: 0,
+                    }}
+                  >
+                    <PricingPlans 
+                      callback={this.toggleModalPricing}
+                      showDemo={false}
+                      headerTitle={false}
+                    />
+
+                  </Layer>
+                )}
+              </Box>
             )}
           </Box>
-          </>
 
 
         )}
@@ -1078,14 +1107,10 @@ export default class EditTalkModal extends Component<Props, State> {
               gap="xsmall"
               width="99.7%"
               background="#eaf1f1"
-              height="10vw"
               style={{
+                minHeight: "50px",
                 borderBottomLeftRadius: "15px",
                 borderBottomRightRadius: "15px",
-                position: "sticky",
-                bottom: 0,
-                // minHeight: "60px",
-                zIndex: 10,
               }}
             >
               {this.state.activeSection === 1 && (
