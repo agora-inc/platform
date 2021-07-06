@@ -546,7 +546,7 @@ class TalkRepository:
                     auto_accept_custom_institutions={auto_accept_custom_institutions}
 
                 WHERE id = {talkId};'''
-            
+
             self.db.run_query(query)
 
             # Update Email reminders
@@ -1078,6 +1078,34 @@ class TalkRepository:
         except Exception as e:
             raise Exception(f"notifyCommmunityAboutNewTalk: exception: {e}")
 
+    # --------------------------------------------
+    # Talks: presentation slides methods
+    # --------------------------------------------
+    def addSlides(self, talkId):
+        query = f'UPDATE Talks SET has_slides=1 WHERE id = {talkId};'
+        self.db.run_query(query)
+
+    def getSlidesLocation(self, talkId):
+        # NOTE: only supports .pdf for now
+        query = f'SELECT has_slides FROM Talks WHERE id = {talkId};'
+        res = self.db.run_query(query)
+
+        if res[0]["has_slides"] == 1:
+            return f"/home/cloud-user/plateform/agora/storage/slides/{talkId}.pdf"
+        else:
+            return "no slides found."
+
+    def removeSlides(self, talkId):
+        query = f'UPDATE Talks SET has_slides=0 WHERE id = {talkId}'
+        self.db.run_query(query)
+
+        file_path = self.getSlidesLocation(talkId)
+        try:
+            os.remove(file_path)
+            return "ok"
+        except Exception as e:
+            app.logger.error("Error removing or closing downloaded file handle", e)
+            return str(e)
     
         # fetch configs from talk
     def isEmailAutoAcceptedToTalk(self, email, talk_id):

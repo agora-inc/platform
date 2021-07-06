@@ -126,18 +126,20 @@ export default class Clapping extends Component<Props, State> {
           align="center"
           pad="small"
           focusIndicator={false}
-          height="60px"
-          background="white"
+          height="50px"
+          background="#EAF1F1"
+          hoverIndicator="#BAD6DB"
           round="small"
+          style={{border: "0.5px solid"}}
           onClick={()=>{
             if(this.props.onClick) {
               this.props.onClick()
             }
             this.startClapping()
           }}
-          style={{ border: "3.5px solid black" }}
+          // style={{ border: "3.5px solid black" }}
         >
-          <Text weight="bold" color="black" size="16px">
+          <Text weight="bold" color="black" size="14px">
             Thank the speaker
           </Text>
         </Box>}
@@ -152,7 +154,7 @@ export default class Clapping extends Component<Props, State> {
                 right: "100px",
               }}
             >
-              Press the space bar to clap
+              Press "space" to clap
             </Heading>
           </Layer>
         )}

@@ -431,7 +431,7 @@ def avatar():
         channelId = request.form["channelId"]
         file = request.files["image"]
         fn = f"{channelId}.jpg"
-        file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/avatars/{fn}")
         channels.addAvatar(channelId)
 
         app.logger.debug(f"Agora with id {request.form['channelId']} updated avatar")
@@ -458,7 +458,7 @@ def cover():
         file = request.files["image"]
         print(file)
         fn = f"{channelId}.jpg"
-        file.save(f"/home/cloud-user/plateform/agora/images/covers/{fn}")
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/covers/{fn}")
         channels.addCover(channelId)
         
         app.logger.debug(f"Agora with id {request.form['channelId']} updated banner")
@@ -1230,6 +1230,46 @@ def registrationStatusForTalk():
     userId = int(request.args.get("userId"))
         
     return jsonify(talks.registrationStatusForTalk(talkId, userId))
+
+# --------------------------------------------
+# Talks: presentation slides routes
+# --------------------------------------------
+@app.route('/talks/slides', methods=["POST", "GET", "DELETE"])
+def presentationSlides():
+    # NOTE: pdf only atm.
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if request.method == "POST":
+        logRequest(request)
+        # if not checkAuth(request.headers.get('Authorization')):
+        #     return exceptions.Unauthorized("Authorization header invalid or not present")
+        talkId = request.form["talkId"]
+        file = request.files["slides"]
+        print(file)
+        fn = f"{talkId}.pdf"
+        file.save(f"/home/cloud-user/plateform/agora/storage/slides/{fn}")
+        talks.addSlides(talkId)
+        
+        return jsonify({"filename": fn})
+        
+    if request.method == "GET":
+        if "talkId" in request.args:
+            talkId = int(request.args.get("talkId"))
+            fn = talks.getSlidesLocation(talkId)
+            return send_file(fn, mimetype="application/pdf")
+        
+
+    if request.method == "DELETE":
+        params = request.json 
+        print(params)
+        talkId = params["talkId"]
+        talks.removeSlides(talkId)
+
+        app.logger.debug(f"talk with id {talkId} removed slides")
+
+        return jsonify("ok")
+
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------

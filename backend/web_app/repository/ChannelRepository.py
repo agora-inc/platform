@@ -145,7 +145,7 @@ class ChannelRepository:
         res = self.db.run_query(query)
 
         if res[0]["has_avatar"] == 1:
-            return f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
+            return f"/home/cloud-user/plateform/agora/storage/images/avatars/{channelId}.jpg"
         else:
             return f"/home/cloud-user/plateform/agora/frontend/public/agora_default_avatar_channel_v2.png"
 
@@ -166,9 +166,9 @@ class ChannelRepository:
         res = self.db.run_query(query)
 
         if res[0]["has_cover"] == 1:
-            return f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
+            return f"/home/cloud-user/plateform/agora/storage/images/covers/{channelId}.jpg"
         else:
-            return f"/home/cloud-user/plateform/agora/images/covers/default.jpg"
+            return f"/home/cloud-user/plateform/agora/storage/images/covers/default.jpg"
 
     def getContactAddresses(self, channelId):
         query = f"SELECT * FROM ChannelContacts WHERE channel_id = {channelId}"
