@@ -2,19 +2,21 @@
     TODO: 
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
+from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
-
+from payment.apis.StripeApi import StripeApi
 from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
 
+import stripe
 
 users = UserRepository.UserRepository()
 tags = TagRepository.TagRepository()
@@ -28,10 +30,17 @@ channels = ChannelRepository.ChannelRepository()
 search = SearchRepository.SearchRepository()
 invitations = InvitedUsersRepository.InvitedUsersRepository()
 mailinglist = MailingListRepository.MailingListRepository()
+credits = CreditRepository.CreditRepository()
+products = ProductRepository.ProductRepository()
+paymentsApi = StripeApi()
+channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
+# paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 
+BASE_URL = "http://localhost:3000"
+# BASE_URL = "https://agora.stream/"
 
-# BASE_API_URL = "http://localhost:8000"
-BASE_API_URL = "https://agora.stream/api"
+# BASE_API_URL = "https://agora.stream/api"
+BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
@@ -234,8 +243,12 @@ def updatePublic():
 # --------------------------------------------
 @app.route('/channels/channel', methods=["GET"])
 def getChannelByName():
-    name = request.args.get("name")
-    return jsonify(channels.getChannelByName(name))
+    if "name" in request.args:
+        name = request.args.get("name")
+        return jsonify(channels.getChannelByName(name))
+    elif "id" in request.args:
+        id = request.args.get("id")
+        return jsonify(channels.getChannelById(id))
 
 @app.route('/channels/all', methods=["GET"])
 def getAllChannels():
@@ -306,33 +319,6 @@ def getInvitedMembersForChannel():
 
     channelId = int(request.args.get("channelId"))
     return jsonify(invitations.getInvitedMembersEmails(channelId))
-
-########## Mailing list methods #############
-
-@app.route('/channels/mailinglist/add', methods=["POST", "OPTIONS"])
-def addToMailingList():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-        
-    # if not checkAuth(request.headers.get('Authorization')):
-    #     return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    params = request.json
-
-    return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
-
-@app.route('/channels/mailinglist', methods=["GET", "OPTIONS"])
-def getMailingList():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    channelId = int(request.args.get("channelId"))
-    return jsonify(mailinglist.getMailingList(channelId))
-
-############################################
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 def addUserToChannel():
@@ -668,6 +654,29 @@ def getChannelsWithTopic():
     offset = int(request.args.get("offset"))
     return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
 
+# --------------------------------------------
+# x mailing list methods
+# --------------------------------------------
+@app.route('/channels/mailinglist/add', methods=["POST", "OPTIONS"])
+def addToMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
+    params = request.json
+
+    return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
+
+@app.route('/channels/mailinglist', methods=["GET", "OPTIONS"])
+def getMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(mailinglist.getMailingList(channelId))
 
 # --------------------------------------------
 # x Membership ROUTES
@@ -1548,7 +1557,7 @@ def fullTextSearch():
     return jsonify(results)
 
 # --------------------------------------------
-# METATAG ROUTES (this is a hack)
+# METATAG ROUTES (this is a hack for link sharing on social media)
 # --------------------------------------------
 @app.route('/event-link', methods=["GET"])
 def eventLinkRedirect():
@@ -1612,3 +1621,320 @@ def channelLinkRedirect():
         return render_template(res_string)
     except Exception as e:
         return jsonify(str(e))
+
+# --------------------------------------------
+# Products
+# --------------------------------------------
+@app.route('/products/streaming', methods=["GET"])
+def getStreamingProductById():
+    err = ""
+    try:
+        product_id = request.args.get("productId")
+        return jsonify(
+            products.getStreamingProductById(product_id)
+            )
+    except Exception as e:
+        err = str(e) + "; "
+
+    try:
+        tier = request.args.get("tier") # = tier1 and tier2
+        product_type = request.args.get("productType") # = 'credits' or 'subscription'
+        aud_size = request.args.get("audienceSize") # = 'small' or 'big'
+        return jsonify(
+            products.getStreamingProductIdByFeatures(tier, product_type, aud_size)
+            )
+    except Exception as e:
+        err += str(e)
+
+    return jsonify(e)
+
+# --------------------------------------------
+# CREDITS
+# --------------------------------------------
+@app.route('/credits/talk/used', methods=["GET"])
+def getUsedStreamCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getUsedStreamCreditForTalk(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/channel/available', methods=["GET"])
+def getAvailableStreamCreditForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        return jsonify(credits.getAvailableStreamCreditForChannel(channel_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/available', methods=["GET"])
+def getAvailableStreamCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getAvailableStreamCreditForTalk(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/add', methods=["GET"])
+def addStreamCreditToTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        increment = request.args.get("increment")
+
+        return jsonify(credits.addStreamCreditToTalk(talk_id, increment))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/channel/add', methods=["GET"])
+def addStreamingCreditToChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        increment = request.args.get("increment")
+
+        return jsonify(credits.addStreamingCreditToChannel(channel_id, increment))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/increment', methods=["GET"])
+def upgradeStreamTalkByOne():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.upgradeStreamTalkByOne(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/max_audience', methods=["GET"])
+def getMaxAudienceForCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getMaxAudienceForCreditForTalk(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+# --------------------------------------------
+# SUBSCRIPTIONS
+# --------------------------------------------
+@app.route('/subscriptions/channel', methods=["GET"])
+def getActiveSubscriptionForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        product_id = request.args.get("productId")
+
+        return jsonify(channelSubscriptions.getActiveSubscriptionId(channel_id, product_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/subscriptions/channel/all', methods=["GET"])
+def getAllActiveSubscriptionsForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        return jsonify(channelSubscriptions.getActiveSubscriptions(channel_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/subscriptions/channel/cancel', methods=["GET"])
+def cancelSubscriptionForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        product_id = request.args.get("productId")
+
+        # get subscription_id
+        subscription_id = channelSubscriptions.getActiveSubscriptionId(channel_id, product_id)
+
+        # set stop subscription date in stripe
+        paymentsApi.stopSubscriptionRenewal(subscription_id)
+
+        # status to "interrupted" in DB 
+        channelSubscriptions.interruptSubscription(subscription_id)
+        
+        return "ok"
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/subscriptions/channel/cancelall', methods=["GET"])
+def cancelAllSubscriptionsForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+
+        # A. get all active channel subscriptions and cancel all of them
+        # get subscription_id
+        subscriptions = channelSubscriptions.getActiveSubscriptions(channel_id)
+        for subscription in subscriptions:
+            sub_id = subscription["stripe_subscription_id"]
+
+            # set stop subscription date in stripe
+            paymentsApi.stopSubscriptionRenewal(sub_id)
+
+            # status to "interrupted" in DB 
+            channelSubscriptions.interruptSubscription(sub_id)
+        
+        return "ok"
+    except Exception as e:
+        return jsonify(str(e))
+
+# --------------------------------------------
+# PAYMENTS
+# --------------------------------------------
+@app.route('/payment/create-checkout-session', methods=["GET"])
+def getStripeSessionForProduct():
+    product_id = request.args.get("productId")
+    user_id = request.args.get("userId")
+    quantity = request.args.get("quantity")
+
+    try:
+        # TODO: generalisation for later:
+        # product_class = products.getProductlassFromId(product_id)
+        product_class = "channel_subscription"
+
+        if product_class == "channel_subscription":
+            channel_id = request.args.get("channelId")
+            
+            success_url = os.path.join(BASE_URL, "thankyou", "success", channel_id)
+            url_cancel = os.path.join(BASE_URL, "thankyou", "error", channel_id)
+            
+            # Create checkout session
+            res = paymentsApi.get_session_for_streaming_products(
+                product_id,
+                success_url,
+                url_cancel,
+                quantity
+            )
+
+            # Store checkoutId in DB
+            channelSubscriptions._addCheckoutSubscription(
+                product_id,
+                res["checkout_session_id"],
+                channel_id,
+                user_id
+                )
+            
+            return jsonify(res)
+    except Exception as e:
+        return jsonify(str(e))
+
+# NOTE: handling of responses Stripe after checkouts and invoices
+@app.route('/payment/stripe_webhook', methods=['POST'])
+def stripe_webhook():
+    '''
+    Hack to handle events easily: https://codenebula.io/stripe/node.js/2019/05/02/using-stripe-webhooks-to-handle-failed-subscription-payments-node-js/
+    Full doc: https://stripe.com/docs/billing/subscriptions/overview#subscription-events
+
+    Tracked situations, associated stripe events, and summary logic:
+        - 1. checkout to pay subscription:
+            - 'checkout.session.completed'
+            - logic: use "checkout_id" to add "subscription_id" to line in DB with "checkout" status
+
+        - 2. payment first subscription: 
+            - 'invoice.paid'
+            - logic: grab "subscription_id" and update status in ChannelSubscription as "active"
+
+        # Ignore 3; taken care in the Dashboard (email is sent to user with stripe retrial link. See: https://support.stripe.com/questions/handling-recurring-payments-that-require-customer-action)
+        # - 3. failure payment first subscription: 
+        #     -'invoice.payment_action_required' (= needs action from customer)
+        #     - logic: send email 
+        #     - invoice.payment_failed
+        #     - logic: db 'status' in ChannelSubscription is "unpaid"
+
+        - 4. successful renewal subscription: 
+            - customer.subscription.updated (subscription status is "active")
+            - logic: if status is "active", update line.
+
+        - 5. failure renewal subscription: 
+            - customer.subscription.updated (subscription status becomes "past_due". After 4 trials, it becomes "unpaid": this is set in dashboard https://dashboard.stripe.com/settings/billing/automatic)
+            - logic:
+                # - if past_due: change subscription status in DB as "pending_payment"  
+                - if past_due: do nothing
+                - after 4 trials: change subscription status into "unpaid"
+
+        - 6. cancellation subscription or upgrade plans: 
+            - customer.subscription.updated (subscription status becomes "cancelled")
+            - logic: update subscription line into 'cancelled'
+
+    Handling:
+        - 'checkout.session.completed' (1)
+        - 'invoice.paid' (2)
+        - 'customer.subscription.updated' (4, 5)
+        - 'customer.subscription.deleted' (6)
+    
+    NOTE: we do not track payments internally (see dashboard Stripe for that)
+    '''
+    # Request too big (protection mechanism; Remy)
+    if request.content_length > 1024 * 1024:
+        return 400
+
+    payload = request.get_data()
+    sig_header = request.environ.get('HTTP_STRIPE_SIGNATURE')
+
+    try:
+        # Handling of all the responses
+        event = paymentsApi._construct_stripe_event_from_raw(payload, sig_header)
+
+        # A. Handle successful checkout sessions (Sent when a customer clicks the Pay or Subscribe button in Checkout, informing you of a new purchase.)
+        if event['type'] == 'checkout.session.completed':
+            checkout_id = event["data"]["object"]["id"]
+
+            # TODO: generalisation for later:
+            # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
+            # product_class = products.getProductlassFromStripeId(stripe_product_id)
+            product_class = "channel_subscription"
+
+            # 1. If StreamingSubscription: add a line in DB and add customer in PaymentHistory
+            if product_class == "channel_subscription":
+                stripe_subscription_id = event["data"]["object"]["subscription"]
+                channelSubscriptions._addStripeSubscriptionId(
+                    checkout_id,
+                    stripe_subscription_id
+                )
+            # 2. If credits
+            else:
+                return NotImplementedError
+
+        # B. Handle paid invoice 
+        elif event['type'] == 'invoice.paid':
+            # TODO: generalisation for later:
+            # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
+            # product_class = products.getProductlassFromStripeId(stripe_product_id)
+            product_class = "channel_subscription"
+
+            #  Update subscription into active
+            if product_class == "channel_subscription":
+                stripe_subscription_id = event["data"]["object"]["subscription"]
+
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, status="active"
+                )
+
+        # C. Changes of status of subscription
+        # (Stripe: "Sent each billing interval if there is an issue with your customer’s payment method.")
+        elif event['type'] == "customer.subscription.updated":
+            stripe_subscription_id = event["data"]["object"]["id"]
+            subscription_status = event["data"]["object"]["status"]
+
+            if subscription_status == "active":
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, status="active"
+                )
+
+            elif subscription_status == "past_due":
+                # do nothing here 
+                pass
+
+            elif subscription_status == "cancelled":
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, 
+                    status="cancelled"
+                    )
+
+        # C. Subscriptions that are changed into cancelled (Stripe dashboard: after 30 days unpaid. https://dashboard.stripe.com/settings/billing/automatic)
+        #  - Cancelled subscriptions
+        elif event['type'] == "customer.subscription.deleted":
+            stripe_subscription_id = event["data"]["object"]["id"]
+
+            channelSubscriptions.updateSubscriptionStatus(
+                stripe_subscription_id=stripe_subscription_id, status="cancelled"
+            )
+
+        return {}
+
+    except Exception as e:
+        return {}, 400

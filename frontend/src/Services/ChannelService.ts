@@ -15,6 +15,10 @@ const getChannelByName = (name: string, callback: any) => {
   get(`channels/channel?name=${name}`, callback);
 };
 
+const getChannelById = (id: number, callback: any) => {
+  get(`channels/channel?id=${id}`, callback);
+};
+
 const createChannel = (
   name: string,
   description: string,
@@ -477,16 +481,9 @@ export type Channel = {
 export const ChannelService = {
   getAllChannels,
   getTrendingChannels,
+  getChannelById,
   getChannelByName,
   createChannel,
-  ///////////////////////
-  // Mailing List methods
-  ///////////////////////
-  addToMailingList,
-  getMailingList,
-  removeFromMailingList,
-  addInvitedMembersToChannel,
-  getInvitedMembersForChannel,
   getChannelsForUser,
   getUsersForChannel,
   getRoleInChannel,
@@ -506,6 +503,14 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
+  ///////////////////////
+  // Mailing List methods
+  ///////////////////////
+  addToMailingList,
+  getMailingList,
+  removeFromMailingList,
+  addInvitedMembersToChannel,
+  getInvitedMembersForChannel,
   ////////////////////////
   // Channel Topic methods
   ////////////////////////

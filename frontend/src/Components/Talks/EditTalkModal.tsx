@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import {
   Box,
+  CheckBox,
   Text,
   TextInput,
   TextArea,
-  CheckBox,
   Calendar,
   MaskedInput,
   Select,
@@ -25,7 +25,6 @@ import { InlineMath } from "react-katex";
 import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
-import { UrlEncryption } from "../Core/Encryption/UrlEncryption";
 
 
 export type Reminder = {
@@ -286,7 +285,6 @@ export default class EditTalkModal extends Component<Props, State> {
               this.props.onFinishedCallback();
             }
           );
-          this.onEditStreamingLinkCallback(talk)
         }
       );
     } else {
@@ -339,10 +337,6 @@ export default class EditTalkModal extends Component<Props, State> {
               });
             }
           );
-          // Encode URL
-          console.log(talk.link)
-
-          this.onEditStreamingLinkCallback(talk)
         }
       );
     }
@@ -1200,7 +1194,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   onChange={(e) => this.setState({ talkSpeakerURL: e.target.value })}
                 />
               </Box>
-
               <Box width="100%" gap="5px" margin={{top: "15px"}}>
                 <Box direction="row" gap="small">
                   <Box margin={{"right": "70px"}}>
@@ -1221,7 +1214,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                   Preview <InlineMath math={"{\\small \\LaTeX}"} />
                 </Box>
-
                 {!this.state.latex && (
                   <TextArea
                     style={{height: "240px"}}
@@ -1236,7 +1228,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   )
                 )}
               </Box>
-
               <Box width="100%" gap="5px">
                 <Text size="14px" weight="bold" color="black">
                     Target audience
@@ -1252,9 +1243,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       }
                     />
               </Box>
-
             </OverlaySection>
-
             
           </Box>
           <Box width="66%" direction="column">
@@ -1327,20 +1316,14 @@ export default class EditTalkModal extends Component<Props, State> {
                   </Box>
                 </OverlaySection>
               </Box>
-
               <Box 
                 direction="column" 
                 width="50%"
                 margin={{left: "large", right: "xsmall", top:"6px", bottom: "10px"}}
               > 
                 <OverlaySection heading="Link to event">
-
-
-
-
                 <TextInput
-                    disabled={this.state.link == '_agora.stream_tech'}
-                    value={this.state.link == '_agora.stream_tech'?"https://agora.stream/":this.state.link}
+                    value={this.state.link}
                     placeholder="https://zoom.us/1234"
                     onChange={(e) => this.setState({ link: e.target.value })}
                   />
@@ -1363,7 +1346,6 @@ export default class EditTalkModal extends Component<Props, State> {
                       </ReactTooltip>
                   </Text>
                 </OverlaySection>
-
                 <OverlaySection heading="Access and visibility">
                   <Box width="100%" gap="5px" margin={{top: "10px"}}>
                     <Box direction="row" gap="small">
@@ -1387,7 +1369,6 @@ export default class EditTalkModal extends Component<Props, State> {
                       }
                     />
                   </Box>
-
               <Box width="100%" gap="5px" margin={{top: "5px"}}>
                 <Box direction="row" gap="small">
                   <Text size="14px" weight="bold" color="black">
@@ -1398,7 +1379,6 @@ export default class EditTalkModal extends Component<Props, State> {
                     Decide who is able to see the talk information. It will be hidden to everyone else.
                   </ReactTooltip>
                 </Box>
-
                 <Select
                   dropAlign={{ bottom: "top" }}
                   focusIndicator={false}
@@ -1411,9 +1391,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   }
                 />
               </Box>
-
-
-
                 </OverlaySection>
               </Box>
             </Box>

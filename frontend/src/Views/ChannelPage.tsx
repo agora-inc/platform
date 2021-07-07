@@ -378,11 +378,11 @@ export default class ChannelPage extends Component<Props, State> {
 
   banner = () => {
     return (
-      <Box width="100vw" background="white" round="10px">
+      <Box width="75vw" background="white" round="10px">
         <Box
           direction="row"
           justify="between"
-          height="33vw"
+          height="25vw"
         >
           <Image src={this.getImageUrl()} style={this.getCoverBoxStyle()} />
         </Box>

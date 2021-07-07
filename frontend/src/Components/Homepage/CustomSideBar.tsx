@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Sidebar } from "grommet";
 import TrendingChannelsList from "./TrendingChannelsList";
-import SubscribedChannelsList from "../SubscribedChannelsList";
+import SubscribedChannelsList from "../Account/SubscribedChannelsList";
 import PopularTagsBox from "./PopularTagsBox";
 import { User } from "../../Services/UserService";
 
