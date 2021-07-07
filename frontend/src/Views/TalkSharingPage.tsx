@@ -63,7 +63,7 @@ export default class TalkSharingPage extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showTalkId: this.getTalkIdFromUrl(),
-      subscriptionPlan: "free", // "free", "endtoend", "excellence"
+      subscriptionPlan: "excellence", // "free", "endtoend", "excellence"
     };
   }
 
@@ -291,7 +291,9 @@ export default class TalkSharingPage extends Component<Props, State> {
 
           <CoffeeHangoutRoom
             talk={this.state.talk}
-            user={this.state.user}/>
+            user={this.state.user}
+            disabled={this.state.subscriptionPlan !== "excellence"}
+          />
           </Box>
         </Box>
       </>

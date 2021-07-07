@@ -47,7 +47,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           }}
         >
           <Box alignSelf="center" fill={true} pad="20px" >
-            <Text size="16px" color="black" weight="bold" >
+            <Text size="16px" color="black" weight="bold" margin={{left: "10px"}} >
               Empower your community!
             </Text>
           </Box>
@@ -64,7 +64,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         </Box>
       )}
 
-      <Box width="95%" margin={{left: "0px"}} > 
+      <Box width="95%" margin={{left: "2%"}} > 
 
         <Box direction="row" gap="10px" align="center" margin={{bottom: "20px", left: "10px"}}> 
           <Text size="14px" style={{fontStyle: "italic"}} > 

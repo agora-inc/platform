@@ -12,6 +12,7 @@ var moment = require("moment");
 interface Props {
     user: User | null;
     talk: Talk;
+    disabled: boolean;
 }
   
 interface State {
@@ -134,19 +135,32 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                 <>
                 {!this.cafeteriaOpened() || (
                     <Box align="center" data-tip data-for='grab_coffee_button_before'>
-                    <a
-                        style={{ width: "100%", textDecoration: "none" }}
-                        href={"https://gather.town/app/ZdQRhpTeDNaBiV2P/agora.stream%20Cafeteria"}
-                        target="_blank"
-                    >
-                        <Button
-                            width={"150px"}
-                            height={"50px"}
-                            onClick={()=>{}}
-                            text={"Grab an e-coffee"}
-                            buttonType="mainAction"
-                        />
-                    </a>
+                    {!this.props.disabled && (
+                      <a
+                          style={{ width: "100%", textDecoration: "none" }}
+                          href={"https://gather.town/app/ZdQRhpTeDNaBiV2P/agora.stream%20Cafeteria"}
+                          target="_blank"
+                      >
+                          <Button
+                              width={"160px"}
+                              height={"35px"}
+                              onClick={()=>{}}
+                              text={"Grab an e-coffee"}
+                              buttonType="mainAction"
+                          />
+                      </a>
+                    )}
+                    {this.props.disabled && (
+                      <Button
+                        width={"160px"}
+                        height={"35px"}
+                        disabled={this.props.disabled}
+                        fill="#d5d5d5"
+                        onClick={()=>{}}
+                        text={"Grab an e-coffee"}
+                        buttonType="mainAction"
+                      />
+                    )}
 
                     <ReactTooltip id="grab_coffee_button_before" effect="solid" place="bottom">
                         Chat with other seminar participants and speakers; cafeteria remains open 2 hours after the end of the seminar.
@@ -158,6 +172,8 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                         <Button
                             width={renderMobileView ? "300px" : "500px"}
                             height={"50px"}
+                            fill="#d5d5d5"
+                            disabled={true}
                             onClick={()=>{}}
                             text={this.showTimeUntil()}
                             buttonType="mainAction"
