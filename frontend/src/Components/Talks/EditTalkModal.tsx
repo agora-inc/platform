@@ -631,8 +631,10 @@ export default class EditTalkModal extends Component<Props, State> {
     var auto_accept = "'Automatically accepting a registration' means that the person registering to your event will automatically receive its details by email if they belong to one of the below group.";
     var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
     "Example: ox.ac.uk, cam.ac.uk"
-
     const numbers = [1, 2, 3, 4, 5];
+
+    console.log("Complete?", this.isComplete())
+    console.log("Missing: ", this.isMissing())
 
     return (
       <>
@@ -645,7 +647,7 @@ export default class EditTalkModal extends Component<Props, State> {
           animation="fadeIn"
           style={{
             width: 650,
-            maxHeight: "75%",
+            maxHeight: "80%",
             borderRadius: 15,
             // border: "3.5px solid black",
             padding: 0,
@@ -664,7 +666,7 @@ export default class EditTalkModal extends Component<Props, State> {
               }}
             >
               <Box pad="20px" alignSelf="center">
-                <Text size="16px" color="black" weight="bold"  >
+                <Text size="16px" color="black" weight="bold" margin={{left: "10px"}}  >
                   {this.props.talk ? "Edit talk" : "New talk"}
                 </Text>
               </Box>
@@ -1058,7 +1060,7 @@ export default class EditTalkModal extends Component<Props, State> {
               <Box margin={{top: "30px"}} gap="15px"> 
                 <Box
                   onClick={this.toggleModalPricing}
-                  background="#EEEEEE"
+                  background="#CCCCCC"
                   round="xsmall"
                   pad="xsmall"
                   width="160px"
@@ -1108,7 +1110,7 @@ export default class EditTalkModal extends Component<Props, State> {
               width="99.7%"
               background="#eaf1f1"
               style={{
-                minHeight: "50px",
+                minHeight: "60px",
                 borderBottomLeftRadius: "15px",
                 borderBottomRightRadius: "15px",
               }}
