@@ -27,6 +27,7 @@ interface State {
   registered: boolean;
   registrationStatus: string;
   showTalkId: number;
+  subscriptionPlan: string; // TO BE DELETED
 }
 
 export default class TalkSharingPage extends Component<Props, State> {
@@ -62,6 +63,7 @@ export default class TalkSharingPage extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showTalkId: this.getTalkIdFromUrl(),
+      subscriptionPlan: "free", // "free", "endtoend", "excellence"
     };
   }
 

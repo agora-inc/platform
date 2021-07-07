@@ -83,7 +83,7 @@ interface State {
   autoAcceptCustomInstitutions: boolean, 
 
   showModalPricing: boolean,
-  subscriptionPlan: string,
+  subscriptionPlan: string, // TO BE DELETED
   
   // acceptedDomains: string[];
   //(below will be added when we will allow addition of extra institutions)
