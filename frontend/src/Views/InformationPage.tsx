@@ -64,7 +64,7 @@ export default class InformationPage extends Component<Props, State> {
                 Our vision
               </Text>
             </Box>
-            <Text>A couple clicks to open the doors of any academic seminar and connect with any academic communities.</Text>
+            <Text weight="bold" size="22px">A couple clicks to open the doors of any seminar and connect with any academic communities.</Text>
 
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "100px") }}>
@@ -107,59 +107,50 @@ export default class InformationPage extends Component<Props, State> {
             }
             >
 
-              <Box gridArea="block_1" alignContent="start">
+              <Box gridArea="block_4" alignContent="start">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Carry on with the original mission of the founders of internet
+                  Connect academic communities
                 </Text>
                 <Text size="18px">
-                  In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. Its potential and
-
-
-                  While we deeply believe in the values carried out by this revolution, we also see the huge unexploited potential of 
-                  modern technologies at the service of researchers to broadly promote their research and reach out to the relevant audience.
-
+                  In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
+                  While the original network only consisted in research groups from all around the world, 
+                  the many problems it palliated rapidly led to a massive democratisation that completely diluted the former in the mass.
+                  We want to offer an easy way to every academics to rapidly and efficiently search and connect with any community.
                 </Text>
               </Box>
 
               <Box gridArea="block_2" alignContent="start">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                Allow every academic, independently of its location or affiliation, to be an active member of the network
+                  Give equal chances to any academics to be part of any communities
                 </Text>
                 <Text size="18px">
-                  Online streaming technologies offer the tools to broadcast seminars in every place of the world, 
-                  democratizing access to world-class research and reducing the carbon footprint 
-                  associated with scholars' countless travels.
-                
+                  Research is a social activity. However, some academics can experience difficulties connecting and taking part to their community events if they are hosted far from where they are. 
+                  We believe that online streaming technologies can be augmented to palliate to this problem.
                 </Text>
               </Box>
 
               <Box gridArea="block_3" alignContent="start">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                Reduce carbon footprint
+                Facilitate cross-field collaborations
                 </Text>
                 <Text size="18px">
-                  Online streaming technologies offer the tools to broadcast seminars in every place of the world, 
-                  democratizing access to world-class research and reducing the carbon footprint 
-                  associated with scholars' countless travels.
+                  A large class of ground-breaking results arises from the merging of ideas coming from different communities. However, it is not always easy for two different communities to meet and identify common problems 
+                  without an active organisational effort allowing them to be physically present at the same place. We hope to facilitate conversations and collaborations by making the organisation of seminars as easy as possible and by providing a central platform where people can easily jump from a seminar to another.
                 </Text>
               </Box>
 
-              <Box gridArea="block_4" alignContent="start">
+              <Box gridArea="block_1" alignContent="start">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Facilitate cross-discipline collaborations and dialogue
+                  Modernise academic seminars
                 </Text>
                 <Text size="18px">
-                  In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
-                  While we deeply believe in the values carried out by this revolution, we also see the huge unexploited potential of 
-                  modern technologies at the service of researchers to broadly promote their research and reach out to the relevant audience.
-                  The COVID-19 crisis created an outburst of ad hoc solutions 
-                  (e.g. websites hosting excel sheets of talks or nested mailing lists) to advertise the newly online seminars. 
-                  While the majority of online talks are meant to disappear as soon as travel restrictions are lifted, 
-                  we strongly believe that a technological paradigm shift should remain even after the pandemic. 
-                  Indeed, online streaming technologies offer the tools to broadcast seminars in every place of the world, 
-                  democratizing access to world-class research and reducing the carbon footprint 
-                  associated with scholars' countless travels.
-                
+                  The COVID-19 crisis created an outburst of ad hoc solutions (e.g. websites hosting excel sheets of talks or nested mailing lists) 
+                  to run and advertise the newly online seminars. While the majority of online talks are meant 
+                  to disappear as soon as travel restrictions are lifted, we strongly believe that a technological paradigm shift should remain even after the pandemic. 
+                  Indeed, online streaming technologies offer the tools to broadcast seminars in every place of the world, democratizing access to world-class research and reducing the carbon footprint associated with scholars' countless travels.
+                </Text>
+                <Text size="18px">
+                  We believe that the future of seminars is going to be a hybrid mixture of in-person and online audience, and we are building our platform around this vision. 
                 </Text>
               </Box>
             </Grid>
@@ -178,10 +169,10 @@ export default class InformationPage extends Component<Props, State> {
               rows={
                 renderMobileView 
                 ?  [
-                    "300px", "300px", "300px", "300px"
+                    "80px", "80px", "80px"
                   ]
                 : [
-                    "300px", "300px", 
+                    "80px", "80px", 
                   ]
               }
               columns={renderMobileView ? ["100%"] : ['50%', "50%"]}
@@ -194,94 +185,35 @@ export default class InformationPage extends Component<Props, State> {
                     { name: 'block_2', start: [0, 1], end: [0, 1] },
 
                     { name: 'block_3', start: [0, 2], end: [0, 2] },
-                    { name: 'block_4', start: [0, 3], end: [0, 3] },
                   ]
                 :
                   [
                     { name: 'block_1', start: [0, 0], end: [0, 0] },
-                    { name: 'block_2', start: [0, 1], end: [0, 1] },
+                    { name: 'block_2', start: [0, 1], end: [1, 1] },
 
                     { name: 'block_3', start: [1, 0], end: [1, 0] },
-                    { name: 'block_4', start: [1, 1], end: [1, 1] },
                 ]
             }
             >
 
               <Box gridArea="block_1" alignContent="start">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Carry on with the original mission of the founders of internet
-                </Text>
-                <Text size="18px">
-                  In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
-                  While we deeply believe in the values carried out by this revolution, we also see the huge unexploited potential of 
-                  modern technologies at the service of researchers to broadly promote their research and reach out to the relevant audience.
-                  The COVID-19 crisis created an outburst of ad hoc solutions 
-                  (e.g. websites hosting excel sheets of talks or nested mailing lists) to advertise the newly online seminars. 
-                  While the majority of online talks are meant to disappear as soon as travel restrictions are lifted, 
-                  we strongly believe that a technological paradigm shift should remain even after the pandemic. 
-                  Indeed, online streaming technologies offer the tools to broadcast seminars in every place of the world, 
-                  democratizing access to world-class research and reducing the carbon footprint 
-                  associated with scholars' countless travels.
-                
+                We are here to make a positive difference in the world of research.
                 </Text>
               </Box>
 
-              <Box gridArea="block_2" alignContent="start">
+              <Box gridArea="block_2" align="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                Allow every academic, independently of its location or affiliation, to be an active member of the network
-                </Text>
-                <Text size="18px">
-                  In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
-                  While we deeply believe in the values carried out by this revolution, we also see the huge unexploited potential of 
-                  modern technologies at the service of researchers to broadly promote their research and reach out to the relevant audience.
-                  The COVID-19 crisis created an outburst of ad hoc solutions 
-                  (e.g. websites hosting excel sheets of talks or nested mailing lists) to advertise the newly online seminars. 
-                  While the majority of online talks are meant to disappear as soon as travel restrictions are lifted, 
-                  we strongly believe that a technological paradigm shift should remain even after the pandemic. 
-                  Indeed, online streaming technologies offer the tools to broadcast seminars in every place of the world, 
-                  democratizing access to world-class research and reducing the carbon footprint 
-                  associated with scholars' countless travels.
-                
+                We build products we believe in.
                 </Text>
               </Box>
 
               <Box gridArea="block_3" alignContent="start">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                Reduce carbon footprint
-                </Text>
-                <Text size="18px">
-                  In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
-                  While we deeply believe in the values carried out by this revolution, we also see the huge unexploited potential of 
-                  modern technologies at the service of researchers to broadly promote their research and reach out to the relevant audience.
-                  The COVID-19 crisis created an outburst of ad hoc solutions 
-                  (e.g. websites hosting excel sheets of talks or nested mailing lists) to advertise the newly online seminars. 
-                  While the majority of online talks are meant to disappear as soon as travel restrictions are lifted, 
-                  we strongly believe that a technological paradigm shift should remain even after the pandemic. 
-                  Indeed, online streaming technologies offer the tools to broadcast seminars in every place of the world, 
-                  democratizing access to world-class research and reducing the carbon footprint 
-                  associated with scholars' countless travels.
-                
+                We thrive for excellence in a small set of tasks over mediocrity in a large set of them.
                 </Text>
               </Box>
 
-              <Box gridArea="block_4" alignContent="start">
-                <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Facilitate cross-discipline collaborations and dialogue
-                </Text>
-                <Text size="18px">
-                  In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
-                  While we deeply believe in the values carried out by this revolution, we also see the huge unexploited potential of 
-                  modern technologies at the service of researchers to broadly promote their research and reach out to the relevant audience.
-                  The COVID-19 crisis created an outburst of ad hoc solutions 
-                  (e.g. websites hosting excel sheets of talks or nested mailing lists) to advertise the newly online seminars. 
-                  While the majority of online talks are meant to disappear as soon as travel restrictions are lifted, 
-                  we strongly believe that a technological paradigm shift should remain even after the pandemic. 
-                  Indeed, online streaming technologies offer the tools to broadcast seminars in every place of the world, 
-                  democratizing access to world-class research and reducing the carbon footprint 
-                  associated with scholars' countless travels.
-                
-                </Text>
-              </Box>
             </Grid>
 
 
