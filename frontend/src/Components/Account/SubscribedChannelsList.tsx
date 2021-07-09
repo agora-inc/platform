@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
-import Loading from "./Core/Loading";
-import { Channel, ChannelService } from "../Services/ChannelService";
+import Loading from "../Core/Loading";
+import { Channel, ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../Styles/trending-channels-box.css";
-import { User } from "../Services/UserService";
-import SignUpButton from "./Account/SignUpButton";
+import { User } from "../../Services/UserService";
+import SignUpButton from "./SignUpButton";
 import AgoraLogo from "../assets/general/agora_logo_v2.png";
 
 

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid } from "grommet";
 import { Checkbox, Twitter, Linkedin } from "grommet-icons";
-import DonorButton from "../Components/Pricing/DonorButton"
+import DonorButton from "../Components/Core/DonorButton"
 import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
 import seminarPhoto from "../assets/agoraCreationPage/academic_seminars_photo.jpeg"
 
@@ -50,14 +50,13 @@ export default class InformationPage extends Component<Props, State> {
     return (
 
       <Box
-        id="pricing"
-        width="100vw"
+        width="120vw"
         height="auto"
         align="center"
         margin={{ top: "8vh" }}
         // background="color6"
         >
-                  <video
+        <video
           autoPlay loop muted id="background-landing"
           style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
         >
@@ -72,7 +71,7 @@ export default class InformationPage extends Component<Props, State> {
             </Box>
             <Text weight="bold" size="22px">A couple clicks to open the doors of any physical or online academic seminars.</Text>
 
-            <img src={seminarPhoto} style={{width: "180%", alignSelf: "center", marginTop: "80px"}}/>
+            <img src={seminarPhoto} style={{width: "100%", alignSelf: "center", marginTop: "80px"}}/>
 
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "100px") }}>
@@ -225,7 +224,7 @@ export default class InformationPage extends Component<Props, State> {
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "50px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-                Become a member of the revolution 💪
+                Join your forces to ours and become part of this paradigm shift 💪
               </Text>
             </Box>
 

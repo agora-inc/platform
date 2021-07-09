@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import { Box, Layer, Button, TextInput, Text } from "grommet";
-import { StatusCritical, StatusGood } from "grommet-icons";
-import { UserService } from "../../Services/UserService";
-import { Overlay } from "../Core/Overlay";
-import Loading from "../Core/Loading";
-import { relativeTimeThreshold } from "moment";
+
 
 interface Props {
   callback: any;
@@ -28,7 +24,6 @@ export default class DonorButton extends Component<Props, State> {
     this.setState({
       showModal: !this.state.showModal,
     }, ()=> {
-        console.log("here is the state: ", this.state.showModal)
     });
   };
 
@@ -109,13 +104,3 @@ export default class DonorButton extends Component<Props, State> {
     );
   }
 }
-
-
-// color1: "#0C385B",
-// color2: "#025377",
-// color3: "#6DA3C7",
-// color4: "7BA59E",
-// color5: "#BAD6DB",
-// color6: "#EAF1F1",
-// color7: "#D3F930",
-// selected: "#eaf1f1"
