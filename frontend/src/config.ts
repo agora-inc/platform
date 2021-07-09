@@ -1,10 +1,10 @@
 // LIVE CONFIG:
-//export const basePoint = "https://agora.stream"
-//export const baseApiUrl = "https://agora.stream/api";
+export const basePoint = "https://agora.stream"
+export const baseApiUrl = "https://agora.stream/api";
 
 // LOCAL TEST CONFIG;
-export const basePoint = "http://localhost:3000"
-export const baseApiUrl = "http://localhost:8000";
+// export const basePoint = "http://localhost:3000"
+// export const baseApiUrl = "http://localhost:8000";
 
 
 export const antmediaWebSocketUrl = 
