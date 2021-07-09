@@ -250,7 +250,7 @@ export default class InformationPage extends Component<Props, State> {
                 </Box>
               </Box>
 
-              <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "150px") }}>
+              <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "100px" : "150px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
                 About us 👨‍👩‍👧‍👦
               </Text>
