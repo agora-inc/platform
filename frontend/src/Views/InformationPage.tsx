@@ -58,15 +58,15 @@ export default class InformationPage extends Component<Props, State> {
         <Box width={renderMobileView ? "85%" : "70%"} direction="column" margin={{top: "80px"}}>
           <Box direction="row" gap="small" margin={{bottom: "44px"}}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-                Our vision
+                Our vision 🌱
               </Text>
             </Box>
-            <Text weight="bold" size="22px">A couple clicks to open the doors of any seminar and connect with any academic communities.</Text>
+            <Text weight="bold" size="22px">A couple clicks to open the doors of any academic seminar and chat with any academic communities.</Text>
 
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "100px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-              Our missions
+              Our missions 🌎
               </Text>
             </Box>
 
@@ -106,7 +106,7 @@ export default class InformationPage extends Component<Props, State> {
 
               <Box gridArea="block_4" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Provide an efficient gateway for academic events
+                  Provide a centralised gateway for academic events
                 </Text>
                 <Text size="18px">
                   In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
@@ -156,7 +156,7 @@ export default class InformationPage extends Component<Props, State> {
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "100px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-              Our values
+              Our values 💛
               </Text>
             </Box>
 
@@ -214,7 +214,7 @@ export default class InformationPage extends Component<Props, State> {
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "50px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-                Join your forces to ours!
+                Be part of the movement! 💪
               </Text>
             </Box>
 
@@ -229,7 +229,7 @@ export default class InformationPage extends Component<Props, State> {
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Checkbox size="25px" />
-                  <Text size="25px"> <b>Follow</b> us on <a href="https://www.linkedin.com/company/agorastream"><Linkedin/></a> and <a href="https://twitter.com/agorastream"><Twitter/></a> to here out about the trending seminars of the moment and the release of new features</Text>
+                  <Text size="25px"> <b>Follow</b> us on <a href="https://www.linkedin.com/company/agorastream"><Linkedin/></a> and <a href="https://twitter.com/agorastream"><Twitter/></a> to hear out about next trending seminars and the release of new features</Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Box direction="row" alignContent="start" height="18px">
@@ -241,7 +241,7 @@ export default class InformationPage extends Component<Props, State> {
 
               <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "150px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-                About us
+                About us 👨‍👩‍👧‍👦
               </Text>
             </Box>
             <Box margin={{bottom: "150px"}}>
