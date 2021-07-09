@@ -225,7 +225,7 @@ export default class InformationPage extends Component<Props, State> {
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "50px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-                Join your forces to ours and be part of the revolution 💪
+                Become a member of the revolution 💪
               </Text>
             </Box>
 
@@ -257,7 +257,7 @@ export default class InformationPage extends Component<Props, State> {
             </Box>
             <Box margin={{bottom: "150px"}}>
               <Text size="18px">
-                  We are a team of researchers at Imperial College London and the University of Oxford who believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.
+                  We are a team of researchers at Imperial College London and the University of Oxford who believe in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.
                 </Text>
             </Box>
           </Box>
