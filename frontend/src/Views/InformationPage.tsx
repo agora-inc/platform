@@ -2,12 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid } from "grommet";
-import MediaQuery from "react-responsive";
-import { Checkmark, Close, Linkedin,  Twitter} from "grommet-icons";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import { Checkbox, Twitter, Linkedin } from "grommet-icons";
 import DonorButton from "../Components/Pricing/DonorButton"
-
-
+import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
 
 interface Props {
   location: { state: { user: User } };
@@ -78,10 +75,10 @@ export default class InformationPage extends Component<Props, State> {
               rows={
                 renderMobileView 
                 ?  [
-                    "300px", "300px", "300px", "300px"
+                    "auto", "auto", "auto", "auto"
                   ]
                 : [
-                    "300px", "300px", 
+                    "auto", "auto", 
                   ]
               }
               columns={renderMobileView ? ["100%"] : ['50%', "50%"]}
@@ -107,19 +104,19 @@ export default class InformationPage extends Component<Props, State> {
             }
             >
 
-              <Box gridArea="block_4" alignContent="start">
+              <Box gridArea="block_4" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Connect academic communities
+                  Provide an efficient gateway for academic events
                 </Text>
                 <Text size="18px">
                   In 1989, the World Wide Web was created by scientists to facilitate international scientific research communications. 
                   While the original network only consisted in research groups from all around the world, 
                   the many problems it palliated rapidly led to a massive democratisation that completely diluted the former in the mass.
-                  We want to offer an easy way to every academics to rapidly and efficiently search and connect with any community.
+                  We want to offer an easy way to every academics to rapidly and efficiently search and connect with any other research community and their events.
                 </Text>
               </Box>
 
-              <Box gridArea="block_2" alignContent="start">
+              <Box gridArea="block_2" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
                   Give equal chances to any academics to be part of any communities
                 </Text>
@@ -129,7 +126,7 @@ export default class InformationPage extends Component<Props, State> {
                 </Text>
               </Box>
 
-              <Box gridArea="block_3" alignContent="start">
+              <Box gridArea="block_3" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
                 Facilitate cross-field collaborations
                 </Text>
@@ -139,9 +136,9 @@ export default class InformationPage extends Component<Props, State> {
                 </Text>
               </Box>
 
-              <Box gridArea="block_1" alignContent="start">
+              <Box gridArea="block_1" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Modernise academic seminars
+                  Contribute into a paradigm shift towards hybrid academic seminars
                 </Text>
                 <Text size="18px">
                   The COVID-19 crisis created an outburst of ad hoc solutions (e.g. websites hosting excel sheets of talks or nested mailing lists) 
@@ -157,19 +154,17 @@ export default class InformationPage extends Component<Props, State> {
 
 
 
-
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "100px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
               Our values
               </Text>
             </Box>
 
-
             <Grid
               rows={
                 renderMobileView 
                 ?  [
-                    "80px", "80px", "80px"
+                    "100px", "100px", "100px"
                   ]
                 : [
                     "80px", "80px", 
@@ -202,53 +197,58 @@ export default class InformationPage extends Component<Props, State> {
                 </Text>
               </Box>
 
-              <Box gridArea="block_2" align="center">
+              {/* <Box gridArea="block_2" align="center"> */}
+              <Box gridArea="block_2" alignContent="start">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                We build products we believe in.
+                We are bold and build products we believe in.
                 </Text>
               </Box>
 
               <Box gridArea="block_3" alignContent="start">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                We thrive for excellence in a small set of tasks over mediocrity in a large set of them.
+                We thrive for perfection in a small set of tasks over mediocrity in a large set of them.
                 </Text>
               </Box>
 
             </Grid>
 
-
-
-
-            
-
-
-            <Box direction="row" gap="small" margin={{bottom: "100px", top: (renderMobileView ? "50px" : "150px") }}>
+            <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "50px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
                 Join your forces to ours!
               </Text>
             </Box>
-            <Text>Does our mission and value resonate with you? Then join your forces to us! You can help our vision become a reality by</Text>
-            <Box direction="row" gap="10px" margin={{left: "10px", top: "10px", bottom: "100px"}} align="center">
-                  <Checkmark size="18px" />
-                  <Text> Clean and easy-to-use interface for speakers </Text>
+
+            <Box gap="small">
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <Checkbox size="25px" />
+                  <Text size="25px"> <b>Tell</b> about <img src={agoraStreamFullLogo} style={{ height: "24px", margin: 0 }}/> to all your friends and colleagues </Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
-                  <Checkmark size="18px" />
-                  <Text> <b> Upload slides </b> to allow participants can go back and forth </Text>
+                  <Checkbox size="25px" />
+                  <Text size="25px"> <b>Organise</b> and share your seminars with <img src={agoraStreamFullLogo} style={{ height: "25px", margin: 0 }}/>  </Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
-                  <Checkmark size="18px" />
-                  <Text> Participants can <b> request the mic </b> and you have the control </Text>
+                  <Checkbox size="25px" />
+                  <Text size="25px"> <b>Follow</b> us on <a href="https://www.linkedin.com/company/agorastream"><Linkedin/></a> and <a href="https://twitter.com/agorastream"><Twitter/></a> to here out about the trending seminars of the moment and the release of new features</Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
-                  <Checkmark size="18px" />
-                  <Text> LateX supported chat </Text>
+                  <Box direction="row" alignContent="start" height="18px">
+                    <Checkbox size="25px" /><Box width="10px"></Box>
+                    <Text size="25px">  <b>Help us</b> grow faster by </Text><Box width="10px"></Box><DonorButton callback={()=> {}} text={"donating!"}/>
+                  </Box>
                 </Box>
-                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
-                  <Checkmark size="18px" />
-                  <Text> Give a <b> round of applause </b> by pressing your space bar to broadcast a clap </Text>
-                </Box>
- 
+              </Box>
+
+              <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "150px") }}>
+              <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
+                About us
+              </Text>
+            </Box>
+            <Box margin={{bottom: "150px"}}>
+              <Text size="18px">
+                  We are a team of researchers at Imperial College London and the University of Oxford who believes in a connected world where ideas can be exchanged without any friction among inter- and intra-disciplinary communities in an efficient way.
+                </Text>
+            </Box>
           </Box>
 
         </Box>

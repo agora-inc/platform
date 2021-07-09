@@ -4,10 +4,12 @@ import { StatusCritical, StatusGood } from "grommet-icons";
 import { UserService } from "../../Services/UserService";
 import { Overlay } from "../Core/Overlay";
 import Loading from "../Core/Loading";
+import { relativeTimeThreshold } from "moment";
 
 interface Props {
   callback: any;
   open?: boolean;
+  text?: string;
 }
 
 interface State {
@@ -86,7 +88,7 @@ export default class DonorButton extends Component<Props, State> {
     return (
       <Box style={{maxHeight: "30px"}}>
         <Button
-          label="Donate"
+          label={this.props.text ? this.props.text : "Donate"}
           onClick={this.toggleModal}
           style={{
             width: 90,
