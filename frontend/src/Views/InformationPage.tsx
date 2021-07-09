@@ -5,6 +5,8 @@ import { Box, Text, Grid } from "grommet";
 import { Checkbox, Twitter, Linkedin } from "grommet-icons";
 import DonorButton from "../Components/Pricing/DonorButton"
 import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
+import seminarPhoto from "../assets/agoraCreationPage/academic_seminars_photo.jpeg"
+
 
 interface Props {
   location: { state: { user: User } };
@@ -55,13 +57,22 @@ export default class InformationPage extends Component<Props, State> {
         margin={{ top: "8vh" }}
         // background="color6"
         >
+                  <video
+          autoPlay loop muted id="background-landing"
+          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
+        >
+          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4" />
+        </video>
+
         <Box width={renderMobileView ? "85%" : "70%"} direction="column" margin={{top: "80px"}}>
           <Box direction="row" gap="small" margin={{bottom: "44px"}}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
                 Our vision 🌱
               </Text>
             </Box>
-            <Text weight="bold" size="22px">A couple clicks to open the doors of any academic seminar and chat with any academic communities.</Text>
+            <Text weight="bold" size="22px">A couple clicks to open the doors of any physical or online academic seminars.</Text>
+
+            <img src={seminarPhoto} style={{width: "180%", alignSelf: "center", marginTop: "80px"}}/>
 
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "100px") }}>
@@ -214,7 +225,7 @@ export default class InformationPage extends Component<Props, State> {
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "50px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-                Be part of the movement! 💪
+                Join your forces to ours and be part of the revolution 💪
               </Text>
             </Box>
 

@@ -403,7 +403,7 @@ export default class UserManager extends Component<Props, State> {
             style={{ textDecoration: "none" }}
           >
           <Button
-            label={"Our vision"}
+            label={"About us"}
             style={{
               width: 90,
               height: 35,
@@ -460,7 +460,7 @@ export default class UserManager extends Component<Props, State> {
           style={{ textDecoration: "none" }}
         >
           <Button
-            label={"Our vision"}
+            label={"About us"}
             style={{
               width: 90,
               height: 35,
