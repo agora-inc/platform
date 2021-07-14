@@ -16,8 +16,6 @@ import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
-import DonorButton from "../Pricing/DonorButton"
-
 
 
 const makeProfilePublicInfo =
@@ -398,8 +396,30 @@ export default class UserManager extends Component<Props, State> {
     return (
       <>
       <Box margin={{right:"43px"}}>
-        <DonorButton callback={()=>{}}/>
+        <Link
+            to={{ pathname: "/info/welcome" }}
+            style={{ textDecoration: "none" }}
+          >
+          <Button
+            label={"About us"}
+            style={{
+              width: 90,
+              height: 35,
+              fontSize: 15,
+              fontWeight: "bold",
+              padding: 0,
+              color: "0C385B",
+              // margin: 6,
+              backgroundColor: "#D3F930",
+              border: "none",
+              borderRadius: 7,
+            }}
+            hoverIndicator="#D3F930"
+          />
+        </Link>
       </Box>
+
+
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
@@ -433,7 +453,27 @@ export default class UserManager extends Component<Props, State> {
 
   loggedOutStuff = (
     <Box direction="row" align="center" justify="center" gap="xsmall">
-      <DonorButton callback={()=>{}}/>
+        <Link
+          to={{ pathname: "/info/welcome" }}
+          style={{ textDecoration: "none" }}
+        >
+          <Button
+            label={"About us"}
+            style={{
+              width: 90,
+              height: 35,
+              fontSize: 15,
+              fontWeight: "bold",
+              padding: 0,
+              color: "0C385B",
+              // margin: 6,
+              backgroundColor: "#D3F930",
+              border: "none",
+              borderRadius: 7,
+            }}
+            hoverIndicator="#D3F930"
+          />
+        </Link>
       <LoginModal
         open={this.props.showLogin}
         callback={() => {

@@ -8,7 +8,7 @@ import VideoPage from "./Views/VideoPage";
 // import StreamPage from "./Views/StreamPage";
 import TagPage from "./Views/TagPage";
 import AllVideosPage from "./Views/AllVideosPage";
-import HeaderBar from "./Components/HeaderBar";
+import HeaderBar from "./Components/Core/HeaderBar";
 import { Theme } from "./theme";
 import ManageChannelPage from "./Views/ManageChannelPage";
 import Preferences from "./Views/Preferences";

@@ -24,12 +24,16 @@ class ProductRepository:
         return res[0] if len(res) > 0 else []
 
     def getStreamingProductIdByFeatures(self, tier, product_type, aud_size):
-        get_query = f'''
-            SELECT * FROM StreamingProducts
-            WHERE (
-                id = {product_id}
-                AND product_type = {product_type}
-                AND audience_size = {aud_size});
-        '''
-        res = self.db.run_query(get_query)
-        return res[0] if len(res) > 0 else []
+        try:
+            get_query = f'''
+                SELECT * FROM StreamingProducts
+                WHERE (
+                    tier = "{tier}"
+                    AND product_type = "{product_type}"
+                    AND audience_size = "{aud_size}");
+            '''
+
+            res = self.db.run_query(get_query)
+            return res[0] if len(res) > 0 else []
+        except Exception as e:
+            return str(e)

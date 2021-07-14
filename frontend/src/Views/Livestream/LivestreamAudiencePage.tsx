@@ -18,6 +18,8 @@ import {db, API} from '../../Services/FirebaseService'
 import '../../Styles/all-stream-page.css'
 import { FaMicrophone } from "react-icons/fa";
 import Clapping from "../../Components/Streaming/Clapping";
+import { ChannelService } from "../../Services/ChannelService";
+import PDFViewer from "../../Components/PDFViewer";
 
 
 interface Props {
@@ -88,6 +90,10 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   const [isClapping, setClapping] = useState('')
   const [hasMicRequested, setMicRequest] = useState('')
   const [isUnpublishFromRemote, unpublishFromRemote] = useState('')
+  const [slideUrl, setSlideUrl] = useState('')
+  const [isSlideVisible, toggleSlide] = useState(false)
+
+  const [slideShareId, setSlideShareId] = useState('')
   
   const [talkId, setTalkId] = useState('')
   const [callControl, setCallControl] = useState({
@@ -115,6 +121,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       overlay: false,
   })
 
+
   function toggleFullscreen() {
     let fullscreenEl = document.fullscreenElement
     if(fullscreenEl) {
@@ -134,8 +141,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   async function setup() {
     console.log(props)
-    const talkId = props.talkId.toString()
-    let talk = await get_talk_by_id(talkId)
+    const talkId = props.talkId
+    let talk = await get_talk_by_id(talkId.toString())
     setTalkDetail(talk)
     // Setting client as Audience
     agoraClient.setClientRole(localUser.role);
@@ -297,6 +304,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     (async ()=>{
+      let {url} = await TalkService.getSlide(Number(props.talkId))
+      setSlideUrl(url)
       setTalkId(props.talkId.toString())
       join_live_chat()
     })()
@@ -332,7 +341,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         return _d
       }).filter(d=>d.requester_id === localUser.uid).find(d=>d.status === 'GRANTED' || d.status === 'REQUESTED')
 
-      console.log(req)
       
       setMicRequest('')
       if(req) {
@@ -344,9 +352,30 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         unpublishFromRemote(Math.random().toString())
       }
     })
+
+    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
+      let req = snaps.docs.filter(d=>d.exists).map(d=>{
+        let _d = d.data()
+        _d.id = d.id
+        return _d
+      })
+      console.log(req)
+      if(req.length == 0){
+        toggleSlide(false)
+        setSlideShareId('')
+        return
+      }
+      let {url} = await TalkService.getSlide(Number(props.talkId))
+      setSlideUrl(url)
+      
+      setSlideShareId(req[0].id)
+      toggleSlide(true)
+    })
+
     return ()=>{
       unsubs()
       request_unsubs()
+      slide_unsubs()
     }
   }, [talkId])
 
@@ -383,7 +412,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                   <Text margin={{top: '20vh'}}>The admin is going to start the talk soon.</Text>
                 </Grid>
               </Box>:
-              <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable?'screen-share':''}`}
+              <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable || isSlideVisible?'screen-share':''}`}
                 style={{height: '90%', position: 'relative'}}>
                 <Box className='camera-video'>
                   {remoteVideoTrack.map((user)=>(
@@ -395,6 +424,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 { isScreenAvailable && 
                     <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
                 }
+                {isSlideVisible && <PDFViewer url={slideUrl} slideShareId={slideShareId} />}
                 <Box className='call-control' direction='row'>
                   {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
                     <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:

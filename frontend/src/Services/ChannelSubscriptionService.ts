@@ -17,14 +17,12 @@ const getActiveSubscriptionForChannel = (
     get(`subscriptions/channel?channelId=${channelId}&productId=${productId}`, callback);
     };
     
-
 const getAllActiveSubscriptionsForChannel = (
     channelId: number,
     callback: any) => {
     get(`subscriptions/channel/all?channelId=${channelId}`, callback);
     };
     
-
 const cancelSubscriptionForChannel = (
     channelId: number,
     productId: number,
@@ -32,8 +30,33 @@ const cancelSubscriptionForChannel = (
     get(`subscriptions/channel/cancel?channelId=${channelId}&productId=${productId}`, callback);
 };
 
+const cancelAllSubscriptionsForChannel = (
+    channelId: number,
+    callback: any) => {
+    get(`subscriptions/channel/cancelall?channelId=${channelId}`, callback);
+};
+
+const ChannelSubscriptionIsActiveForChannel = (
+    channelId: number,
+    productId: number,
+    callback: any) => {
+    getActiveSubscriptionForChannel(channelId, productId, 
+        (data: any) => {
+            if (data.isArray()){
+                if (data.length > 0) {
+                    return true
+                }
+            } else {
+                return false
+            }
+            callback();
+        });
+};
+
 export const ChannelSubscriptionService = {
     getActiveSubscriptionForChannel,
     getAllActiveSubscriptionsForChannel,
-    cancelSubscriptionForChannel
+    cancelSubscriptionForChannel,
+    cancelAllSubscriptionsForChannel,
+    ChannelSubscriptionIsActiveForChannel
 };

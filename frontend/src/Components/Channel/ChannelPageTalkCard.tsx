@@ -20,6 +20,10 @@ import { textToLatex } from "../Core/LatexRendering";
 import FooterOverlay from "../Talks/Talkcard/FooterOverlay";
 import MediaQuery from "react-responsive";
 import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
+import SlidesUploader from "../Core/SlidesUploader";
+import CopyUrlButton from "../Core/ShareButtons/CopyUrlButton";
+import { encryptIdAndRoleInUrl } from "../Core/Encryption/UrlEncryption"
+import { basePoint } from "../../config";
 
 
 interface Props {
@@ -43,6 +47,7 @@ interface State {
   registered: boolean;
   registrationStatus: string;
   showShadow: boolean;
+  slideUrl?: string;
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -55,6 +60,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showShadow: false,
+      slideUrl: ''
     };
   }
 
@@ -65,6 +71,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   componentDidMount = () => {
     this.checkIfUserCanAccessLink();
     this.checkIfUserCanViewCard();
+    this.fetchSlide()
   };
 
   checkIfAvailableAndRegistered = () => {
@@ -259,9 +266,19 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     });
   };
 
+  onSlideUpload = async (e: any) => {
+    await TalkService.uploadSlide(this.props.talk.id, e.target.files[0], ()=>{})
+    await this.fetchSlide()
+  };
+  fetchSlide = async () => {
+    let {url} = await TalkService.getSlide(this.props.talk.id)
+    this.setState({slideUrl: url})
+  };
+
   render() {
     var renderMobileView = (window.innerWidth < 800);
-    // {((window.innerWidth < 800) && this.state.showModal) ? "860px" : "180px"}
+    var agoraTalk = this.props.talk.link.includes( basePoint + "/livestream")
+
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
@@ -424,23 +441,45 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             )}
           </Box>
         </Box>
-        {this.props.admin && (
-          <Box
-            onClick={() => {
-              this.toggleEdit();
-            }}
-            background="#0C385B"
-            round="xsmall"
-            pad="xsmall"
-            height="40px"
-            justify="center"
-            align="center"
-            focusIndicator={false}
-            hoverIndicator="#0C385B"
-            margin="10px"
-          >
-            <Text size="18px">Edit</Text>
+        {
+          
+          <Box margin={{ top: "10px", bottom: "20px" }}>
+          {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
+          {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
+          {this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>}
+          
+          <SlidesUploader
+            text="Upload slide"
+            onUpload={this.onSlideUpload}
+            />
           </Box>
+        }
+        {this.props.admin && (
+          <Box direction="row" gap="10px" margin={{top: "10px"}}>
+            <Box
+              onClick={() => {
+                this.toggleEdit();
+              }}
+              width={agoraTalk ? "50%" : "100%"}
+              background="#0C385B"
+              round="xsmall"
+              pad="xsmall"
+              height="40px"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#0C385B"
+              
+            >
+              <Text size="16px">Edit</Text>
+            </Box>
+            {agoraTalk && <CopyUrlButton 
+              url={encryptIdAndRoleInUrl("livestream", this.props.talk.id, "speaker")}
+              text={"Link for speaker"} 
+              height="40px"
+              width="50%"
+            /> }
+            </Box>
         )}
         {this.state.showModal && (
           <>

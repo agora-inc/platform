@@ -1,6 +1,8 @@
 import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
+import { baseApiUrl } from "../config";
+import axios from "axios";
 import { Reminder } from "../Components/Talks/EditTalkModal";
 
 const getTalkById = (talkId: number, callback: any) => {
@@ -406,6 +408,38 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
   get(`talks/isavailable?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+//////////////////
+// Slides management
+//////////////////
+const uploadSlide = async (talkId: number, slides: File, callback: any) => {
+  const data = new FormData();
+  data.append("talkId", talkId.toString());
+  data.append("slides", slides);
+  let ret = await axios.post(baseApiUrl + "/talks/slides", data)
+
+  return await getSlide(talkId)
+};
+
+const getSlide = async (talkId: number) => {
+  var CACHE_DELAY = 500
+  let current_time = Math.floor(new Date().getTime() / 1000) * CACHE_DELAY;
+
+  // return { url: baseApiUrl + `/talks/slides?talkId=${talkId}&ts=` + current_time};
+  return { url: "https://arxiv.org/pdf/1806.07366.pdf"};
+};
+
+const removeSlide = async (talkId: number) => {
+  let res = await axios
+    .delete(baseApiUrl + "/talks/slides", {
+      headers: { "Access-Control-Allow-Origin": "*" },
+      data: {
+        talkId: talkId,
+      },
+    })
+    
+  return true
+};
+
 const getViewCountForTalk = (
   talkId: number,
   callback: any
@@ -430,14 +464,6 @@ const increaseViewCountForTalk = (
 const getTrendingTalks = (callback: any) => {
   get("talks/trending", callback);
 };
-
-
-const getUserRoleInTalk = (talkId: number, userId: number, callback: any) => {
-  // query channelId of talk
-
-
-  //
-} 
 
 const sendEmailonTalkScheduling = (talkId: number, callback: any) => {
     get(`talks/sendemailschedule?talkId=${talkId}`, callback);
@@ -497,6 +523,7 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  // Talk registration management
   sendEmailonTalkScheduling,
   sendEmailonTalkModification,
   getReminderTime,
@@ -509,6 +536,10 @@ export const TalkService = {
   registrationStatusForTalk,
   getTalkRegistrations,
   getRegisteredTalksForUser,
+  // Slides management
+  uploadSlide,
+  getSlide,
+  removeSlide,
   // talk views
   increaseViewCountForTalk,
   getViewCountForTalk,

@@ -15,7 +15,6 @@ const VideoPlayerAgora:FunctionComponent<Props> = ({id, stream, style={}, classN
 
   useEffect(()=>{
     let a:any = null
-    console.log(stream)
     if(stream) {
       stream.play(id)
       clearInterval(a)

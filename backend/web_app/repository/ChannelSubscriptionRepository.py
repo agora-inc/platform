@@ -6,7 +6,7 @@
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from app.databases import agora_db
-from payment.apis import StripeApi 
+from payment.apis.StripeApi import StripeApi 
 
 stripeApi = StripeApi()
 mail_sys = sendgridApi()
@@ -22,7 +22,6 @@ class ChannelSubscriptionRepository:
         # self.institutions = InstitutionRepository(db=self.db)
         # self.email_reminders = EmailRemindersRepository(db=self.db)
 
-
     def getActiveSubscriptionId(self, channel_id, product_id):
         get_query = f'''SELECT * FROM ChannelSubscriptions
                     WHERE status="active"
@@ -33,7 +32,8 @@ class ChannelSubscriptionRepository:
 
     def getActiveSubscriptions(self, channelId):
         get_query = f'''SELECT * FROM ChannelSubscriptions
-                    WHERE status="active";
+                    WHERE status="active"
+                    AND channel_id = {channelId};
         '''
         return self.db.run_query(get_query)
         
@@ -42,7 +42,7 @@ class ChannelSubscriptionRepository:
             if stripe_subscription_id is not None:
                 update_query = f'''
                     UPDATE ChannelSubscriptions
-                    SET status="{status}"
+                    SET status="{status}", last_change = NOW()
                     WHERE stripe_subscription_id = "{stripe_subscription_id}";                    ;
                 '''
                 self.db.run_query(update_query)
@@ -50,7 +50,7 @@ class ChannelSubscriptionRepository:
             elif channel_subscription_id is not None:
                 update_query = f'''
                     UPDATE ChannelSubscriptions
-                    SET status="{status}""
+                    SET status="{status}", last_change = NOW()
                     WHERE id = {channel_subscription_id};
                 '''
                 self.db.run_query(update_query)
@@ -58,12 +58,12 @@ class ChannelSubscriptionRepository:
         except Exception as e:
             return str(e)
 
-    def cancelSubscription(self, subscription_id):
+    def interruptSubscription(self, subscription_id):
         try: 
             stop_query = f'''
                 UPDATE ChannelSubscriptions
-                SET status = "interrupted"
-                WHERE subscription_id = {subscription_id};
+                SET status = "interrupted", last_change = NOW()
+                WHERE stripe_subscription_id = "{subscription_id}";
             '''
             self.db.run_query(stop_query)
             return "ok"
@@ -109,7 +109,7 @@ class ChannelSubscriptionRepository:
         '''
         update_query = f'''
             UPDATE ChannelSubscriptions
-                SET stripe_subscription_id="{stripe_subscription_id}"
+                SET stripe_subscription_id="{stripe_subscription_id}" AND last_change = NOW()
             WHERE stripe_checkout_id="{checkout_id}";'''
 
         self.db.run_query(update_query)
