@@ -19,7 +19,7 @@ export interface StreamingProduct extends StreamingProductFeatures {
 const getProductById = (
     productId: number,
     callback: any) => {
-  get(`/products?id=${productId}`, callback);
+  get(`products?id=${productId}`, callback);
 };
 
 const getStreamingProductById = (

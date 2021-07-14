@@ -4,6 +4,8 @@ import { Box, Text, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
+import { StreamingProductService } from "../Services/StreamingProductService";
 import { Link } from "react-router-dom";
 import "../Styles/channel-page.css";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
@@ -79,11 +81,25 @@ export default class TalkSharingPage extends Component<Props, State> {
     return Number(talkId);
   };
 
+  getChannelSubscriptionPlan = (): string => {
+    let subscriptions = ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+      this.state.talk.channel_id, () => {}
+    )
+    console.log("subsubs", subscriptions)
+    let product_id = 2
+    let product = StreamingProductService.getProductById(product_id, () => {})
+    console.log("product", product)
+    return ""
+  }
+
   fetchAll = () => {
     let talkId = this.getTalkIdFromUrl();  
     TalkService.getTalkById(talkId, (talk: Talk) => {
         this.setState({talk: talk}, 
-          () => {this.fetchUserInfo();}
+          () => {
+            this.fetchUserInfo();
+            this.getChannelSubscriptionPlan();
+          }
         );
     });
   }

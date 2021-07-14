@@ -1680,7 +1680,7 @@ def getActiveSubscriptionForChannel():
         channel_id = request.args.get("channelId")
         product_id = request.args.get("productId")
 
-        return jsonify(channelSubscriptions.getActiveSubscriptionId(channel_id, talk_id))
+        return jsonify(channelSubscriptions.getActiveSubscriptionId(channel_id, product_id))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1688,7 +1688,7 @@ def getActiveSubscriptionForChannel():
 def getAllActiveSubscriptionsForChannel():
     try:
         channel_id = request.args.get("channelId")
-        return jsonify(channelSubscriptions.getActiveSubscriptions(talk_id))
+        return jsonify(channelSubscriptions.getActiveSubscriptions(channel_id))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1699,7 +1699,7 @@ def cancelSubscriptionForChannel():
         product_id = request.args.get("productId")
 
         # get subscription_id
-        subscription_id = channelSubscription.getActiveSubscriptionId(channel_id, product_id)
+        subscription_id = channelSubscriptions.getActiveSubscriptionId(channel_id, product_id)
 
         # set stop subscription date in stripe
         paymentsApi.stopSubscriptionRenewal(subscription_id)
