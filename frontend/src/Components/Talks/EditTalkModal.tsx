@@ -143,7 +143,7 @@ export default class EditTalkModal extends Component<Props, State> {
       autoAcceptGroup: "Everybody",
       autoAcceptCustomInstitutions: false,
 
-      subscriptionPlan: "free", // "free", "endtoend", "excellence"
+      subscriptionPlan: "tier1", // "free", "tier1", "tier2"
       showModalPricing: false, 
     };
     this.getReminders();
@@ -865,10 +865,10 @@ export default class EditTalkModal extends Component<Props, State> {
               onChange={(e) => this.setState({ link: e.target.value })}
             />
 
-            <Box background={this.state.subscriptionPlan !== "excellence" ? "#EEEEEE" : "white"}
+            <Box background={this.state.subscriptionPlan !== "tier2" ? "#EEEEEE" : "white"}
               pad="10px" round="6px" gap="10px"
             >
-              {this.state.subscriptionPlan !== "excellence" && (
+              {this.state.subscriptionPlan !== "tier2" && (
                 <Text size="14px" color="grey" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
                   Upgrade to the Excellence plan to use our streaming technology sculpted for academic seminars. 
                 </Text> 
@@ -877,7 +877,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 checked={this.state.link == '_agora.stream_tech'} 
                 label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
                 onChange={(e) => {
-                  if (this.state.subscriptionPlan === "excellence") {
+                  if (this.state.subscriptionPlan === "tier2") {
                     this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })
                   }
                 }}
@@ -1013,7 +1013,7 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 5 && (
-          <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px"}} align="center">
+          <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px"}} align="start">
             <Box 
               direction="column" gap="10px" 
               background={this.state.subscriptionPlan === "free" ? "#EEEEEE" : "white"}
