@@ -21,7 +21,7 @@ const getAllActiveSubscriptionsForChannel = (
     channelId: number,
     callback: any) => {
     get(`subscriptions/channel/all?channelId=${channelId}`, callback);
-    };
+};
     
 const cancelSubscriptionForChannel = (
     channelId: number,

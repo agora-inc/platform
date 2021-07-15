@@ -82,13 +82,17 @@ export default class TalkSharingPage extends Component<Props, State> {
   };
 
   getChannelSubscriptionPlan = (): string => {
-    let subscriptions = ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+    let subscriptions: number[] | void = ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
       this.state.talk.channel_id, () => {}
     )
-    console.log("subsubs", subscriptions)
-    let product_id = 2
-    let product = StreamingProductService.getProductById(product_id, () => {})
-    console.log("product", product)
+    // if (subscriptions !== null) {
+    //  let plans = subscriptions.map( (product_id: number) => 
+    //  StreamingProductService.getProductById(product_id, () => {})
+    //)
+
+
+    // let product = StreamingProductService.getProductById(product_id, () => {})
+    // console.log("product", product)
     return ""
   }
 

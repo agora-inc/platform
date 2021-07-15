@@ -1728,7 +1728,9 @@ def getActiveSubscriptionForChannel():
 def getAllActiveSubscriptionsForChannel():
     try:
         channel_id = request.args.get("channelId")
-        return jsonify(channelSubscriptions.getActiveSubscriptions(channel_id))
+        active_subs = channelSubscriptions.getActiveSubscriptions(channel_id)
+        return [sub['product_id'] for sub in active_subs]
+        
     except Exception as e:
         return jsonify(str(e))
 
