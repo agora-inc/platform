@@ -4,6 +4,8 @@ import { Box, Text, TextArea, Image, Grid, Layer } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
+import { StreamingProductService } from "../Services/StreamingProductService";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
@@ -737,7 +739,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   {<UserAdmin />} {`Administrator panel`}{" "}
                 </Text>
 
-                {/* <Box
+                <Box
                   onClick={this.toggleModalPricing}
                   background="#0C385B"
                   round="xsmall"
@@ -750,16 +752,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                   hoverIndicator="#6DA3C7"
                 >
                   <Text size="14px" weight="bold"> Pricing options </Text>
-                </Box> */}
+                </Box>
               </Box>
 
-
-
-
-
-
               
-              {this.state.user && 
+              { /* this.state.user && 
               (
                 <>
                   <StreamingCheckoutPaymentButton
@@ -776,18 +773,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   
                   />
               </>
-              )}
-
-
-
-
-
-
-
-
-
-
-
+              ) */}
 
               {this.state.showModalPricing && (
                 <Layer
@@ -805,7 +791,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 >
                   <PricingPlans 
                     callback={this.toggleModalPricing}
-                    showDemo={true}
+                    showDemo={false}
                     headerTitle={false} 
                   />
 

@@ -1629,7 +1629,7 @@ def channelLinkRedirect():
 def getStreamingProductById():
     err = ""
     try:
-        product_id = request.args.get("productId")
+        product_id = request.args.get("id")
         return jsonify(
             products.getStreamingProductById(product_id)
             )
@@ -1729,7 +1729,7 @@ def getAllActiveSubscriptionsForChannel():
     try:
         channel_id = request.args.get("channelId")
         active_subs = channelSubscriptions.getActiveSubscriptions(channel_id)
-        return [sub['product_id'] for sub in active_subs]
+        return jsonify([sub['product_id'] for sub in active_subs])
         
     except Exception as e:
         return jsonify(str(e))

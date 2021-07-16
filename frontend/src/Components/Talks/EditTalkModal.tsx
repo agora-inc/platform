@@ -15,6 +15,8 @@ import Button from "../Core/Button";
 import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
 import { Talk, TalkService } from "../../Services/TalkService";
+import { ChannelSubscriptionService } from "../../Services/ChannelSubscriptionService";
+import { StreamingProductService } from "../../Services/StreamingProductService";
 import TagSelector from "../Core/TagSelector";
 import TopicSelector from "../Talks/TopicSelector";
 import { Topic } from "../../Services/TopicService";
@@ -83,7 +85,8 @@ interface State {
   autoAcceptCustomInstitutions: boolean, 
 
   showModalPricing: boolean,
-  subscriptionPlan: string, // TO BE DELETED
+  allPlansId: number[];
+  subscriptionPlans: string[];
   
   // acceptedDomains: string[];
   //(below will be added when we will allow addition of extra institutions)
@@ -143,10 +146,12 @@ export default class EditTalkModal extends Component<Props, State> {
       autoAcceptGroup: "Everybody",
       autoAcceptCustomInstitutions: false,
 
-      subscriptionPlan: "tier1", // "free", "tier1", "tier2"
       showModalPricing: false, 
+      allPlansId: [],
+      subscriptionPlans: ["free"],
     };
     this.getReminders();
+    this.getChannelSubscriptions();
   }
 
   getReminders = () => {
@@ -164,6 +169,33 @@ export default class EditTalkModal extends Component<Props, State> {
         }
       )
     }
+  }
+
+  getChannelSubscriptions = () => {
+    if (this.props.channel) {
+      ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+        this.props.channel.id, 
+        (allPlansId: number[]) => {
+          this.setState({ allPlansId })
+          this.setState({
+            subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+          })
+        }
+      );
+    }
+  }
+
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
   }
 
   topicExists = (topics: Topic[]) => {
@@ -567,7 +599,7 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   toggleReminder = (i: number) => {
-    if (this.state.subscriptionPlan !== "free") {
+    if (!this.state.subscriptionPlans.includes("free")) {
       return (
         () => {
           this.setState(prevState => {
@@ -635,7 +667,7 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   toggleReminderEmailGroup = (group: string) => {
-    if (this.state.subscriptionPlan !== "free") {
+    if (!this.state.subscriptionPlans.includes("free")) {
       if (this.state.reminderEmailGroup.includes(group)) {
         this.setState(prevState => ({
           reminderEmailGroup: prevState.reminderEmailGroup.filter(e => e != group)
@@ -682,6 +714,8 @@ export default class EditTalkModal extends Component<Props, State> {
     var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
     "Example: ox.ac.uk, cam.ac.uk"
     const numbers = [1, 2, 3, 4, 5];
+
+    console.log("SUBS", this.state.subscriptionPlans)
 
     return (
       <>
@@ -929,16 +963,10 @@ export default class EditTalkModal extends Component<Props, State> {
               </Box>
             )}
 
-            <CheckBox 
-              checked={this.state.link == '_agora.stream_tech'} 
-              label={'Host on Agora.stream'} 
-              onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}
-            /> 
-
-            <Box background={this.state.subscriptionPlan !== "tier2" ? "#EEEEEE" : "white"}
+            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#EEEEEE"}
               pad="10px" round="6px" gap="10px"
             >
-              {this.state.subscriptionPlan !== "tier2" && (
+              {!this.state.subscriptionPlans.includes("tier2") && (
                 <Text size="14px" color="grey" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
                   Upgrade to the Excellence plan to use our streaming technology sculpted for academic seminars. 
                 </Text> 
@@ -947,7 +975,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 checked={this.state.link == '_agora.stream_tech'} 
                 label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
                 onChange={(e) => {
-                  if (this.state.subscriptionPlan === "tier2") {
+                  if (this.state.subscriptionPlans.includes("tier2")) {
                     this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })
                   }
                 }}
@@ -1086,10 +1114,10 @@ export default class EditTalkModal extends Component<Props, State> {
           <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px"}} align="start">
             <Box 
               direction="column" gap="10px" 
-              background={this.state.subscriptionPlan === "free" ? "#EEEEEE" : "white"}
+              background={this.state.subscriptionPlans.includes("free") ? "#EEEEEE" : "white"}
               pad="10px" round="6px" 
             >
-              {this.state.subscriptionPlan === "free" && (
+              {this.state.subscriptionPlans.includes("free") && (
                 <Text size="14px" color="grey" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
                   You are currently under the Free plan. Upgrade to use the automatic email reminders 
                 </Text>
@@ -1126,7 +1154,7 @@ export default class EditTalkModal extends Component<Props, State> {
               /> */}
             </Box>
             
-            {this.state.subscriptionPlan === "free" && (
+            {this.state.subscriptionPlans.includes("free") && (
               <Box margin={{top: "30px"}} gap="15px"> 
                 <Box
                   onClick={this.toggleModalPricing}

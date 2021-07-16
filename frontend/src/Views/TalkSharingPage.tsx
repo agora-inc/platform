@@ -29,7 +29,8 @@ interface State {
   registered: boolean;
   registrationStatus: string;
   showTalkId: number;
-  subscriptionPlan: string; // TO BE DELETED
+  allPlansId: number[];
+  subscriptionPlans: string[];
 }
 
 export default class TalkSharingPage extends Component<Props, State> {
@@ -65,7 +66,8 @@ export default class TalkSharingPage extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showTalkId: this.getTalkIdFromUrl(),
-      subscriptionPlan: "free", // "free", "tier1", "tier2"
+      allPlansId: [],
+      subscriptionPlans: ["free"],
     };
   }
 
@@ -81,19 +83,29 @@ export default class TalkSharingPage extends Component<Props, State> {
     return Number(talkId);
   };
 
-  getChannelSubscriptionPlan = (): string => {
-    let subscriptions: number[] | void = ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
-      this.state.talk.channel_id, () => {}
-    )
-    // if (subscriptions !== null) {
-    //  let plans = subscriptions.map( (product_id: number) => 
-    //  StreamingProductService.getProductById(product_id, () => {})
-    //)
+  getChannelSubscriptions = () => {
+    ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+      this.state.talk.channel_id, 
+      (allPlansId: number[]) => {
+        this.setState({ allPlansId })
+        this.setState({
+          subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+        })
+      }
+    );
+  }
 
-
-    // let product = StreamingProductService.getProductById(product_id, () => {})
-    // console.log("product", product)
-    return ""
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
   }
 
   fetchAll = () => {
@@ -102,7 +114,7 @@ export default class TalkSharingPage extends Component<Props, State> {
         this.setState({talk: talk}, 
           () => {
             this.fetchUserInfo();
-            this.getChannelSubscriptionPlan();
+            this.getChannelSubscriptions();
           }
         );
     });
@@ -312,7 +324,7 @@ export default class TalkSharingPage extends Component<Props, State> {
           <CoffeeHangoutRoom
             talk={this.state.talk}
             user={this.state.user}
-            disabled={this.state.subscriptionPlan !== "tier2"}
+            disabled={this.state.subscriptionPlans.includes("free")}
           />
           </Box>
         </Box>
