@@ -1640,8 +1640,9 @@ def getStreamingProductById():
         tier = request.args.get("tier") # = tier1 and tier2
         product_type = request.args.get("productType") # = 'credits' or 'subscription'
         aud_size = request.args.get("audienceSize") # = 'small' or 'big'
+        
         return jsonify(
-            products.getStreamingProductIdByFeatures(tier, product_type, aud_size)
+            products.getStreamingProductByFeatures(tier, product_type, aud_size)
             )
     except Exception as e:
         err += str(e)

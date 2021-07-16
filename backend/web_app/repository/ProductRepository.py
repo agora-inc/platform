@@ -23,7 +23,7 @@ class ProductRepository:
         res = self.db.run_query(get_query)
         return res[0] if len(res) > 0 else []
 
-    def getStreamingProductIdByFeatures(self, tier, product_type, aud_size):
+    def getStreamingProductByFeatures(self, tier, product_type, aud_size):
         try:
             get_query = f'''
                 SELECT * FROM StreamingProducts
@@ -34,6 +34,11 @@ class ProductRepository:
             '''
 
             res = self.db.run_query(get_query)
+            with open("/home/cloud-user/test/query-stream-prod-id.txt", "w") as file:
+                file.write(str(get_query))
+            with open("/home/cloud-user/test/stream-prod-id.txt", "w") as file:
+                file.write(str(res))
+
             return res[0] if len(res) > 0 else []
         except Exception as e:
             return str(e)

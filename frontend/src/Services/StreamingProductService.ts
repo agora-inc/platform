@@ -28,20 +28,19 @@ const getStreamingProductById = (
   get(`products/streaming?id=${productId}`, callback);
 };
 
-const getStreamingProductIdByFeatures = (
-    tier: "tier1" | "tier2",
-    audienceSize: "small" | "big",
-    product_type: "subscription" | "credit",
+const getStreamingProductByFeatures = (
+    tier: string,
+    audienceSize: string,
+    product_type: string,
     callback: any) => {
-  get(`products/streaming?tier=${tier}&audienceSize=${audienceSize}&productType=${product_type}`, callback);
+    get(`products/streaming?tier=${tier}&audienceSize=${audienceSize}&productType=${product_type}`, callback);
 };
-
 
 export const StreamingProductService = {
     getProductById,
     // Streaming products
     getStreamingProductById,
-    getStreamingProductIdByFeatures,
+    getStreamingProductByFeatures,
 
     // cancelling products
 };

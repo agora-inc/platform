@@ -25,9 +25,9 @@ const StreamingCheckoutPaymentButton:FunctionComponent<Props> = (props) => {
         if (props.text){
             setButtonText(props.text)
         }
-        StreamingProductService.getStreamingProductIdByFeatures(
+        StreamingProductService.getStreamingProductByFeatures(
             tier, audienceSize, productType, (data: {id: string}) => {
-                console.log("Here is the answer to getStreamingProductIdByFeatures!", data)
+                console.log("Here is the answer to getStreamingProductByFeatures!", data)
                 setProductId(Number(data.id));
                 // If no price text, query price text automatically from DB
                 if (!props.text){

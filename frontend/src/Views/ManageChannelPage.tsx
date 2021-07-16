@@ -5,7 +5,7 @@ import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
 import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
-import { StreamingProductService } from "../Services/StreamingProductService";
+import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
@@ -83,6 +83,11 @@ interface State {
   topicId: number;
   field: string;
   showModalPricing: boolean;
+  allPlansId: number[];
+  subscriptionPlans: string[];
+  allStreamingProducts: {
+    [key: string]: any
+  };
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -123,6 +128,9 @@ export default class ManageChannelPage extends Component<Props, State> {
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
       showModalPricing: false,
+      allPlansId: [],
+      subscriptionPlans: ["free"],
+      allStreamingProducts : {},
     };
   }
 
@@ -147,6 +155,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         this.setState({field: topicName})
       }
     )
+    this.getAllStreamingProductsId()
   }
 
   componentWillUnmount() {
@@ -213,6 +222,48 @@ export default class ManageChannelPage extends Component<Props, State> {
       }
     );
   };
+
+  getChannelSubscriptions = () => {
+    if (this.props.channel) {
+      ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+        this.props.channel.id, 
+        (allPlansId: number[]) => {
+          this.setState({ allPlansId })
+          this.setState({
+            subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+          })
+        }
+      );
+    }
+  }
+
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
+  }
+
+  getAllStreamingProductsId = () => {
+    let allStreamingProducts: any = {};
+    ["tier1", "tier2"].map((tier: string) => {
+      ["small", "big"].map((audienceSize: string) => {
+        StreamingProductService.getStreamingProductByFeatures(
+          tier, audienceSize, "subscription",
+          (product: any) => {
+            allStreamingProducts[tier + "/" + audienceSize] = product
+          }
+        )
+      })
+    })
+    this.setState({ allStreamingProducts })
+  }
 
   storeUserData = () => {
     ChannelService.increaseViewCountForChannel(
@@ -688,7 +739,8 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   render() {
     const { channel } = this.state;
-    // console.log(this.state.listEmailCorrect)
+    console.log(this.state.allStreamingProducts)
+    
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -791,6 +843,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 >
                   <PricingPlans 
                     callback={this.toggleModalPricing}
+                    allStreamingProducts={this.state.allStreamingProducts}
                     showDemo={false}
                     headerTitle={false} 
                   />
