@@ -253,7 +253,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.escapeSingleQuotes(this.state.description),
         dateTimeStrs[0],
         dateTimeStrs[1],
-        this.validLink(this.state.link),
+        (this.state.link == '_agora.stream_tech') ? UrlEncryption.encryptIdAndRoleInUrl("livestream", this.props.talk!.id) : this.validLink(this.state.link),
         this.state.tags,
         this.state.releaseLinkOffset,
         // this.state.linkVisibility,
@@ -327,6 +327,7 @@ export default class EditTalkModal extends Component<Props, State> {
               loading: false,
             },
             () => {
+              this.onEditStreamingLinkCallback(talk);
               this.props.onFinishedCallback();
               this.setState({
                 title: "",
@@ -344,7 +345,8 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   onEditStreamingLinkCallback = (talk: Talk) => {
-    // If user uses agora.steam streaming tech, we add encoded URL on callback.
+    // Edits talk URL if user uses agora.stream streaming tech.
+    // NOTE: As talk_id not available at creation, we add callback
     if (talk.link == 'https://_agora.stream_tech'){
       const dateTimeStrs = this.combineDateAndTimeStrings();
       var encryptedUrl = UrlEncryption.encryptIdAndRoleInUrl("livestream", talk.id)
@@ -387,7 +389,6 @@ export default class EditTalkModal extends Component<Props, State> {
               this.props.onFinishedCallback();
             }
           );
-          this.onEditStreamingLinkCallback(talk)
         }
       );
     }

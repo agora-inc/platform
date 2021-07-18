@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { Box, Layer, Button, TextInput, Text } from "grommet";
-import { StatusCritical, StatusGood } from "grommet-icons";
-import { UserService } from "../../Services/UserService";
-import { Overlay } from "../Core/Overlay";
-import Loading from "../Core/Loading";
+
 
 interface Props {
   callback: any;
   open?: boolean;
+  text?: string;
 }
 
 interface State {
@@ -85,7 +83,7 @@ export default class DonorButton extends Component<Props, State> {
     return (
       <Box style={{maxHeight: "30px"}}>
         <Button
-          label="Donate"
+          label={this.props.text ? this.props.text : "Donate"}
           onClick={this.toggleModal}
           style={{
             width: 90,
@@ -106,13 +104,3 @@ export default class DonorButton extends Component<Props, State> {
     );
   }
 }
-
-
-// color1: "#0C385B",
-// color2: "#025377",
-// color3: "#6DA3C7",
-// color4: "7BA59E",
-// color5: "#BAD6DB",
-// color6: "#EAF1F1",
-// color7: "#D3F930",
-// selected: "#eaf1f1"
