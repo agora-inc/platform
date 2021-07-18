@@ -25,6 +25,7 @@ import { InlineMath } from "react-katex";
 import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
+import { UrlEncryption } from "../Core/Encryption/UrlEncryption";
 
 
 export type Reminder = {
