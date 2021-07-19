@@ -286,10 +286,11 @@ export default class TalkSharingPage extends Component<Props, State> {
               registrationStatus={this.state.registrationStatus}
               isSharingPage={true}
             />
-
-          <CoffeeHangoutRoom
-            talk={this.state.talk}
-            user={this.state.user}/>
+            
+            <CoffeeHangoutRoom
+              talk={this.state.talk}
+              user={this.state.user}
+            />
           </Box>
         </Box>
       </>

@@ -27,6 +27,7 @@ import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
 import { UrlEncryption } from "../Core/Encryption/UrlEncryption";
 
+
 export type Reminder = {
   exist: boolean;
   days: number;
