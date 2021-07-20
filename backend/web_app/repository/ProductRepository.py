@@ -42,3 +42,14 @@ class ProductRepository:
             return res[0] if len(res) > 0 else []
         except Exception as e:
             return str(e)
+
+    def getAllStreamingProducts(self):
+        try:
+            get_query = f'''
+                SELECT * FROM StreamingProducts;
+            '''
+            return self.db.run_query(get_query)
+
+        except Exception as e:
+            return str(e)
+        

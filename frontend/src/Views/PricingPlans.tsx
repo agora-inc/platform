@@ -2,20 +2,26 @@ import React, { Component } from "react";
 import { Box, Text, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
 import { Close, Checkmark, FormNextLink } from "grommet-icons";
 import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
+import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
+import { CancelSubscriptionsButton } from "../Components/Channel/ChannelSubscriptionsButtons/CancelSubscriptionsButton";
+import { CheckoutPaymentButton } from "../Components/Channel/ChannelSubscriptionsButtons/CheckoutPaymentButton";
 import { Switch } from "antd";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
 
 interface Props {
   headerTitle: boolean
-  allStreamingProducts?: { [key: string]: any }
-  // currentProductIds: number[]
+  channelId: number | null
+  userId: number | null
+  disabled: boolean
   showDemo: boolean
-  callback: any;
+  callback: any
 }
 interface State {
   pricingOptionBig: boolean;
   pricingOptionMonthly: boolean;
+  allStreamingProducts: StreamingProduct[];
+  allPlansId: number[];
 }
 
 
@@ -25,10 +31,123 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.state = {
       pricingOptionBig: false,
       pricingOptionMonthly: true,
+      allStreamingProducts: [],
+      allPlansId: [],
+    }
+  }
+
+  componentDidMount() {
+    this.getAllStreamingProducts()
+    this.getChannelSubscriptions()
+  }
+  
+  getAllStreamingProducts = () => {
+    StreamingProductService.getAllStreamingProducts(
+      (allStreamingProducts: StreamingProduct[]) => {
+        this.setState({ allStreamingProducts })
+      }
+    )
+  }
+
+  getChannelSubscriptions = () => {
+    if (this.props.channelId) {
+      ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+        this.props.channelId, 
+        (allPlansId: number[]) => {
+          this.setState({ allPlansId })
+        }
+      );
+    } else {
+      this.setState({ allPlansId: [] })
+    }
+  }
+
+  getPrice = (tier: "tier1" | "tier2", audienceSize: "small" | "big") => {
+    let p = this.state.allStreamingProducts.filter(
+      function (product: StreamingProduct) {
+        return product.tier == tier && product.audience_size === audienceSize
+      }
+    )
+    if (p.length > 0) {
+      return p[0].price_in_dollars
+    } else {
+      return "x";
+    }
+  }
+
+  getProductId = (tier: "tier1" | "tier2", audienceSize: "small" | "big") => {
+    let p = this.state.allStreamingProducts.filter(
+      function (product: StreamingProduct) {
+        return product.tier == tier && product.audience_size === audienceSize
+      }
+    )
+    if (p.length > 0) {
+      return p[0].id
+    } else {
+      return -1;
+    }
+  }
+
+  isSubscribedTo = (tier: "tier1" | "tier2", audienceSize: "small" | "big") => {
+    let p = this.state.allStreamingProducts.filter(
+      function (product: StreamingProduct) {
+        return product.tier == tier && product.audience_size === audienceSize
+      }
+    )
+    if (p.length > 0) {
+      return this.state.allPlansId.includes(p[0].id)
+    } else {
+      return false;
+    }
+  }
+
+  showProduct = (id: number) => {
+    let list = this.state.allStreamingProducts.filter( 
+      function (p: StreamingProduct) {
+        return p.id === id 
+      })
+    
+    if (list.length > 0) {
+      let planName = list[0].tier === "tier1" 
+        ? "Full automation" 
+        : (list[0].tier === "tier2" ? "Excellence" : list[0].tier)
+      return planName + " plan with " + list[0].audience_size + " audience ($" + list[0].price_in_dollars + " / month)";  
+    } else {
+      return "";
+    }
+      
+  }
+
+  renderCurrentPlans = () => {
+    if (this.state.allPlansId.length > 0) {
+      return (
+        <Box margin={{ bottom: "40px", left: "10px" }}>
+          <Text size="14px" weight="bold" >
+            Your current subscription
+          </Text> 
+          {this.state.allPlansId.map( (productId: number) => {
+            return (
+              <Text size="14px" weight="bold" color="#6DA3C7" margin={{ top: "8px", left: "10px" }} > 
+                {this.showProduct(productId)}
+              </Text>
+            );
+          })}
+        </Box>
+      );
+    } else {
+      return (
+        <Box margin={{ bottom: "40px", left: "10px" }}>
+          <Text size="14px" weight="bold" >
+            You are currently on our free plan. Upgrade to enjoy more!
+          </Text>
+        </Box>
+      );
     }
   }
 
   render() {
+    let audienceSize: "small" | "big" = this.state.pricingOptionBig ? "big" : "small";
+
     return (
       <Box align="start" width="100%" style={{ overflowY: "auto" }}>
 
@@ -67,6 +186,8 @@ export default class ManageChannelPage extends Component<Props, State> {
         )}
 
         <Box width="95%" margin={{ left: "2%" }} >
+
+          {this.renderCurrentPlans()}
 
           <Box direction="row" gap="10px" align="center" margin={{ bottom: "20px", left: "10px" }}>
             <Text size="14px" style={{ fontStyle: "italic" }} >
@@ -255,53 +376,80 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </TableCell>
                 )}
               </TableRow>
+                <TableRow>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell margin={{ top: "20px" }}>
+                    {this.props.disabled && (
+                      <Box
+                        onClick={() => {}}
+                        background="#CCCCCC"
+                        round="xsmall"
+                        pad="xsmall"
+                        width="160px"
+                        height="40px"
+                        justify="center"
+                        align="center"
+                        focusIndicator={false}
+                        hoverIndicator={false}
+                      >
+                        <Text size="14px" weight="bold">
+                          $ {this.getPrice("tier1", audienceSize)} / month
+                        </Text>
+                      </Box>
+                    )}
+                    {!this.props.disabled && this.props.channelId && this.props.userId && 
+                      this.isSubscribedTo("tier1", audienceSize) && (
+                        <CancelSubscriptionsButton channelId={this.props.channelId} />
+                    )}
+                    {!this.props.disabled && this.props.channelId && this.props.userId && 
+                      !this.isSubscribedTo("tier1", audienceSize) && (
+                        <CheckoutPaymentButton
+                          userId={this.props.userId}
+                          productId={this.getProductId("tier1", audienceSize)}
+                          quantity={1}
+                          channelId={this.props.channelId}
+                          text={"$ " + this.getPrice("tier1", audienceSize) + " / month"}
+                        />
+                    )}
 
-              <TableRow>
-                <TableCell />
-                <TableCell />
-                <TableCell margin={{ top: "20px" }}>
-                  <Box
-                    onClick={this.props.callback}
-                    background="#0C385B"
-                    round="xsmall"
-                    pad="xsmall"
-                    width="160px"
-                    height="40px"
-                    justify="center"
-                    align="center"
-                    focusIndicator={false}
-                    hoverIndicator="#6DA3C7"
-                  >
-                    <Text size="14px" weight="bold">
-                      ${this.props.allStreamingProducts 
-                        ? this.props.allStreamingProducts["tier1/" + (this.state.pricingOptionBig ? "big" : "small")].price_in_dollars 
-                        : ""
-                      } / month
-                    </Text>
-                  </Box>
-                </TableCell>
-                <TableCell margin={{ top: "20px" }}>
-                  <Box
-                    onClick={this.props.callback}
-                    background="#0C385B"
-                    round="xsmall"
-                    pad="xsmall"
-                    width="160px"
-                    height="40px"
-                    justify="center"
-                    align="center"
-                    focusIndicator={false}
-                    hoverIndicator="#6DA3C7"
-                  >
-                    <Text size="14px" weight="bold"> 
-                      ${this.props.allStreamingProducts 
-                        ? this.props.allStreamingProducts["tier2/" + (this.state.pricingOptionBig ? "big" : "small")].price_in_dollars 
-                        : ""
-                      } / month
-                    </Text>
-                  </Box>
-                </TableCell>
-              </TableRow>
+                  </TableCell>
+
+                  <TableCell margin={{ top: "20px" }}>
+                    {this.props.disabled && (
+                        <Box
+                          onClick={() => {}}
+                          background="#CCCCCC"
+                          round="xsmall"
+                          pad="xsmall"
+                          width="160px"
+                          height="40px"
+                          justify="center"
+                          align="center"
+                          focusIndicator={false}
+                          hoverIndicator={false}
+                        >
+                          <Text size="14px" weight="bold">
+                            $ {this.getPrice("tier2", audienceSize)} / month
+                          </Text>
+                        </Box>
+                      )}
+                      {!this.props.disabled && this.props.channelId && this.props.userId && 
+                        this.isSubscribedTo("tier2", audienceSize) && (
+                          <CancelSubscriptionsButton channelId={this.props.channelId} />
+                      )}
+                      {!this.props.disabled && this.props.channelId && this.props.userId && 
+                        !this.isSubscribedTo("tier2", audienceSize) && (
+                          <CheckoutPaymentButton
+                            userId={this.props.userId}
+                            productId={this.getProductId("tier2", audienceSize)}
+                            quantity={1}
+                            channelId={this.props.channelId}
+                            text={"$ " + this.getPrice("tier2", audienceSize) + " / month"}
+                          />
+                      )}
+                  </TableCell>
+                </TableRow>
 
             </TableBody>
           </Table>

@@ -6,8 +6,8 @@ interface Props {
     channelId: number
 }
 
-const CancelSubscriptionsButton:FunctionComponent<Props> = (props) => {    
-    const [text, setText] = useState("Unsubscribe from all")
+export const CancelSubscriptionsButton:FunctionComponent<Props> = (props) => {    
+    const [text, setText] = useState("Unsubscribe")
 
     const onClick = async () => {
         ChannelSubscriptionService.cancelAllSubscriptionsForChannel(props.channelId, 
@@ -23,7 +23,7 @@ const CancelSubscriptionsButton:FunctionComponent<Props> = (props) => {
     return (
         <Box
             onClick={onClick}
-            background="#0C385B"
+            background="#FF4040"
             round="xsmall"
             pad="xsmall"
             width="160px"
@@ -38,5 +38,3 @@ const CancelSubscriptionsButton:FunctionComponent<Props> = (props) => {
         </Box>
     );
 }
-
-export default CancelSubscriptionsButton

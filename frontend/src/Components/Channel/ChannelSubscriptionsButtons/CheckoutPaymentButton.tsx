@@ -10,7 +10,7 @@ interface Props extends PaymentData{
     channelId?: number
 }
 
-const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {    
+export const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {    
     const stripePromise = loadStripe(stripePublicKey);
 
     const onClick = async () => {
@@ -71,5 +71,3 @@ const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
         </Box>
     );
 }
-
-export default CheckoutPaymentButton

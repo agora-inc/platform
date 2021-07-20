@@ -3,17 +3,15 @@
 // import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
 
-export interface StreamingProductFeatures {
-    tier: "tier1" | "tier2";
-    productType: "subscription" | "credit";
-    audienceSize: "small" | "big";
-    quantity: number
-  }
 
-export interface StreamingProduct extends StreamingProductFeatures {
-    priceInDollars: number;
-    description: "tier1" | "tier2";
-    stripeProductId: number;
+export type StreamingProduct =  {
+    price_in_dollars: number;
+    stripe_product_id: number;
+    tier: "tier1" | "tier2";
+    product_type: "subscription" | "credit";
+    id: number;
+    audience_size: "small" | "big";
+    quantity: number
 }
 
 const getProductById = (
@@ -36,11 +34,15 @@ const getStreamingProductByFeatures = (
     get(`products/streaming?tier=${tier}&audienceSize=${audienceSize}&productType=${product_type}`, callback);
 };
 
+const getAllStreamingProducts = (callback: any) => {
+  get(`products/streaming/all`, callback);
+}
+
 export const StreamingProductService = {
     getProductById,
     // Streaming products
     getStreamingProductById,
     getStreamingProductByFeatures,
-
+    getAllStreamingProducts,
     // cancelling products
 };

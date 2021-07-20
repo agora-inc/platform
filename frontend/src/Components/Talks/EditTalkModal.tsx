@@ -29,6 +29,7 @@ import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
 import PricingPlans from "../../Views/PricingPlans";
 import { UrlEncryption } from "../Core/Encryption/UrlEncryption";
+import { thisExpression } from "@babel/types";
 
 export type Reminder = {
   exist: boolean;
@@ -148,7 +149,7 @@ export default class EditTalkModal extends Component<Props, State> {
 
       showModalPricing: false, 
       allPlansId: [],
-      subscriptionPlans: ["free"],
+      subscriptionPlans: [],
     };
     this.getReminders();
     this.getChannelSubscriptions();
@@ -598,8 +599,13 @@ export default class EditTalkModal extends Component<Props, State> {
     )
   }
 
+  isPaying = () => {
+    return this.state.subscriptionPlans.includes("tier1") || 
+      this.state.subscriptionPlans.includes("tier2");
+  }
+
   toggleReminder = (i: number) => {
-    if (!this.state.subscriptionPlans.includes("free")) {
+    if (this.isPaying()) {
       return (
         () => {
           this.setState(prevState => {
@@ -667,7 +673,7 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   toggleReminderEmailGroup = (group: string) => {
-    if (!this.state.subscriptionPlans.includes("free")) {
+    if (this.isPaying()) {
       if (this.state.reminderEmailGroup.includes(group)) {
         this.setState(prevState => ({
           reminderEmailGroup: prevState.reminderEmailGroup.filter(e => e != group)
@@ -1112,10 +1118,10 @@ export default class EditTalkModal extends Component<Props, State> {
           <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px"}} align="start">
             <Box 
               direction="column" gap="10px" 
-              background={this.state.subscriptionPlans.includes("free") ? "#EEEEEE" : "white"}
+              background={this.isPaying() ? "white" : "#EEEEEE"}
               pad="10px" round="6px" 
             >
-              {this.state.subscriptionPlans.includes("free") && (
+              {!this.isPaying() && (
                 <Text size="14px" color="grey" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
                   You are currently under the Free plan. Upgrade to use the automatic email reminders 
                 </Text>
@@ -1152,7 +1158,7 @@ export default class EditTalkModal extends Component<Props, State> {
               /> */}
             </Box>
             
-            {this.state.subscriptionPlans.includes("free") && (
+            {!this.isPaying() && (
               <Box margin={{top: "30px"}} gap="15px"> 
                 <Box
                   onClick={this.toggleModalPricing}
@@ -1184,6 +1190,9 @@ export default class EditTalkModal extends Component<Props, State> {
                   >
                     <PricingPlans 
                       callback={this.toggleModalPricing}
+                      disabled={false}
+                      userId={null}
+                      channelId={this.props.channel ? this.props.channel.id : null}
                       showDemo={false}
                       headerTitle={false}
                     />

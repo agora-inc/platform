@@ -37,10 +37,6 @@ import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
-import StreamingCheckoutPaymentButton from "../Components/Channel/ChannelSubscriptionsButtons/StreamingCheckoutPaymentButton";
-import CancelSubscriptionsButton from "../Components/Channel/ChannelSubscriptionsButtons/CancelSubscriptionsButton";
-
-
 
 interface Props {
   location: any;
@@ -85,9 +81,6 @@ interface State {
   showModalPricing: boolean;
   allPlansId: number[];
   subscriptionPlans: string[];
-  allStreamingProducts: {
-    [key: string]: any
-  };
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -130,7 +123,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       showModalPricing: false,
       allPlansId: [],
       subscriptionPlans: ["free"],
-      allStreamingProducts : {},
     };
   }
 
@@ -155,7 +147,6 @@ export default class ManageChannelPage extends Component<Props, State> {
         this.setState({field: topicName})
       }
     )
-    this.getAllStreamingProductsId()
   }
 
   componentWillUnmount() {
@@ -248,21 +239,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       )
     })
     return tiers
-  }
-
-  getAllStreamingProductsId = () => {
-    let allStreamingProducts: any = {};
-    ["tier1", "tier2"].map((tier: string) => {
-      ["small", "big"].map((audienceSize: string) => {
-        StreamingProductService.getStreamingProductByFeatures(
-          tier, audienceSize, "subscription",
-          (product: any) => {
-            allStreamingProducts[tier + "/" + audienceSize] = product
-          }
-        )
-      })
-    })
-    this.setState({ allStreamingProducts })
   }
 
   storeUserData = () => {
@@ -739,7 +715,6 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   render() {
     const { channel } = this.state;
-    console.log(this.state.allStreamingProducts)
     
     if (this.state.loading) {
       return (
@@ -843,7 +818,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                 >
                   <PricingPlans 
                     callback={this.toggleModalPricing}
-                    allStreamingProducts={this.state.allStreamingProducts}
+                    disabled={false}
+                    channelId={this.state.channelId}
+                    userId={this.state.user ? this.state.user.id : null}
                     showDemo={false}
                     headerTitle={false} 
                   />

@@ -1649,6 +1649,13 @@ def getStreamingProductById():
 
     return jsonify(e)
 
+@app.route('/products/streaming/all', methods=["GET"])
+def getAllStreamingProducts():
+    try:
+        return jsonify(products.getAllStreamingProducts())
+    except Exception as e:
+        return jsonify(str(e))
+
 # --------------------------------------------
 # CREDITS
 # --------------------------------------------
