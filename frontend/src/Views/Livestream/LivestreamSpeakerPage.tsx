@@ -100,6 +100,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [talkId, setTalkId] = useState('')
   const [slideShareId, setSlideShareId] = useState('')
   const [isSlideVisible, toggleSlide] = useState(false)
+  const [slidesGotUploaded, setSlidesGotUploaded] = useState(false)
+
 
   const [slideUrl, setSlideUrl] = useState('')
 
@@ -525,16 +527,32 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
 
 
-          <Box gridArea="top_chat" height="40px" align="center">
+          <Box gridArea="top_chat" height="40px" align="center" direction="row">
             {/* <SlidesUploader
               text={"Upload your slides"}
               onUpload={()=>{}}
             /> */}
 
             <SpeakerHelpButton
+              talkId={props.talkId}
               callback={()=>{}}
             />
-
+            <SlidesUploader
+              text={slidesGotUploaded ? "Uploaded ✔️ (click to reupload)" : "Upload pdf"}
+              onUpload={(e: any) => {
+                TalkService.uploadSlide(
+                  props.talkId, 
+                  e.target.files[0],
+                  (res: any) => {
+                    console.log("WESH REMY")
+                    if (res){
+                      setSlidesGotUploaded(true)
+                      // this.setState({slidesAlreadyUploaded: true})
+                      }
+                    }
+                  )
+                }}
+            />
 
           </Box>
 

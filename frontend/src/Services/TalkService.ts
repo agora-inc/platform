@@ -415,7 +415,9 @@ const uploadSlide = async (talkId: number, slides: File, callback: any) => {
   const data = new FormData();
   data.append("talkId", talkId.toString());
   data.append("slides", slides);
-  let ret = await axios.post(baseApiUrl + "/talks/slides", data)
+  let ret = await axios.post(baseApiUrl + "/talks/slides", data).then(function (response) {
+    callback(response.data);
+  })
 
   return await getSlide(talkId)
 };
@@ -424,8 +426,8 @@ const getSlide = async (talkId: number) => {
   var CACHE_DELAY = 500
   let current_time = Math.floor(new Date().getTime() / 1000) * CACHE_DELAY;
 
-  // return { url: baseApiUrl + `/talks/slides?talkId=${talkId}&ts=` + current_time};
-  return { url: "https://arxiv.org/pdf/1806.07366.pdf"};
+  return { url: baseApiUrl + `/talks/slides?talkId=${talkId}&ts=` + current_time};
+  // return { url: "https://arxiv.org/pdf/1806.07366.pdf"};
 };
 
 const removeSlide = async (talkId: number) => {

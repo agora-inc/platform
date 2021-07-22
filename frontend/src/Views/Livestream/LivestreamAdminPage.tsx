@@ -82,13 +82,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         role: 'host',
         name: 'Prof. Patric',
         uid: getUserId(props.talkId.toString(), useQuery().get('dummy'))
-        //
-        //
-        //
-        //
-        // CHECK THIS BIT!
-        //
-        //
       } as any)
   const [talkDetail, setTalkDetail] = useState({} as any)
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
