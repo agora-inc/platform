@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
+import agoraStreamFullLogo from "../assets/general/agora_stream_logo_300px.svg";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 import { User, UserService } from "../Services/UserService";
 import { Search, Play, Add, Chat, Close, Channel, ScheduleNew, Multiple } from "grommet-icons";
