@@ -101,7 +101,7 @@ export default class SpeakerHelpButton extends Component<Props, State> {
             <ReactTooltip id='share-screen-info' effect="solid">
                 <Text size="12px">Your audience will only see your current view. </Text>
               </ReactTooltip>
-              <img src={moveSlidesViewButtonImage} width="100%" margin-top="20px"/>
+              <img src={shareScreenButtonImage} width="100%" margin-top="20px"/>
             </Box>
           </Box>
         </Overlay>
