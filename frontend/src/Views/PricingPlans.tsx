@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
 import { Close, Checkmark, FormNextLink } from "grommet-icons";
 import { Switch } from "antd";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 
 interface Props {

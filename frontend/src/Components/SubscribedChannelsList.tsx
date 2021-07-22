@@ -7,7 +7,7 @@ import Identicon from "react-identicons";
 import "../Styles/trending-channels-box.css";
 import { User } from "../Services/UserService";
 import SignUpButton from "./Account/SignUpButton";
-import AgoraLogo from "../assets/general/agora_logo_v2.png";
+import AgoraLogo from "../assets/general/agora_logo_v2.svg";
 
 
 
