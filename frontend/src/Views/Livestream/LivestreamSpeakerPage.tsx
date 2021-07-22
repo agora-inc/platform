@@ -19,7 +19,7 @@ import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneS
 import {MdScreenShare, MdStopScreenShare, MdSlideshow, MdClear} from 'react-icons/md'
 import {db, API} from '../../Services/FirebaseService'
 import SlidesUploader from "../../Components/Core/SlidesUploader";
-
+import SpeakerHelpButton from "../../Components/Streaming/SpeakerHelpButton"
 
 import '../../Styles/all-stream-page.css'
 import PDFViewer from "../../Components/PDFViewer";
@@ -461,16 +461,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           ]}
         >
 
-          <Box gridArea="top_bar" background="red" >
+          <Box gridArea="top_bar" direction='row'>
             <Box 
               direction='row'
+              width="60%"
               // gap="40px"
               alignSelf="start"
             >
               <Link
                 className="channel"
                 to={`/${talkDetail.channel_name}`}
-                style={{ textDecoration: "none", width: "40%"}}
+                style={{ textDecoration: "none", width: "100%"}}
               >
                 <Box
                   direction="row"
@@ -505,28 +506,36 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                   </Box>
                 </Box>
               </Link>
-              <Box
-                width="20vw"
-                height="40px"
-                justify="end"
-                align="center"
-                pad="small"
-                round="xsmall"
-                background="#D3F930"
-              >
-                <Text size="14px" weight="bold">
-                  You are the speaker
-                </Text>
+              </Box>
+              <Box align="end" width="40%">
+                <Box
+                  width="20vw"
+                  height="40px"
+                  justify="end"
+                  align="center"
+                  pad="small"
+                  round="xsmall"
+                  background="#D3F930"
+                >
+                  <Text size="14px" weight="bold">
+                    You are the speaker
+                  </Text>
               </Box>
             </Box>
           </Box>
 
 
-          <Box gridArea="top_chat" height="40px" background="blue" align="center">
-            <SlidesUploader
+          <Box gridArea="top_chat" height="40px" align="center">
+            {/* <SlidesUploader
               text={"Upload your slides"}
               onUpload={()=>{}}
-              />
+            /> */}
+
+            <SpeakerHelpButton
+              callback={()=>{}}
+            />
+
+
           </Box>
 
 

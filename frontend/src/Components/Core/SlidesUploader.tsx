@@ -20,7 +20,7 @@ export default class SlidesUploader extends Component<Props> {
         width="100%"
         justify="center"
         align="center"
-        focusIndicator={false}
+        focusIndicator={true}
         hoverIndicator={true}
         style={{
           border: "1px solid #C2C2C2",
