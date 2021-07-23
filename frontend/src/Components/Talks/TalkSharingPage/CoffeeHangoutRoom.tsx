@@ -97,8 +97,8 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
                                     <PricingPlans 
                                     callback={this.toggleModalPricing}
                                     disabled={false}
-                                    userId={this.props.user ? this.props.user.id : null}
                                     channelId={this.props.talk.channel_id}
+                                    userId={this.props.user ? this.props.user.id : null}
                                     showDemo={false}
                                     headerTitle={false}
                                     />

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
 import { Close, Checkmark, FormNextLink } from "grommet-icons";
+import { User, UserService } from "../Services/UserService";
 import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
 import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
 import { CancelSubscriptionsButton } from "../Components/Channel/ChannelSubscriptionsButtons/CancelSubscriptionsButton";
@@ -147,6 +148,8 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   render() {
     let audienceSize: "small" | "big" = this.state.pricingOptionBig ? "big" : "small";
+
+    console.log("user", this.props.userId)
 
     return (
       <Box align="start" width="100%" style={{ overflowY: "auto" }}>

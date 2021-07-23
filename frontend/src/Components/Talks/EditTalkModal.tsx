@@ -15,6 +15,7 @@ import Button from "../Core/Button";
 import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
 import { Talk, TalkService } from "../../Services/TalkService";
+import { User } from "../../Services/UserService";
 import { ChannelSubscriptionService } from "../../Services/ChannelSubscriptionService";
 import { StreamingProductService } from "../../Services/StreamingProductService";
 import TagSelector from "../Core/TagSelector";
@@ -39,6 +40,7 @@ export type Reminder = {
 
 interface Props {
   channel: Channel | null;
+  user?: User | null;
   visible: boolean;
   onFinishedCallback: any;
   onCanceledCallback: any;
@@ -967,23 +969,67 @@ export default class EditTalkModal extends Component<Props, State> {
               </Box>
             )}
 
-            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#EEEEEE"}
+            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#D3F930"}
               pad="10px" round="6px" gap="10px"
             >
               {!this.state.subscriptionPlans.includes("tier2") && (
-                <Text size="14px" color="grey" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
-                  Upgrade to the Excellence plan to use our streaming technology sculpted for academic seminars. 
+                <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
+                  Unlock our streaming technology sculpted for academic seminars
                 </Text> 
               )}
-              <CheckBox 
-                checked={this.state.link == '_agora.stream_tech'} 
-                label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
-                onChange={(e) => {
-                  if (this.state.subscriptionPlans.includes("tier2")) {
-                    this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })
-                  }
-                }}
-              /> 
+              <Box direction="row" gap="45px"> 
+                <CheckBox 
+                  checked={this.state.link == '_agora.stream_tech'} 
+                  label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+                  onChange={(e) => {
+                    if (this.state.subscriptionPlans.includes("tier2")) {
+                      this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })
+                    }
+                  }}
+                />
+                {!this.state.subscriptionPlans.includes("tier2") && (
+                  <Box
+                    onClick={this.toggleModalPricing}
+                    background="#BAD6DB"
+                    round="xsmall"
+                    pad="xsmall"
+                    width="160px"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator="#0C385B"
+                  >
+                    <Text size="14px" weight="bold"> Unlock streaming </Text>
+                  </Box>
+                )}
+                {this.state.showModalPricing && (
+                  <Layer
+                    onEsc={this.toggleModalPricing}
+                    onClickOutside={this.toggleModalPricing}
+                    modal
+                    responsive
+                    animation="fadeIn"
+                    style={{
+                      width: "1000px",
+                      height: "65%",
+                      borderRadius: 15,
+                      padding: 0,
+                    }}
+                  >
+                    <PricingPlans 
+                      callback={this.toggleModalPricing}
+                      disabled={false}
+                      channelId={this.props.channel ? this.props.channel.id : null}
+                      userId={this.props.user ? this.props.user.id : null}
+                      showDemo={false}
+                      headerTitle={false}
+                    />
+
+                  </Layer>
+                )}
+
+              </Box> 
             </Box>
 
             <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
@@ -1115,15 +1161,15 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 5 && (
-          <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px"}} align="start">
+          <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px" }} align="start">
             <Box 
               direction="column" gap="10px" 
-              background={this.isPaying() ? "white" : "#EEEEEE"}
+              background={this.isPaying() ? "white" : "#d3f930"}
               pad="10px" round="6px" 
             >
               {!this.isPaying() && (
-                <Text size="14px" color="grey" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
-                  You are currently under the Free plan. Upgrade to use the automatic email reminders 
+                <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
+                  Feature not available under your current plan. Unlock it below
                 </Text>
               )}
               <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
@@ -1162,17 +1208,17 @@ export default class EditTalkModal extends Component<Props, State> {
               <Box margin={{top: "30px"}} gap="15px"> 
                 <Box
                   onClick={this.toggleModalPricing}
-                  background="#CCCCCC"
+                  background="#BAD6DB"
                   round="xsmall"
                   pad="xsmall"
-                  width="160px"
+                  width="200px"
                   height="40px"
                   justify="center"
                   align="center"
                   focusIndicator={false}
-                  hoverIndicator="#BAD6DB"
+                  hoverIndicator="#0C385B"
                 >
-                  <Text size="14px" weight="bold"> Pricing options </Text>
+                  <Text size="14px" weight="bold"> Unlock email reminders </Text>
                 </Box>
                 {this.state.showModalPricing && (
                   <Layer
@@ -1191,8 +1237,8 @@ export default class EditTalkModal extends Component<Props, State> {
                     <PricingPlans 
                       callback={this.toggleModalPricing}
                       disabled={false}
-                      userId={null}
                       channelId={this.props.channel ? this.props.channel.id : null}
+                      userId={this.props.user ? this.props.user.id : null}
                       showDemo={false}
                       headerTitle={false}
                     />
