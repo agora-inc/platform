@@ -970,7 +970,7 @@ export default class EditTalkModal extends Component<Props, State> {
             )}
 
             <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#D3F930"}
-              pad="10px" round="6px" gap="10px"
+              pad="15px" round="6px" gap="10px"
             >
               {!this.state.subscriptionPlans.includes("tier2") && (
                 <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
@@ -1165,10 +1165,10 @@ export default class EditTalkModal extends Component<Props, State> {
             <Box 
               direction="column" gap="10px" 
               background={this.isPaying() ? "white" : "#d3f930"}
-              pad="10px" round="6px" 
+              pad="25px" round="6px" 
             >
               {!this.isPaying() && (
-                <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
+                <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "20px"}}>
                   Feature not available under your current plan. Unlock it below
                 </Text>
               )}
@@ -1202,10 +1202,8 @@ export default class EditTalkModal extends Component<Props, State> {
                 checked={this.state.reminderEmailGroup.includes("Followers")}
                 onChange={() => this.toggleReminderEmailGroup("Followers")}
               /> */}
-            </Box>
             
-            {!this.isPaying() && (
-              <Box margin={{top: "30px"}} gap="15px"> 
+            <Box margin={{top: "20px"}} gap="15px"> 
                 <Box
                   onClick={this.toggleModalPricing}
                   background="#BAD6DB"
@@ -1246,10 +1244,8 @@ export default class EditTalkModal extends Component<Props, State> {
                   </Layer>
                 )}
               </Box>
-            )}
+            </Box>
           </Box>
-
-
         )}
 
             </Box>

@@ -81,7 +81,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
       };
 
       showTimeUntil = () => {
-        let message = "Virtual cafeteria opening in ";
+        let message = "Opening in ";
         var startTime = new Date(this.props.talk.date).getTime()
         let secondsUntil = Math.floor(
           (startTime - this.state.now.getTime()) / 1000 - this.state.openingTimeBeforeSemInMinutes * 60

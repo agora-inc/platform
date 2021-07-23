@@ -59,26 +59,26 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
         return (
             <>
                 {/* {!this.cafeteriaPermanentlyClosed() || ( */}
-                <Box align="start" margin={{top:"100px"}} pad="50px" background={this.props.disabled ? "#EEEEEE"  : "" }>
+                <Box align="start" margin={{top:"100px"}} pad="50px" background={this.props.disabled ? "#D3F930"  : "" }>
                     {this.props.disabled && (
                         <Box direction="row" align="center" gap="50px" margin={{bottom: "60px"}}>
                             <Text size="16px" style={{fontStyle: "italic"}} >
-                                Upgrade to give access to the virtual cafeteria to your entire community
+                                Unlock the access to the virtual cafeteria for your entire community
                             </Text>
                             
                             <Box
                                 onClick={this.toggleModalPricing}
-                                background="#0C385B"
+                                background="#BAD6DB"
                                 round="xsmall"
                                 pad="xsmall"
-                                width="160px"
+                                width="200px"
                                 height="40px"
                                 justify="center"
                                 align="center"
                                 focusIndicator={false}
-                                hoverIndicator="#BAD6DB"
+                                hoverIndicator="#0C385B"
                             >
-                                <Text size="14px" weight="bold"> Pricing options </Text>
+                                <Text size="14px" weight="bold"> Unlock virtual cafeteria </Text>
                             </Box>
                             {this.state.showModalPricing && (
                                 <Layer
@@ -109,7 +109,7 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
                     )}
                     <Box direction="row" gap="30px" align="center"> 
                         <Text size="18px" weight="bold" margin={{top:"20px", bottom: "10px"}}>
-                            Meet the participants in the coffee room after the seminar!
+                            Meet the participants in the cafeteria after the seminar!
                         </Text>
                         <CoffeeHangoutButton
                             talk={this.props.talk}
