@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import "../../Styles/manage-channel.css";
 import { Channel } from "../../Services/ChannelService";
+import { User } from "../../Services/UserService";
 import EditTalkModal from "./EditTalkModal";
 
 interface Props {
   margin: any;
   channel: Channel | null;
+  user : User | null;
   onCreatedCallback: any;
 }
 
@@ -47,6 +49,7 @@ export default class ScheduleTalkButton extends Component<Props, State> {
           <EditTalkModal
             visible={this.state.showModal}
             channel={this.props.channel}
+            user={this.props.user}
             onCanceledCallback={this.toggleModal}
             onFinishedCallback={() => {
               this.toggleModal();

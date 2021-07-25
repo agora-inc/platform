@@ -15,6 +15,9 @@ import Button from "../Core/Button";
 import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
 import { Talk, TalkService } from "../../Services/TalkService";
+import { User } from "../../Services/UserService";
+import { ChannelSubscriptionService } from "../../Services/ChannelSubscriptionService";
+import { StreamingProductService } from "../../Services/StreamingProductService";
 import TagSelector from "../Core/TagSelector";
 import TopicSelector from "../Talks/TopicSelector";
 import { Topic } from "../../Services/TopicService";
@@ -25,7 +28,9 @@ import { InlineMath } from "react-katex";
 import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
+import PricingPlans from "../../Views/PricingPlans";
 import { UrlEncryption } from "../Core/Encryption/UrlEncryption";
+import { thisExpression } from "@babel/types";
 
 
 export type Reminder = {
@@ -36,6 +41,7 @@ export type Reminder = {
 
 interface Props {
   channel: Channel | null;
+  user?: User | null;
   visible: boolean;
   onFinishedCallback: any;
   onCanceledCallback: any;
@@ -81,6 +87,10 @@ interface State {
   autoAcceptEnabled: boolean,
   autoAcceptGroup: "Everybody" | "Academics" | "None";
   autoAcceptCustomInstitutions: boolean, 
+
+  showModalPricing: boolean,
+  allPlansId: number[];
+  subscriptionPlans: string[];
   
   // acceptedDomains: string[];
   //(below will be added when we will allow addition of extra institutions)
@@ -139,8 +149,13 @@ export default class EditTalkModal extends Component<Props, State> {
       autoAcceptEnabled: false,
       autoAcceptGroup: "Everybody",
       autoAcceptCustomInstitutions: false,
+
+      showModalPricing: false, 
+      allPlansId: [],
+      subscriptionPlans: [],
     };
     this.getReminders();
+    this.getChannelSubscriptions();
   }
 
   getReminders = () => {
@@ -158,6 +173,33 @@ export default class EditTalkModal extends Component<Props, State> {
         }
       )
     }
+  }
+
+  getChannelSubscriptions = () => {
+    if (this.props.channel) {
+      ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+        this.props.channel.id, 
+        (allPlansId: number[]) => {
+          this.setState({ allPlansId })
+          this.setState({
+            subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+          })
+        }
+      );
+    }
+  }
+
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
   }
 
   topicExists = (topics: Topic[]) => {
@@ -561,16 +603,25 @@ export default class EditTalkModal extends Component<Props, State> {
     )
   }
 
+  isPaying = () => {
+    return this.state.subscriptionPlans.includes("tier1") || 
+      this.state.subscriptionPlans.includes("tier2");
+  }
+
   toggleReminder = (i: number) => {
-    return (
-      () => {
-        this.setState(prevState => {
-          let reminders = prevState.reminders;
-          reminders[i].exist = !reminders[i].exist;
-          return {...prevState, reminders}
-        })
-      }
-    );
+    if (this.isPaying()) {
+      return (
+        () => {
+          this.setState(prevState => {
+            let reminders = prevState.reminders;
+            reminders[i].exist = !reminders[i].exist;
+            return {...prevState, reminders}
+          })
+        }
+      );
+    } else {
+      return ;
+    }
   }
 
   renderReminder = (j: number) => {
@@ -626,16 +677,22 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   toggleReminderEmailGroup = (group: string) => {
-    if (this.state.reminderEmailGroup.includes(group)) {
-      this.setState(prevState => ({
-        reminderEmailGroup: prevState.reminderEmailGroup.filter(e => e != group)
-      }))
-    } else {
-      this.setState(prevState => ({
-        reminderEmailGroup: [group, ...prevState.reminderEmailGroup]
-      }))
+    if (this.isPaying()) {
+      if (this.state.reminderEmailGroup.includes(group)) {
+        this.setState(prevState => ({
+          reminderEmailGroup: prevState.reminderEmailGroup.filter(e => e != group)
+        }))
+      } else {
+        this.setState(prevState => ({
+          reminderEmailGroup: [group, ...prevState.reminderEmailGroup]
+        }))
+      }
     }
   }
+
+  toggleModalPricing = () => {
+    this.setState({ showModalPricing: !this.state.showModalPricing });
+  };
 
   renderArrowButton = (prev: boolean) => {
     let incr = prev ? -1 : 1;
@@ -666,7 +723,6 @@ export default class EditTalkModal extends Component<Props, State> {
     var auto_accept = "'Automatically accepting a registration' means that the person registering to your event will automatically receive its details by email if they belong to one of the below group.";
     var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
     "Example: ox.ac.uk, cam.ac.uk"
-
     const numbers = [1, 2, 3, 4, 5];
 
     return (
@@ -680,35 +736,31 @@ export default class EditTalkModal extends Component<Props, State> {
           animation="fadeIn"
           style={{
             width: 650,
-            height: window.innerHeight > 1200 ? "900px" : "75%",
+            maxHeight: "80%",
             borderRadius: 15,
             // border: "3.5px solid black",
             padding: 0,
           }}
         >
-          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+          <Box align="center" width="100%">
             <Box
               justify="start"
               width="99.7%"
               background="#eaf1f1"
               direction="row"
-              height="10vw"
               style={{
+                minHeight: "50px",
                 borderTopLeftRadius: "15px",
                 borderTopRightRadius: "15px",
-                position: "sticky",
-                top: 0,
-                // minHeight: "6%",
-                zIndex: 10,
               }}
             >
-              <Box pad="30px" alignSelf="center">
-                <Text size="16px" color="black" weight="bold"  >
+              <Box pad="20px" alignSelf="center">
+                <Text size="16px" color="black" weight="bold" margin={{left: "10px"}}  >
                   {this.props.talk ? "Edit talk" : "New talk"}
                 </Text>
               </Box>
               <Box width="67%"></Box>
-              <Box pad="32px" alignSelf="center">
+              <Box pad="20px" alignSelf="center">
                 <Close onClick={this.props.onCanceledCallback} />
               </Box>
             </Box>
@@ -717,21 +769,19 @@ export default class EditTalkModal extends Component<Props, State> {
               width="100%"
               align="center"
               pad={{ horizontal: "30px" }}
-              gap="30px"
+              gap="5px"
               margin={{ top: "20px", bottom: "20px" }}
               overflow="auto"
-              height="78vw"
-              // style={{ minHeight: "500px" }}
             >
 
-        <Box direction="row" justify="center" align="center" gap="60px" margin={{top: "0px"}}>
+        <Box direction="row" justify="center" align="center" gap="60px" style={{minHeight: "30px"}}>
           <Text weight="bold" color="grey" size="13px"> Information </Text>
           <Text weight="bold" color="grey" size="13px"> Time </Text>
           <Text weight="bold" color="grey" size="13px"> Participants </Text>
           <Text weight="bold" color="grey" size="13px"> Filters </Text>
           <Text weight="bold" color="grey" size="13px"> Reminders </Text>
         </Box>
-        <Box direction="row" align="center" margin={{top: "-20px"}}>
+        <Box direction="row" align="center" margin={{bottom: "20px"}} style={{minHeight: "30px"}}>
           {numbers.map( (i: number) => (
             <>
             <Box 
@@ -754,7 +804,9 @@ export default class EditTalkModal extends Component<Props, State> {
         </Box>
 
         {this.state.activeSection === 1 && (
-          <Box direction="column" width="70%" gap="10px">
+          <Box direction="column" width="70%" gap="10px" 
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
             <Box width="100%">
               <TextInput
                 placeholder="Title"
@@ -818,7 +870,9 @@ export default class EditTalkModal extends Component<Props, State> {
           </Box>
         )}
         {this.state.activeSection === 2 && (
-          <Box direction="column" width="55%" gap="10px">
+          <Box direction="column" width="55%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
             <Calendar
               date={this.state.date}
               bounds={this.getDateBounds()}
@@ -883,7 +937,9 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 3 && (
-          <Box direction="column" width="70%" gap="10px">
+          <Box direction="column" width="70%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
             <Box direction="row" gap="5px" > 
               <Text size="13px" weight="bold"> Link to event </Text>
               <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
@@ -915,11 +971,68 @@ export default class EditTalkModal extends Component<Props, State> {
               </Box>
             )}
 
-            <CheckBox 
-              checked={this.state.link == '_agora.stream_tech'} 
-              label={'Host on Agora.stream'} 
-              onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}
-            /> 
+            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#D3F930"}
+              pad="15px" round="6px" gap="10px"
+            >
+              {!this.state.subscriptionPlans.includes("tier2") && (
+                <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
+                  Unlock our streaming technology sculpted for academic seminars
+                </Text> 
+              )}
+              <Box direction="row" gap="45px"> 
+                <CheckBox 
+                  checked={this.state.link == '_agora.stream_tech'} 
+                  label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+                  onChange={(e) => {
+                    if (this.state.subscriptionPlans.includes("tier2")) {
+                      this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })
+                    }
+                  }}
+                />
+                {!this.state.subscriptionPlans.includes("tier2") && (
+                  <Box
+                    onClick={this.toggleModalPricing}
+                    background="#BAD6DB"
+                    round="xsmall"
+                    pad="xsmall"
+                    width="160px"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator="#0C385B"
+                  >
+                    <Text size="14px" weight="bold"> Unlock streaming </Text>
+                  </Box>
+                )}
+                {this.state.showModalPricing && (
+                  <Layer
+                    onEsc={this.toggleModalPricing}
+                    onClickOutside={this.toggleModalPricing}
+                    modal
+                    responsive
+                    animation="fadeIn"
+                    style={{
+                      width: "1000px",
+                      height: "65%",
+                      borderRadius: 15,
+                      padding: 0,
+                    }}
+                  >
+                    <PricingPlans 
+                      callback={this.toggleModalPricing}
+                      disabled={false}
+                      channelId={this.props.channel ? this.props.channel.id : null}
+                      userId={this.props.user ? this.props.user.id : null}
+                      showDemo={false}
+                      headerTitle={false}
+                    />
+
+                  </Layer>
+                )}
+
+              </Box> 
+            </Box>
 
             <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
               <Text size="13px" weight="bold"> Registration required? </Text>
@@ -1019,7 +1132,9 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
         
         {this.state.activeSection === 4 && (
-          <Box direction="column" width="70%" gap="10px">
+          <Box direction="column" width="70%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
             <Text size="13px" weight="bold" color="black">
               Topics
             </Text>
@@ -1048,38 +1163,90 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 5 && (
-          <Box direction="column" width="70%" gap="10px">
-            <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
-              Email reminders
-            </Text>
-            {this.renderReminder(0)}
-            {this.renderReminder(1)}
+          <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px" }} align="start">
+            <Box 
+              direction="column" gap="10px" 
+              background={this.isPaying() ? "white" : "#d3f930"}
+              pad="25px" round="6px" 
+            >
+              {!this.isPaying() && (
+                <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "20px"}}>
+                  Feature not available under your current plan. Unlock it below
+                </Text>
+              )}
+              <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
+                Email reminders
+              </Text>
+              {this.renderReminder(0)}
+              {this.renderReminder(1)}
 
-            <Text size="13px" weight="bold" color="black" margin={{ top: "24px" }}> 
-              To whom?
-            </Text>
-            <CheckBox
-              label="Talk participants"
-              checked={this.state.reminderEmailGroup.includes("Participants")}
-              onChange={() => this.toggleReminderEmailGroup("Participants")}
-            />
-            <Box direction="row" gap="10px">
+              <Text size="13px" weight="bold" color="black" margin={{ top: "24px" }}> 
+                To whom?
+              </Text>
               <CheckBox
-                label="Your mailing list"
-                checked={this.state.reminderEmailGroup.includes("MailingList")}
-                onChange={() => this.toggleReminderEmailGroup("MailingList")}
+                label="Talk participants"
+                checked={this.state.reminderEmailGroup.includes("Participants")}
+                onChange={() => this.toggleReminderEmailGroup("Participants")}
               />
-              <StatusInfo size="small" data-tip data-for='mailing-list-reminder'/>
-              <ReactTooltip id='mailing-list-reminder' place="right" effect="solid">
-                <Text size="12px"> Securely upload your mailing list in the tab 'Mailing List' in your agora. </Text>
-              </ReactTooltip>
-            </Box>
-            {/* <CheckBox
-              label="Your followers"
-              checked={this.state.reminderEmailGroup.includes("Followers")}
-              onChange={() => this.toggleReminderEmailGroup("Followers")}
-            /> */}
+              <Box direction="row" gap="10px" margin={{bottom: "10px"}}>
+                <CheckBox
+                  label="Your mailing list"
+                  checked={this.state.reminderEmailGroup.includes("MailingList")}
+                  onChange={() => this.toggleReminderEmailGroup("MailingList")}
+                />
+                <StatusInfo size="small" data-tip data-for='mailing-list-reminder'/>
+                <ReactTooltip id='mailing-list-reminder' place="right" effect="solid">
+                  <Text size="12px"> Securely upload your mailing list in the tab 'Mailing List' in your agora. </Text>
+                </ReactTooltip>
+              </Box>
+              {/* <CheckBox
+                label="Your followers"
+                checked={this.state.reminderEmailGroup.includes("Followers")}
+                onChange={() => this.toggleReminderEmailGroup("Followers")}
+              /> */}
+            
+            <Box margin={{top: "20px"}} gap="15px"> 
+                <Box
+                  onClick={this.toggleModalPricing}
+                  background="#BAD6DB"
+                  round="xsmall"
+                  pad="xsmall"
+                  width="200px"
+                  height="40px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator="#0C385B"
+                >
+                  <Text size="14px" weight="bold"> Unlock email reminders </Text>
+                </Box>
+                {this.state.showModalPricing && (
+                  <Layer
+                    onEsc={this.toggleModalPricing}
+                    onClickOutside={this.toggleModalPricing}
+                    modal
+                    responsive
+                    animation="fadeIn"
+                    style={{
+                      width: "1000px",
+                      height: "65%",
+                      borderRadius: 15,
+                      padding: 0,
+                    }}
+                  >
+                    <PricingPlans 
+                      callback={this.toggleModalPricing}
+                      disabled={false}
+                      channelId={this.props.channel ? this.props.channel.id : null}
+                      userId={this.props.user ? this.props.user.id : null}
+                      showDemo={false}
+                      headerTitle={false}
+                    />
 
+                  </Layer>
+                )}
+              </Box>
+            </Box>
           </Box>
         )}
 
@@ -1091,14 +1258,10 @@ export default class EditTalkModal extends Component<Props, State> {
               gap="xsmall"
               width="99.7%"
               background="#eaf1f1"
-              height="10vw"
               style={{
+                minHeight: "60px",
                 borderBottomLeftRadius: "15px",
                 borderBottomRightRadius: "15px",
-                position: "sticky",
-                bottom: 0,
-                // minHeight: "60px",
-                zIndex: 10,
               }}
             >
               {this.state.activeSection === 1 && (

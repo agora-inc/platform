@@ -206,10 +206,6 @@ export default class RegistrationsTab extends Component<Props, State> {
 
         </Box> */}
 
-        {(!showItem && (this.state.pendingRegistrationList.length == 0)) &&
-            (<Text size="14px">No pending applications.</Text>
-        )}
-
         {(this.state.pendingRegistrationList.length > 0) &&
           (
           <>

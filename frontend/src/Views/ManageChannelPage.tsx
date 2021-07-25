@@ -4,6 +4,8 @@ import { Box, Text, TextArea, Image, Grid, Layer } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
+import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
@@ -34,10 +36,6 @@ import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
-
-import StreamingCheckoutPaymentButton from "../Components/Channel/ChannelSubscriptionsButtons/StreamingCheckoutPaymentButton";
-import CancelSubscriptionsButton from "../Components/Channel/ChannelSubscriptionsButtons/CancelSubscriptionsButton";
-
 
 
 interface Props {
@@ -81,6 +79,8 @@ interface State {
   topicId: number;
   field: string;
   showModalPricing: boolean;
+  allPlansId: number[];
+  subscriptionPlans: string[];
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -121,6 +121,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
       showModalPricing: false,
+      allPlansId: [],
+      subscriptionPlans: ["free"],
     };
   }
 
@@ -211,6 +213,33 @@ export default class ManageChannelPage extends Component<Props, State> {
       }
     );
   };
+
+  getChannelSubscriptions = () => {
+    if (this.props.channel) {
+      ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+        this.props.channel.id, 
+        (allPlansId: number[]) => {
+          this.setState({ allPlansId })
+          this.setState({
+            subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+          })
+        }
+      );
+    }
+  }
+
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
+  }
 
   storeUserData = () => {
     ChannelService.increaseViewCountForChannel(
@@ -686,7 +715,9 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   render() {
     const { channel } = this.state;
-    // console.log(this.state.listEmailCorrect)
+    
+    console.log("user??", this.state.user)
+
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -708,6 +739,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <ScheduleTalkButton
                     margin={{ bottom: "10px" }}
                     channel={this.state.channel}
+                    user={this.state.user}
                     onCreatedCallback={this.fetchAllTalks}
                   />
                   <Box
@@ -737,7 +769,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   {<UserAdmin />} {`Administrator panel`}{" "}
                 </Text>
 
-                {/* <Box
+                <Box
                   onClick={this.toggleModalPricing}
                   background="#0C385B"
                   round="xsmall"
@@ -750,16 +782,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                   hoverIndicator="#6DA3C7"
                 >
                   <Text size="14px" weight="bold"> Pricing options </Text>
-                </Box> */}
+                </Box>
               </Box>
 
-
-
-
-
-
               
-              {this.state.user && 
+              { /* this.state.user && 
               (
                 <>
                   <StreamingCheckoutPaymentButton
@@ -776,18 +803,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   
                   />
               </>
-              )}
-
-
-
-
-
-
-
-
-
-
-
+              ) */}
 
               {this.state.showModalPricing && (
                 <Layer
@@ -805,7 +821,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                 >
                   <PricingPlans 
                     callback={this.toggleModalPricing}
-                    showDemo={true}
+                    disabled={false}
+                    channelId={this.state.channelId}
+                    userId={this.state.user ? this.state.user.id : null}
+                    showDemo={false}
                     headerTitle={false} 
                   />
 

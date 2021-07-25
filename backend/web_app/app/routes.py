@@ -1649,7 +1649,7 @@ def channelLinkRedirect():
 def getStreamingProductById():
     err = ""
     try:
-        product_id = request.args.get("productId")
+        product_id = request.args.get("id")
         return jsonify(
             products.getStreamingProductById(product_id)
             )
@@ -1660,13 +1660,21 @@ def getStreamingProductById():
         tier = request.args.get("tier") # = tier1 and tier2
         product_type = request.args.get("productType") # = 'credits' or 'subscription'
         aud_size = request.args.get("audienceSize") # = 'small' or 'big'
+        
         return jsonify(
-            products.getStreamingProductIdByFeatures(tier, product_type, aud_size)
+            products.getStreamingProductByFeatures(tier, product_type, aud_size)
             )
     except Exception as e:
         err += str(e)
 
     return jsonify(e)
+
+@app.route('/products/streaming/all', methods=["GET"])
+def getAllStreamingProducts():
+    try:
+        return jsonify(products.getAllStreamingProducts())
+    except Exception as e:
+        return jsonify(str(e))
 
 # --------------------------------------------
 # CREDITS
@@ -1748,7 +1756,9 @@ def getActiveSubscriptionForChannel():
 def getAllActiveSubscriptionsForChannel():
     try:
         channel_id = request.args.get("channelId")
-        return jsonify(channelSubscriptions.getActiveSubscriptions(channel_id))
+        active_subs = channelSubscriptions.getActiveSubscriptions(channel_id)
+        return jsonify([sub['product_id'] for sub in active_subs])
+        
     except Exception as e:
         return jsonify(str(e))
 
