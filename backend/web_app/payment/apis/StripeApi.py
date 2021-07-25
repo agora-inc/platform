@@ -10,9 +10,9 @@ from repository import ProductRepository
 
 class StripeApi:
     def __init__(self):
-        self.public_api_key = "pk_test_51Iw99yLrLOIeFgs2F3sI5NMIe1kBXsF77aYrMCR3TuYhISPeVsZhTNDA1XM6BPOU3twkiVzOS7VaYLeYHnxlPdyo00ffb4tyAZ"
-        self.secret_api_key = "sk_test_51Iw99yLrLOIeFgs2pUoBjwUWPlbIB5mon6FkAMf1Dyf0SOyzARZ0vuqUcNvlOAQubBrXhcXH2fDG5X56erlyCWvQ00JsRaRN9Y"
-        self.endpoint_secret = "whsec_E2qdIOIiKLZd8GjTAiMpdBmBl7yhDh8b"
+        self.public_api_key = "pk_live_51Iw99yLrLOIeFgs2HOEbW5vMi4o5PR2wSGYv5KidblGkq7XL9YjyAiOUgsxvPhtEmnFokUvmCoNvuAGiPXAnXGFl00BJiasPo1"
+        self.secret_api_key = "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"
+        self.endpoint_secret = "whsec_NimBjBYIbnYlczfSzVnt88B8jTkpEBc5"
         
         # init objects
         stripe.api_key = self.secret_api_key
