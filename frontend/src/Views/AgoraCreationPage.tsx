@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid} from "grommet";
 import { Checkmark, Close, Linkedin,  Twitter} from "grommet-icons";
-import agorastreamLogo from "../assets/general/agora.stream_logo_v2.1.png";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import agorastreamLogo from "../assets/general/agora_stream_logo_300px.svg";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 import ReactTooltip from "react-tooltip";
 import { InlineMath } from "react-katex";
@@ -14,7 +14,7 @@ import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/Crea
 import { StreamingProductService } from "../Services/StreamingProductService";
 import MediaQuery from "react-responsive";
 import PricingPlans from "../Views/PricingPlans";
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
+import agoraStreamFullLogo from "../assets/general/agora_stream_logo_300px.svg";
 
 
 interface Props {}

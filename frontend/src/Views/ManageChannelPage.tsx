@@ -35,7 +35,7 @@ import EmailsTab from "./ManageChannelPage/EmailsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 
 interface Props {

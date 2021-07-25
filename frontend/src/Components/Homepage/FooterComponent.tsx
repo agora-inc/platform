@@ -45,7 +45,7 @@ export default class FooterComponent extends Component {
           </Box>
           <Box gap="medium">
             <Text size="14px" style={{textAlign: "right", marginRight: "5px"}}> Connecting academics</Text>
-            <Text style={{ fontSize: 14, marginRight: "5px"}} alignSelf="end">agora.stream © 2020</Text>
+            <Text style={{ fontSize: 14, marginRight: "5px"}} alignSelf="end">agora.stream © 2021</Text>
           </Box>
         </Box>
       </Box>

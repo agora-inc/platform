@@ -7,7 +7,7 @@ import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionServi
 import { CancelSubscriptionsButton } from "../Components/Channel/ChannelSubscriptionsButtons/CancelSubscriptionsButton";
 import { CheckoutPaymentButton } from "../Components/Channel/ChannelSubscriptionsButtons/CheckoutPaymentButton";
 import { Switch } from "antd";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 
 interface Props {
