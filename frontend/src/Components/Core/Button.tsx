@@ -65,7 +65,7 @@ export default class Button extends Component<Props, State> {
         justify="center"
         alignContent="center"
         width={this.props.width}
-        onClick={this.props.onClick}
+        onClick={this.props.disabled ? () => {} : this.props.onClick}
         focusIndicator={false}
         pad="xsmall"
         onMouseEnter={this.props.onMouseEnter}

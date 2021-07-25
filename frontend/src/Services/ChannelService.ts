@@ -15,6 +15,10 @@ const getChannelByName = (name: string, callback: any) => {
   get(`channels/channel?name=${name}`, callback);
 };
 
+const getChannelById = (id: number, callback: any) => {
+  get(`channels/channel?id=${id}`, callback);
+};
+
 const createChannel = (
   name: string,
   description: string,
@@ -40,6 +44,30 @@ const createChannel = (
     callback
   );
 };
+
+const addToMailingList = (channelId: number, emails: string[], callback: any) => {
+  axios
+    .post(
+      baseApiUrl + `/channels/mailinglist/add`,
+      { channelId: channelId, emails: emails },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback("ok");
+    })
+    .catch(function (error) {
+      callback(error.response.data);
+    });
+};
+
+const getMailingList = (channelId: number, callback: any) => { 
+  const url = `channels/mailinglist?channelId=${channelId}`;
+  get(url, callback)
+};
+
+const removeFromMailingList = (channelId: number, emails: string[], callback: any) => {
+
+}
 
 const addInvitedMembersToChannel = (channelId: number, emails: string[], callback: any) => {
   axios
@@ -453,10 +481,9 @@ export type Channel = {
 export const ChannelService = {
   getAllChannels,
   getTrendingChannels,
+  getChannelById,
   getChannelByName,
   createChannel,
-  addInvitedMembersToChannel,
-  getInvitedMembersForChannel,
   getChannelsForUser,
   getUsersForChannel,
   getRoleInChannel,
@@ -476,6 +503,14 @@ export const ChannelService = {
   removeContactAddress,
   sendTalkApplicationEmail,
   deleteAgora,
+  ///////////////////////
+  // Mailing List methods
+  ///////////////////////
+  addToMailingList,
+  getMailingList,
+  removeFromMailingList,
+  addInvitedMembersToChannel,
+  getInvitedMembersForChannel,
   ////////////////////////
   // Channel Topic methods
   ////////////////////////

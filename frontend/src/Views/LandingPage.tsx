@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import agoraStreamFullLogo from "../assets/general/agora_stream_logo_300px.svg";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../Services/UserService";
 import { Search, Play, Add, Chat, Close, Channel, ScheduleNew, Multiple } from "grommet-icons";
 import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
+import ScrollIntoView from 'react-scroll-into-view'
 import TrendingChannelsList from "../Components/Homepage/TrendingChannelsList";
 import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
+import AgoraCreationPage from "../Views/AgoraCreationPage";
 import ReactTooltip from "react-tooltip";
 
 
@@ -330,11 +332,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               <ReactTooltip id="create-your-events" effect="solid">
                 Create your events and share them with the world in less than a minute!
               </ReactTooltip>
-
-              <Link
-                to={{ pathname: "/info/agora_creation" }}
-                style={{ textDecoration: "none" }}
-              >
+                
+              <ScrollIntoView selector="#pricing">
                 <Box
                   onClick={() => ({})}
                   background={this.state.colorButton}
@@ -350,10 +349,10 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   data-tip data-for="create-your-events"
                 >
                   <Add size="30px" />
-                  <Text size="16px" weight="bold" margin={{ top: "10px" }}> Promote </Text>
+                  <Text size="16px" weight="bold" margin={{ top: "10px" }}> Post </Text>
                   <Text size="16px" margin={{ top: "5px" }}> your seminars </Text>
                 </Box>
-              </Link>
+              </ScrollIntoView>  
             </Box>
 
           </MediaQuery>
@@ -466,10 +465,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 For organizers
               </Text>
 
-              <Link
-                to={{ pathname: "/info/agora_creation" }}
-                style={{ textDecoration: "none" }}
-              >
+              <ScrollIntoView selector="#pricing">
                 <Box
                   onClick={() => ({})}
                   direction="row"
@@ -483,18 +479,17 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   focusIndicator={false}
                   hoverIndicator={this.state.colorHover}
                 >
-
                   <Add size="20px" />
                   <Box direction="column">
                     <Text size="14px" weight="bold" margin={{ left: "5px", bottom: "3px" }}>
-                      Promote
+                      Post
                     </Text>
                     <Text size="14px" margin={{ left: "5px" }}>
                       your seminars
                     </Text>
                   </Box>
                 </Box>
-              </Link>
+              </ScrollIntoView>
             </Box>
           </MediaQuery>
         </Box>
@@ -531,8 +526,10 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
           <TrendingTalksList />
+
         </Box>
 
+        <AgoraCreationPage />
 
 
         { /*
@@ -675,7 +672,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         */}
 
-        <Box width="820px" align="center">
+        <Box width={window.innerWidth > 800 ? "70%" : "90%"} align="center">
           <FooterComponent />
         </Box>
 

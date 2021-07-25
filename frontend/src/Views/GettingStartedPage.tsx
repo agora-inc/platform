@@ -4,7 +4,7 @@ import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
 import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help, Channel, PersonalComputer} from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
 import adding_email_invitation from "../assets/getting-started/adding_members/adding_email_invitation.png";

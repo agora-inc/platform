@@ -135,7 +135,7 @@ export default class Countdown extends Component<
                 hoverIndicator="#6DA3C7"
               >
                 <Text size="15px" weight="bold">
-                  Link to talk
+                  Click to join
                 </Text>
               </Box>
             </a>

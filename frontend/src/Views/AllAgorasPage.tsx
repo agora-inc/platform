@@ -6,7 +6,7 @@ import { User } from "../Services/UserService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicClassification from "../Components/Homepage/TopicClassification";
 import "../Styles/all-agoras-page.css";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 
 /*const AllAgorasPage = () => {

@@ -2,36 +2,45 @@
     TODO: 
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
+from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository
-from mailing import sendgridApi
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
-
+from payment.apis.StripeApi import StripeApi
 from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
 
-mail_sys = sendgridApi.sendgridApi()
+import stripe
 
-users = UserRepository.UserRepository(db=agora_db, mail_sys=mail_sys)
-tags = TagRepository.TagRepository(db=agora_db)
-topics = TopicRepository.TopicRepository(db=agora_db)
-questions = QandARepository.QandARepository(db=agora_db)
-streams = StreamRepository.StreamRepository(db=agora_db)
-talks = TalkRepository.TalkRepository(db=agora_db, mail_sys=mail_sys)
-videos = VideoRepository.VideoRepository(db=agora_db)
-channels = ChannelRepository.ChannelRepository(db=agora_db, mail_sys=mail_sys)
-search = SearchRepository.SearchRepository(db=agora_db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db, mail_sys=mail_sys)
-sendgridApi = sendgridApi.sendgridApi()
+users = UserRepository.UserRepository()
+tags = TagRepository.TagRepository()
+topics = TopicRepository.TopicRepository()
+questions = QandARepository.QandARepository()
+streams = StreamRepository.StreamRepository()
+talks = TalkRepository.TalkRepository()
+emailReminders = EmailRemindersRepository.EmailRemindersRepository()
+videos = VideoRepository.VideoRepository()
+channels = ChannelRepository.ChannelRepository()
+search = SearchRepository.SearchRepository()
+invitations = InvitedUsersRepository.InvitedUsersRepository()
+mailinglist = MailingListRepository.MailingListRepository()
+credits = CreditRepository.CreditRepository()
+products = ProductRepository.ProductRepository()
+paymentsApi = StripeApi()
+channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
+# paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 
+BASE_URL = "http://localhost:3000"
+# BASE_URL = "https://agora.stream/"
 
-# BASE_API_URL = "http://localhost:8000"
-BASE_API_URL = "https://agora.stream/api"
+# BASE_API_URL = "https://agora.stream/api"
+BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
@@ -150,20 +159,24 @@ def authenticate():
         return jsonify("ok")
     logRequest(request)
     params = request.json
-    username = params['username']
-    password = params['password']
-    user = users.authenticate(username, password)
 
-    if not user:
-        app.logger.debug(f"Unsuccessful login for user {username} (incorrect username or password)")
+    password = params['password']
+    credential = params['credential']
+
+    user = users.authenticate(credential, password)
+
+    if user:
+        app.logger.debug(f"Successful login for username: {credential}")
+    else:
+        app.logger.debug(f"Unsuccessful login for username {credential} (incorrect username or password)")
         return exceptions.Unauthorized("Incorrect username or password")
 
-    app.logger.debug(f"Successful login for user {username}")
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
 
     return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
+
 
 @app.route('/refreshtoken', methods=["POST"])
 def refreshAccessToken():
@@ -230,8 +243,12 @@ def updatePublic():
 # --------------------------------------------
 @app.route('/channels/channel', methods=["GET"])
 def getChannelByName():
-    name = request.args.get("name")
-    return jsonify(channels.getChannelByName(name))
+    if "name" in request.args:
+        name = request.args.get("name")
+        return jsonify(channels.getChannelByName(name))
+    elif "id" in request.args:
+        id = request.args.get("id")
+        return jsonify(channels.getChannelById(id))
 
 @app.route('/channels/all', methods=["GET"])
 def getAllChannels():
@@ -335,7 +352,6 @@ def getUsersForChannel():
 
     channelId = int(request.args.get("channelId"))
     roles = request.args.getlist("role")
-    print(roles)
     return jsonify(channels.getUsersForChannel(channelId, roles))
 
 @app.route('/channels/user/role', methods=["GET"])
@@ -415,7 +431,7 @@ def avatar():
         channelId = request.form["channelId"]
         file = request.files["image"]
         fn = f"{channelId}.jpg"
-        file.save(f"/home/cloud-user/plateform/agora/images/avatars/{fn}")
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/avatars/{fn}")
         channels.addAvatar(channelId)
 
         app.logger.debug(f"Agora with id {request.form['channelId']} updated avatar")
@@ -442,7 +458,7 @@ def cover():
         file = request.files["image"]
         print(file)
         fn = f"{channelId}.jpg"
-        file.save(f"/home/cloud-user/plateform/agora/images/covers/{fn}")
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/covers/{fn}")
         channels.addCover(channelId)
         
         app.logger.debug(f"Agora with id {request.form['channelId']} updated banner")
@@ -638,6 +654,29 @@ def getChannelsWithTopic():
     offset = int(request.args.get("offset"))
     return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
 
+# --------------------------------------------
+# x mailing list methods
+# --------------------------------------------
+@app.route('/channels/mailinglist/add', methods=["POST", "OPTIONS"])
+def addToMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    # if not checkAuth(request.headers.get('Authorization')):
+    #     return exceptions.Unauthorized("Authorization header invalid or not present")
+    params = request.json
+
+    return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
+
+@app.route('/channels/mailinglist', methods=["GET", "OPTIONS"])
+def getMailingList():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    channelId = int(request.args.get("channelId"))
+    return jsonify(mailinglist.getMailingList(channelId))
 
 # --------------------------------------------
 # x Membership ROUTES
@@ -896,10 +935,10 @@ def scheduleTalk():
 
     for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
         if topic_key not in params:
-            params[topic_key] = "NULL" 
+            params[topic_key] = 0
 
     app.logger.debug(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
-    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"]))
+    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["customInstitutionsIds"],  params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
 
 @app.route('/talks/sendemailedit', methods=["GET", "OPTIONS"])
 def sendEmailonTalkModification():
@@ -931,15 +970,36 @@ def editTalk():
         
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
+    try:
+        params = request.json
+
+        for topic_key in ["topic1Id", "topic2Id", "topic3Id"]:
+            if topic_key not in params:
+                params[topic_key] = 0
+
+        app.logger.debug(f"Talk with id {params['talkId']} edited")
+        return jsonify(talks.editTalk(params["channelId"], params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
+
+    except Exception as e:
+        return str(e)
+
+
+
+@app.route('/talks/editCustomInstitutions', methods=['POST', 'OPTIONS'])
+def editAutoAcceptanceCustomInstitutions():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
 
-    app.logger.debug(f"Talk with id {params['talkId']} edited")
-    return jsonify(talks.editTalk(params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"]))
+    return jsonify(talks.editAutoAcceptanceCustomInstitutions(params["talkId"], params["institutionIds"]))
+
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
 def deleteTalk():
-    logRequest(request)
     if request.method == "OPTIONS":
         return jsonify("ok")
         
@@ -1019,6 +1079,24 @@ def isAvailable():
 def getTrendingTalks():
     return jsonify(talks.getTrendingTalks())
 
+
+@app.route('/talks/reminders/time', methods=["GET"])
+def getReminderTime():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    talkId = int(request.args.get("talkId"))
+    return jsonify(emailReminders.getReminderTime(talkId))
+
+@app.route('/talks/reminders/group', methods=["GET"])
+def getReminderGroup():
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    talkId = int(request.args.get("talkId"))
+    return jsonify(emailReminders.getReminderGroup(talkId))
+
+
 # --------------------------------------------
 # TALK ANALYTICS
 # --------------------------------------------
@@ -1052,7 +1130,6 @@ def registerTalk():
         institution = params["institution"] if "institution" in params else ""
         user_hour_offset = params["userHourOffset"]
 
-        
         res = talks.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
         return jsonify(str(res))
 
@@ -1153,6 +1230,66 @@ def registrationStatusForTalk():
     userId = int(request.args.get("userId"))
         
     return jsonify(talks.registrationStatusForTalk(talkId, userId))
+
+# --------------------------------------------
+# Talks: presentation slides routes
+# --------------------------------------------
+@app.route('/talks/slides', methods=["POST", "GET", "DELETE"])
+def presentationSlides():
+    # NOTE: pdf only atm.
+    try:
+        if request.method == "OPTIONS":
+            return jsonify("ok")
+
+        if request.method == "POST":
+            logRequest(request)
+            # if not checkAuth(request.headers.get('Authorization')):
+            #     return exceptions.Unauthorized("Authorization header invalid or not present")
+            talkId = request.form["talkId"]
+            file = request.files["slides"]
+            print(file)
+            fn = f"{talkId}.pdf"
+            file.save(f"/home/cloud-user/plateform/agora/storage/slides/{fn}")
+            talks.addSlides(talkId)
+            
+            return jsonify({"filename": fn})
+            
+        if request.method == "GET":
+            if "talkId" in request.args:
+                talkId = int(request.args.get("talkId"))
+                fn = talks.getSlidesLocation(talkId)
+                if fn is not None:
+                    return send_file(fn, mimetype="application/pdf")
+                else:
+                    return jsonify({"hasSlides": False})
+
+
+        if request.method == "DELETE":
+            params = request.json 
+            talkId = params["talkId"]
+            talks.deleteSlides(talkId)
+
+            app.logger.debug(f"talk with id {talkId} removed slides")
+
+            return jsonify("ok")
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+@app.route('/talks/hasslides', methods=["GET"])
+def hasSlides():
+    # NOTE: pdf only atm.
+    if request.method == "GET":
+        try:
+            if "talkId" in request.args:
+                talkId = int(request.args.get("talkId"))
+                fn = talks.getSlidesLocation(talkId)
+                if fn is not None:
+                    return jsonify({"hasSlides": True})
+                else:
+                    return jsonify({"hasSlides": False})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------
@@ -1440,7 +1577,7 @@ def fullTextSearch():
     return jsonify(results)
 
 # --------------------------------------------
-# METATAG ROUTES (this is a hack)
+# METATAG ROUTES (this is a hack for link sharing on social media)
 # --------------------------------------------
 @app.route('/event-link', methods=["GET"])
 def eventLinkRedirect():
@@ -1504,3 +1641,330 @@ def channelLinkRedirect():
         return render_template(res_string)
     except Exception as e:
         return jsonify(str(e))
+
+# --------------------------------------------
+# Products
+# --------------------------------------------
+@app.route('/products/streaming', methods=["GET"])
+def getStreamingProductById():
+    err = ""
+    try:
+        product_id = request.args.get("id")
+        return jsonify(
+            products.getStreamingProductById(product_id)
+            )
+    except Exception as e:
+        err = str(e) + "; "
+
+    try:
+        tier = request.args.get("tier") # = tier1 and tier2
+        product_type = request.args.get("productType") # = 'credits' or 'subscription'
+        aud_size = request.args.get("audienceSize") # = 'small' or 'big'
+        
+        return jsonify(
+            products.getStreamingProductByFeatures(tier, product_type, aud_size)
+            )
+    except Exception as e:
+        err += str(e)
+
+    return jsonify(e)
+
+@app.route('/products/streaming/all', methods=["GET"])
+def getAllStreamingProducts():
+    try:
+        return jsonify(products.getAllStreamingProducts())
+    except Exception as e:
+        return jsonify(str(e))
+
+# --------------------------------------------
+# CREDITS
+# --------------------------------------------
+@app.route('/credits/talk/used', methods=["GET"])
+def getUsedStreamCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getUsedStreamCreditForTalk(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/channel/available', methods=["GET"])
+def getAvailableStreamCreditForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        return jsonify(credits.getAvailableStreamCreditForChannel(channel_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/available', methods=["GET"])
+def getAvailableStreamCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getAvailableStreamCreditForTalk(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/add', methods=["GET"])
+def addStreamCreditToTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        increment = request.args.get("increment")
+
+        return jsonify(credits.addStreamCreditToTalk(talk_id, increment))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/channel/add', methods=["GET"])
+def addStreamingCreditToChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        increment = request.args.get("increment")
+
+        return jsonify(credits.addStreamingCreditToChannel(channel_id, increment))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/increment', methods=["GET"])
+def upgradeStreamTalkByOne():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.upgradeStreamTalkByOne(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/credits/talk/max_audience', methods=["GET"])
+def getMaxAudienceForCreditForTalk():
+    try:
+        talk_id = request.args.get("talkId")
+        return jsonify(credits.getMaxAudienceForCreditForTalk(talk_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+# --------------------------------------------
+# SUBSCRIPTIONS
+# --------------------------------------------
+@app.route('/subscriptions/channel', methods=["GET"])
+def getActiveSubscriptionForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        product_id = request.args.get("productId")
+
+        return jsonify(channelSubscriptions.getActiveSubscriptionId(channel_id, product_id))
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/subscriptions/channel/all', methods=["GET"])
+def getAllActiveSubscriptionsForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        active_subs = channelSubscriptions.getActiveSubscriptions(channel_id)
+        return jsonify([sub['product_id'] for sub in active_subs])
+        
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/subscriptions/channel/cancel', methods=["GET"])
+def cancelSubscriptionForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+        product_id = request.args.get("productId")
+
+        # get subscription_id
+        subscription_id = channelSubscriptions.getActiveSubscriptionId(channel_id, product_id)
+
+        # set stop subscription date in stripe
+        paymentsApi.stopSubscriptionRenewal(subscription_id)
+
+        # status to "interrupted" in DB 
+        channelSubscriptions.interruptSubscription(subscription_id)
+        
+        return "ok"
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/subscriptions/channel/cancelall', methods=["GET"])
+def cancelAllSubscriptionsForChannel():
+    try:
+        channel_id = request.args.get("channelId")
+
+        # A. get all active channel subscriptions and cancel all of them
+        # get subscription_id
+        subscriptions = channelSubscriptions.getActiveSubscriptions(channel_id)
+        for subscription in subscriptions:
+            sub_id = subscription["stripe_subscription_id"]
+
+            # set stop subscription date in stripe
+            paymentsApi.stopSubscriptionRenewal(sub_id)
+
+            # status to "interrupted" in DB 
+            channelSubscriptions.interruptSubscription(sub_id)
+        
+        return "ok"
+    except Exception as e:
+        return jsonify(str(e))
+
+# --------------------------------------------
+# PAYMENTS
+# --------------------------------------------
+@app.route('/payment/create-checkout-session', methods=["GET"])
+def getStripeSessionForProduct():
+    product_id = request.args.get("productId")
+    user_id = request.args.get("userId")
+    quantity = request.args.get("quantity")
+
+    try:
+        # TODO: generalisation for later:
+        # product_class = products.getProductlassFromId(product_id)
+        product_class = "channel_subscription"
+
+        if product_class == "channel_subscription":
+            channel_id = request.args.get("channelId")
+            
+            success_url = os.path.join(BASE_URL, "thankyou", "success", channel_id)
+            url_cancel = os.path.join(BASE_URL, "thankyou", "error", channel_id)
+            
+            # Create checkout session
+            res = paymentsApi.get_session_for_streaming_products(
+                product_id,
+                success_url,
+                url_cancel,
+                quantity
+            )
+
+            # Store checkoutId in DB
+            channelSubscriptions._addCheckoutSubscription(
+                product_id,
+                res["checkout_session_id"],
+                channel_id,
+                user_id
+                )
+            
+            return jsonify(res)
+    except Exception as e:
+        return jsonify(str(e))
+
+# NOTE: handling of responses Stripe after checkouts and invoices
+@app.route('/payment/stripe_webhook', methods=['POST'])
+def stripe_webhook():
+    '''
+    Hack to handle events easily: https://codenebula.io/stripe/node.js/2019/05/02/using-stripe-webhooks-to-handle-failed-subscription-payments-node-js/
+    Full doc: https://stripe.com/docs/billing/subscriptions/overview#subscription-events
+
+    Tracked situations, associated stripe events, and summary logic:
+        - 1. checkout to pay subscription:
+            - 'checkout.session.completed'
+            - logic: use "checkout_id" to add "subscription_id" to line in DB with "checkout" status
+
+        - 2. payment first subscription: 
+            - 'invoice.paid'
+            - logic: grab "subscription_id" and update status in ChannelSubscription as "active"
+
+        # Ignore 3; taken care in the Dashboard (email is sent to user with stripe retrial link. See: https://support.stripe.com/questions/handling-recurring-payments-that-require-customer-action)
+        # - 3. failure payment first subscription: 
+        #     -'invoice.payment_action_required' (= needs action from customer)
+        #     - logic: send email 
+        #     - invoice.payment_failed
+        #     - logic: db 'status' in ChannelSubscription is "unpaid"
+
+        - 4. successful renewal subscription: 
+            - customer.subscription.updated (subscription status is "active")
+            - logic: if status is "active", update line.
+
+        - 5. failure renewal subscription: 
+            - customer.subscription.updated (subscription status becomes "past_due". After 4 trials, it becomes "unpaid": this is set in dashboard https://dashboard.stripe.com/settings/billing/automatic)
+            - logic:
+                # - if past_due: change subscription status in DB as "pending_payment"  
+                - if past_due: do nothing
+                - after 4 trials: change subscription status into "unpaid"
+
+        - 6. cancellation subscription or upgrade plans: 
+            - customer.subscription.updated (subscription status becomes "cancelled")
+            - logic: update subscription line into 'cancelled'
+
+    Handling:
+        - 'checkout.session.completed' (1)
+        - 'invoice.paid' (2)
+        - 'customer.subscription.updated' (4, 5)
+        - 'customer.subscription.deleted' (6)
+    
+    NOTE: we do not track payments internally (see dashboard Stripe for that)
+    '''
+    # Request too big (protection mechanism; Remy)
+    if request.content_length > 1024 * 1024:
+        return 400
+
+    payload = request.get_data()
+    sig_header = request.environ.get('HTTP_STRIPE_SIGNATURE')
+
+    try:
+        # Handling of all the responses
+        event = paymentsApi._construct_stripe_event_from_raw(payload, sig_header)
+
+        # A. Handle successful checkout sessions (Sent when a customer clicks the Pay or Subscribe button in Checkout, informing you of a new purchase.)
+        if event['type'] == 'checkout.session.completed':
+            checkout_id = event["data"]["object"]["id"]
+
+            # TODO: generalisation for later:
+            # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
+            # product_class = products.getProductlassFromStripeId(stripe_product_id)
+            product_class = "channel_subscription"
+
+            # 1. If StreamingSubscription: add a line in DB and add customer in PaymentHistory
+            if product_class == "channel_subscription":
+                stripe_subscription_id = event["data"]["object"]["subscription"]
+                channelSubscriptions._addStripeSubscriptionId(
+                    checkout_id,
+                    stripe_subscription_id
+                )
+            # 2. If credits
+            else:
+                return NotImplementedError
+
+        # B. Handle paid invoice 
+        elif event['type'] == 'invoice.paid':
+            # TODO: generalisation for later:
+            # stripe_product_id = event["data"]["lines"]["data"][0]["price"]
+            # product_class = products.getProductlassFromStripeId(stripe_product_id)
+            product_class = "channel_subscription"
+
+            #  Update subscription into active
+            if product_class == "channel_subscription":
+                stripe_subscription_id = event["data"]["object"]["subscription"]
+
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, status="active"
+                )
+
+        # C. Changes of status of subscription
+        # (Stripe: "Sent each billing interval if there is an issue with your customer’s payment method.")
+        elif event['type'] == "customer.subscription.updated":
+            stripe_subscription_id = event["data"]["object"]["id"]
+            subscription_status = event["data"]["object"]["status"]
+
+            if subscription_status == "active":
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, status="active"
+                )
+
+            elif subscription_status == "past_due":
+                # do nothing here 
+                pass
+
+            elif subscription_status == "cancelled":
+                channelSubscriptions.updateSubscriptionStatus(
+                    stripe_subscription_id=stripe_subscription_id, 
+                    status="cancelled"
+                    )
+
+        # C. Subscriptions that are changed into cancelled (Stripe dashboard: after 30 days unpaid. https://dashboard.stripe.com/settings/billing/automatic)
+        #  - Cancelled subscriptions
+        elif event['type'] == "customer.subscription.deleted":
+            stripe_subscription_id = event["data"]["object"]["id"]
+
+            channelSubscriptions.updateSubscriptionStatus(
+                stripe_subscription_id=stripe_subscription_id, status="cancelled"
+            )
+
+        return {}
+
+    except Exception as e:
+        return {}, 400

@@ -4,6 +4,8 @@ import { Box, Text, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
+import { StreamingProductService } from "../Services/StreamingProductService";
 import { Link } from "react-router-dom";
 import "../Styles/channel-page.css";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
@@ -27,6 +29,8 @@ interface State {
   registered: boolean;
   registrationStatus: string;
   showTalkId: number;
+  allPlansId: number[];
+  subscriptionPlans: string[];
 }
 
 export default class TalkSharingPage extends Component<Props, State> {
@@ -62,6 +66,8 @@ export default class TalkSharingPage extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showTalkId: this.getTalkIdFromUrl(),
+      allPlansId: [],
+      subscriptionPlans: [],
     };
   }
 
@@ -77,11 +83,44 @@ export default class TalkSharingPage extends Component<Props, State> {
     return Number(talkId);
   };
 
+  getChannelSubscriptions = () => {
+    ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+      this.state.talk.channel_id, 
+      (allPlansId: number[]) => {
+        this.setState({ allPlansId })
+        this.setState({
+          subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+        })
+      }
+    );
+  }
+
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
+  }
+
+  isPaying = () => {
+    return this.state.subscriptionPlans.includes("tier1") || 
+      this.state.subscriptionPlans.includes("tier2");
+  }
+
   fetchAll = () => {
     let talkId = this.getTalkIdFromUrl();  
     TalkService.getTalkById(talkId, (talk: Talk) => {
         this.setState({talk: talk}, 
-          () => {this.fetchUserInfo();}
+          () => {
+            this.fetchUserInfo();
+            this.getChannelSubscriptions();
+          }
         );
     });
   }
@@ -289,7 +328,9 @@ export default class TalkSharingPage extends Component<Props, State> {
 
           <CoffeeHangoutRoom
             talk={this.state.talk}
-            user={this.state.user}/>
+            user={this.state.user}
+            disabled={!this.isPaying()}
+          />
           </Box>
         </Box>
       </>

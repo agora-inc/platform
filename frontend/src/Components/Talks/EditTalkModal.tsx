@@ -8,12 +8,16 @@ import {
   Calendar,
   MaskedInput,
   Select,
+  Layer,
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import Button from "../Core/Button";
 import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
 import { Talk, TalkService } from "../../Services/TalkService";
+import { User } from "../../Services/UserService";
+import { ChannelSubscriptionService } from "../../Services/ChannelSubscriptionService";
+import { StreamingProductService } from "../../Services/StreamingProductService";
 import TagSelector from "../Core/TagSelector";
 import TopicSelector from "../Talks/TopicSelector";
 import { Topic } from "../../Services/TopicService";
@@ -21,13 +25,23 @@ import "../../Styles/edit-talk-modal.css";
 import { textToLatex } from "../Core/LatexRendering";
 import { Switch } from "antd";
 import { InlineMath } from "react-katex";
-import { StatusInfo } from "grommet-icons";
+import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
+import PricingPlans from "../../Views/PricingPlans";
+import { UrlEncryption } from "../Core/Encryption/UrlEncryption";
+import { thisExpression } from "@babel/types";
 
+
+export type Reminder = {
+  exist: boolean;
+  days: number;
+  hours: number; 
+}
 
 interface Props {
   channel: Channel | null;
+  user?: User | null;
   visible: boolean;
   onFinishedCallback: any;
   onCanceledCallback: any;
@@ -61,7 +75,27 @@ interface State {
   showAdvertisementOverlay: boolean;
   talkToAdvertise: Talk | null,
   sendEmail: boolean;
-  talkId: number | null
+  talkId: number | null;
+  activeSection: number;
+  onRegistration: boolean;
+
+  // reminders  
+  reminders: Reminder[];
+  reminderEmailGroup: string[];
+  
+  // automatic acceptance
+  autoAcceptEnabled: boolean,
+  autoAcceptGroup: "Everybody" | "Academics" | "None";
+  autoAcceptCustomInstitutions: boolean, 
+
+  showModalPricing: boolean,
+  allPlansId: number[];
+  subscriptionPlans: string[];
+  
+  // acceptedDomains: string[];
+  //(below will be added when we will allow addition of extra institutions)
+  // autoAcceptVerifiedAcademics: boolean, 
+  // customInstitutionsIds: number | number[]
 }
 
 export default class EditTalkModal extends Component<Props, State> {
@@ -102,7 +136,70 @@ export default class EditTalkModal extends Component<Props, State> {
       talkToAdvertise: this.props.talk ? this.props.talk : null,
       sendEmail: false,
       talkId: null,
+      activeSection: 1,
+      onRegistration: false,
+
+      // email reminders
+      reminders: [
+        {exist: false, days: 0, hours: 0},
+        {exist: false, days: 0, hours: 0}
+      ],
+      reminderEmailGroup: [],
+      // automatic acceptance
+      autoAcceptEnabled: false,
+      autoAcceptGroup: "Everybody",
+      autoAcceptCustomInstitutions: false,
+
+      showModalPricing: false, 
+      allPlansId: [],
+      subscriptionPlans: [],
     };
+    this.getReminders();
+    this.getChannelSubscriptions();
+  }
+
+  getReminders = () => {
+    if (this.props.talk) {
+      TalkService.getReminderTime(
+        this.props.talk.id, 
+        (reminders: Reminder[]) => {
+          this.setState({ reminders })
+        }
+      )
+      TalkService.getReminderGroup(
+        this.props.talk.id, 
+        (reminderEmailGroup: string[]) => {
+          this.setState({ reminderEmailGroup })
+        }
+      )
+    }
+  }
+
+  getChannelSubscriptions = () => {
+    if (this.props.channel) {
+      ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+        this.props.channel.id, 
+        (allPlansId: number[]) => {
+          this.setState({ allPlansId })
+          this.setState({
+            subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+          })
+        }
+      );
+    }
+  }
+
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
   }
 
   topicExists = (topics: Topic[]) => {
@@ -192,21 +289,30 @@ export default class EditTalkModal extends Component<Props, State> {
     const dateTimeStrs = this.combineDateAndTimeStrings();
     if (this.props.talk) {
       TalkService.editTalk(
+        this.props.talk.channel_id,
         this.props.talk.id,
         this.escapeSingleQuotes(this.state.title),
         this.escapeSingleQuotes(this.state.description),
         dateTimeStrs[0],
         dateTimeStrs[1],
-        this.validLink(this.state.link),
+        (this.state.link == '_agora.stream_tech') ? UrlEncryption.encryptIdAndRoleInUrl("livestream", this.props.talk!.id) : this.validLink(this.state.link),
         this.state.tags,
         this.state.releaseLinkOffset,
-        this.state.linkVisibility,
+        // this.state.linkVisibility,
+        this.state.onRegistration ? "Members only" : "Everybody",
         this.state.cardVisibility,
         this.state.topics,
         this.escapeSingleQuotes(this.state.talkSpeaker),
         this.state.talkSpeakerURL,
         this.state.published,
         this.state.audienceLevel,
+        this.state.autoAcceptGroup,
+        // this.state.autoAcceptCustomInstitutions,
+        // this.state.customInstitutionsIds,
+        false, 
+        [],
+        this.state.reminders,
+        this.state.reminderEmailGroup, 
         (talk: Talk) => {
           if (this.state.talkToAdvertise !== undefined){
             this.setState({
@@ -235,13 +341,21 @@ export default class EditTalkModal extends Component<Props, State> {
         this.validLink(this.state.link),
         this.state.tags,
         this.state.releaseLinkOffset,
-        this.state.linkVisibility,
+        // this.state.linkVisibility,
+        this.state.onRegistration ? "Members only" : "Everybody",
         this.state.cardVisibility,
-        this.state.topics,
+        this.state.topics.length == 0 ? [] : this.state.topics, // Hack
         this.escapeSingleQuotes(this.state.talkSpeaker),
         this.state.talkSpeakerURL,
         this.state.published,
         this.state.audienceLevel,
+        this.state.autoAcceptGroup,
+        // this.state.autoAcceptCustomInstitutions,
+        // this.state.customInstitutionsIds,
+        false, 
+        [],
+        this.state.reminders,
+        this.state.reminderEmailGroup, 
         (talk: Talk) => {
           this.setState({ talkId: talk.id })
           if (this.state.talkToAdvertise !== undefined){
@@ -255,6 +369,7 @@ export default class EditTalkModal extends Component<Props, State> {
               loading: false,
             },
             () => {
+              this.onEditStreamingLinkCallback(talk);
               this.props.onFinishedCallback();
               this.setState({
                 title: "",
@@ -270,6 +385,56 @@ export default class EditTalkModal extends Component<Props, State> {
       );
     }
   };
+
+  onEditStreamingLinkCallback = (talk: Talk) => {
+    // Edits talk URL if user uses agora.stream streaming tech.
+    // NOTE: As talk_id not available at creation, we add callback
+    if (talk.link == 'https://_agora.stream_tech'){
+      const dateTimeStrs = this.combineDateAndTimeStrings();
+      var encryptedUrl = UrlEncryption.encryptIdAndRoleInUrl("livestream", talk.id)
+      TalkService.editTalk(
+        talk.channel_id,
+        talk.id,
+        this.escapeSingleQuotes(this.state.title),
+        this.escapeSingleQuotes(this.state.description),
+        dateTimeStrs[0],
+        dateTimeStrs[1],
+        this.validLink(encryptedUrl),
+        this.state.tags,
+        this.state.releaseLinkOffset,
+        this.state.linkVisibility,
+        this.state.cardVisibility,
+        this.state.topics,
+        this.escapeSingleQuotes(this.state.talkSpeaker),
+        this.state.talkSpeakerURL,
+        this.state.published,
+        this.state.audienceLevel,
+        this.state.autoAcceptGroup,
+        // this.state.autoAcceptCustomInstitutions,
+        // this.state.customInstitutionsIds,
+        false, 
+        [],
+        this.state.reminders,
+        this.state.reminderEmailGroup, 
+        (talk: Talk) => {
+          if (this.state.talkToAdvertise !== undefined){
+            this.setState({
+              talkToAdvertise: talk
+            }
+            )
+          }
+          this.setState(
+            {
+              loading: false,
+            },
+            () => {
+              this.props.onFinishedCallback();
+            }
+          );
+        }
+      );
+    }
+  }
 
   onFinishAdvertisement = () => {
     this.hideAdvertisementOverlay()
@@ -404,58 +569,775 @@ export default class EditTalkModal extends Component<Props, State> {
     }
   }
 
+  handleCheckBox = (name: "Everybody" | "Academics" | "None") => {
+    this.setState({
+      autoAcceptGroup: name
+    });
+  };
+
+  // parseList = (e: any) => {
+  //   this.setState({
+  //     acceptedDomains: e.target.value.split(',')
+  //   });
+  // }
+
+  pushDays = (i: number, n_days: string) => {
+    this.setState(prevState => {
+      let reminders = prevState.reminders;
+      reminders[i].days = Number(n_days);
+      return {...prevState, reminders}
+    })
+  }
+
+  pushHours = (i: number, n_hours: string) => {
+    this.setState(prevState => {
+      let reminders = prevState.reminders;
+      reminders[i].hours = Number(n_hours);
+      return {...prevState, reminders}
+    })
+  }
+
   hideAdvertisementOverlay = () => {
     this.setState({
       showAdvertisementOverlay: false}
     )
   }
 
+  isPaying = () => {
+    return this.state.subscriptionPlans.includes("tier1") || 
+      this.state.subscriptionPlans.includes("tier2");
+  }
+
+  toggleReminder = (i: number) => {
+    if (this.isPaying()) {
+      return (
+        () => {
+          this.setState(prevState => {
+            let reminders = prevState.reminders;
+            reminders[i].exist = !reminders[i].exist;
+            return {...prevState, reminders}
+          })
+        }
+      );
+    } else {
+      return ;
+    }
+  }
+
+  renderReminder = (j: number) => {
+    return (
+      <Box direction="row" gap="6px" align="center">
+        <Text size="13px" color="grey" margin={{right: "20px"}} > 
+          Reminder {j+1}
+        </Text>
+        {!this.state.reminders[j].exist && (
+          <Box
+            focusIndicator={false}
+            background="white"
+            round="xsmall"
+            pad={{ vertical: "2px", horizontal: "xsmall" }}
+            onClick={this.toggleReminder(j)}
+            style={{
+              width: "60px", height: "26px",
+              border: "1px solid #C2C2C2",
+            }}
+            hoverIndicator={true}
+            align="center"
+          >
+            <Text color="grey" size="small"> 
+              + Add 
+            </Text>
+          </Box>
+        )}
+        {this.state.reminders[j].exist && (
+          <Box direction="row" gap="6px" align="center" justify="center">
+            <input
+              value={this.state.reminders[j].days}
+              onChange={(e) => this.pushDays(j, e.target.value)}
+              style={{
+                width: "30px", height: "26px", padding: "4px",
+                border: "1px solid #C2C2C2", borderRadius: "5px", 
+              }}
+            />
+            <Text size="16px" color="grey" margin={{right: "15px"}}> day(s) </Text>
+            <input
+              value={this.state.reminders[j].hours}
+              onChange={(e) => this.pushHours(j, e.target.value)}
+              style={{
+                width: "30px", height: "26px", padding: "4px",
+                border: "1px solid #C2C2C2", borderRadius: "5px", 
+              }}
+            />
+            <Text size="16px" color="grey" margin={{right: "20px"}}> hour(s) before </Text>
+            <Close size="20px" onClick={this.toggleReminder(j)} />
+          </Box>
+        )}
+      </Box>
+    ); 
+  }
+
+  toggleReminderEmailGroup = (group: string) => {
+    if (this.isPaying()) {
+      if (this.state.reminderEmailGroup.includes(group)) {
+        this.setState(prevState => ({
+          reminderEmailGroup: prevState.reminderEmailGroup.filter(e => e != group)
+        }))
+      } else {
+        this.setState(prevState => ({
+          reminderEmailGroup: [group, ...prevState.reminderEmailGroup]
+        }))
+      }
+    }
+  }
+
+  toggleModalPricing = () => {
+    this.setState({ showModalPricing: !this.state.showModalPricing });
+  };
+
+  renderArrowButton = (prev: boolean) => {
+    let incr = prev ? -1 : 1;
+    return (
+      <Box
+        round="xsmall"
+        pad={{ vertical: "4px", horizontal: "4px" }}
+        style={{
+          width: "36px",
+          border: "1px solid #BBBBBB",
+        }}
+        margin={{left: prev ? "36px" : "0px", right: prev ? "0px" : "36px"}}
+        onClick={() => this.setState((prevState: any) => ({activeSection: prevState.activeSection+incr}))} 
+      >
+      {prev && <LinkPrevious color="#BBBBBB" size="26px" />}
+      {!prev && <LinkNext color="#BBBBBB" size="26px" />}
+    </Box>
+    );
+  }
+
+
   render() {
-    console.log("email?", this.state.sendEmail)
+    // var auto_accept = "Select the default option for automatically accepting people to your seminars </br></br>" +
+    // "The accepted people will receive two emails: <br/>" + 
+    // "- One <b> straight after acceptation </b> with all the event details except the link <br/>" +
+    // "- One <b>24 hours before the event</b> to share the streaming URL. <br/><br/>" +
+    // "If URL not available, the email is sent as soon as URL is added to event. ";
+    var auto_accept = "'Automatically accepting a registration' means that the person registering to your event will automatically receive its details by email if they belong to one of the below group.";
+    var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
+    "Example: ox.ac.uk, cam.ac.uk"
+    const numbers = [1, 2, 3, 4, 5];
+
     return (
       <>
-      <Overlay
-        width={1100}
-        height={750}
-        visible={this.props.visible}
-        title={this.props.talk ? "Edit talk" : "New talk"}
-        submitButtonText="Publish"
-        onSubmitClick={this.onFinishClicked}
-        contentHeight="550px"
-        canProceed={this.isComplete()}
-        isMissing={this.isMissing()}
-        onCancelClick={this.props.onCanceledCallback}
-        onClickOutside={this.props.onCanceledCallback}
-        onEsc={this.props.onCanceledCallback}
-        deleteButton={
-          this.props.talk ? (
-            <Button
-              fill="#FF4040"
-              width="90px"
-              height="35px"
-              text="Delete"
-              onClick={this.onDeleteClicked}
+      {this.props.visible && (
+        <Layer
+          onEsc={this.props.onCanceledCallback}
+          onClickOutside={this.props.onCanceledCallback}
+          modal
+          responsive
+          animation="fadeIn"
+          style={{
+            width: 650,
+            maxHeight: "80%",
+            borderRadius: 15,
+            // border: "3.5px solid black",
+            padding: 0,
+          }}
+        >
+          <Box align="center" width="100%">
+            <Box
+              justify="start"
+              width="99.7%"
+              background="#eaf1f1"
+              direction="row"
+              style={{
+                minHeight: "50px",
+                borderTopLeftRadius: "15px",
+                borderTopRightRadius: "15px",
+              }}
+            >
+              <Box pad="20px" alignSelf="center">
+                <Text size="16px" color="black" weight="bold" margin={{left: "10px"}}  >
+                  {this.props.talk ? "Edit talk" : "New talk"}
+                </Text>
+              </Box>
+              <Box width="67%"></Box>
+              <Box pad="20px" alignSelf="center">
+                <Close onClick={this.props.onCanceledCallback} />
+              </Box>
+            </Box>
+            
+            <Box
+              width="100%"
+              align="center"
+              pad={{ horizontal: "30px" }}
+              gap="5px"
+              margin={{ top: "20px", bottom: "20px" }}
+              overflow="auto"
+            >
+
+        <Box direction="row" justify="center" align="center" gap="60px" style={{minHeight: "30px"}}>
+          <Text weight="bold" color="grey" size="13px"> Information </Text>
+          <Text weight="bold" color="grey" size="13px"> Time </Text>
+          <Text weight="bold" color="grey" size="13px"> Participants </Text>
+          <Text weight="bold" color="grey" size="13px"> Filters </Text>
+          <Text weight="bold" color="grey" size="13px"> Reminders </Text>
+        </Box>
+        <Box direction="row" align="center" margin={{bottom: "20px"}} style={{minHeight: "30px"}}>
+          {numbers.map( (i: number) => (
+            <>
+            <Box 
+              width="32px" 
+              height="32px"
+              round="16px" 
+              onClick={() => this.setState({activeSection: i})} 
+              background={this.state.activeSection === i ? "#6DA3C7" : "white"}
+              justify="center"
+              align="center"
+              border={{color: "#6DA3C7"}}
+              hoverIndicator="#6DA3C7"
+              focusIndicator={false}
+            >
+              <Text color="black" size="14px"> {i} </Text> 
+            </Box> 
+            {i !== numbers[numbers.length-1] && <hr style={{width: "80px", height: "0.1px", backgroundColor: "black", borderColor: "black" }} />}
+            </>
+          ))}
+        </Box>
+
+        {this.state.activeSection === 1 && (
+          <Box direction="column" width="70%" gap="10px" 
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
+            <Box width="100%">
+              <TextInput
+                placeholder="Title"
+                value={this.state.title}
+                onChange={(e) => this.setState({ title: e.target.value })}
+              />
+            </Box>
+            <Box direction="row" gap="10px">
+              <Box width="50%">
+                <TextInput
+                  placeholder="Speaker name"
+                  value={this.state.talkSpeaker}
+                  onChange={(e) => this.setState({ talkSpeaker: e.target.value })}
+                />
+              </Box>
+              <Box width="50%">
+                <TextInput
+                  placeholder="Speaker homepage"
+                  value={this.state.talkSpeakerURL}
+                  onChange={(e) => this.setState({ talkSpeakerURL: e.target.value })}
+                />
+              </Box>
+              
+            </Box> 
+
+            <Box width="100%" gap="5px" margin={{top: "15px"}}>
+              <Box direction="row" gap="small">
+                <Box margin={{"right": "70px"}}>
+                  <Text size="14px" weight="bold" color="black">
+                    Description
+                    <StatusInfo size="small" data-tip data-for='description_latex_info'/>
+                      <ReactTooltip id='description_latex_info' place="right" effect="solid">
+                      <InlineMath math={"{\\small \\LaTeX}"} /> supported (e.g. $\log(a)+\log(b)=\log(ab)$).
+                      </ReactTooltip>
+                  </Text>
+                </Box>
+                <Switch
+                  checked={this.state.latex}
+                  onChange={(checked: boolean) => {
+                    this.setState({ latex: checked });
+                  }}
+                  size="small"
+                />
+                Preview <InlineMath math={"{\\small \\LaTeX}"} />
+              </Box>
+
+              {!this.state.latex && (
+                <TextArea
+                  style={{height: "240px"}}
+                  value={this.state.description}
+                  placeholder=""
+                  onChange={(e) => this.setState({ description: e.target.value })}
+                />
+              )}
+              {this.state.latex && (
+                this.state.description.split('\n').map(
+                  (item, i) => textToLatex(item)
+                )
+              )}
+            </Box>
+          </Box>
+        )}
+        {this.state.activeSection === 2 && (
+          <Box direction="column" width="55%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
+            <Calendar
+              date={this.state.date}
+              bounds={this.getDateBounds()}
+              size="small"
+              onSelect={(date: any) => {
+                this.setState({ date });
+              }}
+              daysOfWeek
+              style={{ width: "100%" }}
             />
-          ) : null
-        }
-        saveDraftButton={
-          <Button
-            width="170px"
-            height="35px"
-            text="Save as draft"
-            textColor="white"
-            onClick={this.onSaveDraft}
-          />
-        }
-        buttonOnMouseEnter={this.isMissing}
-      >
-        <Box direction="row"> 
+            <Box direction="row" gap="medium" margin={{top: "medium"}}>
+              <Box direction="column" width="100%" gap="5px">
+                <Text size="14px" weight="bold" color="black">
+                  Start
+                </Text>
+                <MaskedInput
+                  mask={[
+                    {
+                      length: 2,
+                      regexp: /^[01][0-9]$|^2[0-3]|^[0-9]$/,
+                      placeholder: "hh",
+                    },
+                    { fixed: ":" },
+                    {
+                      length: 2,
+                      regexp: /^[0-5][0-9]$|^[0-5]$/,
+                      placeholder: "mm",
+                    },
+                  ]}
+                  value={this.state.startTime}
+                  onChange={(event: any) => {
+                    this.setState({ startTime: event.target.value });
+                  }}
+                />
+              </Box>
+              <Box direction="column" width="100%" gap="5px">
+                <Text size="14px" weight="bold" color="black">
+                  Finish
+                </Text>
+                <MaskedInput
+                  mask={[
+                    {
+                      length: 2,
+                      regexp: /^[01][0-9]$|^2[0-3]|^[0-9]$/,
+                      placeholder: "hh",
+                    },
+                    { fixed: ":" },
+                    {
+                      length: 2,
+                      regexp: /^[0-5][0-9]$|^[0-5]$/,
+                      placeholder: "mm",
+                    },
+                  ]}
+                  value={this.state.endTime}
+                  onChange={(event: any) => {
+                    this.setState({ endTime: event.target.value });
+                  }}
+                />
+              </Box>
+            </Box>
+          </Box>
+        )}
+
+        {this.state.activeSection === 3 && (
+          <Box direction="column" width="70%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
+            <Box direction="row" gap="5px" > 
+              <Text size="13px" weight="bold"> Link to event </Text>
+              <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
+              <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
+                <p> Zoom, Teams, Hangout, etc.</p>
+              </ReactTooltip> 
+            </Box>
+
+            {this.state.link !== '_agora.stream_tech' && ( 
+              <TextInput
+                value={this.state.link}
+                placeholder="https://zoom.us/1234"
+                onChange={(e) => this.setState({ link: e.target.value })}
+              />
+            )}
+            {this.state.link === '_agora.stream_tech' && ( 
+              <Box
+                height="40px"
+                round="3px"
+                pad="small"
+                justify="center"
+                style={{border: "1px solid #BBBBBB"}}
+              >
+
+              <Text size="13px" weight="bold" color="#CCCCCC">
+                The link will be sent to you via email.
+              </Text>
+              
+              </Box>
+            )}
+
+            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#D3F930"}
+              pad="15px" round="6px" gap="10px"
+            >
+              {!this.state.subscriptionPlans.includes("tier2") && (
+                <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "10px"}}>
+                  Unlock our streaming technology sculpted for academic seminars
+                </Text> 
+              )}
+              <Box direction="row" gap="45px"> 
+                <CheckBox 
+                  checked={this.state.link == '_agora.stream_tech'} 
+                  label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+                  onChange={(e) => {
+                    if (this.state.subscriptionPlans.includes("tier2")) {
+                      this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })
+                    }
+                  }}
+                />
+                {!this.state.subscriptionPlans.includes("tier2") && (
+                  <Box
+                    onClick={this.toggleModalPricing}
+                    background="#BAD6DB"
+                    round="xsmall"
+                    pad="xsmall"
+                    width="160px"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator="#0C385B"
+                  >
+                    <Text size="14px" weight="bold"> Unlock streaming </Text>
+                  </Box>
+                )}
+                {this.state.showModalPricing && (
+                  <Layer
+                    onEsc={this.toggleModalPricing}
+                    onClickOutside={this.toggleModalPricing}
+                    modal
+                    responsive
+                    animation="fadeIn"
+                    style={{
+                      width: "1000px",
+                      height: "65%",
+                      borderRadius: 15,
+                      padding: 0,
+                    }}
+                  >
+                    <PricingPlans 
+                      callback={this.toggleModalPricing}
+                      disabled={false}
+                      channelId={this.props.channel ? this.props.channel.id : null}
+                      userId={this.props.user ? this.props.user.id : null}
+                      showDemo={false}
+                      headerTitle={false}
+                    />
+
+                  </Layer>
+                )}
+
+              </Box> 
+            </Box>
+
+            <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
+              <Text size="13px" weight="bold"> Registration required? </Text>
+              <Switch
+                checked={this.state.onRegistration}
+                checkedChildren="Yes" 
+                unCheckedChildren="No"
+                onChange={(checked: boolean) => {
+                  this.setState({ 
+                    onRegistration: checked,
+                    autoAcceptGroup: "None"
+                  });
+                  // close sub-switch
+                  if (!checked){
+                    this.setState({ autoAcceptEnabled: checked });
+                  }
+                }}
+                size="default"
+              />
+            </Box>
+
+            {this.state.onRegistration && (
+              <Box margin={{bottom: "60px"}} gap="15px">
+                <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
+                  <Text size="13px" weight="bold"> 
+                    Automatically accept some users?
+                  </Text>
+                  <Switch
+                      checked={this.state.autoAcceptEnabled}
+                      checkedChildren="Yes" 
+                      unCheckedChildren="No"
+                      onChange={(checked: boolean) => {
+                        this.setState({ 
+                          autoAcceptEnabled: checked,
+                         });
+                         if (!checked){
+                           this.setState({
+                             autoAcceptGroup: "None"
+                           })
+                         }
+                      }}
+                      size="default"
+                  />
+                  <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={auto_accept} data-for='automatic-registration'/>
+                  <ReactTooltip id='automatic-registration' place="right" effect="solid" html={true}/>
+                </Box>
+      
+                {this.state.autoAcceptEnabled && (
+                  <>
+                  <CheckBox
+                    name="feature"
+                    label="Everyone"
+                    checked={this.state.autoAcceptGroup == "Everybody"}
+                    onChange={() => this.handleCheckBox("Everybody")}
+                  />
+                  <CheckBox
+                    name="bug"
+                    label="Verified academics"
+                    checked={this.state.autoAcceptGroup == "Academics"}
+                    onChange={() => this.handleCheckBox("Academics")}
+                  />
+                  <Text size="13px" margin={{top: "20px"}}><i>Everybody else will need to be manually approved.</i></Text>
+                
+                  {/* NOTE: Later, people will be able to pick institutions from list. 
+                  
+                  <Box direction="row" gap="0px"> 
+                    <CheckBox
+                      id="checkbox-domains"
+                      name="bug"
+                      label="Only emails ending by: "
+                      checked={this.state.autoAcceptGroup == "domains"}
+                      onChange={() => this.handleCheckBox("domains")}
+                    />
+                    <StatusInfo style={{marginTop: "14px", marginRight: "10px"}} size="small" data-tip={domains_list} data-for='domains_list'/>
+                    <ReactTooltip id='domains_list' place="bottom" effect="solid" html={true} />
+                    <TextInput
+                      placeholder="List of domains"
+                      value={this.state.acceptedDomains.join(',')}
+                      onChange={(e: any) => e ? this.parseList(e) : ""}
+                      style={{width: "200px"}}
+                    />
+                  </Box> */}
+                  {/* <CheckBox
+                    name="bug"
+                    label="Manually accept participants"
+                    checked={this.state.autoAcceptGroup == "None"}
+                    onChange={() => this.handleCheckBox("None")}
+                  /> */}
+                </>
+                )}
+              </Box>
+            )}
+            {!this.state.onRegistration && (
+              <Text size="13px"> Your event is public, and the link to your talk will be shown on agora.stream 15 minutes before the start. </Text>
+            )}
+          </Box>
+        )}
+        
+        {this.state.activeSection === 4 && (
+          <Box direction="column" width="70%" gap="10px"
+            margin={{bottom: "10px"}} style={{minHeight: "350px"}}
+          >
+            <Text size="13px" weight="bold" color="black">
+              Topics
+            </Text>
+            <TopicSelector 
+              onSelectedCallback={this.selectTopic}
+              onCanceledCallback={this.cancelTopic}
+              isPrevTopics={this.state.isPrevTopics}
+              prevTopics={this.props.talk ? this.props.talk.topics : []} 
+              size="small" 
+            />
+
+            <Text size="13px" weight="bold" color="black">
+              Target audience
+            </Text>
+            <Select
+              dropAlign={{ bottom: "top" }}
+              focusIndicator={false}
+              id="link-visibility-select"
+              options={["General audience", "Bachelor/Master", "PhD+"]}
+              value={this.state.audienceLevel}
+              onChange={({ option }) =>
+                this.setState({ audienceLevel: option })
+              }
+            />
+          </Box>
+        )}
+
+        {this.state.activeSection === 5 && (
+          <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px" }} align="start">
+            <Box 
+              direction="column" gap="10px" 
+              background={this.isPaying() ? "white" : "#d3f930"}
+              pad="25px" round="6px" 
+            >
+              {!this.isPaying() && (
+                <Text size="14px" color="black" style={{fontStyle: "italic"}} margin={{bottom: "20px"}}>
+                  Feature not available under your current plan. Unlock it below
+                </Text>
+              )}
+              <Text size="13px" weight="bold" color="black" margin={{ bottom: "6px" }}> 
+                Email reminders
+              </Text>
+              {this.renderReminder(0)}
+              {this.renderReminder(1)}
+
+              <Text size="13px" weight="bold" color="black" margin={{ top: "24px" }}> 
+                To whom?
+              </Text>
+              <CheckBox
+                label="Talk participants"
+                checked={this.state.reminderEmailGroup.includes("Participants")}
+                onChange={() => this.toggleReminderEmailGroup("Participants")}
+              />
+              <Box direction="row" gap="10px" margin={{bottom: "10px"}}>
+                <CheckBox
+                  label="Your mailing list"
+                  checked={this.state.reminderEmailGroup.includes("MailingList")}
+                  onChange={() => this.toggleReminderEmailGroup("MailingList")}
+                />
+                <StatusInfo size="small" data-tip data-for='mailing-list-reminder'/>
+                <ReactTooltip id='mailing-list-reminder' place="right" effect="solid">
+                  <Text size="12px"> Securely upload your mailing list in the tab 'Mailing List' in your agora. </Text>
+                </ReactTooltip>
+              </Box>
+              {/* <CheckBox
+                label="Your followers"
+                checked={this.state.reminderEmailGroup.includes("Followers")}
+                onChange={() => this.toggleReminderEmailGroup("Followers")}
+              /> */}
+            
+            <Box margin={{top: "20px"}} gap="15px"> 
+                <Box
+                  onClick={this.toggleModalPricing}
+                  background="#BAD6DB"
+                  round="xsmall"
+                  pad="xsmall"
+                  width="200px"
+                  height="40px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator="#0C385B"
+                >
+                  <Text size="14px" weight="bold"> Unlock email reminders </Text>
+                </Box>
+                {this.state.showModalPricing && (
+                  <Layer
+                    onEsc={this.toggleModalPricing}
+                    onClickOutside={this.toggleModalPricing}
+                    modal
+                    responsive
+                    animation="fadeIn"
+                    style={{
+                      width: "1000px",
+                      height: "65%",
+                      borderRadius: 15,
+                      padding: 0,
+                    }}
+                  >
+                    <PricingPlans 
+                      callback={this.toggleModalPricing}
+                      disabled={false}
+                      channelId={this.props.channel ? this.props.channel.id : null}
+                      userId={this.props.user ? this.props.user.id : null}
+                      showDemo={false}
+                      headerTitle={false}
+                    />
+
+                  </Layer>
+                )}
+              </Box>
+            </Box>
+          </Box>
+        )}
+
+            </Box>
+            <Box
+              direction="row"
+              justify="start"
+              align="center"
+              gap="xsmall"
+              width="99.7%"
+              background="#eaf1f1"
+              style={{
+                minHeight: "60px",
+                borderBottomLeftRadius: "15px",
+                borderBottomRightRadius: "15px",
+              }}
+            >
+              {this.state.activeSection === 1 && (
+                <>
+                <Box width={this.props.talk ? "47%" : "90%" } />
+                {this.props.talk && (
+                  <>
+                  <Button
+                    fill="#FF4040"
+                    width="90px"
+                    height="35px"
+                    text="Delete"
+                    onClick={this.onDeleteClicked}
+                  />
+                  <Box width="30%" /> 
+                  </>
+                )}
+                
+                {this.renderArrowButton(false)}
+                </>
+              )}
+
+              {this.state.activeSection > 1 && this.state.activeSection < 5 && (
+                <>
+                  {this.renderArrowButton(true)}
+                  <Box width="80%" />
+                  {this.renderArrowButton(false)}
+                  </>
+              )}
+
+              {this.state.activeSection === 5 && (
+                <>
+                {this.renderArrowButton(true)}
+                <Box width="50%" />
+                <Button
+                  width="140px"
+                  height="35px"
+                  text="Save as draft"
+                  textColor="white"
+                  onClick={this.onSaveDraft}
+                />
+                <Box data-tip data-for='submitbutton' margin={{left: "24px", right: "32px"}}> 
+                  <Button
+                    fill="#025377"
+                    disabled={!this.isComplete()}
+                    height="35px"
+                    width="140px"
+                    text="Publish"
+                    textColor="white"
+                    onClick={this.onFinishClicked}
+                    hoverIndicator="#6DA3C7"
+                    onMouseEnter={this.isMissing}
+                  />
+                  {!this.isComplete() && this.isMissing() && (
+                    <ReactTooltip id='submitbutton' place="top" effect="solid">
+                      The following fields are missing
+                      {this.isMissing().map((item, index) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ReactTooltip>
+                  )}
+                </Box>
+                </>
+              )}
+            </Box>  
+          </Box>
+        </Layer>
+        )}
+
+        {/* <Box direction="row"> 
           <Box 
             direction="column" 
             width="33%"
             margin={{right: "12px"}}
           > 
-            <OverlaySection> {/* heading="Add a title and a short description"> */}
+            <OverlaySection> 
               <Box width="100%" gap="5px">
                 <TextInput
                   placeholder="Title"
@@ -477,7 +1359,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   onChange={(e) => this.setState({ talkSpeakerURL: e.target.value })}
                 />
               </Box>
-
               <Box width="100%" gap="5px" margin={{top: "15px"}}>
                 <Box direction="row" gap="small">
                   <Box margin={{"right": "70px"}}>
@@ -498,13 +1379,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   />
                   Preview <InlineMath math={"{\\small \\LaTeX}"} />
                 </Box>
-
-                {/*<TextArea
-                    style={{height: "240px"}}
-                    value={this.state.description}
-                    placeholder=""
-                    onChange={(e) => this.setState({ description: e.target.value })}
-                />*/}
                 {!this.state.latex && (
                   <TextArea
                     style={{height: "240px"}}
@@ -519,7 +1393,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   )
                 )}
               </Box>
-
               <Box width="100%" gap="5px">
                 <Text size="14px" weight="bold" color="black">
                     Target audience
@@ -535,17 +1408,7 @@ export default class EditTalkModal extends Component<Props, State> {
                       }
                     />
               </Box>
-
             </OverlaySection>
-            {/*<OverlaySection heading="Add a few relevant tags">
-              <TagSelector
-                selected={this.props.talk?.tags}
-                onSelectedCallback={this.selectTag}
-                onDeselectedCallback={this.deselectTag}
-                width="100%"
-                height="200px"
-              />
-                </OverlaySection>*/}
             
           </Box>
           <Box width="66%" direction="column">
@@ -555,7 +1418,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 width="50%"
                 margin={{left: "large", right: "xsmall"}}
               > 
-                <OverlaySection> {/*heading="When is your talk going to be held?">*/}
+                <OverlaySection> 
                   <Calendar
                     date={this.state.date}
                     bounds={this.getDateBounds()}
@@ -618,32 +1481,22 @@ export default class EditTalkModal extends Component<Props, State> {
                   </Box>
                 </OverlaySection>
               </Box>
-
               <Box 
                 direction="column" 
                 width="50%"
                 margin={{left: "large", right: "xsmall", top:"6px", bottom: "10px"}}
               > 
                 <OverlaySection heading="Link to event">
-
-                  {/* PLACEHOLDER 
-                  FOR A MULTI BOX TICKER 
-                  TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
-                  Remy
-                  */}
-
-                {/* <CheckBox
-                    checked={this.state.linkAvailable}
-                    label="interested?"
-                    onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
-                  /> */}
-
-
                 <TextInput
                     value={this.state.link}
                     placeholder="https://zoom.us/1234"
                     onChange={(e) => this.setState({ link: e.target.value })}
                   />
+                <CheckBox 
+                  checked={this.state.link == '_agora.stream_tech'} 
+                  label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+                onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}/> 
+
                   <Text
                     size="14px" 
                     weight="bold" 
@@ -658,7 +1511,6 @@ export default class EditTalkModal extends Component<Props, State> {
                       </ReactTooltip>
                   </Text>
                 </OverlaySection>
-
                 <OverlaySection heading="Access and visibility">
                   <Box width="100%" gap="5px" margin={{top: "10px"}}>
                     <Box direction="row" gap="small">
@@ -682,7 +1534,6 @@ export default class EditTalkModal extends Component<Props, State> {
                       }
                     />
                   </Box>
-
               <Box width="100%" gap="5px" margin={{top: "5px"}}>
                 <Box direction="row" gap="small">
                   <Text size="14px" weight="bold" color="black">
@@ -693,7 +1544,6 @@ export default class EditTalkModal extends Component<Props, State> {
                     Decide who is able to see the talk information. It will be hidden to everyone else.
                   </ReactTooltip>
                 </Box>
-
                 <Select
                   dropAlign={{ bottom: "top" }}
                   focusIndicator={false}
@@ -706,8 +1556,27 @@ export default class EditTalkModal extends Component<Props, State> {
                   }
                 />
               </Box>
-
-                      {/* NOTE: This is the selector to set release time of the link.
+                </OverlaySection>
+              </Box>
+            </Box>
+            <Box 
+              // width="100%" 
+              direction="row" 
+              margin={{top: "5px", left: "47px"}}
+            >
+              <OverlaySection heading="Topics">
+                <TopicSelector 
+                  onSelectedCallback={this.selectTopic}
+                  onCanceledCallback={this.cancelTopic}
+                  isPrevTopics={this.state.isPrevTopics}
+                  prevTopics={this.props.talk ? this.props.talk.topics : []} 
+                  size="medium" 
+                />
+              </OverlaySection>  
+            </Box>
+          </Box>
+        </Box> */}
+                              {/* NOTE: This is the selector to set release time of the link.
                   <Box width="100%" gap="5px" margin={{top: "13px"}}>
                     <Box width="100%" gap="5px" margin={{top: "10px"}}>
                     <Box direction="row" gap="small"> */}
@@ -738,28 +1607,26 @@ export default class EditTalkModal extends Component<Props, State> {
                       }}
                     />
                   </Box> */}
+                    {/*<OverlaySection heading="Add a few relevant tags">
+              <TagSelector
+                selected={this.props.talk?.tags}
+                onSelectedCallback={this.selectTag}
+                onDeselectedCallback={this.deselectTag}
+                width="100%"
+                height="200px"
+              />
+                </OverlaySection>*/} 
+                                  {/* PLACEHOLDER 
+                  FOR A MULTI BOX TICKER 
+                  TWO OPTIONS: ONE FOR "LINK WILL BE SHARED LATER" AND OTHER "URL LINK FOR TALK"
+                  Remy
+                  */}
 
-                </OverlaySection>
-              </Box>
-            </Box>
-            <Box 
-              // width="100%" 
-              direction="row" 
-              margin={{top: "5px", left: "47px"}}
-            >
-              <OverlaySection heading="Topics">
-                <TopicSelector 
-                  onSelectedCallback={this.selectTopic}
-                  onCanceledCallback={this.cancelTopic}
-                  isPrevTopics={this.state.isPrevTopics}
-                  prevTopics={this.props.talk ? this.props.talk.topics : []} 
-                  size="medium" 
-                />
-              </OverlaySection>  
-            </Box>
-          </Box>
-        </Box>  
-      </Overlay>
+                {/* <CheckBox
+                    checked={this.state.linkAvailable}
+                    label="interested?"
+                    onChange={(event) => this.setState({linkAvailable: !(this.state.linkAvailable)})}
+                  /> */}
       
       { /* Overlay when creating a new talk */
         this.state.talkToAdvertise !== null && !this.isInThePast() && !this.props.talk && (

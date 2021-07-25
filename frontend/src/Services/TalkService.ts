@@ -1,8 +1,9 @@
 import { Tag } from "./TagService";
 import { Topic } from "../Services/TopicService";
 import { get, post } from "../Middleware/httpMiddleware";
-import EmailContactManagement from "../Components/Channel/EmailContactManagement";
-import Identicon from "@polkadot/react-identicon/icons/Polkadot";
+import { baseApiUrl } from "../config";
+import axios from "axios";
+import { Reminder } from "../Components/Talks/EditTalkModal";
 
 const getTalkById = (talkId: number, callback: any) => {
   get(`talk/info?id=${talkId}`, callback);
@@ -138,6 +139,7 @@ const getAvailablePastTalksForChannel = (
 };
 
 const editTalk = (
+  channelId: number,
   talkId: number,
   talkName: string,
   talkDescription: string,
@@ -153,11 +155,17 @@ const editTalk = (
   talkSpeakerURL: string,
   published: number,
   audienceLevel: string,
+  autoAcceptGroup: "Everybody" | "Academics" | "None",
+  autoAcceptCustomInstitutions: boolean,
+  customInstitutionsIds: number[] | number,
+  reminders: Reminder[],
+  reminderEmailGroup: string[], 
   callback: any
 ) => {
   post(
     "talks/edit",
     {
+      channelId: channelId,
       talkId: talkId,
       talkName: talkName,
       talkDescription: talkDescription,
@@ -168,15 +176,23 @@ const editTalk = (
       showLinkOffset: showLinkOffset,
       visibility: visibility,
       cardVisibility: cardVisibility,
-      topic1Id: topics[0] ? topics[0].id : 0,
-      topic2Id: topics[1] ? topics[1].id : 0,
-      topic3Id: topics[2] ? topics[2].id : 0,
+      topic1Id: topics.length > 0 ? topics[0].id : null,
+      topic2Id: topics.length > 1 ? topics[1].id : null,
+      topic3Id: topics.length > 2 ? topics[2].id : null,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
       audienceLevel: audienceLevel,
+      reminder1: reminders[0].exist ? 24*reminders[0].days + reminders[0].hours : null,
+      reminder2: reminders[1].exist ? 24*reminders[1].days + reminders[1].hours : null,
+      reminderEmailGroup: reminderEmailGroup, 
+      autoAcceptGroup: autoAcceptGroup,
+      autoAcceptCustomInstitutions: autoAcceptCustomInstitutions
     },
-    callback
+    () => {
+      editAutoAcceptanceCustomInstitutions(talkId, customInstitutionsIds, () => {});
+      callback();
+    }
   );
 };
 
@@ -197,8 +213,14 @@ const scheduleTalk = (
   talkSpeakerURL: string,
   published: number,
   audienceLevel: string,
+  autoAcceptGroup: "Everybody" | "Academics" | "None",
+  autoAcceptCustomInstitutions: boolean,
+  customInstitutionsIds: number[],
+  reminders: Reminder[],
+  reminderEmailGroup: string[], 
   callback: any
 ) => {
+
   post(
     "talks/create",
     {
@@ -213,13 +235,25 @@ const scheduleTalk = (
       showLinkOffset: showLinkOffset,
       visibility: visibility,
       cardVisibility: cardVisibility,
-      topic1Id: topics.length > 0 ? topics[0].id : null,
-      topic2Id: topics.length > 1 ? topics[1].id : null,
-      topic3Id: topics.length > 2 ? topics[2].id : null,
+      topic1Id: topics.length > 0 
+        ? (topics[0] == undefined ? null : topics[0].id)
+        : null,
+      topic2Id: topics.length > 1 
+        ? (topics[1] == undefined ? null : topics[1].id)
+        : null,
+      topic3Id: topics.length > 2 
+        ? (topics[2] == undefined ? null : topics[2].id)
+        : null,
       talkSpeaker: talkSpeaker,
       talkSpeakerURL: talkSpeakerURL,
       published: published,
       audienceLevel: audienceLevel,
+      reminder1: reminders[0].exist ? 24*reminders[0].days + reminders[0].hours : null,
+      reminder2: reminders[1].exist ? 24*reminders[1].days + reminders[1].hours : null,
+      reminderEmailGroup: reminderEmailGroup, 
+      autoAcceptGroup: autoAcceptGroup,
+      autoAcceptCustomInstitutions: autoAcceptCustomInstitutions,
+      customInstitutionsIds: customInstitutionsIds
     },
     callback
   );
@@ -374,6 +408,54 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
   get(`talks/isavailable?talkId=${talkId}&userId=${userId}`, callback);
 };
 
+//////////////////
+// Slides management
+//////////////////
+const uploadSlides = async (talkId: number, slides: File, callback: any) => {
+  const data = new FormData();
+  data.append("talkId", talkId.toString());
+  data.append("slides", slides);
+  let ret = await axios.post(baseApiUrl + "/talks/slides", data).then(function (response) {
+    callback(response.data);
+  })
+
+  return await getSlides(talkId)
+};
+
+const getSlides = async (talkId: number) => {
+  var CACHE_DELAY = 500
+  let current_time = Math.floor(new Date().getTime() / 1000) * CACHE_DELAY;
+
+  return { url: baseApiUrl + `/talks/slides?talkId=${talkId}&ts=` + current_time};
+  // return { url: "https://arxiv.org/pdf/1806.07366.pdf"};
+};
+
+const deleteSlides = async (talkId: number, callback: any) => {
+  let res = await axios
+    .delete(baseApiUrl + "/talks/slides", {
+      headers: { "Access-Control-Allow-Origin": "*" },
+      data: {
+        talkId: talkId,
+      },
+    }).then(function (response) {
+      callback(response.data);
+    })
+    
+  return true
+};
+
+const hasSlides = async (talkId: number, callback: any) => {
+  get(`talks/hasslides?talkId=${talkId}`, 
+    (res: any) => {
+      var hasSlides = res.hasSlides
+      if (callback){
+        callback(hasSlides);
+      }
+      return hasSlides;
+    }
+  );
+};
+
 const getViewCountForTalk = (
   talkId: number,
   callback: any
@@ -407,6 +489,26 @@ const sendEmailonTalkModification = (talkId: number, callback: any) => {
     get(`talks/sendemailedit?talkId=${talkId}`, callback);
 };
 
+const getReminderTime = (talkId: number, callback: any) => {
+  get(`talks/reminders/time?talkId=${talkId}`, callback);
+};
+
+const getReminderGroup = (talkId: number, callback: any) => {
+  get(`talks/reminders/group?talkId=${talkId}`, callback);
+};
+
+const editAutoAcceptanceCustomInstitutions = (talkId: number, institutionIds: number | number[], callback:any) => {
+  post(
+    "talks/editCustomInstitutions",
+    {
+      talkId: talkId,
+      institutionIds: institutionIds,
+    },
+    callback
+  );
+}
+
+
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -427,6 +529,7 @@ export const TalkService = {
   getAvailableCurrentTalksForChannel,
   getAvailablePastTalksForChannel,
   editTalk,
+  editAutoAcceptanceCustomInstitutions,
   scheduleTalk,
   deleteTalk,
   addRecordingLink,
@@ -436,8 +539,11 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  // Talk registration management
   sendEmailonTalkScheduling,
   sendEmailonTalkModification,
+  getReminderTime,
+  getReminderGroup,
   // talk registration management
   acceptTalkRegistration,
   refuseTalkRegistration,
@@ -446,6 +552,11 @@ export const TalkService = {
   registrationStatusForTalk,
   getTalkRegistrations,
   getRegisteredTalksForUser,
+  // Slides management
+  uploadSlides,
+  getSlides,
+  deleteSlides,
+  hasSlides,
   // talk views
   increaseViewCountForTalk,
   getViewCountForTalk,
