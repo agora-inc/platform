@@ -4,7 +4,7 @@ import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid } from "grommet";
 import { Checkbox, Twitter, Linkedin } from "grommet-icons";
 import DonorButton from "../Components/Core/DonorButton"
-import agoraStreamFullLogo from "../assets/general/agora_stream_logo_300px.svg";
+import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.svg";
 import seminarPhoto from "../assets/agoraCreationPage/academic_seminars_photo.jpeg"
 
 
