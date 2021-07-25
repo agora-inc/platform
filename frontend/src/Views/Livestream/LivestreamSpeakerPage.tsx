@@ -527,7 +527,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
 
 
-          <Box gridArea="top_chat" height="40px" align="center" direction="row">
+          <Box gridArea="top_chat" height="40px" align="center" direction="row" gap="small">
             {/* <SlidesUploader
               text={"Upload your slides"}
               onUpload={()=>{}}
@@ -535,6 +535,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
             <SpeakerHelpButton
               talkId={props.talkId}
+              width="25vw"
               callback={()=>{}}
             />
             <SlidesUploader

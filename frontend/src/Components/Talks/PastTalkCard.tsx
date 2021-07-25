@@ -42,6 +42,7 @@ interface State {
   isRecordingLinkHidden: boolean;
   hasYoutubeRecording: boolean;
   slideUrl?: string;
+  hasSlides: boolean
 }
 
 export default class PastTalkCard extends Component<Props, State> {
@@ -58,6 +59,7 @@ export default class PastTalkCard extends Component<Props, State> {
         : "",
       isRecordingLinkHidden: true,
       hasYoutubeRecording: false,
+      hasSlides: false
     };
   }
 
@@ -65,11 +67,18 @@ export default class PastTalkCard extends Component<Props, State> {
     await TalkService.uploadSlide(this.props.talk.id, e.target.files[0], ()=>{})
     await this.fetchSlide()
   };
+
   fetchSlide = async () => {
     let {url} = await TalkService.getSlide(this.props.talk.id)
     this.setState({slideUrl: url})
+    await TalkService.hasSlides(
+      this.props.talk.id,
+      (hasSlides: any) => {
+        console.log(hasSlides)
+        this.setState({hasSlides: hasSlides})
+      }
+    )
   };
-
 
   formatDateFull = (s: string, e: string) => {
     const start = new Date(s);
@@ -211,7 +220,7 @@ export default class PastTalkCard extends Component<Props, State> {
 
   getButtons = () => {
     if (this.props.admin) {
-      console.log(document.getElementById("upload"))
+      // console.log(document.getElementById("upload"))
       return (
         <Box direction="column">  
           <Box gap="small" direction="row" margin={{ top: "10px", bottom: "10px" }}>
@@ -237,30 +246,13 @@ export default class PastTalkCard extends Component<Props, State> {
                 </Box>
               </a>
             )}
-            {this.state.recordingLink === "" && (
-              <Box
-                background="#0C385B"
-                round="xsmall"
-                height="40px"
-                width="35%"
-                justify="center"
-                align="start"
-                focusIndicator={false}
-                hoverIndicator="#0C385B"
-              >
-                <Text alignSelf="center" size="14px">
-                  Watch talk
-                </Text>
-              </Box>
-            )}
             <Box width="30%" />
-            <Box width="35%" height="40px">
-              {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
-              {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-            
-              <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
-              
-            </Box>
+            {this.state.hasSlides && (
+              <Box width="35%" height="40px">
+                  <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
+              </Box>
+              )
+            }
 
           </Box>
           <Box gap="small" direction="row" margin={{ bottom: "10px" }}>
@@ -286,10 +278,11 @@ export default class PastTalkCard extends Component<Props, State> {
             </Box>
             <Box width="30%" />
             <Box width="35%" height="30px">
-              <SlidesUploader
-                text="Upload slides"
-                onUpload={this.onSlideUpload}
-              />
+                <SlidesUploader
+                      text={this.state.hasSlides ? "Re-upload slides": "Upload slides"}
+                      onUpload={this.onSlideUpload}
+                />
+
             </Box>  
           </Box>
         </Box>
@@ -320,11 +313,12 @@ export default class PastTalkCard extends Component<Props, State> {
             </a>
           )}
           <Box width={this.props.talk.recording_link && !this.state.isRecordingLinkHidden ? "30%" : "65%"} />
-          <Box width="35%" height="40px">
-            {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
-            {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-            <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
-          </Box>
+            {this.state.hasSlides && (
+              <Box width="35%" height="40px">
+                  <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
+              </Box>
+              )
+            }
         </Box>
       );
     }

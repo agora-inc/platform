@@ -1254,11 +1254,22 @@ def presentationSlides():
         return jsonify({"filename": fn})
         
     if request.method == "GET":
-        if "talkId" in request.args:
-            talkId = int(request.args.get("talkId"))
-            fn = talks.getSlidesLocation(talkId)
-            return send_file(fn, mimetype="application/pdf")
-        
+        try:
+            if "talkId" in request.args:
+                talkId = int(request.args.get("talkId"))
+                fn = talks.getSlidesLocation(talkId)
+                if fn is not None:
+                    with open("/home/cloud-user/test/test_slides1.txt", "w") as file:
+                        file.write(f"inside + {fn}")
+                    return send_file(fn, mimetype="application/pdf")
+                else:
+                    with open("/home/cloud-user/test/test_slides.txt", "w") as file:
+                        file.write("inside")
+                    return jsonify({"hasSlides": False})
+        except Exception as e:
+            with open("/home/cloud-user/test/test_slidesErr.txt", "w") as file:
+                file.write(str(e))
+
 
     if request.method == "DELETE":
         params = request.json 
@@ -1269,6 +1280,22 @@ def presentationSlides():
         app.logger.debug(f"talk with id {talkId} removed slides")
 
         return jsonify("ok")
+
+@app.route('/talks/hasslides', methods=["GET"])
+def hasSlides():
+    # NOTE: pdf only atm.
+    if request.method == "GET":
+        try:
+            if "talkId" in request.args:
+                talkId = int(request.args.get("talkId"))
+                fn = talks.getSlidesLocation(talkId)
+                if fn is not None:
+                    return jsonify({"hasSlides": True})
+                else:
+                    return jsonify({"hasSlides": False})
+        except Exception as e:
+            with open("/home/cloud-user/test/test_slidesErr.txt", "w") as file:
+                file.write(str(e))
 
 # --------------------------------------------
 # VOD ROUTES

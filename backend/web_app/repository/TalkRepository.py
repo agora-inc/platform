@@ -1089,11 +1089,11 @@ class TalkRepository:
         # NOTE: only supports .pdf for now
         query = f'SELECT has_slides FROM Talks WHERE id = {talkId};'
         res = self.db.run_query(query)
-
-        if res[0]["has_slides"] == 1:
-            return f"/home/cloud-user/plateform/agora/storage/slides/{talkId}.pdf"
-        else:
-            return "no slides found."
+        try:
+            if res[0]["has_slides"] == 1:
+                return f"/home/cloud-user/plateform/agora/storage/slides/{talkId}.pdf"
+        except:
+            return ""
 
     def removeSlides(self, talkId):
         query = f'UPDATE Talks SET has_slides=0 WHERE id = {talkId}'

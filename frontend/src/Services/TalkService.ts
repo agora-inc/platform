@@ -442,6 +442,18 @@ const removeSlide = async (talkId: number) => {
   return true
 };
 
+const hasSlides = async (talkId: number, callback: any) => {
+  get(`talks/hasslides?talkId=${talkId}`, 
+    (res: any) => {
+      var hasSlides = res.hasSlides
+      if (callback){
+        callback(hasSlides);
+      }
+      return hasSlides;
+    }
+  );
+};
+
 const getViewCountForTalk = (
   talkId: number,
   callback: any
@@ -542,6 +554,7 @@ export const TalkService = {
   uploadSlide,
   getSlide,
   removeSlide,
+  hasSlides,
   // talk views
   increaseViewCountForTalk,
   getViewCountForTalk,
