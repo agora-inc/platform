@@ -7,6 +7,7 @@ from repository.EmailRemindersRepository import EmailRemindersRepository
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from app.databases import agora_db
+import os 
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
@@ -1095,19 +1096,15 @@ class TalkRepository:
         except:
             return ""
 
-    def removeSlides(self, talkId):
+    def deleteSlides(self, talkId):
         query = f'UPDATE Talks SET has_slides=0 WHERE id = {talkId}'
         self.db.run_query(query)
-
-        file_path = self.getSlidesLocation(talkId)
         try:
-            os.remove(file_path)
+            os.remove(f"/home/cloud-user/plateform/agora/storage/slides/{talkId}.pdf")
             return "ok"
         except Exception as e:
-            app.logger.error("Error removing or closing downloaded file handle", e)
             return str(e)
     
-        # fetch configs from talk
     def isEmailAutoAcceptedToTalk(self, email, talk_id):
         auto_accept_config_request = f'''
                 SELECT 

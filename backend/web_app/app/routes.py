@@ -1237,49 +1237,44 @@ def registrationStatusForTalk():
 @app.route('/talks/slides', methods=["POST", "GET", "DELETE"])
 def presentationSlides():
     # NOTE: pdf only atm.
-    if request.method == "OPTIONS":
-        return jsonify("ok")
+    try:
+        if request.method == "OPTIONS":
+            return jsonify("ok")
 
-    if request.method == "POST":
-        logRequest(request)
-        # if not checkAuth(request.headers.get('Authorization')):
-        #     return exceptions.Unauthorized("Authorization header invalid or not present")
-        talkId = request.form["talkId"]
-        file = request.files["slides"]
-        print(file)
-        fn = f"{talkId}.pdf"
-        file.save(f"/home/cloud-user/plateform/agora/storage/slides/{fn}")
-        talks.addSlides(talkId)
-        
-        return jsonify({"filename": fn})
-        
-    if request.method == "GET":
-        try:
+        if request.method == "POST":
+            logRequest(request)
+            # if not checkAuth(request.headers.get('Authorization')):
+            #     return exceptions.Unauthorized("Authorization header invalid or not present")
+            talkId = request.form["talkId"]
+            file = request.files["slides"]
+            print(file)
+            fn = f"{talkId}.pdf"
+            file.save(f"/home/cloud-user/plateform/agora/storage/slides/{fn}")
+            talks.addSlides(talkId)
+            
+            return jsonify({"filename": fn})
+            
+        if request.method == "GET":
             if "talkId" in request.args:
                 talkId = int(request.args.get("talkId"))
                 fn = talks.getSlidesLocation(talkId)
                 if fn is not None:
-                    with open("/home/cloud-user/test/test_slides1.txt", "w") as file:
-                        file.write(f"inside + {fn}")
                     return send_file(fn, mimetype="application/pdf")
                 else:
-                    with open("/home/cloud-user/test/test_slides.txt", "w") as file:
-                        file.write("inside")
                     return jsonify({"hasSlides": False})
-        except Exception as e:
-            with open("/home/cloud-user/test/test_slidesErr.txt", "w") as file:
-                file.write(str(e))
 
 
-    if request.method == "DELETE":
-        params = request.json 
-        print(params)
-        talkId = params["talkId"]
-        talks.removeSlides(talkId)
+        if request.method == "DELETE":
+            params = request.json 
+            talkId = params["talkId"]
+            talks.deleteSlides(talkId)
 
-        app.logger.debug(f"talk with id {talkId} removed slides")
+            app.logger.debug(f"talk with id {talkId} removed slides")
 
-        return jsonify("ok")
+            return jsonify("ok")
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 
 @app.route('/talks/hasslides', methods=["GET"])
 def hasSlides():
@@ -1294,9 +1289,7 @@ def hasSlides():
                 else:
                     return jsonify({"hasSlides": False})
         except Exception as e:
-            with open("/home/cloud-user/test/test_slidesErr.txt", "w") as file:
-                file.write(str(e))
-
+            return jsonify({"error": str(e)})
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------

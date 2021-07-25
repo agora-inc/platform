@@ -64,12 +64,12 @@ export default class PastTalkCard extends Component<Props, State> {
   }
 
   onSlideUpload = async (e: any) => {
-    await TalkService.uploadSlide(this.props.talk.id, e.target.files[0], ()=>{})
+    await TalkService.uploadSlides(this.props.talk.id, e.target.files[0], ()=>{})
     await this.fetchSlide()
   };
 
   fetchSlide = async () => {
-    let {url} = await TalkService.getSlide(this.props.talk.id)
+    let {url} = await TalkService.getSlides(this.props.talk.id)
     this.setState({slideUrl: url})
     await TalkService.hasSlides(
       this.props.talk.id,
@@ -218,6 +218,38 @@ export default class PastTalkCard extends Component<Props, State> {
     }
   }
 
+  deleteSlidesButton = () => {
+    return (
+      <Box
+      background="red"
+      round="xsmall"
+      justify="center"
+      align="center"
+      height="40px"
+      width="35%"
+      onClick={() => {
+        TalkService.deleteSlides(this.props.talk.id, 
+          (res: any) => {
+            if (res == "ok"){
+              this.setState({hasSlides: false})
+            }
+          })
+        }
+      }
+      focusIndicator={false}
+      hoverIndicator="#BAD6DB"
+    >
+      {/* <Text alignSelf="center" color="grey" size="14px">
+        {this.state.saved ? "Save talk": "Remove from saved"}
+      </Text> */}
+      <Text alignSelf="center" color="black" size="14px"> 
+        Delete slides
+      </Text>
+    </Box>
+    )
+  }
+
+
   getButtons = () => {
     if (this.props.admin) {
       // console.log(document.getElementById("upload"))
@@ -246,11 +278,15 @@ export default class PastTalkCard extends Component<Props, State> {
                 </Box>
               </a>
             )}
-            <Box width="30%" />
+            {/* <Box width="30%" /> */}
             {this.state.hasSlides && (
-              <Box width="35%" height="40px">
-                  <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
-              </Box>
+              <>
+                <Box width="35%" height="40px">
+                    <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
+                </Box>
+                <Box width="30%" />
+                {this.deleteSlidesButton()}
+              </>
               )
             }
 
@@ -281,8 +317,8 @@ export default class PastTalkCard extends Component<Props, State> {
                 <SlidesUploader
                       text={this.state.hasSlides ? "Re-upload slides": "Upload slides"}
                       onUpload={this.onSlideUpload}
+                      width="100%"
                 />
-
             </Box>  
           </Box>
         </Box>
@@ -315,7 +351,11 @@ export default class PastTalkCard extends Component<Props, State> {
           <Box width={this.props.talk.recording_link && !this.state.isRecordingLinkHidden ? "30%" : "65%"} />
             {this.state.hasSlides && (
               <Box width="35%" height="40px">
-                  <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
+                  <FileDownloader 
+                    name={this.props.talk.name+'_slides.pdf'} 
+                    url={this.state.slideUrl}
+                    width="100%"
+                    />
               </Box>
               )
             }

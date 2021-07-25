@@ -371,7 +371,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     (async ()=>{
-      let {url} = await TalkService.getSlide(Number(props.talkId))
+      let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
       setTalkId(props.talkId.toString())
       join_live_chat()
@@ -407,7 +407,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setSlideShareId('')
         return
       }
-      let {url} = await TalkService.getSlide(Number(props.talkId))
+      let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
       if(req[0].user_id === localUser.uid) {
         console.log('okay')
@@ -541,7 +541,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <SlidesUploader
               text={slidesGotUploaded ? "Uploaded ✔️ (click to reupload)" : "Upload pdf"}
               onUpload={(e: any) => {
-                TalkService.uploadSlide(
+                TalkService.uploadSlides(
                   props.talkId, 
                   e.target.files[0],
                   (res: any) => {
