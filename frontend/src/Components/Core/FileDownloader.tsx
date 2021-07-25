@@ -29,15 +29,23 @@ const FileDownloader:FunctionComponent<Props> = (props) => {
         document.body.removeChild(a)
     }
     return(
-      <Box style={{ position: "relative" }}>
-          <Box
-            width={props.width || "100px"}
-            background="white"
-            round="xsmall"
-            style={{ border: "solid black 1px", cursor: "pointer", position: 'relative' }}
-            align="center"
-            justify="center"
-           onClick={getFile}>{props.text || 'Download'}</Box>
+      <Box
+        background="#EAF1F1"
+        round="xsmall"
+        justify="center"
+        align="center"
+        height="40px"
+        width="100%"
+        onClick={getFile}
+        focusIndicator={false}
+        hoverIndicator="#BAD6DB"
+      >
+        {/* <Text alignSelf="center" color="grey" size="14px">
+          {this.state.saved ? "Save talk": "Remove from saved"}
+        </Text> */}
+        <Text alignSelf="center" color="black" size="14px"> 
+          Download slides
+        </Text>
       </Box>
     )
 }

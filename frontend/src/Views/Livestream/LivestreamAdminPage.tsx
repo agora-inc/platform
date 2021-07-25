@@ -82,13 +82,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         role: 'host',
         name: 'Prof. Patric',
         uid: getUserId(props.talkId.toString(), useQuery().get('dummy'))
-        //
-        //
-        //
-        //
-        // CHECK THIS BIT!
-        //
-        //
       } as any)
   const [talkDetail, setTalkDetail] = useState({} as any)
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
@@ -460,7 +453,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setSlideShareId('')
         return
       }
-      let {url} = await TalkService.getSlide(Number(props.talkId))
+      let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
 
       if(req[0].user_id === localUser.uid) {

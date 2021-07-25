@@ -267,11 +267,12 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   onSlideUpload = async (e: any) => {
-    await TalkService.uploadSlide(this.props.talk.id, e.target.files[0], ()=>{})
+    await TalkService.uploadSlides(this.props.talk.id, e.target.files[0], ()=>{})
     await this.fetchSlide()
   };
+  
   fetchSlide = async () => {
-    let {url} = await TalkService.getSlide(this.props.talk.id)
+    let {url} = await TalkService.getSlides(this.props.talk.id)
     this.setState({slideUrl: url})
   };
 
@@ -441,19 +442,16 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             )}
           </Box>
         </Box>
-        {
           
-          <Box margin={{ top: "10px", bottom: "20px" }}>
           {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
-          {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-          {this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text>}
+          {/* <Text><a href={TalkService.getSlides(160)} target='_blank'>Download</a></Text> */}
+          {/* this.state.slideUrl && <Text><a href={this.state.slideUrl} target='_blank'>Download</a></Text> */}
           
-          <SlidesUploader
+          {/*<SlidesUploader
             text="Upload slide"
             onUpload={this.onSlideUpload}
-            />
-          </Box>
-        }
+          />*/}
+
         {this.props.admin && (
           <Box direction="row" gap="10px" margin={{top: "10px"}}>
             <Box

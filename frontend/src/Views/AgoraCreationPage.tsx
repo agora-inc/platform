@@ -436,7 +436,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
               </Box>
 
               <Text size="18px" >
-                If you already have an agora, go to the homepage to subscribe to our juicy plans!
+                An agora is a hub for your community. It is also the place where you organise and list all your events. If you already have one, simply visit it using the dashboard!
               </Text>
 
             </Box>

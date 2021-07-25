@@ -18,6 +18,8 @@ import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdSlideshow, MdClear} from 'react-icons/md'
 import {db, API} from '../../Services/FirebaseService'
+import SlidesUploader from "../../Components/Core/SlidesUploader";
+import SpeakerHelpButton from "../../Components/Streaming/SpeakerHelpButton"
 
 import '../../Styles/all-stream-page.css'
 import PDFViewer from "../../Components/PDFViewer";
@@ -98,6 +100,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [talkId, setTalkId] = useState('')
   const [slideShareId, setSlideShareId] = useState('')
   const [isSlideVisible, toggleSlide] = useState(false)
+  const [slidesGotUploaded, setSlidesGotUploaded] = useState(false)
+
 
   const [slideUrl, setSlideUrl] = useState('')
 
@@ -367,7 +371,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     (async ()=>{
-      let {url} = await TalkService.getSlide(Number(props.talkId))
+      let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
       setTalkId(props.talkId.toString())
       join_live_chat()
@@ -403,7 +407,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setSlideShareId('')
         return
       }
-      let {url} = await TalkService.getSlide(Number(props.talkId))
+      let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
       if(req[0].user_id === localUser.uid) {
         console.log('okay')
@@ -441,81 +445,119 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   return (
-    <Box style={{position: "absolute", left: "40px", top: "5px"}} margin={{bottom: "50px"}}>
-      
-        <Box 
-          direction='row'
-          gap="40px"
-          margin={{ 
-            top: "xlarge", 
-            bottom: "15px" 
-          }}
-          width="71.5%"
-          align="center"
-        >
-          <Link
-            className="channel"
-            to={`/${talkDetail.channel_name}`}
-            style={{ textDecoration: "none", width: "40%"}}
-          >
-            <Box
-              direction="row"
-              gap="xsmall"
-              align="center"
-              round="xsmall"
-              pad={{ vertical: "6px", horizontal: "6px" }}
-            >
-              <Box
-                justify="center"
-                align="center"
-                background="#efeff1"
-                overflow="hidden"
-                style={{
-                  minHeight: 30,
-                  minWidth: 30,
-                  borderRadius: 15,
-                }}
-              >
-                  <img
-                    src={ChannelService.getAvatar(
-                      talkDetail.channel_id
-                    )}
-                    height={30}
-                    width={30}
-                  />
-              </Box>
-              <Box justify="between">
-                <Text weight="bold" size="16px" color="grey">
-                  {talkDetail.channel_name}
-                </Text>
-              </Box>
-            </Box>
-          </Link>
-          <Box width="25%" />
-          <Box
-            width="20vw"
-            height="40px"
-            justify="end"
-            align="center"
-            pad="small"
-            round="xsmall"
-            background="#D3F930"
-          >
-            <Text size="14px" weight="bold">
-              You are the speaker
-            </Text>
-          </Box>
-        </Box>
+    <Box style={{position: "absolute", left: "40px", top: "5px"}}               margin={{ 
+      top: "xlarge", 
+      bottom: "15px" 
+    }}>
+    
         <Grid
-          rows={["streamViewRow1", "streamViewRow2"]}
           columns={["streamViewColumn1", "streamViewColumn2"]}
+          rows={["streamViewRow1", "streamViewRow2", "streamViewRow3"]}
           gap="medium"
           areas={[
-            { name: "player", start: [0, 0], end: [0, 1] },
-            { name: "chat", start: [1, 0], end: [1, 1] },
-            { name: "description", start: [0, 1], end: [0, 1] },
+            { name: "top_bar", start: [0, 0], end: [0, 0] },
+            { name: "top_chat", start: [1, 0], end: [1, 0] },
+            { name: "player", start: [0, 1], end: [0, 1] },
+            { name: "chat", start: [1, 1], end: [1, 2] },
+            { name: "description", start: [0, 2], end: [0, 2] },
           ]}
         >
+
+          <Box gridArea="top_bar" direction='row'>
+            <Box 
+              direction='row'
+              width="60%"
+              // gap="40px"
+              alignSelf="start"
+            >
+              <Link
+                className="channel"
+                to={`/${talkDetail.channel_name}`}
+                style={{ textDecoration: "none", width: "100%"}}
+              >
+                <Box
+                  direction="row"
+                  gap="xsmall"
+                  align="center"
+                  round="xsmall"
+                  pad={{ vertical: "6px", horizontal: "6px" }}
+                >
+                  <Box
+                    justify="center"
+                    align="center"
+                    background="#efeff1"
+                    overflow="hidden"
+                    style={{
+                      minHeight: 30,
+                      minWidth: 30,
+                      borderRadius: 15,
+                    }}
+                  >
+                      <img
+                        src={ChannelService.getAvatar(
+                          talkDetail.channel_id
+                        )}
+                        height={30}
+                        width={30}
+                      />
+                  </Box>
+                  <Box justify="between">
+                    <Text weight="bold" size="16px" color="grey">
+                      {talkDetail.channel_name}
+                    </Text>
+                  </Box>
+                </Box>
+              </Link>
+              </Box>
+              <Box align="end" width="40%">
+                <Box
+                  width="20vw"
+                  height="40px"
+                  justify="end"
+                  align="center"
+                  pad="small"
+                  round="xsmall"
+                  background="#D3F930"
+                >
+                  <Text size="14px" weight="bold">
+                    You are the speaker
+                  </Text>
+              </Box>
+            </Box>
+          </Box>
+
+
+          <Box gridArea="top_chat" height="40px" align="center" direction="row" gap="small">
+            {/* <SlidesUploader
+              text={"Upload your slides"}
+              onUpload={()=>{}}
+            /> */}
+
+            <SpeakerHelpButton
+              talkId={props.talkId}
+              width="25vw"
+              callback={()=>{}}
+            />
+            <SlidesUploader
+              text={slidesGotUploaded ? "Uploaded ✔️ (click to reupload)" : "Upload pdf"}
+              onUpload={(e: any) => {
+                TalkService.uploadSlides(
+                  props.talkId, 
+                  e.target.files[0],
+                  (res: any) => {
+                    console.log("WESH REMY")
+                    if (res){
+                      setSlidesGotUploaded(true)
+                      // this.setState({slidesAlreadyUploaded: true})
+                      }
+                    }
+                  )
+                }}
+            />
+
+          </Box>
+
+
           
           <Box gridArea="player" justify="between" gap="small">
             <Box ref={videoContainer} className={`video-holder ${localUser.role} ${(isScreenAvailable||callControl.slideShare||isSlideVisible)?'screen-share':''}`}

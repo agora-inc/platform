@@ -42,6 +42,7 @@ interface State {
   isRecordingLinkHidden: boolean;
   hasYoutubeRecording: boolean;
   slideUrl?: string;
+  hasSlides: boolean
 }
 
 export default class PastTalkCard extends Component<Props, State> {
@@ -58,18 +59,26 @@ export default class PastTalkCard extends Component<Props, State> {
         : "",
       isRecordingLinkHidden: true,
       hasYoutubeRecording: false,
+      hasSlides: false
     };
   }
 
   onSlideUpload = async (e: any) => {
-    await TalkService.uploadSlide(this.props.talk.id, e.target.files[0], ()=>{})
+    await TalkService.uploadSlides(this.props.talk.id, e.target.files[0], ()=>{})
     await this.fetchSlide()
   };
-  fetchSlide = async () => {
-    let {url} = await TalkService.getSlide(this.props.talk.id)
-    this.setState({slideUrl: url})
-  };
 
+  fetchSlide = async () => {
+    let {url} = await TalkService.getSlides(this.props.talk.id)
+    this.setState({slideUrl: url})
+    await TalkService.hasSlides(
+      this.props.talk.id,
+      (hasSlides: any) => {
+        console.log(hasSlides)
+        this.setState({hasSlides: hasSlides})
+      }
+    )
+  };
 
   formatDateFull = (s: string, e: string) => {
     const start = new Date(s);
@@ -209,122 +218,149 @@ export default class PastTalkCard extends Component<Props, State> {
     }
   }
 
+  deleteSlidesButton = () => {
+    return (
+      <Box
+      background="red"
+      round="xsmall"
+      justify="center"
+      align="center"
+      height="40px"
+      width="35%"
+      onClick={() => {
+        TalkService.deleteSlides(this.props.talk.id, 
+          (res: any) => {
+            if (res == "ok"){
+              this.setState({hasSlides: false})
+            }
+          })
+        }
+      }
+      focusIndicator={false}
+      hoverIndicator="#BAD6DB"
+    >
+      {/* <Text alignSelf="center" color="grey" size="14px">
+        {this.state.saved ? "Save talk": "Remove from saved"}
+      </Text> */}
+      <Text alignSelf="center" color="black" size="14px"> 
+        Delete slides
+      </Text>
+    </Box>
+    )
+  }
+
+
   getButtons = () => {
     if (this.props.admin) {
+      // console.log(document.getElementById("upload"))
       return (
-        <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
-          <a
-            href={this.state.recordingLink}
-            target="_blank"
-            style={{ width: "100%" }}
-          >
-            <Box
-              background="#0C385B"
-              round="xsmall"
-              height="40px"
-              width="50%"
-              justify="center"
-              align="start"
-              focusIndicator={false}
-              hoverIndicator="#0C385B"
-            >
-              <Text alignSelf="center" size="16px">
-                Watch talk
-              </Text>
-            </Box>
-          </a>
-          <Box margin={{ top: "10px", bottom: "20px" }}>
-            {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
-            {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-            
-            <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
-            
-            <SlidesUploader
-              text="Upload slide"
-              onUpload={this.onSlideUpload}
-              />
-          </Box>
-          <Box
-            onClick={this.onClick}
-            background="white"
-            round="xsmall"
-            height="40px"
-            width="50%"
-            justify="center"
-            align="start"
-            focusIndicator={false}
-            hoverIndicator={true}
-            style={{
-              border: "1px solid #C2C2C2",
-            }}
-          >
-            <Text alignSelf="center" size="16px">
-              {this.state.showLinkInput
-                ? "Save link recording"
-                : "Enter link recording"}
-            </Text>
-          </Box>
-        </Box>
-      );
-    } else if (this.props.talk.recording_link && !this.state.isRecordingLinkHidden) {
-      return (
-        <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
-          <a
-            href={this.props.talk.recording_link}
-            target="_blank"
-            style={{ width: "100%" }}
-          >
-            <Box
-              background="#0C385B"
-              round="xsmall"
-              height="40px"
-              width="50%"
-              justify="center"
-              align="start"
-              focusIndicator={false}
-              hoverIndicator="#0C385B"
-            >
-              <Text alignSelf="center" size="14px">
-                Watch talk
-              </Text>
-            </Box>
-          </a>
+        <Box direction="column">  
+          <Box gap="small" direction="row" margin={{ top: "10px", bottom: "10px" }}>
+            {this.state.recordingLink !== "" && (
+              <a
+                href={this.state.recordingLink}
+                target="_blank"
+                style={{ width: "35%" }}
+              >
+                <Box
+                  background="#0C385B"
+                  round="xsmall"
+                  height="40px"
+                  width="100%"
+                  justify="center"
+                  align="start"
+                  focusIndicator={false}
+                  hoverIndicator="#0C385B"
+                >
+                  <Text alignSelf="center" size="14px">
+                    Watch talk
+                  </Text>
+                </Box>
+              </a>
+            )}
+            {/* <Box width="30%" /> */}
+            {this.state.hasSlides && (
+              <>
+                <Box width="35%" height="40px">
+                    <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
+                </Box>
+                <Box width="30%" />
+                {this.deleteSlidesButton()}
+              </>
+              )
+            }
 
-          <Box margin={{ top: "10px", bottom: "20px" }}>
-            {/* We would like the downloaded slides to have the following name: 'TalkService.getTalkByid.name'_slides.pdf */}
-            {/* <Text><a href={TalkService.getSlide(160)} target='_blank'>Download</a></Text> */}
-            
-            <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
-            
-            <SlidesUploader
-              text="Upload slide"
-              onUpload={this.onSlideUpload}
-              />
           </Box>
-          {this.props.user && (
+          <Box gap="small" direction="row" margin={{ bottom: "10px" }}>
             <Box
+              onClick={this.onClick}
               background="white"
               round="xsmall"
+              height="30px"
+              width="35%"
               justify="center"
-              align="center"
-              height="40px"
-              width="50%"
-              onClick={this.onSaveTalkClicked}
+              align="start"
+              focusIndicator={false}
+              hoverIndicator={true}
               style={{
                 border: "1px solid #C2C2C2",
               }}
-              focusIndicator={false}
-              hoverIndicator={true}
             >
-              <Text alignSelf="center" color="grey" size="14px">
-                {this.state.saved ? "Save talk": "Remove from saved"}
+              <Text alignSelf="center" size="14px" weight="bold">
+                {this.state.showLinkInput
+                  ? "Save link recording"
+                  : "Enter link recording"}
               </Text>
             </Box>
-          )}
+            <Box width="30%" />
+            <Box width="35%" height="30px">
+                <SlidesUploader
+                      text={this.state.hasSlides ? "Re-upload slides": "Upload slides"}
+                      onUpload={this.onSlideUpload}
+                      width="100%"
+                />
+            </Box>  
+          </Box>
         </Box>
       );
     } else {
-      return;
+      return (
+        <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
+          {this.props.talk.recording_link && !this.state.isRecordingLinkHidden && (
+            <a
+              href={this.props.talk.recording_link}
+              target="_blank"
+              style={{ width: "35%" }}
+            >
+              <Box
+                background="#0C385B"
+                round="xsmall"
+                height="40px"
+                width="100%"
+                justify="center"
+                align="start"
+                focusIndicator={false}
+                hoverIndicator="#0C385B"
+              >
+                <Text alignSelf="center" size="14px">
+                  Watch talk
+                </Text>
+              </Box>
+            </a>
+          )}
+          <Box width={this.props.talk.recording_link && !this.state.isRecordingLinkHidden ? "30%" : "65%"} />
+            {this.state.hasSlides && (
+              <Box width="35%" height="40px">
+                  <FileDownloader 
+                    name={this.props.talk.name+'_slides.pdf'} 
+                    url={this.state.slideUrl}
+                    width="100%"
+                    />
+              </Box>
+              )
+            }
+        </Box>
+      );
     }
   };
 
@@ -487,8 +523,8 @@ export default class PastTalkCard extends Component<Props, State> {
               style={{
                 width: 640,
                 height:
-                  this.state.showLinkInput
-                    ? 540
+                  this.props.admin
+                    ? (this.state.showLinkInput ? 600 : 560)
                     : 500,
                 borderRadius: 15,
                 overflow: "hidden",
@@ -600,7 +636,8 @@ export default class PastTalkCard extends Component<Props, State> {
                 <Box
                   direction="column"
                   gap="small"
-                  height={this.state.showLinkInput ? "130px" : (this.props.talk.recording_link || this.props.admin ? "100px" : "30px")}
+                  height={this.props.admin ? (this.state.showLinkInput ? "190px" : "130px") : "90px" }
+                  // height={this.state.showLinkInput ? "190px" : (this.props.talk.recording_link || this.props.admin ? "160px" : "90px")}
                 //style={{ minHeight: "90px", maxHeight: "150px" }}
                 >
                   <Box direction="row" gap="small">
@@ -678,7 +715,7 @@ export default class PastTalkCard extends Component<Props, State> {
                   justify="center"
                 >
                   <Text textAlign="center" weight="bold">
-                    {`The recording is only available to ${
+                    {`The recording and slides are only available to ${
                       this.props.talk.visibility === "Followers and members"
                         ? "followers and members"
                         : "members"
@@ -864,7 +901,6 @@ export default class PastTalkCard extends Component<Props, State> {
           //   )}
           // </Layer>
         )}
-        <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
         {this.props.admin && (
           <Box
             onClick={() => {

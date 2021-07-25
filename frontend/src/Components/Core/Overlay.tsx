@@ -64,12 +64,12 @@ export class Overlay extends Component<OverlayProps> {
               }}
             >
               <Box pad="30px" alignSelf="center" fill={true}>
-                <Text size="16px" color="black" weight="bold"  >
+                <Text size="16px" color="black" weight="bold">
                   {this.props.title}
                 </Text>
               </Box>
               <Box pad="32px" alignSelf="center">
-                <Close onClick={this.props.onCancelClick} />
+                <Close onClick={this.props.onCancelClick}/>
               </Box>
             </Box>
             
