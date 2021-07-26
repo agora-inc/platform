@@ -23,7 +23,6 @@
     "@types/react-pdf": "^5.0.2",
     "agora-rtc-sdk-ng": "^4.2.1",
     "agora-rtm-sdk": "^1.4.1-201",
-    "antd": "^4.12.3",
     "axios": "^0.19.2",
     "compression-webpack-plugin": "^6.1.1",
     "crypto-ts": "^1.0.2",
