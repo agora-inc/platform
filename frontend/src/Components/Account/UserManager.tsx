@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Button, Text, TextArea } from "grommet";
+import { Box, Button, Text, TextArea, Layer } from "grommet";
 import {UserSettings} from "grommet-icons";
 import { Link, Redirect } from "react-router-dom";
 import LoginModal from "./LoginModal";
@@ -8,10 +8,8 @@ import { Channel, ChannelService } from "../../Services/ChannelService";
 import DropdownChannelButton from "../Channel/DropdownChannelButton";
 import CreateChannelButton from "../Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Channel/CreateChannelButton/CreateChannelOverlay";
-import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../../Styles/header.css";
-import "../../Styles/antd.css";
 import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
@@ -130,15 +128,15 @@ export default class UserManager extends Component<Props, State> {
 
   menu = () => {
     return this.state.showCreateChannelOverlay ? (
-      <Menu
+      <Box
+        height="100%"
+        width="350px"
+        pad="small"
         style={{
-          borderRadius: 10,
-          marginTop: 5,
+          border: "2px solid grey",
+          marginTop: 10,
           overflow: "hidden",
           paddingBottom: 0,
-          //height: 175,
-          height: "100%",
-          width: 350,
         }}
       >
         <CreateChannelOverlay
@@ -152,20 +150,19 @@ export default class UserManager extends Component<Props, State> {
           visible={true}
           user={this.state.user}
         />
-      </Menu>
+      </Box>
     ) : (
-      <Menu
+      <Box
+        width="450px"
         onClick={() => {}}
+        round="10px"
         style={{
-          borderRadius: 10,
-          marginTop: 5,
-          paddingBottom: 0,
+          border: "1px solid grey",
           minHeight: 326,
-          width: 450,
         }}
       >
         <Box
-          margin={{ horizontal: "small" }}
+          margin={{ horizontal: "small", top: "15px" }}
           gap="xsmall"
           focusIndicator={false}
           style={{ pointerEvents: "none" }}
@@ -218,8 +215,6 @@ export default class UserManager extends Component<Props, State> {
           )}
         </Box> */}
 
-
-        <Menu.Divider />
         <Box gap="xsmall" pad={{ vertical: "medium" }} focusIndicator={false}>
           <Link
             to={{ pathname: "/schedule", state: { user: this.state.user } }}
@@ -242,7 +237,6 @@ export default class UserManager extends Component<Props, State> {
             </Box>
           </Link>
         </Box>
-        <Menu.Divider />
         <Box
           margin={{
             bottom: "medium",
@@ -251,11 +245,11 @@ export default class UserManager extends Component<Props, State> {
             right: "small",
           }}
           focusIndicator={false}
-          // style={{ pointerEvents: "none" }}
+          justify="center"
           gap="xsmall"
         >
           <Text size="16px" color="grey">
-            Manage your <img src={agoraLogo} style={{ height: "14px"}}/>s
+            Manage your <img src={agoraLogo} style={{ height: "14px", marginBottom: "-3px"}}/>s
           </Text>
           <Box
             height={{max: "120px"}}
@@ -272,7 +266,14 @@ export default class UserManager extends Component<Props, State> {
             onClick={this.toggleCreateChannelOverlay} /> */}
 
         </Box>
-        <Menu.Divider />
+        <hr  
+          style={{
+            width: "95%", 
+            color: "#EEEEEE", 
+            borderColor: "#EEEEEE",
+            backgroundColor: "#EEEEEE"
+          }} 
+        />
         <Box
           margin={{
             bottom: "medium",
@@ -299,7 +300,6 @@ export default class UserManager extends Component<Props, State> {
             ))}
           </Box>
         </Box>
-        <Menu.Divider />
         {/*<Text weight="bold" color="black" margin="small">
           Account
           </Text>*/}
@@ -346,7 +346,24 @@ export default class UserManager extends Component<Props, State> {
           </Box>
         </Box> */}
 
-        <Menu.Item>
+        <hr  
+          style={{
+            width: "95%", 
+            color: "#EEEEEE", 
+            borderColor: "#EEEEEE",
+            backgroundColor: "#EEEEEE"
+          }} 
+        />
+
+        <Box
+          margin={{
+            top: "small",
+            left: "small",
+            right: "small",
+          }}
+          focusIndicator={false}
+          gap="xsmall"
+        >
           <Link
             to={{ pathname: "/saved", state: { user: this.state.user } }}
             style={{ textDecoration: "none" }}
@@ -354,9 +371,8 @@ export default class UserManager extends Component<Props, State> {
           >
             <Text size="14px"> Bookmarks </Text>
           </Link>
-        </Menu.Item>
-        <Menu.Item
-          key="2"
+        </Box>
+        <Box
           onClick={() => {
             UserService.logout();
             this.setState({
@@ -368,10 +384,18 @@ export default class UserManager extends Component<Props, State> {
             paddingBottom: 5,
             paddingTop: 3,
           }}
+          margin={{
+            bottom: "small",
+            top: "small",
+            left: "small",
+            right: "small",
+          }}
+          hoverIndicator={true}
+          gap="xsmall"
         >
           <Text size="14px"> Log out </Text>
-        </Menu.Item>
-      </Menu>
+        </Box>
+      </Box>
     );
   };
 
@@ -419,34 +443,25 @@ export default class UserManager extends Component<Props, State> {
         </Link>
       </Box>
 
-
-      <Dropdown
-        overlay={this.menu()}
-        trigger={["click"]}
-        overlayStyle={{ width: 450 }}
-        visible={this.state.showDropdown}
-        placement="bottomCenter"
+      <Button
+        style={{
+          height: "100%",
+          width: "100%",
+          // borderRadius: 20,
+          overflow: "hidden",
+        }}
+        
+        focusIndicator={false}
+        onClick={this.toggleDropdown}
       >
-        <Button
-          style={{
-            height: "100%",
-            width: "100%",
-            // borderRadius: 20,
-            overflow: "hidden",
-          }}
-          
-          focusIndicator={false}
-          onClick={this.toggleDropdown}
-        >
-          <Box direction="row" gap="small">
-            <Text size="14px" margin={{right: "15px", top: "3.43px"}} color="grey">
-              {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
-              <b>{this.state.user?.username}!</b>
-            </Text>
-              <UserSettings size="medium"/>
-          </Box>
-        </Button>
-      </Dropdown>
+        <Box direction="row" gap="small">
+          <Text size="14px" margin={{right: "15px", top: "3.43px"}} color="grey">
+            {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
+            <b>{this.state.user?.username}!</b>
+          </Text>
+            <UserSettings size="medium"/>
+        </Box>
+      </Button>
       </>
     );
   };
@@ -513,7 +528,24 @@ export default class UserManager extends Component<Props, State> {
         {this.state.isLoggedIn
           ? this.loggedInStuff(username)
           : this.loggedOutStuff}
+        {this.state.showDropdown && (
+          <Layer 
+            modal={false}
+            position="top-right"
+            onEsc={this.toggleDropdown}
+            onClickOutside={this.toggleDropdown}        
+            style={{
+              position: "absolute",
+              top: 65,
+              right: 30,
+            }}
+            responsive
+          >
+            {this.menu()}
+          </Layer>
+        )}
       </Box>
+
     );
   }
 }

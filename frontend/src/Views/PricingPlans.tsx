@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
 import { Close, Checkmark, FormNextLink } from "grommet-icons";
-import { Switch } from "antd";
+import Switch from "../Components/Core/Switch";
 import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 
 
@@ -71,14 +71,19 @@ export default class ManageChannelPage extends Component<Props, State> {
             Select "Big" if you have an audience of more than 30 people:
           </Text>
           <Switch
-            checked={this.state.pricingOptionBig}
+            width="70px"
+            checked={false}
+            callback={(pricingOptionBig: boolean) => {this.setState({ pricingOptionBig })}}
+            textOn="Big"
+            textOff="Small" 
+          />
+            {/* checked={this.state.pricingOptionBig}
             checkedChildren="Big" 
             unCheckedChildren="Small"
             onChange={(checked: boolean) => {
               this.setState({ pricingOptionBig: checked });
             }}
-            size="default"
-          /> 
+          size="default" */}
         </Box>
 
         {/*<Box direction="row" gap="10px" align="center" margin={{bottom: "30px"}}> 

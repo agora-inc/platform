@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Box, Text, TextInput } from "grommet";
 import { Search } from "grommet-icons";
-import { Dropdown, Menu } from "antd";
+// Find another library to make this component work
+// import { Dropdown, Menu } from
 import { User } from "../../Services/UserService";
 import { ChannelService } from "../../Services/ChannelService";
 import { SearchService } from "../../Services/SearchService";
@@ -66,7 +67,10 @@ export default class AddUsersButton extends Component<Props, State> {
     );
   };
 
+  
+
   menu = () => {
+    {/*
     return (
       <Menu
         style={{
@@ -98,12 +102,8 @@ export default class AddUsersButton extends Component<Props, State> {
           />
         </Box>
 
-        {/* "
         The below section will need rework.
         - Remove ability to browse
-        - 
-        Remy
-        " */}
 
         {this.state.searchResults.map((user: User) => {
           if (
@@ -136,11 +136,13 @@ export default class AddUsersButton extends Component<Props, State> {
         })}
       </Menu>
     );
+    */}
   };
 
+
   render() {
-    // console.log(this.props.existingUsers);
     return (
+          {/*
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
@@ -162,6 +164,7 @@ export default class AddUsersButton extends Component<Props, State> {
           </Text>
         </Box>
       </Dropdown>
+      */}
     );
-  }
+  } 
 }

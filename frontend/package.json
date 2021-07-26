@@ -57,6 +57,7 @@
     "react-identicons": "^1.2.4",
     "react-image-crop": "^8.6.6",
     "react-katex": "^2.0.2",
+    "react-loader-spinner": "^4.0.0",
     "react-material-stepper": "^1.0.0",
     "react-overlays": "^3.2.0",
     "react-pdf": "^5.3.0",

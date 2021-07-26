@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text, TextInput } from "grommet";
 import { Search } from "grommet-icons";
-import { Dropdown, Menu } from "antd";
+// Find another library to make this component work
+// import { Dropdown, Menu } from
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import { Stream } from "../../Services/StreamService";
 import { Video } from "../../Services/VideoService";
@@ -86,7 +87,9 @@ export default class SiteWideSearch extends Component<{}, State> {
     });
   };
 
+
   menu = () => {
+     {/*
     return (
       <Menu
         style={{
@@ -371,20 +374,20 @@ export default class SiteWideSearch extends Component<{}, State> {
             </Box>
           </Box>
         )} */}
-        {this.areResultsEmpty() &&
+        {/* this.areResultsEmpty() &&
           !this.state.loading &&
           this.state.searchString !== "" && (
             <Box>
               <Text>No results</Text>
             </Box>
           )}
-      </Menu>
-    );
+          </Menu> 
+          ); */}
   };
 
   render() {
-    // console.log(this.state.results);
     return (
+       {/* 
       <Dropdown
         overlay={this.menu()}
         trigger={["click"]}
@@ -406,6 +409,6 @@ export default class SiteWideSearch extends Component<{}, State> {
           />
         </Box>
       </Dropdown>
-    );
+          */} ); 
   }
 }
