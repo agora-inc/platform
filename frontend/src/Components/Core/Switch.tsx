@@ -48,6 +48,7 @@ export default class Switch extends Component<Props, State> {
           }}
           align="center"
           background="#D3F930"
+          focusIndicator={false}
         >
           <RadialSelected size={height} />
           <Box width={this.props.width}> </Box>
@@ -64,7 +65,7 @@ export default class Switch extends Component<Props, State> {
           round={round}
           onClick={this.toggleChecked}  
           direction="row"
-          
+          focusIndicator={false}
           style={{
             border: "1px solid gray"
           }}
