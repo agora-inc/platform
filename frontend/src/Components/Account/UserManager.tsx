@@ -222,7 +222,7 @@ export default class UserManager extends Component<Props, State> {
           >
             <Box
               onClick={this.toggleDropdown}
-              background="#0C385B"
+              background="#6DA3C7"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -231,7 +231,7 @@ export default class UserManager extends Component<Props, State> {
               align="center"
               focusIndicator={false}
               // hoverIndicator="#2433b5"
-              hoverIndicator="#6DA3C7"
+              hoverIndicator="#0C385B"
             >
               <Text size="14px"> My schedule </Text>
             </Box>
@@ -262,8 +262,9 @@ export default class UserManager extends Component<Props, State> {
             />
             ))}
           </Box>
-          {/*<CreateChannelButton 
-            onClick={this.toggleCreateChannelOverlay} /> */}
+          <CreateChannelButton 
+            onClick={this.toggleCreateChannelOverlay}
+          />
 
         </Box>
         <hr  

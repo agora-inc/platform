@@ -260,6 +260,42 @@ export default class ManageChannelPage extends Component<Props, State> {
             </TableRow>
 
             <TableRow>
+              <TableCell scope="row">
+                <Text weight="bold" size="14px"> Mobile app (coming soon!) </Text>
+              </TableCell>
+              <TableCell scope="row">
+                <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+              </TableCell>
+              <TableCell scope="row">
+                <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+              </TableCell>
+              <TableCell scope="row">
+                <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+              </TableCell>
+              {this.props.showDemo && (
+                <TableCell scope="row">
+                  <Box
+                    direction="row"
+                    justify="center"
+                    align="center"
+                    pad="small"
+                    focusIndicator={false}
+                    height="30px"
+                    background="#EAF1F1"
+                    hoverIndicator="#BAD6DB"
+                    round="small"
+                    onClick={()=>{}}
+                  >
+                    <FormNextLink size="25px" color="black" />
+                    <Text weight="bold" color="black" size="14px">
+                      Watch demo
+                    </Text>
+                  </Box>
+                </TableCell>
+              )}
+            </TableRow>
+
+            <TableRow>
               <TableCell/>
               <TableCell/>
               <TableCell margin={{top: "20px"}}>  
