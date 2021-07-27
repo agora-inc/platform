@@ -1237,39 +1237,59 @@ def registrationStatusForTalk():
 @app.route('/talks/slides', methods=["POST", "GET", "DELETE"])
 def presentationSlides():
     # NOTE: pdf only atm.
-    if request.method == "OPTIONS":
-        return jsonify("ok")
+    try:
+        if request.method == "OPTIONS":
+            return jsonify("ok")
 
-    if request.method == "POST":
-        logRequest(request)
-        # if not checkAuth(request.headers.get('Authorization')):
-        #     return exceptions.Unauthorized("Authorization header invalid or not present")
-        talkId = request.form["talkId"]
-        file = request.files["slides"]
-        print(file)
-        fn = f"{talkId}.pdf"
-        file.save(f"/home/cloud-user/plateform/agora/storage/slides/{fn}")
-        talks.addSlides(talkId)
-        
-        return jsonify({"filename": fn})
-        
+        if request.method == "POST":
+            logRequest(request)
+            # if not checkAuth(request.headers.get('Authorization')):
+            #     return exceptions.Unauthorized("Authorization header invalid or not present")
+            talkId = request.form["talkId"]
+            file = request.files["slides"]
+            print(file)
+            fn = f"{talkId}.pdf"
+            file.save(f"/home/cloud-user/plateform/agora/storage/slides/{fn}")
+            talks.addSlides(talkId)
+            
+            return jsonify({"filename": fn})
+            
+        if request.method == "GET":
+            if "talkId" in request.args:
+                talkId = int(request.args.get("talkId"))
+                fn = talks.getSlidesLocation(talkId)
+                if fn is not None:
+                    return send_file(fn, mimetype="application/pdf")
+                else:
+                    return jsonify({"hasSlides": False})
+
+
+        if request.method == "DELETE":
+            params = request.json 
+            talkId = params["talkId"]
+            talks.deleteSlides(talkId)
+
+            app.logger.debug(f"talk with id {talkId} removed slides")
+
+            return jsonify("ok")
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+@app.route('/talks/hasslides', methods=["GET"])
+def hasSlides():
+    # NOTE: pdf only atm.
     if request.method == "GET":
-        if "talkId" in request.args:
-            talkId = int(request.args.get("talkId"))
-            fn = talks.getSlidesLocation(talkId)
-            return send_file(fn, mimetype="application/pdf")
-        
-
-    if request.method == "DELETE":
-        params = request.json 
-        print(params)
-        talkId = params["talkId"]
-        talks.removeSlides(talkId)
-
-        app.logger.debug(f"talk with id {talkId} removed slides")
-
-        return jsonify("ok")
-
+        try:
+            if "talkId" in request.args:
+                talkId = int(request.args.get("talkId"))
+                fn = talks.getSlidesLocation(talkId)
+                if fn is not None:
+                    return jsonify({"hasSlides": True})
+                else:
+                    return jsonify({"hasSlides": False})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 # --------------------------------------------
 # VOD ROUTES
 # --------------------------------------------
@@ -1629,7 +1649,7 @@ def channelLinkRedirect():
 def getStreamingProductById():
     err = ""
     try:
-        product_id = request.args.get("productId")
+        product_id = request.args.get("id")
         return jsonify(
             products.getStreamingProductById(product_id)
             )
@@ -1640,13 +1660,21 @@ def getStreamingProductById():
         tier = request.args.get("tier") # = tier1 and tier2
         product_type = request.args.get("productType") # = 'credits' or 'subscription'
         aud_size = request.args.get("audienceSize") # = 'small' or 'big'
+        
         return jsonify(
-            products.getStreamingProductIdByFeatures(tier, product_type, aud_size)
+            products.getStreamingProductByFeatures(tier, product_type, aud_size)
             )
     except Exception as e:
         err += str(e)
 
     return jsonify(e)
+
+@app.route('/products/streaming/all', methods=["GET"])
+def getAllStreamingProducts():
+    try:
+        return jsonify(products.getAllStreamingProducts())
+    except Exception as e:
+        return jsonify(str(e))
 
 # --------------------------------------------
 # CREDITS
@@ -1728,7 +1756,9 @@ def getActiveSubscriptionForChannel():
 def getAllActiveSubscriptionsForChannel():
     try:
         channel_id = request.args.get("channelId")
-        return jsonify(channelSubscriptions.getActiveSubscriptions(channel_id))
+        active_subs = channelSubscriptions.getActiveSubscriptions(channel_id)
+        return jsonify([sub['product_id'] for sub in active_subs])
+        
     except Exception as e:
         return jsonify(str(e))
 

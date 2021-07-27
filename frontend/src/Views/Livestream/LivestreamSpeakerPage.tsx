@@ -371,7 +371,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   useEffect(()=>{
     (async ()=>{
-      let {url} = await TalkService.getSlide(Number(props.talkId))
+      let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
       setTalkId(props.talkId.toString())
       join_live_chat()
@@ -407,7 +407,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setSlideShareId('')
         return
       }
-      let {url} = await TalkService.getSlide(Number(props.talkId))
+      let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
       if(req[0].user_id === localUser.uid) {
         console.log('okay')
@@ -527,7 +527,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
 
 
-          <Box gridArea="top_chat" height="40px" align="center" direction="row">
+          <Box gridArea="top_chat" height="40px" align="center" direction="row" gap="small">
             {/* <SlidesUploader
               text={"Upload your slides"}
               onUpload={()=>{}}
@@ -535,12 +535,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
             <SpeakerHelpButton
               talkId={props.talkId}
+              width="25vw"
               callback={()=>{}}
             />
             <SlidesUploader
               text={slidesGotUploaded ? "Uploaded ✔️ (click to reupload)" : "Upload pdf"}
               onUpload={(e: any) => {
-                TalkService.uploadSlide(
+                TalkService.uploadSlides(
                   props.talkId, 
                   e.target.files[0],
                   (res: any) => {

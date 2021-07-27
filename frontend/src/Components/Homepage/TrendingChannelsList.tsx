@@ -6,7 +6,7 @@ import { Channel, ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../../Styles/trending-channels-box.css";
 import { Multiple } from "grommet-icons";
-import AgoraLogo from "../../assets/general/agora_logo_v2.1.png";
+import AgoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import ReactTooltip from "react-tooltip";
 
 interface State {

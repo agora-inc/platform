@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import Identicon from "react-identicons";
 import { Channel } from "../../Services/ChannelService";
-import agoraLogo from "../../assets/general/agora_logo_v2.1.png";
+import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 
 interface Props {
   onClick: any;
@@ -39,7 +39,7 @@ export default class CreateChannelButton extends Component<Props, State> {
         width={this.props.width ? (this.props.width) : "fill"}
         height={this.props.height ? (this.props.height) : "fill"}
         round="xsmall"
-        pad="xsmall"
+        pad="small"
         style={{
           border: "2px solid #C2C2C2",
         }}
@@ -47,7 +47,6 @@ export default class CreateChannelButton extends Component<Props, State> {
         hoverIndicator="color3"
         focusIndicator={false}
         justify="start"
-        margin={{top: "small"}}
       >
         {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
         <Text size="22.5px">🚀</Text>

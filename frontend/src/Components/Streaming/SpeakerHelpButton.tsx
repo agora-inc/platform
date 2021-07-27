@@ -6,7 +6,10 @@ import { StatusInfo } from "grommet-icons";
 import SlidesUploader from "../Core/SlidesUploader";
 import { TalkService } from "../../Services/TalkService";
 import shareScreenButtonImage from "../../assets/tutorial_images/streaming/share_screen_button.jpeg";
-import moveSlidesViewButtonImage from "../../assets/tutorial_images/streaming/move_to_slides_view.jpeg";
+import moveSlidesViewButtonImage from "../../assets/tutorial_images/streaming/move_to_slides_view.png";
+import uploadButtonImage from "../../assets/tutorial_images/streaming/upload_button_image.png";
+import slidesButtonImage from "../../assets/tutorial_images/streaming/slides_button.png";
+import AgoraLogo from "../../assets/general/agora_logo_v2.png";
 
 
 interface Props {
@@ -14,10 +17,13 @@ interface Props {
   callback: any;
   open?: boolean;
   text?: string;
+  width?: string;
 }
 
 interface State {
   showModal: boolean;
+  headerSize: string;
+  textSize: string;
 }
 
 export default class SpeakerHelpButton extends Component<Props, State> {
@@ -25,6 +31,8 @@ export default class SpeakerHelpButton extends Component<Props, State> {
     super(props);
     this.state = {
       showModal: this.props.open || false,
+      headerSize: "16px",
+      textSize: "14px"
     };
   }
 
@@ -44,7 +52,7 @@ export default class SpeakerHelpButton extends Component<Props, State> {
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
           height="40px"
-          width="15vw"
+          width={this.props.width ? this.props.width : "15vw"}
           justify="center"
           align="center"
           focusIndicator={false}
@@ -66,7 +74,7 @@ export default class SpeakerHelpButton extends Component<Props, State> {
           submitButtonText={""}
           canProceed={true}
           isMissing={[]}
-          contentHeight={"370px"}
+          contentHeight={"820px"}
         >
           <Box
             width="100%"
@@ -77,29 +85,29 @@ export default class SpeakerHelpButton extends Component<Props, State> {
             gap="xsmall"
           >
             <Box width="100%" gap="2px" margin={{"top": "5px"}}>
-              <b>A. Upload your pdf presentation <StatusInfo size="small" data-tip data-for='slide-upload-info'/></b>
-
-
-
-
-
-              {/* PLACEHOLDER: ADD IMAGE!! */}
-
-
-
-
-
+              <Box width="100%" height="30px" background="color7" alignContent="center">
+                <Text weight="bold" size={this.state.headerSize}>Option A: <img src={AgoraLogo} height={this.state.headerSize}/> slide sharing tool <StatusInfo size="small" data-tip data-for='slide-upload-info'/></Text>
+              </Box>
+              <Box width="100%">
+                <Text size={this.state.textSize} margin={{top: "25px", bottom: "5px"}}>1) Upload your slides</Text>
+                <img src={uploadButtonImage} width="100%"/>
+                <Text size={this.state.textSize} margin={{top: "25px", bottom: "5px"}}>2) Switch to "slides view"</Text>
+                <img src={moveSlidesViewButtonImage} width="100%"/>
+                <Text size={this.state.textSize} margin={{top: "25px", bottom: "5px"}}>3) Present using arrow keys</Text>
+                <img src={slidesButtonImage} width="100%"/>
+              </Box>
 
             </Box>
             <ReactTooltip id='slide-upload-info' effect="solid">
-                <Text size="12px">Doing so will allow your audience to freely browse through the slides during your presentation. </Text>
+                <Text size={this.state.textSize}>(Prefered) Doing so will allow your physical and online audience to freely browse through the slides during your presentation. </Text>
               </ReactTooltip>
               {/* <img src={shareScreenButtonImage} width="100%" margin-top="20px"/> */}
-            <Text style={{alignSelf: "center"}} margin={{top: "20px", bottom: "20px"}}>OR</Text>
             <Box width="100%" gap="2px">
-              <b>B. Share your screen <StatusInfo size="small" data-tip data-for='share-screen-info'/></b>
+            <Box width="100%" height="30px" background="color7" margin={{top: "20px", bottom: "20px"}} alignContent="center">
+                <Text weight="bold" size={this.state.headerSize}>Option B: Share your screen <StatusInfo size="small" data-tip data-for='share-screen-info'/></Text>
+              </Box>
             <ReactTooltip id='share-screen-info' effect="solid">
-                <Text size="12px">Your audience will only see your current view. </Text>
+                <Text size={this.state.textSize}>Your online and physical audience will only see your current view. </Text>
               </ReactTooltip>
               <img src={shareScreenButtonImage} width="100%" margin-top="20px"/>
             </Box>

@@ -453,7 +453,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setSlideShareId('')
         return
       }
-      let {url} = await TalkService.getSlide(Number(props.talkId))
+      let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
 
       if(req[0].user_id === localUser.uid) {

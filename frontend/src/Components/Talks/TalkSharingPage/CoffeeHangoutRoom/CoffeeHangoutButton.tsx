@@ -12,6 +12,7 @@ var moment = require("moment");
 interface Props {
     user: User | null;
     talk: Talk;
+    disabled: boolean;
 }
   
 interface State {
@@ -80,7 +81,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
       };
 
       showTimeUntil = () => {
-        let message = "Virtual cafeteria opening in ";
+        let message = "Opening in ";
         var startTime = new Date(this.props.talk.date).getTime()
         let secondsUntil = Math.floor(
           (startTime - this.state.now.getTime()) / 1000 - this.state.openingTimeBeforeSemInMinutes * 60
@@ -131,34 +132,56 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
         return (
           <>
             {!this.cafeteriaPermanentlyClosed() && (
-              <>
-              {!this.cafeteriaOpened() || (
-                <Box align="center" data-tip data-for='grab_coffee_button_before'>
-                  <a
-                      style={{ width: "100%", textDecoration: "none" }}
-                      href={"https://gather.town/app/ZdQRhpTeDNaBiV2P/agora.stream%20Cafeteria"}
-                      target="_blank"
-                  >
-                    <Box
-                      onClick={() => {}}
-                      background="#0C385B"
-                      round="xsmall"
-                      width="160px" height="35px"
-                      justify="center"
-                      align="center"
-                      focusIndicator={true}
-                      hoverIndicator="#6DA3C7"
-                    >
-                      <Text size="15px" weight="bold">
-                        Grab an e-coffee
-                      </Text>
-                    </Box>
-                  </a>
+                <>
+                {!this.cafeteriaOpened() || (
+                    <Box align="center" data-tip data-for='grab_coffee_button_before'>
+                    {!this.props.disabled && (
+                      <a
+                          style={{ width: "100%", textDecoration: "none" }}
+                          href={"https://gather.town/app/ZdQRhpTeDNaBiV2P/agora.stream%20Cafeteria"}
+                          target="_blank"
+                      >
+                          <Button
+                              width={"160px"}
+                              height={"35px"}
+                              onClick={()=>{}}
+                              text={"Grab an e-coffee"}
+                              buttonType="mainAction"
+                          />
+                      </a>
+                    )}
+                    {this.props.disabled && (
+                      <Button
+                        width={"160px"}
+                        height={"35px"}
+                        disabled={this.props.disabled}
+                        fill="#d5d5d5"
+                        onClick={()=>{}}
+                        text={"Grab an e-coffee"}
+                        buttonType="mainAction"
+                      />
+                    )}
 
-                  <ReactTooltip id="grab_coffee_button_before" effect="solid" place="bottom">
-                      Chat with other seminar participants and speakers; cafeteria remains open 2 hours after the end of the seminar.
-                  </ReactTooltip>
-                </Box>
+                    <ReactTooltip id="grab_coffee_button_before" effect="solid" place="bottom">
+                        Chat with other seminar participants and speakers; cafeteria remains open 2 hours after the end of the seminar.
+                    </ReactTooltip>
+                    </Box>
+                )}
+                {this.cafeteriaOpened() || (
+                    <Box align="center" data-tip data-for='grab_coffee_button_after'>
+                        <Button
+                            width={renderMobileView ? "300px" : "500px"}
+                            height={"50px"}
+                            fill="#d5d5d5"
+                            disabled={true}
+                            onClick={()=>{}}
+                            text={this.showTimeUntil()}
+                            buttonType="mainAction"
+                        />
+                        <ReactTooltip id="grab_coffee_button_after" effect="solid" place="bottom">
+                            Chat with other seminar participants and speakers
+                        </ReactTooltip>
+                    </Box>
               )}
               {this.cafeteriaOpened() || (
                 <Box align="center" data-tip data-for='grab_coffee_button_after'>

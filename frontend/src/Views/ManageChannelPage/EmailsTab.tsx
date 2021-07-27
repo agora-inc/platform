@@ -197,6 +197,9 @@ export default class EmailsTab extends Component<Props, State> {
         {this.renderReminder(0)}
         {this.renderReminder(1)}
     */}
+        <Text size="16px" style={{fontStyle: "italic"}} margin={{top: "15px"}}> 
+          Securely upload your mailing list and send automatic email reminders when you create your talk!
+        </Text>
 
         <Box 
           direction="row"
@@ -209,6 +212,7 @@ export default class EmailsTab extends Component<Props, State> {
             width="50%"
             margin={{bottom: "50px"}}
           >
+
             <Box 
               direction="row"
               gap="small"

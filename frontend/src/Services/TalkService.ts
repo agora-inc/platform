@@ -411,7 +411,7 @@ const isAvailableToUser = (userId: number, talkId: number, callback: any) => {
 //////////////////
 // Slides management
 //////////////////
-const uploadSlide = async (talkId: number, slides: File, callback: any) => {
+const uploadSlides = async (talkId: number, slides: File, callback: any) => {
   const data = new FormData();
   data.append("talkId", talkId.toString());
   data.append("slides", slides);
@@ -419,10 +419,10 @@ const uploadSlide = async (talkId: number, slides: File, callback: any) => {
     callback(response.data);
   })
 
-  return await getSlide(talkId)
+  return await getSlides(talkId)
 };
 
-const getSlide = async (talkId: number) => {
+const getSlides = async (talkId: number) => {
   var CACHE_DELAY = 500
   let current_time = Math.floor(new Date().getTime() / 1000) * CACHE_DELAY;
 
@@ -430,16 +430,30 @@ const getSlide = async (talkId: number) => {
   // return { url: "https://arxiv.org/pdf/1806.07366.pdf"};
 };
 
-const removeSlide = async (talkId: number) => {
+const deleteSlides = async (talkId: number, callback: any) => {
   let res = await axios
     .delete(baseApiUrl + "/talks/slides", {
       headers: { "Access-Control-Allow-Origin": "*" },
       data: {
         talkId: talkId,
       },
+    }).then(function (response) {
+      callback(response.data);
     })
     
   return true
+};
+
+const hasSlides = async (talkId: number, callback: any) => {
+  get(`talks/hasslides?talkId=${talkId}`, 
+    (res: any) => {
+      var hasSlides = res.hasSlides
+      if (callback){
+        callback(hasSlides);
+      }
+      return hasSlides;
+    }
+  );
 };
 
 const getViewCountForTalk = (
@@ -539,9 +553,10 @@ export const TalkService = {
   getTalkRegistrations,
   getRegisteredTalksForUser,
   // Slides management
-  uploadSlide,
-  getSlide,
-  removeSlide,
+  uploadSlides,
+  getSlides,
+  deleteSlides,
+  hasSlides,
   // talk views
   increaseViewCountForTalk,
   getViewCountForTalk,

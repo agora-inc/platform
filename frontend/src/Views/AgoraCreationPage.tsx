@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid} from "grommet";
 import { Checkmark, Close, Linkedin,  Twitter} from "grommet-icons";
-import agorastreamLogo from "../assets/general/agora.stream_logo_v2.1.png";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import agorastreamLogo from "../assets/general/agora.stream_logo_300px.svg";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 import ReactTooltip from "react-tooltip";
 import { InlineMath } from "react-katex";
@@ -11,9 +11,10 @@ import "katex/dist/katex.min.css";
 
 import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
+import { StreamingProductService } from "../Services/StreamingProductService";
 import MediaQuery from "react-responsive";
 import PricingPlans from "../Views/PricingPlans";
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.png";
+import agoraStreamFullLogo from "../assets/general/agora.stream_logo_300px.svg";
 
 
 interface Props {}
@@ -42,9 +43,10 @@ export default class AgoraCreationPage extends Component<Props, State> {
       agoraCreationOverlay:
         {
           showCreateChannelOverlay: false
-        }
+        },
     };
   }
+
 
   toggleCreateChannelOverlay = () => {
     this.setState({
@@ -438,18 +440,39 @@ export default class AgoraCreationPage extends Component<Props, State> {
               
           </Box>
           <Box width={renderMobileView ? "95%" : "70%"} alignContent="center" margin={{top: renderMobileView ? "0px" : "100px", left: "10px"}}>
-              <PricingPlans 
-                callback={() => {}}
-                showDemo={false}
-                headerTitle={true}
-              />
+            <PricingPlans 
+              callback={() => {}}
+              channelId={null}
+              userId={null}
+              disabled={true}
+              showDemo={false}
+              headerTitle={true}
+            />
 
-              <Box margin={{top:"50px"}}>
-                <MediaQuery maxDeviceWidth={1000}>
-                    <b>Log on the Desktop version to proceed.</b>
-                </MediaQuery>
+            <Box margin={{top:"70px"}} gap="30px">
+              <Box direction="row" gap="30px" align="center"> 
+                <Text size="25px" weight="bold" color="color1">
+                  Create your <img src={agoraLogo} height="22px"/> here
+                </Text>
+                <CreateChannelButton onClick={this.toggleCreateChannelOverlay} width="170px" />
               </Box>
+
+              <Text size="18px" >
+                An agora is a hub for your community. It is also the place where you organise and list all your events. If you already have one, simply visit it using the dashboard!
+              </Text>
+
             </Box>
+            {this.state.agoraCreationOverlay.showCreateChannelOverlay && (
+                <CreateChannelOverlay
+                  onBackClicked={this.toggleCreateChannelOverlay}
+                  onComplete={() => {
+                    this.toggleCreateChannelOverlay();
+                  }}
+                  visible={true}
+                  user={null}
+                />
+              )}
+          </Box>
         </Box>
     );
   }

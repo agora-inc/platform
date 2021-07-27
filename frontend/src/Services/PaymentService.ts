@@ -23,7 +23,7 @@ const createCheckoutSessionFromStreamingFeatures = (
         quantity = 1
     }
     // get product_id
-    StreamingProductService.getStreamingProductIdByFeatures(
+    StreamingProductService.getStreamingProductByFeatures(
         tier, audSize, productType, (res : {product_id : string}) => {
             createCheckoutSessionFromId(
                 Number(res.product_id), userId, quantity, channelId, () => {}
