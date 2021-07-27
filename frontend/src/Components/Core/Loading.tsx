@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import Loader from "react-loader-spinner";
 
 interface Props {
   size: number;
@@ -12,12 +11,13 @@ export default class Loading extends Component<Props> {
     super(props);
   }
   render() {
-    const antIcon = (
-      <LoadingOutlined
-        style={{ fontSize: this.props.size, color: this.props.color }}
-        spin
+    return (
+      <Loader
+        type="Puff"
+        color={this.props.color}
+        height={this.props.size}
+        width={this.props.size}
       />
     );
-    return <Spin indicator={antIcon} />;
   }
 }

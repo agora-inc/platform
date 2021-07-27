@@ -6,7 +6,8 @@ import { Add, Refresh } from "grommet-icons";
 import Loading from "../Core/Loading";
 import LatexInput from "./LatexInput";
 import Identicon from "react-identicons";
-import { CaretUpOutlined, CaretDownOutlined } from "@ant-design/icons";
+// Choose other components
+// import { CaretUpOutlined, CaretDownOutlined } from "@ant-design/icons";
 import "../../Styles/q-and-a.css";
 import { InlineMath } from "react-katex";
 
@@ -359,6 +360,7 @@ export default class QandA extends Component<Props, State> {
                 pad="none"
                 margin="none"
               >
+                {/*
                 <CaretUpOutlined
                   style={{
                     fontSize: 35,
@@ -371,7 +373,7 @@ export default class QandA extends Component<Props, State> {
                 <CaretDownOutlined
                   style={{ fontSize: 35, color: downvoteColor }}
                   onClick={() => this.onDownVoteQuestionClicked(question)}
-                />
+                /> */}
               </Box>
             )}
             <Box>
@@ -453,6 +455,7 @@ export default class QandA extends Component<Props, State> {
             pad="none"
             margin="none"
           >
+            {/* 
             <CaretUpOutlined
               style={{
                 fontSize: 35,
@@ -465,7 +468,7 @@ export default class QandA extends Component<Props, State> {
             <CaretDownOutlined
               style={{ fontSize: 35, color: downvoteColor }}
               onClick={() => this.onDownVoteAnswerClicked(answer)}
-            />
+            /> */}
           </Box>
         )}
         <Box>

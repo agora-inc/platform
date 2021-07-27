@@ -9,8 +9,8 @@ import {
   Layer,
   Text,
 } from "grommet";
-import { Steps } from "antd";
-import "../../Styles/antd.css";
+// Find another library to make this component work
+// import { Steps } from
 import "../../Styles/manage-channel.css";
 import TagSelector from "../Core/TagSelector";
 import { ReactComponent as TitleImage } from "../title.svg";
@@ -22,7 +22,7 @@ import { Channel } from "../../Services/ChannelService";
 import { Tag } from "../../Services/TagService";
 import Loading from "../Core/Loading";
 
-const { Step } = Steps;
+// const { Step } = Steps;
 
 interface Props {
   margin: string;
@@ -308,6 +308,7 @@ export default class StreamNowButton extends Component<Props, State> {
                   <Heading level={2} style={{ marginBottom: 20 }}>
                     New stream
                   </Heading>
+                  {/* 
                   <Steps
                     // size="small"
                     current={this.state.modalStep}
@@ -317,7 +318,7 @@ export default class StreamNowButton extends Component<Props, State> {
                     <Step title="Description" />
                     <Step title="Tags" />
                     <Step title="Finish" />
-                  </Steps>
+                  </Steps> */}
                 </Box>
                 <Box align="center" style={{ width: "100%" }}>
                   {this.state.modalStep == 0 && this.titleStep()}

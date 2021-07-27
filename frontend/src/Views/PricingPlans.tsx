@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Box, Text, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
 import { Close, Checkmark, FormNextLink } from "grommet-icons";
+import Switch from "../Components/Core/Switch";
+import agoraLogo from "../assets/general/agora_logo_v2.1.png";
 import { User, UserService } from "../Services/UserService";
 import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
 import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
 import { CancelSubscriptionsButton } from "../Components/Channel/ChannelSubscriptionsButtons/CancelSubscriptionsButton";
 import { CheckoutPaymentButton } from "../Components/Channel/ChannelSubscriptionsButtons/CheckoutPaymentButton";
-import { Switch } from "antd";
-import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 
 interface Props {
@@ -196,16 +196,21 @@ export default class ManageChannelPage extends Component<Props, State> {
             <Text size="14px" style={{ fontStyle: "italic" }} >
               Select "Big" if you have an audience of more than 30 people:
           </Text>
-            <Switch
-              checked={this.state.pricingOptionBig}
-              checkedChildren="Big"
-              unCheckedChildren="Small"
-              onChange={(checked: boolean) => {
-                this.setState({ pricingOptionBig: checked });
-              }}
-              size="default"
-            />
-          </Box>
+          <Switch
+            width="70px"
+            checked={false}
+            callback={(pricingOptionBig: boolean) => {this.setState({ pricingOptionBig })}}
+            textOn="Big"
+            textOff="Small" 
+          />
+            {/* checked={this.state.pricingOptionBig}
+            checkedChildren="Big" 
+            unCheckedChildren="Small"
+            onChange={(checked: boolean) => {
+              this.setState({ pricingOptionBig: checked });
+            }}
+          size="default" */}
+        </Box>
 
           {/*<Box direction="row" gap="10px" align="center" margin={{bottom: "30px"}}> 
           <Text size="14px" style={{fontStyle: "italic"}}> 
@@ -357,28 +362,44 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <TableCell scope="row">
                   <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
                 </TableCell>
-                {this.props.showDemo && (
-                  <TableCell scope="row">
-                    <Box
-                      direction="row"
-                      justify="center"
-                      align="center"
-                      pad="small"
-                      focusIndicator={false}
-                      height="30px"
-                      background="#EAF1F1"
-                      hoverIndicator="#BAD6DB"
-                      round="small"
-                      onClick={() => { }}
-                    >
-                      <FormNextLink size="25px" color="black" />
-                      <Text weight="bold" color="black" size="14px">
-                        Watch demo
+            </TableRow>
+
+            <TableRow>
+              <TableCell scope="row">
+                <Text weight="bold" size="14px"> Mobile app (coming soon!) </Text>
+              </TableCell>
+              <TableCell scope="row">
+                <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+              </TableCell>
+              <TableCell scope="row">
+                <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+              </TableCell>
+              <TableCell scope="row">
+                <Checkmark size="25px" color="green" style={{alignSelf: "center"}} />
+              </TableCell>
+              {this.props.showDemo && (
+                <TableCell scope="row">
+                  <Box
+                    direction="row"
+                    justify="center"
+                    align="center"
+                    pad="small"
+                    focusIndicator={false}
+                    height="30px"
+                    background="#EAF1F1"
+                    hoverIndicator="#BAD6DB"
+                    round="small"
+                    onClick={()=>{}}
+                  >
+                    <FormNextLink size="25px" color="black" />
+                    <Text weight="bold" color="black" size="14px">
+                      Watch demo
                     </Text>
-                    </Box>
-                  </TableCell>
-                )}
-              </TableRow>
+                  </Box>
+                </TableCell>
+              )}
+            </TableRow>
+
                 <TableRow>
                   <TableCell />
                   <TableCell />

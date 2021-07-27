@@ -23,7 +23,7 @@ import TopicSelector from "../Talks/TopicSelector";
 import { Topic } from "../../Services/TopicService";
 import "../../Styles/edit-talk-modal.css";
 import { textToLatex } from "../Core/LatexRendering";
-import { Switch } from "antd";
+import Switch from "../Core/Switch";
 import { InlineMath } from "react-katex";
 import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
@@ -844,11 +844,12 @@ export default class EditTalkModal extends Component<Props, State> {
                   </Text>
                 </Box>
                 <Switch
+                  height={15}
                   checked={this.state.latex}
-                  onChange={(checked: boolean) => {
+                  callback={(checked: boolean) => {
                     this.setState({ latex: checked });
                   }}
-                  size="small"
+                  width="30px"
                 />
                 Preview <InlineMath math={"{\\small \\LaTeX}"} />
               </Box>
@@ -1037,10 +1038,12 @@ export default class EditTalkModal extends Component<Props, State> {
             <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
               <Text size="13px" weight="bold"> Registration required? </Text>
               <Switch
+                width="60px"
+                height={24}
                 checked={this.state.onRegistration}
-                checkedChildren="Yes" 
-                unCheckedChildren="No"
-                onChange={(checked: boolean) => {
+                textOn="Yes" 
+                textOff="No"
+                callback={(checked: boolean) => {
                   this.setState({ 
                     onRegistration: checked,
                     autoAcceptGroup: "None"
@@ -1050,7 +1053,6 @@ export default class EditTalkModal extends Component<Props, State> {
                     this.setState({ autoAcceptEnabled: checked });
                   }
                 }}
-                size="default"
               />
             </Box>
 
@@ -1061,10 +1063,12 @@ export default class EditTalkModal extends Component<Props, State> {
                     Automatically accept some users?
                   </Text>
                   <Switch
+                      width="60px"
+                      height={24}
                       checked={this.state.autoAcceptEnabled}
-                      checkedChildren="Yes" 
-                      unCheckedChildren="No"
-                      onChange={(checked: boolean) => {
+                      textOn="Yes" 
+                      textOff="No"
+                      callback={(checked: boolean) => {
                         this.setState({ 
                           autoAcceptEnabled: checked,
                          });
@@ -1074,7 +1078,6 @@ export default class EditTalkModal extends Component<Props, State> {
                            })
                          }
                       }}
-                      size="default"
                   />
                   <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={auto_accept} data-for='automatic-registration'/>
                   <ReactTooltip id='automatic-registration' place="right" effect="solid" html={true}/>

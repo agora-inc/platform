@@ -1,7 +1,7 @@
 import React, { Component, RefObject } from "react";
 import { Box, Text, TextArea, Heading } from "grommet";
 import { InlineMath } from "react-katex";
-import { Switch } from "antd";
+import Switch from "../Core/Switch";
 import Loading from "../Core/Loading";
 import "katex/dist/katex.min.css";
 
@@ -217,8 +217,9 @@ export default class LatexInput extends Component<Props, State> {
               >
                 <Text>Enable inline math</Text>
                 <Switch
+                  width="70px"
                   checked={this.state.latex}
-                  onChange={(checked: boolean) => {
+                  callback={(checked: boolean) => {
                     this.setState({ latex: checked });
                   }}
                 />

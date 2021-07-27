@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { Box } from "grommet";
 import { Tag, TagService } from "../../Services/TagService";
-import { Input } from "antd";
+// Find another library to make this component work
+// import { Input } from
 import Loading from "./Loading";
 import { Add } from "grommet-icons";
-const { Search } = Input;
+
+// const { Search } = Input;
 
 interface State {
   all: Tag[];
@@ -119,7 +121,7 @@ export default class TagSelector extends Component<Props, State> {
           gap="small"
           margin={{ bottom: "small" }}
         >
-          {/* <Heading level={4}>Add some tags</Heading> */}
+          {/* <Heading level={4}>Add some tags</Heading> 
           <Search
             placeholder="search..."
             onSearch={(value) => this.filterTags(value)}
@@ -127,6 +129,7 @@ export default class TagSelector extends Component<Props, State> {
             onChange={(e) => this.filterTags(e.target.value)}
             value={this.state.searchTerm}
           />
+          */}
         </Box>
         <Box
           direction="row"

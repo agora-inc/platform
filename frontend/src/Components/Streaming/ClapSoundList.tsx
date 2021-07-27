@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Box, Grid, Text, Layer, Button, List, Heading } from "grommet";
 import { Howl, Howler } from "howler";
-import { DownSquareFilled } from "@ant-design/icons";
 
 export default class ClapSoundList extends Component {
   constructor(props: Props) {

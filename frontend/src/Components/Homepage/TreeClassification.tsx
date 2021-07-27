@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Tree } from "react-d3-tree";
 import treeData from "../../assets/tree.json";
 import { TopicService, TreeTopic } from "../../Services/TopicService";
-import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 
 const myTreeData = [

@@ -332,6 +332,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 : [
                     '10px', "300px",
                     '10px', "300px",
+                    '10px', '300px',
                   ]
               }
               columns={renderMobileView ? ["100%"] : ['50%', "50%"]}
@@ -345,6 +346,9 @@ export default class AgoraCreationPage extends Component<Props, State> {
     
                     { name: 'arg_4_text', start: [0, 2], end: [0, 3] },
                     { name: 'arg_4_image', start: [0, 3], end: [0, 4] },
+
+                    { name: 'arg_8_text', start: [0, 4], end: [0, 5] },
+                    { name: 'arg_8_image', start: [0, 5], end: [0, 6] },
                   ]
                 :
                   [
@@ -353,6 +357,9 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
                     { name: 'arg_4_text', start: [1, 2], end: [1, 3] },
                     { name: 'arg_4_image', start: [0, 2], end: [0, 3] },
+
+                    { name: 'arg_8_text', start: [0, 4], end: [0, 5] },
+                    { name: 'arg_8_image', start: [1, 4], end: [1, 5] },
                   ]
               }
             >
@@ -412,6 +419,21 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 >
                   <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
                 </video>
+              </Box>
+
+              <Box gridArea="arg_8_text" justify="center">
+                <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
+                  Connect your online and physical audience with our mobile app (coming soon!)
+                </Text>
+                <Text size="18px">
+                  The physical audience can now browse the slides of the speaker on their phone, so they won't be lost 10 minutes in the seminar! 
+                </Text>
+                <Text size="18px" margin={{top: "10px"}}>
+                  Both audiences can interact with each other through the chat and Q&A.
+                </Text>
+              </Box>
+              <Box gridArea="arg_8_image">
+                <img src="/images/connect_world.jpg" style={{ height: "100%", width: "auto"}}/> 
               </Box>
 
             </Grid>

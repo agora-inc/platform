@@ -5,7 +5,6 @@ import { Close } from "grommet-icons";
 
 // import allTopics from "../../assets/allTopics.json"
 import Button from "../Core/Button";
-import Icon from "@ant-design/icons";
 
 interface State {
   all: Topic[],
