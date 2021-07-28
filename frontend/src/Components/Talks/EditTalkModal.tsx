@@ -725,6 +725,8 @@ export default class EditTalkModal extends Component<Props, State> {
     "Example: ox.ac.uk, cam.ac.uk"
     const numbers = [1, 2, 3, 4, 5];
 
+    console.log("subs", this.state.subscriptionPlans)
+
     return (
       <>
       {this.props.visible && (
