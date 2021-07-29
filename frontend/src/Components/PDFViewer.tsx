@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Stream } from "../Services/StreamService";
 import "../Styles/videocard.css";
 import { baseApiUrl } from "../config";
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { Document, Page , pdfjs } from 'react-pdf/dist/esm/entry.webpack';
 import { db, API } from "../Services/FirebaseService";
 
 interface Props {
@@ -20,6 +20,8 @@ interface PDFDimension {
 
 
 export default function({presenter=false, ...props}:Props) {
+  pdfjs.GlobalWorkerOptions.workerSrc = 
+    `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const el = useRef<HTMLDivElement>(null)
   const [numPages, setNumPages] = useState(0 as number);
   const [pageNumber, setPageNumber] = useState(1 as number);
