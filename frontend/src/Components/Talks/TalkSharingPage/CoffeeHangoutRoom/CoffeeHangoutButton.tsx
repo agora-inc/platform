@@ -183,28 +183,6 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                         </ReactTooltip>
                     </Box>
               )}
-              {this.cafeteriaOpened() || (
-                <Box align="center" data-tip data-for='grab_coffee_button_after'>
-                  <Box
-                    onClick={() => {}}
-                    background="#0C385B"
-                    round="xsmall"
-                    width={renderMobileView ? "300px" : "500px"} 
-                    height="35px"
-                    justify="center"
-                    align="center"
-                    focusIndicator={true}
-                    hoverIndicator="#6DA3C7"
-                  >
-                    <Text size="15px">
-                      {this.showTimeUntil()}
-                    </Text>
-                  </Box>
-                  <ReactTooltip id="grab_coffee_button_after" effect="solid" place="bottom">
-                      Chat with other seminar participants and speakers
-                  </ReactTooltip>
-                </Box>
-              )}
               </>
             )}
             {this.cafeteriaPermanentlyClosed() && (

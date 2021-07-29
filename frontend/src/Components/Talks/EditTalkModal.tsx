@@ -525,23 +525,30 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   isComplete = () => {
+    const dateTimeStrs = this.combineDateAndTimeStrings();
     return (
       this.state.startTime !== "" &&
       this.state.endTime !== "" &&
+      dateTimeStrs[0] < dateTimeStrs[1] &&
       this.state.title !== "" &&
       this.state.description !== "" &&
       this.state.link !== "" &&
       this.state.topics.length > 0
     );
+
   };
 
   isMissing = () => {
+    const dateTimeStrs = this.combineDateAndTimeStrings();
     let res: string[] = []
     if (this.state.startTime === "") {
       res.push("Start time")
     }
     if (this.state.endTime === "") {
       res.push("End time")
+    }
+    if (dateTimeStrs[0] > dateTimeStrs[1]) {
+      res.push("End date is before start date")
     }
     if (this.state.title === "") {
       res.push("Title")
@@ -724,8 +731,6 @@ export default class EditTalkModal extends Component<Props, State> {
     var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
     "Example: ox.ac.uk, cam.ac.uk"
     const numbers = [1, 2, 3, 4, 5];
-
-    console.log("subs", this.state.subscriptionPlans)
 
     return (
       <>
@@ -1310,7 +1315,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 />
                 <Box data-tip data-for='submitbutton' margin={{left: "24px", right: "32px"}}> 
                   <Button
-                    fill="#025377"
+                    fill={this.isComplete() ? "#025377" : "#CCCCCC"}
                     disabled={!this.isComplete()}
                     height="35px"
                     width="140px"

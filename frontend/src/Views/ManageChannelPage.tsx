@@ -715,8 +715,6 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   render() {
     const { channel } = this.state;
-    
-    console.log("user??", this.state.user)
 
     if (this.state.loading) {
       return (

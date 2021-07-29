@@ -108,11 +108,6 @@ export default class TalkSharingPage extends Component<Props, State> {
     return tiers
   }
 
-  isPaying = () => {
-    return this.state.subscriptionPlans.includes("tier1") || 
-      this.state.subscriptionPlans.includes("tier2");
-  }
-
   fetchAll = () => {
     let talkId = this.getTalkIdFromUrl();  
     TalkService.getTalkById(talkId, (talk: Talk) => {
@@ -329,7 +324,8 @@ export default class TalkSharingPage extends Component<Props, State> {
           <CoffeeHangoutRoom
             talk={this.state.talk}
             user={this.state.user}
-            disabled={!this.isPaying()}
+            disabled={!this.state.subscriptionPlans.includes("tier1") && 
+              this.state.subscriptionPlans.includes("tier2")}
           />
           </Box>
         </Box>

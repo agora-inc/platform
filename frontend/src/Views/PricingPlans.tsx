@@ -119,14 +119,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       
   }
 
-  renderCurrentPlans = () => {
-
-  }
-
   render() {
     let audienceSize: "small" | "big" = this.state.pricingOptionBig ? "big" : "small";
-
-    console.log("user", this.props.userId)
 
     return (
       <Box align="start" width="100%" style={{ overflowY: "auto" }}>
