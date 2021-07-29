@@ -17,4 +17,4 @@ export const chatUrl =
   "wss://c5uavsaa69.execute-api.eu-west-2.amazonaws.com/Test";
 
 export const stripePublicKey = 
-"pk_test_51Iw99yLrLOIeFgs2F3sI5NMIe1kBXsF77aYrMCR3TuYhISPeVsZhTNDA1XM6BPOU3twkiVzOS7VaYLeYHnxlPdyo00ffb4tyAZ"
+"pk_live_51Iw99yLrLOIeFgs2HOEbW5vMi4o5PR2wSGYv5KidblGkq7XL9YjyAiOUgsxvPhtEmnFokUvmCoNvuAGiPXAnXGFl00BJiasPo1"
