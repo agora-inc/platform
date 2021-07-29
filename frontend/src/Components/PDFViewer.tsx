@@ -114,7 +114,7 @@ export default function({presenter=false, ...props}:Props) {
   return (
     <div ref={el} className={`pdf-viewer ${limitSide}`}>
       <Document
-        file={props.url}
+        file={"https://cors-anywhere.herokuapp.com/ " + props.url}
         onLoadSuccess={onDocumentLoadSuccess}
       >
         <Page pageNumber={pageNumber} {...dimension} renderAnnotationLayer={false} />
