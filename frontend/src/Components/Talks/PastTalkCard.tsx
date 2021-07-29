@@ -74,7 +74,6 @@ export default class PastTalkCard extends Component<Props, State> {
     await TalkService.hasSlides(
       this.props.talk.id,
       (hasSlides: any) => {
-        console.log(hasSlides)
         this.setState({hasSlides: hasSlides})
       }
     )

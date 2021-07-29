@@ -119,37 +119,8 @@ export default class ManageChannelPage extends Component<Props, State> {
       
   }
 
-  renderCurrentPlans = () => {
-    if (this.state.allPlansId.length > 0) {
-      return (
-        <Box margin={{ bottom: "40px", left: "10px" }}>
-          <Text size="14px" weight="bold" >
-            Your current subscription
-          </Text> 
-          {this.state.allPlansId.map( (productId: number) => {
-            return (
-              <Text size="14px" weight="bold" color="#6DA3C7" margin={{ top: "8px", left: "10px" }} > 
-                {this.showProduct(productId)}
-              </Text>
-            );
-          })}
-        </Box>
-      );
-    } else {
-      return (
-        <Box margin={{ bottom: "40px", left: "10px" }}>
-          <Text size="14px" weight="bold" >
-            You are currently on our free plan. Upgrade to enjoy more!
-          </Text>
-        </Box>
-      );
-    }
-  }
-
   render() {
     let audienceSize: "small" | "big" = this.state.pricingOptionBig ? "big" : "small";
-
-    console.log("user", this.props.userId)
 
     return (
       <Box align="start" width="100%" style={{ overflowY: "auto" }}>
@@ -190,9 +161,30 @@ export default class ManageChannelPage extends Component<Props, State> {
 
         <Box width="95%" margin={{ left: "2%" }} >
 
-          {this.renderCurrentPlans()}
+          {this.state.allPlansId.length > 0 && (
+            <Box margin={{ bottom: "20px", left: "10px" }} direction="row">
+              <Text size="14px" weight="bold" >
+                Your current subscription:
+              </Text> 
+              
+              {this.state.allPlansId.map( (productId: number) => {
+                return (
+                  <Text size="14px" weight="bold" color="#6DA3C7" margin={{ left: "10px" }} > 
+                    {this.showProduct(productId)}
+                  </Text>
+                );
+              })}
+            </Box>
+          )}
+          {this.state.allPlansId.length === 0 && (
+            <Box margin={{ bottom: "20px", left: "10px" }}>
+              <Text size="14px" weight="bold" >
+                You are currently on our free plan. Upgrade to enjoy more!
+              </Text>
+            </Box>
+          )}  
 
-          <Box direction="row" gap="10px" align="center" margin={{ bottom: "20px", left: "10px" }}>
+          <Box direction="row" gap="10px" align="center" margin={{ top:"20px", bottom: "20px", left: "10px" }}>
             <Text size="14px" style={{ fontStyle: "italic" }} >
               Select "Big" if you have an audience of more than 30 people:
           </Text>

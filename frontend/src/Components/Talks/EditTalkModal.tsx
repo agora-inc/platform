@@ -41,6 +41,7 @@ export type Reminder = {
 
 interface Props {
   channel: Channel | null;
+  channelId?: number;
   user?: User | null;
   visible: boolean;
   onFinishedCallback: any;
@@ -48,7 +49,7 @@ interface Props {
   onDeletedCallback?: any;
   talk?: Talk;
   onFinishedAdvertisementCallback?: any;
-  onCanceledAdvertisementCallback?: any
+  onCanceledAdvertisementCallback?: any;
 }
 
 interface State {
@@ -176,9 +177,13 @@ export default class EditTalkModal extends Component<Props, State> {
   }
 
   getChannelSubscriptions = () => {
-    if (this.props.channel) {
+    if (this.props.channel || this.props.channelId) {
+      let id = this.props.channel 
+        ? this.props.channel.id 
+        : (this.props.channelId ? this.props.channelId : -1)
+
       ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
-        this.props.channel.id, 
+        id, 
         (allPlansId: number[]) => {
           this.setState({ allPlansId })
           this.setState({
@@ -525,14 +530,23 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   isComplete = () => {
+    let validDates: boolean = true; 
+    if (this.state.startTime !== "" && this.state.endTime !== "") {
+      const dateTimeStrs = this.combineDateAndTimeStrings();
+      if (dateTimeStrs[0] > dateTimeStrs[1]) {
+        validDates = false
+      }
+    }
     return (
       this.state.startTime !== "" &&
       this.state.endTime !== "" &&
+      validDates &&
       this.state.title !== "" &&
       this.state.description !== "" &&
       this.state.link !== "" &&
       this.state.topics.length > 0
     );
+
   };
 
   isMissing = () => {
@@ -542,6 +556,12 @@ export default class EditTalkModal extends Component<Props, State> {
     }
     if (this.state.endTime === "") {
       res.push("End time")
+    }
+    if (this.state.startTime !== "" && this.state.endTime !== "") {
+      const dateTimeStrs = this.combineDateAndTimeStrings();
+      if (dateTimeStrs[0] > dateTimeStrs[1]) {
+        res.push("End is before start date")
+      }
     }
     if (this.state.title === "") {
       res.push("Title")
@@ -1023,7 +1043,8 @@ export default class EditTalkModal extends Component<Props, State> {
                     <PricingPlans 
                       callback={this.toggleModalPricing}
                       disabled={false}
-                      channelId={this.props.channel ? this.props.channel.id : null}
+                      channelId={this.props.channel ? this.props.channel.id 
+                        : (this.props.channelId ? this.props.channelId : null)}
                       userId={this.props.user ? this.props.user.id : null}
                       showDemo={false}
                       headerTitle={false}
@@ -1240,7 +1261,8 @@ export default class EditTalkModal extends Component<Props, State> {
                     <PricingPlans 
                       callback={this.toggleModalPricing}
                       disabled={false}
-                      channelId={this.props.channel ? this.props.channel.id : null}
+                      channelId={this.props.channel ? this.props.channel.id 
+                        : (this.props.channelId ? this.props.channelId : null)}
                       userId={this.props.user ? this.props.user.id : null}
                       showDemo={false}
                       headerTitle={false}
@@ -1308,7 +1330,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 />
                 <Box data-tip data-for='submitbutton' margin={{left: "24px", right: "32px"}}> 
                   <Button
-                    fill="#025377"
+                    fill={this.isComplete() ? "#025377" : "#CCCCCC"}
                     disabled={!this.isComplete()}
                     height="35px"
                     width="140px"
