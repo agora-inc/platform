@@ -529,7 +529,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         </Box>
 
-        <AgoraCreationPage />
+        <AgoraCreationPage user={this.state.user} />
 
 
         { /*

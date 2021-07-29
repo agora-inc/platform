@@ -17,7 +17,9 @@ import PricingPlans from "../Views/PricingPlans";
 import agoraStreamFullLogo from "../assets/general/agora.stream_logo_300px.svg";
 
 
-interface Props {}
+interface Props {
+  user: User | null;
+}
 
 interface State {
   loading: boolean;
@@ -452,7 +454,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
             <Box margin={{top:"70px"}} gap="30px">
               <Box direction="row" gap="30px" align="center"> 
                 <Text size="25px" weight="bold" color="color1">
-                  Create your <img src={agoraLogo} height="22px"/> here
+                  Create your <img src={agoraLogo} height="22px" style={{marginBottom: "-5px"}} /> here
                 </Text>
                 <CreateChannelButton onClick={this.toggleCreateChannelOverlay} width="170px" />
               </Box>
@@ -469,7 +471,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                     this.toggleCreateChannelOverlay();
                   }}
                   visible={true}
-                  user={null}
+                  user={this.props.user}
                 />
               )}
           </Box>

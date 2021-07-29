@@ -671,6 +671,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           <EditTalkModal
             visible={this.state.showEdit}
             channel={null}
+            channelId={this.props.talk.channel_id}
             talk={this.props.talk}
             onFinishedCallback={() => {
               this.props.onEditCallback();
