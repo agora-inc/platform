@@ -129,9 +129,9 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             justify="end"
           >
             <TimeZoneInfo />
-          <MediaQuery minDeviceWidth={992}>
-            <UserManager showLogin={this.state.showLogin} />
-          </MediaQuery> 
+            <MediaQuery minDeviceWidth={992}>
+              <UserManager showLogin={this.state.showLogin} />
+            </MediaQuery> 
           </Box>
 
         </Box>

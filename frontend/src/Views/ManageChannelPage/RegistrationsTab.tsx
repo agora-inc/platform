@@ -266,7 +266,7 @@ export default class RegistrationsTab extends Component<Props, State> {
           </>)}
         <Box direction="row" gap="small" margin={{ top: "24px", bottom: "12px" }}>
           <Text size="14px" weight="bold" color="grey">
-            Pending registrations
+            Pending registrations for future events
           </Text>
           <StatusInfo style={{marginTop: "3px"}} size="small" data-tip data-for='pending_reg_info'/>
           <ReactTooltip id='pending_reg_info' place="right" effect="solid">
