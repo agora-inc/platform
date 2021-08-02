@@ -443,42 +443,16 @@ export default class ChannelPage extends Component<Props, State> {
                           channelId={this.state.channel!.id}
                           channelName={this.state.channel!.name}
                         />
-              {!(this.state.role == "member" || this.state.role == "owner") && (
+              {/* {!(this.state.role == "member" || this.state.role == "owner") && (
               <RequestMembershipButton
                 channelId={this.state.channel!.id}
                 channelName={this.state.channel!.name}
                 user={this.state.user}
               />
-              )}
+              )} */}
             </MediaQuery>
 
 
-            {/*this.state.user && (
-              <Box
-                className="follow-button"
-                pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
-                background={this.state.following ? "#e5e5e5" : "white"}
-                height="30px"
-                style={{
-                  border: "1px solid #C2C2C2",
-                }}
-                width="10vw"
-                round="xsmall"
-                align="center"
-                justify="center"
-                onClick={this.onFollowClicked}
-                focusIndicator={false}
-                hoverIndicator={true}
-              >
-                <Text 
-                  size="14px" 
-                  color="grey"
-                  alignSelf="center"
-                >
-                  {this.state.following ? "Following" : "Follow"}
-                </Text>
-              </Box>
-              )*/}
             {this.state.bannerExtended ? (
               <FormUp
                 onClick={this.toggleBanner}
