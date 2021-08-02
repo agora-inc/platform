@@ -66,21 +66,28 @@ export default class InformationPage extends Component<Props, State> {
         <Box width={renderMobileView ? "85%" : "75%"} direction="column" margin={{top: "80px"}}>
           <Box direction="row" gap="small" margin={{bottom: "36px"}}>
             <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-              Our vision 🌎 
+              Our vision 🌱
             </Text>
           </Box>
           <Text weight="bold" size="22px" margin={{bottom: "36px", left: "15px"}}>
-            Connecting academics and expanding knowledge with hybrid research seminars.
+            A public gateway for hybrid seminars where new ideas are debated, discovered, and broadcasted to an international physical / online audience.
+            {/* Hybrid seminars where new ideas are debated, discovered, and broadcasted to an international audience. */}
           </Text>
 
-            {/* <img src={seminarPhoto} style={{width: "100%", alignSelf: "center", marginTop: "80px"}}/>
+            <img src={seminarPhoto} 
+              style={{
+                width: "100%", 
+                alignSelf: "center", 
+                marginTop: renderMobileView ? "15px" : "30px", 
+                marginBottom: renderMobileView ? "55px" : "0px"}}
+            />
 
-
+          
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "100px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-              Our missions 🌱
+              Our missions 🌎
               </Text>
-            </Box> */}
+            </Box>
 
 
             <Grid
@@ -118,22 +125,22 @@ export default class InformationPage extends Component<Props, State> {
 
               <Box gridArea="block_4" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Research is a social activity
+                  Provide a gateway to social academic events
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  Scientists created the World Wide Web to facilitate international research communications.
+                  Scientists originally created the World Wide Web to facilitate international research communications.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  The internet grew massively since 1989, losing track of its original mission in the meantime.
+                  The internet radically transformed our everyday life since 1989 but not much progress has been done regarding its primal goal.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  We recreate a safe place for academics to exchange ideas without external noise.
+                  We leverage modern technologies to empower academics to connect, exchange and debate new ideas anywhere on Earth.
                 </Text>
               </Box>
 
               <Box gridArea="block_3" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Equal chances to all academics around the world
+                  Give egal chance to every academics to be part of any communities
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
                   Not every researcher have access to top-notch seminars in their university.
@@ -157,25 +164,25 @@ export default class InformationPage extends Component<Props, State> {
                   However, in order to meet, there must be a conscious organizational effort to gather.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  The solution? A centralized place where researchers hop from one seminar to another.
+                  The solution? A centralized place where researchers can hop from one seminar to another with just a couple clicks.
                 </Text>
               </Box>
 
               <Box gridArea="block_1" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Hybrid seminars are the future of academia
+                  Empower the atomic social component of research
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
                   COVID-19 raised awareness that researchers could benefit from online seminars.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  The majority of groups that went online saw their audience multiply. 
+                  The majority of groups that went online saw their audience multiply and enjoyed the consistent presence of world-class experts. 
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  As restrictions are being lifted, academics LOVE having their seminars back in person.  
+                  As restrictions are being lifted, academics also want to re-experience the presence of their next-door colleagues in person.  
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  The solution? An hybrid streaming technolgy tailored for academic seminars.
+                  The solution? An hybrid streaming technolgy tailored for academic seminars where online and physical audience can interact and empower each other.
                 </Text>
               </Box>
             </Grid>

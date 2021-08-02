@@ -72,7 +72,22 @@ const removeFromMailingList = (channelId: number, emails: string[], callback: an
 const addInvitedMembersToChannel = (channelId: number, emails: string[], callback: any) => {
   axios
     .post(
-      baseApiUrl + `/channels/invite/add`,
+      baseApiUrl + `/channels/invite/add/member`,
+      { channelId: channelId, emails: emails },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback("ok");
+    })
+    .catch(function (error) {
+      callback(error.response.data);
+    });
+};
+
+const addFollowingMembersToChannel = (channelId: number, emails: string[], callback: any) => {
+  axios
+    .post(
+      baseApiUrl + `/channels/invite/add/follower`,
       { channelId: channelId, emails: emails },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -517,6 +532,10 @@ export const ChannelService = {
   editChannelTopic,
   getChannelTopic,
   getChannelsWithTopic,
+  /////////////////////////
+  // Follower method
+  ////////////////////////
+  addFollowingMembersToChannel,
   /////////////////////
   // membership methods
   /////////////////////
