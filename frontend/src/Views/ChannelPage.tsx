@@ -443,13 +443,13 @@ export default class ChannelPage extends Component<Props, State> {
                           channelId={this.state.channel!.id}
                           channelName={this.state.channel!.name}
                         />
-              {!(this.state.role == "member" || this.state.role == "owner") && (
+              {/* {!(this.state.role == "member" || this.state.role == "owner") && (
               <RequestMembershipButton
                 channelId={this.state.channel!.id}
                 channelName={this.state.channel!.name}
                 user={this.state.user}
               />
-              )}
+              )} */}
             </MediaQuery>
 
 
