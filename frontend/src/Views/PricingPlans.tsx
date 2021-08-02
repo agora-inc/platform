@@ -161,7 +161,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
         <Box width="95%" margin={{ left: "2%" }} >
 
-          {this.state.allPlansId.length > 0 && (
+          {!this.props.disabled && this.state.allPlansId.length > 0 && (
             <Box margin={{ bottom: "20px", left: "10px" }} direction="row">
               <Text size="14px" weight="bold" >
                 Your current subscription:
@@ -176,7 +176,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               })}
             </Box>
           )}
-          {this.state.allPlansId.length === 0 && (
+          {!this.props.disabled && this.state.allPlansId.length === 0 && (
             <Box margin={{ bottom: "20px", left: "10px" }}>
               <Text size="14px" weight="bold" >
                 You are currently on our free plan. Upgrade to enjoy more!

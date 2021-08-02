@@ -114,6 +114,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
     let path_image = "/home/cloud-user/plateform/agora/frontend/media/tutorial/adding_members/";
     var renderMobileView = (window.innerWidth < 1000);
 
+    console.log("width", window.innerWidth)
+
     return (
       <Box
         id="pricing"
@@ -127,15 +129,6 @@ export default class AgoraCreationPage extends Component<Props, State> {
             <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{bottom: "44px"}} > 
               Everything you need to organize your seminars, all in one place
             </Text>
-          {/* <Box margin={{bottom: "32px"}}>
-            <Text size={this.state.sizeText} > Get your <img src={agoraLogo} height="14px"/> and your seminars up and running in <b>less than a minute</b>.
-             </Text>
-                               "70px", "80px", "200px",
-                  "70px", "200px", "200px",
-                  "70px", "110px", "200px",
-                  "70px", "170px", "200px",
-                  "70px", "100px", "200px",
-          </Box> */}
             <Grid
               rows={
                 renderMobileView 
@@ -143,7 +136,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   "30px", "50px", "300px", 
                   "350px", "250px", "250px", 
                   "250px", "250px", "250px", 
-                  "150px", "50px", "250px",
+                  "250px", "50px", "250px",
                   ]
                 : [
                     '10px', "300px",
@@ -152,9 +145,6 @@ export default class AgoraCreationPage extends Component<Props, State> {
                     '10px', 
                   ]
               }
-
-
-
               columns={renderMobileView ? ["100%"] : ['50%', "50%"]}
               gap={renderMobileView ? "0px" : "50px"}
               margin={renderMobileView ? {} : {left: "10px"}}
@@ -328,8 +318,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
               rows={
                 renderMobileView 
                 ?  [
-                  "400px", "200px", "150px",
-                  "10px", "200px",
+                  "440px", "200px", "150px",
+                  "200px", "200px", "80px", "100px"
                   ]
                 : [
                     '10px', "300px",
@@ -441,7 +431,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
             </Grid>
               
           </Box>
-          <Box width={renderMobileView ? "95%" : "70%"} alignContent="center" margin={{top: renderMobileView ? "0px" : "100px", left: "10px"}}>
+          <Box width={renderMobileView ? "95%" : "70%"} alignContent="center" margin={{top: "100px", left: "10px"}}>
             <PricingPlans 
               callback={() => {}}
               channelId={null}
