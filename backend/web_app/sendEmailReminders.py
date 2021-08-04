@@ -1,13 +1,15 @@
 # import hack (Remy); TODO: rework code architecture
 from app.routes import EmailRemindersRepository 
 
-DELTA_TIME_WINDOW = 900  # Reminders are sent with an imprecision of 2 hours
+DELTA_TIME_WINDOW = 2  # Reminders are sent with an imprecision of 2 hours
+
+assert DELTA_TIME_WINDOW == 2 , 'Imprecision is more than 2 hours'
 
 emailReminders = EmailRemindersRepository.EmailRemindersRepository()
 
 
-def sendAllEmailReminders():
-    # query all reminders
+def sendAllEmailReminders() -> None:
+    # query all reminders 
     reminderIds = emailReminders.getReminderIdsToBeSent(DELTA_TIME_WINDOW)
 
     # send
