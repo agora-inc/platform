@@ -415,19 +415,24 @@ export default class UserManager extends Component<Props, State> {
   };
 
   dynamicGreetings= () => {
-      // random greetings
+      // random greetings , now works with hours instead of days
       var dynamicGreetingsList = [
-        "Good morning, ",
-        "Greetings, ",
-        "Buenos dias, ",
+        "Hello, ",
         "Bonjour, ",
-        "Buongiorno, ",
-        "哈囉, ",
-        "Guten Tag, "
+        "Ciao, ",
+        "你好, ",
+        "こんにちは, ",
+        "Hallo, ",
+        "سلام, ",
+        "שלום, ",
+        "안녕하세요, ",
+        "Olá, ",
+        "Привет, ",
+        "Hola, "
       ];
       var now = new Date;
-      var day = now.getDay()
-      return dynamicGreetingsList[day % dynamicGreetingsList.length]
+      var hour = now.getHours()
+      return dynamicGreetingsList[hour % dynamicGreetingsList.length]
   }
 
 
