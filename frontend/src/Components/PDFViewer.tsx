@@ -114,9 +114,10 @@ export default function({presenter=false, ...props}:Props) {
   }, [numPages])
 
   return (
+    <>
     <div ref={el} className={`pdf-viewer ${limitSide}`}>
       <Document
-        file={"https://cors-anywhere.herokuapp.com/ " + props.url}
+        file={"https://agora-pdfcontent.herokuapp.com/" + props.url}
         onLoadSuccess={onDocumentLoadSuccess}
       >
         <Page pageNumber={pageNumber} {...dimension} renderAnnotationLayer={false} />
@@ -143,5 +144,6 @@ export default function({presenter=false, ...props}:Props) {
         </Box>
       </Box>
     </div>
+    </>
   );
 }
