@@ -28,6 +28,7 @@ interface State {
   user: { id: number; username: string; bio: string; public: boolean } | null;
   adminChannels: Channel[];
   memberChannels: Channel[];
+  followingChannels: Channel[];
   showCreateChannelOverlay: boolean;
   showDropdown: boolean;
   editingBio: boolean;
@@ -41,6 +42,7 @@ export default class UserManager extends Component<Props, State> {
       user: UserService.getCurrentUser(),
       adminChannels: [],
       memberChannels: [],
+      followingChannels: [],
       showCreateChannelOverlay: false,
       showDropdown: false,
       editingBio: false,
@@ -50,6 +52,7 @@ export default class UserManager extends Component<Props, State> {
   componentWillMount() {
     this.fetchAdminChannels();
     this.fetchMemberChannels();
+    this.fetchFollowingChannels();
   }
 
   fetchAdminChannels = () => {
@@ -59,6 +62,17 @@ export default class UserManager extends Component<Props, State> {
         ["owner"],
         (adminChannels: Channel[]) => {
           this.setState({ adminChannels });
+        }
+      );
+  };
+
+  fetchFollowingChannels = () => {
+    this.state.user &&
+      ChannelService.getChannelsForUser(
+        this.state.user.id,
+        ["follower"],
+        (followingChannels: Channel[]) => {
+          this.setState({ followingChannels });
         }
       );
   };
@@ -134,7 +148,7 @@ export default class UserManager extends Component<Props, State> {
         pad="small"
         style={{
           border: "2px solid grey",
-          marginTop: 10,
+          marginTop: 20,
           overflow: "hidden",
           paddingBottom: 0,
         }}
@@ -287,13 +301,13 @@ export default class UserManager extends Component<Props, State> {
           gap="xsmall"
         >
           <Text size="16px" color="grey">
-             Memberships
+             Following
           </Text>
           <Box
             height={{max: "120px"}}
             overflow="auto"
           >
-            {this.state.memberChannels.map((channel: Channel) => (
+            {this.state.followingChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
               onClick={this.toggleDropdown}
@@ -401,19 +415,24 @@ export default class UserManager extends Component<Props, State> {
   };
 
   dynamicGreetings= () => {
-      // random greetings
+      // random greetings , now works with hours instead of days
       var dynamicGreetingsList = [
-        "Good morning, ",
-        "Greetings, ",
-        "Buenos dias, ",
+        "Hello, ",
         "Bonjour, ",
-        "Buongiorno, ",
-        "哈囉, ",
-        "Guten Tag, "
+        "Ciao, ",
+        "你好, ",
+        "こんにちは, ",
+        "Hallo, ",
+        "سلام, ",
+        "שלום, ",
+        "안녕하세요, ",
+        "Olá, ",
+        "Привет, ",
+        "Hola, "
       ];
       var now = new Date;
-      var day = now.getDay()
-      return dynamicGreetingsList[day % dynamicGreetingsList.length]
+      var hour = now.getHours()
+      return dynamicGreetingsList[hour % dynamicGreetingsList.length]
   }
 
 
@@ -537,7 +556,7 @@ export default class UserManager extends Component<Props, State> {
             onClickOutside={this.toggleDropdown}        
             style={{
               position: "absolute",
-              top: 65,
+              top: 95,
               right: 30,
             }}
             responsive

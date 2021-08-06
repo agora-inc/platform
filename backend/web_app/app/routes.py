@@ -295,7 +295,8 @@ def deleteChannel():
     channels.deleteChannel(params["id"])
     return jsonify("ok")
 
-@app.route('/channels/invite/add', methods=["POST", "OPTIONS"])
+# TODO: merge "addInvitedMembersToChannel" and "addInvitedFollowerToChannel" into the same method.
+@app.route('/channels/invite/add/member', methods=["POST", "OPTIONS"])
 def addInvitedMembersToChannel():
     logRequest(request)
     if request.method == "OPTIONS":
@@ -305,14 +306,31 @@ def addInvitedMembersToChannel():
     #    return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-
-    invitations.addInvitedMemberToChannel(params['emails'], params['channelId'], 'member')
+    
+    # NOTE: Method addInvitedUserToChannel has not been implemented for "member".
+    invitations.addInvitedUserToChannel(params['emails'], params['channelId'], 'member')
+    
     for email in params['emails']:
         app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
 
     return jsonify("ok")
 
-@app.route('/channels/invite', methods=["GET"])
+@app.route('/channels/invite/add/follower', methods=["POST", "OPTIONS"])
+def addInvitedFollowerToChannel():
+    logRequest(request)
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    #if not checkAuth(request.headers.get('Authorization')):
+    #    return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    invitations.addInvitedUserToChannel(params['emails'], params['channelId'], 'follower')
+    for email in params['emails']:
+        app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
+
+    return jsonify("ok")
+
+@app.route('/channels/invite/add/follower', methods=["GET"])
 def getInvitedMembersForChannel():
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
