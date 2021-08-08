@@ -16,7 +16,7 @@ import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
-import {MdScreenShare, MdStopScreenShare, MdClear, MdSlideshow} from 'react-icons/md'
+import {MdScreenShare, MdStopScreenShare, MdClear, MdSlideshow, MdLens} from 'react-icons/md'
 import {db, API} from '../../Services/FirebaseService'
 
 import '../../Styles/all-stream-page.css'
@@ -48,7 +48,8 @@ interface Control {
   video: boolean;
   screenShare: boolean;
   slideShare: boolean;
-  fullscreen: boolean
+  fullscreen: boolean;
+  recording: boolean;
 }
 
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
@@ -57,8 +58,11 @@ const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
 function getUserId(talkId:string, userId?:string|null){
   let key = userId || talkId
   let uid = window.localStorage.getItem(key)
+  console.log("Sd)")
   if(!uid) {
-    uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
+    // uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
+    // Agora recording need integer uid
+    uid = `${Math.floor(Date.now()/1000)}`
     window.localStorage.setItem(key, uid)
   }
 
@@ -109,6 +113,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [talkId, setTalkId] = useState('')
   const [slideShareId, setSlideShareId] = useState('')
   const [isSlideVisible, toggleSlide] = useState(false)
+  const [recordingResource, setRecordingResource] = useState({} as any)
 
   const [slideUrl, setSlideUrl] = useState('')
 
@@ -413,6 +418,129 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     let ret = await API.endSeminar(talkId)
   }
 
+  async function start_recording(){
+    const APPID = `f68f8f99e18d4c76b7e03b2505f08ee3`
+    const CustomerID = '8db92469886442cc9f6ec33424befae2'
+    const CustomerSecret = 'cc44234f65154e0c9292f538a3871b78'
+
+    let URL = `https://api.agora.io/v1/apps/${APPID}/cloud_recording/acquire`
+
+    let encoded = window.btoa(unescape(encodeURIComponent( `${CustomerID}:${CustomerSecret}` )))
+    console.log(encoded)
+
+    let { uid} = localUser
+    let talkId = props.talkId.toString()
+
+    let body = {
+      "cname": talkId,
+      "uid": uid,
+      "clientRequest":{
+        "resourceExpiredHour": 24,
+        "scene": 0
+      }
+    }
+
+    let res = await window.fetch(URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${encoded}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    res = await res.json()
+    console.log(res)
+
+    let token = await get_token_for_talk(talkId)
+    const StorageVendor = 1
+    const StorageRegion = 5
+    const AccessKey = 'AKIARXZJ2PLWWCX5IIXL'
+    const  SecretKey = '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'
+    const Bucket = 'agora-streaming-recordings'
+    let start_json = {
+      "cname": talkId,
+      "uid": uid,
+      "clientRequest":{
+            "token": token,
+        "recordingConfig":{
+          "channelType":0,
+          "streamTypes":2,
+          "audioProfile":1,
+          "videoStreamType":1,
+          "maxIdleTime":120,
+          "transcodingConfig":{
+            "width": 640,
+            "height":360,
+            "fps":30,
+            "bitrate":600,
+            "mixedVideoLayout":1
+          }
+        },
+            "recordingFileConfig":{
+              "avFileType":[
+                  "hls",
+                  "mp4"
+             ]
+            },
+        "storageConfig":{
+          "vendor": StorageVendor,
+          "region": StorageRegion,
+          "bucket": Bucket,
+          "accessKey":AccessKey,
+          "secretKey":SecretKey,
+          "fileNamePrefix": ['recordings', talkId]
+        }	
+      }
+    } 
+    
+    // @ts-ignore
+    const START_URL = `https://api.agora.io/v1/apps/${APPID}/cloud_recording/resourceid/${res.resourceId}/mode/mix/start`
+    let start = await window.fetch(START_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${encoded}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(start_json)
+    })
+    start = await start.json()
+    console.log(start)
+    setRecordingResource({...start})
+    setCallControl({...callControl, recording: true})
+  }
+  async function stop_recording(){
+    const APPID = `f68f8f99e18d4c76b7e03b2505f08ee3`
+    const CustomerID = '8db92469886442cc9f6ec33424befae2'
+    const CustomerSecret = 'cc44234f65154e0c9292f538a3871b78'
+    const {resourceId, sid} = recordingResource
+
+    let { uid} = localUser
+    let talkId = props.talkId.toString()
+
+    let body = {
+      "cname": talkId,
+      "uid": uid,
+      "clientRequest":{
+        "resourceExpiredHour": 24,
+        "scene": 0
+      }
+    }
+    let encoded = window.btoa(unescape(encodeURIComponent( `${CustomerID}:${CustomerSecret}` )))
+    // @ts-ignore
+    const STOP_URL = `https://api.agora.io/v1/apps/${APPID}/cloud_recording/resourceid/${resourceId}/sid/${sid}/mode/mix/stop`
+    let stop = await window.fetch(STOP_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${encoded}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    stop = await stop.json()
+    console.log(stop)
+    setCallControl({...callControl, recording: false})
+  }
+
 
   useEffect(()=>{
     (async ()=>{
@@ -637,6 +765,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                 {callControl.slideShare?
                   <MdClear onClick={()=> slideShare(false)} />:
                   <MdSlideshow onClick={()=> slideShare(true)} />
+                }
+                {callControl.recording?
+                  <MdLens color='red' onClick={stop_recording} />:
+                  <MdLens color='white' onClick={start_recording} />
                 }
                 {callControl.fullscreen?
                   <FaCompress onClick={toggleFullscreen} />:

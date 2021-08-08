@@ -36,6 +36,8 @@ export function encryptIdAndRoleInUrl(endpoint: string, id: number, role?: strin
         return baseUrl + "/" + encodedEndpoint
     }
 }
+let a = encryptIdAndRoleInUrl('/', 901)
+console.log(a)
 
 export function getIdFromEncryptedEndpoint(encryptedUrl: string) {
     /// NOTE: encryptedUrl is only the encoded endpoint, not the full URL.

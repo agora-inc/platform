@@ -47,7 +47,9 @@ function getUserId(talkId:string, userId?:string|null){
 
   let uid = window.localStorage.getItem(key)
   if(!uid) {
-    uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
+    // uid = `${userId?'reg':'guest'}-${key}-${Math.floor(Date.now()/1000)}`
+    // Agora recording need integer uid
+    uid = `${Math.floor(Date.now()/1000)}`
     window.localStorage.setItem(key, uid)
   }
   return uid
