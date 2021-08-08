@@ -646,8 +646,8 @@ export default class EditTalkModal extends Component<Props, State> {
 
   renderReminder = (j: number) => {
     return (
-      <Box direction="row" gap="6px" align="center">
-        <Text size="13px" color="grey" margin={{right: "20px"}} > 
+      <Box direction="row" gap="5px" align="center">
+        <Text size="14x" color="grey" margin={{right: "20px"}} > 
           Reminder {j+1}
         </Text>
         {!this.state.reminders[j].exist && (
@@ -675,20 +675,20 @@ export default class EditTalkModal extends Component<Props, State> {
               value={this.state.reminders[j].days}
               onChange={(e) => this.pushDays(j, e.target.value)}
               style={{
-                width: "30px", height: "26px", padding: "4px",
+                width: "30px", height: "20px", padding: "2px",
                 border: "1px solid #C2C2C2", borderRadius: "5px", 
               }}
             />
-            <Text size="16px" color="grey" margin={{right: "15px"}}> day(s) </Text>
+            <Text size="14px" color="grey" margin={{right: "15px"}}> day(s) </Text>
             <input
               value={this.state.reminders[j].hours}
               onChange={(e) => this.pushHours(j, e.target.value)}
               style={{
-                width: "30px", height: "26px", padding: "4px",
+                width: "30px", height: "20px", padding: "2px",
                 border: "1px solid #C2C2C2", borderRadius: "5px", 
               }}
             />
-            <Text size="16px" color="grey" margin={{right: "20px"}}> hour(s) before </Text>
+            <Text size="14px" color="grey" margin={{right: "20px"}}> hour(s) before </Text>
             <Close size="20px" onClick={this.toggleReminder(j)} />
           </Box>
         )}
@@ -1187,7 +1187,7 @@ export default class EditTalkModal extends Component<Props, State> {
         )}
 
         {this.state.activeSection === 5 && (
-          <Box width="70%" margin={{bottom: "10px"}} style={{minHeight: "350px" }} align="start">
+          <Box width="75%" margin={{bottom: "10px"}} style={{minHeight: "350px" }} align="start">
             <Box 
               direction="column" gap="10px" 
               background={this.isPaying() ? "white" : "#d3f930"}
