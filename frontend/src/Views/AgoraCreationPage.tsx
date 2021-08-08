@@ -444,9 +444,11 @@ export default class AgoraCreationPage extends Component<Props, State> {
             <Box margin={{top:"70px"}} gap="30px">
               <Box direction="row" gap="30px" align="center"> 
                 <Text size="25px" weight="bold" color="color1">
-                  Create your <img src={agoraLogo} height="22px" style={{marginBottom: "-5px"}} /> here
+                  Create your <img src={agoraLogo} height="22px" style={{marginBottom: "-5px"}}/> here
                 </Text>
-                <CreateChannelButton onClick={this.toggleCreateChannelOverlay} width="170px" />
+                <CreateChannelButton 
+                  onClick={this.toggleCreateChannelOverlay} width="170px" 
+                  text={"Create your hub"}/>
               </Box>
 
               <Text size="18px" >
