@@ -61,7 +61,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     var now = Date.now();
     // return dynamicTextValueList[now % dynamicTextValueList.length]
     // "Home for cutting-edge online/physical academic seminars"
-    return "Delivering hybrid academic seminars"
+    return "Where new ideas are shared and debated."
   }
 
   toggleModal = () => {
@@ -237,7 +237,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Box direction="column" width="56%" >
 
               <Text size="21px" weight="bold" margin={{ left: "10px", bottom: "30px" }}>
-                For academics
+                For audience
               </Text>
               <Box direction="row" gap="10px">
                 <Link
@@ -324,7 +324,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <div id="vertical-line"> {} </div>
 
-            <Box direction="column" width="24%" alignSelf="center">
+            <Box direction="column" width="25%" alignSelf="center">
               <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
                 For organizers
               </Text>
@@ -363,7 +363,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <MediaQuery maxDeviceWidth={800}>
             <Box direction="column" width="50%" >
               <Text size="18px" weight="bold" margin={{ left: "10px", bottom: "10px" }}>
-                For academics
+                For audience
               </Text>
               <Box direction="column" margin={{ left: "10px" }}>
                 <Link
@@ -391,7 +391,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                         Browse
                       </Text>
                       <Text size="14px" margin={{ left: "2px" }}>
-                        future seminars
+                        future events
                       </Text>
                     </Box>
                   </Box>
@@ -550,7 +550,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <Box direction="column" margin={{top: "-20px"}}> 
               <Text size="18px"> 
-                Connecting academics
+                The modern agora
               </Text>
               <Text size="18px"> 
                 academics in the world - for FREE!

@@ -70,7 +70,7 @@ export default class InformationPage extends Component<Props, State> {
             </Text>
           </Box>
           <Text weight="bold" size="22px" margin={{bottom: "36px", left: "15px"}}>
-            A public gateway for hybrid seminars where new ideas are debated, discovered, and broadcasted to an international physical / online audience.
+            A public place where new ideas are debated, discovered, and broadcasted to an international physical / online audience.
             {/* Hybrid seminars where new ideas are debated, discovered, and broadcasted to an international audience. */}
           </Text>
 
