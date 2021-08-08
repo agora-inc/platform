@@ -1229,7 +1229,8 @@ export default class EditTalkModal extends Component<Props, State> {
                 onChange={() => this.toggleReminderEmailGroup("Followers")}
               /> */}
             
-            <Box margin={{top: "20px"}} gap="15px"> 
+            <Box margin={{top: "20px"}} gap="15px">
+              {!this.isPaying() && ( 
                 <Box
                   onClick={this.toggleModalPricing}
                   background="#BAD6DB"
@@ -1244,32 +1245,32 @@ export default class EditTalkModal extends Component<Props, State> {
                 >
                   <Text size="14px" weight="bold"> Unlock email reminders </Text>
                 </Box>
-                {this.state.showModalPricing && (
-                  <Layer
-                    onEsc={this.toggleModalPricing}
-                    onClickOutside={this.toggleModalPricing}
-                    modal
-                    responsive
-                    animation="fadeIn"
-                    style={{
-                      width: "1000px",
-                      height: "65%",
-                      borderRadius: 15,
-                      padding: 0,
-                    }}
-                  >
-                    <PricingPlans 
-                      callback={this.toggleModalPricing}
-                      disabled={false}
-                      channelId={this.props.channel ? this.props.channel.id 
-                        : (this.props.channelId ? this.props.channelId : null)}
-                      userId={this.props.user ? this.props.user.id : null}
-                      showDemo={false}
-                      headerTitle={false}
-                    />
-
-                  </Layer>
-                )}
+              )}
+              {this.state.showModalPricing && (
+                <Layer
+                  onEsc={this.toggleModalPricing}
+                  onClickOutside={this.toggleModalPricing}
+                  modal
+                  responsive
+                  animation="fadeIn"
+                  style={{
+                    width: "1000px",
+                    height: "65%",
+                    borderRadius: 15,
+                    padding: 0,
+                  }}
+                >
+                  <PricingPlans 
+                    callback={this.toggleModalPricing}
+                    disabled={false}
+                    channelId={this.props.channel ? this.props.channel.id 
+                      : (this.props.channelId ? this.props.channelId : null)}
+                    userId={this.props.user ? this.props.user.id : null}
+                    showDemo={false}
+                    headerTitle={false}
+                  />
+                </Layer>
+              )}
               </Box>
             </Box>
           </Box>

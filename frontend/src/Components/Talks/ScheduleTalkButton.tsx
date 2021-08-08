@@ -24,15 +24,19 @@ export default class ScheduleTalkButton extends Component<Props, State> {
     };
   }
 
-  toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal });
+  showModal = () => {
+    this.setState({ showModal: true });
   };
+
+  hideModal = () => {
+    this.setState({ showModal: false })
+  }
 
   render() {
     return (
       <Box margin={this.props.margin} pad="none">
         <Box
-          onClick={this.toggleModal}
+          onClick={this.showModal}
           background="#0C385B"
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
@@ -50,9 +54,9 @@ export default class ScheduleTalkButton extends Component<Props, State> {
             visible={this.state.showModal}
             channel={this.props.channel}
             user={this.props.user}
-            onCanceledCallback={this.toggleModal}
+            onCanceledCallback={this.hideModal}
             onFinishedCallback={() => {
-              this.toggleModal();
+              this.hideModal();
               this.props.onCreatedCallback();
             }}
           />
