@@ -674,6 +674,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
             channelId={this.props.talk.channel_id}
             talk={this.props.talk}
             onFinishedCallback={() => {
+              this.toggleEdit();
               this.props.onEditCallback();
             }}
             onDeletedCallback={() => {
