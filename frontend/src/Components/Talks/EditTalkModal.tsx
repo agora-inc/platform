@@ -287,7 +287,7 @@ export default class EditTalkModal extends Component<Props, State> {
   escapeSingleQuotes = (text: string) => {
     // We want to store backslash with \\
     // We want to store apostrophe '
-    return text.replace(/'/g, "''").replace(/"/g, "'").replace(/\\/g, "\\\\")
+    return text.replace(/"/g, "'").replace(/\\/g, "\\\\") //.replace(/'/g, "''")
   }
 
   onFinish = () => {
