@@ -140,7 +140,7 @@ export default class InformationPage extends Component<Props, State> {
 
               <Box gridArea="block_3" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Give egal chance to every academics to be part of any communities
+                  Give an equal chance to every academics to be part of any communities
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
                   Not every researcher have access to top-notch seminars in their university.
