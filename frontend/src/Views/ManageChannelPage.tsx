@@ -572,7 +572,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   banner = () => {
     return (
       <Box
-        width="75vw"
+        // width="75vw"
         background="white"
         round="10px"
         margin={{ bottom: "60px" }}
@@ -724,14 +724,22 @@ export default class ManageChannelPage extends Component<Props, State> {
       );
     } else {
       return this.isAllowed() ? (
-        <Box>
+        <Box
+         
+          align="center"
+          style={{
+            position: "absolute",
+            top: "5vw",
+          }}
+
+        >
           <Box
-            width="100%"
+             width="75%"
             height="100%"
             align="center"
-            margin={{ top: "100px" }}
+
           >
-            <Box width="75%" align="start">
+            <Box align="start">
               {this.state.role === "owner" && (
                 <Box direction="row" gap="40vw">
                   <ScheduleTalkButton
