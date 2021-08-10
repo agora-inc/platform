@@ -147,7 +147,6 @@ export default class LivestreamPage extends Component<Props, State> {
     render() {
         if (!(this.state.talkNotFound)){
             if (this.state.talkRole == "speaker"){
-                console.log("speaker")
                 return (
                     <LivestreamSpeakerPage
                         talkId={this.state.talkId}
@@ -156,16 +155,12 @@ export default class LivestreamPage extends Component<Props, State> {
             } else if (
                 (this.state.talkRole == "admin") || (this.state.channelRole == "owner")
                 ){
-                console.log("admin")
-
                 return (
                     <LivestreamAdminPage
                         talkId={this.state.talkId}
                     />
                 )
             } else {
-                console.log("audience")
-
                 return (
                     <LivestreamAudiencePage
                         talkId={this.state.talkId}
