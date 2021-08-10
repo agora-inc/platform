@@ -28,6 +28,7 @@ interface Props {
   // location: { pathname: string; state: { video: Video } };
   // match: {params: {talk_id: string}};
   talkId: number;
+  role: string
 }
 
 interface State {
@@ -69,17 +70,23 @@ function useQuery(){
   return new URLSearchParams(useLocation().search)
 }
 
-
 const AgoraStream:FunctionComponent<Props> = (props) => {
   const videoContainer = useRef<HTMLDivElement>(null)
   const [agoraClient] = useState(AgoraRTC.createClient({ mode: "rtc", codec: "vp8" }))
   const [agoraScreenShareClient] = useState(AgoraRTC.createClient({ mode: "rtc", codec: "vp8" }))
   const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
   const [messageChannel, setMessageChannel] = useState(null as any)
+
+  var agoraIoRoleName = ""
+  if (props.role! == "speaker" || props.role! == "admin"){
+    agoraIoRoleName = "host"
+  } else {
+    agoraIoRoleName = "audience"
+  }
   const [localUser, setLocalUser] = useState({
         appId: APP_ID,
         talkId: "",
-        role: 'host',
+        role: agoraIoRoleName,
         name: 'Prof. Patric',
         uid: getUserId(props.talkId.toString(), useQuery().get('dummy'))
       } as any)
@@ -103,12 +110,22 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [slideUrl, setSlideUrl] = useState('')
   const [isSlideVisible, toggleSlide] = useState(false)
   
+  const [role, setRole] = useState("speaker")
+
   // admin only features
   const [micRequests, setMicRequests] = useState([] as any[])
   const [isTimeover, setTimeover] = useState(false)
   
+  // speaker only feature
+  const [slidesGotUploaded, setSlidesGotUploaded] = useState(false)
+
+
   const [callControl, _setCallControl] = useState({
-    mic: true, video: true, screenShare: false, fullscreen: false, slideShare: false
+    mic: true, 
+    video: true, 
+    screenShare: false, 
+    fullscreen: false, 
+    slideShare: false
   } as Control)
   const [cc, setCallControl] = useState({} as any)
 
@@ -142,28 +159,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     setTalkDetail(talk)
   }
 
-  function toggleFullscreen() {
-    let fullscreenEl = document.fullscreenElement
-    if(fullscreenEl) {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-        setCallControl({fullscreen: false})
-      }
-      return
-    }
-
-    let element = videoContainer.current!
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-      setCallControl({fullscreen: true})
-    }
-
-  }
-
-  function leave() {
-
-  }
-
   useEffect(()=>{
     if(!talkDetail.id) return
 
@@ -180,19 +175,43 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     return ()=> clearInterval(loop)
   }, [talkDetail])
 
+  function toggleFullscreen() {
+    let fullscreenEl = document.fullscreenElement
+    if(fullscreenEl) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        setCallControl({fullscreen: false})
+      }
+      return
+    }
+    
+    let element = videoContainer.current!
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+      setCallControl({fullscreen: true})
+    }
+    
+  }
 
+  function leave() {
+    
+  }
+  
 
   async function setup() {
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
-      //console.log('on connection state changed to ' + newState + ' reason: ' + reason);
+      console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });
-    // Setting client as Speaker
-    // await agoraClient.setClientRole(localUser.role);
-    // await agoraScreenShareClient.setClientRole(localUser.role);
+    // Setting client role (agora.io: 'host' or 'audience')
+    await agoraClient.setClientRole(localUser.role);
+    await agoraScreenShareClient.setClientRole(localUser.role);
 
     agoraClient.on('user-published', onClient)
     agoraClient.on('user-unpublished', onClientStop)
+    
+    if (localUser.role == "host"){
     agoraClient.on('user-left', onClientStop)
+    }
     agoraScreenShareClient.on('user-published', onScreenShare)
     agoraScreenShareClient.on('user-unpublished', onScreenShareStop)
 
@@ -225,13 +244,20 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   async function join_live_chat(){
     //console.log('joining...')
-    let {appId , uid} = localUser
+    let {uid} = localUser
     let talkId = props.talkId.toString()
+    
 
     try{
       await agoraMessageClient.login({ uid })
       let _messageChannel = agoraMessageClient.createChannel(talkId)
-      await agoraMessageClient.addOrUpdateLocalUserAttributes({name: `Admin`})
+      if (props.role == "host"){
+        await agoraMessageClient.addOrUpdateLocalUserAttributes({name: `Admin`})
+      }
+      if (props.role == "speaker"){
+        let talk = await get_talk_by_id(talkId) as any
+        await agoraMessageClient.addOrUpdateLocalUserAttributes({name: `(Speaker) ${talk.talk_speaker}`})
+      }
       await _messageChannel.join()
       _messageChannel.on('ChannelMessage', on_message)
       setMessageChannel(_messageChannel)
@@ -255,7 +281,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       await publish_camera()
       await publish_microphone()
     }catch(e) {
-      //console.log(e)
+      console.log(e)
     }
   }
   async function stop_share_screen() {
@@ -290,7 +316,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
       await agoraScreenShareClient.publish(_localScreenTrack);
     }catch(e) {
-      //console.log("Error sharing screen", e)
+      console.log("Error sharing screen", e)
     }
   }
 
@@ -299,7 +325,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       localVideoTrack.stop()
 
       await agoraClient.unpublish(localVideoTrack);
-      setCallControl({ video: false})
+      setCallControl({...callControl, video: false})
       setLocalVideoTrack(null)
     }
   }
@@ -345,7 +371,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me', first: first}])
       await messageChannel.sendMessage({text})
     } catch{
-      //console.log('error sending message')
+      console.log('error sending message')
     }
   }
 
@@ -363,9 +389,81 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     }
   }
   async function onClientStop(user: any, mediaType: "audio" | "video") {
-    setTimeout(()=>{
-      setRemoteVideoTrack([...agoraClient.remoteUsers])
-    }, 2000)
+    console.log("left", agoraClient.remoteUsers)
+    if (props.role == "admin"){
+      setTimeout(()=>{
+        setRemoteVideoTrack([...agoraClient.remoteUsers])
+      }, 2000)
+    } else if (props.role == "speaker"){
+      setTimeout(()=>{
+        setRemoteVideoTrack([...agoraClient.remoteUsers])
+      }, 200)
+    } else {
+      //
+      //
+      // PLACEHOLDER AUDIENCE
+      //
+    }
+
+      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //
+
+
     if(mediaType == 'video'){
       return
     }
@@ -544,7 +642,16 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
 
           <Box gridArea="display_role" justify="between" gap="small">
+            {role == "admin" && (
             <Text size="16px" color="grey">You are an admin.</Text>
+            )}
+            {role == "speaker" && (
+            <Text size="16px" color="grey">You are a speaker.</Text>
+            )}
+            {(role !== "admin" && role !== "speaker")  && (
+            <Text size="16px" color="grey">You are an attendee.</Text>
+            )}  
+
           </Box>
 
           <Box gridArea="main_buttons" justify="between" gap="small">

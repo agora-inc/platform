@@ -158,6 +158,7 @@ export default class LivestreamPage extends Component<Props, State> {
                 return (
                     <LivestreamAdminPage
                         talkId={this.state.talkId}
+                        role="speaker"
                     />
                 )
             } else {
