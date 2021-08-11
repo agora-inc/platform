@@ -139,7 +139,7 @@ export default class Clapping extends Component<Props, State> {
           }}
         >
           <Text weight="bold" color="white" size="14px" textAlign="center">
-            Thank the speaker
+            Thank speaker
           </Text>
         </Box>}
         {this.state.overlay && (
