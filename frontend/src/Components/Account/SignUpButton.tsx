@@ -76,7 +76,7 @@ export default class SignUpButton extends Component<Props, State> {
           focusIndicator={false}
           align="center"
           justify="center"
-          width="90px"
+          width="100px"
           height="35px"
           round="xsmall"
         >

@@ -858,11 +858,11 @@ export default class EditTalkModal extends Component<Props, State> {
               height="32px"
               round="16px" 
               onClick={() => this.setState({activeSection: i})} 
-              background={this.state.activeSection === i ? "#6DA3C7" : "white"}
+              background={this.state.activeSection === i ? "#BAD6DB" : "white"}
               justify="center"
               align="center"
-              border={{color: "#6DA3C7"}}
-              hoverIndicator="#6DA3C7"
+              border={{color: "#BAD6DB"}}
+              hoverIndicator="#BAD6DB"
               focusIndicator={false}
             >
               <Text color="black" size="14px"> {i} </Text> 
