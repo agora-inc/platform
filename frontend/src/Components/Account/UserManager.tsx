@@ -235,7 +235,7 @@ export default class UserManager extends Component<Props, State> {
           >
             <Box
               onClick={this.toggleDropdown}
-              background="#6DA3C7"
+              background="#BAD6DB"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
@@ -244,9 +244,9 @@ export default class UserManager extends Component<Props, State> {
               align="center"
               focusIndicator={false}
               // hoverIndicator="#2433b5"
-              hoverIndicator="#0C385B"
+              hoverIndicator="#6DA3C7"
             >
-              <Text size="14px"> My schedule </Text>
+              <Text size="14px" weight="bold"> My schedule </Text>
             </Box>
           </Link>
         </Box>
@@ -448,12 +448,12 @@ export default class UserManager extends Component<Props, State> {
             onClick={() => ({})}
             width="120px"
             height="30px"
-            background="#D3F930"
+            background="#BAD6DB"
             round="7px"
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#BAD6DB"
+            hoverIndicator="#6DA3C7"
           >
             <Text size="15px" weight="bold"> About us </Text>
           </Box>
@@ -488,12 +488,12 @@ export default class UserManager extends Component<Props, State> {
             onClick={() => ({})}
             width="120px"
             height="30px"
-            background="#D3F930"
+            background="#BAD6DB"
             round="7px"
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#BAD6DB"
+            hoverIndicator="#6DA3C7"
           >
             <Text size="15px" weight="bold"> About us </Text>
           </Box>
