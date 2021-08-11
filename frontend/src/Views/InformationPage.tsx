@@ -161,7 +161,7 @@ export default class InformationPage extends Component<Props, State> {
                   Ground-breaking results often come from the merging of ideas from different fields.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  However, in order to meet, there must be a conscious organizational effort to gather.
+                  However, in order to meet, there must be a conscious organisational effort to gather.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
                   The solution? A centralized place where researchers can hop from one seminar to another with just a couple clicks.

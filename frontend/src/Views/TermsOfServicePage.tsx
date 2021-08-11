@@ -50,7 +50,7 @@ export default class TermsOfService extends Component<Props, State> {
             <h2><b>1. Use of the site</b></h2>
             <ol>
               <li> All added content to agora.stream must be academic-related.</li>
-              <li> The Users should not attempt to use the site for any purpose other than browsing through past and future events, connecting with communities, organizing, and publicizing events on research.</li>
+              <li> The Users should not attempt to use the site for any purpose other than browsing through past and future events, connecting with communities, organising, and publicizing events on research.</li>
             </ol>
 
             <h2><b>2. Code of conduct</b></h2>
