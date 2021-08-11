@@ -744,8 +744,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     user={this.state.user}
                     onCreatedCallback={this.fetchAllTalks}
                   />
-                  <Box direction="row" gap="10px" alignContent="end">
-                    <Checkmark size="14px"/>
+                  <Box direction="row" alignContent="end">
                     <Text size="14px" weight="bold" color="grey">
                       You are an administrator
                     </Text>

@@ -27,7 +27,6 @@ const DeleteAgoraButton = ({ name, id }: Props) => {
     <Fragment>
       <Box
         background="#EAF1F1"
-        // background="#F2F2F2"
         round="xsmall"
         width="120px"
         height="35px"

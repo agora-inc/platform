@@ -25,7 +25,7 @@ import "../../Styles/edit-talk-modal.css";
 import { textToLatex } from "../Core/LatexRendering";
 import Switch from "../Core/Switch";
 import { InlineMath } from "react-katex";
-import { StatusInfo, Close, LinkNext, LinkPrevious } from "grommet-icons";
+import { StatusInfo, Close, LinkNext, LinkPrevious, Configure} from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import ShareButtons from "../Core/ShareButtons";
 import PricingPlans from "../../Views/PricingPlans";
@@ -79,6 +79,7 @@ interface State {
   talkId: number | null;
   activeSection: number;
   onRegistration: boolean;
+  onClickDelete: boolean;
 
   // reminders  
   reminders: Reminder[];
@@ -139,6 +140,7 @@ export default class EditTalkModal extends Component<Props, State> {
       talkId: null,
       activeSection: 1,
       onRegistration: false,
+      onClickDelete: false,
 
       // email reminders
       reminders: [
@@ -779,7 +781,40 @@ export default class EditTalkModal extends Component<Props, State> {
                   {this.props.talk ? "Edit talk" : "New talk"}
                 </Text>
               </Box>
-              <Box width="67%"></Box>
+              {this.props.talk && (
+                <Box width="67%" direction="row" align="center" justify="center" gap="30px">
+                  <Box 
+                    round="xsmall"
+                    pad={{ vertical: "4px", horizontal: "4px" }}
+                    style={{
+                      width: "36px",
+                      border: "1px solid #BBBBBB",
+                    }}
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator="#dddddd"
+                    onClick={() => this.setState((prevState: any) => ({onClickDelete: !prevState.onClickDelete}))} 
+                  >
+                    <Configure size="20px"/>
+                  </Box>
+                  {this.state.onClickDelete && (
+                    <Box
+                      background="#DDDDDD"
+                      hoverIndicator="#CCCCCC"
+                      justify="center"
+                      round="xsmall"
+                      align="center"
+                      width="90px"
+                      height="35px"
+                      onClick={this.onDeleteClicked}
+                    >
+                      <Text size="13px" weight="bold" color="grey"> Delete talk </Text>
+                    </Box>
+                  )} 
+                </Box>
+              )}
+
+              {!this.props.talk && <Box width="67%" />}
               <Box pad="20px" alignSelf="center">
                 <Close onClick={this.props.onCanceledCallback} />
               </Box>
@@ -1292,20 +1327,7 @@ export default class EditTalkModal extends Component<Props, State> {
             >
               {this.state.activeSection === 1 && (
                 <>
-                <Box width={this.props.talk ? "47%" : "90%" } />
-                {this.props.talk && (
-                  <>
-                  <Button
-                    fill="#FF4040"
-                    width="90px"
-                    height="35px"
-                    text="Delete"
-                    onClick={this.onDeleteClicked}
-                  />
-                  <Box width="30%" /> 
-                  </>
-                )}
-                
+                <Box width="90%" />                
                 {this.renderArrowButton(false)}
                 </>
               )}
