@@ -23,7 +23,7 @@ import ImageUploader from "../Components/Core/ImageUploader";
 import PricingPlans from "../Views/PricingPlans";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, 
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, Checkmark, 
   MailOption, SettingsOption, Group, DocumentText, Resources, Configure } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
@@ -737,23 +737,16 @@ export default class ManageChannelPage extends Component<Props, State> {
           >
             <Box align="start">
               {this.state.role === "owner" && (
-                <Box direction="row" gap="40vw">
+                <Box direction="row" align="center" alignContent="end" gap="17vw">
                   <ScheduleTalkButton
                     margin={{ bottom: "10px" }}
                     channel={this.state.channel}
                     user={this.state.user}
                     onCreatedCallback={this.fetchAllTalks}
                   />
-                  <Box
-                    width="20vw"
-                    height="40px"
-                    justify="center"
-                    align="center"
-                    pad="small"
-                    round="xsmall"
-                    background="#D3F930"
-                  >
-                    <Text size="14px" weight="bold">
+                  <Box direction="row" gap="10px" alignContent="end">
+                    <Checkmark size="14px"/>
+                    <Text size="14px" weight="bold" color="grey">
                       You are an administrator
                     </Text>
                   </Box>

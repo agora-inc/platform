@@ -26,7 +26,7 @@ const DeleteAgoraButton = ({ name, id }: Props) => {
   ) : (
     <Fragment>
       <Box
-        background="#FF4040"
+        background="#EAF1F1"
         // background="#F2F2F2"
         round="xsmall"
         width="120px"
@@ -37,7 +37,7 @@ const DeleteAgoraButton = ({ name, id }: Props) => {
         hoverIndicator="#DDDDDD"
         onClick={() => setShowModal(true)}
       >
-        <Text size="13px" weight="bold" color="white">
+        <Text size="13px" weight="bold" color="grey">
           Delete agora
         </Text>
       </Box>
