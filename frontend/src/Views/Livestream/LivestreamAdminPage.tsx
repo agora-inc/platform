@@ -82,10 +82,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
   const [messageChannel, setMessageChannel] = useState(null as any)
 
-  const [role, setRole] = useState<"speaker" | "admin" | "audience" | undefined>(props.role)
-  
+  const [role, setRole] = useState(props.role)
+  const [storedName, setStoredName] = useState(getLocalName(props.talkId.toString())||'')
+
   var agoraIoRoleName = ""
-  if (props.role! == "speaker" || props.role! == "admin"){
+  if (props.role == "speaker" || props.role == "admin"){
     agoraIoRoleName = "host"
   } else {
     agoraIoRoleName = "audience"
@@ -138,6 +139,19 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   useEffect(()=>{
     _setCallControl({...callControl, ...cc})
   }, [cc])
+
+
+
+
+  ////////////////////////////////
+  // Setting audience name
+  ////////////////////////////////
+  function getLocalName(talk_id:string){
+    return  window.localStorage.getItem(`${talk_id}.user_name`)
+  }
+  function setLocalName(talk_id:string, name:string){
+    return  window.localStorage.setItem(`${talk_id}.user_name`, name)
+  }
 
 
   ////////////////////////////////
@@ -207,10 +221,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     
   }
 
-  async function setup() {
-    agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
-      console.log('on connection state changed to ' + newState + ' reason: ' + reason);
-    });
+  async function initStreamingConnection() {
     // Setting client role (agora.io: 'host' or 'audience')
     await agoraClient.setClientRole(localUser.role);
     await agoraScreenShareClient.setClientRole(localUser.role);
@@ -225,6 +236,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     agoraScreenShareClient.on('user-unpublished', onScreenShareStop)
 
     join()
+
+    // FETCH talk details
+    const talkId = props.talkId
+    let talk = await get_talk_by_id(talkId.toString())
+    setTalkDetail(talk)
   }
 
   async function get_token_for_talk(talkId: string) {
@@ -235,7 +251,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           return res(tk)
         rej()
       })
-
     })
   }
 
@@ -252,6 +267,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   async function join_live_chat(){
+    agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
+      console.log('on connection state changed to ' + newState + ' reason: ' + reason);
+    });
+
     //console.log('joining...')
     let {uid} = localUser
     let talkId = props.talkId.toString()
@@ -262,11 +281,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       let _messageChannel = agoraMessageClient.createChannel(talkId)
       if (role == "admin"){
         await agoraMessageClient.addOrUpdateLocalUserAttributes({name: `Admin`})
-      }
-      if (role == "speaker"){
+      } else if (role == "speaker"){
         let talk = await get_talk_by_id(talkId) as any
         await agoraMessageClient.addOrUpdateLocalUserAttributes({name: `(Speaker) ${talk.talk_speaker}`})
+      } else {
+        await agoraMessageClient.addOrUpdateLocalUserAttributes({name: storedName})
       }
+
       await _messageChannel.join()
       _messageChannel.on('ChannelMessage', on_message)
       setMessageChannel(_messageChannel)
@@ -293,6 +314,56 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       console.log(e)
     }
   }
+
+
+
+
+
+
+
+
+
+  
+//
+//
+//// Remy: checkpoint
+//// Remy: checkpoint
+//// Remy: checkpoint
+////
+//
+//
+// WIP: INTEGRATING "REQUEST MIC FEATURE" FROM LivestreamAudiencePage
+//
+//
+//
+//
+////
+//
+////
+//
+////
+//
+//
+//// Remy: checkpoint
+//// Remy: checkpoint
+//// Remy: checkpoint
+////
+//
+//
+// WIP: INTEGRATING "REQUEST MIC FEATURE" FROM LivestreamAudiencePage
+//
+//
+////
+
+
+
+
+
+
+
+
+
+
   async function stop_share_screen() {
       //console.log("sharing stopped")
       await agoraScreenShareClient.unpublish()
@@ -399,19 +470,14 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
   async function onClientStop(user: any, mediaType: "audio" | "video") {
     console.log("left", agoraClient.remoteUsers)
-    if (props.role == "admin"){
+    if (role == "admin"){
       setTimeout(()=>{
         setRemoteVideoTrack([...agoraClient.remoteUsers])
       }, 2000)
-    } else if (props.role == "speaker"){
+    } else {
       setTimeout(()=>{
         setRemoteVideoTrack([...agoraClient.remoteUsers])
       }, 200)
-    } else {
-      //
-      //
-      // PLACEHOLDER AUDIENCE
-      //
     }
 
     if(mediaType == 'video'){
@@ -483,7 +549,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       let data = doc.data() as any
       if(data.status === 'STARTED') {
         setTalkStatus(data.status)
-        setup()
+        initStreamingConnection()
       }
       if(data.status === 'ENDED') {
         setTalkStatus(data.status)
@@ -943,7 +1009,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
 
   return (
-      <Box style={{position: "absolute", left: "20px", top: "5px"}} margin={{bottom: "50px", top: "80px"}}>
+      <Box style={{position: "absolute", left: "20px", top: "5px"}} margin={{bottom: "50px", top: "80px"}} width="100%">
         {isTimeover && (
           <Box 
             margin={{ top: "xlarge", bottom: "xsmall" }} 

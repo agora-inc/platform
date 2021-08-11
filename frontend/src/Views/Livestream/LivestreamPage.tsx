@@ -72,6 +72,9 @@ export default class LivestreamPage extends Component<Props, State> {
     
     componentDidMount() {
         this.fetchAll()
+        if (this.state.channelRole == "owner"){
+            this.setState({talkRole: "admin"})
+        }
     }
 
     readUrl(callback: any){
@@ -146,28 +149,13 @@ export default class LivestreamPage extends Component<Props, State> {
     
     render() {
         if (!(this.state.talkNotFound)){
-            if (this.state.talkRole == "speaker"){
-                return (
-                    <LivestreamSpeakerPage
-                        talkId={this.state.talkId}
-                    />
-                )
-            } else if (
-                (this.state.talkRole == "admin") || (this.state.channelRole == "owner")
-                ){
-                return (
-                    <LivestreamAdminPage
-                        talkId={this.state.talkId}
-                        role="speaker"
-                    />
-                )
-            } else {
-                return (
-                    <LivestreamAudiencePage
-                        talkId={this.state.talkId}
-                    />
-                )
-            }
+            return (
+                <LivestreamAdminPage
+                    talkId={this.state.talkId}
+                    // role={this.state.talkRole}
+                    role="audience"
+                />
+            )
         }
         else {
             return (
