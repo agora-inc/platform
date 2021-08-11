@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Button, Text, TextArea, Layer } from "grommet";
 import {UserSettings} from "grommet-icons";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
 import { Channel, ChannelService } from "../../Services/ChannelService";
@@ -147,8 +147,7 @@ export default class UserManager extends Component<Props, State> {
         width="350px"
         pad="small"
         style={{
-          border: "2px solid grey",
-          marginTop: 20,
+          border: "1px solid grey",
           overflow: "hidden",
           paddingBottom: 0,
         }}
@@ -437,51 +436,45 @@ export default class UserManager extends Component<Props, State> {
 
 
   loggedInStuff = (username: string) => {
+    
     return (
       <>
       <Box margin={{right:"43px"}}>
         <Link
-            to={{ pathname: "/info/welcome" }}
-            style={{ textDecoration: "none" }}
-          >
-          <Button
-            label={"About us"}
-            style={{
-              width: 90,
-              height: 35,
-              fontSize: 15,
-              fontWeight: "bold",
-              padding: 0,
-              color: "0C385B",
-              // margin: 6,
+          to={{ pathname: "/info/welcome" }}
+          style={{ textDecoration: "none", color: "grey" }}
+        >
+          <Box
+            width="120px"
+            height="30px"
+            style={{ 
               backgroundColor: "#D3F930",
-              border: "none",
+              border: "0px",
               borderRadius: 7,
             }}
-            hoverIndicator="#D3F930"
-          />
+            justify="center"
+            align="center"
+            focusIndicator={false}
+          >
+            <Text size="14px" weight="bold"> About us </Text>
+          </Box>
         </Link>
       </Box>
 
-      <Button
-        style={{
-          height: "100%",
-          width: "100%",
-          // borderRadius: 20,
-          overflow: "hidden",
-        }}
-        
+      <Box
+        margin={{right: "1vw"}}
         focusIndicator={false}
         onClick={this.toggleDropdown}
+        overflow="hidden"
       >
-        <Box direction="row" gap="small">
-          <Text size="14px" margin={{right: "15px", top: "3.43px"}} color="grey">
+        <Box direction="row" gap="small" justify="center" align="center" margin={{top: "3px"}}>
+          <Text size="14px" margin={{right: "15px"}} color="grey">
             {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
             <b>{this.state.user?.username}!</b>
           </Text>
-            <UserSettings size="medium"/>
+          <UserSettings size="medium"/>
         </Box>
-      </Button>
+      </Box>
       </>
     );
   };
@@ -490,24 +483,22 @@ export default class UserManager extends Component<Props, State> {
     <Box direction="row" align="center" justify="center" gap="xsmall">
         <Link
           to={{ pathname: "/info/welcome" }}
-          style={{ textDecoration: "none" }}
+          style={{ textDecoration: "none", color: "grey" }}
         >
-          <Button
-            label={"About us"}
-            style={{
-              width: 90,
-              height: 35,
-              fontSize: 15,
-              fontWeight: "bold",
-              padding: 0,
-              color: "0C385B",
-              // margin: 6,
+          <Box
+            width="120px"
+            height="30px"
+            style={{ 
               backgroundColor: "#D3F930",
-              border: "none",
+              border: "0px",
               borderRadius: 7,
             }}
-            hoverIndicator="#D3F930"
-          />
+            justify="center"
+            align="center"
+            focusIndicator={false}
+          >
+            <Text size="14px" weight="bold"> About us </Text>
+          </Box>
         </Link>
       <LoginModal
         open={this.props.showLogin}
@@ -556,8 +547,8 @@ export default class UserManager extends Component<Props, State> {
             onClickOutside={this.toggleDropdown}        
             style={{
               position: "absolute",
-              top: 95,
-              right: 30,
+              top: "6vw",
+              right: "2vw",
             }}
             responsive
           >

@@ -29,8 +29,8 @@ const DeleteAgoraButton = ({ name, id }: Props) => {
         background="#FF4040"
         // background="#F2F2F2"
         round="xsmall"
-        width="100px"
-        height="25px"
+        width="120px"
+        height="35px"
         justify="center"
         align="center"
         focusIndicator={true}
