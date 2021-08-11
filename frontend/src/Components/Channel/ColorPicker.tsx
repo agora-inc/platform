@@ -69,7 +69,7 @@ export default class ColorPicker extends Component<Props, State> {
   };
 
   renderDropContent = () => {
-    let remove_button;
+    {/* let remove_button;
     if (this.props.hasCover){
     remove_button =
       <Box
@@ -88,7 +88,7 @@ export default class ColorPicker extends Component<Props, State> {
           Remove header
         </Text>
       </Box>
-    }
+    } */}
 
     return (
       <Box
@@ -111,20 +111,20 @@ export default class ColorPicker extends Component<Props, State> {
             ></Box>
           ))}
         </Box>
-        <Box gap="4px">
-          {/* <ImageCropUploader
+        {/* <Box gap="4px">
+          <ImageCropUploader
             text="Upload header"
             onUpload={this.onCoverUpload}
             width="100%"
-          /> */}
+          /> 
           {remove_button}
-        </Box>
+        </Box>*/}
       </Box>
     );
   };
 
   render() {
-        let remove_button;
+    {/* let remove_button;
     if (this.props.hasCover){
     remove_button =
       <Box
@@ -142,7 +142,7 @@ export default class ColorPicker extends Component<Props, State> {
           Remove header
         </Text>
       </Box>
-    }
+    } */}
     return (
       <>
       {/* <Box
@@ -206,8 +206,8 @@ export default class ColorPicker extends Component<Props, State> {
           onUpload={this.onCoverUpload}
           width="150px"
         />
-        <Box margin= {{ right: "xsmall" }}/>
-        {remove_button}
+        {/* <Box margin= {{ right: "xsmall" }}/>
+        {remove_button} */}
 
       </Box>
       </>

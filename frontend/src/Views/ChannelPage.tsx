@@ -571,7 +571,7 @@ export default class ChannelPage extends Component<Props, State> {
                 )} */}
 
 
-                <Box width="100%" gap="20px">
+                <Box width="100%" gap="20px" margin={{top: "-20px"}}>
                   <Box direction="row" gap="45vw">
                     {this.state.role == "member" && (
                       <Box

@@ -23,8 +23,8 @@ import ImageUploader from "../Components/Core/ImageUploader";
 import PricingPlans from "../Views/PricingPlans";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, 
-  MailOption, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, Checkmark, 
+  MailOption, SettingsOption, Group, DocumentText, Resources, Configure } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -572,7 +572,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   banner = () => {
     return (
       <Box
-        width="75vw"
+        // width="75vw"
         background="white"
         round="10px"
         margin={{ bottom: "60px" }}
@@ -660,10 +660,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <p>Recommended avatar dim: 400x400px</p>
                     </ReactTooltip>
               </Box>
-              <DeleteAgoraButton
-                name={this.state.channel!.name}
-                id={this.state.channel!.id}
-                />
             </Box>
             </Box>
           </Box>
@@ -724,32 +720,32 @@ export default class ManageChannelPage extends Component<Props, State> {
       );
     } else {
       return this.isAllowed() ? (
-        <Box>
+        <Box
+         
+          align="center"
+          style={{
+            position: "absolute",
+            top: "5vw",
+          }}
+
+        >
           <Box
-            width="100%"
+             width="75%"
             height="100%"
             align="center"
-            margin={{ top: "100px" }}
+
           >
-            <Box width="75%" align="start">
+            <Box align="start">
               {this.state.role === "owner" && (
-                <Box direction="row" gap="40vw">
+                <Box direction="row" align="center" alignContent="end" gap="17vw">
                   <ScheduleTalkButton
                     margin={{ bottom: "10px" }}
                     channel={this.state.channel}
                     user={this.state.user}
                     onCreatedCallback={this.fetchAllTalks}
                   />
-                  <Box
-                    width="20vw"
-                    height="40px"
-                    justify="center"
-                    align="center"
-                    pad="small"
-                    round="xsmall"
-                    background="#D3F930"
-                  >
-                    <Text size="14px" weight="bold">
+                  <Box direction="row" alignContent="end">
+                    <Text size="14px" weight="bold" color="grey">
                       You are an administrator
                     </Text>
                   </Box>
@@ -876,6 +872,15 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <DocumentText />
                       <Text size="14px"> 
                         Registrations 
+                      </Text>
+                    </Box>
+                  </Tab>
+
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <Configure />
+                      <Text size="14px"> 
+                        Settings 
                       </Text>
                     </Box>
                   </Tab>
@@ -1245,6 +1250,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RegistrationsTab channelId={channel!.id} />
+                  </Box>
+                </TabPanel>
+
+
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                  <Box direction="row" margin={{top: "40px", bottom: "60px"}}>
+                    <DeleteAgoraButton
+                      name={this.state.channel!.name}
+                      id={this.state.channel!.id}
+                    />
                   </Box>
                 </TabPanel>
 
