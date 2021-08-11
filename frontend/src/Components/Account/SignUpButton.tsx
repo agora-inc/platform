@@ -69,22 +69,19 @@ export default class SignUpButton extends Component<Props, State> {
   render() {
     return (
       <Box style={{maxHeight: "30px"}}>
-        <Button
-          label="Sign up"
+        <Box
           onClick={this.toggleModal}
-          hoverIndicator={false}
-          style={{
-            width: 90,
-            height: 35,
-            fontSize: 16,
-            fontWeight: "bold",
-            color: "white",
-            padding: 0,
-            backgroundColor: "#0C385B",
-            border: "none",
-            borderRadius: 5,
-          }}
-        />
+          background="#0C385B"
+          hoverIndicator="#BAD6DB"
+          focusIndicator={false}
+          align="center"
+          justify="center"
+          width="90px"
+          height="35px"
+          round="xsmall"
+        >
+          <Text size="14px" weight="bold"> Sign up </Text>
+        </Box>
         <Overlay
           width={400}
           height={this.state.error !== "" ? 600 : 500}

@@ -1062,7 +1062,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 {!this.state.subscriptionPlans.includes("tier2") && (
                   <Box
                     onClick={this.toggleModalPricing}
-                    background="#BAD6DB"
+                    background="#0C385B"
                     round="xsmall"
                     pad="xsmall"
                     width="160px"
@@ -1070,7 +1070,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     justify="center"
                     align="center"
                     focusIndicator={false}
-                    hoverIndicator="#0C385B"
+                    hoverIndicator="#BAD6DB"
                   >
                     <Text size="14px" weight="bold"> Unlock streaming </Text>
                   </Box>
@@ -1282,7 +1282,7 @@ export default class EditTalkModal extends Component<Props, State> {
               {!this.isPaying() && ( 
                 <Box
                   onClick={this.toggleModalPricing}
-                  background="#BAD6DB"
+                  background="#0C385B"
                   round="xsmall"
                   pad="xsmall"
                   width="200px"
@@ -1290,7 +1290,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   justify="center"
                   align="center"
                   focusIndicator={false}
-                  hoverIndicator="#0C385B"
+                  hoverIndicator="#BAD6DB"
                 >
                   <Text size="14px" weight="bold"> Unlock email reminders </Text>
                 </Box>
