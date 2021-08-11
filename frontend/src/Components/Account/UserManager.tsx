@@ -442,21 +442,20 @@ export default class UserManager extends Component<Props, State> {
       <Box margin={{right:"43px"}}>
         <Link
           to={{ pathname: "/info/welcome" }}
-          style={{ textDecoration: "none", color: "grey" }}
+          style={{ textDecoration: "none", marginRight: "43px" }}
         >
           <Box
+            onClick={() => ({})}
             width="120px"
             height="30px"
-            style={{ 
-              backgroundColor: "#D3F930",
-              border: "0px",
-              borderRadius: 7,
-            }}
+            background="#D3F930"
+            round="7px"
             justify="center"
             align="center"
             focusIndicator={false}
+            hoverIndicator="#BAD6DB"
           >
-            <Text size="14px" weight="bold"> About us </Text>
+            <Text size="15px" weight="bold"> About us </Text>
           </Box>
         </Link>
       </Box>
@@ -480,24 +479,23 @@ export default class UserManager extends Component<Props, State> {
   };
 
   loggedOutStuff = (
-    <Box direction="row" align="center" justify="center" gap="xsmall">
+    <Box direction="row" align="center" justify="center" gap="xsmall" margin={{right: "1vw"}}>
         <Link
           to={{ pathname: "/info/welcome" }}
-          style={{ textDecoration: "none", color: "grey" }}
+          style={{ textDecoration: "none", marginRight: "43px" }}
         >
           <Box
+            onClick={() => ({})}
             width="120px"
             height="30px"
-            style={{ 
-              backgroundColor: "#D3F930",
-              border: "0px",
-              borderRadius: 7,
-            }}
+            background="#D3F930"
+            round="7px"
             justify="center"
             align="center"
             focusIndicator={false}
+            hoverIndicator="#BAD6DB"
           >
-            <Text size="14px" weight="bold"> About us </Text>
+            <Text size="15px" weight="bold"> About us </Text>
           </Box>
         </Link>
       <LoginModal
