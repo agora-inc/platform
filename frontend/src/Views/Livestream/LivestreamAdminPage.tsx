@@ -126,6 +126,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   // speaker only feature
   const [slidesGotUploaded, setSlidesGotUploaded] = useState(false)
 
+  // audience only features
+  const [hasMicRequested, setMicRequest] = useState('')
+  const [isUnpublishFromRemote, unpublishFromRemote] = useState('')
+  const [isClapping, setClapping] = useState('')
+
 
   const [callControl, _setCallControl] = useState({
     mic: true, 
@@ -323,7 +328,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
 
 
-  
+
 //
 //
 //// Remy: checkpoint
@@ -417,6 +422,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   async function unpublish_microphone(){
+    if (role == "audience"){
+      if(hasMicRequested) {
+        API.removeRequest(hasMicRequested)
+      }
+      setMicRequest('')
+    }
+
     if(localAudioTrack) {
       localAudioTrack.stop()
 
@@ -426,11 +438,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     }
   }
   async function publish_microphone(){
+    if (role == "audience"){
+      await agoraClient.setClientRole('host');
+    }
     let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
     setLocalAudioTrack(_localAudioTrack)
     await agoraClient.publish(_localAudioTrack);
-
-    setCallControl({mic: true})
+    setCallControl({...callControl, mic: true})
   }
 
   async function on_message(msg:any, senderId:string){
@@ -440,6 +454,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       return [...m, {senderId, text: msg.text, name: attr.name ||'', first: first}]
     })
   }
+
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return
     // @ts-ignore
@@ -554,18 +569,46 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       if(data.status === 'ENDED') {
         setTalkStatus(data.status)
       }
+      if (role == "audience"){
+        if(data.clapping_status) {
+          setClapping(data.clapping_status)
+        }else{
+          setClapping('')
+        }
+      }
     })
 
     // Unsub mic requests
-    let request_unsubs = db.collection('requests').where('talk_id', '==', talkId).onSnapshot(snaps=>{
-      let req = snaps.docs.filter(d=>d.exists).map(d=>{
-        let _d = d.data()
-        _d.id = d.id
-        return _d
-      }).filter((d:any)=> d.status !== 'DENIED')
-      setMicRequests([...req])
-    })
-
+    let request_unsubs = () => {}
+    if (role == "admin" || role == "speaker"){
+      let request_unsubs = db.collection('requests').where('talk_id', '==', talkId).onSnapshot(snaps=>{
+        let req = snaps.docs.filter(d=>d.exists).map(d=>{
+          let _d = d.data()
+          _d.id = d.id
+          return _d
+        }).filter((d:any)=> d.status !== 'DENIED')
+        setMicRequests([...req])
+      })
+    } else if (role == "audience") {
+      let request_unsubs = db.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
+        let req = snaps.docs.filter(d=>d.exists).map(d=>{
+          let _d = d.data()
+          _d.id = d.id
+          return _d
+        }).filter(d=>d.requester_id === localUser.uid).find(d=>d.status === 'GRANTED' || d.status === 'REQUESTED')
+  
+        
+        setMicRequest('')
+        if(req) {
+          setMicRequest(req.id)
+          if(req.status === 'GRANTED') {
+            publish_microphone()
+          }
+        }else{
+          unpublishFromRemote(Math.random().toString())
+        }
+      })
+    }
     // Unsub slides
     let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
@@ -598,7 +641,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       leave()
       unsubs()
       slide_unsubs()
-      if (role == "admin"){
+      if (role == "admin" || role == "audience"){
         request_unsubs()
       }
     }
@@ -659,6 +702,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               {viewChangeButton()}
             </>
           )}  
+
+          {(role == "audience") && (
+            <>
+              {requestMicButton()}
+              {fullscreenButton()}
+              {viewChangeButton()}
+            </>
+            ) 
+          }
+
+
         </Box>
         
         {/* SECONDARY BUTTONS */}
@@ -687,8 +741,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
             {(role !== "admin" && role != "speaker") && (
             <>
-              {startTalkButton()}
-              {stopTalkButton()}
             </>
             )}
         </Box>
@@ -861,6 +913,33 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     >
       <Text weight="bold" color="white" size="14px" textAlign="center">
         {callControl.slideShare? "Standard view" : "Slides view"}
+      </Text>
+    </Box>
+    )
+  }
+
+  function requestMicButton () {
+    return (
+      <Box
+      justify="center"
+      align="center"
+      pad="small"
+      focusIndicator={false}
+      height="50px"
+      background="color1"
+      hoverIndicator="#BAD6DB"
+      style={{borderRadius:'6px'}}
+      onClick={()=>{
+        if (hasMicRequested || !callControl.mic){
+          API.requestMic(talkId, localUser.uid, storedName)
+        }
+        else {
+          unpublish_microphone()
+        }
+      }}
+    >
+      <Text weight="bold" color="white" size="14px" textAlign="center">
+        {(hasMicRequested || !callControl.mic) ? "Give up microphone" : "Request microphone"}
       </Text>
     </Box>
     )

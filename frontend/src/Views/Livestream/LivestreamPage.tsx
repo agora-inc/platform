@@ -153,7 +153,7 @@ export default class LivestreamPage extends Component<Props, State> {
                 <LivestreamAdminPage
                     talkId={this.state.talkId}
                     // role={this.state.talkRole}
-                    role="audience"
+                    role="admin"
                 />
             )
         }
