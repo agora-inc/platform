@@ -227,9 +227,12 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   async function initStreamingConnection() {
+    // FETCH talk details
+    fetchTalkDetails()
+
     // Setting client role (agora.io: 'host' or 'audience')
-    await agoraClient.setClientRole(localUser.role);
-    await agoraScreenShareClient.setClientRole(localUser.role);
+    // await agoraClient.setClientRole(localUser.role);
+    // await agoraScreenShareClient.setClientRole(localUser.role);
 
     agoraClient.on('user-published', onClient)
     agoraClient.on('user-unpublished', onClientStop)
@@ -241,11 +244,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     agoraScreenShareClient.on('user-unpublished', onScreenShareStop)
 
     join()
-
-    // FETCH talk details
-    const talkId = props.talkId
-    let talk = await get_talk_by_id(talkId.toString())
-    setTalkDetail(talk)
   }
 
   async function get_token_for_talk(talkId: string) {
@@ -547,8 +545,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   useEffect(()=>{
     (async ()=>{
       setTalkId(props.talkId.toString())
-      join_live_chat()
       fetchTalkDetails()
+      join_live_chat()
     })()
   }, [])
 
