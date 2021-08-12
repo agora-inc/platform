@@ -56,8 +56,7 @@ export default class SpeakerHelpButton extends Component<Props, State> {
           justify="center"
           align="center"
           focusIndicator={false}
-          // hoverIndicator="#2433b5"
-          hoverIndicator="#6DA3C7"
+          hoverIndicator="#BAD6DB"
         >
           <Text size="14px" weight="bold">Help</Text>
         </Box>

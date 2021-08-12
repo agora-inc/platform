@@ -773,7 +773,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   justify="center"
                   align="center"
                   focusIndicator={false}
-                  hoverIndicator="#6DA3C7"
+                  hoverIndicator="#BAD6DB"
                 >
                   <Text size="14px" weight="bold"> Pricing options </Text>
                 </Box>
@@ -1236,7 +1236,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           justify="center"
                           align="center"
                           focusIndicator={false}
-                          hoverIndicator="#0C385B"
+                          hoverIndicator="#BAD6DB"
                         >
                           <Text size="14px"> Add </Text>
                         </Box>

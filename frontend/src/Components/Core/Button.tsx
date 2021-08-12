@@ -28,7 +28,7 @@ export default class Button extends Component<Props, State> {
     super(props);
     this.state = {
       background:  "#0C385B",
-      hoverIndicator: "#6DA3C7",
+      hoverIndicator: "#BAD6DB",
       textColor: this.props.textColor ? this.props.textColor : "black",
     };
   }

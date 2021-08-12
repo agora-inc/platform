@@ -64,7 +64,7 @@ export const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#6DA3C7"
+            hoverIndicator="#BAD6DB"
             alignSelf="center"
         >
             <Text size="14px" weight="bold">{props.text}</Text>

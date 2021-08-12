@@ -727,7 +727,8 @@ export default class EditTalkModal extends Component<Props, State> {
           border: "1px solid #BBBBBB",
         }}
         margin={{left: prev ? "36px" : "0px", right: prev ? "0px" : "36px"}}
-        onClick={() => this.setState((prevState: any) => ({activeSection: prevState.activeSection+incr}))} 
+        onClick={() => this.setState((prevState: any) => ({activeSection: prevState.activeSection+incr}))}
+        hoverIndicator="#DDDDDD" 
       >
       {prev && <LinkPrevious color="#BBBBBB" size="26px" />}
       {!prev && <LinkNext color="#BBBBBB" size="26px" />}
@@ -770,6 +771,7 @@ export default class EditTalkModal extends Component<Props, State> {
               width="99.7%"
               background="#eaf1f1"
               direction="row"
+              align="center"
               style={{
                 minHeight: "50px",
                 borderTopLeftRadius: "15px",
@@ -782,7 +784,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 </Text>
               </Box>
               {this.props.talk && (
-                <Box width="67%" direction="row" align="center" justify="center" gap="30px">
+                <Box width="71%" direction="row" align="center" justify="start" gap="30px">
                   <Box 
                     round="xsmall"
                     pad={{ vertical: "4px", horizontal: "4px" }}
@@ -795,7 +797,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     hoverIndicator="#dddddd"
                     onClick={() => this.setState((prevState: any) => ({onClickDelete: !prevState.onClickDelete}))} 
                   >
-                    <Configure size="20px"/>
+                    <Configure size="18px"/>
                   </Box>
                   {this.state.onClickDelete && (
                     <Box
@@ -814,9 +816,21 @@ export default class EditTalkModal extends Component<Props, State> {
                 </Box>
               )}
 
-              {!this.props.talk && <Box width="67%" />}
-              <Box pad="20px" alignSelf="center">
-                <Close onClick={this.props.onCanceledCallback} />
+              {!this.props.talk && <Box width="71%" />}
+              <Box
+                pad="4px"
+                style={{
+                  height: "36px",
+                  width: "36px",
+                  border: "1px solid #BBBBBB",
+                }}
+                justify="center"
+                round="xsmall"
+                align="center"
+                onClick={this.props.onCanceledCallback}
+                hoverIndicator="#DDDDDD" 
+              >
+                <Close color="#BBBBBB" size="26px" />
               </Box>
             </Box>
             
@@ -844,11 +858,11 @@ export default class EditTalkModal extends Component<Props, State> {
               height="32px"
               round="16px" 
               onClick={() => this.setState({activeSection: i})} 
-              background={this.state.activeSection === i ? "#6DA3C7" : "white"}
+              background={this.state.activeSection === i ? "#BAD6DB" : "white"}
               justify="center"
               align="center"
-              border={{color: "#6DA3C7"}}
-              hoverIndicator="#6DA3C7"
+              border={{color: "#BAD6DB"}}
+              hoverIndicator="#BAD6DB"
               focusIndicator={false}
             >
               <Text color="black" size="14px"> {i} </Text> 
@@ -1048,7 +1062,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 {!this.state.subscriptionPlans.includes("tier2") && (
                   <Box
                     onClick={this.toggleModalPricing}
-                    background="#BAD6DB"
+                    background="#0C385B"
                     round="xsmall"
                     pad="xsmall"
                     width="160px"
@@ -1056,7 +1070,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     justify="center"
                     align="center"
                     focusIndicator={false}
-                    hoverIndicator="#0C385B"
+                    hoverIndicator="#BAD6DB"
                   >
                     <Text size="14px" weight="bold"> Unlock streaming </Text>
                   </Box>
@@ -1268,7 +1282,7 @@ export default class EditTalkModal extends Component<Props, State> {
               {!this.isPaying() && ( 
                 <Box
                   onClick={this.toggleModalPricing}
-                  background="#BAD6DB"
+                  background="#0C385B"
                   round="xsmall"
                   pad="xsmall"
                   width="200px"
@@ -1276,7 +1290,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   justify="center"
                   align="center"
                   focusIndicator={false}
-                  hoverIndicator="#0C385B"
+                  hoverIndicator="#BAD6DB"
                 >
                   <Text size="14px" weight="bold"> Unlock email reminders </Text>
                 </Box>

@@ -197,7 +197,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                       justify="center"
                       align="center"
                       focusIndicator={true}
-                      hoverIndicator="#6DA3C7"
+                      hoverIndicator="#BAD6DB"
                   >
                     <Text size="15px" weight="bold">
                       The virtual cafeteria is closed
