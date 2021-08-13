@@ -47,12 +47,12 @@ export default class Switch extends Component<Props, State> {
             border: "1px solid gray"
           }}
           align="center"
-          background="#6DA3C7"
+          background="#025377"
           focusIndicator={false}
         >
-          <RadialSelected size={height} />
+          <RadialSelected size={height} color="#EEEEEE" />
           <Box width={this.props.width}> </Box>
-          <Text size="12px" margin={{right: "10px"}}> 
+          <Text size="12px" margin={{right: "10px"}} weight="bold" color="#EEEEEE"> 
             {this.props.textOn ? this.props.textOn : ""} 
           </Text>
         </Box>
@@ -70,9 +70,9 @@ export default class Switch extends Component<Props, State> {
             border: "1px solid gray"
           }}
           align="center"
-          background="#BAD6DB"
+          background="white"
         >
-          <Text size="12px" margin={{left: "10px"}}> 
+          <Text size="12px" margin={{left: "10px"}} weight="bold"> 
             {this.props.textOff ? this.props.textOff : ""} 
           </Text>
           <Box width={this.props.width}> </Box>

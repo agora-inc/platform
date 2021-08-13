@@ -68,7 +68,8 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
                             
                             <Box
                                 onClick={this.toggleModalPricing}
-                                background="#0C385B"
+                                background="#D3F930"
+                                hoverIndicator="#7BA59E"
                                 round="xsmall"
                                 pad="xsmall"
                                 width="200px"
@@ -76,7 +77,6 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
                                 justify="center"
                                 align="center"
                                 focusIndicator={false}
-                                hoverIndicator="#BAD6DB"
                             >
                                 <Text size="14px" weight="bold"> Unlock virtual cafeteria </Text>
                             </Box>

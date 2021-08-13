@@ -925,7 +925,7 @@ export default class EditTalkModal extends Component<Props, State> {
 
               {!this.state.latex && (
                 <TextArea
-                  style={{height: "240px"}}
+                  style={{height: "210px"}}
                   value={this.state.description}
                   placeholder=""
                   onChange={(e) => this.setState({ description: e.target.value })}
@@ -1062,7 +1062,8 @@ export default class EditTalkModal extends Component<Props, State> {
                 {!this.state.subscriptionPlans.includes("tier2") && (
                   <Box
                     onClick={this.toggleModalPricing}
-                    background="#0C385B"
+                    background="#D3F930"
+                    hoverIndicator="#7BA59E"
                     round="xsmall"
                     pad="xsmall"
                     width="160px"
@@ -1070,7 +1071,6 @@ export default class EditTalkModal extends Component<Props, State> {
                     justify="center"
                     align="center"
                     focusIndicator={false}
-                    hoverIndicator="#7BA59E"
                   >
                     <Text size="14px" weight="bold"> Unlock streaming </Text>
                   </Box>
@@ -1282,7 +1282,8 @@ export default class EditTalkModal extends Component<Props, State> {
               {!this.isPaying() && ( 
                 <Box
                   onClick={this.toggleModalPricing}
-                  background="#0C385B"
+                  background="#D3F930"
+                  hoverIndicator="#7BA59E"
                   round="xsmall"
                   pad="xsmall"
                   width="200px"
@@ -1290,7 +1291,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   justify="center"
                   align="center"
                   focusIndicator={false}
-                  hoverIndicator="#7BA59E"
                 >
                   <Text size="14px" weight="bold"> Unlock email reminders </Text>
                 </Box>
