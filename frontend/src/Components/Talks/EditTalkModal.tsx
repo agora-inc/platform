@@ -1127,8 +1127,8 @@ export default class EditTalkModal extends Component<Props, State> {
             </Box>
 
             {this.state.onRegistration && (
-              <Box margin={{bottom: "60px"}} gap="15px">
-                <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
+              <Box margin={{bottom: "20px"}} gap="15px">
+                <Box direction="row" gap="small" margin={{ bottom: "0px" }} align="center">
                   <Text size="13px" weight="bold"> 
                     Automatically accept some users?
                   </Text>
