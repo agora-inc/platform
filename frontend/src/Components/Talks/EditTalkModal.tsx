@@ -655,7 +655,7 @@ export default class EditTalkModal extends Component<Props, State> {
         {!this.state.reminders[j].exist && (
           <Box
             focusIndicator={false}
-            background="white"
+            background={this.isPaying() ? "white" : "#BAD6DB"}
             round="xsmall"
             pad={{ vertical: "2px", horizontal: "xsmall" }}
             onClick={this.toggleReminder(j)}
@@ -1041,7 +1041,7 @@ export default class EditTalkModal extends Component<Props, State> {
               </Box>
             )}
 
-            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#D3F930"}
+            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#BAD6DB"}
               pad="15px" round="6px" gap="10px"
             >
               {!this.state.subscriptionPlans.includes("tier2") && (
@@ -1070,7 +1070,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     justify="center"
                     align="center"
                     focusIndicator={false}
-                    hoverIndicator="#BAD6DB"
+                    hoverIndicator="#7BA59E"
                   >
                     <Text size="14px" weight="bold"> Unlock streaming </Text>
                   </Box>
@@ -1239,7 +1239,7 @@ export default class EditTalkModal extends Component<Props, State> {
           <Box width="75%" margin={{bottom: "10px"}} style={{minHeight: "350px" }} align="start">
             <Box 
               direction="column" gap="10px" 
-              background={this.isPaying() ? "white" : "#d3f930"}
+              background={this.isPaying() ? "white" : "#BAD6DB"}
               pad="25px" round="6px" 
             >
               {!this.isPaying() && (
@@ -1290,7 +1290,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   justify="center"
                   align="center"
                   focusIndicator={false}
-                  hoverIndicator="#BAD6DB"
+                  hoverIndicator="#7BA59E"
                 >
                   <Text size="14px" weight="bold"> Unlock email reminders </Text>
                 </Box>

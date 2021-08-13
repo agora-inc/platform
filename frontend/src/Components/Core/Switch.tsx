@@ -47,7 +47,7 @@ export default class Switch extends Component<Props, State> {
             border: "1px solid gray"
           }}
           align="center"
-          background="#D3F930"
+          background="#6DA3C7"
           focusIndicator={false}
         >
           <RadialSelected size={height} />
@@ -70,6 +70,7 @@ export default class Switch extends Component<Props, State> {
             border: "1px solid gray"
           }}
           align="center"
+          background="#BAD6DB"
         >
           <Text size="12px" margin={{left: "10px"}}> 
             {this.props.textOff ? this.props.textOff : ""} 

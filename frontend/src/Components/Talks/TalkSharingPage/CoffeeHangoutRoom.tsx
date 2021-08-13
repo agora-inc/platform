@@ -59,7 +59,7 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
         return (
             <>
                 {/* {!this.cafeteriaPermanentlyClosed() || ( */}
-                <Box align="start" margin={{top:"100px"}} pad="50px" background={this.props.disabled ? "#D3F930"  : "" }>
+                <Box align="start" margin={{top:"100px"}} pad="50px" background={this.props.disabled ? "#BAD6DB"  : "" }>
                     {this.props.disabled && (
                         <Box direction="row" align="center" gap="50px" margin={{bottom: "60px"}}>
                             <Text size="16px" style={{fontStyle: "italic"}} >
