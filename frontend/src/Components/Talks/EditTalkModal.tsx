@@ -1358,13 +1358,18 @@ export default class EditTalkModal extends Component<Props, State> {
                 <>
                 {this.renderArrowButton(true)}
                 <Box width="50%" />
-                <Button
+                <Box
                   width="140px"
                   height="35px"
-                  text="Save as draft"
-                  textColor="white"
+                  align="center"
+                  justify="center"
+                  round="xsmall"
+                  background="#BAD6DB"
+                  hoverIndicator="#6DA3C7"
                   onClick={this.onSaveDraft}
-                />
+                >
+                  <Text size="14px" weight="bold"> Save as draft </Text>
+                </Box>
                 <Box data-tip data-for='submitbutton' margin={{left: "24px", right: "32px"}}> 
                   <Button
                     fill={this.isComplete() ? "#025377" : "#CCCCCC"}
