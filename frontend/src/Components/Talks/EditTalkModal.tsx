@@ -300,7 +300,7 @@ export default class EditTalkModal extends Component<Props, State> {
         this.escapeSingleQuotes(this.state.description),
         dateTimeStrs[0],
         dateTimeStrs[1],
-        (this.state.link == '_agora.stream_tech') ? UrlEncryption.encryptIdAndRoleInUrl("livestream", this.props.talk!.id) : this.validLink(this.state.link),
+        (this.state.link == '_mora.stream_tech') ? UrlEncryption.encryptIdAndRoleInUrl("livestream", this.props.talk!.id) : this.validLink(this.state.link),
         this.state.tags,
         this.state.releaseLinkOffset,
         // this.state.linkVisibility,
@@ -392,9 +392,9 @@ export default class EditTalkModal extends Component<Props, State> {
   };
 
   onEditStreamingLinkCallback = (talk: Talk) => {
-    // Edits talk URL if user uses agora.stream streaming tech.
+    // Edits talk URL if user uses mora.stream streaming tech.
     // NOTE: As talk_id not available at creation, we add callback
-    if (talk.link == 'https://_agora.stream_tech'){
+    if (talk.link == 'https://_mora.stream_tech'){
       const dateTimeStrs = this.combineDateAndTimeStrings();
       var encryptedUrl = UrlEncryption.encryptIdAndRoleInUrl("livestream", talk.id)
       TalkService.editTalk(
@@ -969,14 +969,14 @@ export default class EditTalkModal extends Component<Props, State> {
               </ReactTooltip> 
             </Box>
 
-            {this.state.link !== '_agora.stream_tech' && ( 
+            {this.state.link !== '_mora.stream_tech' && ( 
               <TextInput
                 value={this.state.link}
                 placeholder="https://zoom.us/1234"
                 onChange={(e) => this.setState({ link: e.target.value })}
               />
             )}
-            {this.state.link === '_agora.stream_tech' && ( 
+            {this.state.link === '_mora.stream_tech' && ( 
               <Box
                 height="40px"
                 round="3px"
@@ -1002,11 +1002,11 @@ export default class EditTalkModal extends Component<Props, State> {
               )}
               <Box direction="row" gap="45px"> 
                 <CheckBox 
-                  checked={this.state.link == '_agora.stream_tech'} 
-                  label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
+                  checked={this.state.link == '_mora.stream_tech'} 
+                  label={`${this.state.link == '_mora.stream_tech'?"Hosting":"Host"} on mora.stream`} 
                   onChange={(e) => {
                     if (this.state.subscriptionPlans.includes("tier2")) {
-                      this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })
+                      this.setState({ link: e.target.checked ?'_mora.stream_tech':'' })
                     }
                   }}
                 />
@@ -1150,7 +1150,7 @@ export default class EditTalkModal extends Component<Props, State> {
               </Box>
             )}
             {!this.state.onRegistration && (
-              <Text size="13px"> Your event is public, and the link to your talk will be shown on agora.stream 15 minutes before the start. </Text>
+              <Text size="13px"> Your event is public, and the link to your talk will be shown on mora.stream 15 minutes before the start. </Text>
             )}
           </Box>
         )}
@@ -1519,9 +1519,9 @@ export default class EditTalkModal extends Component<Props, State> {
                     onChange={(e) => this.setState({ link: e.target.value })}
                   />
                 <CheckBox 
-                  checked={this.state.link == '_agora.stream_tech'} 
-                  label={`${this.state.link == '_agora.stream_tech'?"Hosting":"Host"} on Agora.stream`} 
-                onChange={(e) => this.setState({ link: e.target.checked ?'_agora.stream_tech':'' })}/> 
+                  checked={this.state.link == '_mora.stream_tech'} 
+                  label={`${this.state.link == '_mora.stream_tech'?"Hosting":"Host"} on mora.stream`} 
+                onChange={(e) => this.setState({ link: e.target.checked ?'_mora.stream_tech':'' })}/> 
 
                   <Text
                     size="14px" 

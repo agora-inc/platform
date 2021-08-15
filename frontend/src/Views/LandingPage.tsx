@@ -105,7 +105,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           >
             <Box pad="30px" alignSelf="center" fill={true}>
               <Text size="16px" color="black" weight="bold"  >
-                How to give your talk on agora.stream
+                How to give your talk on mora.stream
               </Text>
             </Box>
             <Box pad="32px" alignSelf="center">

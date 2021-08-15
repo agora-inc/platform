@@ -99,7 +99,7 @@ export default class VideoCard extends Component<Props, State> {
           onClick={() => {}}
           style={{
             backgroundImage: `url(${
-              "http://agora.stream:5080/WebRTCAppEE/previews/" +
+              "http://mora.stream:5080/WebRTCAppEE/previews/" +
               this.props.video.chat_id +
               ".png"
             })`,

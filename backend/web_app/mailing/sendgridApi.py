@@ -17,7 +17,7 @@ import math
 class sendgridApi:
     def __init__(self):
         self.endpoint = "https://api.sendgrid.com/v3/mail/send"
-        self.name_app = "agora.stream_logistic_mails"
+        self.name_app = "mora.stream_logistic_mails"
         self.api_key = "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"
         self.sendgrid_api_client = SendGridAPIClient(api_key=self.api_key)
 
