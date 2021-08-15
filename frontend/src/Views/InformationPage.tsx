@@ -4,7 +4,7 @@ import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid } from "grommet";
 import { Checkmark, Twitter, Linkedin } from "grommet-icons";
 import DonorButton from "../Components/Core/DonorButton"
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.svg";
+import moraStreamFullLogo from "../assets/general/mora.stream_logo_v2.1.svg";
 import seminarPhoto from "../assets/agoraCreationPage/academic_seminars_photo.jpeg"
 
 
@@ -220,14 +220,14 @@ export default class InformationPage extends Component<Props, State> {
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Checkmark size="25px" />
                   <Text size="25px"> <b>Tell</b> about 
-                    <img src={agoraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/> 
+                    <img src={moraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/> 
                     to all your friends and colleagues 
                   </Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Checkmark size="25px" />
                   <Text size="25px"> <b>Organise</b> and share your seminars with 
-                    <img src={agoraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/>  
+                    <img src={moraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/>  
                   </Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">

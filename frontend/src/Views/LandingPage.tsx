@@ -61,7 +61,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     var now = Date.now();
     // return dynamicTextValueList[now % dynamicTextValueList.length]
     // "Home for cutting-edge online/physical academic seminars"
-    return "Where new ideas are shared and debated."
+    return "where new ideas are shared and debated."
   }
 
   toggleModal = () => {
