@@ -42,12 +42,12 @@ interface Props {
 
     urlLink = () => {
       if (this.props.talk) {
-        return `https://agora.stream/event/${this.props.talk.id}`
+        return `https://mora.stream/event/${this.props.talk.id}`
       } else if (this.props.channel){
         const name = this.props.channel.name.replace(/\s/g, '%20')
-        return `https://agora.stream/${name}`
+        return `https://mora.stream/${name}`
       } else {
-        return 'https://agora.stream/'
+        return 'https://mora.stream/'
       }
     }
 
@@ -96,9 +96,9 @@ interface Props {
 
     agoraLogoUrl = () => {
       if (this.props.talk) {
-        return `https://agora.stream/api/channels/avatar?channelId=${this.props.talk.ChannelIcon_id}&ts=2`
+        return `https://mora.stream/api/channels/avatar?channelId=${this.props.talk.ChannelIcon_id}&ts=2`
       } else if (this.props.channel) {
-        return `https://agora.stream/api/channels/avatar?channelId=${this.props.channel.id}`
+        return `https://mora.stream/api/channels/avatar?channelId=${this.props.channel.id}`
       }
     }
 
@@ -106,7 +106,7 @@ interface Props {
       if (this.props.talk) {
         return this.props.talk.channel_name;
       } else if (this.props.channel) {
-        return "agora.stream";
+        return "mora.stream";
       }
     }
 

@@ -111,13 +111,13 @@ class InvitedUsersRepository:
                 # Send emails
                 channel_name = self.channels.getChannelById(channelId)["name"]
                 for email in registered_users_emails:
-                    msg = Message(sender = ("Agora.stream Team", 'team@agora.stream'), recipients = [email])
+                    msg = Message(sender = ("mora.stream Team", 'team@agora.stream'), recipients = [email])
                     msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
-                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been invited by the administrators of <strong>{channel_name}</strong> to join their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
+                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been invited by the administrators of <strong>{channel_name}</strong> to join their agora community on <a href="https://mora.stream/{channel_name}">mora.stream</a>!&nbsp;</span></span></p>
                         <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
                         <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you soon!</span></span></p>
-                        <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The agora.stream Team</span></p>'''
-                    msg.subject = f"Agora.stream: you are invited to join {channel_name}"
+                        <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The mora.stream Team</span></p>'''
+                    msg.subject = f"mora.stream: you are invited to join {channel_name}"
                     self.mail_sys.send(msg)
 
         # C. Add invitations in DB and send emails to new ones
@@ -136,11 +136,11 @@ class InvitedUsersRepository:
             for email in invitationEmailList:
                 msg = Message(sender = 'team@agora.stream', recipients = [email])
                 msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
-                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been invited by the administrators of <strong>{channel_name}</strong> to join their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been invited by the administrators of <strong>{channel_name}</strong> to join their agora community on <a href="https://mora.stream/{channel_name}">mora.stream</a>!&nbsp;</span></span></p>
                     <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
                     <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you soon!</span></span></p>
-                    <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The agora.stream Team</span></p>'''
-                msg.subject = f"Agora.stream: you have been invited to follow {channel_name}"
+                    <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The mora.stream Team</span></p>'''
+                msg.subject = f"mora.stream: you have been invited to follow {channel_name}"
                 self.mail_sys.send(msg)
 
     def getInvitedMembersEmails(self, channelId):

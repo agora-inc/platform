@@ -114,7 +114,7 @@ class UserRepository:
                 # send confirmation email
                 msg = Message(sender = 'team@agora.stream', recipients = [email])
                 msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif;">Dear <strong>{username}</strong>,</span></p>
-                        <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://agora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">agora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion will be driving forces for many research communities.</span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://mora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">mora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion will be driving forces for many research communities.</span></p>
                         
                         <p><span style="font-family: Arial, Helvetica, sans-serif;">With your new account, you can:</span></p>
                         <ol>
@@ -122,11 +122,11 @@ class UserRepository:
                             <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Create your own agora</strong> and/or become the <strong>administrator</strong> of one, allowing you to advertise your events to the audience you desire, receive talk applications from researchers all around the world and much more!</span></li>
                         </ol>
                         {existing_invitation_paragraph}
-                        <p><span style="font-family: Arial, Helvetica, sans-serif;">You can visit our <a href="https://agora.stream/info/getting-started">getting started page</a> to explore all the features of agora.stream.</span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">You can visit our <a href="https://mora.stream/info/getting-started">getting started page</a> to explore all the features of mora.stream.</span></p>
                         <p><span style="font-family: Arial, Helvetica, sans-serif;">If you have any question, feedback or suggestion, please reach out to us by replying to this email.</span></p>
-                        <p><span style="font-family: Arial, Helvetica, sans-serif;"><em>The agora.stream team</em></span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;"><em>The mora.stream team</em></span></p>
                     '''
-                msg.subject = f"Welcome to agora.stream!"
+                msg.subject = f"Welcome to mora.stream!"
                 self.mail_sys.send(msg)
 
             # New email formatting (Sendgrid) if no invitations

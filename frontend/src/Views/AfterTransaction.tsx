@@ -47,7 +47,7 @@ interface Props extends RouteComponentProps {
     }
 
     onSuccess = () => {
-        var channelUrl = `https://agora.stream/${this.state.channel.name}`
+        var channelUrl = `https://mora.stream/${this.state.channel.name}`
         return (
             <Box align="center" margin={{top:"80px"}} >
                 <Box width="40%">

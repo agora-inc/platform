@@ -144,7 +144,7 @@ export default class GettingStartedPage extends Component<Props, State> {
             <Text size={this.state.sizeHeader} weight="bold"> Getting started </Text>
           </Box>
           <Box margin={{bottom: "32px"}}>
-            <Text size={this.state.sizeText} > Welcome to <b>agora.stream</b>, the centralized platform to advertise and attend academic seminars!
+            <Text size={this.state.sizeText} > Welcome to <b>mora.stream</b>, the centralized platform to advertise and attend academic seminars!
              </Text>
           {/* <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
             PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
