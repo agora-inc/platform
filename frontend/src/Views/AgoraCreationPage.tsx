@@ -369,7 +369,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Checkmark size="18px" />
-                  <Text> <b> Upload slides </b> to allow participants can go back and forth </Text>
+                  <Text> <b> Upload slides </b> and allow participants to go back and forth </Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Checkmark size="18px" />
