@@ -442,7 +442,7 @@ export default class UserManager extends Component<Props, State> {
       <Box margin={{right:"43px"}}>
         <Link
           to={{ pathname: "/info/welcome" }}
-          style={{ textDecoration: "none", marginRight: "43px" }}
+          style={{ textDecoration: "none", marginRight: "100px" }}
         >
           <Box
             onClick={() => ({})}
@@ -455,7 +455,7 @@ export default class UserManager extends Component<Props, State> {
             focusIndicator={false}
             hoverIndicator="#6DA3C7"
           >
-            <Text size="15px" weight="bold"> About us </Text>
+            <Text size="14px" weight="bold"> About us </Text>
           </Box>
         </Link>
       </Box>
@@ -482,20 +482,20 @@ export default class UserManager extends Component<Props, State> {
     <Box direction="row" align="center" justify="center" gap="xsmall" margin={{right: "1vw"}}>
         <Link
           to={{ pathname: "/info/welcome" }}
-          style={{ textDecoration: "none", marginRight: "43px" }}
+          style={{ textDecoration: "none", marginRight: "100px" }}
         >
           <Box
             onClick={() => ({})}
             width="120px"
             height="30px"
             background="#BAD6DB"
-            round="7px"
+            round="xsmall"
             justify="center"
             align="center"
             focusIndicator={false}
             hoverIndicator="#6DA3C7"
           >
-            <Text size="15px" weight="bold"> About us </Text>
+            <Text size="14px" weight="bold"> About us </Text>
           </Box>
         </Link>
       <LoginModal

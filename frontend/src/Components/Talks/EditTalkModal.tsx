@@ -655,7 +655,7 @@ export default class EditTalkModal extends Component<Props, State> {
         {!this.state.reminders[j].exist && (
           <Box
             focusIndicator={false}
-            background="white"
+            background={this.isPaying() ? "white" : "#BAD6DB"}
             round="xsmall"
             pad={{ vertical: "2px", horizontal: "xsmall" }}
             onClick={this.toggleReminder(j)}
@@ -727,7 +727,8 @@ export default class EditTalkModal extends Component<Props, State> {
           border: "1px solid #BBBBBB",
         }}
         margin={{left: prev ? "36px" : "0px", right: prev ? "0px" : "36px"}}
-        onClick={() => this.setState((prevState: any) => ({activeSection: prevState.activeSection+incr}))} 
+        onClick={() => this.setState((prevState: any) => ({activeSection: prevState.activeSection+incr}))}
+        hoverIndicator="#DDDDDD" 
       >
       {prev && <LinkPrevious color="#BBBBBB" size="26px" />}
       {!prev && <LinkNext color="#BBBBBB" size="26px" />}
@@ -770,6 +771,7 @@ export default class EditTalkModal extends Component<Props, State> {
               width="99.7%"
               background="#eaf1f1"
               direction="row"
+              align="center"
               style={{
                 minHeight: "50px",
                 borderTopLeftRadius: "15px",
@@ -782,7 +784,7 @@ export default class EditTalkModal extends Component<Props, State> {
                 </Text>
               </Box>
               {this.props.talk && (
-                <Box width="67%" direction="row" align="center" justify="center" gap="30px">
+                <Box width="71%" direction="row" align="center" justify="start" gap="30px">
                   <Box 
                     round="xsmall"
                     pad={{ vertical: "4px", horizontal: "4px" }}
@@ -795,7 +797,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     hoverIndicator="#dddddd"
                     onClick={() => this.setState((prevState: any) => ({onClickDelete: !prevState.onClickDelete}))} 
                   >
-                    <Configure size="20px"/>
+                    <Configure size="18px"/>
                   </Box>
                   {this.state.onClickDelete && (
                     <Box
@@ -814,9 +816,21 @@ export default class EditTalkModal extends Component<Props, State> {
                 </Box>
               )}
 
-              {!this.props.talk && <Box width="67%" />}
-              <Box pad="20px" alignSelf="center">
-                <Close onClick={this.props.onCanceledCallback} />
+              {!this.props.talk && <Box width="71%" />}
+              <Box
+                pad="4px"
+                style={{
+                  height: "36px",
+                  width: "36px",
+                  border: "1px solid #BBBBBB",
+                }}
+                justify="center"
+                round="xsmall"
+                align="center"
+                onClick={this.props.onCanceledCallback}
+                hoverIndicator="#DDDDDD" 
+              >
+                <Close color="#BBBBBB" size="26px" />
               </Box>
             </Box>
             
@@ -844,11 +858,11 @@ export default class EditTalkModal extends Component<Props, State> {
               height="32px"
               round="16px" 
               onClick={() => this.setState({activeSection: i})} 
-              background={this.state.activeSection === i ? "#6DA3C7" : "white"}
+              background={this.state.activeSection === i ? "#BAD6DB" : "white"}
               justify="center"
               align="center"
-              border={{color: "#6DA3C7"}}
-              hoverIndicator="#6DA3C7"
+              border={{color: "#BAD6DB"}}
+              hoverIndicator="#BAD6DB"
               focusIndicator={false}
             >
               <Text color="black" size="14px"> {i} </Text> 
@@ -911,7 +925,7 @@ export default class EditTalkModal extends Component<Props, State> {
 
               {!this.state.latex && (
                 <TextArea
-                  style={{height: "240px"}}
+                  style={{height: "210px"}}
                   value={this.state.description}
                   placeholder=""
                   onChange={(e) => this.setState({ description: e.target.value })}
@@ -1027,7 +1041,7 @@ export default class EditTalkModal extends Component<Props, State> {
               </Box>
             )}
 
-            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#D3F930"}
+            <Box background={this.state.subscriptionPlans.includes("tier2") ? "white" : "#BAD6DB"}
               pad="15px" round="6px" gap="10px"
             >
               {!this.state.subscriptionPlans.includes("tier2") && (
@@ -1048,7 +1062,8 @@ export default class EditTalkModal extends Component<Props, State> {
                 {!this.state.subscriptionPlans.includes("tier2") && (
                   <Box
                     onClick={this.toggleModalPricing}
-                    background="#BAD6DB"
+                    background="#D3F930"
+                    hoverIndicator="#7BA59E"
                     round="xsmall"
                     pad="xsmall"
                     width="160px"
@@ -1056,7 +1071,6 @@ export default class EditTalkModal extends Component<Props, State> {
                     justify="center"
                     align="center"
                     focusIndicator={false}
-                    hoverIndicator="#0C385B"
                   >
                     <Text size="14px" weight="bold"> Unlock streaming </Text>
                   </Box>
@@ -1113,8 +1127,8 @@ export default class EditTalkModal extends Component<Props, State> {
             </Box>
 
             {this.state.onRegistration && (
-              <Box margin={{bottom: "60px"}} gap="15px">
-                <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
+              <Box margin={{bottom: "20px"}} gap="15px">
+                <Box direction="row" gap="small" margin={{ bottom: "0px" }} align="center">
                   <Text size="13px" weight="bold"> 
                     Automatically accept some users?
                   </Text>
@@ -1225,7 +1239,7 @@ export default class EditTalkModal extends Component<Props, State> {
           <Box width="75%" margin={{bottom: "10px"}} style={{minHeight: "350px" }} align="start">
             <Box 
               direction="column" gap="10px" 
-              background={this.isPaying() ? "white" : "#d3f930"}
+              background={this.isPaying() ? "white" : "#BAD6DB"}
               pad="25px" round="6px" 
             >
               {!this.isPaying() && (
@@ -1268,7 +1282,8 @@ export default class EditTalkModal extends Component<Props, State> {
               {!this.isPaying() && ( 
                 <Box
                   onClick={this.toggleModalPricing}
-                  background="#BAD6DB"
+                  background="#D3F930"
+                  hoverIndicator="#7BA59E"
                   round="xsmall"
                   pad="xsmall"
                   width="200px"
@@ -1276,7 +1291,6 @@ export default class EditTalkModal extends Component<Props, State> {
                   justify="center"
                   align="center"
                   focusIndicator={false}
-                  hoverIndicator="#0C385B"
                 >
                   <Text size="14px" weight="bold"> Unlock email reminders </Text>
                 </Box>
@@ -1344,13 +1358,18 @@ export default class EditTalkModal extends Component<Props, State> {
                 <>
                 {this.renderArrowButton(true)}
                 <Box width="50%" />
-                <Button
+                <Box
                   width="140px"
                   height="35px"
-                  text="Save as draft"
-                  textColor="white"
+                  align="center"
+                  justify="center"
+                  round="xsmall"
+                  background="#BAD6DB"
+                  hoverIndicator="#6DA3C7"
                   onClick={this.onSaveDraft}
-                />
+                >
+                  <Text size="14px" weight="bold"> Save as draft </Text>
+                </Box>
                 <Box data-tip data-for='submitbutton' margin={{left: "24px", right: "32px"}}> 
                   <Button
                     fill={this.isComplete() ? "#025377" : "#CCCCCC"}
