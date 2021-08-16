@@ -466,7 +466,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               justify="center"
               align="center"
               focusIndicator={false}
-              hoverIndicator="#0C385B"
+              hoverIndicator="#BAD6DB"
               
             >
               <Text size="16px">Edit</Text>

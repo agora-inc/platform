@@ -269,7 +269,7 @@ export default class PastTalkCard extends Component<Props, State> {
                   justify="center"
                   align="start"
                   focusIndicator={false}
-                  hoverIndicator="#0C385B"
+                  hoverIndicator="#BAD6DB"
                 >
                   <Text alignSelf="center" size="14px">
                     Watch talk
@@ -339,7 +339,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 justify="center"
                 align="start"
                 focusIndicator={false}
-                hoverIndicator="#0C385B"
+                hoverIndicator="#BAD6DB"
               >
                 <Text alignSelf="center" size="14px">
                   Watch talk
@@ -913,7 +913,7 @@ export default class PastTalkCard extends Component<Props, State> {
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#0C385B"
+            hoverIndicator="#BAD6DB"
             margin="10px"
           >
             <Text size="18px">Edit</Text>

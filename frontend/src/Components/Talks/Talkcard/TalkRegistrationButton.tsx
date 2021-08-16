@@ -331,7 +331,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                 </Text>
                 <Box direction="row" align="center" pad="xsmall">
                   <FormNext size="20px" />
-                  <Text size="14px"> Please wait for the approval from the event organizer </Text>
+                  <Text size="14px"> Please wait for the approval from the event organiser </Text>
                 </Box>
               </Box>
 

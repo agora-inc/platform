@@ -101,7 +101,7 @@ export default class MobileTalkCardOverlay extends Component<Props, State> {
                             justify="center"
                             align="start"
                             focusIndicator={false}
-                            hoverIndicator="#0C385B"
+                            hoverIndicator="#BAD6DB"
                             >
                             <Text alignSelf="center" size="14px">
                                 Watch talk
