@@ -1,6 +1,6 @@
 // LIVE CONFIG:
-export const basePoint = "https://agora.stream"
-export const baseApiUrl = "https://agora.stream/api";
+export const basePoint = "https://mora.stream"
+export const baseApiUrl = "https://mora.stream/api";
 
 // LOCAL TEST CONFIG;
 // export const basePoint = "http://localhost:3000"

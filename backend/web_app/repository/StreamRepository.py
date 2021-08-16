@@ -62,7 +62,7 @@ class StreamRepository:
         # self.db.con.commit()
         query = f'INSERT INTO Streams(channel_id, channel_name, name, description, image_url) VALUES ({channelId}, "{channelName}", "{streamName}", "{streamDescription}", "{imageUrl}")'
         insertId = self.db.run_query(query)[0]
-        streamUrl = "http://www.agora.stream:5080/WebRTCAppEE/streams/%d_720p.m3u8" % insertId
+        streamUrl = "http://www.mora.stream:5080/WebRTCAppEE/streams/%d_720p.m3u8" % insertId
 
         query = f'UPDATE Streams SET from_url = "{streamUrl}" WHERE id = {insertId}'
         # cursor.execute('UPDATE Streams SET from_url = "%s" WHERE id = %d' % (streamUrl, insertId))
@@ -81,7 +81,7 @@ class StreamRepository:
         if not stream:
             return -1
 
-        url = f"http://www.agora.stream:5080/WebRTCAppEE/streams/{streamId}_720p.mp4"
+        url = f"http://www.mora.stream:5080/WebRTCAppEE/streams/{streamId}_720p.mp4"
 
         if not delete:
             query = f'INSERT INTO Videos(channel_id, channel_name, name, description, image_url, url, chat_id, views, date) VALUES ({stream["channelId"]}, "{stream["channelName"]}", "{stream["name"]}", "{stream["description"]}", "{stream["image_url"]}", "{url}", "{streamId}", "{stream["views"]}", "{now}")'

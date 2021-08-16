@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Layer, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 
-import agoraStreamFullLogo from "../../assets/general/agora.stream_logo_v2.1.svg";
+import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v2.1.svg";
 import { Link } from "react-router-dom";
 import UserManager from "../Account/UserManager";
 import FormContainer from "../Homepage/FormContainer";
@@ -60,10 +60,10 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             <Link to="/" style={{ textDecoration: "none", width: 140 }}>
               <Box direction="row" align="center">
                 <MediaQuery minDeviceWidth={992}>
-                <img src={agoraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
+                <img src={moraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
                 </MediaQuery>
                   <MediaQuery maxDeviceWidth={992}>
-                <img src={agoraStreamFullLogo} style={{ height: "3vh", marginLeft: 5 }}/>
+                <img src={moraStreamFullLogo} style={{ height: "3vh", marginLeft: 5 }}/>
                     <Text size="xsmall" color="black">mobile</Text>
                     </MediaQuery>
               </Box>
@@ -79,7 +79,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                     fontStyle: "italic",
                   }}
                 >
-                  The modern agora
+                  The <b>mo</b>dern ago<b>ra</b>
                 </Text>
                 {/* Automating the academic seminar organisation pipeline. */}
               </MediaQuery>
