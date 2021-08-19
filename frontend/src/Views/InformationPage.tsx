@@ -4,6 +4,7 @@ import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid } from "grommet";
 import { CaretNext, Twitter, Linkedin } from "grommet-icons";
 import DonorButton from "../Components/Core/DonorButton"
+import ShareButtons from "../Components/Core/ShareButtons";
 import moraStreamFullLogo from "../assets/general/mora.stream_logo_v2.1.svg";
 import seminarPhoto from "../assets/agoraCreationPage/academic_seminars_photo.jpeg"
 
@@ -241,6 +242,14 @@ export default class InformationPage extends Component<Props, State> {
                     <img src={moraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/> 
                     to all your friends and colleagues 
                   </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "45px", top: "10px"}} align="center">
+                  <ShareButtons
+                      talk={null}
+                      channel={null}
+                      useReducedHorizontalVersion={true}
+                      widthPixel={40}
+                    />
                 </Box>
               </Box>
 
