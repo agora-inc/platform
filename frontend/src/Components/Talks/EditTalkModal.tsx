@@ -932,9 +932,11 @@ export default class EditTalkModal extends Component<Props, State> {
                 />
               )}
               {this.state.latex && (
-                this.state.description.split('\n').map(
-                  (item, i) => textToLatex(item)
-                )
+                <Box height="210px" overflow="auto">
+                  {this.state.description.split('\n').map(
+                    (item, i) => textToLatex(item)
+                  )}
+                </Box>
               )}
             </Box>
           </Box>

@@ -47,7 +47,7 @@ interface Props {
         const name = this.props.channel.name.replace(/\s/g, '%20')
         return `https://mora.stream/${name}`
       } else {
-        return 'https://mora.stream/'
+        return `https://mora.stream/`
       }
     }
 
@@ -58,6 +58,8 @@ interface Props {
       } else if (this.props.channel){
         let url = baseApiUrl + `/channel-link?channelId=${this.props.channel.id}`
         return url
+      } else {
+        return baseApiUrl
       }
     }
 
@@ -66,6 +68,8 @@ interface Props {
         return `Talk that might be of interest to you`
       } else if (this.props.channel) {
         return `An Agora that might be of interest to you`
+      } else {
+        return `Check out this new hybrid seminar platform`
       }
     }
 
@@ -74,6 +78,8 @@ interface Props {
         return `Hey, check this out: ${this.urlLink()}`
       } else if (this.props.channel) {
         return `Hey, check this out: ${this.urlLink()}`
+      } else {
+        return `Here is the link: ${this.urlLink()}`
       }
     }
 
@@ -83,6 +89,9 @@ interface Props {
         return this.props.talk.description
       } else if (this.props.channel) {
         return this.props.channel.description
+      } else {
+        return "mora.stream is a public place where new ideas are" + 
+        "debated, discovered, and broadcasted to an international physical/online audience."
       }
     }
 
@@ -91,6 +100,8 @@ interface Props {
         return this.props.talk.name
       } else if (this.props.channel){
         return this.props.channel.name
+      } else {
+        return "mora.stream"
       }
     }
 
@@ -99,7 +110,7 @@ interface Props {
         return `https://mora.stream/api/channels/avatar?channelId=${this.props.talk.ChannelIcon_id}&ts=2`
       } else if (this.props.channel) {
         return `https://mora.stream/api/channels/avatar?channelId=${this.props.channel.id}`
-      }
+      } 
     }
 
     twitterUsername = () => {
@@ -107,6 +118,8 @@ interface Props {
         return this.props.talk.channel_name;
       } else if (this.props.channel) {
         return "mora.stream";
+      } else {
+        return "mora.stream"
       }
     }
 
