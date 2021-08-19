@@ -45,7 +45,7 @@ export default class PrivacyPage extends Component<Props, State> {
           > */}
             <Text color="black" size="14px">
                 <h1><b>Data privacy </b></h1>
-                <p>As with any other website, when using agora.stream, your internet browser and our servers exchange data. We are going to tell you exactly what transacts and how it is used.
+                <p>As with any other website, when using mora.stream, your internet browser and our servers exchange data. We are going to tell you exactly what transacts and how it is used.
                 </p>
 
                 <h2> <b>1. What type of data is exchanged? </b></h2>
@@ -102,7 +102,7 @@ export default class PrivacyPage extends Component<Props, State> {
                   <li> <em>The right to erasure</em> – You have the right to request that we erase your personal data, under certain conditions.</li>
                   <li> <em>The right to restrict processing</em> – You have the right to request that we restrict the processing of your personal data, under certain conditions.</li>
                   <li> <em>The right to object to processing</em> – You have the right to object to our processing of your personal data, under certain conditions.</li>
-                  <li> <em>The right to data portability</em> – You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</li>
+                  <li> <em>The right to data portability</em> – You have the right to request that we transfer the data that we have collected to another organisation, or directly to you, under certain conditions.</li>
                   <li> <em>The right to access</em> – You have the right to request us for copies of your personal data. We may charge you a small fee for this service.</li>
                 </ol>
                 </p>

@@ -127,7 +127,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
         >
         <Box width={renderMobileView ? "85%" : "70%"} direction="column" margin={{top: "10px"}}>
             <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{bottom: "44px"}} > 
-              Everything you need to organize your seminars, all in one place
+              Everything for your seminars, all in one place
             </Text>
             <Grid
               rows={
@@ -271,7 +271,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   A couple clicks to handle all registrations
                 </Text>
                 <Text size="18px">
-                  As an organizer, you can decide to automatically accept certains group of people <b> everyone, only verified academics, only people from your institution, etc. </b>
+                  As an organiser, you can decide to automatically accept certains group of people <b> everyone, only verified academics, only people from your institution, etc. </b>
                 </Text>
                 <Text size="18px" margin={{top: "10px"}}>
                   For the others, manually accepting them is made very easy and intuitive!
@@ -369,7 +369,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Checkmark size="18px" />
-                  <Text> <b> Upload slides </b> to allow participants can go back and forth </Text>
+                  <Text> <b> Upload slides </b> and allow participants to go back and forth </Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Checkmark size="18px" />

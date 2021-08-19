@@ -138,7 +138,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                     {!this.props.disabled && (
                       <a
                           style={{ width: "100%", textDecoration: "none" }}
-                          href={"https://gather.town/app/ZdQRhpTeDNaBiV2P/agora.stream%20Cafeteria"}
+                          href={"https://gather.town/app/ZdQRhpTeDNaBiV2P/mora.stream%20Cafeteria"}
                           target="_blank"
                       >
                           <Button
@@ -197,7 +197,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                       justify="center"
                       align="center"
                       focusIndicator={true}
-                      hoverIndicator="#6DA3C7"
+                      hoverIndicator="#BAD6DB"
                   >
                     <Text size="15px" weight="bold">
                       The virtual cafeteria is closed

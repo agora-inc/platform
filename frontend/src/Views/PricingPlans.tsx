@@ -188,14 +188,14 @@ export default class ManageChannelPage extends Component<Props, State> {
 
           <Box direction="row" gap="10px" align="center" margin={{ top:"20px", bottom: "20px", left: "10px" }}>
             <Text size="14px" style={{ fontStyle: "italic" }} >
-              Select "Big" if you have an audience of more than 30 people:
+              Do you have more than 30 people attending your seminars?
           </Text>
           <Switch
-            width="70px"
+            width="60px"
             checked={false}
             callback={(pricingOptionBig: boolean) => {this.setState({ pricingOptionBig })}}
-            textOn="Big"
-            textOff="Small" 
+            textOn="Yes"
+            textOff="No" 
           />
             {/* checked={this.state.pricingOptionBig}
             checkedChildren="Big" 
@@ -221,7 +221,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           /> 
           </Box> */}
 
-          <Table>
+          <Table margin={{bottom: "20px"}}>
             <TableHeader>
               <TableRow>
                 <TableCell scope="col" border="bottom">

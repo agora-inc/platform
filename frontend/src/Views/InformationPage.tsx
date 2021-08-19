@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid } from "grommet";
-import { Checkmark, Twitter, Linkedin } from "grommet-icons";
+import { CaretNext, Twitter, Linkedin } from "grommet-icons";
 import DonorButton from "../Components/Core/DonorButton"
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.svg";
+import moraStreamFullLogo from "../assets/general/mora.stream_logo_v2.1.svg";
 import seminarPhoto from "../assets/agoraCreationPage/academic_seminars_photo.jpeg"
 
 
@@ -70,14 +70,15 @@ export default class InformationPage extends Component<Props, State> {
             </Text>
           </Box>
           <Text weight="bold" size="22px" margin={{bottom: "36px", left: "15px"}}>
-            A public place where new ideas are debated, discovered, and broadcasted to an international physical / online audience.
+            A public place where new ideas are debated, discovered, and broadcasted to an international physical/online audience.
             {/* Hybrid seminars where new ideas are debated, discovered, and broadcasted to an international audience. */}
           </Text>
 
             <img src={seminarPhoto} 
               style={{
-                width: "100%", 
-                alignSelf: "center", 
+                width: "70%", 
+                alignSelf: "left", 
+                marginLeft: "15px",
                 marginTop: renderMobileView ? "15px" : "30px", 
                 marginBottom: renderMobileView ? "55px" : "0px"}}
             />
@@ -85,7 +86,7 @@ export default class InformationPage extends Component<Props, State> {
           
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "100px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-              Our missions 🌎
+              Our mission 🌎
               </Text>
             </Box>
 
@@ -161,7 +162,7 @@ export default class InformationPage extends Component<Props, State> {
                   Ground-breaking results often come from the merging of ideas from different fields.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  However, in order to meet, there must be a conscious organizational effort to gather.
+                  However, in order to meet, there must be a conscious organisational effort to gather.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
                   The solution? A centralized place where researchers can hop from one seminar to another with just a couple clicks.
@@ -210,47 +211,47 @@ export default class InformationPage extends Component<Props, State> {
               </Box>
             </Box>
 
-            <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "50px") }}>
+            <Box direction="row" gap="small" margin={{bottom: "36px", top: (renderMobileView ? "50px" : "50px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
                 Become part of the revolution 💪
               </Text>
             </Box>
 
             <Box gap="small">
-                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
-                  <Checkmark size="25px" />
-                  <Text size="25px"> <b>Tell</b> about 
-                    <img src={agoraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/> 
-                    to all your friends and colleagues 
-                  </Text>
-                </Box>
-                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
-                  <Checkmark size="25px" />
+
+                <Box direction="row" gap="10px" margin={{left: "10px"}} align="center">
+                  <CaretNext size="25px" />
                   <Text size="25px"> <b>Organise</b> and share your seminars with 
-                    <img src={agoraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/>  
+                    <img src={moraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/>  
                   </Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
-                  <Checkmark size="25px" />
-                  <Text size="25px"> <b>Follow</b> us on <a href="https://www.linkedin.com/company/agorastream"><Linkedin/></a> and <a href="https://twitter.com/agorastream"><Twitter/></a> to hear out about next trending seminars and the release of new features</Text>
+                  <CaretNext size="25px" />
+                  <Text size="25px"> <b>Follow</b> us on <a href="https://www.linkedin.com/company/morastream"><Linkedin/></a> and <a href="https://twitter.com/morastream"><Twitter/></a> to hear out about next trending seminars and the release of new features</Text>
                 </Box>
                 <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <Box direction="row" alignContent="start" height="18px">
-                    <Checkmark size="25px" /><Box width="10px"></Box>
+                    <CaretNext size="25px" /><Box width="10px"></Box>
                     <Text size="25px">  <b>Help us</b> grow faster by </Text><Box width="10px"></Box><DonorButton callback={()=> {}} text={"donating!"}/>
                   </Box>
                 </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "20px"}} align="center">
+                  <CaretNext size="25px" />
+                  <Text size="25px"> <b>Tell</b> about 
+                    <img src={moraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/> 
+                    to all your friends and colleagues 
+                  </Text>
+                </Box>
               </Box>
 
-              <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "100px" : "150px") }}>
+              <Box direction="row" gap="small" margin={{bottom: "36px", top: (renderMobileView ? "100px" : "150px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
                 About us 👨‍👩‍👧‍👦
               </Text>
             </Box>
             <Box margin={{bottom: "150px"}}>
-              <Text size="18px">
-                  We are a team of researchers at Imperial College London and the University of Oxford 
-                  who believe in a connected world where ideas are shared in a efficient way.
+              <Text size="25px">
+                  We are a team of researchers at Imperial College London and the University of Oxford who believe in a connected world where ideas are shared in a efficient way.
                 </Text>
             </Box>
           </Box>

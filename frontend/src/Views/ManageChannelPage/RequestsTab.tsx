@@ -178,7 +178,7 @@ const WineButton: React.FC<any> = (props) => {
       justify="center"
       align="center"
       focusIndicator={false}
-      hoverIndicator="#0C385B"
+      hoverIndicator="#BAD6DB"
     >
       <Text size="14px">{props.children}</Text>
     </Box>

@@ -86,22 +86,19 @@ export default class LoginModal extends Component<Props, State> {
   render() {
     return (
       <Box style={{maxHeight: "30px"}}>
-        <Button
-          label="Log in"
+        <Box
           onClick={this.toggleModal}
-          style={{
-            width: 90,
-            height: 35,
-            fontSize: 15,
-            fontWeight: "bold",
-            padding: 0,
-            // margin: 6,
-            backgroundColor: "#F2F2F2",
-            border: "none",
-            borderRadius: 7,
-          }}
+          background="#F2F2F2"
           hoverIndicator="#BAD6DB"
-        />
+          focusIndicator={false}
+          align="center"
+          justify="center"
+          width="100px"
+          height="35px"
+          round="xsmall"
+        >
+          <Text size="14px" weight="bold"> Log in </Text>
+        </Box>
         <Overlay
           width={400}
           height={this.state.failed ? 420 : 320}

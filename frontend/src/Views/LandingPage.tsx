@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-import agoraStreamFullLogo from "../assets/general/agora.stream_logo_v2.1.svg";
+import moraStreamFullLogo from "../assets/general/mora.stream_logo_v2.1.svg";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../Services/UserService";
 import { Search, Play, Add, Chat, Close, Channel, ScheduleNew, Multiple } from "grommet-icons";
@@ -61,7 +61,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     var now = Date.now();
     // return dynamicTextValueList[now % dynamicTextValueList.length]
     // "Home for cutting-edge online/physical academic seminars"
-    return "Where new ideas are shared and debated."
+    return "where new ideas are shared and debated."
   }
 
   toggleModal = () => {
@@ -105,7 +105,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           >
             <Box pad="30px" alignSelf="center" fill={true}>
               <Text size="16px" color="black" weight="bold"  >
-                How to give your talk on agora.stream
+                How to give your talk on mora.stream
               </Text>
             </Box>
             <Box pad="32px" alignSelf="center">
@@ -191,7 +191,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           {/* Desktop version */}
           <MediaQuery minDeviceWidth={800}>
             <Box direction="row" justify="center" style={{ justifyContent: "center" }} margin={{ top: "50px", bottom: "20px" }}>
-              <img src={agoraStreamFullLogo} style={{ height: "90px" }} />
+              <img src={moraStreamFullLogo} style={{ height: "90px" }} />
             </Box>
             <Box direction="column" justify="center" alignContent="center"
               margin={{ top: "-35px", left: "215px", right: "10px", bottom: "38px" }}
@@ -206,7 +206,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <MediaQuery maxDeviceWidth={800}>
 
             <Box direction="row" justify="center" style={{ justifyContent: "center" }} margin={{ top: "50px", bottom: "20px" }}>
-              <img src={agoraStreamFullLogo} style={{ width: "200px", maxHeight: "40px" }} />
+              <img src={moraStreamFullLogo} style={{ width: "200px", maxHeight: "40px" }} />
               <Text margin={{ left: "5px" }} size="14px">Mobile</Text>
             </Box>
             <Box direction="column" justify="center" alignContent="center"
@@ -326,7 +326,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <Box direction="column" width="25%" alignSelf="center">
               <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
-                For organizers
+                For organisers
               </Text>
 
               <ReactTooltip id="create-your-events" effect="solid">
@@ -462,7 +462,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Box>
 
               <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
-                For organizers
+                For organisers
               </Text>
 
               <ScrollIntoView selector="#pricing">

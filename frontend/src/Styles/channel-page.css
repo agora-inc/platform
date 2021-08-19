@@ -3,7 +3,9 @@
   width: 75%;
   align-content: center;
   align-self: center;
-  margin-top: 10vh;
+  /* margin-top: 10vh; */
+  position: absolute;
+  top: 5vw;
   /* border-spacing: "20px"; */
   /* round: "10px" */
 }
