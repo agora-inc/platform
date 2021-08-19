@@ -49,8 +49,8 @@ export default class TermsOfService extends Component<Props, State> {
 
             <h2><b>1. Use of the site</b></h2>
             <ol>
-              <li> All added content to agora.stream must be academic-related.</li>
-              <li> The Users should not attempt to use the site for any purpose other than browsing through past and future events, connecting with communities, organising, and publicizing events on research.</li>
+              <li> All added content to mora.stream must be academic-related.</li>
+              <li> The Users should not attempt to use the site for any purpose other than browsing through past and future events, connecting with communities, organizing, and publicizing events on research.</li>
             </ol>
 
             <h2><b>2. Code of conduct</b></h2>
@@ -63,28 +63,28 @@ export default class TermsOfService extends Component<Props, State> {
               <li> When creating his account, the User commits to not take someone's else identity or to falsely claim an affiliation.</li>
               <li> When participating in communication of any kind, the User may not use language that could be offensive or vulgar to others.</li>
               <li> When publishing an event, the User will check with the people involved with the former that they give him/her their approval concerning the content and the accuracy of the information associated with the event.</li>
-              <li> When using a third-party technology, the User will be careful to not share any confidential information. Note that agora.stream will never reach out to the User to ask for his password or account credentials.</li>
+              <li> When using a third-party technology, the User will be careful to not share any confidential information. Note that mora.stream will never reach out to the User to ask for his password or account credentials.</li>
             </ol>
 
 
 
             <h2><b>3. Liability</b></h2>
 
-            While the above code of conduct is highly valued by us and its respect is one of our main mission, agora.stream cannot be held responsible nor liable for any harm caused through the use of this site.
+            While the above code of conduct is highly valued by us and its respect is one of our main mission, mora.stream cannot be held responsible nor liable for any harm caused through the use of this site.
               <ol>
-                <li> While the above code of conduct is highly valued by us and its respect is one of our main mission, agora.stream cannot be held responsible nor liable for any harm caused through the use of this site. </li>
-                <li> Agora.stream cannot be held responsible for technical issues or any harm originating from a third-party technology (e.g. <em>Zoom</em> or <em>Microsoft Teams</em> among others). </li>
-                <li> Any action, comment, or opinion of a User of agora.stream does not necessarely represent agora.stream's position. </li>
+                <li> While the above code of conduct is highly valued by us and its respect is one of our main mission, mora.stream cannot be held responsible nor liable for any harm caused through the use of this site. </li>
+                <li> mora.stream cannot be held responsible for technical issues or any harm originating from a third-party technology (e.g. <em>Zoom</em> or <em>Microsoft Teams</em> among others). </li>
+                <li> Any action, comment, or opinion of a User of mora.stream does not necessarely represent mora.stream's position. </li>
                 <li> While we commit to serve the research community in a whole, Agora makes no guarantee of the availability of the website at anytime: its usage is at the user's risk. </li>
               </ol>
             <h2><b>4. Violations</b></h2>
               <ol>
-                <li> In case of violations of term of services and code of conduct or whether it is judged inappropriate, agora.stream reserves the right to edit or delete the content hosted on the platform. </li>
-                <li> In case of misconduct, agora.stream reserves the right to temporarily or permanently disable an account or IP address. </li>
+                <li> In case of violations of term of services and code of conduct or whether it is judged inappropriate, mora.stream reserves the right to edit or delete the content hosted on the platform. </li>
+                <li> In case of misconduct, mora.stream reserves the right to temporarily or permanently disable an account or IP address. </li>
               </ol>
             <h2><b>5. General information</b></h2>
               <ol>
-                <li> Agora.stream's mission is to connect the world of science and make research open to all. Any natural or legal person who, as a recipient of the Service, accesses or uses the Service for any purpose is a User ("User", "you"). Our registered Users ("Members") share their professional identities and credentials, engage and collaborate with their networks and exchange knowledge. Some content is also visible to unregistered and logged-out Users ("Visitors"). </li>
+                <li> mora.stream's mission is to connect the world of science and make research open to all. Any natural or legal person who, as a recipient of the Service, accesses or uses the Service for any purpose is a User ("User", "you"). Our registered Users ("Members") share their professional identities and credentials, engage and collaborate with their networks and exchange knowledge. Some content is also visible to unregistered and logged-out Users ("Visitors"). </li>
                 <li> Use of our services constitutes acceptance of the Terms of service. </li>
                 <li> These terms are subject to change. </li>
               </ol>

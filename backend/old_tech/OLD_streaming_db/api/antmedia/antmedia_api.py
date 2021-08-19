@@ -9,13 +9,13 @@ LOG_FOLDER_PATH = "/home/cloud-user/log"
 class AntMediaRestApi(object):
     """
     Wrapping API methods to locally interact with Ant Media server.
-    e.g. http://agora.stream:5080/WebRTCAppEE/rest/broadcast/get?id=1
+    e.g. http://mora.stream:5080/WebRTCAppEE/rest/broadcast/get?id=1
     """
     def __init__(self):
         self.api_port = API_PORT
         self.api_app = API_APP
         self.api_version = "v2"
-        self.basepoint = f"http://agora.stream:{self.api_port}/{self.api_app}/rest/{self.api_version}/"
+        self.basepoint = f"http://mora.stream:{self.api_port}/{self.api_app}/rest/{self.api_version}/"
         self.log_folder_path = LOG_FOLDER_PATH
 
     ##############

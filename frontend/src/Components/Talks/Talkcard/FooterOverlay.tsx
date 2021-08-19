@@ -225,7 +225,7 @@ render() {
 
 
               {/* <Box
-                  onClick={() => {navigator.clipboard.writeText(`https://agora.stream/event/${this.props.talk.id}`); }}
+                  onClick={() => {navigator.clipboard.writeText(`https://mora.stream/event/${this.props.talk.id}`); }}
                   data-tip data-for='save_url_event'
                   background="white"
                   round="xsmall"

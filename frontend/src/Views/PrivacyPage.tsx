@@ -45,7 +45,7 @@ export default class PrivacyPage extends Component<Props, State> {
           > */}
             <Text color="black" size="14px">
                 <h1><b>Data privacy </b></h1>
-                <p>As with any other website, when using agora.stream, your internet browser and our servers exchange data. We are going to tell you exactly what transacts and how it is used.
+                <p>As with any other website, when using mora.stream, your internet browser and our servers exchange data. We are going to tell you exactly what transacts and how it is used.
                 </p>
 
                 <h2> <b>1. What type of data is exchanged? </b></h2>

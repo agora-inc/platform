@@ -82,7 +82,16 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
   const [messageChannel, setMessageChannel] = useState(null as any)
 
-  const [role, setRole] = useState(props.role)
+  const [role, setRole] = useState((props.role !== undefined || props.role != "") ? props.role : "audience" )
+  // if (props.role == undefined){
+  //   setRole("audience")
+  // }
+  console.log("wesh")
+  console.log(props.role)
+
+
+
+  const [name, setName] = useState('')
   const [storedName, setStoredName] = useState(getLocalName(props.talkId.toString())||'')
 
   var agoraIoRoleName = ""
@@ -134,7 +143,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   const [callControl, _setCallControl] = useState({
     mic: true, 
-    video: true, 
+    video: (role == "speaker" || role == "admin") ? true : false, 
     screenShare: false, 
     fullscreen: false, 
     slideShare: false
@@ -1083,97 +1092,136 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     )
   }
 
-
-
+  console.log("kirikou")
+  console.log(storedName)
   return (
-      <Box style={{position: "absolute", left: "20px", top: "5px"}} margin={{bottom: "50px", top: "80px"}} width="100%">
-        {isTimeover && (
-          <Box 
-            margin={{ top: "xlarge", bottom: "xsmall" }} 
-            style={{ 
-              zIndex: 1000, background: 'red', color: 'white',
-              padding: '10px', borderRadius: '4px', width: "50%"
-            }}
-          >
-            {talkStatus === 'ENDED' ? <Text> Talk ended </Text> : 
-            <Text>Seminar time over. It will end automatically in 15 mins.</Text> }
-          </Box>
-        )}
-      
-        <Grid
-          columns={["75%", "20%"]}
-          rows={["2vh", "15vh", "55vh", "25vh"]}
-          gap="medium"
-          areas={[
-            { name: "player", start: [0, 0], end: [0, 3] },
-            { name: "display_role", start: [1, 0], end: [1, 0] },
-            { name: "main_buttons", start: [1, 1], end: [1, 1] },
-            { name: "chat", start: [1, 2], end: [1, 2] },
-            { name: "description", start: [0, 3], end: [0, 3] },
-            { name: "extra_feature", start: [1, 3], end: [1, 3] },
-          ]}
-        >
-          
-          <Box gridArea="player" justify="between" gap="small">
-            <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable||callControl.slideShare || isSlideVisible?'screen-share':''}`}
-              style={{height: '100%', position: 'relative'}}>
-              <Box className='camera-video'>
-                {remoteVideoTrack.map((user)=>(
-                  //@ts-ignore
-                  <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
-                ))}
-                <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
-              </Box>
-
-              { isScreenAvailable && 
-                  <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
+    <>
+      {(storedName == "" && (props.role != "speaker" && props.role != "admin")) && (
+        <Box align="center">
+        <Grid margin={{ top: "xlarge", bottom: "none" }}>
+            <TextInput style={{minWidth: '300px', marginTop: "20vh", marginBottom: "20px"}} placeholder='Enter your name.' value={name} onChange={(e)=> setName(e.target.value)} />
+            <Box
+                justify="center"
+                align="center"
+                pad="small"
+                focusIndicator={false}
+                height="30px"
+                background="color1"
+                hoverIndicator="#BAD6DB"
+                style={{borderRadius:'6px'}}
+                onClick={()=>{
+                  setLocalName(props.talkId.toString(), name)
+                  var StoredName = getLocalName(props.talkId.toString())
+                  if (StoredName !== null){
+                    setStoredName(StoredName)
+                  }
+                  console.log("bartez")
+                  console.log(storedName)
               }
-              {(callControl.slideShare || isSlideVisible) &&
-                <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} />
               }
+              >
+            <Text weight="bold" color="white" size="14px" textAlign="center">
+              Join
+            </Text>
             </Box>
-          </Box>
-
-          <Box gridArea="display_role" justify="between" gap="small">
-            {role == "admin" && (
-            <Text size="16px" color="grey">You are an admin.</Text>
-            )}
-            {role == "speaker" && (
-            <Text size="16px" color="grey">You are a speaker.</Text>
-            )}
-            {(role !== "admin" && role !== "speaker")  && (
-            <Text size="16px" color="grey">You are an attendee.</Text>
-            )}  
-
-          </Box>
-
-          <Box gridArea="main_buttons" justify="between" gap="small">
-              {streamingButtons()}
-          </Box>
-
-          <Box gridArea="chat" background="#EAF1F1" round="small" margin={{bottom: "10px"}}>
-              {chatBox()}
-          </Box>
-
-          <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}
-              {(role == "admin") && (
-                requestMicBox()
-              )}
-              {/* <DescriptionAndQuestions
-                gridArea="questions"
-                tags={state.video.tags.map((t: any) => t.name)}
-                description={state.video!.description}
-                videoId={state.video.id}
-                streamer={false}
-              /> */}
-          </Box>
-
-          <Box gridArea="description" margin={{top: "-20px"}}>
-              {talkDetailsDescription()}
-          </Box>
         </Grid>
 
       </Box>
+      )}
+
+
+      {/* {((props.role == "admin" || props.role == "speaker") || name == "") && ( */}
+      {!(storedName == "" && (props.role != "speaker" && props.role != "admin")) && (
+        <Box style={{position: "absolute", left: "20px", top: "5px"}} margin={{bottom: "50px", top: "80px"}} width="100%">
+          {isTimeover && (
+            <Box 
+              margin={{ top: "xlarge", bottom: "xsmall" }} 
+              style={{ 
+                zIndex: 1000, background: 'red', color: 'white',
+                padding: '10px', borderRadius: '4px', width: "50%"
+              }}
+            >
+              {talkStatus === 'ENDED' ? <Text> Talk ended </Text> : 
+              <Text>Seminar time over. It will end automatically in 15 mins.</Text> }
+            </Box>
+          )}
+        
+          <Grid
+            columns={["75%", "20%"]}
+            rows={["2vh", "15vh", "55vh", "25vh"]}
+            gap="medium"
+            areas={[
+              { name: "player", start: [0, 0], end: [0, 3] },
+              { name: "display_role", start: [1, 0], end: [1, 0] },
+              { name: "main_buttons", start: [1, 1], end: [1, 1] },
+              { name: "chat", start: [1, 2], end: [1, 2] },
+              { name: "description", start: [0, 3], end: [0, 3] },
+              { name: "extra_feature", start: [1, 3], end: [1, 3] },
+            ]}
+          >
+            
+            <Box gridArea="player" justify="between" gap="small">
+              <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable||callControl.slideShare || isSlideVisible?'screen-share':''}`}
+                style={{height: '100%', position: 'relative'}}>
+                <Box className='camera-video'>
+                  {remoteVideoTrack.map((user)=>(
+                    //@ts-ignore
+                    <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
+                  ))}
+                  <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
+                </Box>
+
+                { isScreenAvailable && 
+                    <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
+                }
+                {(callControl.slideShare || isSlideVisible) &&
+                  <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} />
+                }
+              </Box>
+            </Box>
+
+            <Box gridArea="display_role" justify="between" gap="small">
+              {role == "admin" && (
+              <Text size="16px" color="grey">You are an admin.</Text>
+              )}
+              {role == "speaker" && (
+              <Text size="16px" color="grey">You are a speaker.</Text>
+              )}
+              {(role !== "admin" && role !== "speaker")  && (
+              <Text size="16px" color="grey">You are an attendee.</Text>
+              )}  
+
+            </Box>
+
+            <Box gridArea="main_buttons" justify="between" gap="small">
+                {streamingButtons()}
+            </Box>
+
+            <Box gridArea="chat" background="#EAF1F1" round="small" margin={{bottom: "10px"}}>
+                {chatBox()}
+            </Box>
+
+            <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}
+                {(role == "admin") && (
+                  requestMicBox()
+                )}
+                {/* <DescriptionAndQuestions
+                  gridArea="questions"
+                  tags={state.video.tags.map((t: any) => t.name)}
+                  description={state.video!.description}
+                  videoId={state.video.id}
+                  streamer={false}
+                /> */}
+            </Box>
+
+            <Box gridArea="description" margin={{top: "-20px"}}>
+                {talkDetailsDescription()}
+            </Box>
+          </Grid>
+
+        </Box>
+        )}
+      </>
   )
 }
 

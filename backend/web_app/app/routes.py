@@ -36,11 +36,11 @@ paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 
-BASE_URL = "http://localhost:3000"
-# BASE_URL = "https://agora.stream/"
+# BASE_URL = "http://localhost:3000"
+BASE_URL = "https://mora.stream/"
 
-# BASE_API_URL = "https://agora.stream/api"
-BASE_API_URL = "http://localhost:8000/api"
+BASE_API_URL = "https://mora.stream/api"
+# BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
@@ -198,12 +198,12 @@ def generateChangePasswordLink():
     username = params["username"]
     user = users.getUser(params["username"])
     code = users.encodeAuthToken(user["id"], "changePassword")
-    link = f'https://agora.stream:3000/changepassword?code={code.decode()}'
+    link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
     
     # email link
-    msg = Message('Agora.stream: password reset', sender = 'team@agora.stream', recipients = [user["email"]])
+    msg = Message('mora.stream: password reset', sender = 'team@agora.stream', recipients = [user["email"]])
     msg.body = f'Password reset link: {link}'
-    msg.subject = "Agora.stream: password reset"
+    msg.subject = "mora.stream: password reset"
     mail.send(msg)
 
     app.logger.debug(f"User {username} requested link to change password")
@@ -600,7 +600,7 @@ def sendTalkApplicationEmail():
                         <p style="margin-left: 20px;">{params["personal_message"]}</p>"""
 
         # email link
-        email_subject = f"New speaker application: agora.stream ({params['agora_name']})"
+        email_subject = f"New speaker application: mora.stream ({params['agora_name']})"
         body_msg = f"""<p>Dear Administrator,</p>
                         <p>{params['speaker_name']} wants to give a talk within your <b>{params['agora_name']}</b> agora community!</p>
                         <p> </p>
@@ -631,7 +631,7 @@ def sendTalkApplicationEmail():
                         {personal_message_section}
                         <br></br>
                         <p>Best wishes,</p>
-                        <p>The agora.stream Team</p>
+                        <p>The mora.stream Team</p>
                     """
         for email in administrator_emails:
             msg = Message(body_msg, sender = 'team@agora.stream', recipients = [email])
@@ -1607,7 +1607,7 @@ def eventLinkRedirect():
         channel_name = talk_info["channel_name"]
         channel_id = channels.getChannelByName(channel_name)["id"]
 
-        real_url = f"https://agora.stream/event/{eventId}"
+        real_url = f"https://mora.stream/event/{eventId}"
         hack_url = f"{BASE_API_URL}/event-link?eventId={eventId}"
         image = f"{BASE_API_URL}/channels/avatar?channelId={channel_id}"
 
@@ -1637,7 +1637,7 @@ def channelLinkRedirect():
         channel_info = channels.getChannelById(channel_id)
         name = channel_info["name"]
         long_description = channel_info["long_description"]
-        real_url = f"https://agora.stream/{name}"
+        real_url = f"https://mora.stream/{name}"
         hack_url = f"{BASE_API_URL}/channel-link?channelId={channel_id}"
         image = f"{BASE_API_URL}/api/channels/avatar?channelId={channel_id}"
 

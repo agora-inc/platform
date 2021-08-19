@@ -124,7 +124,9 @@ export default class LivestreamPage extends Component<Props, State> {
                                             () => {
                                                 // Making channel owners as admin of stream
                                                 if (channelRole == "owner" && this.state.talkRole !== "speaker"){
-                                                    this.setState({talkRole: "admin", loading: false})
+                                                    this.setState({talkRole: "admin"}, () => {
+                                                        this.setState({loading: false})
+                                                    })
                                                 } else {
                                                     this.setState({loading: false})
                                                 }
