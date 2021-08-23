@@ -51,10 +51,10 @@ interface Message {
 
 interface Control {
   mic: boolean;
-  video: boolean;
-  screenShare: boolean;
-  slideShare: boolean;
   fullscreen: boolean
+  video?: boolean;
+  screenShare?: boolean;
+  slideShare?: boolean;
 }
 
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
@@ -83,13 +83,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [messageChannel, setMessageChannel] = useState(null as any)
 
   const [role, setRole] = useState((props.role !== undefined || props.role != "") ? props.role : "audience" )
-  // if (props.role == undefined){
-  //   setRole("audience")
-  // }
-  console.log("wesh")
-  console.log(props.role)
-
-
 
   const [name, setName] = useState('')
   const [storedName, setStoredName] = useState(getLocalName(props.talkId.toString())||'')
@@ -104,7 +97,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         appId: APP_ID,
         talkId: "",
         role: agoraIoRoleName,
-        name: 'Prof. Patric',
+        name: 'Prof. Newton',
         uid: getUserId(props.talkId.toString(), useQuery().get('dummy'))
       } as any)
   const [talkDetail, setTalkDetail] = useState({} as any)
@@ -142,20 +135,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
 
   const [callControl, _setCallControl] = useState({
-    mic: true, 
-    video: (role == "speaker" || role == "admin") ? true : false, 
-    screenShare: false, 
-    fullscreen: false, 
-    slideShare: false
+    mic: (role == "speaker" || role == "admin") ? true : false
+    // video: (role == "speaker" || role == "admin") ? true : false, 
+    // screenShare: false, 
+    // fullscreen: false, 
+    // slideShare: false
   } as Control)
   const [cc, setCallControl] = useState({} as any)
 
   useEffect(()=>{
     _setCallControl({...callControl, ...cc})
   }, [cc])
-
-
-
 
   ////////////////////////////////
   // Setting audience name
@@ -326,55 +316,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       console.log(e)
     }
   }
-
-
-
-
-
-
-
-
-
-
-//
-//
-//// Remy: checkpoint
-//// Remy: checkpoint
-//// Remy: checkpoint
-////
-//
-//
-// WIP: INTEGRATING "REQUEST MIC FEATURE" FROM LivestreamAudiencePage
-//
-//
-//
-//
-////
-//
-////
-//
-////
-//
-//
-//// Remy: checkpoint
-//// Remy: checkpoint
-//// Remy: checkpoint
-////
-//
-//
-// WIP: INTEGRATING "REQUEST MIC FEATURE" FROM LivestreamAudiencePage
-//
-//
-////
-
-
-
-
-
-
-
-
-
 
   async function stop_share_screen() {
       //console.log("sharing stopped")
@@ -709,8 +650,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               {viewChangeButton()}
             </>
           )}  
-
-          {(role == "audience") && (
+          {(role != "admin" && role != "speaker") && (
             <>
               {requestMicButton()}
               {fullscreenButton()}
@@ -1092,8 +1032,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     )
   }
 
-  console.log("kirikou")
-  console.log(storedName)
   return (
     <>
       {(storedName == "" && (props.role != "speaker" && props.role != "admin")) && (
@@ -1115,8 +1053,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                   if (StoredName !== null){
                     setStoredName(StoredName)
                   }
-                  console.log("bartez")
-                  console.log(storedName)
               }
               }
               >
