@@ -121,26 +121,25 @@ export default class Clapping extends Component<Props, State> {
   render() {
     return (
       <Box>
-        {!this.props.clapOnAttach && <Box
+        {!this.props.clapOnAttach && 
+        <Box
           justify="center"
           align="center"
           pad="small"
           focusIndicator={false}
           height="50px"
-          background="#EAF1F1"
+          background="color1"
           hoverIndicator="#BAD6DB"
-          round="small"
-          style={{border: "0.5px solid"}}
+          style={{borderRadius:'6px'}}
           onClick={()=>{
             if(this.props.onClick) {
               this.props.onClick()
             }
             this.startClapping()
           }}
-          // style={{ border: "3.5px solid black" }}
         >
-          <Text weight="bold" color="black" size="14px">
-            Thank the speaker
+          <Text weight="bold" color="white" size="14px" textAlign="center">
+            Thank speaker
           </Text>
         </Box>}
         {this.state.overlay && (

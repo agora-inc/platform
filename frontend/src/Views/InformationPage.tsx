@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, Grid } from "grommet";
-import { CaretNext, Twitter, Linkedin } from "grommet-icons";
+import { CaretNext, Twitter, Linkedin, Checkmark } from "grommet-icons";
 import DonorButton from "../Components/Core/DonorButton"
 import ShareButtons from "../Components/Core/ShareButtons";
 import moraStreamFullLogo from "../assets/general/mora.stream_logo_v2.1.svg";
@@ -219,8 +219,14 @@ export default class InformationPage extends Component<Props, State> {
             </Box>
 
             <Box gap="small">
-
-                <Box direction="row" gap="10px" margin={{left: "10px"}} align="center">
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
+                  <CaretNext size="25px" />
+                  <Text size="25px"> <b>Tell</b> about 
+                    <img src={moraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/> 
+                    to all your friends and colleagues 
+                  </Text>
+                </Box>
+                <Box direction="row" gap="10px" margin={{left: "10px", top: "10px"}} align="center">
                   <CaretNext size="25px" />
                   <Text size="25px"> <b>Organise</b> and share your seminars with 
                     <img src={moraStreamFullLogo} style={{ height: "30px", marginLeft: 8, marginRight: 10, marginBottom: -8 }}/>  

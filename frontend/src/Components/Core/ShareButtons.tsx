@@ -47,7 +47,7 @@ interface Props {
         const name = this.props.channel.name.replace(/\s/g, '%20')
         return `https://mora.stream/${name}`
       } else {
-        return `https://mora.stream/`
+        return 'https://mora.stream/'
       }
     }
 
@@ -110,7 +110,7 @@ interface Props {
         return `https://mora.stream/api/channels/avatar?channelId=${this.props.talk.ChannelIcon_id}&ts=2`
       } else if (this.props.channel) {
         return `https://mora.stream/api/channels/avatar?channelId=${this.props.channel.id}`
-      } 
+      }
     }
 
     twitterUsername = () => {
@@ -118,8 +118,6 @@ interface Props {
         return this.props.talk.channel_name;
       } else if (this.props.channel) {
         return "mora.stream";
-      } else {
-        return "mora.stream"
       }
     }
 

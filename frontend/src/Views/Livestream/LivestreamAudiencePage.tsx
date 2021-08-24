@@ -257,6 +257,60 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     }
   }
 
+
+
+
+
+  
+//
+//
+////
+//
+//// Remy: checkpoint
+//// Remy: checkpoint
+//// Remy: checkpoint
+
+//
+//
+// WIP: INTEGRATING "REQUEST MIC FEATURE" into LivestreamAudiencePAge
+//
+//
+//
+//
+//
+//
+////
+//
+//// Remy: checkpoint
+//// Remy: checkpoint
+//// Remy: checkpoint
+
+//
+//
+// WIP: INTEGRATING "REQUEST MIC FEATURE" into LivestreamAudiencePAge
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   useEffect(()=>{
     unpublish_microphone()
   }, [isUnpublishFromRemote])
@@ -277,6 +331,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       setCallControl({...callControl, mic: false})
     }
   }
+
   async function publish_microphone(){
     await agoraClient.setClientRole('host');
     let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
@@ -530,9 +585,24 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   return (
     <Box align="center">
       <Grid margin={{ top: "xlarge", bottom: "none" }}>
-          <Text margin={{top: '20vh'}}>Enter your name.</Text>
-          <TextInput style={{minWidth: '300px'}} placeholder='type...' value={name} onChange={(e)=> setName(e.target.value)} />
-          <Button style={{marginTop: '10px'}} label="Join" primary size='small' onClick={join} />
+          <TextInput style={{minWidth: '300px', marginTop: "20vh", marginBottom: "20px"}} placeholder='Enter your name.' value={name} onChange={(e)=> setName(e.target.value)} />
+          <Box
+              justify="center"
+              align="center"
+              pad="small"
+              focusIndicator={false}
+              height="30px"
+              background="color1"
+              hoverIndicator="#BAD6DB"
+              style={{borderRadius:'6px'}}
+              onClick={()=>{
+                join()
+              }}
+            >
+          <Text weight="bold" color="white" size="14px" textAlign="center">
+            Join
+          </Text>
+          </Box>
       </Grid>
 
     </Box>

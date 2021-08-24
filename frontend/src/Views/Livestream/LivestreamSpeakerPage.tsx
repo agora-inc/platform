@@ -18,11 +18,13 @@ import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdSlideshow, MdClear} from 'react-icons/md'
 import {db, API} from '../../Services/FirebaseService'
+import '../../Styles/all-stream-page.css'
+import PDFViewer from "../../Components/PDFViewer";
+
+// Speaker-only features
 import SlidesUploader from "../../Components/Core/SlidesUploader";
 import SpeakerHelpButton from "../../Components/Streaming/SpeakerHelpButton"
 
-import '../../Styles/all-stream-page.css'
-import PDFViewer from "../../Components/PDFViewer";
 
 
 interface Props {
@@ -99,11 +101,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   
   const [talkId, setTalkId] = useState('')
   const [slideShareId, setSlideShareId] = useState('')
-  const [isSlideVisible, toggleSlide] = useState(false)
-  const [slidesGotUploaded, setSlidesGotUploaded] = useState(false)
-
 
   const [slideUrl, setSlideUrl] = useState('')
+  const [isSlideVisible, toggleSlide] = useState(false)
+
+  // speaker only feature
+  const [slidesGotUploaded, setSlidesGotUploaded] = useState(false)
+
 
   const [callControl, _setCallControl] = useState({
     mic: true, video: true, screenShare: false, fullscreen: false, slideShare: false
@@ -258,7 +262,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       }
       // @ts-ignore
       var _localScreenTrack = await AgoraRTC.createScreenVideoTrack(config);
-      console.log(222, _localScreenTrack)
+      // console.log(222, _localScreenTrack)
       _localScreenTrack.on('track-ended', stop_share_screen)
       setCallControl({screenShare: true})
 
@@ -344,6 +348,101 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     setTimeout(()=>{
       setRemoteVideoTrack([...agoraClient.remoteUsers])
     }, 200)
+
+
+      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      // wip
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //      //
+      //
+
+
+
+
+
+
+
+
     if(mediaType == 'video'){
       return
     }
