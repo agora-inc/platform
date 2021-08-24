@@ -59,7 +59,7 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
         return (
             <>
                 {/* {!this.cafeteriaPermanentlyClosed() || ( */}
-                <Box align="start" margin={{top:"100px"}} pad="50px" background={this.props.disabled ? "#D3F930"  : "" }>
+                <Box align="start" margin={{top:"100px"}} pad="50px" background={this.props.disabled ? "#BAD6DB"  : "" }>
                     {this.props.disabled && (
                         <Box direction="row" align="center" gap="50px" margin={{bottom: "60px"}}>
                             <Text size="16px" style={{fontStyle: "italic"}} >
@@ -68,7 +68,8 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
                             
                             <Box
                                 onClick={this.toggleModalPricing}
-                                background="#0C385B"
+                                background="#D3F930"
+                                hoverIndicator="#7BA59E"
                                 round="xsmall"
                                 pad="xsmall"
                                 width="200px"
@@ -76,7 +77,6 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
                                 justify="center"
                                 align="center"
                                 focusIndicator={false}
-                                hoverIndicator="#BAD6DB"
                             >
                                 <Text size="14px" weight="bold"> Unlock virtual cafeteria </Text>
                             </Box>

@@ -17,6 +17,7 @@ interface Props {
   disabled: boolean
   showDemo: boolean
   callback: any
+  title?: string
 }
 interface State {
   pricingOptionBig: boolean;
@@ -121,6 +122,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   render() {
     let audienceSize: "small" | "big" = this.state.pricingOptionBig ? "big" : "small";
+    let title = this.props.title ? this.props.title : "Empower your community now!"
 
     return (
       <Box align="start" width="100%" style={{ overflowY: "auto" }}>
@@ -143,7 +145,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           >
             <Box alignSelf="center" fill={true} pad="20px" >
               <Text size="16px" color="black" weight="bold" margin={{ left: "10px" }} >
-                Empower your community!
+                {title}
             </Text>
             </Box>
             <Box pad="32px" alignSelf="center">
@@ -154,7 +156,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         {this.props.headerTitle && (
           <Box align="start" margin={{ bottom: "40px" }} >
             <Text size="32px" weight="bold" color="color1">
-              Empower your community now!
+              {title}
           </Text>
           </Box>
         )}
@@ -186,14 +188,14 @@ export default class ManageChannelPage extends Component<Props, State> {
 
           <Box direction="row" gap="10px" align="center" margin={{ top:"20px", bottom: "20px", left: "10px" }}>
             <Text size="14px" style={{ fontStyle: "italic" }} >
-              Select "Big" if you have an audience of more than 30 people:
+              Do you have more than 30 people attending your seminars?
           </Text>
           <Switch
-            width="70px"
+            width="60px"
             checked={false}
             callback={(pricingOptionBig: boolean) => {this.setState({ pricingOptionBig })}}
-            textOn="Big"
-            textOff="Small" 
+            textOn="Yes"
+            textOff="No" 
           />
             {/* checked={this.state.pricingOptionBig}
             checkedChildren="Big" 
@@ -219,7 +221,7 @@ export default class ManageChannelPage extends Component<Props, State> {
           /> 
           </Box> */}
 
-          <Table>
+          <Table margin={{bottom: "20px"}}>
             <TableHeader>
               <TableRow>
                 <TableCell scope="col" border="bottom">
