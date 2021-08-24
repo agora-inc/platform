@@ -127,7 +127,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
         >
         <Box width={renderMobileView ? "85%" : "70%"} direction="column" margin={{top: "10px"}}>
             <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{bottom: "44px"}} >
-              Tech to empower the seminar experience and simplify their organisation
+              Enhancing the seminar experience and simplifying their organisation with cutting-edge technologies.
             </Text>
             <Grid
               rows={
