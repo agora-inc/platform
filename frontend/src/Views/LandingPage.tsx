@@ -61,7 +61,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     var now = Date.now();
     // return dynamicTextValueList[now % dynamicTextValueList.length]
     // "Home for cutting-edge online/physical academic seminars"
-    return "where new ideas are shared and debated."
+    return "Streaming cutting-edge seminars."
   }
 
   toggleModal = () => {
@@ -258,7 +258,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                     margin={{ left: "10px", right: "20px" }}
                   >
                     <Search size="30px" />
-                    <Text size="16px" weight="bold" margin={{ top: "10px" }}> Browse </Text>
+                    <Text size="16px" weight="bold" margin={{ top: "10px" }}> Attend </Text>
                     <Text size="16px" margin={{ top: "5px" }}> future seminars </Text>
                   </Box>
                 </Link>

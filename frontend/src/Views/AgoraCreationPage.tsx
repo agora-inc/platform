@@ -126,8 +126,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
         // background="color6"
         >
         <Box width={renderMobileView ? "85%" : "70%"} direction="column" margin={{top: "10px"}}>
-            <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{bottom: "44px"}} > 
-              Everything for your seminars, all in one place
+            <Text size={this.state.sizeHeader} weight="bold" color="color1" margin={{bottom: "44px"}} >
+              Tech to empower the seminar experience and simplify their organisation
             </Text>
             <Grid
               rows={
@@ -157,14 +157,14 @@ export default class AgoraCreationPage extends Component<Props, State> {
                     { name: 'arg_2_text', start: [0, 3], end: [0, 4] },
                     { name: 'arg_2_image', start: [0, 4], end: [0, 5] },
     
-                    { name: 'arg_7_text', start: [0, 5], end: [0, 6] },
-                    { name: 'arg_7_image', start: [0, 6], end: [0, 7] },
+                    { name: 'arg_3_text', start: [0, 5], end: [0, 6] },
+                    { name: 'arg_3_image', start: [0, 6], end: [0, 7] },
     
                     { name: 'arg_6_text', start: [0, 7], end: [0, 8] },
                     { name: 'arg_6_image', start: [0, 8], end: [0, 9] },
     
-                    { name: 'arg_3_text', start: [0, 9], end: [0, 10] },
-                    { name: 'arg_3_image', start: [0, 10], end: [0, 11] },
+                    { name: 'arg_7_text', start: [0, 9], end: [0, 10] },
+                    { name: 'arg_7_image', start: [0, 10], end: [0, 11] },
                   ]
                 :
                   [
@@ -174,23 +174,23 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   { name: 'arg_2_text', start: [1, 2], end: [1, 3] },
                   { name: 'arg_2_image', start: [0, 2], end: [0, 3] },
 
-                  { name: 'arg_7_text', start: [0, 3], end: [0, 4] },
-                  { name: 'arg_7_image', start: [1, 3], end: [1, 4] },
+                  { name: 'arg_3_text', start: [0, 3], end: [0, 4] },
+                  { name: 'arg_3_image', start: [1, 3], end: [1, 4] },
 
                   { name: 'arg_6_text', start: [1, 4], end: [1, 5] },
                   { name: 'arg_6_image', start: [0, 4], end: [0, 5] },
 
-                  { name: 'arg_3_text', start: [0, 5], end: [0, 6] },
-                  { name: 'arg_3_image', start: [1, 5], end: [1, 6] },
+                  { name: 'arg_7_text', start: [0, 5], end: [0, 6] },
+                  { name: 'arg_7_image', start: [1, 5], end: [1, 6] },
               ]
             }
             >
               <Box gridArea="arg_1_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Your target audience is right there
+                  A platform for a thoughtful audience
                 </Text>
                 <Text size="18px">
-                  Our users are <b>university students and researchers </b> from all over the world, hungry to know about the latest research.
+                  Our users are <b>university students, researchers, and experts </b> from all over the world, hungry to know about the latest trends in academia or tech.
                 </Text>
                 </Box>
               <Box gridArea="arg_1_image">
@@ -204,7 +204,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_2_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Publish your seminars in 1 minute
+                  Organise and advertise your seminars in 1 minute
                 </Text>
                 <Text size="18px">
                   Create your <img src={agoraLogo} height="14px"/>  to:
@@ -289,13 +289,13 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_3_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Finding speakers has never been easier
+                  A marketplace for speakers
                 </Text>
                 <Text size="18px">
-                  You can allow potential future speakers <b> from all around the world </b> to apply to give a talk to your community.
+                  Any speakers <b> from all around the world </b> can apply to give a talk within a community (if it is accepting applications).
                 </Text>
                 <Text size="18px" margin={{top: "10px"}}>
-                  Speakers fill out a form stating the <b> title and the abstract </b> of their talk, and you decide whether it's a fit.
+                  Speakers fill out a form stating the <b> title and the abstract </b> of their talk, and the admins decide whether it's a fit.
                 </Text>
               </Box>
               <Box gridArea="arg_3_image" >
@@ -310,7 +310,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
             <Box direction="row" gap="small" margin={{bottom: "44px", top: (renderMobileView ? "50px" : "150px") }}>
               <Text size={this.state.sizeHeader} weight="bold" color="color1"> 
-                No more switching between tools!
+                Everything seminar organisers need, from start to finish
               </Text>
             </Box>
 
@@ -415,10 +415,11 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
               <Box gridArea="arg_8_text" justify="center">
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Connect your online and physical audience with our mobile app (coming soon!)
+                  Run a new transformative type of seminars: hybrid seminars! (coming soon!)
+                  {/* Connect your online and physical audience with our mobile app (coming soon!) */}
                 </Text>
                 <Text size="18px">
-                  The physical audience can now browse the slides of the speaker on their phone, so they won't be lost 10 minutes in the seminar! 
+                  With our mobile app, the physical audience can now browse the slides of the speaker on their phone, so they won't be lost 10 minutes in the seminar! 
                 </Text>
                 <Text size="18px" margin={{top: "10px"}}>
                   Both audiences can interact with each other through the chat and Q&A.
