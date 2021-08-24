@@ -326,7 +326,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <Box direction="column" width="25%" alignSelf="center">
               <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
-                For organizers
+                For organisers
               </Text>
 
               <ReactTooltip id="create-your-events" effect="solid">
@@ -462,7 +462,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Box>
 
               <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
-                For organizers
+                For organisers
               </Text>
 
               <ScrollIntoView selector="#pricing">

@@ -271,7 +271,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   A couple clicks to handle all registrations
                 </Text>
                 <Text size="18px">
-                  As an organizer, you can decide to automatically accept certains group of people <b> everyone, only verified academics, only people from your institution, etc. </b>
+                  As an organiser, you can decide to automatically accept certains group of people <b> everyone, only verified academics, only people from your institution, etc. </b>
                 </Text>
                 <Text size="18px" margin={{top: "10px"}}>
                   For the others, manually accepting them is made very easy and intuitive!
@@ -433,6 +433,38 @@ export default class AgoraCreationPage extends Component<Props, State> {
               
           </Box>
           <Box width={renderMobileView ? "95%" : "70%"} alignContent="center" margin={{top: "100px", left: "10px"}}>
+            <Box margin={{top:"70px"}} gap="30px">
+              <Box direction="row" gap="30px" align="center"> 
+                <Text size="25px" weight="bold" color="color1">
+                  Create your <img src={agoraLogo} height="22px" style={{marginBottom: "-5px"}}/> now, for free!
+                </Text>
+                <CreateChannelButton 
+                  onClick={this.toggleCreateChannelOverlay} 
+                  width="190px" 
+                  text={"Create your agora"}/>
+              </Box>
+
+              <Text size="18px" >
+                An agora is a hub for your community. It is the place where you organise and list all your events, past or future.
+              </Text>
+
+              <Text size="18px" >
+                If you wish to empower your community with awesome features, check out the pricing below!
+              </Text>
+
+            </Box>
+
+            {this.state.agoraCreationOverlay.showCreateChannelOverlay && (
+              <CreateChannelOverlay
+                onBackClicked={this.toggleCreateChannelOverlay}
+                onComplete={() => {
+                  this.toggleCreateChannelOverlay();
+                }}
+                visible={true}
+                user={this.props.user}
+              />
+            )}
+
             <PricingPlans 
               callback={() => {}}
               channelId={null}
@@ -440,33 +472,9 @@ export default class AgoraCreationPage extends Component<Props, State> {
               disabled={true}
               showDemo={false}
               headerTitle={true}
+              title={" "}
             />
 
-            <Box margin={{top:"70px"}} gap="30px">
-              <Box direction="row" gap="30px" align="center"> 
-                <Text size="25px" weight="bold" color="color1">
-                  Create your <img src={agoraLogo} height="22px" style={{marginBottom: "-5px"}}/> here
-                </Text>
-                <CreateChannelButton 
-                  onClick={this.toggleCreateChannelOverlay} width="170px" 
-                  text={"Create your hub"}/>
-              </Box>
-
-              <Text size="18px" >
-                An agora is a hub for your community. It is also the place where you organise and list all your events. If you already have one, simply visit it using the dashboard!
-              </Text>
-
-            </Box>
-            {this.state.agoraCreationOverlay.showCreateChannelOverlay && (
-                <CreateChannelOverlay
-                  onBackClicked={this.toggleCreateChannelOverlay}
-                  onComplete={() => {
-                    this.toggleCreateChannelOverlay();
-                  }}
-                  visible={true}
-                  user={this.props.user}
-                />
-              )}
           </Box>
         </Box>
     );

@@ -304,17 +304,16 @@ export default class TopicTalkList extends Component<Props, State> {
                 <Box
                   onClick={() => {this.updateTopic(topic)}}
                   background={"white"} 
-                  border={this.state.chosenTopic === topic ? {color: "#0C385B", size: "2px"} : {size: "0px"}}
                   round="xsmall"
                   pad="5px"
                   width="80%"
                   justify="center"
-                  align="center"
+                  align="start"
                   focusIndicator={false}
                   margin="3px"
                   hoverIndicator="#DDDDDD"
                 >
-                  <Text size="12px">
+                  <Text size="12px" margin={{left: "5px"}}>
                     {topic.field}
                   </Text>
                 </Box>
@@ -339,12 +338,12 @@ export default class TopicTalkList extends Component<Props, State> {
                     pad="5px"
                     width="90%"
                     justify="center"
-                    align="center"
+                    align="start"
                     focusIndicator={false}
                     margin="3px"
                     hoverIndicator="#DDDDDD"
                   >
-                    <Text size="12px">
+                    <Text size="12px" margin={{left: "5px"}}>
                       {topic.field}
                     </Text>
                   </Box>
@@ -363,7 +362,7 @@ export default class TopicTalkList extends Component<Props, State> {
                     pad="5px"
                     width="90%"
                     justify="center"
-                    align="center"
+                    align="start"
                     focusIndicator={false}
                     margin="3px"
                     hoverIndicator="#DDDDDD"
@@ -391,12 +390,12 @@ export default class TopicTalkList extends Component<Props, State> {
                   pad="5px"
                   width="90%"
                   justify="center"
-                  align="center"
+                  align="start"
                   focusIndicator={false}
                   margin="3px"
                   hoverIndicator="#DDDDDD"
                 >
-                  <Text size="12px">
+                  <Text size="12px" margin={{left: "5px"}}>
                     {txt}
                   </Text>
                 </Box>

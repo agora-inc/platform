@@ -56,7 +56,8 @@ export const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
     return (
         <Box
             onClick={onClick}
-            background="#0C385B"
+            background="#D3F930"
+            hoverIndicator="#7BA59E"
             round="xsmall"
             pad="xsmall"
             width="160px"
@@ -64,7 +65,6 @@ export const CheckoutPaymentButton:FunctionComponent<Props> = (props) => {
             justify="center"
             align="center"
             focusIndicator={false}
-            hoverIndicator="#6DA3C7"
             alignSelf="center"
         >
             <Text size="14px" weight="bold">{props.text}</Text>

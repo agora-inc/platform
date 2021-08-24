@@ -132,7 +132,7 @@ export default class Countdown extends Component<
                 justify="center"
                 align="center"
                 focusIndicator={true}
-                hoverIndicator="#6DA3C7"
+                hoverIndicator="#BAD6DB"
               >
                 <Text size="15px" weight="bold">
                   Click to join
