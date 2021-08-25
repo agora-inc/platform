@@ -44,7 +44,7 @@ export default class FooterComponent extends Component {
             </a>
           </Box>
           <Box gap="medium">
-            <Text size="14px" style={{textAlign: "right", marginRight: "5px"}}> Connecting academics</Text>
+            <Text size="14px" style={{textAlign: "right", marginRight: "5px"}}> The modern agora</Text>
             <Text style={{ fontSize: 14, marginRight: "5px"}} alignSelf="end">mora.stream © 2021</Text>
           </Box>
         </Box>

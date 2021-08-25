@@ -61,7 +61,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     var now = Date.now();
     // return dynamicTextValueList[now % dynamicTextValueList.length]
     // "Home for cutting-edge online/physical academic seminars"
-    return "Streaming cutting-edge seminars."
+    return "The modern agora"
+    // return "Home for sharing, debating, and discovering"
   }
 
   toggleModal = () => {
@@ -210,9 +211,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               <Text margin={{ left: "5px" }} size="14px">Mobile</Text>
             </Box>
             <Box direction="column" justify="center" alignContent="center"
-              margin={{ top: "-25px", left: "61px", right: "10px", bottom: "38px" }}
+              margin={{ top: "-25px", left: "81px", right: "5px", bottom: "38px" }}
             >
-              <Text size="11px" weight="bold" alignSelf="center" color="#0C385B">
+              <Text size="11px" weight="bold" alignSelf="end" color="#0C385B">
                 {this.showDynamicTextValue()}
               </Text>
             </Box>
