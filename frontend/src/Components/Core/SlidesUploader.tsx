@@ -14,17 +14,15 @@ export default class SlidesUploader extends Component<Props> {
   render() {
     return (
       <Box
-        background="white"
-        round="xsmall"
-        height="30px"
-        width="100%"
         justify="center"
         align="center"
-        focusIndicator={true}
-        hoverIndicator={true}
-        style={{
-          border: "1px solid #C2C2C2",
-        }}
+        pad="small"
+        focusIndicator={false}
+        height="50px"
+        background="color1"
+        hoverIndicator="#BAD6DB"
+        style={{borderRadius:'6px'}}
+        onClick={()=>{}}
       >
         <input
           width="100%"

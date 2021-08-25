@@ -45,26 +45,26 @@ export default class SpeakerHelpButton extends Component<Props, State> {
 
   render() {
     return (
-      <Box style={{maxHeight: "30px"}}>
+      <Box style={{maxHeight: "50px"}}>
         <Box
           onClick={this.toggleModal}
           background="#0C385B"
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
-          height="40px"
+          height="50px"
           width={this.props.width ? this.props.width : "15vw"}
           justify="center"
           align="center"
           focusIndicator={false}
           hoverIndicator="#BAD6DB"
         >
-          <Text size="14px" weight="bold">How to present?</Text>
+          <Text size="14px" weight="bold">Help</Text>
         </Box>
         <Overlay
           width={400}
           height={520}
           visible={this.state.showModal}
-          title="Choose one of the two"
+          title="Two ways of presenting"
           onEsc={this.toggleModal}
           onClickOutside={this.toggleModal}
           onCancelClick={this.toggleModal}

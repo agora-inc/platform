@@ -124,23 +124,47 @@ export default function({presenter=false, ...props}:Props) {
       </Document>
       <Box direction='row'>
         <Box direction="row" className="pdf-control">
-          <Button onClick={()=> navigate(pageNumber-1)}
-            hoverIndicator="#5A0C0F"
-            style={{background: '#7E1115', padding: '10px', boxShadow: 'none',
-                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'}}
-            >Prev</Button>
+          <Box
+            justify="center"
+            align="center"
+            pad="small"
+            focusIndicator={false}
+            height="30px"
+            background="color1"
+            hoverIndicator="#BAD6DB"
+            style={{borderRadius:'6px'}}
+            onClick={() => {navigate(pageNumber-1)}}>
+              Prev
+          </Box>
           <Text style={{width: '140px', textAlign: 'center', padding: '10px'}}> Page {pageNumber} of {numPages} </Text>
-          <Button onClick={()=> navigate(pageNumber + 1)}
-            hoverIndicator="#5A0C0F"
-            style={{background: '#7E1115', padding: '10px', boxShadow: 'none',
-                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'}}
-          
-            >Next</Button>
-          {!presenter && !isLive && <Button onClick={()=> toggleLive(true)}
-            hoverIndicator="#5A0C0F"
-            style={{background: '#7E1115', padding: '10px', boxShadow: 'none',
-                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '40px'}}
-            >Live</Button>}
+          <Box
+            justify="center"
+            align="center"
+            pad="small"
+            focusIndicator={false}
+            height="30px"
+            background="color1"
+            hoverIndicator="#BAD6DB"
+            style={{borderRadius:'6px'}}
+            onClick={()=> navigate(pageNumber + 1)}>
+              Next
+          </Box>
+
+
+          {!presenter && !isLive && 
+            <Box
+              justify="center"
+              align="center"
+              pad="small"
+              focusIndicator={false}
+              height="30px"
+              background="color1"
+              hoverIndicator="#BAD6DB"
+              style={{borderRadius:'6px'}}
+              onClick={()=> toggleLive(true)}>
+              Live
+            </Box>
+          }
         </Box>
       </Box>
     </div>
