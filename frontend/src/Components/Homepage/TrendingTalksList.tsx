@@ -62,7 +62,7 @@ export default class TrendingTalksList extends Component<{}, State> {
             alignSelf="start"
             weight="bold"
           >
-            Trending events 🔥
+            Trending events
           </Text>
 
         </Box>

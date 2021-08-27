@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Layer, Button, Heading, Grommet, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 
-import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v2.1.svg";
+import moraStreamFullLogo from "../../assets/general/mora_simple_m_cropped_logo_v3.png";
 import { Link } from "react-router-dom";
 import UserManager from "../Account/UserManager";
 import FormContainer from "../Homepage/FormContainer";
@@ -68,21 +68,6 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                     </MediaQuery>
               </Box>
             </Link>
-              <MediaQuery minDeviceWidth={992}>
-                <Text 
-                  size="12px"
-                  color="grey"
-                  margin={{start: "1.6%"}}
-                  style={{
-                    // height: "30px",
-                    overflow: "auto",
-                    fontStyle: "italic",
-                  }}
-                >
-                  The <b>mo</b>dern ago<b>ra</b>
-                </Text>
-                {/* Automating the academic seminar organisation pipeline. */}
-              </MediaQuery>
           </Box>
           {/* <MediaQuery minDeviceWidth={992}>
             <Link

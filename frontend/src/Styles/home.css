@@ -1,12 +1,12 @@
 .core_box_without_sidebar {
-  width: 70%;
+  width: 90%;
   height: 100%;
   overflow:"hidden";
   pad: medium;
   margin-top: 9vh;
   overflow-y: hidden;
   margin-left: 8%;
-  margin-right: 0%;
+  margin-right: 8%;
 }
 
 .sliding-underline {

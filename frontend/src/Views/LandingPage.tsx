@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-import moraStreamFullLogo from "../assets/general/mora.stream_logo_v2.1.svg";
+import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../Services/UserService";
 import { Search, Play, Add, Chat, Close, Channel, ScheduleNew, Multiple } from "grommet-icons";
@@ -61,7 +61,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     var now = Date.now();
     // return dynamicTextValueList[now % dynamicTextValueList.length]
     // "Home for cutting-edge online/physical academic seminars"
-    return "The modern agora"
+    return ""
     // return "Home for sharing, debating, and discovering"
   }
 
@@ -182,25 +182,25 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         <video
           autoPlay loop muted id="background-landing"
-          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
+          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%", backgroundColor: "red" }}
         >
-          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4" />
+          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
         </video>
 
         <Box direction="column" justify="start"> {/*style={{justifyContent: "center"}}>*/}
 
           {/* Desktop version */}
           <MediaQuery minDeviceWidth={800}>
-            <Box direction="row" justify="center" style={{ justifyContent: "center" }} margin={{ top: "50px", bottom: "20px" }}>
-              <img src={moraStreamFullLogo} style={{ height: "90px" }} />
+            <Box direction="row" justify="center" style={{ justifyContent: "center" }}>
+              <img src={moraStreamFullLogo} style={{ height: "550px" }} />
             </Box>
-            <Box direction="column" justify="center" alignContent="center"
+            {/* <Box direction="column" justify="center" alignContent="center"
               margin={{ top: "-35px", left: "215px", right: "10px", bottom: "38px" }}
             >
               <Text size="16px" weight="bold" alignSelf="center" color="#0C385B">
                 {this.showDynamicTextValue()}
               </Text>
-            </Box>
+            </Box> */}
           </MediaQuery>
 
           {/* Mobile version */}
@@ -238,7 +238,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Box direction="column" width="56%" >
 
               <Text size="21px" weight="bold" margin={{ left: "10px", bottom: "30px" }}>
-                For audience
+                Audiences
               </Text>
               <Box direction="row" gap="10px">
                 <Link
@@ -292,7 +292,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <Box direction="column" width="24%" alignSelf="center">
               <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
-                For speakers
+                Speakers
               </Text>
 
               {/*<Link
@@ -327,7 +327,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <Box direction="column" width="25%" alignSelf="center">
               <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
-                For organisers
+                Organisers
               </Text>
 
               <ReactTooltip id="create-your-events" effect="solid">
@@ -433,7 +433,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
             <Box direction="column" width="50%" alignSelf="center">
               <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
-                For speakers
+                Speakers
               </Text>
               
               <Box
