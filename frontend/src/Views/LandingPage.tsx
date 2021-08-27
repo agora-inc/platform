@@ -207,8 +207,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <MediaQuery maxDeviceWidth={800}>
 
             <Box direction="row" justify="center" style={{ justifyContent: "center" }} margin={{ top: "50px", bottom: "20px" }}>
-              <img src={moraStreamFullLogo} style={{ width: "200px", maxHeight: "40px" }} />
-              <Text margin={{ left: "5px" }} size="14px">Mobile</Text>
+              <img src={moraStreamFullLogo} style={{ height: "280px" }} />
             </Box>
             <Box direction="column" justify="center" alignContent="center"
               margin={{ top: "-25px", left: "81px", right: "5px", bottom: "38px" }}
@@ -364,7 +363,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <MediaQuery maxDeviceWidth={800}>
             <Box direction="column" width="50%" >
               <Text size="18px" weight="bold" margin={{ left: "10px", bottom: "10px" }}>
-                For audience
+                Audiences
               </Text>
               <Box direction="column" margin={{ left: "10px" }}>
                 <Link
@@ -463,7 +462,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Box>
 
               <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
-                For organisers
+                Organisers
               </Text>
 
               <ScrollIntoView selector="#pricing">
