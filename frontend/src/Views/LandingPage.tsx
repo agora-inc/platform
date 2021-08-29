@@ -293,7 +293,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             Create your events and share them with the world in less than a minute!
           </ReactTooltip>
             
-          <ScrollIntoView selector="#pricing">
+          <ScrollIntoView selector="#content">
             <Box
               onClick={() => ({})}
               background={this.state.colorButton}
@@ -424,7 +424,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             Organisers
           </Text>
 
-          <ScrollIntoView selector="#pricing">
+          <ScrollIntoView selector="#content">
             <Box
               onClick={() => ({})}
               direction="row"
@@ -692,7 +692,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color1">
+        <Box height="100%" width="100%" background="color1" id="content">
           <Box width="80%" height={this.state.renderMobileView ? "1450px": "650px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
