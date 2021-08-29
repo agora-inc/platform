@@ -115,12 +115,13 @@ export default class CreateChannelOverlay extends Component<Props, State> {
     ) : (
       <Overlay
       width={500}
-      height={300}
+      height={380}
       visible={this.props.visible}
-      title={`Create an Agora`}
+      title={this.props.user === null ? "Get started!" : `Create an Agora`}
       submitButtonText="Create"
+      disableSubmitButton={this.props.user === null ? true : false}
       onSubmitClick={this.onCreateClicked}
-      contentHeight="150px"
+      contentHeight="230px"
       canProceed={this.isComplete()}
       onCancelClick={this.props.onBackClicked}
       onClickOutside={this.props.onBackClicked}
@@ -139,12 +140,10 @@ export default class CreateChannelOverlay extends Component<Props, State> {
                 </>
                 )}  
 
-
-
-
       {!(this.props.user === null) && (
         <>
           <OverlaySection>
+            An agora is a hub for your community. It is the place where you organise and list all your events, past or future. Give your community a name and classification before getting started!
             <TextInput
               style={{ width: "100%", marginTop: "5px"}}
               placeholder="Your agora name"
@@ -164,7 +163,6 @@ export default class CreateChannelOverlay extends Component<Props, State> {
       )}
 
 
-
         {this.containsSpecialCharacter(this.state.newChannelName) ? (
             <Text
             color="red"
@@ -174,10 +172,6 @@ export default class CreateChannelOverlay extends Component<Props, State> {
               Agora name cannot contain special characters
             </Text>
           ) : (null)}
-      
-      
-      
-      
       
       
       </Overlay>

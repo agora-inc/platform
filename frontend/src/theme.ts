@@ -29,7 +29,7 @@ export const Theme = {
       color1: "#0C385B",
       color2: "#025377",
       color3: "#6DA3C7",
-      color4: "7BA59E",
+      color4: "#7BA59E",
       color5: "#BAD6DB",
       color6: "#EAF1F1",
       color7: "#D3F930",

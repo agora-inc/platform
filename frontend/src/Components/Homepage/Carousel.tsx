@@ -4,6 +4,7 @@ import { Box, Text } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
 import TalkCard from "../Talks/TalkCard";
 import { User, UserService } from "../../Services/UserService";
+import TrendingTalksList from "../../Components/Homepage/TrendingTalksList";
 
 interface Props {
   gridArea: string;
@@ -99,15 +100,18 @@ export default class Carousel extends Component<Props, State> {
 
   render() {
     return (
-      <Box
-      // width="100%"
-      // height="100%"
-      // gridArea={this.props.gridArea}
-      // margin={{ top: "60px" }}
-      >
-        {this.state.talks.length != 0 && this.ifStreams()}
-        
-      </Box>
+      <>
+        <TrendingTalksList />
+        <Box
+        // width="100%"
+        // height="100%"
+        // gridArea={this.props.gridArea}
+        // margin={{ top: "60px" }}
+        >
+          {this.state.talks.length != 0 && this.ifStreams()}
+          
+        </Box>
+    </>
     );
   }
 }

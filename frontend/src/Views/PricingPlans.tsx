@@ -180,8 +180,11 @@ export default class ManageChannelPage extends Component<Props, State> {
           )}
           {!this.props.disabled && this.state.allPlansId.length === 0 && (
             <Box margin={{ bottom: "20px", left: "10px" }}>
-              <Text size="14px" weight="bold" >
-                You are currently on our free plan. Upgrade to enjoy more!
+              <Text size="18px" weight="bold" >
+                You are currently on our free plan.
+              </Text>
+              <Text size="18px" margin={{top:"20px"}} >
+                To democratise access to knowledge, we offer most of the above features <b>for free</b>! For the premium ones, check out the pricing below!
               </Text>
             </Box>
           )}  
