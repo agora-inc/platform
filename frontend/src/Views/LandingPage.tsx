@@ -160,7 +160,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             Attend, give, create virtual or hybrid seminars with academic and tech experts from all over the world before grabbing an e-coffee with them!
           </Text>
         </Box>
-        <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "10px"}}>
+        <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "10px"}} height="50%">
           {this.callToActions()}
         </Box>
       </>
@@ -172,7 +172,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     return (
       <>
         <Box direction="column" justify="center" style={{ alignContent: "center" }}>
-          <img src={moraStreamFullLogo} style={{ width: "100%", marginTop: "50px" }} />
+          <img src={moraStreamFullLogo} style={{ width: "100%"}} />
         </Box>
       </>
     )
@@ -185,16 +185,17 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         direction="row"
         focusIndicator={false}
         margin={{
-          top: (window.innerWidth > 800) ? "80px" : "25px",
+          top: (window.innerWidth > 800) ? "80px" : "40px",
           bottom: (window.innerWidth > 800) ? "40px" : "0px"
         }}
-        justify="center"
+        justify="start"
+        alignContent="start"
       >
 
       {/* Desktop version */}
       <MediaQuery minDeviceWidth={800}>
 
-        <Box direction="column" width="56%" >
+        <Box direction="column" width="340px" >
 
           <Text size="21px" weight="bold" margin={{ left: "10px", bottom: "30px" }}>
             Audiences
@@ -249,7 +250,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         <div id="vertical-line"> {} </div>
 
-        <Box direction="column" width="24%" alignSelf="center">
+        <Box direction="column" width="150px" alignSelf="center">
           <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
             Speakers
           </Text>
@@ -284,7 +285,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         <div id="vertical-line"> {} </div>
 
-        <Box direction="column" width="25%" alignSelf="center">
+        <Box direction="column" width="150px" alignSelf="center">
           <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
             Organisers
           </Text>
@@ -320,7 +321,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
       {/* Mobile version */}
       <MediaQuery maxDeviceWidth={800}>
-        <Box direction="column" width="50%" >
+        <Box direction="column" width="50%" height="100%">
           <Text size="18px" weight="bold" margin={{ left: "10px", bottom: "10px" }}>
             Audiences
           </Text>
@@ -389,7 +390,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         <div id="vertical-line"> {} </div>
 
-        <Box direction="column" width="50%" alignSelf="center">
+        <Box direction="column" width="50%" alignSelf="center" height="100%">
           <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
             Speakers
           </Text>
@@ -682,11 +683,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "1000px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height="100%">
+          <Box width="80%" height={this.state.renderMobileView ? "950px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "750px" : "100%"}>
               {this.aboveTheFoldMain()}
             </Box>
-            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "60%" : "100%"}>
+            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "100px" : "100%"}>
               {this.aboveTheFoldImage()}
             </Box>
           </Box>
