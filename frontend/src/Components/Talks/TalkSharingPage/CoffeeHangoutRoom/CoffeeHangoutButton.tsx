@@ -138,7 +138,7 @@ export default class CoffeeHangoutButton extends Component<Props, State> {
                     {!this.props.disabled && (
                       <a
                           style={{ width: "100%", textDecoration: "none" }}
-                          href={"https://gather.town/app/ZdQRhpTeDNaBiV2P/mora.stream%20Cafeteria"}
+                          href={"https://gather.town/app/q9m3D0XU6stq8fNG/morastream%20Cafeteria"}
                           target="_blank"
                       >
                           <Button
