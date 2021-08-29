@@ -130,28 +130,30 @@ export default class InformationPage extends Component<Props, State> {
                   Provide a gateway to social academic events
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  Scientists originally created the World Wide Web to facilitate international research communications.
+                  Scientists originally created the World Wide Web to facilitate the communication of and around international research.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  The internet radically transformed our everyday life since 1989 but not much progress has been done regarding its primal goal.
+                  Since 1989, the internet has radically transformed our everyday lives. Despite this, with regards to research, 
+                  not much progress has been made toward its primary goal.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  We leverage modern technologies to empower academics to connect, exchange and debate new ideas anywhere on Earth.
+                  At mora, we believe in leveraging modern technologies to empower academics to connect, 
+                  exchange and debate new ideas anywhere on Earth.
                 </Text>
               </Box>
 
               <Box gridArea="block_3" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Give an equal chance to every academics to be part of any communities
+                  Give an equal chance to every academic to be part of any community
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  Not every researcher have access to top-notch seminars in their university.
+                  Not every researcher has access to top-notch seminars at their university. 
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  Ideas and collaborations are most often formed around a coffee after a presentation. 
+                  Collaborations and the ideas that follow as a direct result are most often formed over a coffee after a presentation. 
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  Online streaming technologies can facilitate the rise of talented researchers.
+                In this respect, online streaming technologies can facilitate the rise of talented researchers, regardless of where they are.
                 </Text>
               </Box>
 
@@ -160,31 +162,34 @@ export default class InformationPage extends Component<Props, State> {
                   Facilitate cross-subject collaborations
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  Ground-breaking results often come from the merging of ideas from different fields.
+                  Ground-breaking results often stem from the boundary of ideas from different fields.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  However, in order to meet, there must be a conscious organisational effort to gather.
+                  In order for them to meet, there must be some conscious organisational effort.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  The solution? A centralized place where researchers can hop from one seminar to another with just a couple clicks.
+                  The solution? A centralised place where researchers can hop from one seminar to another in just a few clicks.
                 </Text>
               </Box>
 
               <Box gridArea="block_1" alignContent="start" margin={{bottom: "20px"}}>
                 <Text size="25px" weight="bold" color="color3" margin={{bottom: "20px"}}>
-                  Empower the atomic social component of research
+                  Empower the social component of research
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  COVID-19 raised awareness that researchers could benefit from online seminars.
+                  COVID-19 raised awareness that researchers benefit from online seminars.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  The majority of groups that went online saw their audience multiply and enjoyed the consistent presence of world-class experts. 
+                  The majority of research groups that went online saw their audience multiply and enjoyed the 
+                  many advantages that come with it, such as the consistent presence of world-class experts.
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  As restrictions are being lifted, academics also want to re-experience the presence of their next-door colleagues in person.  
+                  As restrictions are lifted, academics want to integrate this experience with that of familiar 
+                  in-person seminars with their colleagues next door.  
                 </Text>
                 <Text size="16px" margin={{bottom: "10px"}}>
-                  The solution? An hybrid streaming technolgy tailored for academic seminars where online and physical audience can interact and empower each other.
+                  The solution? A hybrid streaming technology tailored to academic seminars, where a virtual and 
+                  physical audience can interact and empower one another.
                 </Text>
               </Box>
             </Grid>
