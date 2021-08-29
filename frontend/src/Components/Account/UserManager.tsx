@@ -14,6 +14,7 @@ import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
+import MediaQuery from "react-responsive";
 
 
 const makeProfilePublicInfo =
@@ -479,55 +480,58 @@ export default class UserManager extends Component<Props, State> {
   };
 
   loggedOutStuff = (
-    <Box direction="row" align="center" justify="center" gap="xsmall" margin={{right: "1vw"}}>
-        <Link
-          to={{ pathname: "/info/welcome" }}
-          style={{ textDecoration: "none", marginRight: "100px" }}
-        >
-          <Box
-            onClick={() => ({})}
-            width="120px"
-            height="30px"
-            background="#BAD6DB"
-            round="xsmall"
-            justify="center"
-            align="center"
-            focusIndicator={false}
-            hoverIndicator="#6DA3C7"
+    <MediaQuery minDeviceWidth={800}>
+      <Box direction="row" align="center" justify="end" gap="xsmall" margin={{right: "1vw"}}>
+          <Link
+            to={{ pathname: "/info/welcome" }}
+            style={{ textDecoration: "none", marginRight: "100px" }}
           >
-            <Text size="14px" weight="bold"> About us </Text>
-          </Box>
-        </Link>
-      <LoginModal
-        open={this.props.showLogin}
-        callback={() => {
-          this.setState(
-            {
-              isLoggedIn: UserService.isLoggedIn(),
-              user: UserService.getCurrentUser(),
-            },
-            () => {
-              this.fetchAdminChannels();
-              this.fetchMemberChannels();
-            }
-          );
-        }}
-      />
-      <SignUpButton
-        callback={() => {
-          this.setState(
-            {
-              isLoggedIn: UserService.isLoggedIn(),
-              user: UserService.getCurrentUser(),
-            },
-            () => {
-              this.fetchAdminChannels();
-              this.fetchMemberChannels();
-            }
-          );
-        }}
-      />
-    </Box>
+            <Box
+              onClick={() => ({})}
+              width="120px"
+              height="30px"
+              background="#BAD6DB"
+              round="xsmall"
+              justify="center"
+              align="center"
+              focusIndicator={false}
+              hoverIndicator="#6DA3C7"
+            >
+              <Text size="14px" weight="bold"> About us </Text>
+            </Box>
+          </Link>
+          
+          <LoginModal
+            open={this.props.showLogin}
+            callback={() => {
+              this.setState(
+                {
+                  isLoggedIn: UserService.isLoggedIn(),
+                  user: UserService.getCurrentUser(),
+                },
+                () => {
+                  this.fetchAdminChannels();
+                  this.fetchMemberChannels();
+                }
+              );
+            }}
+          />
+          <SignUpButton
+            callback={() => {
+              this.setState(
+                {
+                  isLoggedIn: UserService.isLoggedIn(),
+                  user: UserService.getCurrentUser(),
+                },
+                () => {
+                  this.fetchAdminChannels();
+                  this.fetchMemberChannels();
+                }
+              );
+            }}
+          />
+      </Box>
+    </MediaQuery>
   );
 
   render() {

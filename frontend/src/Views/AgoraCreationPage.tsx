@@ -122,10 +122,9 @@ export default class AgoraCreationPage extends Component<Props, State> {
         width="100vw"
         height="auto"
         align="center"
-        margin={{ top: "8vh" }}
         // background="color6"
         >
-          <Box width={renderMobileView ? "95%" : "70%"} alignContent="center" margin={{top: "100px", left: "10px"}}>
+          <Box width={renderMobileView ? "95%" : "70%"} alignContent="center">
             <Box margin={{top:"70px"}} gap="30px">
               <Box direction="row" gap="30px" align="center"> 
                 <Text size="25px" weight="bold" color="color1">
@@ -144,7 +143,6 @@ export default class AgoraCreationPage extends Component<Props, State> {
               <Text size="18px" >
                 If you wish to empower your community with awesome features, check out the pricing below!
               </Text>
-
             </Box>
 
             {this.state.agoraCreationOverlay.showCreateChannelOverlay && (

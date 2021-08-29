@@ -26,7 +26,7 @@ export default class FooterComponent extends Component {
           }}
         />
         <Box direction="row" justify="between">
-          <Box gap="xsmall" width="50%">
+          <Box gap="xsmall" width="100%">
             <a href="/info/welcome" style={{ color: "grey" }}>
               About us
             </a>
@@ -44,7 +44,7 @@ export default class FooterComponent extends Component {
             </a>
           </Box>
           <Box gap="medium">
-            <Text size="14px" style={{textAlign: "right", marginRight: "5px"}}> The modern agora</Text>
+            <Text size="14px" style={{textAlign: "right", marginRight: "5px"}}> where minds meet</Text>
             <Text style={{ fontSize: 14, marginRight: "5px"}} alignSelf="end">mora.stream © 2021</Text>
           </Box>
         </Box>

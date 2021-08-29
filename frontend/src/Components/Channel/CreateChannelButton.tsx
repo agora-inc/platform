@@ -46,11 +46,11 @@ export default class CreateChannelButton extends Component<Props, State> {
         background="color1"
         hoverIndicator="color3"
         focusIndicator={false}
-        justify="start"
+        justify="center"
       >
         {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
-        <Text size="22.5px">🚀</Text>
         <Text size="14px" color="white">{this.props.text ? this.props.text : "Create an agora"}</Text>
+        <Text size="22.5px">🚀</Text>
         
       </Box>
     );

@@ -51,14 +51,13 @@ export default class TrendingTalksList extends Component<{}, State> {
   }
   render() {
     return (
-      <Box height="290px">
-        <Box direction="row" justify="start" style={{minWidth: "50%"}} margin={{bottom: "21px"}}>
+      <Box height="250px">
+        <Box direction="row" justify="start" style={{minWidth: "50%"}} margin={{bottom: "10px"}}>
           <ReactTooltip id="what-is-an-agora" effect="solid">
           An agora is a hub for a community -- reading group, seminar group, institution, ...
           </ReactTooltip>
           <Text
-            size="21px"
-            margin={{ left: "small" }}
+            size="26px"
             alignSelf="start"
             weight="bold"
           >
@@ -112,7 +111,7 @@ export default class TrendingTalksList extends Component<{}, State> {
             </Link>
           ))}
         </Box>
-        <Link
+        {/* <Link
           to={{ pathname: "/agoras" }}
           style={{ textDecoration: "none" }}
         >
@@ -134,7 +133,7 @@ export default class TrendingTalksList extends Component<{}, State> {
               Discover more <img src={AgoraLogo} style={{ height: "12px", marginTop: "1px", marginRight: "-1px"}}/>s 
             </Text>
           </Box>
-        </Link>
+        </Link> */}
       </Box>
     );
   }

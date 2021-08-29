@@ -4,36 +4,41 @@ import { Box, Text, Heading, Layer } from "grommet";
 import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../Services/UserService";
-import { Search, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop} from "grommet-icons";
+import { Search, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
 import UserManager from "../Components/Account/UserManager";
 import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 import ScrollIntoView from 'react-scroll-into-view'
-import TrendingChannelsList from "../Components/Homepage/TrendingChannelsList";
-import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
-import AgoraCreationPage from "../Views/AgoraCreationPage";
 import ReactTooltip from "react-tooltip";
+
+import CreateChannelButton from "../Components/Channel/CreateChannelButton";
+import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
+
+import PricingPlans from "../Views/PricingPlans";
+
 
 interface State {
   user: User | null
   showLogin: boolean
   colorButton: string
   colorHover: string
-  showModalGiveATalk: boolean
-  renderMobileView: boolean
+  showModalGiveATalk: boolean;
+  renderMobileView: boolean;
+  showCreateChannelOverlay: boolean
 }
 
 export default class LandingPage extends Component<RouteComponentProps, State> {
   constructor(props: any) {
     super(props);
     this.state = {
+      renderMobileView: (window.innerWidth < 1000),
       user: UserService.getCurrentUser(),
       showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
       colorButton: "#EAF1F1",
       colorHover: "#BAD6DB",
       showModalGiveATalk: false,
-      renderMobileView: (window.innerWidth < 1000)
+      showCreateChannelOverlay: false
     };
   }
 
@@ -47,24 +52,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     }
   }
 
-  // showDynamicTextValue() {
-  //   // Changes every second
-  //   var dynamicTextValueList = [
-  //     "Opening the doors to all online academic seminars in the world",
-  //     "Democratizing access to cutting-edge research",
-  //     "Leveraging modern technologies in the service of academics",
-  //     "Cutting global travel of academics and fight climate change",
-  //     "Empowering academics reach and visibility",
-  //     "Automating the seminar organisation pipeline",
-  //     "Bridging academic and industrial researchers"
-  //   ];
-
-  //   var now = Date.now();
-  //   // return dynamicTextValueList[now % dynamicTextValueList.length]
-  //   // "Home for cutting-edge online/physical academic seminars"
-  //   return ""
-  //   // return "Home for sharing, debating, and discovering"
-  // }
+  toggleCreateChannelOverlay = () => {
+    this.setState({
+      showCreateChannelOverlay: !this.state.showCreateChannelOverlay
+    });
+  };
 
   toggleModal = () => {
     this.setState({ showModalGiveATalk: !this.state.showModalGiveATalk });
@@ -159,19 +151,19 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
   aboveTheFoldMain() {
     return (
-      <Box>
+      <>
         <Box>
-          <Text size="48px" weight="bold" color="color1" margin={{top: "15%", bottom: "20px"}}>
+          <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "40px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
             A platform for a thoughtful audience.
           </Text>
-          <Text>
+          <Text size="20px">
             Attend, give, create virtual or hybrid seminars with academic and tech experts from all over the world before grabbing an e-coffee with them!
           </Text>
         </Box>
-        <Box>
+        <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "10px"}}>
           {this.callToActions()}
         </Box>
-      </Box>
+      </>
     )
 
 }
@@ -179,20 +171,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   aboveTheFoldImage() {
     return (
       <>
-        {/* Desktop version */}
-        <MediaQuery minDeviceWidth={800}>
-          <Box direction="row" justify="center" style={{ justifyContent: "center" }}>
-            <img src={moraStreamFullLogo} style={{ height: "550px" }} />
-          </Box>
-        </MediaQuery>
-
-        {/* Mobile version */}
-        <MediaQuery maxDeviceWidth={800}>
-
-          <Box direction="row" justify="center" style={{ justifyContent: "center" }} margin={{ top: "50px", bottom: "20px" }}>
-            <img src={moraStreamFullLogo} style={{ height: "280px" }} />
-          </Box>
-        </MediaQuery>
+        <Box direction="column" justify="center" style={{ alignContent: "center" }}>
+          <img src={moraStreamFullLogo} style={{ width: "100%", marginTop: "50px" }} />
+        </Box>
       </>
     )
 }
@@ -201,14 +182,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   callToActions() {
     return (
       <Box
-      direction="row"
-      focusIndicator={false}
-      margin={{
-        top: (window.innerWidth > 800) ? "80px" : "25px",
-        bottom: (window.innerWidth > 800) ? "40px" : "0px"
-      }}
-      justify="center"
-    >
+        direction="row"
+        focusIndicator={false}
+        margin={{
+          top: (window.innerWidth > 800) ? "80px" : "25px",
+          bottom: (window.innerWidth > 800) ? "40px" : "0px"
+        }}
+        justify="center"
+      >
 
       {/* Desktop version */}
       <MediaQuery minDeviceWidth={800}>
@@ -477,51 +458,47 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content1() {
     return (
       <>
-        <Text size="34px" margin={this.state.renderMobileView ? {top: "10%", bottom: "10%"} : {top: "5%", bottom: "5%"}} color="white">We empower every aspects of seminars with tech</Text>
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="large">
-          <Box width="40vh" height="40vh" background="grey" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">We empower every aspects of seminars with tech</Text>
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Workshop size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
                 Paradise for speakers
               </Text>
             </Box>
             <Text size="18px">Got a new idea or want to share your work with some existing communities? Simply browse for them and fill the in-built application form! Their admins will get back to you as soon as they can!</Text>
-
           </Box>
 
 
-          <Box width="40vh" height="40vh" background="grey" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <SearchAdvanced size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Granular classification system
+                Granular classification
               </Text>
             </Box>
-            <Text size="18px">Classification made by researchers and entrepreneurs for researchers and entrepreneurs.</Text>
-
+            <Text size="18px">We consulted experts for each field: the classification is made by people who know what they are talking about.</Text>
           </Box>
 
-          <Box width="40vh" height="40vh" background="grey" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <ShareOption size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Physical and online audience are connected
+                Hybrid audience connected
               </Text>
             </Box>
-            <Text size="18px">Placeholder description lol mec</Text>
-
+            <Text size="18px">With our mobile app, the in-person audience can interact with the online one through the chat and Q&A. The physical audience can also browse the slides of the speaker on their phone, so they won't be lost 10 minutes in the seminar!</Text>
           </Box>
 
-          <Box width="40vh" height="40vh" background="grey" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "20px"}} height="35%">
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "20px"}} height="25%">
               <Group size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
                 Meet your next teammates! 
               </Text>
             </Box>
             <Text size="18px">Whether you are looking for new opportunities for your next article, collaborations, or partnership, your future teammates are likely to be sitting next to you!</Text>
-
           </Box>
         </Box>
       </>
@@ -531,97 +508,114 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={this.state.renderMobileView ? {top: "10%", bottom: "10%"} : {top: "5%", bottom: "5%"}} color="black">Everything seminar organisers need, from start to finish</Text>
-        {/* First row of features */}
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="large" margin={{bottom: "20px"}}>
-          <Box width="40vh" height="30vh" background="white" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
-              <Workshop size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color1">
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Everything seminar organisers need, from start to finish</Text>
+        {/* A. First row of features */}
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "20px"}} gap="30px">
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column" className="box1" gap="15px"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
+              <Attraction size="large"/>
+              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Speakers come to you
               </Text>
             </Box>
             <Text size="18px">Finding exciting speakers to hear about lattest trends in your field can be tedious. Here, they come to you. </Text>
-
           </Box>
 
+          {/* {(!this.state.renderMobileView && 
+            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
+          )} */}
 
-          <Box width="40vh" height="30vh" background="white" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
-              <SearchAdvanced size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color1">
-                Post your seminar in less than a minute
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column" className="box2"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
+              <Trigger size="large"/>
+              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
+                Post your seminars in 30 seconds
               </Text>
             </Box>
             <Text size="18px">Decide whether your event is public or requires registration. Yes, the registration form for your audience is automatically generated: you don't need to take care of that.</Text>
           </Box>
 
-          <Box width="40vh" height="30vh" background="white" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "20px"}} height="35%">
-              <Group size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color1">
+          {/* {(!this.state.renderMobileView && 
+            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
+          )} */}
+
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "20px"}} height="25%">
+              <MailOption size="large"/>
+              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Automatic email advertisement
               </Text>
             </Box>
-            <Text size="18px">Easily integrate your mailing list into your agora. Whenever a new event is created or some unexpected changes happened, you can with a single click let your community know about it!</Text>
+            <Text size="18px">Easily integrate your mailing list into your administration panel. Whenever a new event is created or modified, you can let your community know about it with a simple click!</Text>
           </Box>
 
-          <Box width="40vh" height="30vh" background="white" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
-              <ShareOption size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color1">
+          {/* {(!this.state.renderMobileView && 
+            <hr style={{width: "40px", height: "0.5px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
+          )} */}
+
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
+              <DocumentPerformance size="large"/>
+              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Easy registration management
               </Text>
             </Box>
             <Text size="18px">You can automatically accept everybody with a verified academic email address (or other institutions). Else, manually accept attendees in a centralised panel.</Text>
           </Box>
         </Box>
-
-        {/* Second row of features */}
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="large">
-          <Box width="40vh" height="30vh" background="white" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
-              <Workshop size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color1">
+        
+        {/* B. Second row of features */}
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
+              <Deploy size="large"/>
+              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 New opportunities for your community
               </Text>
             </Box>
-            <Text size="18px">Allow your online audience to mingle after the event around an e-coffee! Some of the most projects and collaborations started around a coffee!</Text>
-
+            <Text size="18px">Allow your online audience to mingle after the event around an e-coffee! So many projects and collaborations started around a coffee, this one included!</Text>
           </Box>
 
+          {/* {(!this.state.renderMobileView && 
+            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
+          )} */}
 
-          <Box width="40vh" height="30vh" background="white" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
-              <SearchAdvanced size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color1">
-                Easily record and upload
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
+              <CirclePlay size="large"/>
+              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
+                Record and upload (BETA)
               </Text>
             </Box>
-            <Text size="18px">Classification made by people who know what they're talking about. If we're missing a .</Text>
-
+            <Text size="18px">Recording can be done with one click. Appending the slide to your event with a second one. Uploading your recording on mora.stream with a third one.</Text>
           </Box>
 
-          <Box width="40vh" height="30vh" background="white" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="35%">
-              <ShareOption size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color1">
-                Easily give microphone to audience
+          {/* {(!this.state.renderMobileView && 
+            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
+          )} */}
+
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%">
+              <Like size="large"/>
+              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
+                Audience management
               </Text>
             </Box>
-            <Text size="18px">Placeholder description lol mec</Text>
-
+            <Text size="18px">Allow your audience to request the microphone if they want to ask a question orally. You decide whether you want to give it to them, or take it back if you are running out of time!</Text>
           </Box>
+          
+          {/* {(!this.state.renderMobileView && 
+            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
+          )} */}
 
-          <Box width="40vh" height="30vh" background="white" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "20px"}} height="35%">
-              <Group size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color1">
-                Streaming in browser (no apps!)
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+            <Box direction="row" margin={{bottom: "20px"}} height="25%">
+              <Workshop size="large"/>
+              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
+                Speaker friendly
               </Text>
             </Box>
-            <Text size="18px">Whether you are looking for new opportunities for your next article, collaborations, or partnership, your future teammates are likely to be sitting next to you!</Text>
-
+            <Text size="18px">All the streaming happens in the browser (no external software is required!). We made the speaker interface so light and simplified that even the founder's grandmother could give a talk!</Text>
           </Box>
         </Box>
       </>
@@ -630,8 +624,35 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
   callToCreateAgora() {
     return (
-      <Text size="34px" margin={{top: "5%", bottom: "5%"}} color="color1">Empower your community now!</Text>
-          
+      <>
+        {!this.state.renderMobileView && (
+          <>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now, in less than a minute!</Text>
+            <Box align="center" margin={{bottom: "20px"}}>
+                <CreateChannelButton 
+                onClick={this.toggleCreateChannelOverlay} 
+                width="250px"
+                height="90px"
+                text={"Get started!"}/>
+            </Box>
+          </>
+        )}
+        {this.state.renderMobileView && (
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Come back to this page using a Desktop browser to get started! 🚀</Text>
+        )}
+
+        {this.state.showCreateChannelOverlay && (
+              <CreateChannelOverlay
+                onBackClicked={this.toggleCreateChannelOverlay}
+                onComplete={() => {
+                  this.toggleCreateChannelOverlay();
+                }}
+                visible={true}
+                user={this.state.user}
+              />
+            )}
+      </>
+      
     )
   }
 
@@ -661,48 +682,36 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "180vh": "75vh"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1000px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
             <Box width={this.state.renderMobileView ? "100%" : "60%"} height="100%">
               {this.aboveTheFoldMain()}
             </Box>
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height="100%">
+            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "60%" : "100%"}>
               {this.aboveTheFoldImage()}
             </Box>
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color1">
-          <Box width="80%" height={this.state.renderMobileView ? "200vh": "70vh"}  direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1450px": "650px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color5">
-          <Box width="80%" height={this.state.renderMobileView ? "380vh": "130vh"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "2350px": "930px"} direction="column" alignSelf="center">
             {this.content2()}
           </Box>
         </Box>
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "200vh": "70vh"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "400px": "400px"} direction="column" alignSelf="center">
             {this.callToCreateAgora()}
           </Box>
         </Box>
 
-
-        <AgoraCreationPage user={this.state.user} />
-
-
-        {/* <Box
-          direction="row"
-          gap="150px"
-          margin={{ top: "75px", left: "10px", right: "10px" }}
-        >
-          <TrendingTalksList />
-        </Box> */}
-
-        <Box width={window.innerWidth > 800 ? "70%" : "90%"} align="center">
+        <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />
         </Box>
 
