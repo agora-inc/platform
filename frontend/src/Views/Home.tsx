@@ -97,6 +97,12 @@ export default class Home extends Component<{}, State> {
           style={{ overflowY: "scroll" }}
           gap="25px"
         > */}
+        <video
+          autoPlay loop muted id="background-landing"
+          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
+        >
+          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
+        </video>
         <div className="core_box_without_sidebar">
           <Carousel gridArea="carousel" />
             {/*<TreeClassification />*/}

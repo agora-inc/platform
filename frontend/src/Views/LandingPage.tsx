@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-// import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
 import moraStreamFullLogo from "../assets/general/mora.stream_logo_v3.svg";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../Services/UserService";
@@ -16,7 +15,6 @@ import ReactTooltip from "react-tooltip";
 import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
-import PricingPlans from "../Views/PricingPlans";
 
 
 interface State {

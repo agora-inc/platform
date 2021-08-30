@@ -27,12 +27,12 @@ export default class FooterComponent extends Component {
         />
         <Box direction="row" justify="between">
           <Box gap="xsmall" width="100%">
-            <a href="/info/welcome" style={{ color: "grey" }}>
+            {/* <a href="/info/welcome" style={{ color: "grey" }}>
               About us
-            </a>
-            <a href="/info/getting-started" style={{ color: "grey" }}>
+            </a> */}
+            {/* <a href="/info/getting-started" style={{ color: "grey" }}>
               Getting started
-            </a>
+            </a> */}
             <a>
               <FormContainer />
             </a>
