@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
+// import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
+import moraStreamFullLogo from "../assets/general/mora.stream_logo_v3.svg";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../Services/UserService";
 import { Search, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
@@ -32,7 +33,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      renderMobileView: (window.innerWidth < 1000),
+      renderMobileView: (window.innerWidth < 1200),
       user: UserService.getCurrentUser(),
       showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
       colorButton: "#EAF1F1",
@@ -157,7 +158,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             A platform for a thoughtful audience.
           </Text>
           <Text size="20px">
-            Attend, give, create virtual or hybrid seminars with academic and tech experts from all over the world before grabbing an e-coffee with them!
+            Attend, give, and create virtual or hybrid seminars with academic and tech experts from all over the world before grabbing an e-coffee with them!
           </Text>
         </Box>
         <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "10px"}} height="50%">
@@ -171,8 +172,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   aboveTheFoldImage() {
     return (
       <>
-        <Box direction="column" justify="center" style={{ alignContent: "center" }}>
-          <img src={moraStreamFullLogo} style={{ width: "100%"}} />
+        <Box direction="column" style={this.state.renderMobileView 
+            ? { width: "90%", alignSelf: "center" } 
+            : { width: "90%", marginTop: "120px", alignSelf: "center"}
+          }>
+          <img src={moraStreamFullLogo} style={{maxWidth: "650px"}}/>
         </Box>
       </>
     )
@@ -193,7 +197,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       >
 
       {/* Desktop version */}
-      <MediaQuery minDeviceWidth={800}>
+      <MediaQuery minDeviceWidth={1000}>
 
         <Box direction="column" width="340px" >
 
@@ -320,7 +324,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
       {/* Mobile version */}
-      <MediaQuery maxDeviceWidth={800}>
+      <MediaQuery maxDeviceWidth={1000}>
         <Box direction="column" width="50%" height="100%">
           <Text size="18px" weight="bold" margin={{ left: "10px", bottom: "10px" }}>
             Audiences
@@ -461,18 +465,18 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">We empower every aspects of seminars with tech</Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Workshop size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
                 Paradise for speakers
               </Text>
             </Box>
-            <Text size="18px">Got a new idea or want to share your work with some existing communities? Simply browse for them and fill the in-built application form! Their admins will get back to you as soon as they can!</Text>
+            <Text size="18px">Do you want to share a new idea or what you've been working on with some existing communities? We made your life super-easy! Simply connect to them by clicking the 'Give a talk!' button!</Text>
           </Box>
 
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <SearchAdvanced size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
@@ -482,24 +486,24 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Text size="18px">We consulted experts for each field: the classification is made by people who know what they are talking about.</Text>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <ShareOption size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
                 Hybrid audience connected
               </Text>
             </Box>
-            <Text size="18px">With our mobile app, the in-person audience can interact with the online one through the chat and Q&A. The physical audience can also browse the slides of the speaker on their phone, so they won't be lost 10 minutes in the seminar!</Text>
+            <Text size="18px">With our mobile app, the in-person audience can interact with the online one through chat and Q&A but can also browse the slides of the speaker back-and-forth!</Text>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "20px"}} height="25%">
               <Group size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
                 Meet your next teammates! 
               </Text>
             </Box>
-            <Text size="18px">Whether you are looking for new opportunities for your next article, collaborations, or partnership, your future teammates are likely to be sitting next to you!</Text>
+            <Text size="18px">Whether you are looking for new opportunities for your next research article, community project, or start-up, your future teammates are likely to be sitting next to you!</Text>
           </Box>
         </Box>
       </>
@@ -512,7 +516,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Everything seminar organisers need, from start to finish</Text>
         {/* A. First row of features */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "20px"}} gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column" className="box1" gap="15px"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box1" gap="15px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Attraction size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
@@ -526,21 +530,21 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column" className="box2"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box2"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Trigger size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Post your seminars in 30 seconds
+                Seminars posted in 30 seconds
               </Text>
             </Box>
-            <Text size="18px">Decide whether your event is public or requires registration. Yes, the registration form for your audience is automatically generated: you don't need to take care of that.</Text>
+            <Text size="18px">Decide whether your event is public or requires registration. The registration form for your audience is automatically generated: no need to worry about it.</Text>
           </Box>
 
           {/* {(!this.state.renderMobileView && 
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "20px"}} height="25%">
               <MailOption size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
@@ -554,7 +558,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <hr style={{width: "40px", height: "0.5px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <DocumentPerformance size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
@@ -567,21 +571,21 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         
         {/* B. Second row of features */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Deploy size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                New opportunities for your community
+                New exciting opportunities
               </Text>
             </Box>
-            <Text size="18px">Allow your online audience to mingle after the event around an e-coffee! So many projects and collaborations started around a coffee, this one included!</Text>
+            <Text size="18px">Allow your online audience to mingle after the event around an e-coffee! So many ideas and collaborations started around a coffee (this one included)!</Text>
           </Box>
 
           {/* {(!this.state.renderMobileView && 
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <CirclePlay size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
@@ -595,11 +599,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Like size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Audience management
+                Audience management tools
               </Text>
             </Box>
             <Text size="18px">Allow your audience to request the microphone if they want to ask a question orally. You decide whether you want to give it to them, or take it back if you are running out of time!</Text>
@@ -609,14 +613,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "300px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "20px"}} height="25%">
               <Workshop size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Speaker friendly
               </Text>
             </Box>
-            <Text size="18px">All the streaming happens in the browser (no external software is required!). We made the speaker interface so light and simplified that even the founder's grandmother could give a talk!</Text>
+            <Text size="18px">All the streaming happens in the browser (no external software is required!). The speaker interface is so light and simplified that even the founders' grandparents could use it!</Text>
           </Box>
         </Box>
       </>
@@ -683,8 +687,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "950px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "750px" : "100%"}>
+          <Box width="80%" height={this.state.renderMobileView ? "1080px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "750px" : "100%"}
+              style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
               {this.aboveTheFoldMain()}
             </Box>
             <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "100px" : "100%"}>
@@ -694,13 +699,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
 
         <Box height="100%" width="100%" background="color1" id="content">
-          <Box width="80%" height={this.state.renderMobileView ? "1450px": "650px"}  direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1550px": "690px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color5">
-          <Box width="80%" height={this.state.renderMobileView ? "2350px": "930px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "2390px": "970px"} direction="column" alignSelf="center">
             {this.content2()}
           </Box>
         </Box>
