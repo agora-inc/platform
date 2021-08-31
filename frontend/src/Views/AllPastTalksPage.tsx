@@ -8,6 +8,7 @@ import { User, UserService } from "../Services/UserService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicClassification from "../Components/Homepage/TopicClassification";
 import MediaQuery from "react-responsive";
+import "../Styles/landing-page.css";
 
 interface State {
   totalNumberOfTalks: number;
