@@ -175,7 +175,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             ? { width: "90%", alignSelf: "center" } 
             : { width: "90%", marginTop: "120px", alignSelf: "center"}
           }>
-          <img src={moraStreamFullLogo} style={{maxWidth: "650px"}}/>
+          <img src={moraStreamFullLogo} style={{maxWidth: "600px"}}/>
         </Box>
       </>
     )
