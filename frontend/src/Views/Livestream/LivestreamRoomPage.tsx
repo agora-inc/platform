@@ -647,6 +647,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                     )
                   }}
                   />
+              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />     
               {viewChangeButton()}
             </>
           )}  
@@ -654,6 +655,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <>
               {requestMicButton()}
               {fullscreenButton()}
+              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
               {viewChangeButton()}
             </>
             ) 
