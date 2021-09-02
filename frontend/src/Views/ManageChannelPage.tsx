@@ -908,6 +908,12 @@ export default class ManageChannelPage extends Component<Props, State> {
                 
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                  <ScheduleTalkButton
+                    margin={{ top: "20px", bottom: "40px" }}
+                    channel={this.state.channel}
+                    user={this.state.user}
+                    onCreatedCallback={this.fetchAllTalks}
+                  />
                   <Box
                     width="100%"
                     direction="row"
