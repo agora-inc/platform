@@ -462,16 +462,23 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content1() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">We empower every aspects of seminars with tech</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">
+          We enhance each aspect of a seminar with technology
+        </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Workshop size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
                 Paradise for speakers
               </Text>
             </Box>
-            <Text size="18px">Do you want to share a new idea or what you've been working on with some existing communities? We made your life super-easy! Simply connect to them by clicking the 'Give a talk!' button!</Text>
+            <Text size="18px"> 
+              Do you want to share a new idea or what you've been working on with existing communities? 
+            </Text>
+            <Text size="18px"> 
+              We made your life super easy! Connect with them by simply clicking the 'Give a talk!' button.
+            </Text>
           </Box>
 
 
@@ -482,17 +489,24 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 Granular classification
               </Text>
             </Box>
-            <Text size="18px">We consulted experts for each field: the classification is made by people who know what they are talking about.</Text>
+            <Text size="18px">
+              We consulted experts for each field: the classification is made by people who know what they are talking about.
+            </Text>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <ShareOption size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
                 Hybrid audience connected
               </Text>
             </Box>
-            <Text size="18px">With our mobile app, the in-person audience can interact with the online one through chat and Q&A but can also browse the slides of the speaker back-and-forth!</Text>
+            <Text size="18px">
+              With our mobile app, the in-person audience can interact with their online peers through an integrated chat. 
+            </Text>
+            <Text size="18px">
+              Everyone can also browse the slides of the speaker!
+            </Text>
           </Box>
 
           <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
@@ -502,7 +516,10 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 Meet your next teammates! 
               </Text>
             </Box>
-            <Text size="18px">Whether you are looking for new opportunities for your next research article, community project, or start-up, your future teammates are likely to be sitting next to you!</Text>
+            <Text size="18px">
+              Whether you are looking for new opportunities for your next research article, community project, or start-up, 
+              your future teammates are likely to be sitting next to you!
+            </Text>
           </Box>
         </Box>
       </>
@@ -515,111 +532,148 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Everything seminar organisers need, from start to finish</Text>
         {/* A. First row of features */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "20px"}} gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box1" gap="15px"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box1" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Attraction size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Speakers come to you
               </Text>
             </Box>
-            <Text size="18px">Finding exciting speakers to hear about lattest trends in your field can be tedious. Here, they come to you. </Text>
+            <Text size="18px">
+              Finding exciting speakers to hear about latest trends in your field can be tedious. 
+            </Text>
+            <Text size="18px">
+              On mora.stream, they directly come to you. 
+            </Text>
           </Box>
 
           {/* {(!this.state.renderMobileView && 
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box2"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box2" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Trigger size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Seminars posted in 30 seconds
               </Text>
             </Box>
-            <Text size="18px">Decide whether your event is public or requires registration. The registration form for your audience is automatically generated: no need to worry about it.</Text>
+            <Text size="18px">
+              Decide whether your event is public or requires a registration. 
+            </Text>
+            <Text size="18px">
+              The registration form for your audience is automatically generated and integrated: no need to worry about it.
+            </Text>
           </Box>
 
           {/* {(!this.state.renderMobileView && 
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "20px"}} height="25%">
               <MailOption size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Automatic email advertisement
               </Text>
             </Box>
-            <Text size="18px">Easily integrate your mailing list into your administration panel. Whenever a new event is created or modified, you can let your community know about it with a simple click!</Text>
+            <Text size="18px">
+              Easily integrate your existing mailing list on mora.stream.
+            </Text>
+            <Text size="18px">
+              Whenever an event is created or modified, you can let your community know about it with a simple click.
+            </Text>
           </Box>
 
           {/* {(!this.state.renderMobileView && 
             <hr style={{width: "40px", height: "0.5px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <DocumentPerformance size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Easy registration management
               </Text>
             </Box>
-            <Text size="18px">You can automatically accept everybody with a verified academic email address (or other institutions). Else, manually accept attendees in a centralised panel.</Text>
+            <Text size="18px">
+              You can automatically accept everybody with a verified academic email address (or other institutions). 
+            </Text>
+            <Text size="18px">
+              Manually accept the remainding attendees in a centralised panel.
+            </Text>
           </Box>
         </Box>
         
         {/* B. Second row of features */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Deploy size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 New exciting opportunities
               </Text>
             </Box>
-            <Text size="18px">Allow your online audience to mingle after the event around an e-coffee! So many ideas and collaborations started around a coffee (this one included)!</Text>
+            <Text size="18px">
+              Let your online audience mingle after the event around an e-coffee.
+            </Text>
+            <Text size="18px">
+              So many ideas and collaborations started around a coffee (mora.stream included)!
+            </Text>
           </Box>
 
           {/* {(!this.state.renderMobileView && 
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <CirclePlay size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Record and upload (BETA)
               </Text>
             </Box>
-            <Text size="18px">Recording can be done with one click. Appending the slide to your event with a second one. Uploading your recording on mora.stream with a third one.</Text>
+            <Text size="18px">
+              Record the seminar, include the slides of the speaker and uploading everything on mora.stream in 3 clicks.
+            </Text>
           </Box>
 
           {/* {(!this.state.renderMobileView && 
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Like size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
                 Audience management tools
               </Text>
             </Box>
-            <Text size="18px">Allow your audience to request the microphone if they want to ask a question orally. You decide whether you want to give it to them, or take it back if you are running out of time!</Text>
+            <Text size="18px">
+              Allow your audience to request the microphone if they want to ask a question. 
+            </Text>
+            <Text size="18px">
+              You decide whether you want to give it to them, or take it back if you are running out of time.
+            </Text>
           </Box>
           
           {/* {(!this.state.renderMobileView && 
             <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
           )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column"> 
+          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "20px"}} height="25%">
               <Workshop size="large"/>
               <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Speaker friendly
+                Speaker-friendly
               </Text>
             </Box>
-            <Text size="18px">All the streaming happens in the browser (no external software is required!). The speaker interface is so light and simplified that even the founders' grandparents could use it!</Text>
+            <Text size="18px">
+              All the streaming happens in the browser (no external software is required). 
+            </Text>
+            <Text size="18px">
+              The speaker interface is light and simple: even the founders' grandparents can use it!
+            </Text>
           </Box>
         </Box>
       </>
@@ -637,7 +691,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   onClick={this.toggleCreateChannelOverlay} 
                   width="250px"
                   height="90px"
-                  text={"Get started!"}
+                  text={"Get started"}
                   textSize="18px"
                 />
             </Box>
