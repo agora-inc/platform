@@ -9,6 +9,7 @@ interface Props {
   width?: string;
   height?: string;
   text?: string;
+  textSize?: string;
 }
 
 interface State {
@@ -48,8 +49,13 @@ export default class CreateChannelButton extends Component<Props, State> {
         focusIndicator={false}
         justify="center"
       >
-        {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
-        <Text size="14px" color="white">{this.props.text ? this.props.text : "Create an agora"}</Text>
+        <Text 
+          size={this.props.textSize ? this.props.textSize : "14px"}  
+          color="white"
+          weight="bold"
+        >
+            {this.props.text ? this.props.text : "Create an agora"}
+        </Text>
         <Text size="22.5px">🚀</Text>
         
       </Box>

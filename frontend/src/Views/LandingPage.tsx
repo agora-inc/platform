@@ -634,10 +634,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now, in less than a minute!</Text>
             <Box align="center" margin={{bottom: "20px"}}>
                 <CreateChannelButton 
-                onClick={this.toggleCreateChannelOverlay} 
-                width="250px"
-                height="90px"
-                text={"Get started!"}/>
+                  onClick={this.toggleCreateChannelOverlay} 
+                  width="250px"
+                  height="90px"
+                  text={"Get started!"}
+                  textSize="18px"
+                />
             </Box>
           </>
         )}
