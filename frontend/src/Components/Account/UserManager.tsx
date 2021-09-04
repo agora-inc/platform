@@ -176,7 +176,7 @@ export default class UserManager extends Component<Props, State> {
         }}
       >
         <Box
-          margin={{ horizontal: "small", top: "15px" }}
+          margin={{ horizontal: "small", top: "15px", bottom: "20px" }}
           gap="xsmall"
           focusIndicator={false}
           style={{ pointerEvents: "none" }}
@@ -228,19 +228,20 @@ export default class UserManager extends Component<Props, State> {
             />
           )}
         </Box> */}
-
+        {/*
         <Box gap="xsmall" pad={{ vertical: "medium" }} focusIndicator={false}>
           <Link
             to={{ pathname: "/schedule", state: { user: this.state.user } }}
             style={{ textDecoration: "none" }}
           >
+
             <Box
               onClick={this.toggleDropdown}
               background="#BAD6DB"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
-              height="40px"
+              height="50px"
               justify="center"
               align="center"
               focusIndicator={false}
@@ -248,9 +249,10 @@ export default class UserManager extends Component<Props, State> {
               hoverIndicator="#6DA3C7"
             >
               <Text size="14px" weight="bold"> My schedule </Text>
-            </Box>
+            </Box> 
           </Link>
         </Box>
+        */}
         <Box
           margin={{
             bottom: "medium",
@@ -277,6 +279,7 @@ export default class UserManager extends Component<Props, State> {
             ))}
           </Box>
           <CreateChannelButton 
+            // height="50px"
             onClick={this.toggleCreateChannelOverlay}
           />
 
@@ -306,7 +309,11 @@ export default class UserManager extends Component<Props, State> {
           <Box
             height={{max: "120px"}}
             overflow="auto"
+            align="center"
           >
+            {this.state.followingChannels.length === 0 && (
+              <Text size="12px" color="#BBBBBB" style={{fontStyle: "italic"}}> The agoras you follow will be displayed here </Text>
+            )}
             {this.state.followingChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
@@ -370,7 +377,7 @@ export default class UserManager extends Component<Props, State> {
           }} 
         />
 
-        <Box
+        {/* <Box
           margin={{
             top: "small",
             left: "small",
@@ -386,7 +393,7 @@ export default class UserManager extends Component<Props, State> {
           >
             <Text size="14px"> Bookmarks </Text>
           </Link>
-        </Box>
+        </Box> */}
         <Box
           onClick={() => {
             UserService.logout();
