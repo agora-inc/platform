@@ -17,6 +17,10 @@ import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
 
+import ZoomLogo from "../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
+import YoutubeLogo from "../assets/competitors_logo/YouTube_Logo_2017.svg.png";
+import MicrosoftTeams from "../assets/competitors_logo/youtube_logo.jpeg";
+
 
 interface State {
   user: User | null
@@ -528,7 +532,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">A unique stack that empowers seminar organisers, from start to finish</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Empowering seminar organisers, from start to finish</Text>
         {/* A. First row of features */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "20px"}} gap="30px">
           <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box1" gap="10px"> 
@@ -684,13 +688,26 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now, in less than a minute!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Start running your seminar series, in less than a minute!</Text>
+            {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "20px"}}>
                 <CreateChannelButton 
                   onClick={this.toggleCreateChannelOverlay} 
                   width="250px"
                   height="90px"
                   text={"Get started"}
+                  textSize="18px"
+                />
+            </Box>
+
+            <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Already running a series? Transport everything together in a minute!</Text>
+            <Text color="black" margin={{bottom: "80px"}} alignSelf="center">Bring your <img height="15px" src={ZoomLogo}/> subscription, your <img height="20px" style={{marginBottom: "-3px"}} src={YoutubeLogo}/> seminar recordings, or <i>gather.town</i> in your centralised panel <b>for free</b>!</Text>
+            <Box align="center" margin={{bottom: "5px"}}>
+                <CreateChannelButton 
+                  onClick={this.toggleCreateChannelOverlay} 
+                  width="250px"
+                  height="90px"
+                  text={"Transport"}
                   textSize="18px"
                 />
             </Box>
@@ -766,7 +783,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "400px": "400px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "600px": "600px"} direction="column" alignSelf="center">
             {this.callToCreateAgora()}
           </Box>
         </Box>
