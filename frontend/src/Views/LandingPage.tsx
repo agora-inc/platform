@@ -154,10 +154,10 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "40px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            A platform for a thoughtful audience.
+            Modernising academic seminars, from start to finish
           </Text>
           <Text size="20px">
-            Attend, give, and create virtual or hybrid seminars with academic and tech experts from all over the world before grabbing an e-coffee with them!
+            <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking and meeting your next teammates around an e-coffee!
           </Text>
         </Box>
         <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "10px"}} height="50%">
