@@ -463,21 +463,21 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">
-          We enhance each aspect of a seminar with technology
+          We empower every aspect of academic seminars with tech
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
           <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <Workshop size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Paradise for speakers
+                Present your research everywhere
               </Text>
             </Box>
             <Text size="18px"> 
-              Do you want to share a new idea or what you've been working on with existing communities? 
+              Do you want to share a new idea or paper with existing communities? 
             </Text>
             <Text size="18px"> 
-              We made your life super easy! Connect with them by simply clicking the 'Give a talk!' button.
+              We made your life super easy! Connect with them by simply clicking the 'Give a talk!' button and they will get back to you!
             </Text>
           </Box>
 
@@ -498,7 +498,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Box direction="row" margin={{bottom: "25px"}} height="25%">
               <ShareOption size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Hybrid audience connected
+                Hybrid academic seminars
               </Text>
             </Box>
             <Text size="18px">
@@ -513,12 +513,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Box direction="row" margin={{bottom: "20px"}} height="25%">
               <Group size="large"/>
               <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Meet your next teammates! 
+                Meet your next co-authors! 
               </Text>
             </Box>
             <Text size="18px">
-              Whether you are looking for new opportunities for your next research article, community project, or start-up, 
-              your future teammates are likely to be sitting next to you!
+              After seminars, the online audience can mingle around e-coffees in a 2D world. So many ideas and collaborations started around a coffee (mora.stream included)!
             </Text>
           </Box>
         </Box>
@@ -529,7 +528,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Everything seminar organisers need, from start to finish</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">A unique stack that empowers seminar organisers, from start to finish</Text>
         {/* A. First row of features */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "20px"}} gap="30px">
           <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box1" gap="10px"> 
