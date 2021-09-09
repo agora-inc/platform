@@ -3,12 +3,14 @@ import { Box, Text } from "grommet";
 import Identicon from "react-identicons";
 import { Channel } from "../../Services/ChannelService";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   onClick: any;
   width?: string;
   height?: string;
   text?: string;
+  textSize?: string;
 }
 
 interface State {
@@ -26,6 +28,7 @@ export default class CreateChannelButton extends Component<Props, State> {
   render() {
     return (
       <Box
+        data-tip data-for="create_agora_button"
         onClick={this.props.onClick}
         onMouseEnter={() => {
           this.setState({ hover: true });
@@ -48,11 +51,19 @@ export default class CreateChannelButton extends Component<Props, State> {
         focusIndicator={false}
         justify="center"
       >
-        {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
-        <Text size="14px" color="white">{this.props.text ? this.props.text : "Create an agora"}</Text>
+        <Text 
+          size={this.props.textSize ? this.props.textSize : "14px"}  
+          color="white"
+          weight="bold"
+        >
+            {this.props.text ? this.props.text : "Create an agora"}
+        </Text>
         <Text size="22.5px">🚀</Text>
-        
+        <ReactTooltip id="create_agora_button" effect="solid">
+            Create a new channel (we call it agora) for your seminar series
+        </ReactTooltip>
       </Box>
+
     );
   }
 }
