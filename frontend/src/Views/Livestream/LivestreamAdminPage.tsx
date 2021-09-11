@@ -598,7 +598,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           
           <Box gridArea="player" justify="between" gap="small">
             <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable||callControl.slideShare || isSlideVisible?'screen-share':''}`}
-              style={{height: '90%', position: 'relative'}}>
+              style={{height: '100%', position: 'relative'}}>
               <Box className='camera-video'>
                 {remoteVideoTrack.map((user)=>(
                   //@ts-ignore

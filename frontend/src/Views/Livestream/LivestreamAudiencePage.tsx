@@ -461,7 +461,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           areas={[
             { name: "player", start: [0, 0], end: [0, 0] },
             { name: "chat", start: [1, 0], end: [1, 0] },
-            // { name: "questions", start: [0, 1], end: [1, 1] },
+            { name: "description", start: [0, 1], end: [0, 1] },
           ]}
         >
         
@@ -566,14 +566,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           </Box>
         </Grid>
         <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
-        <DescriptionAndQuestions
+        {/* <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}
           description={state.video!.description}
           videoId={state.video.id}
           streamer={false}
           margin={{ top: "-20px" }}
-        />
+        /> */}
+        <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
+            <Text size="12px"> {talkDetail.description} </Text>
+          </Box>
       </Box>
   )
 }
