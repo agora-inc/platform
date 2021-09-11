@@ -14,6 +14,7 @@ import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {db, API} from '../../Services/FirebaseService'
+import { textToLatex } from "../../Components/Core/LatexRendering";
 
 import '../../Styles/all-stream-page.css'
 import { FaMicrophone } from "react-icons/fa";
