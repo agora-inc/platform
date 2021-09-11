@@ -354,7 +354,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     // @ts-ignore
     evt.target.value = ''
     try{
-      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me'}])
+      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me', first: first}])
       await messageChannel.sendMessage({text})
     }catch{
       console.log('error sending message')
