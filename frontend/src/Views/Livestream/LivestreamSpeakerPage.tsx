@@ -661,7 +661,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
 
           <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
-            <Text size="12px"> {talkDetail.description} </Text>
+            <Text size="12px"> {textToLatex(talkDetail.description)} </Text>
           </Box>
         </Grid>
       </Box>
