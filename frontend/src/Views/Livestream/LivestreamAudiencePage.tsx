@@ -564,19 +564,20 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
             <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
             {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
           </Box>
-          <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
+          {/* <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
             <Text size="12px"> {talkDetail.description} </Text>
-          </Box>
+          </Box> */}
         </Grid>
         <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
-        {/* <DescriptionAndQuestions
+        <DescriptionAndQuestions
           gridArea="questions"
           tags={state.video.tags.map((t: any) => t.name)}
           description={state.video!.description}
           videoId={state.video.id}
           streamer={false}
           margin={{ top: "-20px" }}
-        /> */}
+        
+        />
       </Box>
   )
 }
