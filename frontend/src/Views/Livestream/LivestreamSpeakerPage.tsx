@@ -643,7 +643,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           </Box>
 
           <Box gridArea="chat" background="#EAF1F1" round="small" height="36vw" margin={{bottom: "10px"}}>
-            <Box flex={true} height="94%" gap="2px" overflow="auto">
+            <Box flex={true} height="90%" gap="2px" overflow="auto">
               {messages.map((msg, i)=>(
                   <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "-2px"}>
                     { msg.first && (
