@@ -354,6 +354,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     // @ts-ignore
     evt.target.value = ''
     try{
+      let first = messages.length === 0 ? true : messages[messages.length-1].senderId !== localUser.uid
       setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me', first: first}])
       await messageChannel.sendMessage({text})
     }catch{
