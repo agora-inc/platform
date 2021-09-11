@@ -262,7 +262,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       }
       // @ts-ignore
       var _localScreenTrack = await AgoraRTC.createScreenVideoTrack(config);
-      // console.log(222, _localScreenTrack)
+      console.log(222, _localScreenTrack)
       _localScreenTrack.on('track-ended', stop_share_screen)
       setCallControl({screenShare: true})
 
@@ -348,101 +348,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     setTimeout(()=>{
       setRemoteVideoTrack([...agoraClient.remoteUsers])
     }, 200)
-
-
-      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      // wip
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      // wip
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      // wip
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      // wip
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      // wip
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      // wip
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //      //
-      //
-
-
-
-
-
-
-
-
     if(mediaType == 'video'){
       return
     }
