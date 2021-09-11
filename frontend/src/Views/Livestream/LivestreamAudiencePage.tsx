@@ -37,7 +37,8 @@ interface State {
 interface Message{
   senderId: string;
   text: string;
-  name?: string
+  name?: string;
+  first: boolean;
 }
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
 const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
