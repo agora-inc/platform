@@ -538,13 +538,25 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
               </Box>
             </Box>
           </Box>
-          <Box gridArea="chat" background="gray" round="small">
-            {messages.map((msg, i)=>(
-                <Box key={i}>
-                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}><b>{msg.name}:</b> {msg.text}</span>
-                </Box>
-              ))}
-            <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
+          <Box gridArea="chat" background="#EAF1F1" round="small" height="20vw" margin={{bottom: "10px"}}>
+            {/* <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Chat</Text> */}
+            <Box height="90%" flex={true} gap="2px" overflow="auto">
+              {messages.map((msg, i)=>(
+                  <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "0px"}>
+                    { msg.first && (
+                      <Text color="#0C385B" size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                        {msg.name}
+                      </Text>
+                    )}
+                    <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                      {textToLatex(msg.text)}
+                    </Text>
+                  </Box>
+                  // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
+                ))}
+            </Box>
+            <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
+            {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
           </Box>
         </Grid>
         <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
