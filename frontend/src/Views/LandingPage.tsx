@@ -20,6 +20,7 @@ import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/Crea
 import ZoomLogo from "../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
 import YoutubeLogo from "../assets/competitors_logo/YouTube_Logo_2017.svg.png";
 import MicrosoftTeams from "../assets/competitors_logo/youtube_logo.jpeg";
+import BackgroundImage from "../assets/general/mora_social_media_cover#bad6db.png"
 
 
 interface State {
@@ -158,7 +159,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "40px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Modernising academic seminars, from start to finish
+            Everything about academic seminars, and more
           </Text>
           <Text size="20px">
             <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking and meeting your next teammates around an e-coffee!
@@ -700,14 +701,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 />
             </Box>
 
-            <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Already running a series? Transport everything together in a minute!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Already running a series? Migrate everything together in a minute!</Text>
             <Text color="black" margin={{bottom: "80px"}} alignSelf="center">Bring your <img height="15px" src={ZoomLogo}/> subscription, your <img height="20px" style={{marginBottom: "-3px"}} src={YoutubeLogo}/> seminar recordings, or <i>gather.town</i> in your centralised panel <b>for free</b>!</Text>
             <Box align="center" margin={{bottom: "5px"}}>
                 <CreateChannelButton 
                   onClick={this.toggleCreateChannelOverlay} 
                   width="250px"
                   height="90px"
-                  text={"Transport"}
+                  text={"Migrate"}
                   textSize="18px"
                 />
             </Box>
@@ -749,12 +750,20 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <UserManager showLogin={this.state.showLogin} />
         </Box>
 
-        <video
+        {/* <video
           autoPlay loop muted id="background-landing"
           style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
         >
           <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
-        </video>
+        </video> */}
+        {/* <img height="200px" src={BackgroundImage}/> */}
+        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+          src="https://media-exp1.licdn.com/dms/image/C4E1BAQFzWpvlhDzPjQ/company-background_10000/0/1629992754456?e=1631440800&v=beta&t=BagSNSbs47kbmV_xN_-ekW6tsyvQRfuCuw9QS-ZaWZg"
+        />
+
+
+
+
 
 
         <Box height="100%" width="100%">
