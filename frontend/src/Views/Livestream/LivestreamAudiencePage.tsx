@@ -342,7 +342,10 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   }
   async function on_message(msg:any, senderId:string){
     let attr = await agoraMessageClient.getUserAttributes(senderId)
-    setMessages((m)=>[...m, {senderId, text: msg.text, name: attr.name ||''}])
+    setMessages((m) => {
+      let first = m.length === 0 ? true : m[m.length-1].senderId !== senderId
+      return [...m, {senderId, text: msg.text, name: attr.name ||'', first: first}]
+    })
   }
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return
