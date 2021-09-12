@@ -1,6 +1,6 @@
-from repository.ChannelRepository import ChannelRepository
-from repository.TalkRepository import TalkRepository
-from app.databases import agora_db
+# from repository.ChannelRepository import ChannelRepository
+# from repository.TalkRepository import TalkRepository
+# from app.databases import agora_db
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -12,10 +12,12 @@ from datetime import datetime
 
 
 class RSScraperRepository:
-	def __init__(self, db=agora_db):
+	def __init__(self): #db=agora_db):
+		"""
 		self.db = db
 		self.channelRepo = ChannelRepository(db=self.db)
 		self.talkRepo = TalkRepository(db=self.db)
+		"""
 		# Set-up selenium
 		options = Options()
 		options.headless = True
@@ -39,6 +41,13 @@ class RSScraperRepository:
 		except NoSuchElementException:
 			return False
 
+	def get_valid_series_and_ntalks(self, url_agora):
+		self.driver.get(url_agora)
+		if self.driver.find_element_by_id("title").text == 'Page not found':
+			return False, 0
+		else:
+			ids = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
+			return True, len(ids)
 
 	def parse_agora(self, url_agora):
 		self._login()
@@ -97,6 +106,7 @@ class RSScraperRepository:
 
 	def create_agora_and_talks(self, url, userId, topic_1_id, audience_level, visibility, auto_accept_group):
 		info = self.parse_agora(url)
+		"""
 		channel_id = self.channelRepo.createChannel(info['name'], info['description'], userId, topic_1_id)
 
 		for talk in info['talks']:
@@ -127,6 +137,7 @@ class RSScraperRepository:
 				reminderEmailGroup=[],
 				email_on_creation=False,
 			)
+		"""
 
 	@staticmethod
 	def _get_all_talks_id(lst):
@@ -183,8 +194,8 @@ class RSScraperRepository:
 # TESTING
 if __name__ == "__main__":
 	scraper = RSScraperRepository()
-	url_agora = "https://researchseminars.org/seminar/cogentseminar"
-	print(scraper.parse_agora(url_agora))
+	url_agora = "https://researchseminars.org/seminar/cogentseminarkkkkk"
+	print(scraper.get_valid_series_and_ntalks(url_agora))
 
 
 

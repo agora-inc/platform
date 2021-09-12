@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { User } from "../../Services/UserService";
 import { Topic } from "../../Services/TopicService";
-import { Box, Text, TextInput, Select, CheckBox } from "grommet";
-import { StatusInfo } from "grommet-icons";
+import { Box, Text, TextInput, Select, CheckBox, Layer } from "grommet";
+import { StatusInfo, Close } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import { Overlay } from "../Core/Overlay";
 import Switch from "../Core/Switch";
@@ -25,6 +25,9 @@ interface State {
   autoAcceptEnabled: boolean,
   autoAcceptGroup: "Everybody" | "Academics" | "None";
   autoAcceptCustomInstitutions: boolean, 
+  showProgressOverlay: boolean;
+  isValidSeries: boolean;
+  numberTalksSeries: number;
 }
 
 
@@ -41,11 +44,17 @@ export default class AgoraCreationPage extends Component<Props, State> {
       autoAcceptEnabled: false,
       autoAcceptGroup: "Everybody",
       autoAcceptCustomInstitutions: false,
+      showProgressOverlay: false,
+      isValidSeries: false,
+      numberTalksSeries: 0,
     };
 	}
 	
 	toggleOverlay = () => {
 		this.setState({showOverlay: !this.state.showOverlay});
+  }
+  toggleProgressOverlay = () => {
+		this.setState({showProgressOverlay: !this.state.showProgressOverlay});
   }
 
   selectTopic = (topic: Topic, num: number) => {
@@ -96,6 +105,10 @@ export default class AgoraCreationPage extends Component<Props, State> {
   }
 
   onSubmitClick = () => {
+    // Try if the series indeed exists
+    this.toggleProgressOverlay()
+    this.toggleOverlay()
+    // If yes, start parsing everything
 
   }
 
@@ -267,6 +280,48 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
           )}
         </Overlay>
+      )}
+      {this.state.showProgressOverlay && (
+        <Layer
+          onEsc={this.toggleProgressOverlay}
+          onClickOutside={this.toggleProgressOverlay}
+          modal
+          responsive
+          animation="fadeIn"
+          style={{
+            width: "600px",
+            height: "300px",
+            borderRadius: 15,
+            padding: 0,
+          }}
+        >
+          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+            <Box
+              justify="start"
+              width="99.7%"
+              background="#eaf1f1"
+              direction="row"
+              style={{
+                borderTopLeftRadius: "15px",
+                borderTopRightRadius: "15px",
+                position: "sticky",
+                top: 0,
+                minHeight: "55px",
+                zIndex: 10,
+              }}
+            >
+              <Box pad="30px" alignSelf="center" fill={true}>
+                <Text size="16px" color="black" weight="bold">
+                  {this.state.isValidSeries ? "Success" : "Error"}
+                </Text>
+              </Box>
+              <Box pad="32px" alignSelf="center">
+                <Close onClick={this.toggleProgressOverlay}/>
+              </Box>
+            </Box>
+          </Box>
+        </Layer>
+
       )}
       </>
   	);
