@@ -105,7 +105,7 @@ export default class Home extends Component<{}, State> {
         </video>
          */}
         <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
-          src="https://media-exp1.licdn.com/dms/image/C4E1BAQFzWpvlhDzPjQ/company-background_10000/0/1629992754456?e=1631440800&v=beta&t=BagSNSbs47kbmV_xN_-ekW6tsyvQRfuCuw9QS-ZaWZg"
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
         <div className="core_box_without_sidebar">
           <Carousel gridArea="carousel" />

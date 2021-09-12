@@ -233,7 +233,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
           <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
         </video> */}
         <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
-          src="https://media-exp1.licdn.com/dms/image/C4E1BAQFzWpvlhDzPjQ/company-background_10000/0/1629992754456?e=1631440800&v=beta&t=BagSNSbs47kbmV_xN_-ekW6tsyvQRfuCuw9QS-ZaWZg"
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
         <Box width="90%" margin={{ left: "2.5%" }}>
           <Box

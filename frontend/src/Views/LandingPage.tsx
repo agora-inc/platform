@@ -20,7 +20,7 @@ import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/Crea
 import ZoomLogo from "../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
 import YoutubeLogo from "../assets/competitors_logo/YouTube_Logo_2017.svg.png";
 import MicrosoftTeams from "../assets/competitors_logo/youtube_logo.jpeg";
-import BackgroundImage from "../assets/general/mora_social_media_cover#bad6db.png"
+import BackgroundImage from "../assets/general/mora_social_media_cover_#bad6db.jpg"
 
 
 interface State {
@@ -758,8 +758,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </video> */}
         {/* <img height="200px" src={BackgroundImage}/> */}
         <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
-          src="https://media-exp1.licdn.com/dms/image/C4E1BAQFzWpvlhDzPjQ/company-background_10000/0/1629992754456?e=1631440800&v=beta&t=BagSNSbs47kbmV_xN_-ekW6tsyvQRfuCuw9QS-ZaWZg"
-        />
+          // src={BackgroundImage}
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+/>
 
 
 
