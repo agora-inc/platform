@@ -15,7 +15,7 @@ import ReactTooltip from "react-tooltip";
 
 import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
-
+import TransportSeminars from "../Components/Homepage/TransportSeminars";
 
 import ZoomLogo from "../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
 import YoutubeLogo from "../assets/competitors_logo/YouTube_Logo_2017.svg.png";
@@ -732,6 +732,19 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     )
   }
 
+  migrateFromResearchSeminars() {
+    return (
+      <Box align="center" justify="center">
+        <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">
+          Migrate your seminar series from researchseminars.org!
+        </Text>
+        <TransportSeminars 
+          user={this.state.user}
+        />
+      </Box>
+    );
+  }
+
   render() {
     return (
       <Box
@@ -785,6 +798,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "600px": "600px"} direction="column" alignSelf="center">
             {this.callToCreateAgora()}
+          </Box>
+        </Box>
+
+        <Box height="100%" width="100%">
+          <Box width="80%" height={this.state.renderMobileView ? "600px": "600px"} direction="column" alignSelf="center">
+            {this.migrateFromResearchSeminars()}
           </Box>
         </Box>
 
