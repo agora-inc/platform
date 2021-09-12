@@ -420,7 +420,7 @@ class TalkRepository:
             return
 
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup):
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup, email_on_creation=True):
         query = f'''
             INSERT INTO Talks (
                 channel_id, 
@@ -482,14 +482,15 @@ class TalkRepository:
             self.editAutoAcceptanceCustomInstitutions(insertId, customInstitutionsIds)
 
             # notify members by email
-            self.notifyCommunityAboutNewTalk(
-                channelId, 
-                channelName, 
-                startDate, 
-                talkName, 
-                insertId, 
-                talk_speaker, 
-                talk_speaker_url)
+            if email_on_creation:
+                self.notifyCommunityAboutNewTalk(
+                    channelId, 
+                    channelName, 
+                    startDate, 
+                    talkName, 
+                    insertId, 
+                    talk_speaker, 
+                    talk_speaker_url)
 
             # Email reminders
             self.email_reminders.addEmailReminders(insertId, startDate, reminderEmailGroup, reminder1, reminder2)

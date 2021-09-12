@@ -1,6 +1,6 @@
-# from repository.ChannelRepository import ChannelRepository
-# from repository.TalkRepository import TalkRepository
-# from app.databases import agora_db
+from repository.ChannelRepository import ChannelRepository
+from repository.TalkRepository import TalkRepository
+from app.databases import agora_db
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -12,10 +12,10 @@ from datetime import datetime
 
 
 class RSScraperRepository:
-	def __init__(self): # db=agora_db):
-		# self.db = db
-		# self.channels = ChannelRepository(db=self.db)
-		# self.talks = TalkRepository(db=self.db)
+	def __init__(self, db=agora_db):
+		self.db = db
+		self.channelRepo = ChannelRepository(db=self.db)
+		self.talkRepo = TalkRepository(db=self.db)
 		# Set-up selenium
 		options = Options()
 		options.headless = True
@@ -44,7 +44,7 @@ class RSScraperRepository:
 		self._login()
 		self.driver.get(url_agora)
 		info = {}
-		
+
 		# Agora name
 		info['name'] = self.driver.find_element_by_xpath("//h1").text
 
@@ -94,6 +94,39 @@ class RSScraperRepository:
 		self.driver.quit()
 
 		return info
+
+	def create_agora_and_talks(self, url, userId, topic_1_id, audience_level, visibility, auto_accept_group):
+		info = self.parse_agora(url)
+		channel_id = self.channelRepo.createChannel(info['name'], info['description'], userId, topic_1_id)
+
+		for talk in info['talks']:
+			self.talkRepo.scheduleTalk(
+				channelId=channel_id, 
+				channelName=info['name'], 
+				talkName=talk['name'], 
+				startDate=talk['start_date'], 
+				endDate=talk['end_date'], 
+				talkDescription=talk['description'], 
+				talkLink=talk['link'], 
+				talkTags=[], 
+				showLinkOffset=15, 
+				visibility=visibility, 
+				cardVisibility="Everybody", 
+				topic_1_id=topic_1_id, 
+				topic_2_id=None, 
+				topic_3_id=None,
+				talk_speaker=talk['speaker'], 
+				talk_speaker_url=talk['speaker_url'], 
+				published=1, 
+				audience_level=audience_level, 
+				auto_accept_group=auto_accept_group, 
+				auto_accept_custom_institutions=False, 
+				customInstitutionsIds=[], 
+				reminder1=None, 
+				reminder2=None, 
+				reminderEmailGroup=[],
+				email_on_creation=False,
+			)
 
 	@staticmethod
 	def _get_all_talks_id(lst):
