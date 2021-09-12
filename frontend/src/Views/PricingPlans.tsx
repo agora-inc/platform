@@ -351,13 +351,13 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Text weight="bold" size="14px"> Virtual cafeteria </Text>
                 </TableCell>
                 <TableCell scope="row">
-                <Text size="14px"> Public cafeteria</Text>
+                <Text size="14px"> Public</Text>
                 </TableCell>
                 <TableCell scope="row">
-                  <Text size="14px"> Public cafeteria</Text>
+                  <Text size="14px"> Public</Text>
                 </TableCell>
                 <TableCell scope="row">
-                <Text size="14px"> Private cafeteria</Text>
+                <Text size="14px"> Public or Private</Text>
                 </TableCell>
             </TableRow>
 

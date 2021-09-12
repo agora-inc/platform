@@ -12,6 +12,7 @@ import "../../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 import ScrollIntoView from 'react-scroll-into-view'
 import ReactTooltip from "react-tooltip";
+import TrendingTalksList from "../../Components/Homepage/TrendingTalksList";
 
 import CreateChannelButton from "../../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../../Components/Channel/CreateChannelButton/CreateChannelOverlay";
@@ -165,7 +166,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             Hybrid academic seminars to share ideas and network
           </Text>
           <Text size="20px">
-            <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking and meeting your next teammates around an e-coffee!
+            <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking with speakers and audience around virtual coffees!
           </Text>
           <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "0px"}} height="50%">
             {this.callToActions()}
@@ -325,134 +326,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">How does this work?</Text>
-        {/* A. First row of features */}
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "20px"}} gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box1" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <Attraction size="large"/>
-              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Speakers come to you
-              </Text>
-            </Box>
-            <Text size="18px">
-              Finding exciting speakers to hear about latest trends in your field can be tedious. 
-            </Text>
-            <Text size="18px">
-              On mora.stream, they directly come to you. 
-            </Text>
-          </Box>
-
-          {/* {(!this.state.renderMobileView && 
-            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
-          )} */}
-
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box2" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <Trigger size="large"/>
-              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Seminars posted in 30 seconds
-              </Text>
-            </Box>
-            <Text size="18px">
-              Decide whether your event is public or requires a registration. 
-            </Text>
-            <Text size="18px">
-              The registration form for your audience is automatically generated and integrated: no need to worry about it.
-            </Text>
-          </Box>
-
-          {/* {(!this.state.renderMobileView && 
-            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
-          )} */}
-
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "20px"}} height="25%">
-              <MailOption size="large"/>
-              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Automatic email advertisement
-              </Text>
-            </Box>
-            <Text size="18px">
-              Easily integrate your existing mailing list on mora.stream.
-            </Text>
-            <Text size="18px">
-              Whenever an event is created or modified, you can let your community know about it with a simple click.
-            </Text>
-          </Box>
-        </Box>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">A three-sided marketplace for academics</Text>
         
-        {/* B. Second row of features */}
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <Deploy size="large"/>
-              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                New exciting opportunities
-              </Text>
-            </Box>
-            <Text size="18px">
-              Let your online audience mingle after the event around an e-coffee.
-            </Text>
-            <Text size="18px">
-              So many ideas and collaborations started around a coffee (mora.stream included)!
-            </Text>
-          </Box>
 
-          {/* {(!this.state.renderMobileView && 
-            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
-          )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <CirclePlay size="large"/>
-              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Record and upload (BETA)
-              </Text>
-            </Box>
-            <Text size="18px">
-              Record the seminar, include the slides of the speaker and uploading everything on mora.stream in 3 clicks.
-            </Text>
-          </Box>
 
-          {/* {(!this.state.renderMobileView && 
-            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
-          )} */}
 
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <Like size="large"/>
-              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Audience management tools
-              </Text>
-            </Box>
-            <Text size="18px">
-              Allow your audience to request the microphone if they want to ask a question. 
-            </Text>
-            <Text size="18px">
-              You decide whether you want to give it to them, or take it back if you are running out of time.
-            </Text>
-          </Box>
-          
-          {/* {(!this.state.renderMobileView && 
-            <hr style={{width: "40px", height: "0.1px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
-          )} */}
-
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "20px"}} height="25%">
-              <Workshop size="large"/>
-              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Speaker-friendly
-              </Text>
-            </Box>
-            <Text size="18px">
-              All the streaming happens in the browser (no external software is required). 
-            </Text>
-            <Text size="18px">
-              The speaker interface is light and simple: even the founders' grandparents can use it!
-            </Text>
-          </Box>
-        </Box>
       </>
     )
   }
@@ -554,11 +433,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
         
 
-        <Box height="100%" width="100%">
+        {/* <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "600px": "600px"} direction="column" alignSelf="center">
             {this.callToCreateAgora()}
           </Box>
-        </Box>
+        </Box> */}
+
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />

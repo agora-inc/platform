@@ -264,7 +264,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-          Your logistic flow made easy, from start to finish!
+          Your logistic pipeline made easy, from start to finish!
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "20px"}}>
@@ -361,7 +361,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               <Box width="70px">
                 <Group size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">6. Upload recording!
+              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">6. Upload recording
               </Text>
             </Box>
             <Text size="18px">
@@ -377,7 +377,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Your life already simplified for free</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Your life simplified for free</Text>
         <Text>
             Because we want to simplify the sharing of knowledge, most features are free and no plan is required to run seminars. The option is always there for those who want a premium experience!            
         </Text>
@@ -490,20 +490,20 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         </Box>
 
         <Box height="100%" width="100%" background="color5" id="content">
-          <Box width="80%" height={this.state.renderMobileView ? "1550px": "690px"}  direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1550px": "820px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color6">
-          <Box width="80%" height={this.state.renderMobileView ? "2390px": "200px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "2390px": "820px"} direction="column" alignSelf="center">
             {this.content2()}
           </Box>
         </Box>
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "600px": "600px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "600px": "700px"} direction="column" alignSelf="center">
             {this.callToCreateAgora()}
           </Box>
         </Box>
