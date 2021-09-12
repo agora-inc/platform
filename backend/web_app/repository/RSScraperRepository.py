@@ -1,131 +1,175 @@
+# from repository.ChannelRepository import ChannelRepository
+# from repository.TalkRepository import TalkRepository
+# from app.databases import agora_db
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-import time
 from datetime import datetime
 
-# Set-up selenium
-DRIVER_PATH = '/home/cloud-user/Downloads/chromedriver_linux64/chromedriver'
-options = Options()
-options.headless = True
-options.add_argument("--window-size=1920,1200")
-driver = webdriver.Chrome(options=options, executable_path=DRIVER_PATH)
+
+class RSScraperRepository:
+	def __init__(self): # db=agora_db):
+		# self.db = db
+		# self.channels = ChannelRepository(db=self.db)
+		# self.talks = TalkRepository(db=self.db)
+		# Set-up selenium
+		options = Options()
+		options.headless = True
+		options.add_argument("--window-size=1920,1200")
+		self.driver = webdriver.Chrome(
+			options=options, 
+			executable_path='/home/cloud-user/plateform/agora/backend/web_app/chromedriver_linux64/chromedriver'
+		)
+
+	def _login(self):
+		USERNAME = "revolutionisingresearch@gmail.com"
+		PASSWORD = "234.wer.sdf"
+		# Log in 
+		self.driver.get("https://researchseminars.org/user/info")
+		self.driver.find_element_by_name("email").send_keys(USERNAME)
+		self.driver.find_element_by_name("password").send_keys(PASSWORD)
+		self.driver.find_element_by_name("submit").click()
+		try:
+			self.driver.find_element_by_class_name("side-cancel")
+			return True
+		except NoSuchElementException:
+			return False
 
 
-USERNAME = "revolutionisingresearch@gmail.com"
-PASSWORD = "234.wer.sdf"
+	def parse_agora(self, url_agora):
+		self._login()
+		self.driver.get(url_agora)
+		info = {}
+		
+		# Agora name
+		info['name'] = self.driver.find_element_by_xpath("//h1").text
 
-# Log in 
-"""
-driver.get("https://researchseminars.org/user/info")
-login = driver.find_element_by_name("email").send_keys(USERNAME)
-password = driver.find_element_by_name("password").send_keys(PASSWORD)
-submit = driver.find_element_by_name("submit").click()
-try:
-  logout_button = driver.find_element_by_class_name("side-cancel")
-  print('Successfully logged in')
-except NoSuchElementException:
-  print('Incorrect login/password')
-"""
+		# Description
+		description = self.driver.find_elements_by_xpath("//p")[2:]
+		description = [e.text for e in description if e.text != '']
+		info['description'] = '\n'.join(description)
+
+		# Talks
+		url_talks = url_agora.replace("/seminar/", "/talk/")
+		info['talks'] = []
+		ids = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
+		print(ids)
+
+		for i in ids:
+			self.driver.get(url_talks + f"/{i}")
+			talk = {}
+			lst_link = self.driver.find_elements_by_xpath('//a')
+
+			# Title
+			talk['title'] = self.driver.find_element_by_xpath("//h1").text
+
+			# Speaker 
+			talk['speaker'] = self.driver.find_element_by_class_name("talk-title").text
+			talk['speaker_link'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
+
+			# Time
+			str_time = self.driver.find_element_by_xpath('//b').text
+			talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
+
+			# Description
+			e = self.driver.find_element_by_class_name('talk-details-container')
+			lst = e.text.split('\n')
+			idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
+			talk['description'] = '\n'.join(lst[:idx]).replace('Abstract: ', '')
+
+			# Link
+			talk['link'] = RSScraperRepository._get_href(lst_link, "available")
+
+			# Slides and video
+			talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
+			talk['video'] = RSScraperRepository._get_href(lst_link, "video")
+
+			# Save
+			info['talks'].append(talk)
+
+		self.driver.quit()
+
+		return info
+
+	@staticmethod
+	def _get_all_talks_id(lst):
+		ids = []
+		for e in lst:
+			suffix = e.get_attribute("knowl")
+			title = e.get_attribute("title")
+			if suffix and title and suffix[:5] == "talk/":
+				ids.append(suffix.split('/')[-1])
+
+		return ids
+
+	@staticmethod
+	def _get_href(lst_link, txt, substring=False):
+		if substring:
+			elements = [e for e in lst_link if e.text in txt and e.text != '']
+		else:
+			elements = [e for e in lst_link if e.text == txt]
+		
+		if len(elements) > 0:
+			return elements[0].get_attribute('href')
+		else:
+			return ""
+
+	@staticmethod
+	def _parse_time(str_t):
+		str_t = str_t.split(" (")[0]
+		date, time = str_t.split(', ')
+		start, end = time.split('-')
+		
+		if "-" in date:
+			start_time = datetime.strptime(
+				" ".join([date, start]), 
+				"%d-%b-%Y %H:%M"
+			)
+			end_time = datetime.strptime(
+				" ".join([date, end]),
+				"%d-%b-%Y %H:%M"
+			)
+		else:
+			current_year = str(datetime.now().year)
+			start_time = datetime.strptime(
+				" ".join([current_year, date, start]), 
+				"%Y %a %b %d %H:%M"
+			)
+			end_time = datetime.strptime(
+				" ".join([current_year, date, end]), 
+				"%Y %a %b %d %H:%M"
+			)
+			
+		return start_time, end_time
+
+	
+# TESTING
+if __name__ == "__main__":
+	scraper = RSScraperRepository()
+	url_agora = "https://researchseminars.org/seminar/cogentseminar"
+	print(scraper.parse_agora(url_agora))
 
 
-# Scrap page
-url_agora = "https://researchseminars.org/seminar/cogentseminar"
-# "https://researchseminars.org/seminar/GeomInequAndPDEs"
-driver.get(url_agora)
-
-info = {}
-
-# Agora name
-info['name'] = driver.find_element_by_xpath("//h1").text
-
-# Description
-description = driver.find_elements_by_xpath("//p")[2:]
-description = [e.text for e in description if e.text != '']
-info['description'] = '\n'.join(description)
-
-# Talks
-url_talks = url_agora.replace("/seminar/", "/talk/")
-info['talks'] = []
 
 
-def get_href(lst_link, txt, substring=False):
-  if substring:
-    elements = [e for e in lst_link if e.text in txt and e.text != '']
-  else:
-    elements = [e for e in lst_link if e.text == txt]
-  
-  if len(elements) > 0:
-    return elements[0].get_attribute('href')
-  else:
-    return ""
-
-def parse_time(str_t):
-  str_t = str_t.split(" (")[0]
-  date, time = str_t.split(', ')
-  start, end = time.split('-')
-
-  if "-" in date:
-    start_time = datetime.strptime(
-      " ".join([date, start]), 
-      "%d-%b-%Y %H:%M"
-    )
-    end_time = datetime.strptime(
-      " ".join([date, end]), 
-      "%d-%b-%Y %H:%M"
-    )
-
-  else:
-    current_year = str(datetime.now().year)
-    start_time = datetime.strptime(
-      " ".join([current_year, date, start]), 
-      "%Y %a %b %d %H:%M"
-    )
-    end_time = datetime.strptime(
-      " ".join([current_year, date, end]), 
-      "%Y %a %b %d %H:%M"
-    )
-
-  return start_time, end_time
 
 
-url_talks = "https://researchseminars.org/talk/NYC-NCG"
-i = 69
-driver.get(url_talks + f"/{i}")
-while driver.find_element_by_id("title").text != "Page not found":
-  talk = {}
-  lst_link = driver.find_elements_by_xpath('//a')
 
-  # Title
-  talk['title'] = driver.find_element_by_xpath("//h1").text
 
-  # Speaker 
-  talk['speaker'] = driver.find_element_by_class_name("talk-title").text
-  talk['speaker_link'] = get_href(lst_link, talk['speaker'], substring=True)
- 
-  # Time
-  str_time = driver.find_element_by_xpath('//b').text
-  talk['start_time'], talk['end_time'] = parse_time(str_time)
 
-  # Description
-  e = driver.find_element_by_class_name('talk-details-container')
-  lst = e.text.split('\n')
-  idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
-  talk['description'] = '\n'.join(lst[:idx]).replace('Abstract: ', '')
 
-  # Link
-  talk['link'] = get_href(lst_link, "available")
 
-  # Slides and video
-  talk['slides'] = get_href(lst_link, "slides")
-  talk['video'] = get_href(lst_link, "video")
 
-  print(talk)
-  i += 1
-  driver.get(url_talks + f"/{i}")
+
+
+
+
+
+
 
 
 
@@ -233,12 +277,3 @@ for i in range(n_talks):
 
   driver.refresh()
 """
-  
-
-
-print(info)
-
-# Logout
-
-
-driver.quit()
