@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { User } from "../../Services/UserService";
 import { Topic } from "../../Services/TopicService";
-import { Box, Text, TextInput} from "grommet";
+import { Box, Text, TextInput, Select, CheckBox } from "grommet";
+import { StatusInfo } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
-import { Overlay, OverlaySection } from "../Core/Overlay";
+import { Overlay } from "../Core/Overlay";
+import Switch from "../Core/Switch";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import ChannelTopicSelector from "../Channel/ChannelTopicSelector";
@@ -18,6 +20,11 @@ interface State {
   url: string;
   topics: Topic[];
   isPrevTopics: boolean[];
+  audienceLevel: string;
+  onRegistration: boolean;
+  autoAcceptEnabled: boolean,
+  autoAcceptGroup: "Everybody" | "Academics" | "None";
+  autoAcceptCustomInstitutions: boolean, 
 }
 
 
@@ -29,11 +36,16 @@ export default class AgoraCreationPage extends Component<Props, State> {
       url: "",
       topics: [],
       isPrevTopics: [false, false, false],
+      audienceLevel: "General audience",
+      onRegistration: false,
+      autoAcceptEnabled: false,
+      autoAcceptGroup: "Everybody",
+      autoAcceptCustomInstitutions: false,
     };
 	}
 	
-	toggleOverlay() {
-		this.setState({showOverlay: !this.state.showOverlay})
+	toggleOverlay = () => {
+		this.setState({showOverlay: !this.state.showOverlay});
   }
 
   selectTopic = (topic: Topic, num: number) => {
@@ -58,16 +70,39 @@ export default class AgoraCreationPage extends Component<Props, State> {
       topics: tempTopics
     });
   }
+
+  handleCheckBox = (name: "Everybody" | "Academics" | "None") => {
+    this.setState({
+      autoAcceptGroup: name
+    });
+  };
   
-  isComplete() {
-    return true
+  isComplete = () => {
+    return (
+      this.state.url !== "" &&
+      this.state.topics.length > 0
+    );
   }
 
-  onSubmitClick() {
+  isMissing = () => {
+    let res: string[] = []
+    if (this.state.url === "") {
+      res.push("url")
+    }
+    if (this.state.topics.length === 0) {
+      res.push("At least 1 topic")
+    }
+    return res
+  }
+
+  onSubmitClick = () => {
 
   }
 
   render() {
+    console.log(this.isComplete())
+    var auto_accept = "'Automatically accepting a registration' means that the person registering " + 
+    "to your event will automatically receive the details by email if they belong to one of the group you selected below";
     return (
       <>
       <Box
@@ -99,15 +134,16 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
       {this.state.showOverlay && (
         <Overlay
-          width={500}
-          height={500}
+          width={600}
+          height={580}
           visible={true}
           title={this.props.user === null ? "Get started!" : "Transport your seminar series"}
           submitButtonText="Transport"
           disableSubmitButton={this.props.user === null ? true : false}
           onSubmitClick={this.onSubmitClick}
-          contentHeight="380px"
+          contentHeight="430px"
           canProceed={this.isComplete()}
+          isMissing={this.isMissing()}
           onCancelClick={this.toggleOverlay}
           onClickOutside={this.toggleOverlay}
           onEsc={this.toggleOverlay}
@@ -125,16 +161,18 @@ export default class AgoraCreationPage extends Component<Props, State> {
           )}  
         
           {this.props.user !== null && (
-            <>
-            <OverlaySection>
-              Enter here the url to your seminar series on researchseminars.org
+            <Box align="start"> 
+              <Text size="14px">
+                1. Enter here the url of your series on researchseminars.org
+              </Text>
               <TextInput
                 style={{ width: "100%", marginTop: "5px"}}
-                placeholder="url"
+                placeholder="https://researchseminars.org/seminar/yourname"
                 onChange={(e) => this.setState({ url: e.target.value })}
               />
-            </OverlaySection>
-            <OverlaySection>
+              <Text size="14px">
+                2. Choose the most appropriate field
+              </Text>
               <ChannelTopicSelector 
                 onSelectedCallback={this.selectTopic}
                 onCanceledCallback={this.cancelTopic}
@@ -142,8 +180,91 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 prevTopics={[]} 
                 textSize="medium"
               />
-            </OverlaySection>
-            </>
+              <Text size="14px">
+                3. Choose the target audience
+              </Text>
+              <Select
+                dropAlign={{ bottom: "top" }}
+                focusIndicator={false}
+                id="link-visibility-select"
+                options={["General audience", "Bachelor/Master", "PhD+"]}
+                value={this.state.audienceLevel}
+                onChange={({ option }) =>
+                  this.setState({ audienceLevel: option })
+                }
+              />
+              <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
+                <Text size="13px" weight="bold"> 4. Do you require registration on your events? </Text>
+                <Switch
+                  width="60px"
+                  height={24}
+                  checked={this.state.onRegistration}
+                  textOn="Yes" 
+                  textOff="No"
+                  callback={(checked: boolean) => {
+                    this.setState({ 
+                      onRegistration: checked,
+                      autoAcceptGroup: "None"
+                    });
+                    // close sub-switch
+                    if (!checked){
+                      this.setState({ autoAcceptEnabled: checked });
+                    }
+                  }}
+                />
+              </Box>
+              {this.state.onRegistration && (
+                <Box margin={{bottom: "20px"}} gap="15px">
+                  <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
+                    <Text size="13px" weight="bold"> 
+                      Automatically accept some users?
+                    </Text>
+                    <Switch
+                      width="60px"
+                      height={24}
+                      checked={this.state.autoAcceptEnabled}
+                      textOn="Yes" 
+                      textOff="No"
+                      callback={(checked: boolean) => {
+                        this.setState({ 
+                          autoAcceptEnabled: checked,
+                        });
+                        if (!checked){
+                          this.setState({
+                            autoAcceptGroup: "None"
+                          })
+                        }
+                      }}
+                    />
+                    <StatusInfo style={{marginTop: "3px"}} size="small" data-tip={auto_accept} data-for='automatic-registration'/>
+                    <ReactTooltip id='automatic-registration' place="right" effect="solid" html={true}/>
+                  </Box>
+        
+                  {this.state.autoAcceptEnabled && (
+                    <>
+                    <CheckBox
+                      name="feature"
+                      label="Everyone"
+                      checked={this.state.autoAcceptGroup == "Everybody"}
+                      onChange={() => this.handleCheckBox("Everybody")}
+                    />
+                    <CheckBox
+                      name="bug"
+                      label="Verified academics"
+                      checked={this.state.autoAcceptGroup == "Academics"}
+                      onChange={() => this.handleCheckBox("Academics")}
+                    />
+                    <Text size="13px" margin={{top: "20px"}}><i>Everybody else will need to be manually approved.</i></Text>
+
+                  </>
+                  )}
+                </Box>
+              )}
+              {!this.state.onRegistration && (
+                <Text size="13px"> Your events are going to be public, and the link to your talk will be shown on mora.stream 15 minutes before the start. </Text>
+              )}
+            </Box>
+
           )}
         </Overlay>
       )}
