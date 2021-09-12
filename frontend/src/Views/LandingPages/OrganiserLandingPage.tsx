@@ -377,9 +377,9 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Your life simplified for free</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Your life made easy, for free</Text>
         <Text>
-            Because we want to simplify the sharing of knowledge, most features are free and no plan is required to run seminars. The option is always there for those who want a premium experience!            
+            Because we want to facilitate the broadcasting of new knowledge, most of the features are free and no plan is required to run seminars (you will however need to use your own <img src={ZoomLogo} height="12px"/> subscription or equivalent). The option is always there for those who want a premium experience!            
         </Text>
 
 

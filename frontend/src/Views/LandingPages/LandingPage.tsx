@@ -23,9 +23,11 @@ import YoutubeLogo from "../../assets/competitors_logo/YouTube_Logo_2017.svg.png
 import MicrosoftTeams from "../../assets/competitors_logo/youtube_logo.jpeg";
 import BackgroundImage from "../../assets/general/mora_social_media_cover_#bad6db.jpg"
 import WavyArrow from "../../assets/landing_page/wavy_arrow_left_right.png"
+import ThreeSidedMarketplaceGraph from "../../assets/landing_page/3-sided_marketplace.jpg"
 
 import InstitutionalUsers from "./InstitutionalUsers";
-
+import LoginModal from "../../Components/Account/LoginModal";
+import SignUpButton from "../../Components/Account/SignUpButton";
 
 interface State {
   user: User | null
@@ -270,53 +272,79 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-              <Box width="70px">
-                <SearchAdvanced size="large"/>
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "420px"} background="color2" direction="column">
+            <Box height="50%" pad="medium" gap="10px">
+              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+                <Box width="70px">
+                  <SearchAdvanced size="large"/>
+                </Box>
+                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                  1. Register,
+                </Text>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                1. Find a seminar 
+              <Text size="18px"> 
+                Register as an attendee or apply as a speaker within a community!
               </Text>
             </Box>
-            <Text size="18px"> 
-              Register as an attendee or apply as a speaker within a community!
-            </Text>
+            <Box height="45%" alignSelf="end" direction="column">
+              <video 
+                    autoPlay loop muted
+                    style={{ height: "auto", width: "100%"}}
+                    >
+                    <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+              </video>
+            </Box>
           </Box>
 
           <Box width="120px" direction="column" alignSelf="center"> 
             <img src={WavyArrow} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-              <Box width="70px">
-                <Workshop size="large"/>
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "420px"} background="color2" direction="column">
+            <Box height="50%" pad="medium" gap="10px">
+              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+                <Box width="70px">
+                  <Workshop size="large"/>
+                </Box>
+                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                  2. Attend,
+                </Text>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">2. Attend
+              <Text size="18px">
+                Seminars can be run online or hybrid. Ask questions, go back-and-forth the slides
               </Text>
             </Box>
-
-            <Text size="18px">
-              Seminars can be run online or hybrid. Ask questions, go back-and-forth the slides
-            </Text>
+            <Box height="45%" alignSelf="end" direction="column">
+              <img src="/videos/mora_streaming_gif_test.gif"/> 
+            </Box>
           </Box>
 
           <Box width="120px" direction="column" alignSelf="center"> 
             <img src={WavyArrow} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-              <Box width="70px">
-                <Group size="large"/>
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "420px"} background="color2" direction="column">
+            <Box height="50%" pad="medium" gap="10px">
+              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+                <Box width="70px">
+                  <Group size="large"/>
+                </Box>
+                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">3. Mingle!
+                </Text>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">3. Mingle!
-              </Text>
+              <Text size="18px">
+                Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers and the audience.
+              </Text>   
             </Box>
-            <Text size="18px">
-              Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers and the audience.
-            </Text>
+
+            <Box height="45%" alignSelf="end" direction="column">
+              <video 
+                    autoPlay loop muted
+                    style={{ height: "auto", width: "100%"}}
+                    >
+                    <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+              </video>
+            </Box>
           </Box>
         </Box>
       </>
@@ -329,40 +357,31 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">A three-sided marketplace for academics</Text>
         
 
-
+        <img src={ThreeSidedMarketplaceGraph} height="50%" width="50%"/>
 
 
       </>
     )
   }
 
-  callToCreateAgora() {
+  callToActionEndpage() {
     return (
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Start running your seminar series, in less than a minute!</Text>
-            {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
-            <Box align="center" margin={{bottom: "20px"}}>
-                <CreateChannelButton 
-                  onClick={this.toggleCreateChannelOverlay} 
-                  width="250px"
-                  height="90px"
-                  text={"Get started"}
-                  textSize="18px"
-                />
-            </Box>
-
-            <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Already running a series? Migrate everything together in a minute!</Text>
-            <Text color="black" margin={{bottom: "80px"}} alignSelf="center">Bring your <img height="15px" src={ZoomLogo}/> subscription, your <img height="20px" style={{marginBottom: "-3px"}} src={YoutubeLogo}/> seminar recordings, or <i>gather.town</i> in your centralised panel <b>for free</b>!</Text>
-            <Box align="center" margin={{bottom: "5px"}}>
-                <CreateChannelButton 
-                  onClick={this.toggleCreateChannelOverlay} 
-                  width="250px"
-                  height="90px"
-                  text={"Migrate"}
-                  textSize="18px"
-                />
+            <Box>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Sign up to keep updated with the hottest topics of the moment and join a worldwide community of researchers!</Text>
+              <Box align="center" margin={{bottom: "90px"}}>
+                  <SignUpButton 
+                    callback={()=>{}}
+                    height="100px"
+                    width="200px"
+                    textSize="18px"
+                  />
+              </Box>
+              <Box alignSelf="center">
+                <InstitutionalUsers/>
+              </Box>
             </Box>
           </>
         )}
@@ -421,7 +440,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
 
         <Box height="100%" width="100%" background="color5" id="content">
-          <Box width="80%" height={this.state.renderMobileView ? "1550px": "690px"}  direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1550px": "730px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
         </Box>
@@ -433,11 +452,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
         
 
-        {/* <Box height="100%" width="100%">
+        <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "600px": "600px"} direction="column" alignSelf="center">
-            {this.callToCreateAgora()}
+            {this.callToActionEndpage()}
           </Box>
-        </Box> */}
+        </Box>
 
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
