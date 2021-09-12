@@ -461,7 +461,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           areas={[
             { name: "player", start: [0, 0], end: [0, 0] },
             { name: "chat", start: [1, 0], end: [1, 0] },
-            { name: "description", start: [0, 1], end: [1, 1] },
+            // { name: "questions", start: [0, 1], end: [1, 1] },
           ]}
         >
         
@@ -474,7 +474,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 </Grid>
               </Box>:
               <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable || isSlideVisible?'screen-share':''}`}
-                style={{height: '100%', position: 'relative'}}>
+                style={{height: '90%', position: 'relative'}}>
                 <Box className='camera-video'>
                   {remoteVideoTrack.map((user)=>(
                     //@ts-ignore
@@ -564,9 +564,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
             <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
             {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
           </Box>
-          {/* <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
-            <Text size="12px"> {talkDetail.description} </Text>
-          </Box> */}
         </Grid>
         <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
         <DescriptionAndQuestions
@@ -576,7 +573,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           videoId={state.video.id}
           streamer={false}
           margin={{ top: "-20px" }}
-        
         />
       </Box>
   )
