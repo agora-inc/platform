@@ -52,8 +52,12 @@ url_talks = url_agora.replace("/seminar/", "/talk/")
 info['talks'] = []
 
 
-def get_href(lst_link, txt):
-  elements = [e for e in lst_link if e.text == txt]
+def get_href(lst_link, txt, substring=False):
+  if substring:
+    elements = [e for e in lst_link if e.text in txt and e.text != '']
+  else:
+    elements = [e for e in lst_link if e.text == txt]
+  
   if len(elements) > 0:
     return elements[0].get_attribute('href')
   else:
@@ -88,8 +92,8 @@ def parse_time(str_t):
   return start_time, end_time
 
 
-# url_talks = "https://researchseminars.org/talk/NYC-NCG"
-i = 1
+url_talks = "https://researchseminars.org/talk/NYC-NCG"
+i = 69
 driver.get(url_talks + f"/{i}")
 while driver.find_element_by_id("title").text != "Page not found":
   talk = {}
@@ -100,7 +104,8 @@ while driver.find_element_by_id("title").text != "Page not found":
 
   # Speaker 
   talk['speaker'] = driver.find_element_by_class_name("talk-title").text
-
+  talk['speaker_link'] = get_href(lst_link, talk['speaker'], substring=True)
+ 
   # Time
   str_time = driver.find_element_by_xpath('//b').text
   talk['start_time'], talk['end_time'] = parse_time(str_time)
