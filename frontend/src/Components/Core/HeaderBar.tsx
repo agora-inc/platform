@@ -36,14 +36,12 @@ class HeaderBar extends Component<RouteComponentProps, State> {
   }
 
   render() {
-    if (this.props.location.pathname !== "/") {
       return (
         <Box
           tag="header"
           direction="row"
           align="center"
           justify="between"
-          background="white"
           pad={{ left: "xsmall", right: "small", vertical: "small" }}
           elevation="none"
           style={{
@@ -113,7 +111,32 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             style={{ minWidth: "30%", maxHeight: "20px" }}
             justify="end"
           >
-            <TimeZoneInfo />
+            {((this.props.location.pathname !== "/") && (this.props.location.pathname !== "/organisers")) && (
+              <TimeZoneInfo />
+            )}
+
+          <Box>
+            <Link
+              to={{ pathname: "/info/welcome" }}
+              style={{ textDecoration: "none"}}
+            >
+              <Box
+                onClick={() => ({})}
+                width="120px"
+                height="30px"
+                background="#BAD6DB"
+                round="7px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#6DA3C7"
+              >
+                <Text size="14px" weight="bold"> About us </Text>
+              </Box>
+            </Link>
+          </Box>
+
+
             <MediaQuery minDeviceWidth={992}>
               <UserManager showLogin={this.state.showLogin} />
             </MediaQuery> 
@@ -121,9 +144,6 @@ class HeaderBar extends Component<RouteComponentProps, State> {
 
         </Box>
       );
-    } else {
-      return null;
-    }
   } 
 }
 

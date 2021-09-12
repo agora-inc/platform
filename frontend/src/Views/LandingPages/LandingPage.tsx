@@ -2,25 +2,28 @@ import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
 // import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
-import moraStreamFullLogo from "../assets/general/mora.stream_logo_v3.svg";
-import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
-import { User, UserService } from "../Services/UserService";
-import { Search, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
-import UserManager from "../Components/Account/UserManager";
-import FooterComponent from "../Components/Homepage/FooterComponent";
-import "../Styles/landing-page.css";
+import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
+import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
+import { User, UserService } from "../../Services/UserService";
+import { Search, Java, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
+import UserManager from "../../Components/Account/UserManager";
+import FooterComponent from "../../Components/Homepage/FooterComponent";
+import "../../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 import ScrollIntoView from 'react-scroll-into-view'
 import ReactTooltip from "react-tooltip";
 
-import CreateChannelButton from "../Components/Channel/CreateChannelButton";
-import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
+import CreateChannelButton from "../../Components/Channel/CreateChannelButton";
+import CreateChannelOverlay from "../../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
 
-import ZoomLogo from "../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
-import YoutubeLogo from "../assets/competitors_logo/YouTube_Logo_2017.svg.png";
-import MicrosoftTeams from "../assets/competitors_logo/youtube_logo.jpeg";
-import BackgroundImage from "../assets/general/mora_social_media_cover_#bad6db.jpg"
+import ZoomLogo from "../../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
+import YoutubeLogo from "../../assets/competitors_logo/YouTube_Logo_2017.svg.png";
+import MicrosoftTeams from "../../assets/competitors_logo/youtube_logo.jpeg";
+import BackgroundImage from "../../assets/general/mora_social_media_cover_#bad6db.jpg"
+import WavyArrow from "../../assets/landing_page/wavy_arrow_left_right.png"
+
+import InstitutionalUsers from "./InstitutionalUsers";
 
 
 interface State {
@@ -40,8 +43,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       renderMobileView: (window.innerWidth < 1200),
       user: UserService.getCurrentUser(),
       showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
-      colorButton: "#EAF1F1",
-      colorHover: "#BAD6DB",
+      colorButton: "color1",
+      colorHover: "color5",
       showModalGiveATalk: false,
       showCreateChannelOverlay: false
     };
@@ -159,14 +162,15 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "40px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Everything about academic seminars, and more
+            Hybrid academic seminars to share ideas and network
           </Text>
           <Text size="20px">
             <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking and meeting your next teammates around an e-coffee!
           </Text>
-        </Box>
-        <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "10px"}} height="50%">
-          {this.callToActions()}
+          <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "0px"}} height="50%">
+            {this.callToActions()}
+          </Box>
+          <InstitutionalUsers/>
         </Box>
       </>
     )
@@ -186,343 +190,131 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     )
 }
 
-
   callToActions() {
     return (
       <Box
         direction="row"
         focusIndicator={false}
         margin={{
-          top: (window.innerWidth > 800) ? "80px" : "40px",
-          bottom: (window.innerWidth > 800) ? "40px" : "0px"
+          top: (window.innerWidth > 800) ? "40px" : "40px",
+          bottom: (window.innerWidth > 800) ? "0px" : "0px"
         }}
         justify="start"
-        alignContent="start"
+        alignContent="center"
+        gap="medium"
       >
-
-      {/* Desktop version */}
-      <MediaQuery minDeviceWidth={1000}>
-
-        <Box direction="column" width="340px" >
-
-          <Text size="21px" weight="bold" margin={{ left: "10px", bottom: "30px" }}>
-            Audiences
-          </Text>
-          <Box direction="row" gap="10px">
-            <Link
-              to={{ pathname: "/browse" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                onClick={() => ({})}
-                background={this.state.colorButton}
-                round="xsmall"
-                pad="xsmall"
-                height="120px"
-                width="150px"
-                justify="center"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator={this.state.colorHover}
-                margin={{ left: "10px", right: "20px" }}
-              >
-                <Search size="30px" />
-                <Text size="16px" weight="bold" margin={{ top: "10px" }}> Attend </Text>
-                <Text size="16px" margin={{ top: "5px" }}> future seminars </Text>
-              </Box>
-            </Link>
-
-            <Link
-              to={{ pathname: "/past" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                onClick={() => ({})}
-                background={this.state.colorButton}
-                round="xsmall"
-                pad="xsmall"
-                height="120px"
-                width="150px"
-                justify="center"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator={this.state.colorHover}
-              >
-                <Play size="30px" />
-                <Text size="16px" weight="bold" margin={{ top: "10px" }}> Watch</Text>
-                <Text size="16px" margin={{ top: "5px" }}> past seminars </Text>
-              </Box>
-            </Link>
-          </Box>
+      <Link
+        to={{ pathname: "/browse" }}
+        style={{ textDecoration: "none" }}
+      >
+        <Box
+          onClick={this.toggleModal}
+          background={this.state.colorButton}
+          round="xsmall"
+          pad="xsmall"
+          height="80px"
+          width="300px"
+          justify="center"
+          align="center"
+          focusIndicator={false}
+          hoverIndicator={this.state.colorHover}
+          margin={{ left: "0px" }}
+          direction="row"
+        >
+          <Play size="30px" />
+          <Text size="18px" margin={{left: "10px"}}> <b>Watch</b>  latest seminars</Text>
+          {/* <Text size="22px">🔥</Text> */}
         </Box>
+      </Link>
 
-        <div id="vertical-line"> {} </div>
-
-        <Box direction="column" width="150px" alignSelf="center">
-          <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
-            Speakers
-          </Text>
-
-          {/*<Link
-              to={{ pathname: "/agoras" }}
-              style={{ textDecoration: "none" }}
-          > */}
-            <Box
-              onClick={this.toggleModal}
-              background={this.state.colorButton}
-              round="xsmall"
-              pad="xsmall"
-              height="120px"
-              width="150px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator={this.state.colorHover}
-              margin={{ left: "0px" }}
-            >
-              <Chat size="30px" />
-              <Text size="16px" weight="bold" margin={{ top: "10px" }}> Give </Text>
-              <Text size="16px" margin={{ top: "5px" }}> a talk </Text>
-            </Box>
-          {/* </Link> */}
+      <Link
+        to={{ pathname: "/organisers" }}
+        style={{ textDecoration: "none" }}
+        >
+        <Box
+          onClick={this.toggleModal}
+          background={this.state.colorButton}
+          round="xsmall"
+          pad="xsmall"
+          height="80px"
+          width="300px"
+          justify="center"
+          align="center"
+          focusIndicator={false}
+          hoverIndicator={this.state.colorHover}
+          margin={{ left: "0px" }}
+          direction="row"
+        >
+          <Group size="30px" />
+          <Text size="18px" margin={{left: "10px"}}> <b>Launch</b>  your own seminars</Text>
         </Box>
-
-        {this.state.showModalGiveATalk && (
-          this.giveATalkOverlay()
-        )}
-
-        <div id="vertical-line"> {} </div>
-
-        <Box direction="column" width="150px" alignSelf="center">
-          <Text size="21px" weight="bold" margin={{ bottom: "30px" }}>
-            Organisers
-          </Text>
-
-          <ReactTooltip id="create-your-events" effect="solid">
-            Create your events and share them with the world in less than a minute!
-          </ReactTooltip>
-            
-          <ScrollIntoView selector="#content">
-            <Box
-              onClick={() => ({})}
-              background={this.state.colorButton}
-              round="xsmall"
-              pad="xsmall"
-              height="120px"
-              width="150px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator={this.state.colorHover}
-              margin={{ left: "0px" }}
-              data-tip data-for="create-your-events"
-            >
-              <Add size="30px" />
-              <Text size="16px" weight="bold" margin={{ top: "10px" }}> Post </Text>
-              <Text size="16px" margin={{ top: "5px" }}> your seminars </Text>
-            </Box>
-          </ScrollIntoView>  
-        </Box>
-
-      </MediaQuery>
-
-
-      {/* Mobile version */}
-      <MediaQuery maxDeviceWidth={1000}>
-        <Box direction="column" width="50%" height="100%">
-          <Text size="18px" weight="bold" margin={{ left: "10px", bottom: "10px" }}>
-            Audiences
-          </Text>
-          <Box direction="column" margin={{ left: "10px" }}>
-            <Link
-              to={{ pathname: "/browse" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                onClick={() => ({})}
-                direction="row"
-                background={this.state.colorButton}
-                round="xsmall"
-                pad="small"
-                gap="xsmall"
-                height="60px"
-                width="150px"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator={this.state.colorHover}
-                margin={{ bottom: "25px" }}
-              >
-
-                <Search size="20px" />
-                <Box direction="column">
-                  <Text size="14px" weight="bold" margin={{ left: "2px", bottom: "3px" }}>
-                    Browse
-                  </Text>
-                  <Text size="14px" margin={{ left: "2px" }}>
-                    future events
-                  </Text>
-                </Box>
-              </Box>
-            </Link>
-            <Link
-              to={{ pathname: "/past" }}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                onClick={() => ({})}
-                direction="row"
-                background={this.state.colorButton}
-                round="xsmall"
-                pad="small"
-                gap="xsmall"
-                height="60px"
-                width="150px"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator={this.state.colorHover}
-              >
-
-                <Play size="20px" />
-                <Box direction="column">
-                  <Text size="14px" weight="bold" margin={{ left: "2px", bottom: "3px" }}>
-                    Watch
-                  </Text>
-                  <Text size="14px" margin={{ left: "2px" }}>
-                    past seminars
-                  </Text>
-                </Box>
-              </Box>
-            </Link>
-          </Box>
-        </Box>
-
-        <div id="vertical-line"> {} </div>
-
-        <Box direction="column" width="50%" alignSelf="center" height="100%">
-          <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
-            Speakers
-          </Text>
-          
-          <Box
-            onClick={() => ({})}
-            direction="row"
-            background={this.state.colorButton}
-            round="xsmall"
-            pad="small"
-            gap="xsmall"
-            height="60px"
-            width="140px"
-            align="center"
-            focusIndicator={false}
-            hoverIndicator={this.state.colorHover}
-            margin={{ bottom: "20px" }}
-          >
-
-            <Chat size="20px" />
-            <Box direction="column">
-              <Text size="14px" weight="bold" margin={{ left: "5px", bottom: "3px" }}>
-                Give
-              </Text>
-              <Text size="14px" margin={{ left: "5px" }}>
-                a talk
-              </Text>
-            </Box>
-          </Box>
-
-          <Text size="18px" weight="bold" margin={{ bottom: "10px" }}>
-            Organisers
-          </Text>
-
-          <ScrollIntoView selector="#content">
-            <Box
-              onClick={() => ({})}
-              direction="row"
-              background={this.state.colorButton}
-              round="xsmall"
-              pad="small"
-              gap="xsmall"
-              height="60px"
-              width="140px"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator={this.state.colorHover}
-            >
-              <Add size="20px" />
-              <Box direction="column">
-                <Text size="14px" weight="bold" margin={{ left: "5px", bottom: "3px" }}>
-                  Post
-                </Text>
-                <Text size="14px" margin={{ left: "5px" }}>
-                  your seminars
-                </Text>
-              </Box>
-            </Box>
-          </ScrollIntoView>
-        </Box>
-      </MediaQuery>
+      </Link>
     </Box>
     )
   }
 
+  brandCurrentOrganisation() {
+    return(
+      <Box>
+        sdf
+      </Box>
+    )
+  }
+
+
   content1() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">
-          We empower every aspect of academic seminars with tech
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
+          How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <Workshop size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Present your research everywhere
+          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
+            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+              <Box width="70px">
+                <SearchAdvanced size="large"/>
+              </Box>
+              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                1. Find a seminar 
               </Text>
             </Box>
             <Text size="18px"> 
-              Do you want to share a new idea or paper with existing communities? 
-            </Text>
-            <Text size="18px"> 
-              We made your life super easy! Connect with them by simply clicking the 'Give a talk!' button and they will get back to you!
+              Register as an attendee or apply as a speaker within a community!
             </Text>
           </Box>
 
+          <Box width="120px" direction="column" alignSelf="center"> 
+            <img src={WavyArrow} style={{alignSelf: "center"}} width="120px"/>
+          </Box>
 
           <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <SearchAdvanced size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Granular classification
+            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+              <Box width="70px">
+                <Workshop size="large"/>
+              </Box>
+              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">2. Attend
               </Text>
             </Box>
+
             <Text size="18px">
-              We consulted experts for each field: the classification is made by people who know what they are talking about.
+              Seminars can be run online or hybrid. Ask questions, go back-and-forth the slides
             </Text>
+          </Box>
+
+          <Box width="120px" direction="column" alignSelf="center"> 
+            <img src={WavyArrow} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
           <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <ShareOption size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Hybrid academic seminars
+            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+              <Box width="70px">
+                <Group size="large"/>
+              </Box>
+              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">3. Mingle!
               </Text>
             </Box>
             <Text size="18px">
-              With our mobile app, the in-person audience can interact with their online peers through an integrated chat. 
-            </Text>
-            <Text size="18px">
-              Everyone can also browse the slides of the speaker!
-            </Text>
-          </Box>
-
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "320px"} background="color2" pad="medium" direction="column"> 
-            <Box direction="row" margin={{bottom: "20px"}} height="25%">
-              <Group size="large"/>
-              <Text size="22px" weight="bold" margin={{left: "10px"}} color="color7">
-                Meet your next co-authors! 
-              </Text>
-            </Box>
-            <Text size="18px">
-              After seminars, the online audience can mingle around e-coffees in a 2D world. So many ideas and collaborations started around a coffee (mora.stream included)!
+              Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers and the audience.
             </Text>
           </Box>
         </Box>
@@ -533,7 +325,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Empowering seminar organisers, from start to finish</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">How does this work?</Text>
         {/* A. First row of features */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "20px"}} gap="30px">
           <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" className="box1" gap="10px"> 
@@ -586,25 +378,6 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Text>
             <Text size="18px">
               Whenever an event is created or modified, you can let your community know about it with a simple click.
-            </Text>
-          </Box>
-
-          {/* {(!this.state.renderMobileView && 
-            <hr style={{width: "40px", height: "0.5px", backgroundColor: "black", borderColor: "black", marginTop: "15vh", marginBottom: "15vh"}} />
-          )} */}
-
-          <Box width="350px" height={this.state.renderMobileView ? "220px" : "320px"} background="color6" pad="medium" direction="column" gap="10px"> 
-            <Box direction="row" margin={{bottom: "25px"}} height="25%">
-              <DocumentPerformance size="large"/>
-              <Text size="20px" weight="bold" margin={{left: "10px"}} color="color1">
-                Easy registration management
-              </Text>
-            </Box>
-            <Text size="18px">
-              You can automatically accept everybody with a verified academic email address (or other institutions). 
-            </Text>
-            <Text size="18px">
-              Manually accept the remainding attendees in a centralised panel.
             </Text>
           </Box>
         </Box>
@@ -739,17 +512,6 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         direction="column"
         align="center"
       >
-        <Box
-          direction="row"
-          gap="small"
-          align="end"
-          style={{ minWidth: "90%", maxHeight: "40px" }}
-          margin={{ top: "20px" }}
-          justify="end"
-        >
-          <UserManager showLogin={this.state.showLogin} />
-        </Box>
-
         {/* <video
           autoPlay loop muted id="background-landing"
           style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
@@ -760,7 +522,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
           // src={BackgroundImage}
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
-/>
+        />
 
 
 
@@ -779,13 +541,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color1" id="content">
+        <Box height="100%" width="100%" background="color5" id="content">
           <Box width="80%" height={this.state.renderMobileView ? "1550px": "690px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color5">
+        <Box height="100%" width="100%" background="color1">
           <Box width="80%" height={this.state.renderMobileView ? "2390px": "970px"} direction="column" alignSelf="center">
             {this.content2()}
           </Box>

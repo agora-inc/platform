@@ -73,7 +73,7 @@ export default class Countdown extends Component<
   }
 
   showTimeUntil = () => {
-    let message = "Link available here in ";
+    let message = "Redirected to seminar in ";
     let secondsUntil = Math.floor(
       (this.state.showLinkAt.getTime() - this.state.now.getTime()) / 1000
     )

@@ -2,7 +2,8 @@ import React from "react";
 import { BrowserRouter, Route, Switch} from "react-router-dom";
 import { Grommet } from "grommet";
 import Home from "./Views/Home";
-import LandingPage from "./Views/LandingPage";
+import LandingPage from "./Views/LandingPages/LandingPage";
+import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
 // import StreamPage from "./Views/StreamPage";
@@ -39,6 +40,9 @@ function App() {
       <HeaderBar />
         <Switch>
           <Route exact path="/" component={LandingPage} />
+          <Route exact path="/organisers" component={OrganiserLandingPage} />
+
+
           <Route exact path="/browse" component={Home} />
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
