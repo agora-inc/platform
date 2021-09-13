@@ -264,7 +264,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-          Empowering the whole organiser pipeline, from start to finish!
+          Empowering the whole organiser pipeline, from start to finish
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "50px"}}>

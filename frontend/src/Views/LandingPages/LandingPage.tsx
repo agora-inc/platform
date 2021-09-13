@@ -354,7 +354,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7">boost</Text> research collaborations with tech</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7" weight="bold">boost</Text> research collaborations with tech</Text>
 
         <img src={ThreeSidedMarketplaceGraph} height="40%" width="40%" style={{alignSelf: "center", marginBottom: "40px"}}/>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" justify="center">
