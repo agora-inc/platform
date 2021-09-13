@@ -1,16 +1,17 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { User } from "../../Services/UserService";
 import { Topic } from "../../Services/TopicService";
+import { ChannelService } from "../../Services/ChannelService";
 import { RSScraping } from "../../Services/RSScrapingService";
-import { Box, Text, TextInput, Select, CheckBox, Layer } from "grommet";
-import { StatusInfo, Close } from "grommet-icons";
+import { Box, Text, TextInput, Select, CheckBox, Layer, Image } from "grommet";
+import { StatusInfo, Close, Checkmark } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
 import { Overlay } from "../Core/Overlay";
 import Switch from "../Core/Switch";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import ChannelTopicSelector from "../Channel/ChannelTopicSelector";
-
 
 
 interface Props {
@@ -30,10 +31,12 @@ interface State {
   showProgressOverlay: boolean;
   isValidSeries: number; // 1 is valid, 0 otherwise
   numberTalksSeries: number;
+  migrating: boolean;
+  channelId: number;
+  channelName: string;
 }
 
-
-export default class AgoraCreationPage extends Component<Props, State> {
+export default class TransportSeminars extends Component<Props, State> {
 	constructor(props: any) {
 		super(props);		
 		this.state = {
@@ -49,6 +52,9 @@ export default class AgoraCreationPage extends Component<Props, State> {
       showProgressOverlay: false,
       isValidSeries: 0,
       numberTalksSeries: 0,
+      migrating: true,
+      channelId: -1,
+      channelName: ""
     };
 	}
 	
@@ -106,6 +112,23 @@ export default class AgoraCreationPage extends Component<Props, State> {
     return res
   }
 
+  textTitle = () => {
+    if (this.state.isValidSeries) {
+      if (this.state.migrating && this.state.channelId < 0) {
+        return "Found!";
+      }
+      if (!this.state.migrating && this.state.channelId > 0) {
+        return "Success!";
+      }
+      if (!this.state.migrating && this.state.channelId <= 0) {
+        return "Error...";
+      }
+
+    } else {
+      return "Not found..."
+    }
+  }
+
   onSubmitClick = () => {
     // Try if the series indeed exists
     RSScraping.getValidSeriesAndNtalks(
@@ -114,6 +137,22 @@ export default class AgoraCreationPage extends Component<Props, State> {
         this.setState({ isValidSeries: res[0] })
         this.setState({ numberTalksSeries: res[1] })
         this.toggleProgressOverlay()
+        if (res[0] === 1 && this.props.user) {
+          this.toggleOverlay()
+          RSScraping.getChannelAllTalks(
+            this.state.url,
+            this.props.user.id,
+            this.state.topics[0].id,
+            this.state.audienceLevel,
+            this.state.onRegistration ? "Members only" : "Everybody",
+            this.state.autoAcceptGroup,
+            (res: {channelId: number, channelName: string}) => {
+              this.setState({ migrating: false })
+              this.setState({ channelId: res.channelId })
+              this.setState({ channelName: res.channelName })
+            }
+          )
+        }
       }
     )
 
@@ -122,14 +161,11 @@ export default class AgoraCreationPage extends Component<Props, State> {
   }
 
   render() {
-    console.log("Valid?", this.state.isValidSeries)
-    console.log("Number of talks", this.state.numberTalksSeries)
     var auto_accept = "'Automatically accepting a registration' means that the person registering " + 
     "to your event will automatically receive the details by email if they belong to one of the group you selected below";
     return (
       <>
       <Box
-        data-tip data-for="create_agora_button"
         direction="row"
         onClick={this.toggleOverlay}
         align="center"
@@ -150,9 +186,6 @@ export default class AgoraCreationPage extends Component<Props, State> {
           Migrate your seminars
         </Text>
         <Text size="22.5px">🚀</Text>
-        <ReactTooltip id="create_agora_button" effect="solid">
-            Migrate your seminar series on researchseminars.org in less than a minute!
-        </ReactTooltip>
       </Box>
 
       {this.state.showOverlay && (
@@ -185,7 +218,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
         
           {this.props.user !== null && (
             <Box align="start"> 
-              <Text size="14px">
+              <Text size="14px" weight="bold">
                 1. Enter here the url of your series on researchseminars.org
               </Text>
               <TextInput
@@ -193,7 +226,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 placeholder="https://researchseminars.org/seminar/yourname"
                 onChange={(e) => this.setState({ url: e.target.value })}
               />
-              <Text size="14px">
+              <Text size="14px" weight="bold" margin={{top: "20px", bottom: "-5px"}}>
                 2. Choose the most appropriate field
               </Text>
               <ChannelTopicSelector 
@@ -203,7 +236,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
                 prevTopics={[]} 
                 textSize="medium"
               />
-              <Text size="14px">
+              <Text size="14px" weight="bold" margin={{top: "10px", bottom: "5px"}}>
                 3. Choose the target audience
               </Text>
               <Select
@@ -216,8 +249,8 @@ export default class AgoraCreationPage extends Component<Props, State> {
                   this.setState({ audienceLevel: option })
                 }
               />
-              <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
-                <Text size="13px" weight="bold"> 4. Do you require registration on your events? </Text>
+              <Box direction="row" gap="10px"  align="center" margin={{top: "20px", bottom: "10px"}}>
+                <Text size="14px" weight="bold"> 4. Do you require registration on your events? </Text>
                 <Switch
                   width="60px"
                   height={24}
@@ -239,7 +272,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
               {this.state.onRegistration && (
                 <Box margin={{bottom: "20px"}} gap="15px">
                   <Box direction="row" gap="small" margin={{ bottom: "0px" }}>
-                    <Text size="13px" weight="bold"> 
+                    <Text size="14px" weight="bold"> 
                       Automatically accept some users?
                     </Text>
                     <Switch
@@ -277,14 +310,14 @@ export default class AgoraCreationPage extends Component<Props, State> {
                       checked={this.state.autoAcceptGroup == "Academics"}
                       onChange={() => this.handleCheckBox("Academics")}
                     />
-                    <Text size="13px" margin={{top: "20px"}}><i>Everybody else will need to be manually approved.</i></Text>
+                    <Text size="14x" margin={{top: "20px"}}><i>Everybody else will need to be manually approved.</i></Text>
 
                   </>
                   )}
                 </Box>
               )}
               {!this.state.onRegistration && (
-                <Text size="13px"> Your events are going to be public, and the link to your talk will be shown on mora.stream 15 minutes before the start. </Text>
+                <Text size="14px"> Your events are going to be public, and the link to your talk will be shown on mora.stream 15 minutes before the start. </Text>
               )}
             </Box>
 
@@ -305,7 +338,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
             padding: 0,
           }}
         >
-          <Box align="center" width="100%" style={{ overflowY: "auto" }}>
+          <Box width="100%" style={{ overflowY: "auto" }}>
             <Box
               justify="start"
               width="99.7%"
@@ -322,27 +355,95 @@ export default class AgoraCreationPage extends Component<Props, State> {
             >
               <Box pad="30px" alignSelf="center" fill={true}>
                 <Text size="16px" color="black" weight="bold">
-                  {this.state.isValidSeries === 1 ? "Success" : "Error"}
+                  {this.textTitle()}
                 </Text>
               </Box>
               <Box pad="32px" alignSelf="center">
                 <Close onClick={this.toggleProgressOverlay}/>
               </Box>
             </Box>
-            {this.state.isValidSeries === 1 && (
-              <Box direction="row"> 
-                <Text>
-                  Number of talks to migrate:
+            {this.state.isValidSeries === 1 && this.state.migrating && (
+              <Box margin={{top: "30px", left: "30px"}} > 
+                <Text size="16px" margin={{bottom: "15px"}}>
+                  Migration starting... This can take up to 5 minutes.
                 </Text>
-                <Text> {this.state.numberTalksSeries} </Text>
+                <Text size="16px" weight="bold" margin={{bottom: "70px"}}>
+                  Number of talks to migrate: {this.state.numberTalksSeries}
+                </Text>
+                <Text size="14px" alignSelf="end" margin={{right: "30px"}} style={{fontStyle: "italic"}} >
+                  Do not close this window...
+                </Text>
+              </Box> 
+            )}
+            {this.state.isValidSeries === 1 && !this.state.migrating && this.state.channelId > 0 && (
+              <Box margin={{top: "30px", left: "30px"}}>
+                <Box direction="row" margin={{bottom: "20px"}} align="center" gap="10px">
+                  <Checkmark color="green" /> 
+                  <Text size="16px"> 
+                    Access to your agora by clicking below.
+                  </Text>
+                </Box>
+                <Link
+                  className="channel"
+                  to={`/${this.state.channelName}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Box
+                    direction="row"
+                    gap="xsmall"
+                    align="center"
+                    round="xsmall"
+                    pad={{ vertical: "6px", horizontal: "6px" }}
+                  >
+                    <Box
+                      justify="center"
+                      align="center"
+                      background="#efeff1"
+                      overflow="hidden"
+                      style={{
+                        minHeight: 30,
+                        minWidth: 30,
+                        borderRadius: 15,
+                      }}
+                    >
+                        <img
+                          src={ChannelService.getAvatar(
+                            this.state.channelId
+                          )}
+                          height={30}
+                          width={30}
+                        />
+                    </Box>
+                    <Box justify="between">
+                      <Text weight="bold" size="16px" color="grey">
+                        {this.state.channelName}
+                      </Text>
+                    </Box>
+                  </Box>
+                </Link>
                 
               </Box> 
             )}
+            {this.state.isValidSeries === 1 && !this.state.migrating && this.state.channelId <= 0 && (
+              <Box margin={{top: "30px", left: "30px"}}>
+                <Box direction="row" margin={{bottom: "20px"}} align="center" gap="10px">
+                  <Close color="red" /> 
+                  <Text size="16px"> 
+                    There was an error in the processing of your seminars. Please try again or contact us.
+                  </Text> 
+                </Box>
+              </Box>
+            )}
             {this.state.isValidSeries !== 1 && (
-              <Text size="18px" color="black">
-                The url you entered does not correspond to any seminar series. <b/>
-                Please check that the url is correct or contact us.
-              </Text>
+              <Box margin={{top: "30px", left: "30px"}}>
+                <Box direction="row" margin={{bottom: "20px"}} align="center" gap="10px">
+                  <Close color="red" /> 
+                  <Text size="16px"> 
+                    The url you entered does not correspond to any seminar series. <br/>
+                    Please check that the url is correct or contact us.
+                  </Text> 
+                </Box>
+              </Box>
             )}
 
           </Box>

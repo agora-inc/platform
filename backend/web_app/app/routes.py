@@ -1997,3 +1997,16 @@ def getValidSeriesAndNtalks():
     url = request.args.get("url")
     return jsonify(RSScraper.get_valid_series_and_ntalks(url))
 
+@app.route('/rsscraping/allTalks', methods=["POST"])
+def publishChannelAllTalks():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    params = request.json
+    channel_id, channel_name = RSScraper.create_agora_and_talks(
+        params['url'], params['user_id'], params['topic_1_id'], 
+        params['audience_level'], params['visibility'], params['auto_accept_group']
+    )
+    
+    return jsonify({"channelId": channel_id, "channelName": channel_name})
+

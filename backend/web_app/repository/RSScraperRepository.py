@@ -14,8 +14,8 @@ from datetime import datetime
 class RSScraperRepository:
 	def __init__(self, db=agora_db):
 		self.db = db
-		self.channelRepo = ChannelRepository(db=self.db)
-		self.talkRepo = TalkRepository(db=self.db)
+		self.channelRepo = ChannelRepository(db=db)
+		self.talkRepo = TalkRepository(db=db)
 		# Set-up selenium
 		options = Options()
 		options.headless = True
@@ -51,10 +51,6 @@ class RSScraperRepository:
 			return 1, len(ids)
 
 	def parse_agora(self, url_agora):
-		is_valid, _ = self.get_valid_series_and_ntalks(url_agora)
-		if is_valid == 0:
-			return {}
-
 		self._login()
 		self.driver.get(url_agora)
 		info = {}
@@ -71,56 +67,62 @@ class RSScraperRepository:
 		url_talks = url_agora.replace("/seminar/", "/talk/")
 		info['talks'] = []
 		ids = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
-		print(ids)
+		# ids = ids[:5]
 
 		for i in ids:
-			self.driver.get(url_talks + f"/{i}")
-			talk = {}
-			lst_link = self.driver.find_elements_by_xpath('//a')
+			try:
+				self.driver.get(url_talks + f"/{i}")
+				talk = {}
+				lst_link = self.driver.find_elements_by_xpath('//a')
 
-			# Title
-			talk['title'] = self.driver.find_element_by_xpath("//h1").text
+				# Title
+				talk['title'] = self.driver.find_element_by_xpath("//h1").text
 
-			# Speaker 
-			talk['speaker'] = self.driver.find_element_by_class_name("talk-title").text
-			talk['speaker_link'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
+				# Speaker 
+				talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
+				talk['speaker_url'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
 
-			# Time
-			str_time = self.driver.find_element_by_xpath('//b').text
-			talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
+				# Time
+				str_time = self.driver.find_element_by_xpath('//b').text
+				talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
 
-			# Description
-			e = self.driver.find_element_by_class_name('talk-details-container')
-			lst = e.text.split('\n')
-			idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
-			talk['description'] = '\n'.join(lst[:idx]).replace('Abstract: ', '')
+				# Description
+				e = self.driver.find_element_by_class_name('talk-details-container')
+				lst = e.text.split('\n')
+				idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
+				talk['description'] = '\n'.join(lst[:idx]).replace('Abstract: ', '')
 
-			# Link
-			talk['link'] = RSScraperRepository._get_href(lst_link, "available")
+				# Link
+				talk['link'] = RSScraperRepository._get_href(lst_link, "available")
 
-			# Slides and video
-			talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
-			talk['video'] = RSScraperRepository._get_href(lst_link, "video")
+				# Slides and video
+				talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
+				talk['video'] = RSScraperRepository._get_href(lst_link, "video")
 
-			# Save
-			info['talks'].append(talk)
+				# Save
+				info['talks'].append(talk)
+
+			except:
+				pass
 
 		self.driver.quit()
 
 		return info
 
 	def create_agora_and_talks(self, url, userId, topic_1_id, audience_level, visibility, auto_accept_group):
+		# Get info
 		info = self.parse_agora(url)
-		"""
-		channel_id = self.channelRepo.createChannel(info['name'], info['description'], userId, topic_1_id)
+		# Create channel
+		channel = self.channelRepo.createChannel(info['name'], info['description'], userId, topic_1_id)
 
+		# Create talks
 		for talk in info['talks']:
-			self.talkRepo.scheduleTalk(
-				channelId=channel_id, 
+			talk_created = self.talkRepo.scheduleTalk(
+				channelId=channel['id'], 
 				channelName=info['name'], 
-				talkName=talk['name'], 
-				startDate=talk['start_date'], 
-				endDate=talk['end_date'], 
+				talkName=talk['title'], 
+				startDate=str(talk['start_time']), 
+				endDate=str(talk['end_time']), 
 				talkDescription=talk['description'], 
 				talkLink=talk['link'], 
 				talkTags=[], 
@@ -142,7 +144,12 @@ class RSScraperRepository:
 				reminderEmailGroup=[],
 				email_on_creation=False,
 			)
-		"""
+
+			with open(f"/home/cloud-user/test/talk.txt", "w") as file:
+				file.write(str(talk_created))
+				
+		return channel['id'], info['name']
+
 
 	@staticmethod
 	def _get_all_talks_id(lst):
