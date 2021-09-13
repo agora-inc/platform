@@ -358,13 +358,13 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     setCallControl({...callControl, mic: true})
   }
 
-  async function publish_camera(){
-    await agoraClient.setClientRole('host');
-    let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    setLocalVideoTrack(_localVideoTrack)
-    await agoraClient.publish([_localVideoTrack]);
-    setCallControl({video: true})
-  }
+  // async function publish_camera(){
+  //   await agoraClient.setClientRole('host');
+  //   let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+  //   setLocalVideoTrack(_localVideoTrack)
+  //   await agoraClient.publish([_localVideoTrack]);
+  //   setCallControl({video: true})
+  // }
 
   // async function publish_camera_and_microphone(){
   //   await agoraClient.setClientRole('host');
