@@ -67,7 +67,7 @@ class RSScraperRepository:
 		url_talks = url_agora.replace("/seminar/", "/talk/")
 		info['talks'] = []
 		ids = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
-		# ids = ids[:5]
+		# ids = ids[:10]
 
 		for i in ids:
 			try:
