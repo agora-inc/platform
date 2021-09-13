@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { User } from "../../Services/UserService";
 import { Topic } from "../../Services/TopicService";
+import { RSScraping } from "../../Services/RSScrapingService";
 import { Box, Text, TextInput, Select, CheckBox, Layer } from "grommet";
 import { StatusInfo, Close } from "grommet-icons";
 import ReactTooltip from "react-tooltip";
@@ -9,6 +10,7 @@ import Switch from "../Core/Switch";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 import ChannelTopicSelector from "../Channel/ChannelTopicSelector";
+
 
 
 interface Props {
@@ -26,7 +28,7 @@ interface State {
   autoAcceptGroup: "Everybody" | "Academics" | "None";
   autoAcceptCustomInstitutions: boolean, 
   showProgressOverlay: boolean;
-  isValidSeries: boolean;
+  isValidSeries: number; // 1 is valid, 0 otherwise
   numberTalksSeries: number;
 }
 
@@ -45,7 +47,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
       autoAcceptGroup: "Everybody",
       autoAcceptCustomInstitutions: false,
       showProgressOverlay: false,
-      isValidSeries: false,
+      isValidSeries: 0,
       numberTalksSeries: 0,
     };
 	}
@@ -106,14 +108,22 @@ export default class AgoraCreationPage extends Component<Props, State> {
 
   onSubmitClick = () => {
     // Try if the series indeed exists
-    this.toggleProgressOverlay()
-    this.toggleOverlay()
+    RSScraping.getValidSeriesAndNtalks(
+      this.state.url,
+      (res: number[]) => {
+        this.setState({ isValidSeries: res[0] })
+        this.setState({ numberTalksSeries: res[1] })
+        this.toggleProgressOverlay()
+      }
+    )
+
     // If yes, start parsing everything
 
   }
 
   render() {
-    console.log(this.isComplete())
+    console.log("Valid?", this.state.isValidSeries)
+    console.log("Number of talks", this.state.numberTalksSeries)
     var auto_accept = "'Automatically accepting a registration' means that the person registering " + 
     "to your event will automatically receive the details by email if they belong to one of the group you selected below";
     return (
@@ -312,13 +322,29 @@ export default class AgoraCreationPage extends Component<Props, State> {
             >
               <Box pad="30px" alignSelf="center" fill={true}>
                 <Text size="16px" color="black" weight="bold">
-                  {this.state.isValidSeries ? "Success" : "Error"}
+                  {this.state.isValidSeries === 1 ? "Success" : "Error"}
                 </Text>
               </Box>
               <Box pad="32px" alignSelf="center">
                 <Close onClick={this.toggleProgressOverlay}/>
               </Box>
             </Box>
+            {this.state.isValidSeries === 1 && (
+              <Box direction="row"> 
+                <Text>
+                  Number of talks to migrate:
+                </Text>
+                <Text> {this.state.numberTalksSeries} </Text>
+                
+              </Box> 
+            )}
+            {this.state.isValidSeries !== 1 && (
+              <Text size="18px" color="black">
+                The url you entered does not correspond to any seminar series. <b/>
+                Please check that the url is correct or contact us.
+              </Text>
+            )}
+
           </Box>
         </Layer>
 

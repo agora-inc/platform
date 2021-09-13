@@ -6,7 +6,7 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -35,6 +35,7 @@ products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
+RSScraper = RSScraperRepository.RSScraperRepository()
 
 # BASE_URL = "http://localhost:3000"
 BASE_URL = "https://mora.stream/"
@@ -1986,3 +1987,13 @@ def stripe_webhook():
 
     except Exception as e:
         return {}, 400
+
+
+# --------------------------------------------
+# Research seminars scraping
+# --------------------------------------------
+@app.route('/rsscraping/valid', methods=["GET"])
+def getValidSeriesAndNtalks():
+    url = request.args.get("url")
+    return jsonify(RSScraper.get_valid_series_and_ntalks(url))
+

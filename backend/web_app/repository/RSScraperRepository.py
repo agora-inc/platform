@@ -1,6 +1,6 @@
-# from repository.ChannelRepository import ChannelRepository
-# from repository.TalkRepository import TalkRepository
-# from app.databases import agora_db
+from repository.ChannelRepository import ChannelRepository
+from repository.TalkRepository import TalkRepository
+from app.databases import agora_db
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -12,12 +12,10 @@ from datetime import datetime
 
 
 class RSScraperRepository:
-	def __init__(self): #db=agora_db):
-		"""
+	def __init__(self, db=agora_db):
 		self.db = db
 		self.channelRepo = ChannelRepository(db=self.db)
 		self.talkRepo = TalkRepository(db=self.db)
-		"""
 		# Set-up selenium
 		options = Options()
 		options.headless = True
@@ -42,14 +40,21 @@ class RSScraperRepository:
 			return False
 
 	def get_valid_series_and_ntalks(self, url_agora):
+		if "https://researchseminars.org/seminar/" not in url_agora:
+			return 0, 0
+
 		self.driver.get(url_agora)
 		if self.driver.find_element_by_id("title").text == 'Page not found':
-			return False, 0
+			return 0, 0
 		else:
 			ids = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
-			return True, len(ids)
+			return 1, len(ids)
 
 	def parse_agora(self, url_agora):
+		is_valid, _ = self.get_valid_series_and_ntalks(url_agora)
+		if is_valid == 0:
+			return {}
+
 		self._login()
 		self.driver.get(url_agora)
 		info = {}
