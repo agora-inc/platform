@@ -428,14 +428,14 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                   onClick={this.toggleCreateChannelOverlay} 
                   width="400px"
                   height="90px"
-                  text={"Migrate from researchseminars.org"}
+                  text={"Import from researchseminars.org"}
                   textSize="18px"
                 />
             <CreateChannelButton 
                   onClick={this.toggleCreateChannelOverlay} 
                   width="400px"
                   height="90px"
-                  text={"Migrate from custom website"}
+                  text={"Import from custom website"}
                   textSize="18px"
                 />
             </Box>

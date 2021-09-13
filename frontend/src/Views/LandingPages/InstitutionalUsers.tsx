@@ -23,7 +23,8 @@ interface Props {
 
 interface State {
   width: string;
-  gap: string
+  gap: string;
+  renderMobileView: boolean;
 }
 
   
@@ -32,50 +33,107 @@ interface State {
       super(props);
       this.state = {
         width: "100px",
-        gap: "60px"
+        gap: "60px",
+        renderMobileView: (window.innerWidth < 1200),
       }
     }
 
     render() {
         return(
-          <Box direction="column">
-            {/* First line */}
-            <Box direction="row" gap={this.state.gap}>
-              <Box height={this.state.width} width={this.state.width}>
-                <img src={Imperial} className="institutional-logo"/>
-              </Box>
+          <>
+            {/* Desktop: 4x2 */}
+            {!this.state.renderMobileView! && (
+              <Box direction="column">
+              {/* First line */}
+              <Box direction="row" gap={this.state.gap}>
+                <Box height={this.state.width} width={this.state.width}>
+                  <img src={Imperial} className="institutional-logo"/>
+                </Box>
 
-              <Box height={this.state.width} width={this.state.width}>
-                <img src={Oxford} className="institutional-logo"/>
-              </Box>
+                <Box height={this.state.width} width={this.state.width}>
+                  <img src={Oxford} className="institutional-logo"/>
+                </Box>
 
-              <Box height={this.state.width} width={this.state.width}>
-                <img src={EthLogo} className="institutional-logo"/>
+                <Box height={this.state.width} width={this.state.width}>
+                  <img src={EthLogo} className="institutional-logo"/>
+                </Box>
+                <Box height={this.state.width} width={this.state.width}>
+                  <img src={LseLogo} className="institutional-logo"/>
+                </Box>
               </Box>
-              <Box height={this.state.width} width={this.state.width}>
-                <img src={LseLogo} className="institutional-logo"/>
+              {/* Second line */}
+              <Box direction="row" gap={this.state.gap}>
+                <Box height={this.state.width} width={this.state.width}>
+                  <img src={CambridgeLogo} className="institutional-logo"/>
+                </Box>
+
+                <Box height={this.state.width} width={this.state.width}>
+                  <img src={Harvard} className="institutional-logo"/>
+                </Box>
+
+                <Box height={this.state.width} width={this.state.width}>
+                  <img src={Epfl} className="institutional-logo"/>
+                </Box>
+                
+                <Box height={this.state.width} width={this.state.width}>
+                  <img src={EcolePolytechnique} className="institutional-logo"/>
+                </Box>
+                
               </Box>
             </Box>
-            {/* Second line */}
-            <Box direction="row" gap={this.state.gap}>
-              <Box height={this.state.width} width={this.state.width}>
-                <img src={CambridgeLogo} className="institutional-logo"/>
-              </Box>
+            )}
 
-              <Box height={this.state.width} width={this.state.width}>
-                <img src={Harvard} className="institutional-logo"/>
-              </Box>
+          {/* Mobile: 2x4 */}
+          {this.state.renderMobileView && (
+              <Box direction="column" gap="small" alignSelf={this.state.renderMobileView ? "center" : "start"}>
+                {/* First line */}
+                <Box direction="row" gap={this.state.gap}>
+                  <Box height={this.state.width} width={this.state.width}>
+                    <img src={Imperial} className="institutional-logo"/>
+                  </Box>
 
-              <Box height={this.state.width} width={this.state.width}>
-                <img src={Epfl} className="institutional-logo"/>
+                  <Box height={this.state.width} width={this.state.width}>
+                    <img src={Oxford} className="institutional-logo"/>
+                  </Box>
+                </Box>
+
+                {/* SEcondline */}
+                <Box direction="row" gap={this.state.gap}>
+                  <Box height={this.state.width} width={this.state.width}>
+                    <img src={EthLogo} className="institutional-logo"/>
+                  </Box>
+                  <Box height={this.state.width} width={this.state.width}>
+                    <img src={LseLogo} className="institutional-logo"/>
+                  </Box>
+                </Box>
+
+                {/* Third line */}
+                <Box direction="row" gap={this.state.gap}>
+                  <Box height={this.state.width} width={this.state.width}>
+                    <img src={CambridgeLogo} className="institutional-logo"/>
+                  </Box>
+
+                  <Box height={this.state.width} width={this.state.width}>
+                    <img src={Harvard} className="institutional-logo"/>
+                  </Box>
+                </Box>
+
+                {/* Forth line */}
+                <Box direction="row" gap={this.state.gap}>
+                  <Box height={this.state.width} width={this.state.width}>
+                    <img src={Epfl} className="institutional-logo"/>
+                  </Box>
+                
+                  <Box height={this.state.width} width={this.state.width}>
+                    <img src={EcolePolytechnique} className="institutional-logo"/>
+                  </Box>
               </Box>
-              
-              <Box height={this.state.width} width={this.state.width}>
-                <img src={EcolePolytechnique} className="institutional-logo"/>
-              </Box>
-              
             </Box>
-          </Box>
+            )}
+
+
+
+          </>
         )
     }
 }

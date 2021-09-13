@@ -170,7 +170,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Text size="20px">
             <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking with speakers and audience in a 2D world!
           </Text>
-          <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "0px"}} height="50%">
+          <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>
           <InstitutionalUsers/>
@@ -184,7 +184,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     return (
       <>
         <Box direction="column" style={this.state.renderMobileView 
-            ? { width: "90%", alignSelf: "center" } 
+            ? { width: "90%", alignSelf: "center", marginTop: "20px" } 
             : { width: "90%", marginTop: "120px", alignSelf: "center"}
           }>
           <img src={moraStreamFullLogo} style={{maxWidth: "600px"}}/>
@@ -196,10 +196,10 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   callToActions() {
     return (
       <Box
-        direction="row"
+        direction={this.state.renderMobileView ? "column" : "row"}
         focusIndicator={false}
         margin={{
-          top: (window.innerWidth > 800) ? "40px" : "40px",
+          top: (window.innerWidth > 800) ? "40px" : "20px",
           bottom: (window.innerWidth > 800) ? "0px" : "0px"
         }}
         justify="start"
@@ -393,7 +393,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 <SearchAdvanced size="large"/>
               </Box> */}
               <Text size="24px" weight="bold" margin={{left: "5px"}} color="black">
-              <Text size="24px" weight="bold" color="color7">More collaborations</Text> implies <Text size="24px" weight="bold" color="color7">more speakers</Text>
+              <Text size="24px" weight="bold" color="color7">More networking</Text> implies <Text size="24px" weight="bold" color="color7">more future speakers</Text>
               </Text>
             </Box>
             <Text size="18px"> 
@@ -469,8 +469,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "1080px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "750px" : "100%"}
+          <Box width="80%" height={this.state.renderMobileView ? "1280px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "950px" : "100%"}
               style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
               {this.aboveTheFoldMain()}
             </Box>
