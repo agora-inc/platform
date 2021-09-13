@@ -359,13 +359,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         <img src={ThreeSidedMarketplaceGraph} height="40%" width="40%" style={{alignSelf: "center", marginBottom: "40px"}}/>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" justify="center">
-          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color6" direction="column" pad="medium">
+          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color4" direction="column" pad="medium">
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               {/* <Box width="70px">
                 <SearchAdvanced size="large"/>
               </Box> */}
               <Text size="24px" weight="bold" margin={{left: "5px"}} color="black">
-                More speakers are matched with communities
+                <Text size="24px" color="color7">More speakers</Text> are matched with communities
               </Text>
             </Box>
             <Text size="18px"> 
@@ -373,13 +373,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Text>
           </Box>
 
-          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color6" direction="column" pad="medium">
+          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color4" direction="column" pad="medium">
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               {/* <Box width="70px">
                 <SearchAdvanced size="large"/>
               </Box> */}
               <Text size="24px" weight="bold" margin={{left: "5px"}} color="black">
-                More seminars are organised
+              <Text size="24px" weight="bold" color="color7">More seminars</Text> are organised
               </Text>
             </Box>
             <Text size="18px"> 
@@ -387,13 +387,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Text>
           </Box>
 
-          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color6" direction="column" pad="medium">
+          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color4" direction="column" pad="medium">
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               {/* <Box width="70px">
                 <SearchAdvanced size="large"/>
               </Box> */}
               <Text size="24px" weight="bold" margin={{left: "5px"}} color="black">
-                More collaborations create more speakers
+              <Text size="24px" weight="bold" color="color7">More collaborations</Text> implies <Text size="24px" weight="bold" color="color7">more speakers</Text>
               </Text>
             </Box>
             <Text size="18px"> 
@@ -411,7 +411,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Do not miss out the hottest discussions of the moment!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Keep up with the hottest ideas of the moment!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}

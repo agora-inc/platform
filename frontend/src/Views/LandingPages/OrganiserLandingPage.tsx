@@ -5,7 +5,7 @@ import { Box, Text, Heading, Layer } from "grommet";
 import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../../Services/UserService";
-import { Search, Java, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
+import { Search, Java, Play, Share, Add, Video, Close, ShareOption, Rewind, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
 import FooterComponent from "../../Components/Homepage/FooterComponent";
 import "../../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
@@ -164,7 +164,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         <Box>
           <Text size="48px" weight="bold" color="color4" margin={this.state.renderMobileView ? {top: "40px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Everything seminar organiser need, all in one place
+            Simplifying the organiser's life, from start to finish
           </Text>
           <Text size="20px">
             "Organising seminars is super easy!"
@@ -264,21 +264,21 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-          Empowering the whole organiser pipeline, from start to finish
+            Everything seminar organiser need, all in one place
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "50px"}}>
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
-                <SearchAdvanced size="large"/>
+                <Attraction size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">
                 1. Create your hub
               </Text>
             </Box>
             <Text size="18px"> 
-              Do you want to share a new idea or paper with existing communities? 
+              There, your community and audience will see your future and past events. Future speakers will also be able to contact you to give a talk!
             </Text>
 
             <CreateChannelButton 
@@ -292,12 +292,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Workshop size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">2. Find a speaker
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">2. Find a speaker
               </Text>
             </Box>
 
@@ -310,33 +310,33 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
-                <Group size="large"/>
+                <Share size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">3. Publish your event
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">3. Publish seminars in a minute
               </Text>
             </Box>
             <Text size="18px">
-              With one click, emails are sent to your whole community. You can also set up automatic email reminders.
+                One click to automate the sending of advertisement or reminder emails. Another one to automatically accept verified academics. A last one to share your event on all your social media!
             </Text>
           </Box>
         </Box>
 
         {/* Second line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
-                <SearchAdvanced size="large"/>
+                <Video size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">
                 4. Stream
               </Text>
             </Box>
             <Text size="18px"> 
-                You can automatically accept registrations from verified academics. Else, manually accept registrations in a centralised panel. 
+                Decide whether you want to use <img src={ZoomLogo} height="14px"/> (or equivalent) or the <img src={moraStreamFullLogo} height="14px"/> streaming tech, allowing you to run online or hybrid seminars!
             </Text>
             </Box>
 
@@ -344,12 +344,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
-                <Workshop size="large"/>
+                <Group size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">5. Network with audience
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">5. Network with audience
               </Text>
             </Box>
 
@@ -362,12 +362,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
-          <Box width="350px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
+          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
-                <Group size="large"/>
+                <Play size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">6. Upload recording
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">6. Upload recording
               </Text>
             </Box>
             <Text size="18px">
@@ -385,7 +385,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Your life made easy, for free</Text>
         <Text>
-            Because we want to facilitate the broadcasting of new knowledge, most of the features are free and no plan is required to run seminars (you will however need to use your own <img src={ZoomLogo} height="12px"/> subscription or equivalent). The option is always there for those who want a premium experience!            
+            Because we want to facilitate the sharing of new knowledge, no plan is required to run seminars if you use your own <img src={ZoomLogo} height="12px"/> subscription or equivalent. The option is always there for those who want a premium experience!            
         </Text>
 
 
