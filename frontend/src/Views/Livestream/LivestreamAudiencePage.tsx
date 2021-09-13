@@ -295,24 +295,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 //
 //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   useEffect(()=>{
     unpublish_microphone()
   }, [isUnpublishFromRemote])
@@ -334,6 +316,38 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     }
   }
 
+  async function unpublish_camera_and_microphone(){
+    console.log('unp mic', localAudioTrack)
+    if(hasMicRequested) {
+      API.removeRequest(hasMicRequested)
+    }
+
+    setMicRequest('')
+    if(localAudioTrack || localVideoTrack) {
+      
+      localAudioTrack.stop()
+      localVideoTrack.stop()
+
+      await agoraClient.unpublish(localAudioTrack);
+      await agoraClient.unpublish(localVideoTrack);
+
+      setLocalAudioTrack(null)
+      setLocalVideoTrack(null)
+
+      await agoraClient.setClientRole(localUser.role);
+      
+      setCallControl({...callControl, mic: false, video: false})
+    }
+
+    // if(localVideoTrack) {
+    //   localVideoTrack.stop()
+
+    //   await agoraClient.unpublish(localVideoTrack);
+    //   setCallControl({ video: false})
+    //   setLocalVideoTrack(null)
+    // }
+  }
+
   async function publish_microphone(){
     await agoraClient.setClientRole('host');
     let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
@@ -341,6 +355,27 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     await agoraClient.publish(_localAudioTrack);
     setCallControl({...callControl, mic: true})
   }
+
+  async function publish_camera(){
+    await agoraClient.setClientRole('host');
+    let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+    setLocalVideoTrack(_localVideoTrack)
+    await agoraClient.publish([_localVideoTrack]);
+    setCallControl({video: true})
+  }
+
+  async function publish_camera_and_microphone(){
+    await agoraClient.setClientRole('host');
+    let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    setLocalAudioTrack(_localAudioTrack)
+    await agoraClient.publish(_localAudioTrack);
+    // setCallControl({...callControl, mic: true})
+    let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+    setLocalVideoTrack(_localVideoTrack)
+    await agoraClient.publish([_localVideoTrack]);
+    setCallControl({...callControl, mic: true, video: true})
+  }
+
   async function on_message(msg:any, senderId:string){
     let attr = await agoraMessageClient.getUserAttributes(senderId)
     setMessages((m) => {
