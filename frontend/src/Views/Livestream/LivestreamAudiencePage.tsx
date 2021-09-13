@@ -461,7 +461,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           areas={[
             { name: "player", start: [0, 0], end: [0, 0] },
             { name: "chat", start: [1, 0], end: [1, 0] },
-            { name: "description", start: [0, 1], end: [1, 1] },
+            // { name: "questions", start: [0, 1], end: [1, 1] },
           ]}
         >
         
