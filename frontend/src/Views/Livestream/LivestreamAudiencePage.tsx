@@ -337,7 +337,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
       await agoraClient.setClientRole(localUser.role);
       
-      setCallControl({...callControl, mic: false, video: false})
+      setCallControl({...callControl, mic: false})
+      setCallControl({...callControl, video: false})
     }
 
     // if(localVideoTrack) {
