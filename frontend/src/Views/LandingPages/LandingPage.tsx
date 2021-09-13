@@ -279,7 +279,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   <SearchAdvanced size="large"/>
                 </Box>
                 <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  1. Register,
+                  Register,
                 </Text>
               </Box>
               <Text size="18px"> 
@@ -307,7 +307,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   <Workshop size="large"/>
                 </Box>
                 <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  2. Attend,
+                  Attend,
                 </Text>
               </Box>
               <Text size="18px">
@@ -329,7 +329,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 <Box width="70px">
                   <Group size="large"/>
                 </Box>
-                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">3. Mingle!
+                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                  Mingle!
                 </Text>
               </Box>
               <Text size="18px">
