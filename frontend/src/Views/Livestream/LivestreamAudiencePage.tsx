@@ -99,7 +99,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   
   const [talkId, setTalkId] = useState('')
   const [callControl, setCallControl] = useState({
-    mic: false
+    mic: false,
+    video: false
   } as Control)
 
 
@@ -324,7 +325,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
     setMicRequest('')
     if(localAudioTrack || localVideoTrack) {
-      
+
       localAudioTrack.stop()
       localVideoTrack.stop()
 
