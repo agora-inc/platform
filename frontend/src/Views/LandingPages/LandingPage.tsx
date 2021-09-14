@@ -272,7 +272,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "350px" : "450px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
@@ -300,7 +300,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <img src={WavyArrow} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "350px" : "450px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
@@ -323,7 +323,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <img src={WavyArrow} style={{alignSelf: "center"}} width="120px"/>
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "350px" : "450px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
