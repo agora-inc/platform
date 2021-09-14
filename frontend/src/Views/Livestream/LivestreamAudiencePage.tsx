@@ -23,6 +23,11 @@ import { ChannelService } from "../../Services/ChannelService";
 import PDFViewer from "../../Components/PDFViewer";
 
 
+import AudienceHelpButton from "../../Components/Streaming/AudienceHelpButton";
+
+
+import BeforeStartImage from "../../assets/streaming/waiting_start_image.jpeg"
+
 interface Props {
   // location: { pathname: string; state: { video: Video } };
   // match: {params: {talk_id: string}};
@@ -157,12 +162,16 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   }
 
+  async function fetchTalkDetails() {
+    const talkId = props.talkId.toString()
+    let talk = await get_talk_by_id(talkId)
+    setTalkDetail(talk)
+  }
 
   async function setup() {
-    console.log(props)
-    const talkId = props.talkId
-    let talk = await get_talk_by_id(talkId.toString())
-    setTalkDetail(talk)
+    // Fetch talk details
+
+    fetchTalkDetails()
     // Setting client as Audience
     agoraClient.setClientRole(localUser.role);
     agoraScreenShareClient.setClientRole(localUser.role);
@@ -413,9 +422,13 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         return
       }
       let data = doc.data() as any
+      // Start chat + video
+      if(data.status == "NOT_STARTED" || data.status == "STARTED"){
+        setup()
+      }
+      
       if(data.status === 'STARTED') {
         setTalkStatus(data.status)
-        setup()
       }
       if(data.status === 'ENDED') {
         setTalkStatus(data.status)
@@ -554,16 +567,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       pad="small"
       focusIndicator={false}
       height="50px"
-      background="color1"
-      hoverIndicator="#BAD6DB"
+      background={talkStatus == "NOT_STARTED" ? "grey" : "color1"}
+      hoverIndicator={talkStatus == "NOT_STARTED" ? "grey" : "#BAD6DB"}
       style={{borderRadius:'6px'}}
       onClick={()=>{
-        if (callControl.slideShare){
-          slideShare(false)
-        } else {
-          slideShare(true)
+        if (talkStatus == "STARTED"){
+          if (callControl.slideShare){
+            slideShare(false)
+          } else {
+            slideShare(true)
+          }
         }
-    
       }}
     >
       <Text weight="bold" color="white" size="14px" textAlign="center">
@@ -581,15 +595,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       pad="small"
       focusIndicator={false}
       height="50px"
-      background="color1"
-      hoverIndicator="#BAD6DB"
+      background={talkStatus == "NOT_STARTED" ? "grey" : "color1"}
+      hoverIndicator={talkStatus == "NOT_STARTED" ? "grey" : "#BAD6DB"}
       style={{borderRadius:'6px'}}
       onClick={()=>{
-        if (hasMicRequested || !callControl.mic){
-          API.requestMic(talkId, localUser.uid, storedName)
-        }
-        else {
-          unpublish_microphone()
+        if (talkStatus == "STARTED"){
+          if (hasMicRequested || !callControl.mic){
+            API.requestMic(talkId, localUser.uid, storedName)
+          }
+          else {
+            unpublish_microphone()
+          }
         }
       }}
     >
@@ -619,7 +635,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
         ))}
         </Box>
-        <TextInput onKeyUp={send_message} placeholder='Aa' />
+        <TextInput onKeyUp={send_message} placeholder="'There are no dumb questions.'" />
         {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
   
       </>
@@ -740,8 +756,9 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           {(role != "admin" && role != "speaker") && (
             <>
               {requestMicButton()}
-              {fullscreenButton()}
               {viewChangeButton()}
+              {fullscreenButton()}
+              <AudienceHelpButton/>
             </>
             ) 
           }
@@ -919,6 +936,10 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
 
       <Box style={{position: "absolute", left: "20px", top: "5px"}} margin={{bottom: "50px", top: "80px"}} width="100%">
+        {/* Background image */}
+        <img style={{ height: "100%", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-streaming"
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+        />
       {isTimeover && (
         <Box 
           margin={{ top: "xlarge", bottom: "xsmall" }} 
@@ -949,13 +970,23 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         <Box gridArea="player" justify="between" gap="small">
           <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable || callControl.slideShare || isSlideVisible?'screen-share':''}`}
             style={{height: '100%', position: 'relative'}}>
-            <Box className='camera-video'>
-              {remoteVideoTrack.map((user)=>(
-                //@ts-ignore
-                <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
-              ))}
-              <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
-            </Box>
+            {/* If not started, waiting screen */}
+            {talkStatus == "NOT_STARTED" && (
+              <Box background="black" alignContent="center">
+                <img src={BeforeStartImage} style={{height:"100%", width: "80%", maxWidth: "100%", maxHeight: "100%", alignSelf: "center"}}/>
+              </Box>
+            )}
+
+            {/* If started, stream */}
+            {talkStatus == "STARTED" && (
+              <Box className='camera-video'>
+                {remoteVideoTrack.map((user)=>(
+                  //@ts-ignore
+                  <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
+                ))}
+                <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
+              </Box>
+            )}
 
             { isScreenAvailable && 
                 <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />

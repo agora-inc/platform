@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Box, Layer, Button, TextInput, Text } from "grommet";
+import { Help} from "grommet-icons";
+
 import { Overlay } from "../Core/Overlay";
 import ReactTooltip from "react-tooltip";
 import { StatusInfo } from "grommet-icons";
@@ -52,13 +54,13 @@ export default class SpeakerHelpButton extends Component<Props, State> {
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
           height="50px"
-          width={this.props.width ? this.props.width : "15vw"}
+          width={this.props.width ? this.props.width : "50px"}
           justify="center"
           align="center"
           focusIndicator={false}
           hoverIndicator="#BAD6DB"
         >
-          <Text size="14px" weight="bold">Help</Text>
+          <Help size="medium"/>
         </Box>
         <Overlay
           width={400}
