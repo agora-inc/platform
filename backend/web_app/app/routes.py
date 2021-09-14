@@ -2010,6 +2010,27 @@ def createAgoraGetTalkIds():
         "channelName": channel_name
     })
 
+@app.route('/rsscraping/allTalks', methods=["POST", "OPTIONS"])
+def publishAllTalks():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    talks = RSScraper.create_talks(
+        params['url'], params['channel_id'], params['channel_name'], params['idx'], params['topic_1_id'], 
+        params['audience_level'], params['visibility'], params['auto_accept_group']
+    )
+
+    return jsonify(talks)
+
+
+"""
+@app.route('/rsscraping/valid', methods=["GET"])
+def getValidSeriesAndNtalks():
+    url = request.args.get("url")
+    return jsonify(RSScraper.get_valid_series_and_ntalks(url))
 @app.route('/rsscraping/scheduleTalk', methods=["POST", "OPTIONS"])
 def scrapeScheduleTalk():
     if request.method == "OPTIONS":
@@ -2027,14 +2048,6 @@ def scrapeScheduleTalk():
         file.write(str(is_valid))
 
     return jsonify(is_valid)
-
-
-"""
-@app.route('/rsscraping/valid', methods=["GET"])
-def getValidSeriesAndNtalks():
-    url = request.args.get("url")
-    return jsonify(RSScraper.get_valid_series_and_ntalks(url))
-
 @app.route('/rsscraping/allTalks', methods=["POST", "OPTIONS"])
 def publishChannelAllTalks():
     if request.method == "OPTIONS":

@@ -144,29 +144,24 @@ export default class TransportSeminars extends Component<Props, State> {
           this.setState({ channelId: res.channelId })
           this.setState({ channelName: res.channelName })
           this.toggleProgressOverlay()
-          this.scheduleAllTalks(res.allTalkIds, res.channelId, res.channelName)
+          RSScraping.scheduleAllTalks(
+            this.state.url, 
+            res.channelId, 
+            res.channelName, 
+            res.allTalkIds,
+            this.state.topics[0].id,
+            this.state.audienceLevel, 
+            this.state.onRegistration ? "Members only" : "Everybody",
+            this.state.autoAcceptGroup,
+            (is_valid: number) => {
+              this.setState({nTalksParsed: this.state.nTalksParsed + is_valid})
+            }
+          )
         }
       )
     }
   }
 
-  scheduleAllTalks = (allTalkIds: number[], channelId: number, channelName: string) => {
-    for (let id of allTalkIds) {
-      RSScraping.scrapeScheduleTalk(
-        this.state.url, 
-        id, 
-        channelId, 
-        channelName, 
-        this.state.topics[0].id,
-        this.state.audienceLevel, 
-        this.state.onRegistration ? "Members only" : "Everybody",
-        this.state.autoAcceptGroup,
-        (is_valid: number) => {
-          this.setState({nTalksParsed: this.state.nTalksParsed + is_valid})
-        }
-      )
-    }
-  }
 
   /*
   onSubmitClick = () => {
@@ -405,19 +400,13 @@ export default class TransportSeminars extends Component<Props, State> {
             </Box>
             {this.state.isValidSeries === 1 && this.state.migrating && (
               <Box margin={{top: "30px", left: "30px", bottom: "90px"}} > 
-                <Box direction="row" gap="30px">
-                  <Text size="16px">
-                    Migration of your talks...
-                  </Text>
-                  <Text size="16px" weight="bold">
-                    {this.state.nTalksParsed}/{this.state.allTalkIds.length} completed
-                  </Text>
-                </Box>
-                
+                <Text size="16px" margin={{bottom: "150px"}}>
+                  Migration of your talks...
+                </Text>
                 <Text size="14px" alignSelf="end" margin={{right: "30px"}} style={{fontStyle: "italic"}} >
                   Do not close this window...
                 </Text>
-              </Box> 
+              </Box>
             )}
             {this.state.isValidSeries === 1 && !this.state.migrating && this.state.channelId > 0 && (
               <Box margin={{top: "30px", left: "30px"}}>

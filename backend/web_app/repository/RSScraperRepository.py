@@ -58,48 +58,68 @@ class RSScraperRepository:
 			if not channel:
 				channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id)
 
-			# Get talk id
-			ids = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
-			return 1, ids, channel['id'], name, 
+			# Get talk index
+			idx = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
+			return 1, idx, channel['id'], name
 
-	def scrape_and_schedule_talk(self, url_agora, talk_id, channel_id, channel_name, topic_1_id, audience_level, visibility, auto_accept_group):
-		try:
-			self._login()
-			url_talks = url_agora.replace("/seminar/", "/talk/")
-			self.driver.get(url_talks + f"/{talk_id}")
-			talk = {}
-			lst_link = self.driver.find_elements_by_xpath('//a')
+	def parse_talks(self, url_agora, idx):
+		self._login()
 
-			# Title
-			talk['title'] = self.driver.find_element_by_xpath("//h1").text
+		# Talks
+		url_talks = url_agora.replace("/seminar/", "/talk/")
+		talks = []
+		# ids = ids[:10]
+		for i in idx:
+			try:
+				self.driver.get(url_talks + f"/{i}")
+				talk = {}
+				lst_link = self.driver.find_elements_by_xpath('//a')
 
-			# Speaker 
-			talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
-			talk['speaker_url'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
+				# Title
+				talk['title'] = self.driver.find_element_by_xpath("//h1").text
 
-			# Time
-			str_time = self.driver.find_element_by_xpath('//b').text
-			talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
+				# Speaker 
+				talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
+				talk['speaker_url'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
 
-			# Description
-			e = self.driver.find_element_by_class_name('talk-details-container')
-			lst = e.text.split('\n')
-			idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
-			talk['description'] = '\n'.join(lst[:idx]).replace('Abstract: ', '')
+				# Time
+				str_time = self.driver.find_element_by_xpath('//b').text
+				talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
 
-			# Link
-			talk['link'] = RSScraperRepository._get_href(lst_link, "available")
+				# Description
+				e = self.driver.find_element_by_class_name('talk-details-container')
+				lst = e.text.split('\n')
+				idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
+				talk['description'] = '\n'.join(lst[:idx]).replace('Abstract: ', '')
 
-			# Slides and video
-			talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
-			talk['video'] = RSScraperRepository._get_href(lst_link, "video")
+				# Link
+				talk['link'] = RSScraperRepository._get_href(lst_link, "available")
 
-			# Create talk
-			self.talkRepo.scheduleTalk(
+				# Slides and video
+				talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
+				talk['video'] = RSScraperRepository._get_href(lst_link, "video")
+
+				# Save
+				talks.append(talk)
+
+			except:
+				pass
+
+		self.driver.quit()
+
+		return talks
+
+	def create_talks(self, url, channel_id, channel_name, idx, topic_1_id, audience_level, visibility, auto_accept_group):
+		# Get info
+		talks = self.parse_talks(url, idx)
+
+		# Create talks
+		for talk in talks:
+			talk_created = self.talkRepo.scheduleTalk(
 				channelId=channel_id, 
 				channelName=channel_name, 
 				talkName=talk['title'], 
-				startDate=str(talk['start_time']),
+				startDate=str(talk['start_time']), 
 				endDate=str(talk['end_time']), 
 				talkDescription=talk['description'], 
 				talkLink=talk['link'], 
@@ -123,12 +143,10 @@ class RSScraperRepository:
 				email_on_creation=False,
 			)
 
-			self.driver.quit()
-
-			return 1
-
-		except:
-			return 0
+			with open(f"/home/cloud-user/test/talk.txt", "w") as file:
+				file.write(str(talk_created))
+				
+		return talks
 
 
 	@staticmethod
@@ -197,7 +215,75 @@ if __name__ == "__main__":
 
 
 
+	"""
+	def scrape_and_schedule_talk(self, url_agora, talk_id, channel_id, channel_name, topic_1_id, audience_level, visibility, auto_accept_group):
+		try:
+			# self._login()
+			url_talks = url_agora.replace("/seminar/", "/talk/")
+			self.driver.get(url_talks + f"/{talk_id}")
+			talk = {}
+			lst_link = self.driver.find_elements_by_xpath('//a')
 
+			# Title
+			talk['title'] = self.driver.find_element_by_xpath("//h1").text
+
+			# Speaker 
+			talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
+			talk['speaker_url'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
+
+			# Time
+			str_time = self.driver.find_element_by_xpath('//b').text
+			talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
+
+			# Description
+			e = self.driver.find_element_by_class_name('talk-details-container')
+			lst = e.text.split('\n')
+			idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
+			talk['description'] = '\n'.join(lst[:idx]).replace('Abstract: ', '')
+
+			# Link
+			talk['link'] = RSScraperRepository._get_href(lst_link, "available")
+
+			# Slides and video
+			talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
+			talk['video'] = RSScraperRepository._get_href(lst_link, "video")
+
+			# Create talk
+			self.talkRepo.scheduleTalk(
+				channelId=channel_id, 
+				channelName=channel_name, 
+				talkName=talk['title'], 
+				startDate=str(talk['start_time']),
+				endDate=str(talk['end_time']), 
+				talkDescription=talk['description'], 
+				talkLink=talk['link'], 
+				talkTags=[], 
+				showLinkOffset=15, 
+				visibility=visibility, 
+				cardVisibility="Everybody", 
+				topic_1_id=topic_1_id, 
+				topic_2_id=None, 
+				topic_3_id=None,
+				talk_speaker=talk['speaker'], 
+				talk_speaker_url=talk['speaker_url'], 
+				published=1, 
+				audience_level=audience_level, 
+				auto_accept_group=auto_accept_group, 
+				auto_accept_custom_institutions=False, 
+				customInstitutionsIds=[], 
+				reminder1=None, 
+				reminder2=None, 
+				reminderEmailGroup=[],
+				email_on_creation=False,
+			)
+
+			self.driver.quit()
+
+			return 1
+
+		except:
+			return 0
+	"""
 
 
 
