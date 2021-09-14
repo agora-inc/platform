@@ -737,7 +737,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
               {viewChangeButton()}
             </>
           )}   */}
-          {(role != "admin" && role != "speaker") && (
+          {(
             <>
               {requestMicButton()}
               {fullscreenButton()}

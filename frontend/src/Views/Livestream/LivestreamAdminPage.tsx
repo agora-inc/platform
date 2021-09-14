@@ -677,8 +677,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             // gap="10px"
             align="center"
           >
-          {(role == "admin") && (
-            <>
+          {(<>
               {startTalkButton()}
               {stopTalkButton()}
               <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
@@ -721,8 +720,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         
         {/* SECONDARY BUTTONS */}
         <Box direction="row">
-            {(role == "admin") && (
-            <>
+            {(<>
               {micButton()}
               {webcamButton()}
               {screenShareButton()}
