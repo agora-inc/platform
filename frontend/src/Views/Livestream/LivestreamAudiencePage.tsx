@@ -635,7 +635,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
         ))}
         </Box>
-        <TextInput onKeyUp={send_message} placeholder="'There are no dumb questions.'" />
+        <TextInput onKeyUp={send_message} placeholder="Aa" />
         {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
   
       </>
