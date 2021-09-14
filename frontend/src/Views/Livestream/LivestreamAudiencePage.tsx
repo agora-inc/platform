@@ -739,7 +739,12 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           )}   */}
           {(
             <>
-              {requestMicButton()}
+              {<Box className='call-control' direction='row'>
+                  {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
+                    <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
+                    <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
+                  }
+              </Box>}
               {fullscreenButton()}
               {viewChangeButton()}
               <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />
@@ -776,12 +781,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
             {(role !== "admin" && role != "speaker") && (
             <>
-             <Box className='call-control' direction='row'>
-                  {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
-                    <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
-                    <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
-                  }
-                </Box>
+
             </>
             )}
         </Box>
