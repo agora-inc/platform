@@ -573,32 +573,32 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     )
   }
 
-  function requestMicButton () {
-    return (
-      <Box
-      justify="center"
-      align="center"
-      pad="small"
-      focusIndicator={false}
-      height="50px"
-      background="color1"
-      hoverIndicator="#BAD6DB"
-      style={{borderRadius:'6px'}}
-      onClick={()=>{
-        if (hasMicRequested || !callControl.mic){
-          API.requestMic(talkId, localUser.uid, storedName)
-        }
-        else {
-          unpublish_microphone()
-        }
-      }}
-    >
-      <Text weight="bold" color="white" size="14px" textAlign="center">
-        {(hasMicRequested || !callControl.mic) ? "Request microphone" : "Give up microphone"}
-      </Text>
-    </Box>
-    )
-  }
+  // function requestMicButton () {
+  //   return (
+  //     <Box
+  //     justify="center"
+  //     align="center"
+  //     pad="small"
+  //     focusIndicator={false}
+  //     height="50px"
+  //     background="color1"
+  //     hoverIndicator="#BAD6DB"
+  //     style={{borderRadius:'6px'}}
+  //     onClick={()=>{
+  //       if (hasMicRequested || !callControl.mic){
+  //         API.requestMic(talkId, localUser.uid, storedName)
+  //       }
+  //       else {
+  //         unpublish_microphone()
+  //       }
+  //     }}
+  //   >
+  //     <Text weight="bold" color="white" size="14px" textAlign="center">
+  //       {(hasMicRequested || !callControl.mic) ? "Request microphone" : "Give up microphone"}
+  //     </Text>
+  //   </Box>
+  //   )
+  // }
 
   function chatBox() {
     return (
@@ -776,6 +776,12 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
             {(role !== "admin" && role != "speaker") && (
             <>
+             <Box className='call-control' direction='row'>
+                  {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
+                    <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
+                    <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
+                  }
+                </Box>
             </>
             )}
         </Box>
