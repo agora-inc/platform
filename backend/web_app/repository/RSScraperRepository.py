@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from datetime import datetime
+import time
 
 
 class RSScraperRepository:
@@ -39,6 +40,174 @@ class RSScraperRepository:
 		except NoSuchElementException:
 			return False
 
+	def create_agora_and_get_talk_ids(self, url_agora, user_id, topic_1_id):
+		if "https://researchseminars.org/seminar/" not in url_agora:
+			return 0, []
+
+		self.driver.get(url_agora)
+		if self.driver.find_element_by_id("title").text == 'Page not found':
+			return 0, []
+		else:
+			# Create channel
+			name = self.driver.find_element_by_xpath("//h1").text
+			description = self.driver.find_elements_by_xpath("//p")[2:]
+			description = [e.text for e in description if e.text != '']
+			description = '\n'.join(description)
+			
+			channel = self.channelRepo.getChannelByName(name)
+			if not channel:
+				channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id)
+
+			# Get talk id
+			ids = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
+			return 1, ids, channel['id'], name, 
+
+	def scrape_and_schedule_talk(self, url_agora, talk_id, channel_id, channel_name, topic_1_id, audience_level, visibility, auto_accept_group):
+		try:
+			self._login()
+			url_talks = url_agora.replace("/seminar/", "/talk/")
+			self.driver.get(url_talks + f"/{talk_id}")
+			talk = {}
+			lst_link = self.driver.find_elements_by_xpath('//a')
+
+			# Title
+			talk['title'] = self.driver.find_element_by_xpath("//h1").text
+
+			# Speaker 
+			talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
+			talk['speaker_url'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
+
+			# Time
+			str_time = self.driver.find_element_by_xpath('//b').text
+			talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
+
+			# Description
+			e = self.driver.find_element_by_class_name('talk-details-container')
+			lst = e.text.split('\n')
+			idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
+			talk['description'] = '\n'.join(lst[:idx]).replace('Abstract: ', '')
+
+			# Link
+			talk['link'] = RSScraperRepository._get_href(lst_link, "available")
+
+			# Slides and video
+			talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
+			talk['video'] = RSScraperRepository._get_href(lst_link, "video")
+
+			# Create talk
+			self.talkRepo.scheduleTalk(
+				channelId=channel_id, 
+				channelName=channel_name, 
+				talkName=talk['title'], 
+				startDate=str(talk['start_time']),
+				endDate=str(talk['end_time']), 
+				talkDescription=talk['description'], 
+				talkLink=talk['link'], 
+				talkTags=[], 
+				showLinkOffset=15, 
+				visibility=visibility, 
+				cardVisibility="Everybody", 
+				topic_1_id=topic_1_id, 
+				topic_2_id=None, 
+				topic_3_id=None,
+				talk_speaker=talk['speaker'], 
+				talk_speaker_url=talk['speaker_url'], 
+				published=1, 
+				audience_level=audience_level, 
+				auto_accept_group=auto_accept_group, 
+				auto_accept_custom_institutions=False, 
+				customInstitutionsIds=[], 
+				reminder1=None, 
+				reminder2=None, 
+				reminderEmailGroup=[],
+				email_on_creation=False,
+			)
+
+			self.driver.quit()
+
+			return 1
+
+		except:
+			return 0
+
+
+	@staticmethod
+	def _get_all_talks_id(lst):
+		ids = []
+		for e in lst:
+			suffix = e.get_attribute("knowl")
+			title = e.get_attribute("title")
+			if suffix and title and suffix[:5] == "talk/":
+				ids.append(int(suffix.split('/')[-1]))
+
+		return ids
+
+	@staticmethod
+	def _get_href(lst_link, txt, substring=False):
+		if substring:
+			elements = [e for e in lst_link if e.text in txt and e.text != '']
+		else:
+			elements = [e for e in lst_link if e.text == txt]
+		
+		if len(elements) > 0:
+			return elements[0].get_attribute('href')
+		else:
+			return ""
+
+	@staticmethod
+	def _parse_time(str_t):
+		str_t = str_t.split(" (")[0]
+		date, time = str_t.split(', ')
+		start, end = time.split('-')
+		
+		if "-" in date:
+			start_time = datetime.strptime(
+				" ".join([date, start]), 
+				"%d-%b-%Y %H:%M"
+			)
+			end_time = datetime.strptime(
+				" ".join([date, end]),
+				"%d-%b-%Y %H:%M"
+			)
+		else:
+			current_year = str(datetime.now().year)
+			start_time = datetime.strptime(
+				" ".join([current_year, date, start]), 
+				"%Y %a %b %d %H:%M"
+			)
+			end_time = datetime.strptime(
+				" ".join([current_year, date, end]), 
+				"%Y %a %b %d %H:%M"
+			)
+			
+		return start_time, end_time
+
+	
+# TESTING
+if __name__ == "__main__":
+	scraper = RSScraperRepository()
+	url_agora = "https://researchseminars.org/seminar/cogentseminarkkkkk"
+	print(scraper.get_valid_series_and_ntalks(url_agora))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 	def get_valid_series_and_ntalks(self, url_agora):
 		if "https://researchseminars.org/seminar/" not in url_agora:
 			return 0, 0
@@ -149,85 +318,7 @@ class RSScraperRepository:
 				file.write(str(talk_created))
 				
 		return channel['id'], info['name']
-
-
-	@staticmethod
-	def _get_all_talks_id(lst):
-		ids = []
-		for e in lst:
-			suffix = e.get_attribute("knowl")
-			title = e.get_attribute("title")
-			if suffix and title and suffix[:5] == "talk/":
-				ids.append(suffix.split('/')[-1])
-
-		return ids
-
-	@staticmethod
-	def _get_href(lst_link, txt, substring=False):
-		if substring:
-			elements = [e for e in lst_link if e.text in txt and e.text != '']
-		else:
-			elements = [e for e in lst_link if e.text == txt]
-		
-		if len(elements) > 0:
-			return elements[0].get_attribute('href')
-		else:
-			return ""
-
-	@staticmethod
-	def _parse_time(str_t):
-		str_t = str_t.split(" (")[0]
-		date, time = str_t.split(', ')
-		start, end = time.split('-')
-		
-		if "-" in date:
-			start_time = datetime.strptime(
-				" ".join([date, start]), 
-				"%d-%b-%Y %H:%M"
-			)
-			end_time = datetime.strptime(
-				" ".join([date, end]),
-				"%d-%b-%Y %H:%M"
-			)
-		else:
-			current_year = str(datetime.now().year)
-			start_time = datetime.strptime(
-				" ".join([current_year, date, start]), 
-				"%Y %a %b %d %H:%M"
-			)
-			end_time = datetime.strptime(
-				" ".join([current_year, date, end]), 
-				"%Y %a %b %d %H:%M"
-			)
-			
-		return start_time, end_time
-
-	
-# TESTING
-if __name__ == "__main__":
-	scraper = RSScraperRepository()
-	url_agora = "https://researchseminars.org/seminar/cogentseminarkkkkk"
-	print(scraper.get_valid_series_and_ntalks(url_agora))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"""
 
 
 

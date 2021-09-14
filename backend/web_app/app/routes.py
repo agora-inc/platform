@@ -1992,15 +1992,55 @@ def stripe_webhook():
 # --------------------------------------------
 # Research seminars scraping
 # --------------------------------------------
+@app.route('/rsscraping/createAgora', methods=["POST", "OPTIONS"])
+def createAgoraGetTalkIds():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    is_valid, talk_ids, channel_id, channel_name = RSScraper.create_agora_and_get_talk_ids(
+        params['url'], params['user_id'], params['topic_1_id']
+    )
+    return jsonify({
+        "isValidSeries": is_valid, 
+        "allTalkIds": talk_ids, 
+        "channelId": channel_id, 
+        "channelName": channel_name
+    })
+
+@app.route('/rsscraping/scheduleTalk', methods=["POST", "OPTIONS"])
+def scrapeScheduleTalk():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    is_valid = RSScraper.scrape_and_schedule_talk(
+        params['url'], params['talk_id'], params['channel_id'], params['channel_name'], params['topic_1_id'], 
+        params['audience_level'], params['visibility'], params['auto_accept_group']
+    )
+
+    with open("/home/cloud-user/test/route.txt", "w") as file:
+        file.write(str(is_valid))
+
+    return jsonify(is_valid)
+
+
+"""
 @app.route('/rsscraping/valid', methods=["GET"])
 def getValidSeriesAndNtalks():
     url = request.args.get("url")
     return jsonify(RSScraper.get_valid_series_and_ntalks(url))
 
-@app.route('/rsscraping/allTalks', methods=["POST"])
+@app.route('/rsscraping/allTalks', methods=["POST", "OPTIONS"])
 def publishChannelAllTalks():
     if request.method == "OPTIONS":
         return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
     channel_id, channel_name = RSScraper.create_agora_and_talks(
@@ -2009,4 +2049,5 @@ def publishChannelAllTalks():
     )
     
     return jsonify({"channelId": channel_id, "channelName": channel_name})
+"""
 

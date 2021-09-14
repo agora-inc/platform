@@ -30,10 +30,11 @@ interface State {
   autoAcceptCustomInstitutions: boolean, 
   showProgressOverlay: boolean;
   isValidSeries: number; // 1 is valid, 0 otherwise
-  numberTalksSeries: number;
+  allTalkIds: number[];
   migrating: boolean;
   channelId: number;
   channelName: string;
+  nTalksParsed: number;
 }
 
 export default class TransportSeminars extends Component<Props, State> {
@@ -51,10 +52,11 @@ export default class TransportSeminars extends Component<Props, State> {
       autoAcceptCustomInstitutions: false,
       showProgressOverlay: false,
       isValidSeries: 0,
-      numberTalksSeries: 0,
+      allTalkIds: [],
       migrating: true,
       channelId: -1,
-      channelName: ""
+      channelName: "",
+      nTalksParsed: 0, 
     };
 	}
 	
@@ -114,13 +116,13 @@ export default class TransportSeminars extends Component<Props, State> {
 
   textTitle = () => {
     if (this.state.isValidSeries) {
-      if (this.state.migrating && this.state.channelId < 0) {
-        return "Found!";
+      if (this.state.migrating && this.state.channelId > 0) {
+        return "Agora created!";
       }
       if (!this.state.migrating && this.state.channelId > 0) {
         return "Success!";
       }
-      if (!this.state.migrating && this.state.channelId <= 0) {
+      if (this.state.migrating && this.state.channelId <= 0) {
         return "Error...";
       }
 
@@ -128,7 +130,45 @@ export default class TransportSeminars extends Component<Props, State> {
       return "Not found..."
     }
   }
+  
+  onSubmitClick = () => {
+    // Try if the series indeed exists and create agora
+    if (this.props.user) {
+      RSScraping.createAgoraGetTalkIds(
+        this.state.url,
+        this.props.user.id,
+        this.state.topics[0].id,
+        (res: {isValidSeries: number, allTalkIds: number[], channelId: number, channelName: string}) => {
+          this.setState({ isValidSeries: res.isValidSeries })
+          this.setState({ allTalkIds: res.allTalkIds })
+          this.setState({ channelId: res.channelId })
+          this.setState({ channelName: res.channelName })
+          this.toggleProgressOverlay()
+          this.scheduleAllTalks(res.allTalkIds, res.channelId, res.channelName)
+        }
+      )
+    }
+  }
 
+  scheduleAllTalks = (allTalkIds: number[], channelId: number, channelName: string) => {
+    for (let id of allTalkIds) {
+      RSScraping.scrapeScheduleTalk(
+        this.state.url, 
+        id, 
+        channelId, 
+        channelName, 
+        this.state.topics[0].id,
+        this.state.audienceLevel, 
+        this.state.onRegistration ? "Members only" : "Everybody",
+        this.state.autoAcceptGroup,
+        (is_valid: number) => {
+          this.setState({nTalksParsed: this.state.nTalksParsed + is_valid})
+        }
+      )
+    }
+  }
+
+  /*
   onSubmitClick = () => {
     // Try if the series indeed exists
     RSScraping.getValidSeriesAndNtalks(
@@ -155,12 +195,13 @@ export default class TransportSeminars extends Component<Props, State> {
         }
       }
     )
-
-    // If yes, start parsing everything
-
-  }
+  } */
 
   render() {
+    console.log("isValidSeries", this.state.isValidSeries)
+    console.log("allTalkIds", this.state.allTalkIds)
+    console.log("channelId", this.state.channelId)
+    console.log("channelName", this.state.channelName)
     var auto_accept = "'Automatically accepting a registration' means that the person registering " + 
     "to your event will automatically receive the details by email if they belong to one of the group you selected below";
     return (
@@ -327,7 +368,7 @@ export default class TransportSeminars extends Component<Props, State> {
       {this.state.showProgressOverlay && (
         <Layer
           onEsc={this.toggleProgressOverlay}
-          onClickOutside={this.toggleProgressOverlay}
+          // onClickOutside={this.toggleProgressOverlay}
           modal
           responsive
           animation="fadeIn"
@@ -363,13 +404,16 @@ export default class TransportSeminars extends Component<Props, State> {
               </Box>
             </Box>
             {this.state.isValidSeries === 1 && this.state.migrating && (
-              <Box margin={{top: "30px", left: "30px"}} > 
-                <Text size="16px" margin={{bottom: "15px"}}>
-                  Migration starting... This can take up to 5 minutes.
-                </Text>
-                <Text size="16px" weight="bold" margin={{bottom: "70px"}}>
-                  Number of talks to migrate: {this.state.numberTalksSeries}
-                </Text>
+              <Box margin={{top: "30px", left: "30px", bottom: "90px"}} > 
+                <Box direction="row" gap="30px">
+                  <Text size="16px">
+                    Migration of your talks...
+                  </Text>
+                  <Text size="16px" weight="bold">
+                    {this.state.nTalksParsed}/{this.state.allTalkIds.length} completed
+                  </Text>
+                </Box>
+                
                 <Text size="14px" alignSelf="end" margin={{right: "30px"}} style={{fontStyle: "italic"}} >
                   Do not close this window...
                 </Text>
@@ -424,16 +468,17 @@ export default class TransportSeminars extends Component<Props, State> {
                 
               </Box> 
             )}
-            {this.state.isValidSeries === 1 && !this.state.migrating && this.state.channelId <= 0 && (
+            {/*this.state.isValidSeries === 1 && !this.state.migrating && this.state.channelId <= 0 && (
               <Box margin={{top: "30px", left: "30px"}}>
                 <Box direction="row" margin={{bottom: "20px"}} align="center" gap="10px">
                   <Close color="red" /> 
                   <Text size="16px"> 
-                    There was an error in the processing of your seminars. Please try again or contact us.
+                    There was an error in the processing of your seminars. <br/>
+                    Please try again or contact us.
                   </Text> 
                 </Box>
               </Box>
-            )}
+            )*/}
             {this.state.isValidSeries !== 1 && (
               <Box margin={{top: "30px", left: "30px"}}>
                 <Box direction="row" margin={{bottom: "20px"}} align="center" gap="10px">
