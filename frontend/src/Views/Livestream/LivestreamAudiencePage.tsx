@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { Box, Grid, Text, Layer, Button, TextInput } from "grommet";
+import { useLocation, Link } from "react-router-dom";
 import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
 import ChatBox from "../../Components/Streaming/ChatBox";
 import ChannelIdCard from "../../Components/Channel/ChannelIdCard";
@@ -15,9 +15,9 @@ import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {db, API} from '../../Services/FirebaseService'
 import { textToLatex } from "../../Components/Core/LatexRendering";
+import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 
 import '../../Styles/all-stream-page.css'
-import { FaMicrophone } from "react-icons/fa";
 import Clapping from "../../Components/Streaming/Clapping";
 import { ChannelService } from "../../Services/ChannelService";
 import PDFViewer from "../../Components/PDFViewer";
@@ -41,6 +41,13 @@ interface Message{
   name?: string;
   first: boolean;
 }
+
+interface Control {
+  mic: boolean
+  fullscreen: boolean
+  slideShare: boolean
+}
+
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
 const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
 
@@ -59,9 +66,6 @@ function getUserId(talkId:string, userId?:string|null){
 function useQuery(){
   return new URLSearchParams(useLocation().search)
 }
-interface Control {
-  mic: boolean
-}
 AgoraRTC.setLogLevel(4)
 
 
@@ -79,6 +83,10 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         name: 'Prof. Patric',
         uid: getUserId(props.talkId.toString(), useQuery().get('dummy'))
       } as any)
+
+  // Role: added for future merging of the files
+  const [role, setRole] = useState("audience")
+  
   const [talkDetail, setTalkDetail] = useState({} as any)
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
   const [localVideoTrack, setLocalVideoTrack] = useState(null as any)
@@ -91,6 +99,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
   const [isClapping, setClapping] = useState('')
   const [hasMicRequested, setMicRequest] = useState('')
+  const [isTimeover, setTimeover] = useState(false)
   const [isUnpublishFromRemote, unpublishFromRemote] = useState('')
   const [slideUrl, setSlideUrl] = useState('')
   const [isSlideVisible, toggleSlide] = useState(false)
@@ -98,10 +107,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   const [slideShareId, setSlideShareId] = useState('')
   
   const [talkId, setTalkId] = useState('')
-  const [callControl, setCallControl] = useState({
+
+  const [callControl, _setCallControl] = useState({
     mic: false,
+    fullscreen: false
     // video: false
   } as Control)
+  const [cc, setCallControl] = useState({} as any)
+
+  useEffect(()=>{
+    _setCallControl({...callControl, ...cc})
+  }, [cc])
 
 
   const [state, setState] = useState({
@@ -222,6 +238,21 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     })
   }
 
+  useEffect(()=>{
+    if(!talkDetail.id) return
+
+    let end = Date.parse(talkDetail.end_date)
+    let loop = setInterval(()=>{
+      if(Date.now() >end) {
+        setTimeover(true)
+      }
+      if(Date.now() > end + 15*60*1000) {
+        // API.endSeminar(props.match.params.talk_id)
+      }
+    }, 1000)
+
+    return ()=> clearInterval(loop)
+  }, [talkDetail])
 
   async function join_live_chat(){
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
@@ -259,42 +290,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       console.log(e)
     }
   }
-
-
-
-
-
-  
-//
-//
-////
-//
-//// Remy: checkpoint
-//// Remy: checkpoint
-//// Remy: checkpoint
-
-//
-//
-// WIP: INTEGRATING "REQUEST MIC FEATURE" into LivestreamAudiencePAge
-//
-//
-//
-//
-//
-//
-////
-//
-//// Remy: checkpoint
-//// Remy: checkpoint
-//// Remy: checkpoint
-
-//
-//
-// WIP: INTEGRATING "REQUEST MIC FEATURE" into LivestreamAudiencePAge
-//
-//
-//
-//
 
   useEffect(()=>{
     unpublish_microphone()
@@ -487,135 +482,533 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     )
   }
 
-  return (
-      <Box align="center">
-        <Grid
-          margin={{ top: "xlarge", bottom: "none" }}
-          // rows={["streamViewRow1", "medium"]}
-          rows={["streamViewRow1"]}
-          columns={["streamViewColumn1", "streamViewColumn2"]}
-          gap="medium"
-          areas={[
-            { name: "player", start: [0, 0], end: [0, 0] },
-            { name: "chat", start: [1, 0], end: [1, 0] },
-            // { name: "questions", start: [0, 1], end: [1, 1] },
-          ]}
-        >
-        
-          <Box gridArea="player" justify="between" gap="small">
+  async function slideShare(slideShare: boolean) {
+    if(slideShare) {
+      let req = await API.slideShare(localUser.uid, talkId) as any
+      setSlideShareId(req.id)
+      setCallControl({slideShare: true})
+    }else{
+      let req = await API.slideStop(slideShareId) as any
+      setSlideShareId('')
+      setCallControl({slideShare: false})
+    }
+  }
 
-            {talkStatus === 'NOT_STARTED' ? 
-              <Box align='center'>
-                <Grid margin={{ top: "xlarge", bottom: "none" }}>
-                  <Text margin={{top: '20vh'}}>The admin is going to start the talk soon.</Text>
-                </Grid>
-              </Box>:
-              <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable || isSlideVisible?'screen-share':''}`}
-                style={{height: '100%', position: 'relative'}}>
-                <Box className='camera-video'>
-                  {remoteVideoTrack.map((user)=>(
-                    //@ts-ignore
-                    <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} />
-                  ))}
-                </Box>
+  ///////////////////////
+  // Frontend methods
+  //////////////////////
+  function micButton () {
+    return (
+      <Box
+      justify="center"
+      align="center"
+      pad="small"
+      focusIndicator={false}
+      height="50px"
+      background="color1"
+      hoverIndicator="#BAD6DB"
+      style={{borderRadius:'6px'}}
+      onClick={()=>{
+        if (callControl.mic){
+          unpublish_microphone()
+        } else {
+          publish_microphone()
+        }
+    
+      }}
+    >
+      <Text weight="bold" color="white" size="14px" textAlign="center">
+        {callControl.mic? <FaMicrophone/> : <FaMicrophoneSlash/>}
+      </Text>
+    </Box>
+    )
+  }
 
-                { isScreenAvailable && 
-                    <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
-                }
-                {isSlideVisible && <PDFViewer url={slideUrl} slideShareId={slideShareId} />}
-                <Box className='call-control' direction='row'>
-                  {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
-                    <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
-                    <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
-                  }
-                </Box>
+  function fullscreenButton () {
+    return (
+      <Box
+        justify="center"
+        align="center"
+        pad="small"
+        focusIndicator={false}
+        height="50px"
+        background="color1"
+        hoverIndicator="#BAD6DB"
+        style={{borderRadius:'6px'}}
+        onClick={()=>{
+            toggleFullscreen()
+        }}
+      >
+        <Text weight="bold" color="white" size="14px" textAlign="center">
+          {callControl.fullscreen? <FaExpand/> : <FaCompress/>}
+        </Text>
+      </Box>
+    )
+  }
 
-                <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
-              </Box>
-            }
+  function viewChangeButton () {
+    return (
+      <Box
+      justify="center"
+      align="center"
+      pad="small"
+      focusIndicator={false}
+      height="50px"
+      background="color1"
+      hoverIndicator="#BAD6DB"
+      style={{borderRadius:'6px'}}
+      onClick={()=>{
+        if (callControl.slideShare){
+          slideShare(false)
+        } else {
+          slideShare(true)
+        }
+    
+      }}
+    >
+      <Text weight="bold" color="white" size="14px" textAlign="center">
+        {callControl.slideShare? "Standard view" : "Slides view"}
+      </Text>
+    </Box>
+    )
+  }
 
-            <Box direction="row" justify="between" align="start">
-              <p
-                style={{
-                  padding: 0,
-                  margin: 0,
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  // color: "black",
-                  maxWidth: "65%",
-                }}
+  function requestMicButton () {
+    return (
+      <Box
+      justify="center"
+      align="center"
+      pad="small"
+      focusIndicator={false}
+      height="50px"
+      background="color1"
+      hoverIndicator="#BAD6DB"
+      style={{borderRadius:'6px'}}
+      onClick={()=>{
+        if (hasMicRequested || !callControl.mic){
+          API.requestMic(talkId, localUser.uid, storedName)
+        }
+        else {
+          unpublish_microphone()
+        }
+      }}
+    >
+      <Text weight="bold" color="white" size="14px" textAlign="center">
+        {(hasMicRequested || !callControl.mic) ? "Request microphone" : "Give up microphone"}
+      </Text>
+    </Box>
+    )
+  }
+
+  function chatBox() {
+    return (
+      <>
+          {/* <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Chat</Text> */}
+          <Box height="85%" flex={true} gap="2px" overflow="auto" margin="small">
+          {messages.map((msg, i)=>(
+          <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "0px"}>
+            { msg.first && (
+              <Text color="#0C385B" size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                {msg.name}
+              </Text>
+            )}
+            <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+              {textToLatex(msg.text)}
+            </Text>
+          </Box>
+          // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
+        ))}
+        </Box>
+        <TextInput onKeyUp={send_message} placeholder='Aa' />
+        {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
+  
+      </>
+    )
+  }
+
+  function talkDetailsDescription() {
+    return (
+      <>
+        <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="5px">
+              <Link
+                  className="channel"
+                  to={`/${talkDetail.channel_name}`}
+                  style={{ textDecoration: "none", width: "40%"}}
+                >
+                  <Box
+                    direction="row"
+                    gap="xsmall"
+                    align="center"
+                    round="xsmall"
+                    pad={{ vertical: "6px", horizontal: "6px" }}
+                  >
+                    <Box
+                      justify="center"
+                      align="center"
+                      background="#efeff1"
+                      overflow="hidden"
+                      style={{
+                        minHeight: 30,
+                        minWidth: 30,
+                        borderRadius: 15,
+                      }}
+                    >
+                        <img
+                          src={ChannelService.getAvatar(
+                            talkDetail.channel_id
+                          )}
+                          height={30}
+                          width={30}
+                        />
+                    </Box>
+                    <Box justify="between">
+                      <Text weight="bold" size="16px" color="grey">
+                        {talkDetail.channel_name}
+                      </Text>
+                    </Box>
+                  </Box>
+              </Link>
+              <Text
+                size="18px"
+                weight="bold"
+                style={{width: "45%"}}
               >
                 {talkDetail.name}
-              </p>
-              <br />
-              <p
-                style={{
-                  padding: 0,
-                  margin: 0,
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  // color: "black",
-                  maxWidth: "65%",
-                }}
+              </Text>
+              <Text
+                size="18px"
+                weight="bold"
+                style={{width: "25%"}}
               >
-                Speaker: {talkDetail.talk_speaker}
-              </p>
+                {talkDetail.talk_speaker}
+              </Text>
+
               <Box
                 direction="row"
                 gap="small"
                 justify="end"
-                style={{ minWidth: "35%" }}
+                style={{ width: "10%" }}
               >
-                <ChannelIdCard channelName={state.video!.channel_name} />
-                <Box direction="row" align="center" gap="xxsmall">
-                  <View color="black" size="40px" />
-                  {state.viewCount === -1 && (
-                    <Loading color="grey" size={34} />
-                  )}
-                  {state.viewCount !== -1 && (
-                    <Text size="34px" weight="bold">
-                      {state.viewCount}
-                    </Text>
-                  )}
-                </Box>
               </Box>
-            </Box>
           </Box>
-          <Box gridArea="chat" background="#EAF1F1" round="small" height="20vw" margin={{bottom: "10px"}}>
-            {/* <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Chat</Text> */}
-            <Box height="90%" flex={true} gap="2px" overflow="auto">
-              {messages.map((msg, i)=>(
-                  <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "0px"}>
-                    { msg.first && (
-                      <Text color="#0C385B" size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
-                        {msg.name}
-                      </Text>
-                    )}
-                    <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
-                      {textToLatex(msg.text)}
-                    </Text>
-                  </Box>
-                  // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
-                ))}
-            </Box>
-            <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
-            {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
-          </Box>
-          {/* <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
-            <Text size="12px"> {talkDetail.description} </Text>
-          </Box> */}
-        </Grid>
-        <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
-        <DescriptionAndQuestions
-          gridArea="questions"
-          tags={state.video.tags.map((t: any) => t.name)}
-          description={state.video!.description}
-          videoId={state.video.id}
-          streamer={false}
-          margin={{ top: "-20px" }}
+
+        <Text size="12px"> {talkDetail.description} </Text>
+      </>
+    )
+  }
+
+  function streamingButtons () {
+    return (
+      <>
+      {/* MAIN BUTTONS */}
+        <Box 
+            direction='row'
+            // gap="10px"
+            align="center"
+          >
+          {/* {(role == "admin") && (
+            <>
+              {startTalkButton()}
+              {stopTalkButton()}
+              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+              {viewChangeButton()}
+            </>
+            )}
         
-        />
+          {(role == "speaker") && (
+            <>
+              {screenShareButton()}
+              <SlidesUploader
+                text={slidesGotUploaded ? "Uploaded ✔️ (click to reupload)" : "Upload slides"}
+                onUpload={(e: any) => {
+                  TalkService.uploadSlides(
+                    props.talkId, 
+                    e.target.files[0],
+                    (res: any) => {
+                      if (res){
+                        setSlidesGotUploaded(true)
+                        // this.setState({slidesAlreadyUploaded: true})
+                      }
+                    }
+                    )
+                  }}
+                  />
+              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />     
+              {viewChangeButton()}
+            </>
+          )}   */}
+          {(role != "admin" && role != "speaker") && (
+            <>
+              {requestMicButton()}
+              {fullscreenButton()}
+              {viewChangeButton()}
+            </>
+            ) 
+          }
+
+
+        </Box>
+        
+        {/* SECONDARY BUTTONS */}
+        <Box direction="row">
+            {/* {(role == "admin") && (
+            <>
+              {micButton()}
+              {webcamButton()}
+              {screenShareButton()}
+              {fullscreenButton()}
+            </>
+            )}
+
+            {(role == "speaker") && (
+            <>
+              {micButton()}
+              {webcamButton()}
+              {fullscreenButton()}
+              <SpeakerHelpButton
+                talkId={props.talkId}
+                width="5vw"
+                callback={()=>{}}
+              />
+            </>
+            )} */}
+
+            {(role !== "admin" && role != "speaker") && (
+            <>
+            </>
+            )}
+        </Box>
+      </>
+    )
+  }
+
+
+
+  return (
+      // <Box align="center">
+      //   <Grid
+      //     margin={{ top: "xlarge", bottom: "none" }}
+      //     // rows={["streamViewRow1", "medium"]}
+      //     rows={["streamViewRow1"]}
+      //     columns={["streamViewColumn1", "streamViewColumn2"]}
+      //     gap="medium"
+      //     areas={[
+      //       { name: "player", start: [0, 0], end: [0, 0] },
+      //       { name: "chat", start: [1, 0], end: [1, 0] },
+      //       // { name: "questions", start: [0, 1], end: [1, 1] },
+      //     ]}
+      //   >
+          
+        
+      //     <Box gridArea="player" justify="between" gap="small">
+
+      //       {talkStatus === 'NOT_STARTED' ? 
+      //         <Box align='center'>
+      //           <Grid margin={{ top: "xlarge", bottom: "none" }}>
+      //             <Text margin={{top: '20vh'}}>The admin is going to start the talk soon.</Text>
+      //           </Grid>
+      //         </Box>:
+      //         <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable || isSlideVisible?'screen-share':''}`}
+      //           style={{height: '100%', position: 'relative'}}>
+      //           <Box className='camera-video'>
+      //             {remoteVideoTrack.map((user)=>(
+      //               //@ts-ignore
+      //               <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} />
+      //             ))}
+      //           </Box>
+
+      //           { isScreenAvailable && 
+      //               <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
+      //           }
+      //           {isSlideVisible && <PDFViewer url={slideUrl} slideShareId={slideShareId} />}
+      //           <Box className='call-control' direction='row'>
+      //             {hasMicRequested || callControl.mic?!callControl.mic?<Button label="Requested mic" primary size='small' />:
+      //               <Button label="Give-up mic" primary size='small' onClick={unpublish_microphone} />:
+      //               <Button label="Request mic" primary size='small' onClick={()=>API.requestMic(talkId, localUser.uid, storedName)} />
+      //             }
+      //           </Box>
+
+      //           <Button className='full-screen-button' label="Fullscreen" primary size='small' onClick={toggleFullscreen} />
+      //         </Box>
+      //       }
+
+      //       <Box direction="row" justify="between" align="start">
+      //         <p
+      //           style={{
+      //             padding: 0,
+      //             margin: 0,
+      //             fontSize: "24px",
+      //             fontWeight: "bold",
+      //             // color: "black",
+      //             maxWidth: "65%",
+      //           }}
+      //         >
+      //           {talkDetail.name}
+      //         </p>
+      //         <br />
+      //         <p
+      //           style={{
+      //             padding: 0,
+      //             margin: 0,
+      //             fontSize: "24px",
+      //             fontWeight: "bold",
+      //             // color: "black",
+      //             maxWidth: "65%",
+      //           }}
+      //         >
+      //           Speaker: {talkDetail.talk_speaker}
+      //         </p>
+      //         <Box
+      //           direction="row"
+      //           gap="small"
+      //           justify="end"
+      //           style={{ minWidth: "35%" }}
+      //         >
+      //           <ChannelIdCard channelName={state.video!.channel_name} />
+      //           <Box direction="row" align="center" gap="xxsmall">
+      //             <View color="black" size="40px" />
+      //             {state.viewCount === -1 && (
+      //               <Loading color="grey" size={34} />
+      //             )}
+      //             {state.viewCount !== -1 && (
+      //               <Text size="34px" weight="bold">
+      //                 {state.viewCount}
+      //               </Text>
+      //             )}
+      //           </Box>
+      //         </Box>
+      //       </Box>
+      //     </Box>
+      //     <Box gridArea="chat" background="#EAF1F1" round="small" height="20vw" margin={{bottom: "10px"}}>
+      //       {/* <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Chat</Text> */}
+      //       <Box height="90%" flex={true} gap="2px" overflow="auto">
+      //         {messages.map((msg, i)=>(
+      //             <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "0px"}>
+      //               { msg.first && (
+      //                 <Text color="#0C385B" size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+      //                   {msg.name}
+      //                 </Text>
+      //               )}
+      //               <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+      //                 {textToLatex(msg.text)}
+      //               </Text>
+      //             </Box>
+      //             // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
+      //           ))}
+      //       </Box>
+      //       <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
+      //       {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
+      //     </Box>
+      //     {/* <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
+      //       <Text size="12px"> {talkDetail.description} </Text>
+      //     </Box> */}
+      //   </Grid>
+      //   <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+      //   <DescriptionAndQuestions
+      //     gridArea="questions"
+      //     tags={state.video.tags.map((t: any) => t.name)}
+      //     description={state.video!.description}
+      //     videoId={state.video.id}
+      //     streamer={false}
+      //     margin={{ top: "-20px" }}
+        
+      //   />
+      // </Box>
+
+
+
+
+      <Box style={{position: "absolute", left: "20px", top: "5px"}} margin={{bottom: "50px", top: "80px"}} width="100%">
+      {isTimeover && (
+        <Box 
+          margin={{ top: "xlarge", bottom: "xsmall" }} 
+          style={{ 
+            zIndex: 1000, background: 'red', color: 'white',
+            padding: '10px', borderRadius: '4px', width: "50%"
+          }}
+        >
+          {talkStatus === 'ENDED' ? <Text> Talk ended </Text> : 
+          <Text>Seminar time over. It will end automatically in 15 mins.</Text> }
+        </Box>
+      )}
+
+      <Grid
+        columns={["75%", "20%"]}
+        rows={["2vh", "15vh", "55vh", "25vh"]}
+        gap="medium"
+        areas={[
+          { name: "player", start: [0, 0], end: [0, 3] },
+          { name: "display_role", start: [1, 0], end: [1, 0] },
+          { name: "main_buttons", start: [1, 1], end: [1, 1] },
+          { name: "chat", start: [1, 2], end: [1, 2] },
+          { name: "description", start: [0, 3], end: [0, 3] },
+          { name: "extra_feature", start: [1, 3], end: [1, 3] },
+        ]}
+      >
+        
+        <Box gridArea="player" justify="between" gap="small">
+          <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable || callControl.slideShare || isSlideVisible?'screen-share':''}`}
+            style={{height: '100%', position: 'relative'}}>
+            <Box className='camera-video'>
+              {remoteVideoTrack.map((user)=>(
+                //@ts-ignore
+                <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
+              ))}
+              <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
+            </Box>
+
+            { isScreenAvailable && 
+                <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
+            }
+            {(callControl.slideShare || isSlideVisible) &&
+              <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} />
+            }
+          </Box>
+        </Box>
+
+        <Box gridArea="display_role" justify="between" gap="small">
+          {role == "admin" && (
+          <Text size="16px" color="grey">You are an admin.</Text>
+          )}
+          {role == "speaker" && (
+          <Text size="16px" color="grey">You are a speaker.</Text>
+          )}
+          {(role !== "admin" && role !== "speaker")  && (
+          <Text size="16px" color="grey">You are an attendee.</Text>
+          )}  
+
+        </Box>
+
+        <Box gridArea="main_buttons" justify="between" gap="small">
+            {streamingButtons()}
+        </Box>
+
+        <Box gridArea="chat" background="#EAF1F1" round="small" margin={{bottom: "10px"}}>
+            {chatBox()}
+        </Box>
+
+        <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}
+        </Box>
+
+        <Box gridArea="description" margin={{top: "-20px"}}>
+            {talkDetailsDescription()}
+        </Box>
+      </Grid>
+
       </Box>
+
+
+
+
+
+
+
+
+
+
+
+
+
   )
 }
 
