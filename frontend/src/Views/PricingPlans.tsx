@@ -194,7 +194,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               Do you have more than 30 people attending your seminars?
           </Text>
           <Switch
-            width="60px"
+            width={(window.innerWidth > 800) ? "60px" : "100px"}
             checked={false}
             callback={(pricingOptionBig: boolean) => {this.setState({ pricingOptionBig })}}
             textOn="Yes"

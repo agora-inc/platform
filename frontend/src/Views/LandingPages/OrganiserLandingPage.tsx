@@ -165,12 +165,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Box>
-          <Text size="48px" weight="bold" color="color4" margin={this.state.renderMobileView ? {top: "40px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Simplifying the organiser's life, from start to finish
+          <Text size="48px" weight="bold" color="color4" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
+            Empowering seminar organisers, from start to finish
           </Text>
           <Text size="20px">
-            "Organising seminars is super easy!"
+            "I'd love to see this grow into something big." - 
           </Text>
+          <Text>PLACEHOLDER</Text>
         </Box>
       </>
     )
@@ -270,28 +271,36 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "50px"}}>
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
+          <Box width="380px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Attraction size="large"/>
               </Box>
-              <CreateChannelButton 
-                textColor="color7"
-                text="1. Create your agora"
-                textSize="20px"
-                onClick={this.toggleCreateChannelOverlay}
-              />
+              {this.state.renderMobileView && (
+                <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">1. Create your agora</Text>
+              )}
+              {!this.state.renderMobileView && (
+                <CreateChannelButton 
+                  textColor="color7"
+                  text="1. Create your agora"
+                  textSize="20px"
+                  onClick={this.toggleCreateChannelOverlay}
+                />
+              )}
             </Box>
             <Text size="18px">
               Your agora, or community homepage, will be the center of your organisational life. It will also be the place where your community will periodically come back! 
             </Text>
             </Box>
 
-          <Box width="120px" direction="column" alignSelf="center"> 
-            <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
-          </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+          {!this.state.renderMobileView && (
+            <Box width="120px" direction="column" alignSelf="center"> 
+              <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
+            </Box>
+          )}
+
+          <Box width="380px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Workshop size="large"/>
@@ -305,11 +314,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Text>
           </Box>
 
-          <Box width="120px" direction="column" alignSelf="center"> 
-            <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
-          </Box>
+          {!this.state.renderMobileView && (
+            <Box width="120px" direction="column" alignSelf="center"> 
+              <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
+            </Box>
+          )}
 
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
+          <Box width="380px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Share size="large"/>
@@ -325,7 +336,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
 
         {/* Second line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
+          <Box width="400px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Video size="large"/>
@@ -339,16 +350,18 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Text>
             </Box>
 
-          <Box width="120px" direction="column" alignSelf="center"> 
-            <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
-          </Box>
+            {!this.state.renderMobileView && (
+            <Box width="120px" direction="column" alignSelf="center"> 
+              <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
+            </Box>
+          )}
 
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column"> 
+          <Box width="400px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Group size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">5. Network with audience
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">5. Mingle et network
               </Text>
             </Box>
 
@@ -357,11 +370,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Text>
           </Box>
 
-          <Box width="120px" direction="column" alignSelf="center"> 
-            <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
-          </Box>
+          {!this.state.renderMobileView && (
+            <Box width="120px" direction="column" alignSelf="center"> 
+              <img src={DashedLine} style={{alignSelf: "center"}} width="120px"/>
+            </Box>
+          )}
 
-          <Box width="380px" height={this.state.renderMobileView ? "250px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
+          <Box width="400px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Play size="large"/>
@@ -384,7 +399,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Your life made easy, for free</Text>
         <Text>
-            Because we want to facilitate the sharing of new knowledge, <b>no plan is required to deploy your seminars on mora.stream!</b> The option is always there for those who want a premium experience!            
+            Because we want to facilitate the sharing of new knowledge, <b>most of the features are free and no plan is required to deploy your seminars on mora.stream!</b> The option is always there for those who want a premium experience!            
         </Text>
 
 
@@ -495,20 +510,20 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         </Box>
 
         <Box height="100%" width="100%" background="color5" id="content">
-          <Box width="80%" height={this.state.renderMobileView ? "1550px": "940px"}  direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "2650px": "940px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color6">
-          <Box width="80%" height={this.state.renderMobileView ? "2390px": "820px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1150px": "820px"} direction="column" alignSelf="center">
             {this.content2()}
           </Box>
         </Box>
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "600px": "700px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "500px": "700px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
           </Box>
         </Box>

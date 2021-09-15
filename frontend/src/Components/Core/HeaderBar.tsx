@@ -62,7 +62,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 </MediaQuery>
                   <MediaQuery maxDeviceWidth={992}>
                 <img src={moraStreamFullLogo} style={{ height: "3vh", marginLeft: 5 }}/>
-                    <Text size="xsmall" color="black">mobile</Text>
+                    {/* <Text size="xsmall" color="black">mobile</Text> */}
                     </MediaQuery>
               </Box>
             </Link>
