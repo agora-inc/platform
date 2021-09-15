@@ -2025,7 +2025,9 @@ def publishAllTalks():
         params['audience_level'], params['visibility'], params['auto_accept_group']
     )
 
-    return jsonify(talks)
+    response =  jsonify(talks)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 """
