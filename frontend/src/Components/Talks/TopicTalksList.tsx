@@ -264,12 +264,13 @@ export default class TopicTalkList extends Component<Props, State> {
         width="100%" 
         margin={{
           "bottom": "50px",
-          "left": (window.innerWidth < 800 ? "30px" : "0px"),
+          // "left": (window.innerWidth < 800 ? "30px" : "0px"),
         }}
       >
         <Box
           width="100%"
           direction="row"
+          justify="between"
           gap="medium"
           align="end"
           margin={{ 
@@ -279,9 +280,53 @@ export default class TopicTalkList extends Component<Props, State> {
           }}
         >
           {this.props.title && (
-            <Text size="24px" weight="bold" color="black" margin="5px">
-              Upcoming talks
-            </Text>
+            <>
+              <Link
+              to={{ pathname: "/browse" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color2"
+                round="xsmall"
+                pad="xsmall"
+                height="60px"
+                width="220px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color2"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                <Text size="18px" weight="bold"> Upcoming seminars</Text>
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </Link>
+
+              <Link
+              to={{ pathname: "/past" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color5"
+                round="xsmall"
+                pad="xsmall"
+                height="60px"
+                width="180px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color3"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                <Text size="18px"> Past seminars</Text>
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </Link>
+            </>
           )}
 
         </Box>
@@ -289,8 +334,8 @@ export default class TopicTalkList extends Component<Props, State> {
         {/* A. Classification system for desktop */}
         <MediaQuery minDeviceWidth={992}>
           <Box 
-            width="97.5%" 
-            margin={{"bottom": "50px", "left": "5px"}}
+            width="100%" 
+            margin={{"bottom": "50px"}}
             background="color6"
             direction="row"
             pad="12px"

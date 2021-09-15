@@ -82,7 +82,7 @@ export default class Home extends Component<{}, State> {
 
   render() {
     return (
-      <Box direction="row">
+      <Box direction="row" justify="center">
         {/* Only show side-bar for desktop */}
         {/*<MediaQuery minDeviceWidth={992}>
           <CustomSideBar user={this.state.user} />

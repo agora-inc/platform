@@ -101,7 +101,9 @@ export default class Carousel extends Component<Props, State> {
   render() {
     return (
       <>
-        <TrendingTalksList />
+        <Box align="center">
+          <TrendingTalksList />
+        </Box>
         <Box
         // width="100%"
         // height="100%"

@@ -228,7 +228,7 @@ export default class AllAgorasPage extends Component<Props, State> {
       />
       <div className="all-agoras-page">
         <Text weight="bold" size="28px" margin={{bottom: "15px"}}>
-          Discover new  <img src={agoraLogo} height="30px"/>s
+          Discover new  <img src={agoraLogo} height="20px" style={{offset:"50px"}}/>s
           </Text>
           <TopicClassification 
             topicCallback={this.selectTopic}
