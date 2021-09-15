@@ -22,7 +22,10 @@ import ZoomLogo from "../../assets/competitors_logo/427px-Zoom_Communications_Lo
 import YoutubeLogo from "../../assets/competitors_logo/YouTube_Logo_2017.svg.png";
 import MicrosoftTeams from "../../assets/competitors_logo/youtube_logo.jpeg";
 import BackgroundImage from "../../assets/general/mora_social_media_cover_#bad6db.jpg"
-import WavyArrow from "../../assets/landing_page/wavy_arrow_left_right.png"
+import WavyArrowLeftRight from "../../assets/landing_page/wavy_arrow_left_right.png"
+import WavyArrowTopBot from "../../assets/landing_page/wavy_arrow_top_bot.png"
+
+
 import ThreeSidedMarketplaceGraph from "../../assets/landing_page/3_sided_marketplace_graph.jpeg"
 
 import InstitutionalUsers from "./InstitutionalUsers";
@@ -164,7 +167,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     return (
       <>
         <Box>
-          <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "40px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
+          <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
             Delivering hybrid academic seminars
           </Text>
           <Text size="20px">
@@ -226,7 +229,6 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         >
           <Play size="30px" />
           <Text size="18px" margin={{left: "10px"}}> <b>Watch</b>  latest seminars</Text>
-          {/* <Text size="22px">🔥</Text> */}
         </Box>
       </Link>
 
@@ -256,15 +258,6 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     )
   }
 
-  brandCurrentOrganisation() {
-    return(
-      <Box>
-        sdf
-      </Box>
-    )
-  }
-
-
   content1() {
     return (
       <>
@@ -272,7 +265,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="380px" height={this.state.renderMobileView ? "350px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
@@ -297,10 +290,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Box>
 
           <Box width="120px" direction="column" alignSelf="center"> 
-            <img src={WavyArrow} style={{alignSelf: "center"}} width="120px"/>
+            <img src={this.state.renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
+              style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "350px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
@@ -320,10 +314,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Box>
 
           <Box width="120px" direction="column" alignSelf="center"> 
-            <img src={WavyArrow} style={{alignSelf: "center"}} width="120px"/>
+            <img src={this.state.renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
+              style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "350px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
@@ -357,8 +352,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7" weight="bold">boost</Text> research collaborations with tech</Text>
 
-        <img src={ThreeSidedMarketplaceGraph} height="40%" width="40%" style={{alignSelf: "center", marginBottom: "40px"}}/>
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" justify="center">
+
+        {!this.state.renderMobileView && 
+          <img src={ThreeSidedMarketplaceGraph} height="40%" width="auto" style={{alignSelf: "center"}}/>
+        }
+
+
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" justify="center" margin={{top: "40px"}}>
           <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color4" direction="column" pad="medium">
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               {/* <Box width="70px">
@@ -420,7 +420,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                     textSize="18px"
                   />
               </Box>
-              <Box alignSelf="center">
+              <Box alignSelf="center" margin={this.state.renderMobileView ? {top: "30px"} : {}}>
                 <InstitutionalUsers/>
               </Box>
             </Box>
@@ -469,32 +469,32 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "1280px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "950px" : "100%"}
+          <Box width="80%" height={this.state.renderMobileView ? "1480px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "1250px" : "100%"}
               style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
               {this.aboveTheFoldMain()}
             </Box>
-            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "100px" : "100%"}>
+            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "500px" : "100%"}>
               {this.aboveTheFoldImage()}
             </Box>
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color5" id="content">
-          <Box width="80%" height={this.state.renderMobileView ? "1550px": "760px"}  direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1750px": "760px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color1">
-          <Box width="80%" height={this.state.renderMobileView ? "2390px": "1100px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1290px": "1100px"} direction="column" alignSelf="center">
             {this.content2()}
           </Box>
         </Box>
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "600px": "600px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
           </Box>
         </Box>

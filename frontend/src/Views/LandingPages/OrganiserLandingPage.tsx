@@ -3,6 +3,8 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
 // import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
 import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
+import moraStreamFullLettersLogo from "../../assets/general/mora.stream_logo_v2.1.png";
+
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../../Services/UserService";
 import { Search, Java, Play, Share, Add, Video, Close, ShareOption, Rewind, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
@@ -273,19 +275,16 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               <Box width="70px">
                 <Attraction size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">
-                1. Create your hub
-              </Text>
+              <CreateChannelButton 
+                textColor="color7"
+                text="1. Create your agora"
+                textSize="20px"
+                onClick={this.toggleCreateChannelOverlay}
+              />
             </Box>
-            <Text size="18px"> 
-              There, your community and audience will see your future and past events. Future speakers will also be able to contact you to give a talk!
+            <Text size="18px">
+              Your agora, or community homepage, will be the center of your organisational life. It will also be the place where your community will periodically come back! 
             </Text>
-
-            <CreateChannelButton 
-            // height="50px"
-            onClick={this.toggleCreateChannelOverlay}
-            />
-
             </Box>
 
           <Box width="120px" direction="column" alignSelf="center"> 
@@ -302,7 +301,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Box>
 
             <Text size="18px">
-                On mora.stream, speakers come apply to you!
+                Finding speakers can sometimes be very tedious. On mora.stream, speakers directly come to you by filling an in-built application form!
             </Text>
           </Box>
 
@@ -315,11 +314,11 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               <Box width="70px">
                 <Share size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">3. Publish seminars in a minute
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">3. Publish in a minute
               </Text>
             </Box>
             <Text size="18px">
-                One click to automate the sending of advertisement or reminder emails. Another one to automatically accept verified academics. A last one to share your event on all your social media!
+                We made organising seminars is made <b>as easy as possible</b>. Three clicks are enough to automate the sending of reminder emails, automatically accept verified academics, and share your event on all your social media!
             </Text>
           </Box>
         </Box>
@@ -331,12 +330,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               <Box width="70px">
                 <Video size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">
-                4. Stream
+              <Text size="24px" weight="bold" margin={{left: "15px"}} color="color7">
+                4. Stream with <img src={ZoomLogo} height="14px"/> or <img src={moraStreamFullLettersLogo} height="18px"/>
               </Text>
             </Box>
             <Text size="18px"> 
-                Decide whether you want to use <img src={ZoomLogo} height="14px"/> (or equivalent) or the <img src={moraStreamFullLogo} height="14px"/> streaming tech, allowing you to run online or hybrid seminars!
+                You can use your <img src={ZoomLogo} height="14px"/> subscription but also the <img src={moraStreamFullLettersLogo} height="16px"/> streaming tech sculpted for academics, allowing you to run hybrid seminars, write LateX in chat, go back in the slides, clap for the speaker and much more!
             </Text>
             </Box>
 
@@ -354,7 +353,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Box>
 
             <Text size="18px">
-              Use your own Zoom or Teams. If you want to go hybrid, check out our streaming tech! 
+              Enjoy the free access to a 2D-virtual cafeteria after each seminars and allow your audience to mingle among themselves and meet with the speakers.
             </Text>
           </Box>
 
@@ -367,11 +366,11 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               <Box width="70px">
                 <Play size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">6. Upload recording
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">6. Upload slides and recordings
               </Text>
             </Box>
             <Text size="18px">
-              Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers and the audience.
+              Please your community by supplementing your event with your mp4 recording, your <img src={YoutubeLogo} height="16px"/> URL as well as your speaker's slides in just a couple clicks!
             </Text>
           </Box>
         </Box>
@@ -385,7 +384,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Your life made easy, for free</Text>
         <Text>
-            Because we want to facilitate the sharing of new knowledge, no plan is required to run seminars if you use your own <img src={ZoomLogo} height="12px"/> subscription or equivalent. The option is always there for those who want a premium experience!            
+            Because we want to facilitate the sharing of new knowledge, <b>no plan is required to deploy your seminars on mora.stream!</b> The option is always there for those who want a premium experience!            
         </Text>
 
 
@@ -410,7 +409,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Start running your seminar series, in less than a minute!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Start empowering your community by joining a worldwide network of academics!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "20px"}}>
                 <CreateChannelButton 
@@ -423,7 +422,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Box>
 
             <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Already running a series? Import everything in a minute!</Text>
-            <Box align="center" margin={{bottom: "20px"}}>
+            <Box align="center" margin={{bottom: "20px"}} gap="small">
             <CreateChannelButton 
                   onClick={this.toggleCreateChannelOverlay} 
                   width="400px"

@@ -11,6 +11,7 @@ interface Props {
   height?: string;
   text?: string;
   textSize?: string;
+  textColor?: string;
 }
 
 interface State {
@@ -43,9 +44,6 @@ export default class CreateChannelButton extends Component<Props, State> {
         height={this.props.height ? (this.props.height) : "fill"}
         round="xsmall"
         pad="small"
-        style={{
-          border: "2px solid #C2C2C2",
-        }}
         background="color1"
         hoverIndicator="color3"
         focusIndicator={false}
@@ -53,12 +51,12 @@ export default class CreateChannelButton extends Component<Props, State> {
       >
         <Text 
           size={this.props.textSize ? this.props.textSize : "14px"}  
-          color="white"
+          color={this.props.textColor ? this.props.textColor : "white"}
           weight="bold"
         >
             {this.props.text ? this.props.text : "Create an agora"}
         </Text>
-        <Text size="22.5px">🚀</Text>
+        {/* <Text size="22.5px">🚀</Text> */}
         <ReactTooltip id="create_agora_button" effect="solid">
             Create a new channel (we call it agora) for your seminar series
         </ReactTooltip>
