@@ -436,6 +436,9 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 />
             </Box>
 
+
+            {/* TODO: INTEGRATE SCRAPPER RESEARCHSEMINARS.ORG before commenting out
+
             <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Already running a series? Import everything in a minute!</Text>
             <Box align="center" margin={{bottom: "20px"}} gap="small">
             <CreateChannelButton 
@@ -452,8 +455,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                   text={"Import from custom website"}
                   textSize="18px"
                 />
-            </Box>
+            </Box> */}
           </>
+
+
+
+
+
         )}
         {this.state.renderMobileView && (
             <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Come back to this page using a Desktop browser to get started! 🚀</Text>
