@@ -205,7 +205,7 @@ class RSScraperRepository:
 if __name__ == "__main__":
 	scraper = RSScraperRepository()
 	url_agora = "https://researchseminars.org/seminar/cogentseminarkkkkk"
-	print(scraper.get_valid_series_and_ntalks(url_agora))
+	# print(scraper.get_valid_series_and_ntalks(url_agora))
 
 
 

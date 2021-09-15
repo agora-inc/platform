@@ -2003,12 +2003,14 @@ def createAgoraGetTalkIds():
     is_valid, talk_ids, channel_id, channel_name = RSScraper.create_agora_and_get_talk_ids(
         params['url'], params['user_id'], params['topic_1_id']
     )
-    return jsonify({
+    response =  jsonify({
         "isValidSeries": is_valid, 
         "allTalkIds": talk_ids, 
         "channelId": channel_id, 
         "channelName": channel_name
     })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 @app.route('/rsscraping/allTalks', methods=["POST", "OPTIONS"])
 def publishAllTalks():
@@ -2030,7 +2032,9 @@ def publishAllTalks():
 @app.route('/rsscraping/valid', methods=["GET"])
 def getValidSeriesAndNtalks():
     url = request.args.get("url")
-    return jsonify(RSScraper.get_valid_series_and_ntalks(url))
+    response = jsonify(RSScraper.get_valid_series_and_ntalks(url))
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 @app.route('/rsscraping/scheduleTalk', methods=["POST", "OPTIONS"])
 def scrapeScheduleTalk():
     if request.method == "OPTIONS":
