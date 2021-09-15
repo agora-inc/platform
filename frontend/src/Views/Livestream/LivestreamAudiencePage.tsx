@@ -576,7 +576,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       }}
     >
       <Text weight="bold" color="white" size="14px" textAlign="center">
-        {callControl.slideShare? "Standard view" : "Slides view"}
+        {callControl.slideShare? "View speaker" : "View slides"}
       </Text>
     </Box>
     )
@@ -1085,7 +1085,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
             }
             {(callControl.slideShare || isSlideVisible) &&
-              <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} />
+              <PDFViewer url={slideUrl} slideShareId={slideShareId} />
             }
           </Box>
         </Box>

@@ -703,7 +703,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       }}
     >
       <Text weight="bold" color="white" size="14px" textAlign="center">
-        {callControl.slideShare? "Standard view" : "Slides view"}
+      {callControl.slideShare? "View speaker" : "View slides"}
       </Text>
     </Box>
     )
