@@ -6,7 +6,7 @@ import ChatBox from "../../Components/Streaming/ChatBox";
 import ChannelIdCard from "../../Components/Channel/ChannelIdCard";
 import Tag from "../../Components/Core/Tag";
 import Loading from "../../Components/Core/Loading";
-import { View } from "grommet-icons";
+import { Java } from "grommet-icons";
 import { Video, VideoService } from "../../Services/VideoService";
 import { StreamService } from "../../Services/StreamService";
 import { TalkService } from "../../Services/TalkService";
@@ -16,6 +16,8 @@ import AgoraRTM from 'agora-rtm-sdk';
 import {db, API} from '../../Services/FirebaseService'
 import { textToLatex } from "../../Components/Core/LatexRendering";
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
+import Loader from "react-loader-spinner";
+import ReactTooltip from "react-tooltip";
 
 import '../../Styles/all-stream-page.css'
 import Clapping from "../../Components/Streaming/Clapping";
@@ -27,6 +29,8 @@ import AudienceHelpButton from "../../Components/Streaming/AudienceHelpButton";
 
 
 import BeforeStartImage from "../../assets/streaming/waiting_start_image.jpeg"
+import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_invitation.jpg"
+
 
 interface Props {
   // location: { pathname: string; state: { video: Video } };
@@ -485,15 +489,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     }
   }, [talkId])
 
-  if(talkStatus === 'ENDED'){
-    return (
-      <Box align='center'>
-        <Grid margin={{ top: "xlarge", bottom: "none" }}>
-          <Text margin={{top: '20vh'}}>This talk was ended by the admin.</Text>
-        </Grid>
-      </Box>
-    )
-  }
 
   async function slideShare(slideShare: boolean) {
     if(slideShare) {
@@ -699,17 +694,82 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 {talkDetail.talk_speaker}
               </Text>
 
-              <Box
-                direction="row"
-                gap="small"
-                justify="end"
-                style={{ width: "10%" }}
-              >
-              </Box>
+              {talkStatusIcon()}
           </Box>
 
         <Text size="12px"> {talkDetail.description} </Text>
       </>
+    )
+  }
+
+  function talkStatusIcon() {
+    return (
+      <Box
+      direction="row"
+      gap="small"
+      justify="end"
+      style={{ width: "10%" }}
+      data-tip data-for='talk_status'
+    >
+      {talkStatus == "STARTED" && (
+        <>
+        <Loader
+          type="Puff"
+          color="red"
+          height="42px"
+          width="42px"
+          timeout={30000}
+        />
+        <ReactTooltip id="talk_status" effect="solid">
+            Streaming is broadcasted to audience.
+        </ReactTooltip>
+        </>
+      )}
+
+      {talkStatus == "NOT_STARTED" && (
+        <>
+          <Box
+            data-tip data-for='talk_status'
+            justify="center"
+            align="center"
+            background="color5"
+            round={"medium"}
+            onClick={() => {}}
+            height="45px"
+            width="150px"
+            focusIndicator={false}
+            direction="row"
+          >
+            <Text>Starting soon</Text>
+          </Box>
+          <ReactTooltip id="talk_status" effect="solid">
+              Speakers and admins can talk to each other but audience cannot see yet.
+            </ReactTooltip>
+        </>
+      )}
+
+      {talkStatus == "ENDED" && (
+        <>
+        <Box
+          data-tip data-for='talk_status'
+          justify="center"
+          align="center"
+          background="grey"
+          round={"medium"}
+          onClick={() => {}}
+          pad={{ horizontal: "medium", vertical: "small" }}
+          height="35px"
+          width="140px"
+          focusIndicator={false}
+        >
+          <Text>Ended</Text>
+        </Box>
+        <ReactTooltip id="talk_status" effect="solid">
+            Stream has been ended.
+          </ReactTooltip>
+      </>
+    )}
+    </Box>
     )
   }
 
@@ -799,6 +859,29 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     )
   }
 
+  function postSeminarCoffeeButton() {
+    return (
+      <a href={"https://gather.town/app/q9m3D0XU6stq8fNG/morastream%20Cafeteria"}>
+        <Box
+          justify="center"
+          align="center"
+          pad="small"
+          focusIndicator={false}
+          height="80px"
+          width="350px"
+          background="color1"
+          hoverIndicator="#BAD6DB"
+          style={{borderRadius:'6px'}}
+          onClick={()=>{
+          }}
+        >
+          <Text weight="bold" color="white" size="14px" textAlign="center">
+            <Java size="medium"/> Grab a coffee and meet your peers!
+          </Text>
+        </Box>
+      </a>
+    )
+  }
 
 
   return (
@@ -940,7 +1023,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         <img style={{ height: "100%", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-streaming"
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
-      {isTimeover && (
+      {/* {isTimeover && (
         <Box 
           margin={{ top: "xlarge", bottom: "xsmall" }} 
           style={{ 
@@ -951,7 +1034,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           {talkStatus === 'ENDED' ? <Text> Talk ended </Text> : 
           <Text>Seminar time over. It will end automatically in 15 mins.</Text> }
         </Box>
-      )}
+      )} */}
 
       <Grid
         columns={["75%", "20%"]}
@@ -985,6 +1068,16 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                   <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
                 ))}
                 <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
+              </Box>
+            )}
+
+            {talkStatus == "ENDED" && (
+              <Box background="black">
+                <img src={PostSeminarCoffeeImage} style={{position: "absolute", height:"100%", width: "80%", maxWidth: "100%", maxHeight: "100%", alignSelf: "center"}}/>
+                    
+                <Box align="center" margin={{top: "15%", bottom: "20%"}} style={{zIndex: 1}}>
+                  {postSeminarCoffeeButton()}
+                  </Box>
               </Box>
             )}
 

@@ -1071,7 +1071,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       {/* {((props.role == "admin" || props.role == "speaker") || name == "") && ( */}
       {!(storedName == "" && (props.role != "speaker" && props.role != "admin")) && (
         <Box style={{position: "absolute", left: "20px", top: "5px"}} margin={{bottom: "50px", top: "80px"}} width="100%">
-          {isTimeover && (
+          {/* {isTimeover && (
             <Box 
               margin={{ top: "xlarge", bottom: "xsmall" }} 
               style={{ 
@@ -1082,7 +1082,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               {talkStatus === 'ENDED' ? <Text> Talk ended </Text> : 
               <Text>Seminar time over. It will end automatically in 15 mins.</Text> }
             </Box>
-          )}
+          )} */}
         
           <Grid
             columns={["75%", "20%"]}
