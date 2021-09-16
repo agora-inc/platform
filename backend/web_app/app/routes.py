@@ -15,6 +15,7 @@ from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
+import time
 
 import stripe
 
@@ -2020,10 +2021,16 @@ def publishAllTalks():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-    talks = RSScraper.create_talks(
-        params['url'], params['channel_id'], params['channel_name'], params['idx'], params['topic_1_id'], 
-        params['audience_level'], params['visibility'], params['auto_accept_group']
-    )
+    log_in = 0
+    talk_ids = params['idx']
+    while len(talk_ids) != 0:
+        curr_time = time.time()
+        talks , talk_ids , logged_in = RSScraper.create_talks(
+            params['url'], params['channel_id'], params['channel_name'], talk_ids, params['topic_1_id'], 
+            params['audience_level'], params['visibility'], params['auto_accept_group'] ,talk_ids , log_in
+        )
+        yield talks
+        log_in = logged_in
 
     response =  jsonify(talks)
     response.headers.add('Access-Control-Allow-Origin', '*')
