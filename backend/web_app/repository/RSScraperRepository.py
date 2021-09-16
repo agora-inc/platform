@@ -94,10 +94,15 @@ class RSScraperRepository:
 					talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
 
 					# Description + Comments
-					e = self.driver.find_element_by_class_name('talk-details-container')
-					lst = e.text.split('\n')[:-3]
+					e = self.driver.find_element_by_xpath("//div[@class= 'talk-details-container']")
+					lst = []
+					for elem in e.find_elements_by_xpath("./child::*"):
+						if elem.text != '':
+							lst.append(elem.text)
+						else:
+							break
 					desc_idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
-					talk['description'] = '\n'.join(lst[:desc_idx - 1] + lst[desc_idx:]).replace('Abstract: ', '')
+					talk['description'] = '\n'.join(lst[:desc_idx - 1] + lst[desc_idx + 1:]).replace('Abstract: ', '')
 
 					# Audience level
 					talk['audience'] = lst[desc_idx][10:]
