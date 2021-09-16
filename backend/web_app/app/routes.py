@@ -2023,16 +2023,18 @@ def publishAllTalks():
     params = request.json
     log_in = 0
     talk_ids = params['idx']
-    while len(talk_ids) != 0:
-        curr_time = time.time()
-        talks , talk_ids , logged_in = RSScraper.create_talks(
-            params['url'], params['channel_id'], params['channel_name'], talk_ids, params['topic_1_id'], 
-            params['audience_level'], params['visibility'], params['auto_accept_group'] ,talk_ids , log_in
-        )
-        yield talks
-        log_in = logged_in
+    def stream_talks():
+        while len(talk_ids) != 0:
+            curr_time = time.time()
+            talks , talk_ids , logged_in = RSScraper.create_talks(
+                params['url'], params['channel_id'], params['channel_name'], talk_ids, params['topic_1_id'], 
+                params['audience_level'], params['visibility'], params['auto_accept_group'] ,talk_ids , log_in
+            )
+            log_in = logged_in
+            yield talks
+            
 
-    response =  jsonify(talks)
+    response =  jsonify(stream_talks())
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
