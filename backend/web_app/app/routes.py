@@ -2023,18 +2023,27 @@ def publishAllTalks():
     params = request.json
     log_in = 0
     talk_ids = params['idx']
+    with open(f"/home/cloud-user/test/routes.txt", "w") as file:
+        file.write(str(len(talk_ids)))
+
     def stream_talks():
+        with open(f"/home/cloud-user/test/fed1.txt", "w") as file:
+            file.write("done")
         while len(talk_ids) != 0:
             curr_time = time.time()
-            talks , talk_ids , logged_in = RSScraper.create_talks(
-                params['url'], params['channel_id'], params['channel_name'], talk_ids, params['topic_1_id'], 
-                params['audience_level'], params['visibility'], params['auto_accept_group'] ,talk_ids , log_in
+            with open(f"/home/cloud-user/test/fed2.txt", "w") as file:
+                file.write("done")
+
+            talks, talk_ids, logged_in = RSScraper.parse_create_talks(
+                params['url'], talk_ids, params['channel_id'], params['channel_name'], params['topic_1_id'], 
+                params['audience_level'], params['visibility'], params['auto_accept_group'] , curr_time, log_in
             )
+            with open(f"/home/cloud-user/test/fed3.txt", "w") as file:
+                file.write("done")
             log_in = logged_in
             yield talks
             
-
-    response =  jsonify(stream_talks())
+    response = jsonify(stream_talks())
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
