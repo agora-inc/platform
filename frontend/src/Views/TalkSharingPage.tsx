@@ -71,6 +71,10 @@ export default class TalkSharingPage extends Component<Props, State> {
     };
   }
 
+  componentDidMount() {
+    window.scrollTo(0, 0)
+  }
+
   componentWillMount() {
     this.fetchAll()
   }

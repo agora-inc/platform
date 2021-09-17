@@ -44,6 +44,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
       joinLobby: false,
     };
   }
+  
 
   returnRestrictedAndTitle = () => {
     if (this.props.talk.visibility === "Everybody") {
@@ -70,6 +71,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
   render() {
     const {restricted, mainTitle} = this.returnRestrictedAndTitle()
     if (this.state.joinLobby) {
+      window.scrollTo(0, 0);
       return <Redirect to={`/event/${this.props.talk.id}`} push={true} />
     } else {
       return (

@@ -168,12 +168,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Delivering hybrid academic seminars
+            Watch academic seminars and meet your next co-authors 
           </Text>
           <Text size="20px">
             <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking with speakers and audience in a 2D world!
           </Text>
-          <Box margin={this.state.renderMobileView ? {top: "30px"} : {top: "0px"}} height="40%">
+          <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>
           <InstitutionalUsers/>
@@ -228,7 +228,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           direction="row"
         >
           <Play size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Watch</b>  latest seminars</Text>
+          <Text size="18px" margin={{left: "10px"}}> <b>Watch</b>  trending seminars</Text>
         </Box>
       </Link>
 

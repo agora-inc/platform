@@ -24,6 +24,8 @@ interface State {
   chosenSubtopics: Topic[];
   audienceLevel: string[];
   allAudienceLevels: string[];
+  renderMobile: boolean
+  
 }
 
 export default class AllPastTalksPage extends Component<{}, State> {
@@ -47,6 +49,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
+      renderMobile: window.innerWidth < 800
     };
   }
 
@@ -261,7 +264,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
               round="xsmall"
               pad="xsmall"
               height="60px"
-              width="220px"
+              width={this.state.renderMobile ? "150px" : "220px"}
               justify="center"
               align="center"
               focusIndicator={false}
@@ -269,7 +272,10 @@ export default class AllPastTalksPage extends Component<{}, State> {
               margin={{ left: "0px" }}
               direction="row"
             >
-              <Text size="18px"> Upcoming seminars</Text>
+              {this.state.renderMobile 
+                ? <Text size="18px" weight="bold"> Upcoming</Text> 
+                : <Text size="18px" weight="bold"> Upcoming seminars</Text>
+              }
               {/* <Text size="22px">🔥</Text> */}
             </Box>
             </Link>
@@ -284,7 +290,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
               round="xsmall"
               pad="xsmall"
               height="60px"
-              width="180px"
+              width={this.state.renderMobile ? "150px" : "220px"}
               justify="center"
               align="center"
               focusIndicator={false}
@@ -292,7 +298,11 @@ export default class AllPastTalksPage extends Component<{}, State> {
               margin={{ left: "0px" }}
               direction="row"
             >
-              <Text size="18px" weight="bold"> Past seminars</Text>
+              {this.state.renderMobile 
+                ? <Text size="18px" weight="bold"> Past</Text> 
+                : <Text size="18px" weight="bold"> Past seminars</Text>
+              }
+              {/* <Text size="22px">🔥</Text> */}
             </Box>
             </Link>
 

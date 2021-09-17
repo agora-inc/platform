@@ -72,9 +72,9 @@ export default class TrendingTalksList extends Component<{}, State> {
         )}
         <Box margin={{ bottom: "15px", left:"8px", top: "8px" }} overflow="auto">
           {this.state.trendingTalks.map((trendingTalk: any) => (
-            <Link
+            <a
               className="channel"
-              to={`/event/${trendingTalk.id}`}
+              href={`/event/${trendingTalk.id}`}
               style={{ textDecoration: "none" }}
             >
               <Box
@@ -109,7 +109,7 @@ export default class TrendingTalksList extends Component<{}, State> {
                   </Text>
                 </Box>
               </Box>
-            </Link>
+            </a>
           ))}
         </Box>
         {/* <Link
