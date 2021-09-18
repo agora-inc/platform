@@ -251,7 +251,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           direction="row"
         >
           <Group size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Publish</b>  your own seminars</Text>
+          <Text size="18px" margin={{left: "10px"}}> <b>Publish</b>  your seminars</Text>
         </Box>
       </Link>
     </Box>
@@ -411,7 +411,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Keep up with the hottest ideas of the moment!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Keep updated with the hottest discussions of the moment!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}

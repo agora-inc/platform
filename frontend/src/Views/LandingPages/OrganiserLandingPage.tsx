@@ -247,7 +247,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           direction="row"
         >
           <Group size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Launch</b>  your own seminars</Text>
+          <Text size="18px" margin={{left: "10px"}}> <b>Launch</b>  your seminars</Text>
         </Box>
       </Link>
     </Box>
