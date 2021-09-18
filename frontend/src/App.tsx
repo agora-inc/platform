@@ -4,6 +4,7 @@ import { Grommet } from "grommet";
 import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPages/LandingPage";
 import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
+import ChannelReferralPage from "./Views/ChannelReferralPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
 // import StreamPage from "./Views/StreamPage";
@@ -42,7 +43,6 @@ function App() {
           <Route exact path="/" component={LandingPage} />
           <Route exact path="/organisers" component={OrganiserLandingPage} />
 
-
           <Route exact path="/browse" component={Home} />
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
@@ -50,7 +50,6 @@ function App() {
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
 
           <Route path="/thankyou/:status" component={AfterTransaction} />
-
           <Route path="/livestream/:encoded_endpoint" component={LivestreamPage} />
 
           <Route path="/video" component={VideoPage} />
@@ -64,6 +63,8 @@ function App() {
           <Route path="/saved" component={SavedTalksPage} />
           <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
+          <Route path="/referral" component={ChannelReferralPage} />
+
           <Route path="/info/welcome" component={InformationPage} />
           <Route path="/info/agora_creation" component={AgoraCreationPage} />
           <Route path="/info/getting-started" component={GettingStartedPage} />
