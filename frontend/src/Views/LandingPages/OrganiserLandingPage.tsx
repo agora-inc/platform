@@ -298,7 +298,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               )}
             </Box>
             <Text size="18px">
-              Your agora, or community homepage, will be the center of your organisational life. It will also be the place where your community will periodically come back! 
+              Your agora, or community homepage, will be the center of your organisational life. It will also be the place where your community will periodically come back to check out your next events! 
             </Text>
             </Box>
 
@@ -433,7 +433,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Start empowering your community by joining a worldwide network of academics!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now by attracting world-experts to your events!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "20px"}}>
                 <CreateChannelButton 
