@@ -25,6 +25,7 @@ import BackgroundImage from "../../assets/general/mora_social_media_cover_#bad6d
 import WavyArrow from "../../assets/landing_page/wavy_arrow_left_right.png"
 
 import InstitutionalUsers from "./InstitutionalUsers";
+import SeminarImage from "../../assets/general/academic_seminars_photo.jpeg"
 
 import PricingPlans from "../../Views/PricingPlans";
 
@@ -164,14 +165,22 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
   aboveTheFoldMain() {
     return (
       <>
-        <Box>
+        <Box direction="column">
           <Text size="48px" weight="bold" color="color4" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
             Empowering seminar organisers, from start to finish
           </Text>
-          <Text size="20px">
-            "I'd love to see this grow into something big." - 
-          </Text>
-          <Text>PLACEHOLDER</Text>
+          {!this.state.renderMobileView && (
+            <Box margin={{bottom: "50px"}}>
+              <CreateChannelButton 
+                      onClick={this.toggleCreateChannelOverlay} 
+                      width="400px"
+                      height="90px"
+                      text={"Publish your seminars"}
+                      textSize="18px"
+                    />
+            </Box>
+          )}
+          <InstitutionalUsers/>
         </Box>
       </>
     )
@@ -185,7 +194,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             ? { width: "90%", alignSelf: "center" } 
             : { width: "90%", marginTop: "120px", alignSelf: "center"}
           }>
-          <img src={moraStreamFullLogo} style={{maxWidth: "600px"}}/>
+          <img src={SeminarImage}/>
         </Box>
       </>
     )
@@ -346,7 +355,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               </Text>
             </Box>
             <Text size="18px"> 
-                You can use your <img src={ZoomLogo} height="14px"/> subscription but also the <img src={moraStreamFullLettersLogo} height="16px"/> streaming tech sculpted for academics, allowing you to run hybrid seminars, write LateX in chat, go back in the slides, clap for the speaker and much more!
+                You can use your <img src={ZoomLogo} height="14px"/> subscription OR the <img src={moraStreamFullLettersLogo} height="16px"/> streaming tech. The latter allows you to run hybrid seminars, write LateX in chat, go back in the slides, clap for the speaker and much more!
             </Text>
             </Box>
 
@@ -506,12 +515,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
 
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "1080px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "750px" : "100%"}
+          <Box width="80%" height={this.state.renderMobileView ? "1080px": "700px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+            <Box width={this.state.renderMobileView ? "100%" : "50%"} height={this.state.renderMobileView ? "750px" : "100%"}
               style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
               {this.aboveTheFoldMain()}
             </Box>
-            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "100px" : "100%"}>
+            <Box width={this.state.renderMobileView ? "100%" : "50%"} height={this.state.renderMobileView ? "100px" : "100%"}>
               {this.aboveTheFoldImage()}
             </Box>
           </Box>

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
+import { Group } from "grommet-icons"
 import Identicon from "react-identicons";
 import { Channel } from "../../Services/ChannelService";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
@@ -53,7 +54,7 @@ export default class CreateChannelButton extends Component<Props, State> {
           size={this.props.textSize ? this.props.textSize : "14px"}  
           color={this.props.textColor ? this.props.textColor : "white"}
           weight="bold"
-        >
+        ><Group size="medium" style={{marginRight: "10px"}}/>
             {this.props.text ? this.props.text : "Create an agora"}
         </Text>
         {/* <Text size="22.5px">🚀</Text> */}
