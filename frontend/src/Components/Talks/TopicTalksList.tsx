@@ -272,7 +272,6 @@ export default class TopicTalkList extends Component<Props, State> {
         <Box
           width="100%"
           direction="row"
-          justify="between"
           gap="medium"
           align="end"
           margin={{ 
@@ -283,57 +282,89 @@ export default class TopicTalkList extends Component<Props, State> {
         >
           {this.props.title && (
             <>
-            <Link
-            to={{ pathname: "/browse" }}
-            style={{ textDecoration: "none" }}
-            >
-            <Box
-              onClick={()=>{}}
-              background="color2"
-              round="xsmall"
-              pad="xsmall"
-              height="60px"
-              width={this.state.renderMobile ? "150px" : "220px"}
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="color2"
-              margin={{ left: "0px" }}
-              direction="row"
-            >
-              {this.state.renderMobile 
-                ? <Text size="18px" weight="bold"> Upcoming</Text> 
-                : <Text size="18px" weight="bold"> Upcoming seminars</Text>
-              }
-              {/* <Text size="22px">🔥</Text> */}
-            </Box>
-            </Link>
+            <Box width="70%" alignContent="start" direction="row">
+              <Link
+              to={{ pathname: "/browse" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color2"
+                round="xsmall"
+                pad="xsmall"
+                height="60px"
+                width={this.state.renderMobile ? "150px" : "220px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color2"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                {this.state.renderMobile 
+                  ? <Text size="18px" weight="bold"> Upcoming</Text> 
+                  : <Text size="18px" weight="bold"> Upcoming seminars</Text>
+                }
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </Link>
 
-            <Link
-            to={{ pathname: "/past" }}
-            style={{ textDecoration: "none" }}
-            >
-            <Box
-              onClick={()=>{}}
-              background="color5"
-              round="xsmall"
-              pad="xsmall"
-              height="60px"
-              width={this.state.renderMobile ? "150px" : "220px"}
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="color2"
-              margin={{ left: "0px" }}
-              direction="row"
-            >
-              {this.state.renderMobile 
-                ? <Text size="18px" weight="bold"> Past</Text> 
-                : <Text size="18px" weight="bold"> Past seminars</Text>
-              }
-              {/* <Text size="22px">🔥</Text> */}
+              <Link
+              to={{ pathname: "/past" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color5"
+                round="xsmall"
+                pad="xsmall"
+                height="60px"
+                width={this.state.renderMobile ? "150px" : "220px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color2"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                {this.state.renderMobile 
+                  ? <Text size="18px" weight="bold"> Past</Text> 
+                  : <Text size="18px" weight="bold"> Past seminars</Text>
+                }
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </Link>
             </Box>
-            </Link>
+
+            <Box width="30%" justify="end" align="end">
+            {!this.state.renderMobile && (
+              <Link
+              to={{ pathname: "/agoras" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color7"
+                round="xsmall"
+                pad="xsmall"
+                height="60px"
+                width={this.state.renderMobile ? "150px" : "220px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color6"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                <Text size="18px" weight="bold"> Give a talk</Text>
+              </Box>
+              </Link>
+              )
+            }
+            </Box>
+
+
+
             </>
           )}
 
