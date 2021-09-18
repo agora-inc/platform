@@ -265,9 +265,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "460px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+          <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
+            <Box height="230px" pad="medium" gap="10px">
+              <Box direction="row" height="75px" width="100%">
                 <Box width="70px">
                   <SearchAdvanced size="large"/>
                 </Box>
@@ -275,23 +275,28 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   Find or give a talk,
                 </Text>
               </Box>
-              <Text size="18px"> 
+              <Text size="18px" style={{alignContent: "start"}}> 
                 Browse for seminars as an attendee or apply as a speaker within a community!
               </Text>
             </Box>
-            <Box height="45%" alignSelf="end" direction="column">
-              <img src="/videos/browse.gif"/> 
+            <Box height="200px" alignSelf="center" direction="row">
+              <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", alignSelf: "center", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/browse_talk.webm" type="video/webm"/> 
+              </video>
             </Box>
           </Box>
 
-          <Box width="120px" direction="column" alignSelf="center"> 
+          <Box width="190px" direction="column" alignSelf="center"> 
             <img src={this.state.renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
               style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "460px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+          <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
+            <Box height="230px" pad="medium" gap="10px">
+              <Box direction="row" height="75px" width="100%">
                 <Box width="70px">
                   <Workshop size="large"/>
                 </Box>
@@ -299,23 +304,28 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   Attend,
                 </Text>
               </Box>
-              <Text size="18px">
-                Seminars can be run online and hybrid. Use <img src={ZoomLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech made by academics for academics (yes, you can type LateX in chat and browse slides live)!
+              <Text size="18px" style={{alignContent: "start"}}>
+                Seminars can be run online or hybrid with <img src={ZoomLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech made by academics for academics!
               </Text>
             </Box>
-            <Box height="45%" alignSelf="end" direction="column">
-              <img src="/videos/mora_streaming_gif_test.gif"/> 
+            <Box height="200px" alignSelf="center" direction="row">
+              <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/morastreaming_tech_example.webm" type="video/webm"/> 
+              </video>
             </Box>
           </Box>
 
-          <Box width="120px" direction="column" alignSelf="center"> 
+          <Box width="190px" direction="column" alignSelf="center"> 
             <img src={this.state.renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
               style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "460px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+          <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
+            <Box height="230px" pad="medium" gap="10px">
+              <Box direction="row" height="75px" width="100%">
                 <Box width="70px">
                   <Group size="large"/>
                 </Box>
@@ -323,13 +333,18 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   Mingle!
                 </Text>
               </Box>
-              <Text size="18px">
-                Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers and the audience. Many collaborations started around a coffee (mora.stream included)! 
+              <Text size="18px" style={{alignContent: "start"}}>
+                Grab an e-coffee in a 2D world and meet with speakers and audience. Many collaborations started around a coffee (mora.stream included)! 
               </Text>   
             </Box>
 
-            <Box height="45%" alignSelf="end" direction="column">
-              <img src="/videos/cafeteria-agora-minidemo.gif"/> 
+            <Box height="200px" alignSelf="center" direction="row">
+              <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/cafeteria-agora-minidemo.webm" type="video/webm"/> 
+              </video>
             </Box>
           </Box>
         </Box>

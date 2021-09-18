@@ -120,7 +120,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Box>
           </Box>
 
-          <Box height="300px" margin={{bottom: "15px"}}>
+          <Box height="200px" margin={{bottom: "15px"}}>
 
             <video 
                   autoPlay loop muted
