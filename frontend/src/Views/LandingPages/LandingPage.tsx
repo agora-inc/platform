@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-// import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
 import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
+import moraStreamFullLettersLogo from "../../assets/general/mora.stream_logo_v2.1.png";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../../Services/UserService";
 import { Search, Java, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
@@ -265,27 +265,22 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "370px" : "460px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
                   <SearchAdvanced size="large"/>
                 </Box>
                 <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Register,
+                  Find or give a talk,
                 </Text>
               </Box>
               <Text size="18px"> 
-                Register to a seminar as an attendee or apply as a speaker within a community!
+                Browse for seminars as an attendee or apply as a speaker within a community!
               </Text>
             </Box>
             <Box height="45%" alignSelf="end" direction="column">
-              <video 
-                    autoPlay loop muted
-                    style={{ height: "auto", width: "100%"}}
-                    >
-                    <source src="/videos/talk_application.mp4" type="video/mp4"/> 
-              </video>
+              <img src="/videos/browse.gif"/> 
             </Box>
           </Box>
 
@@ -294,7 +289,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "370px" : "460px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
@@ -305,7 +300,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 </Text>
               </Box>
               <Text size="18px">
-                Seminars can be run online or hybrid using a mobile app. Request the mic, browse through the slides, and clap for the speaker with your space bar!
+                Seminars can be run online and hybrid. Use <img src={ZoomLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech made by academics for academics (yes, you can type LateX in chat and browse slides live)!
               </Text>
             </Box>
             <Box height="45%" alignSelf="end" direction="column">
@@ -318,7 +313,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
+          <Box width="380px" height={this.state.renderMobileView ? "370px" : "460px"} background="color2" direction="column">
             <Box height="50%" pad="medium" gap="10px">
               <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
                 <Box width="70px">
@@ -329,17 +324,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 </Text>
               </Box>
               <Text size="18px">
-                Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers, the audience, and maybe your future co-authors!
+                Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers and the audience. Many collaborations started around a coffee (mora.stream included)! 
               </Text>   
             </Box>
 
             <Box height="45%" alignSelf="end" direction="column">
-              <video 
-                    autoPlay loop muted
-                    style={{ height: "auto", width: "100%"}}
-                    >
-                    <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
-              </video>
+              <img src="/videos/cafeteria-agora-minidemo.gif"/> 
             </Box>
           </Box>
         </Box>

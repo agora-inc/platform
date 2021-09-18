@@ -433,7 +433,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now by attracting world-experts to your events!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now by attracting new teammates to your events!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "20px"}}>
                 <CreateChannelButton 
@@ -501,10 +501,6 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           // src={BackgroundImage}
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
-
-
-
-
 
 
         <Box height="100%" width="100%">
