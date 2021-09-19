@@ -20,6 +20,8 @@ import TransportSeminars from "../Components/Homepage/TransportSeminars";
 import ZoomLogo from "../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
 import YoutubeLogo from "../assets/competitors_logo/YouTube_Logo_2017.svg.png";
 import MicrosoftTeams from "../assets/competitors_logo/youtube_logo.jpeg";
+import { strict } from "assert";
+import { number } from "prop-types";
 
 
 interface State {
@@ -42,7 +44,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       colorButton: "#EAF1F1",
       colorHover: "#BAD6DB",
       showModalGiveATalk: false,
-      showCreateChannelOverlay: false
+      showCreateChannelOverlay: false,
     };
   }
 

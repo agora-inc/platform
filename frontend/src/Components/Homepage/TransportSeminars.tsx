@@ -35,7 +35,6 @@ interface State {
   showProgressOverlay: boolean;
   isValidSeries: number; // 1 is valid, 0 otherwise
   allTalkIds: number[];
-  migrating: boolean;
   channelId: number;
   channelName: string;
   nTalksParsed: number;
@@ -57,7 +56,6 @@ export default class TransportSeminars extends Component<Props, State> {
       showProgressOverlay: false,
       isValidSeries: 0,
       allTalkIds: [],
-      migrating: true,
       channelId: -1,
       channelName: "",
       nTalksParsed: 0, 
@@ -107,6 +105,10 @@ export default class TransportSeminars extends Component<Props, State> {
     );
   }
 
+  isMigrating = () => {
+    return this.state.allTalkIds.length === 0 || this.state.nTalksParsed < this.state.allTalkIds.length
+  }
+
   isMissing = () => {
     let res: string[] = []
     if (this.state.url === "") {
@@ -120,13 +122,13 @@ export default class TransportSeminars extends Component<Props, State> {
 
   textTitle = () => {
     if (this.state.isValidSeries) {
-      if (this.state.migrating && this.state.channelId > 0) {
+      if (this.isMigrating() && this.state.channelId > 0) {
         return "Agora created!";
       }
-      if (!this.state.migrating && this.state.channelId > 0) {
+      if (!this.isMigrating() && this.state.channelId > 0) {
         return "Success!";
       }
-      if (this.state.migrating && this.state.channelId <= 0) {
+      if (this.isMigrating() && this.state.channelId <= 0) {
         return "Error...";
       }
 
@@ -159,7 +161,6 @@ export default class TransportSeminars extends Component<Props, State> {
         }
       )
     }
-    console.log("Done")
   }
   
   onSubmitClick = () => {
@@ -416,22 +417,45 @@ export default class TransportSeminars extends Component<Props, State> {
                 <Close onClick={this.toggleProgressOverlay}/>
               </Box>
             </Box>
-            {this.state.isValidSeries === 1 && this.state.migrating && (
-              <Box margin={{top: "30px", left: "30px", bottom: "90px"}} > 
-                <Text size="16px" margin={{bottom: "150px"}}>
-                  Migration in process... {this.state.nTalksParsed/this.state.allTalkIds.length} talks created
+            {this.state.isValidSeries === 1 && this.isMigrating() && (
+              <Box margin={{top: "30px", left: "30px", bottom: "40px"}} > 
+                <Text size="16px" margin={{bottom: "30px"}}>
+                  Migration of your talks in progress...
                 </Text>
+                <Box align="start">
+                  <Box
+                    round="xsmall"
+                    height="25px"
+                    width="300px" 
+                    align="start" 
+                    background="#DDDDDD" 
+                  />
+                  <Box 
+                    height="25px" 
+                    round="xsmall"
+                    style={{
+                      width: (Math.floor(300*this.state.nTalksParsed/this.state.allTalkIds.length)).toString() + "px",
+                    }}
+                    background="#0C385B"
+                    margin={{top: "-25px", bottom: "50px"}}
+                    align="start"
+                    justify="center"
+                  >
+                    <Text size="14px" alignSelf="end" margin={{right: "3px"}}>
+                      {Math.floor(100*this.state.nTalksParsed/this.state.allTalkIds.length)}%
+                    </Text>
+                  </Box>
+                </Box>
                 <Text size="14px" alignSelf="end" margin={{right: "30px"}} style={{fontStyle: "italic"}} >
                   Do not close this window
                 </Text>
               </Box>
             )}
-            {this.state.isValidSeries === 1 && !this.state.migrating && this.state.channelId > 0 && (
+            {this.state.isValidSeries === 1 && !this.isMigrating() && this.state.channelId > 0 && (
               <Box margin={{top: "30px", left: "30px"}}>
-                <Box direction="row" margin={{bottom: "20px"}} align="center" gap="10px">
-                  <Checkmark color="green" /> 
+                <Box direction="row" margin={{bottom: "20px"}} align="center">
                   <Text size="16px"> 
-                    Access to your agora by clicking below
+                    Go to your agora by clicking below
                   </Text>
                 </Box>
                 <Link
@@ -475,7 +499,7 @@ export default class TransportSeminars extends Component<Props, State> {
                 
               </Box> 
             )}
-            {/*this.state.isValidSeries === 1 && !this.state.migrating && this.state.channelId <= 0 && (
+            {/*this.state.isValidSeries === 1 && !this.isMigrating() && this.state.channelId <= 0 && (
               <Box margin={{top: "30px", left: "30px"}}>
                 <Box direction="row" margin={{bottom: "20px"}} align="center" gap="10px">
                   <Close color="red" /> 
