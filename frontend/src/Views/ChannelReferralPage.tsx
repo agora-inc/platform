@@ -18,14 +18,6 @@ import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
 
-import ZoomLogo from "../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
-import YoutubeLogo from "../assets/competitors_logo/YouTube_Logo_2017.svg.png";
-import MicrosoftTeams from "../assets/competitors_logo/youtube_logo.jpeg";
-import BackgroundImage from "../assets/general/mora_social_media_cover_#bad6db.jpg"
-import WavyArrowLeftRight from "../assets/landing_page/wavy_arrow_left_right.png"
-import WavyArrowTopBot from "../assets/landing_page/wavy_arrow_top_bot.png"
-
-
 import ThreeSidedMarketplaceGraph from "../assets/landing_page/3_sided_marketplace_graph.jpeg"
 
 import LoginModal from "../Components/Account/LoginModal";
@@ -209,8 +201,9 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
     return (
       <>
         <Box>
-          <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Invite members and get free tools
+          <Text size="20px" color="grey" margin={this.state.renderMobileView ? {top: "80px"} : {top: "120px"}}>Don't leave your colleagues behind</Text>
+          <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "20px", bottom: "40px"} : {top: "20px", bottom: "50px"}}>
+            Invite colleagues and empower your community for free
           </Text>
           <Text size="20px">
             Share your unique link via email, Facebook, or Twitter and earn free goods for each members who signs up.
@@ -231,7 +224,14 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
             ? { width: "90%", alignSelf: "center", marginTop: "20px" } 
             : { width: "90%", marginTop: "120px", alignSelf: "center"}
           }>
-          <img src={moraStreamFullLogo} style={{maxWidth: "600px"}}/>
+
+          <video 
+            autoPlay loop muted
+            style={{ height: "auto", width: "100%"}}
+            >
+            <source src="/videos/referral_page_faces_ai_generated.webm" type="video/webm"/> 
+          </video>
+
         </Box>
       </>
     )
@@ -250,51 +250,7 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
         alignContent="center"
         gap="medium"
       >
-      <Link
-        to={{ pathname: "/browse" }}
-        style={{ textDecoration: "none" }}
-      >
-        <Box
-          onClick={this.toggleModal}
-          background={this.state.colorButton}
-          round="xsmall"
-          pad="xsmall"
-          height="80px"
-          width="310px"
-          justify="center"
-          align="center"
-          focusIndicator={false}
-          hoverIndicator={this.state.colorHover}
-          margin={{ left: "0px" }}
-          direction="row"
-        >
-          <Play size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Watch</b>  trending seminars</Text>
-        </Box>
-      </Link>
-
-      <Link
-        to={{ pathname: "/organisers" }}
-        style={{ textDecoration: "none" }}
-        >
-        <Box
-          onClick={this.toggleModal}
-          background={this.state.colorButton}
-          round="xsmall"
-          pad="xsmall"
-          height="80px"
-          width="310px"
-          justify="center"
-          align="center"
-          focusIndicator={false}
-          hoverIndicator={this.state.colorHover}
-          margin={{ left: "0px" }}
-          direction="row"
-        >
-          <Group size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Publish</b>  your own seminars</Text>
-        </Box>
-      </Link>
+        PLACEHOLDER LINK SHARING
     </Box>
     )
   }
@@ -302,87 +258,11 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
   content1() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
+        <Text size="28px" margin={{top: "60px", bottom: "80px"}} color="black" alignSelf="center">
           How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-                <Box width="70px">
-                  <SearchAdvanced size="large"/>
-                </Box>
-                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Register,
-                </Text>
-              </Box>
-              <Text size="18px"> 
-                Register to a seminar as an attendee or apply as a speaker within a community!
-              </Text>
-            </Box>
-            <Box height="45%" alignSelf="end" direction="column">
-              <video 
-                    autoPlay loop muted
-                    style={{ height: "auto", width: "100%"}}
-                    >
-                    <source src="/videos/talk_application.mp4" type="video/mp4"/> 
-              </video>
-            </Box>
-          </Box>
-
-          <Box width="120px" direction="column" alignSelf="center"> 
-            <img src={this.state.renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
-              style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
-          </Box>
-
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-                <Box width="70px">
-                  <Workshop size="large"/>
-                </Box>
-                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Attend,
-                </Text>
-              </Box>
-              <Text size="18px">
-                Seminars can be run online or hybrid using a mobile app. Request the mic, browse through the slides, and clap for the speaker with your space bar!
-              </Text>
-            </Box>
-            <Box height="45%" alignSelf="end" direction="column">
-              <img src="/videos/mora_streaming_gif_test.gif"/> 
-            </Box>
-          </Box>
-
-          <Box width="120px" direction="column" alignSelf="center"> 
-            <img src={this.state.renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
-              style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
-          </Box>
-
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-                <Box width="70px">
-                  <Group size="large"/>
-                </Box>
-                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Mingle!
-                </Text>
-              </Box>
-              <Text size="18px">
-                Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers, the audience, and maybe your future co-authors!
-              </Text>   
-            </Box>
-
-            <Box height="45%" alignSelf="end" direction="column">
-              <video 
-                    autoPlay loop muted
-                    style={{ height: "auto", width: "100%"}}
-                    >
-                    <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
-              </video>
-            </Box>
-          </Box>
+          PLACEHOLDER PROGRESS BAR
         </Box>
       </>
     )
@@ -495,24 +375,24 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
         />
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "1480px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "1250px" : "100%"}
+          <Box width="80%" height={this.state.renderMobileView ? "1480px": "550px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "500px" : "100%"}>
+              {this.aboveTheFoldImage()}
+            </Box>
+            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "1250px" : "100%"}
               style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
               {this.aboveTheFoldMain()}
-            </Box>
-            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "500px" : "100%"}>
-              {this.aboveTheFoldImage()}
             </Box>
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color5" id="content">
-          <Box width="80%" height={this.state.renderMobileView ? "1750px": "760px"}  direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "1750px": "460px"}  direction="column" alignSelf="center">
             {this.content1()}
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color1">
+        {/* <Box height="100%" width="100%" background="color1">
           <Box width="80%" height={this.state.renderMobileView ? "1290px": "1100px"} direction="column" alignSelf="center">
             {this.content2()}
           </Box>
@@ -528,7 +408,7 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />
-        </Box>
+        </Box> */}
 
       </Box>
     );
