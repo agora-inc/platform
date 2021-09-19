@@ -421,6 +421,36 @@ class ChannelRepository:
         except Exception as e:
             return str(e)
 
+    def increaseChannelReferralCount(self, channelId):
+        try:
+            increase_counter_query = f'''
+                UPDATE ChannelReferrals
+                    SET num_referrals = num_referrals + 1
+                    WHERE channel_id = {channelId};'''
+            res = self.db.run_query(increase_counter_query)
+
+            if type(res) == list:
+                if res[0] == 0 and res[1] == 0:
+                    initialise_counter_query = f'''
+                        INSERT INTO ChannelReferrals (channel_id, num_referrals) 
+                            VALUES ({channelId}, 1);
+                    '''
+                    res = self.db.run_query(initialise_counter_query)
+                    return "ok" 
+
+        except Exception as e:
+            return str(e)
+
+    def getChannelReferalCount(self, channelId):
+        get_counter_query = f'''
+            SELECT * FROM ChannelReferrals 
+                WHERE channel_id = {channelId};
+            '''
+        try:
+            return self.db.run_query(get_counter_query)[0]["num_referrals"]
+        except Exception as e:
+            return str(e)
+
     def editChannelTopic(self, channelId, topic_1_id, topic_2_id, topic_3_id):
         topicsQuery = f'''
             UPDATE Channels
