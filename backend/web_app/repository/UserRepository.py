@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 import os
 import jwt
 from repository.InstitutionRepository import InstitutionRepository
+from repository.ChannelRepository import ChannelRepository
+channel = ChannelRepository.ChannelRepository()
 from mailing.sendgridApi import sendgridApi
 
 # for emails
@@ -57,7 +59,7 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password, email):
+    def addUser(self, username, password, email, channelId = 0):
         email = str(email).lower()
 
         if self.getUserByEmail(email):
@@ -70,6 +72,12 @@ class UserRepository:
         passwordHash = generate_password_hash(password)
         query = f'INSERT INTO Users(username, password_hash, email) VALUES ("{username}", "{passwordHash}", "{email}")'
         userId = self.db.run_query(query)[0]
+
+        # check if user has been referred by a channel
+        # let me know if you also want to add the user as a follower to an agora automatically
+        if(ChannelRepository.getChannelById(channelId)):
+            channel.increaseChannelReferralCount()
+            # channel.acceptMembershipApplication(channelId, self.getUserById(username) )
 
         # check if user has been invited to some agoras
         query_existing_invitations = f'''

@@ -133,7 +133,8 @@ def addUser():
     username = params['username']
     password = params['password']
     email = params['email']
-    user = users.addUser(username, password, email)
+    refChannel = params['channelId']
+    user = users.addUser(username, password, email, refChannel)
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
@@ -393,6 +394,18 @@ def increaseViewCountForChannel():
     params = request.json 
     channelId = params["channelId"]
     return jsonify(channels.increaseChannelViewCount(channelId))
+
+@app.route('/channels/referrals/get', methods=["GET"])
+def getReferralsForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelReferalCount(channelId))
+
+# don't really think this is needed , but adding this in a comment anyways
+# @app.route('/channels/referrals/add', methods=["POST"])
+# def increaseReferralsForChannel():
+#     params = request.json 
+#     channelId = params["channelId"]
+#     return jsonify(channels.increaseChannelReferralCount(channelId))
 
 @app.route('/channels/updatecolour', methods=["POST", "OPTIONS"])
 def updateChannelColour():
@@ -695,6 +708,12 @@ def getMailingList():
 
     channelId = int(request.args.get("channelId"))
     return jsonify(mailinglist.getMailingList(channelId))
+
+# --------------------------------------------
+# x Referral ROUTES ( empower page)
+# --------------------------------------------
+# @app.route('/empower', methods=["GET", "OPTIONS"])
+
 
 # --------------------------------------------
 # x Membership ROUTES
