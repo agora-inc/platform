@@ -62,104 +62,88 @@ class RSScraperRepository:
 			idx = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
 			return 1, idx, channel['id'], name
 
-	def parse_create_talks(self, url_agora, idx, channel_id, channel_name, topic_1_id, audience_level, visibility, auto_accept_group, time_epoch, logged_in = 0):
-		if not logged_in : self._login()
+	def parse_create_talks(self, url_agora, idx, channel_id, channel_name, topic_1_id, audience_level, visibility, auto_accept_group):
+		# self._login()
 
 		# Talks
 		url_talks = url_agora.replace("/seminar/", "/talk/")
 		talks = []
 		
-		
 		for i in idx:
-			if time.time() - time_epoch < 28:
-				try:
-					self.driver.get(url_talks + f"/{i}")
-					talk = {}
-					lst_link = self.driver.find_elements_by_xpath('//a')
+			self.driver.get(url_talks + f"/{i}")
+			talk = {}
+			lst_link = self.driver.find_elements_by_xpath('//a')
 
-					# Title
-					talk['title'] = self.driver.find_element_by_xpath("//h1").text
+			# Title
+			talk['title'] = self.driver.find_element_by_xpath("//h1").text
 
-					#Topics
-					topics = list(self.driver.find_elements_by_xpath("//p//span[@class='topic_label']"))
-					talk['topics'] = [t.text for t in topics][:3]
-					if len(talk['topics']) < 3:
-						talk['topics'] += [None] * (3 - len(talk['topics']))
+			#Topics
+			topics = list(self.driver.find_elements_by_xpath("//p//span[@class='topic_label']"))
+			talk['topics'] = [t.text for t in topics][:3]
+			if len(talk['topics']) < 3:
+				talk['topics'] += [None] * (3 - len(talk['topics']))
 
-					# Speaker 
-					talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
-					talk['speaker_url'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
+			# Speaker 
+			talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
+			talk['speaker_url'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
 
-					# Time
-					str_time = self.driver.find_element_by_xpath('//b').text
-					talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
+			# Time
+			str_time = self.driver.find_element_by_xpath('//b').text
+			talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
 
-					# Description + Comments
-					e = self.driver.find_element_by_xpath("//div[@class= 'talk-details-container']")
-					lst = []
-					for elem in e.find_elements_by_xpath("./child::*"):
-						if elem.text != '':
-							lst.append(elem.text)
-						else:
-							break
-					desc_idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
-					talk['description'] = '\n'.join(lst[:desc_idx - 1] + lst[desc_idx + 1:]).replace('Abstract: ', '')
+			# Description + Comments
+			e = self.driver.find_element_by_xpath("//div[@class= 'talk-details-container']")
+			lst = []
+			for elem in e.find_elements_by_xpath("./child::*"):
+				if elem.text != '':
+					lst.append(elem.text)
+				else:
+					break
+			desc_idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
+			talk['description'] = '\n'.join(lst[:desc_idx - 1] + lst[desc_idx + 1:]).replace('Abstract: ', '')
 
-					# Audience level
-					talk['audience'] = lst[desc_idx][10:]
+			# Audience level
+			talk['audience'] = lst[desc_idx][10:]
 
-					# Link
-					talk['link'] = RSScraperRepository._get_href(lst_link, "available")
+			# Link
+			talk['link'] = RSScraperRepository._get_href(lst_link, "available")
 
-					# Slides and video
-					talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
-					talk['video'] = RSScraperRepository._get_href(lst_link, "video")
+			# Slides and video
+			talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
+			talk['video'] = RSScraperRepository._get_href(lst_link, "video")
 
-					# Store in database
-					talk_created = self.talkRepo.scheduleTalk(
-						channelId=channel_id, 
-						channelName=channel_name, 
-						talkName=talk['title'], 
-						startDate=str(talk['start_time']), 
-						endDate=str(talk['end_time']), 
-						talkDescription=talk['description'], 
-						talkLink=talk['link'], 
-						talkTags=[], 
-						showLinkOffset=15, 
-						visibility=visibility, 
-						cardVisibility="Everybody", 
-						topic_1_id=topic_1_id, 
-						topic_2_id=None, 
-						topic_3_id=None,
-						talk_speaker=talk['speaker'], 
-						talk_speaker_url=talk['speaker_url'], 
-						published=1, 
-						audience_level=audience_level, 
-						auto_accept_group=auto_accept_group, 
-						auto_accept_custom_institutions=False, 
-						customInstitutionsIds=[], 
-						reminder1=None, 
-						reminder2=None, 
-						reminderEmailGroup=[],
-						email_on_creation=False,
-					)
+			# Store in database
+			talk_created = self.talkRepo.scheduleTalk(
+				channelId=channel_id, 
+				channelName=channel_name, 
+				talkName=talk['title'], 
+				startDate=str(talk['start_time']), 
+				endDate=str(talk['end_time']), 
+				talkDescription=talk['description'], 
+				talkLink=talk['link'], 
+				talkTags=[], 
+				showLinkOffset=15, 
+				visibility=visibility, 
+				cardVisibility="Everybody", 
+				topic_1_id=topic_1_id, 
+				topic_2_id=None, 
+				topic_3_id=None,
+				talk_speaker=talk['speaker'], 
+				talk_speaker_url=talk['speaker_url'], 
+				published=1, 
+				audience_level=audience_level, 
+				auto_accept_group=auto_accept_group, 
+				auto_accept_custom_institutions=False, 
+				customInstitutionsIds=[], 
+				reminder1=None, 
+				reminder2=None, 
+				reminderEmailGroup=[],
+				email_on_creation=False,
+			)
 
-					with open(f"/home/cloud-user/test/talk.txt", "w") as file:
-						file.write(str(talk_created))
+			talks.append(talk_created)
 
-					talks.append(talk_created)
-
-					# Remove idx from list
-					idx.remove(i)
-
-				except Exception as e:
-					print(e)
-					pass
-
-			if len(idx) == 0 : self.driver.quit()
-			logged_in = 1
-
-		return talks, idx, logged_in
+		return talks
 
 	@staticmethod
 	def _get_all_talks_id(lst):

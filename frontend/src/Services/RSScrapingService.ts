@@ -21,7 +21,7 @@ const createAgoraGetTalkIds = (
 	)
 } 
 
-const scheduleAllTalks = (
+const scheduleTalks = async (
 	url: string,
 	channelId: number, 
 	channelName: string, 
@@ -33,7 +33,7 @@ const scheduleAllTalks = (
 	callback: any
 ) => {
 	post(
-		`rsscraping/allTalks`,
+		`rsscraping/talks`,
 		{
 			url: url,
 			channel_id: channelId, 
@@ -138,7 +138,7 @@ const getChannelAllTalks = (
 
 export const RSScraping = {
 	createAgoraGetTalkIds,
-	scheduleAllTalks,
+	scheduleTalks,
 	// scrapeScheduleTalk,
 	// getValidSeriesAndNtalks,
 	// getChannelAllTalks

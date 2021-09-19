@@ -14,6 +14,34 @@ import SignUpButton from "../Account/SignUpButton";
 import ChannelTopicSelector from "../Channel/ChannelTopicSelector";
 
 
+async function scheduleAllTalks(
+  url: string, 
+  channelId: number,
+  channelName: string,
+  talkIds: number[],
+  topicId: number,
+  audienceLevel: string,
+  registration: string,
+  autoAcceptGroup: "Everybody" | "Academics" | "None",
+) {
+  var chunks = [], i = 0, n = talkIds.length;
+  while (i < n) {
+    chunks.push(talkIds.slice(i, Math.min(i+10, n)))
+    i += 10
+  }
+
+  console.log("chunks", chunks)
+
+  for (const ids of chunks) {
+    const talks = await RSScraping.scheduleTalks(
+      url, channelId, channelName, ids, topicId,
+      audienceLevel, registration, autoAcceptGroup, () => {}
+    )
+    console.log(talks)
+  }
+}
+
+
 interface Props {
 	user: User | null;
 }
@@ -144,24 +172,17 @@ export default class TransportSeminars extends Component<Props, State> {
           this.setState({ channelId: res.channelId })
           this.setState({ channelName: res.channelName })
           this.toggleProgressOverlay()
-          RSScraping.scheduleAllTalks(
-            this.state.url, 
-            res.channelId, 
-            res.channelName, 
-            res.allTalkIds,
-            this.state.topics[0].id,
+          scheduleAllTalks(this.state.url, 
+            res.channelId, res.channelName, res.allTalkIds,
+            this.state.topics[0].id, 
             this.state.audienceLevel, 
-            this.state.onRegistration ? "Members only" : "Everybody",
-            this.state.autoAcceptGroup,
-            (is_valid: number) => {
-              this.setState({nTalksParsed: this.state.nTalksParsed + is_valid})
-            }
+            this.state.onRegistration ? "Members only" : "Everybody", 
+            this.state.autoAcceptGroup
           )
         }
       )
     }
   }
-
 
   /*
   onSubmitClick = () => {
