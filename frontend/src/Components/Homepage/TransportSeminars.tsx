@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { User } from "../../Services/UserService";
+import { Talk } from "../../Services/TalkService";
 import { Topic } from "../../Services/TopicService";
 import { ChannelService } from "../../Services/ChannelService";
 import { RSScraping } from "../../Services/RSScrapingService";
@@ -14,32 +15,7 @@ import SignUpButton from "../Account/SignUpButton";
 import ChannelTopicSelector from "../Channel/ChannelTopicSelector";
 
 
-async function scheduleAllTalks(
-  url: string, 
-  channelId: number,
-  channelName: string,
-  talkIds: number[],
-  topicId: number,
-  audienceLevel: string,
-  registration: string,
-  autoAcceptGroup: "Everybody" | "Academics" | "None",
-) {
-  var chunks = [], i = 0, n = talkIds.length;
-  while (i < n) {
-    chunks.push(talkIds.slice(i, Math.min(i+10, n)))
-    i += 10
-  }
 
-  console.log("chunks", chunks)
-
-  for (const ids of chunks) {
-    const talks = await RSScraping.scheduleTalks(
-      url, channelId, channelName, ids, topicId,
-      audienceLevel, registration, autoAcceptGroup, () => {}
-    )
-    console.log(talks)
-  }
-}
 
 
 interface Props {
@@ -158,6 +134,33 @@ export default class TransportSeminars extends Component<Props, State> {
       return "Not found..."
     }
   }
+
+  async scheduleAllTalks(
+    channelId: number,
+    channelName: string,
+    talkIds: number[],
+  ) {
+    var chunks = [], i = 0, n = talkIds.length;
+    while (i < n) {
+      chunks.push(talkIds.slice(i, Math.min(i+5, n)))
+      i += 5
+    }
+  
+    for (const ids of chunks) {
+      await RSScraping.scheduleTalks(
+        this.state.url, 
+        channelId, channelName, ids, 
+        this.state.topics[0].id,
+        this.state.audienceLevel, 
+        this.state.onRegistration ? "Members only" : "Everybody",
+        this.state.autoAcceptGroup, 
+        (talks: Talk[]) => {
+          this.setState({nTalksParsed: this.state.nTalksParsed + talks.length})
+        }
+      )
+    }
+    console.log("Done")
+  }
   
   onSubmitClick = () => {
     // Try if the series indeed exists and create agora
@@ -172,13 +175,7 @@ export default class TransportSeminars extends Component<Props, State> {
           this.setState({ channelId: res.channelId })
           this.setState({ channelName: res.channelName })
           this.toggleProgressOverlay()
-          scheduleAllTalks(this.state.url, 
-            res.channelId, res.channelName, res.allTalkIds,
-            this.state.topics[0].id, 
-            this.state.audienceLevel, 
-            this.state.onRegistration ? "Members only" : "Everybody", 
-            this.state.autoAcceptGroup
-          )
+          this.scheduleAllTalks(res.channelId, res.channelName, res.allTalkIds)
         }
       )
     }
@@ -422,10 +419,10 @@ export default class TransportSeminars extends Component<Props, State> {
             {this.state.isValidSeries === 1 && this.state.migrating && (
               <Box margin={{top: "30px", left: "30px", bottom: "90px"}} > 
                 <Text size="16px" margin={{bottom: "150px"}}>
-                  Migration of your talks...
+                  Migration in process... {this.state.nTalksParsed/this.state.allTalkIds.length} talks created
                 </Text>
                 <Text size="14px" alignSelf="end" margin={{right: "30px"}} style={{fontStyle: "italic"}} >
-                  Do not close this window...
+                  Do not close this window
                 </Text>
               </Box>
             )}
@@ -434,7 +431,7 @@ export default class TransportSeminars extends Component<Props, State> {
                 <Box direction="row" margin={{bottom: "20px"}} align="center" gap="10px">
                   <Checkmark color="green" /> 
                   <Text size="16px"> 
-                    Access to your agora by clicking below.
+                    Access to your agora by clicking below
                   </Text>
                 </Box>
                 <Link
