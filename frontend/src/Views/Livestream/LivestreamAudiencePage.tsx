@@ -119,7 +119,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   const [callControl, _setCallControl] = useState({
     mic: false,
-    fullscreen: false
+    fullscreen: false,
+    slideShare: false,
     // video: false
   } as Control)
   const [cc, setCallControl] = useState({} as any)
@@ -417,6 +418,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     })()
   }, [])
 
+  // Set all Firestore listening ports
   useEffect(()=>{
     if(!talkId) {
       return
@@ -426,11 +428,11 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         return
       }
       let data = doc.data() as any
-      // Start chat + video
+
+      // Start chat + video + init clapping
       if(data.status == "NOT_STARTED" || data.status == "STARTED"){
         setup()
       }
-      
       if(data.status === 'STARTED') {
         setTalkStatus(data.status)
       }
@@ -444,6 +446,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       }
     })
 
+    // listen to mic requests
     let request_unsubs = db.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
@@ -463,6 +466,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       }
     })
 
+    // listen to slides (grab url, SlideShareId, and set listening port)
     let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
@@ -477,7 +481,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       }
       let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
-      
+
+      // automatically displays slides when speaker uploads slides (i.e. slide URL is known)
       setSlideShareId(req[0].id)
       toggleSlide(true)
     })
@@ -490,17 +495,18 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   }, [talkId])
 
 
-  async function slideShare(slideShare: boolean) {
-    if(slideShare) {
-      let req = await API.slideShare(localUser.uid, talkId) as any
-      setSlideShareId(req.id)
-      setCallControl({slideShare: true})
-    }else{
-      let req = await API.slideStop(slideShareId) as any
-      setSlideShareId('')
-      setCallControl({slideShare: false})
-    }
-  }
+  // SLIDE SHARING (speaker + admin ONLY)
+  // async function slideShare(slideShare: boolean) {
+  //   if(slideShare) {
+  //     let req = await API.slideShare(localUser.uid, talkId) as any
+  //     setSlideShareId(req.id)
+  //     setCallControl({slideShare: true})
+  //   }else{
+  //     let req = await API.slideStop(slideShareId) as any
+  //     setSlideShareId('')
+  //     setCallControl({slideShare: false})
+  //   }
+  // }
 
   ///////////////////////
   // Frontend methods
@@ -567,16 +573,16 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       style={{borderRadius:'6px'}}
       onClick={()=>{
         if (talkStatus == "STARTED"){
-          if (callControl.slideShare){
-            slideShare(false)
+          if (isSlideVisible){
+            toggleSlide(false)
           } else {
-            slideShare(true)
+            toggleSlide(true)
           }
         }
       }}
     >
       <Text weight="bold" color="white" size="14px" textAlign="center">
-        {callControl.slideShare? "View speaker" : "View slides"}
+        {isSlideVisible? "View speaker" : "View slides"}
       </Text>
     </Box>
     )
@@ -1084,7 +1090,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
             { isScreenAvailable && 
                 <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
             }
-            {(callControl.slideShare || isSlideVisible) &&
+            {(isSlideVisible) &&
               <PDFViewer url={slideUrl} slideShareId={slideShareId} />
             }
           </Box>

@@ -309,7 +309,7 @@ export default class UserManager extends Component<Props, State> {
           <Box
             height={{max: "120px"}}
             overflow="auto"
-            align="center"
+            align="start"
           >
             {this.state.followingChannels.length === 0 && (
               <Text size="12px" color="#BBBBBB" style={{fontStyle: "italic"}}> The agoras you follow will be displayed here </Text>
