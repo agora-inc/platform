@@ -5,6 +5,7 @@ import ReactCrop, { Crop } from "react-image-crop";
 import 'react-image-crop/dist/ReactCrop.css'
 
 interface Props {
+  aspect?: number | null
   visible: boolean,
   src: any,
   onCanceledCallback?: any,
@@ -23,7 +24,7 @@ export default class CropImageModal extends Component<Props, State> {
       crop: {
         unit: "%",
         width: 50,
-        aspect: 3 / 1
+        aspect: props.aspect ? props.aspect : 3 / 1
       },
       croppedImageUrl: '',
     }

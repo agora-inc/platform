@@ -24,6 +24,7 @@ import SlidesUploader from "../Core/SlidesUploader";
 import CopyUrlButton from "../Core/ShareButtons/CopyUrlButton";
 import { encryptIdAndRoleInUrl } from "../Core/Encryption/UrlEncryption"
 import { basePoint } from "../../config";
+import ImageCropUploader from "./ImageCropUploader";
 
 
 interface Props {
@@ -215,6 +216,10 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.props.callback()
   };
 
+  onSpeakerPhotoUpload = (file: File) => {
+
+  };
+
   formatDate = (d: string) => {
     const date = new Date(d);
     const dateStr = date.toDateString().slice(0, -4);
@@ -346,6 +351,17 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               <Text weight="bold" size="14px" color="grey">
                 {this.props.talk.channel_name}
               </Text>
+              <div style={{position: 'absolute', top: 10, right: 10, zIndex: 5}}>
+              <ImageCropUploader
+                text="Upload speaker pic"
+                onUpload={this.onSpeakerPhotoUpload}
+                width="100px"
+                height="20px"
+                textSize="10px"
+                hideToolTip={true}
+                aspect={2 / 3}
+              />
+              </div>
             </Box>
             <Text
               size="14px"

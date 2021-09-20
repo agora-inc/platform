@@ -10,6 +10,9 @@ interface Props {
   onUpload: (file: File) => void;
   width?: string;
   height?: string;
+  textSize?: string;
+  hideToolTip?: boolean;
+  aspect?: number;
 }
 
 interface State {
@@ -31,7 +34,6 @@ export default class ImageCropUploader extends Component<Props, State> {
   };
 
   onFileChange = (e: any) => {
-    // this.props.onClick();
     const fileReader = new FileReader()
     fileReader.onloadend = () => {
       this.setState({src: fileReader.result })
@@ -53,6 +55,7 @@ export default class ImageCropUploader extends Component<Props, State> {
         focusIndicator={true}
         hoverIndicator="#DDDDDD"
         data-tip data-for='link_to_talk_info'
+        onClick={(e: any) => e.stopPropagation()}
       >
         <input
           type="file"
@@ -60,13 +63,16 @@ export default class ImageCropUploader extends Component<Props, State> {
           className="input-hidden"
           onChange={this.onFileChange}
         ></input>
-          <Text size="14px" weight="bold" color="black">
+          <Text size={this.props.textSize ? this.props.textSize : "14px"} weight="bold" color="black">
             {this.props.text + " "} 
-            <ReactTooltip id='link_to_talk_info' place="bottom" effect="solid">
-              <p>Recommended dim: 1500x500px</p>
-            </ReactTooltip>
+            {!this.props.hideToolTip && (
+              <ReactTooltip id='link_to_talk_info' place="bottom" effect="solid">
+                <p>Recommended dim: 1500x500px</p>
+              </ReactTooltip>
+            )}
           </Text>
         <CropImageModal
+          aspect={this.props.aspect}
           visible={this.state.showModal}
           src={this.state.src}
           onCanceledCallback={this.toggleModal}
