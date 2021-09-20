@@ -359,7 +359,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 height="20px"
                 textSize="10px"
                 hideToolTip={true}
-                aspect={2 / 3}
+                aspect={3 / 2}
               />
               </div>
             </Box>
