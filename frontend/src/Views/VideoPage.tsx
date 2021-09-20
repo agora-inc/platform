@@ -7,7 +7,7 @@ import Tag from "../Components/Core/Tag";
 import Loading from "../Components/Core/Loading";
 import { View } from "grommet-icons";
 import { Video, VideoService } from "../Services/VideoService";
-import VideoPlayer from "../Components/Streaming/VideoPlayer";
+import VideoPlayer from "../Components/Streaming/OldStuff/VideoPlayer";
 
 interface Props {
   location: { pathname: string; state: { video: Video } };

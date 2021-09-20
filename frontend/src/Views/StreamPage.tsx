@@ -4,7 +4,7 @@ import DescriptionAndQuestions from "../Components/Streaming/OldStuff/Descriptio
 import ChatBox from "../Components/Streaming/OldStuff/ChatBox";
 import Loading from "../Components/Core/Loading";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
-import VideoPlayer from "../Components/Streaming/VideoPlayer";
+import VideoPlayer from "../Components/Streaming/OldStuff/VideoPlayer";
 import { View } from "grommet-icons";
 import { Stream, StreamService } from "../Services/StreamService";
 import Clapping from "../Components/Streaming/Clapping/Clapping";

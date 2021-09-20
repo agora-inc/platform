@@ -10,7 +10,7 @@ import { Java } from "grommet-icons";
 import { Video, VideoService } from "../../Services/VideoService";
 import { StreamService } from "../../Services/StreamService";
 import { TalkService } from "../../Services/TalkService";
-import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
+import VideoPlayerAgora from "../../Components/Streaming/VideoPlayer/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {db, API} from '../../Services/FirebaseService'
@@ -22,7 +22,7 @@ import ReactTooltip from "react-tooltip";
 import '../../Styles/all-stream-page.css'
 import Clapping from "../../Components/Streaming/Clapping/Clapping";
 import { ChannelService } from "../../Services/ChannelService";
-import PDFViewer from "../../Components/PDFViewer";
+import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 
 
 import AudienceHelpButton from "../../Components/Streaming/HelpButtons/AudienceHelpButton";

@@ -1,11 +1,11 @@
 import React, { Component, useState, useEffect, useRef } from "react";
 import { Box, Text, Button } from "grommet";
 import { Link } from "react-router-dom";
-import { Stream } from "../Services/StreamService";
-import "../Styles/videocard.css";
-import { baseApiUrl } from "../config";
+import { Stream } from "../../../Services/StreamService";
+import "../../../Styles/videocard.css";
+import { baseApiUrl } from "../../../config";
 import { Document, Page , pdfjs } from 'react-pdf/dist/esm/entry.webpack';
-import { db, API } from "../Services/FirebaseService";
+import { db, API } from "../../../Services/FirebaseService";
 
 interface Props {
     url: string;

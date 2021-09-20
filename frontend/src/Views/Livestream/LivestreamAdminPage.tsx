@@ -12,7 +12,7 @@ import { Video, VideoService } from "../../Services/VideoService";
 import { StreamService } from "../../Services/StreamService";
 import { TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
-import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
+import VideoPlayerAgora from "../../Components/Streaming/VideoPlayer/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
@@ -26,7 +26,7 @@ import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_i
 
 import '../../Styles/all-stream-page.css'
 import Clapping from "../../Components/Streaming/Clapping/Clapping";
-import PDFViewer from "../../Components/PDFViewer";
+import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 
 
 interface Props {
