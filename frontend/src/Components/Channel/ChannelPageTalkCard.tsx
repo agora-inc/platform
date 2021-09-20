@@ -351,7 +351,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               <Text weight="bold" size="14px" color="grey">
                 {this.props.talk.channel_name}
               </Text>
-              <div style={{position: 'absolute', top: 10, right: 10, zIndex: 5}}>
+              <div style={{position: 'absolute', top: 10, right: 10}}>
               <ImageCropUploader
                 text="Upload speaker pic"
                 onUpload={this.onSpeakerPhotoUpload}
