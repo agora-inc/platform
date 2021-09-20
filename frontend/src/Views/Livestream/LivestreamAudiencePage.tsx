@@ -20,12 +20,12 @@ import Loader from "react-loader-spinner";
 import ReactTooltip from "react-tooltip";
 
 import '../../Styles/all-stream-page.css'
-import Clapping from "../../Components/Streaming/Clapping";
+import Clapping from "../../Components/Streaming/Clapping/Clapping";
 import { ChannelService } from "../../Services/ChannelService";
 import PDFViewer from "../../Components/PDFViewer";
 
 
-import AudienceHelpButton from "../../Components/Streaming/AudienceHelpButton";
+import AudienceHelpButton from "../../Components/Streaming/HelpButtons/AudienceHelpButton";
 
 
 import BeforeStartImage from "../../assets/streaming/waiting_start_image.jpeg"

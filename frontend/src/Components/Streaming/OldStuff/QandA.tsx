@@ -4,7 +4,7 @@ import { QandAService } from "../../../Services/QandAService";
 import { UserService, User } from "../../../Services/UserService";
 import { Add, Refresh } from "grommet-icons";
 import Loading from "../../Core/Loading";
-import LatexInput from "../LatexInput";
+import LatexInput from "../ChatBox/LatexInput";
 import Identicon from "react-identicons";
 // Choose other components
 // import { CaretUpOutlined, CaretDownOutlined } from "@ant-design/icons";

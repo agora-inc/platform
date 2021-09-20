@@ -2,16 +2,16 @@ import React, { Component } from "react";
 import { Box, Layer, Button, TextInput, Text } from "grommet";
 import { Help} from "grommet-icons";
 
-import { Overlay } from "../Core/Overlay";
+import { Overlay } from "../../Core/Overlay";
 import ReactTooltip from "react-tooltip";
 import { StatusInfo } from "grommet-icons";
-import SlidesUploader from "../Core/SlidesUploader";
-import { TalkService } from "../../Services/TalkService";
-import shareScreenButtonImage from "../../assets/tutorial_images/streaming/share_screen_button.jpeg";
-import moveSlidesViewButtonImage from "../../assets/tutorial_images/streaming/move_to_slides_view.png";
-import uploadButtonImage from "../../assets/tutorial_images/streaming/upload_button_image.png";
-import slidesButtonImage from "../../assets/tutorial_images/streaming/slides_button.png";
-import AgoraLogo from "../../assets/general/agora_logo_v2.png";
+import SlidesUploader from "../../Core/SlidesUploader";
+import { TalkService } from "../../../Services/TalkService";
+import shareScreenButtonImage from "../../../assets/tutorial_images/streaming/share_screen_button.jpeg";
+import moveSlidesViewButtonImage from "../../../assets/tutorial_images/streaming/move_to_slides_view.png";
+import uploadButtonImage from "../../../assets/tutorial_images/streaming/upload_button_image.png";
+import slidesButtonImage from "../../../assets/tutorial_images/streaming/slides_button.png";
+import AgoraLogo from "../../../assets/general/agora_logo_v2.png";
 
 
 interface Props {

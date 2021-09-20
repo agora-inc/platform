@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Box, Layer, Button, TextInput, Text } from "grommet";
-import { Overlay } from "../Core/Overlay";
+import { Overlay } from "../../Core/Overlay";
 import ReactTooltip from "react-tooltip";
 import { Help } from "grommet-icons";
 

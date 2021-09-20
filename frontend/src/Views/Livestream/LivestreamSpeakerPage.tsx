@@ -28,7 +28,7 @@ import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_i
 
 // Speaker-only features
 import SlidesUploader from "../../Components/Core/SlidesUploader";
-import SpeakerHelpButton from "../../Components/Streaming/SpeakerHelpButton"
+import SpeakerHelpButton from "../../Components/Streaming/HelpButtons/SpeakerHelpButton"
 
 import BeforeStartImage from "../../assets/streaming/waiting_start_image.jpeg"
 

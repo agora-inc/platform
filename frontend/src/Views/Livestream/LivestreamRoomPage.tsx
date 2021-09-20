@@ -22,11 +22,11 @@ import '../../Styles/all-stream-page.css'
 import PDFViewer from "../../Components/PDFViewer";
 
 // Admin-only features
-import Clapping from "../../Components/Streaming/Clapping";
+import Clapping from "../../Components/Streaming/Clapping/Clapping";
 
 // Speaker-only features
 import SlidesUploader from "../../Components/Core/SlidesUploader";
-import SpeakerHelpButton from "../../Components/Streaming/SpeakerHelpButton"
+import SpeakerHelpButton from "../../Components/Streaming/HelpButtons/SpeakerHelpButton"
 
 
 interface Props {

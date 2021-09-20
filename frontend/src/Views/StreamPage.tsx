@@ -7,7 +7,7 @@ import ChannelIdCard from "../Components/Channel/ChannelIdCard";
 import VideoPlayer from "../Components/Streaming/VideoPlayer";
 import { View } from "grommet-icons";
 import { Stream, StreamService } from "../Services/StreamService";
-import Clapping from "../Components/Streaming/Clapping";
+import Clapping from "../Components/Streaming/Clapping/Clapping";
 
 interface Props {
   location: { pathname: string; state: { stream: Stream } };
@@ -19,8 +19,8 @@ interface State {
 }
 
 const claps = {
-  clapBase: require("../assets/auditorium.mp3"),
-  clapUser: require("../assets/applause-7.mp3"),
+  clapBase: require("../../assets/auditorium.mp3"),
+  clapUser: require("../../assets/applause-7.mp3"),
 };
 
 export default class VideoPage extends Component<Props, State> {
