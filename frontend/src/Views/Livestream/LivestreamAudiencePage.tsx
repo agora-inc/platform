@@ -568,8 +568,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       pad="small"
       focusIndicator={false}
       height="50px"
-      background={talkStatus == "NOT_STARTED" ? "grey" : "color1"}
-      hoverIndicator={talkStatus == "NOT_STARTED" ? "grey" : "#BAD6DB"}
+      background={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "color1"}
+      hoverIndicator={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "#BAD6DB"}
       style={{borderRadius:'6px'}}
       onClick={()=>{
         if (talkStatus == "STARTED"){
@@ -1090,7 +1090,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
             { isScreenAvailable && 
                 <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
             }
-            {(isSlideVisible) &&
+            { isSlideVisible &&
               <PDFViewer url={slideUrl} slideShareId={slideShareId} />
             }
           </Box>

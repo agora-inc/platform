@@ -176,7 +176,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     setTalkDetail(talk)
   }
 
-  async function setup() {
+  async function setup_connection_video_and_screen_sharing() {
     // fetch talk details
     fetchTalkDetails()
 
@@ -424,17 +424,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         return
       }
       let data = doc.data() as any
-
+      setTalkStatus(data.status)
       // Start chat + video
       if(data.status == "NOT_STARTED" || data.status == "STARTED"){
-        setup()
-      }
-
-      if(data.status === 'STARTED') {
-        setTalkStatus(data.status)
-      }
-      if(data.status === 'ENDED') {
-        setTalkStatus(data.status)
+        setup_connection_video_and_screen_sharing()
       }
     })
 
@@ -463,9 +456,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
         setCallControl({ slideShare: false})
       }
-      
     })
-
 
     return ()=>{
       leave()
@@ -503,6 +494,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               {screenShareButton()}
               <SlidesUploader
                 text={slidesGotUploaded ? "Uploaded ✔️ (click to reupload)" : "Upload slides"}
+                disabled={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED")}
                 onUpload={(e: any) => {
                   TalkService.uploadSlides(
                     props.talkId, 
@@ -582,8 +574,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         pad="small"
         focusIndicator={false}
         height="50px"
-        background="color1"
-        hoverIndicator="#BAD6DB"
+        background={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "color1"}
+        hoverIndicator={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "#BAD6DB"}
         style={{borderRadius:'6px'}}
         onClick={()=>{
           if (callControl.screenShare){
@@ -690,8 +682,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       pad="small"
       focusIndicator={false}
       height="50px"
-      background="color1"
-      hoverIndicator="#BAD6DB"
+      background={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "color1"}
+      hoverIndicator={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "#BAD6DB"}
       style={{borderRadius:'6px'}}
       onClick={()=>{
         if (callControl.slideShare){
@@ -1251,7 +1243,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                   <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
               }
               {(callControl.slideShare || isSlideVisible) &&
-                <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} />
+                <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={(role == "speaker")} />
               }
             </Box>
           </Box>
