@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
 import { Box, Grid, Text, Layer, Button, TextInput } from "grommet";
 import { useLocation, Link } from "react-router-dom";
-import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
-import ChatBox from "../../Components/Streaming/ChatBox";
+// import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
+// import ChatBox from "../../Components/Streaming/ChatBox";
 import ChannelIdCard from "../../Components/Channel/ChannelIdCard";
 import Tag from "../../Components/Core/Tag";
 import Loading from "../../Components/Core/Loading";

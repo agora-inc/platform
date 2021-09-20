@@ -1,7 +1,7 @@
 import React, { useRef, useReducer, Component } from "react";
 import { Box, Grid, Text, Layer, Button } from "grommet";
-import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
-import ChatBox from "../Components/Streaming/ChatBox";
+import DescriptionAndQuestions from "../Components/Streaming/OldStuff/DescriptionAndQuestions";
+import ChatBox from "../Components/Streaming/OldStuff/ChatBox";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
 import Tag from "../Components/Core/Tag";
 import Loading from "../Components/Core/Loading";

@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Box, Grid, Text, TextInput, Layer, Button, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
-import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
-import ChatBox from "../../Components/Streaming/ChatBox";
+// import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
+// import ChatBox from "../../Components/Streaming/ChatBox";
 import ChannelIdCard from "../../Components/Channel/ChannelIdCard";
 import Tag from "../../Components/Core/Tag";
 import Loading from "../../Components/Core/Loading";

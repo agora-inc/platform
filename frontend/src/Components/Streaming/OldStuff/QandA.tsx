@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
-import { QandAService } from "../../Services/QandAService";
-import { UserService, User } from "../../Services/UserService";
+import { QandAService } from "../../../Services/QandAService";
+import { UserService, User } from "../../../Services/UserService";
 import { Add, Refresh } from "grommet-icons";
-import Loading from "../Core/Loading";
-import LatexInput from "./LatexInput";
+import Loading from "../../Core/Loading";
+import LatexInput from "../LatexInput";
 import Identicon from "react-identicons";
 // Choose other components
 // import { CaretUpOutlined, CaretDownOutlined } from "@ant-design/icons";
-import "../../Styles/q-and-a.css";
+import "../../../Styles/q-and-a.css";
 import { InlineMath } from "react-katex";
 
 type Answer = {
