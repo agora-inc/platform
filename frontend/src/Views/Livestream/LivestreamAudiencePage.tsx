@@ -418,7 +418,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     })()
   }, [])
 
-  // Set all Firestore listening ports
+  // Set all Firestore listening ports (slides + clapping + video)
   useEffect(()=>{
     if(!talkId) {
       return

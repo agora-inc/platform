@@ -38,9 +38,16 @@ const API = {
         let r = await db.collection('talk').doc(talk_id).update({status: 'ENDED'});
         return true
     },
-    thankTheSpeaker: async (talk_id:string, value=true) =>{
-        let r = await db.collection('talk').doc(talk_id).update({isClapping: value, clapping_status: Math.floor(10000 + Math.random()*10000)});
-    },
+    thankTheSpeaker: async (talk_id:string) =>{
+        // Event triggered by updating isClapping to "true"
+        let r1 = await db.collection('talk').doc(talk_id).update({isClapping: true, clapping_status: Math.floor(10000 + Math.random()*10000)});
+        
+        // 5sec later, back to "false" to clean event
+        let r2 = setTimeout(
+            () => {
+                db.collection('talk').doc(talk_id).update({isClapping: false, clapping_status: Math.floor(10000 + Math.random()*10000)})
+            }, 5000);
+        },
 
     ////////////////////////////
     // Mic API calls
@@ -93,9 +100,6 @@ const API = {
         }
         return await db.collection('slide').add({pageNumber: 1, talk_id, user_id});
     },
-
-
-
 
     // (For other people)
     slideNavigate: async (slide_id:string, pageNumber:number=1) => {

@@ -965,8 +965,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   function talkDetailsDescription() {
     return (
-      <>
-        <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="5px">
+        <>
+          <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="5px">
               <Link
                   className="channel"
                   to={`/${talkDetail.channel_name}`}
@@ -990,13 +990,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                         borderRadius: 15,
                       }}
                     >
-                        <img
-                          src={ChannelService.getAvatar(
-                            talkDetail.channel_id
-                          )}
-                          height={30}
-                          width={30}
-                        />
+                      <img
+                        src={ChannelService.getAvatar(
+                          talkDetail.channel_id
+                        )}
+                        height={30}
+                        width={30}
+                      />
                     </Box>
                     <Box justify="between">
                       <Text weight="bold" size="16px" color="grey">
@@ -1028,9 +1028,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               >
               </Box>
           </Box>
-
-        <Text size="12px"> {talkDetail.description} </Text>
-      </>
+          <Text size="12px"> {talkDetail.description} </Text>
+        </>
     )
   }
 
