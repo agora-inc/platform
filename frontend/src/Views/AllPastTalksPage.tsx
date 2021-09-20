@@ -9,6 +9,9 @@ import { Topic, TopicService } from "../Services/TopicService";
 import TopicClassification from "../Components/Homepage/TopicClassification";
 import MediaQuery from "react-responsive";
 import "../Styles/landing-page.css";
+import "../Styles/home.css";
+import { Link } from "react-router-dom";
+import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
 
 interface State {
   totalNumberOfTalks: number;
@@ -21,6 +24,8 @@ interface State {
   chosenSubtopics: Topic[];
   audienceLevel: string[];
   allAudienceLevels: string[];
+  renderMobile: boolean
+  
 }
 
 export default class AllPastTalksPage extends Component<{}, State> {
@@ -44,6 +49,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
+      renderMobile: window.innerWidth < 800
     };
   }
 
@@ -220,62 +226,123 @@ export default class AllPastTalksPage extends Component<{}, State> {
   render() {
     var breakpoint_width = 992
     return (
+      <>
+      <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+      src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+      />
       <Box
         pad={{ top: "10vh", bottom: "100px" }}
         align="center"
-        style={{ overflowY: "scroll" }}
+        style={{ overflowY: "auto" }}
         onScroll={this.handleScroll}
+        margin={{left: "8%", right: "8%"}}
       >
-        <video
+        {/* <video
           autoPlay loop muted id="background-landing"
           style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
         >
           <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
-        </video>
-        <Box width="90%" margin={{ left: "2.5%" }}>
+        </video> */}
+        <Box align="center">
+          <TrendingTalksList />
+        </Box>
+        <Box width="90%">
+
+
           <Box
             direction="row"
             width="100%"
             justify="between"
-            align="end"
+            align="start"
             margin={{ bottom: "medium" }}
           >
-            <Heading
-              color="black"
-              size="24px"
-              margin={{ bottom: "15px" }}
-              style={{ height: "20px" }}
-            >
-              All previous talks
-            </Heading>
-            {/* <Box direction="row" align="center" gap="xsmall">
-              <Text color="black" weight="bold">
-                Filter by
-              </Text>
-              <SmallSearchBar placeholder="search tags" />
-            </Box> */}
-            {/* <Box
-              direction="row"
-              align="center"
-              gap="xsmall"
-              margin={{ right: "2.5%" }}
-            >
-              <Text color="black" weight="bold">
-                Sort by
-              </Text>
-              <SmallSelector
-                callback={(sortBy: string) =>
-                  this.setState({ sortBy: sortBy.toLowerCase() })
+            <Box width="70%" alignContent="start" direction="row">
+              <Link
+              to={{ pathname: "/browse" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color5"
+                round="xsmall"
+                pad="xsmall"
+                height="60px"
+                width={this.state.renderMobile ? "150px" : "220px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color2"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                {this.state.renderMobile 
+                  ? <Text size="18px" weight="bold"> Upcoming</Text> 
+                  : <Text size="18px" weight="bold"> Upcoming seminars</Text>
                 }
-              />
-            </Box> */}
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </Link>
+
+              <Link
+              to={{ pathname: "/past" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color2"
+                round="xsmall"
+                pad="xsmall"
+                height="60px"
+                width={this.state.renderMobile ? "150px" : "220px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color2"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                {this.state.renderMobile 
+                  ? <Text size="18px" weight="bold"> Past</Text> 
+                  : <Text size="18px" weight="bold"> Past seminars</Text>
+                }
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </Link>
+            </Box>
+
+            <Box width="30%" justify="end" align="end">
+            {!this.state.renderMobile && (
+              <Link
+              to={{ pathname: "/agoras" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color7"
+                round="xsmall"
+                pad="xsmall"
+                height="60px"
+                width={this.state.renderMobile ? "150px" : "220px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color6"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                <Text size="18px" weight="bold"> Give a talk</Text>
+              </Box>
+              </Link>
+              )
+            }
+            </Box>
           </Box>
 
           <MediaQuery minDeviceWidth={992}>
           <Box 
-            width="97.5%" 
-            margin={{"bottom": "50px", "left": "5px"}}
-            background="#EEEEEE"
+            width="100%" 
+            margin={{"bottom": "50px"}}
+            background="color6"
             direction="row"
             pad="12px"
             round="xsmall"
@@ -293,12 +360,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
                   pad="5px"
                   width="80%"
                   justify="center"
-                  align="center"
+                  align="start"
                   focusIndicator={false}
                   margin="3px"
                   hoverIndicator="#DDDDDD"
                 >
-                  <Text size="12px">
+                  <Text size="12px" margin={{left: "5px"}}>
                     {topic.field}
                   </Text>
                 </Box>
@@ -323,12 +390,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
                     pad="5px"
                     width="90%"
                     justify="center"
-                    align="center"
+                    align="start"
                     focusIndicator={false}
                     margin="3px"
                     hoverIndicator="#DDDDDD"
                   >
-                    <Text size="12px">
+                    <Text size="12px" margin={{left: "5px"}}>
                       {topic.field}
                     </Text>
                   </Box>
@@ -347,12 +414,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
                     pad="5px"
                     width="90%"
                     justify="center"
-                    align="center"
+                    align="start"
                     focusIndicator={false}
                     margin="3px"
                     hoverIndicator="#DDDDDD"
                   >
-                    <Text size="12px">
+                    <Text size="12px" margin={{left: "5px"}}>
                       {topic.field}
                     </Text>
                   </Box>
@@ -375,12 +442,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
                   pad="5px"
                   width="90%"
                   justify="center"
-                  align="center"
+                  align="start"
                   focusIndicator={false}
                   margin="3px"
                   hoverIndicator="#DDDDDD"
                 >
-                  <Text size="12px">
+                  <Text size="12px" margin={{left: "5px"}}>
                     {txt}
                   </Text>
                 </Box>
@@ -458,6 +525,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
           </Box>
         )} */}
       </Box>
+      </>
     );
   }
 }

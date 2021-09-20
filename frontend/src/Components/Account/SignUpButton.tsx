@@ -7,6 +7,9 @@ import { Overlay } from "../Core/Overlay";
 
 interface Props {
   callback: any;
+  width?: string;
+  height?: string;
+  textSize?: string;
 }
 
 interface State {
@@ -16,6 +19,9 @@ interface State {
   password: string;
   confirmPassword: string;
   email: string;
+  width: string;
+  height: string;
+  textSize: string;
 }
 
 export default class SignUpButton extends Component<Props, State> {
@@ -28,6 +34,9 @@ export default class SignUpButton extends Component<Props, State> {
       password: "",
       confirmPassword: "",
       email: "",
+      width: this.props.width ? this.props.width : "100px",
+      height: this.props.height ? this.props.height : "35px",
+      textSize: this.props.textSize ? this.props.textSize : "14px"
     };
   }
 
@@ -68,7 +77,7 @@ export default class SignUpButton extends Component<Props, State> {
 
   render() {
     return (
-      <Box style={{maxHeight: "30px"}}>
+      <Box style={this.props.height ? {} : {maxHeight: "30px"}}>
         <Box
           onClick={this.toggleModal}
           background="#0C385B"
@@ -76,11 +85,11 @@ export default class SignUpButton extends Component<Props, State> {
           focusIndicator={false}
           align="center"
           justify="center"
-          width="100px"
-          height="35px"
+          width={this.state.width}
+          height={this.state.height}
           round="xsmall"
         >
-          <Text size="14px" weight="bold"> Sign up </Text>
+          <Text size={this.state.textSize} weight="bold"> Sign up </Text>
         </Box>
         <Overlay
           width={400}

@@ -79,7 +79,7 @@ export default class Carousel extends Component<Props, State> {
 
   ifStreams = () => {
     return (
-      <Box width="100%">
+      <Box width="100%" margin={{bottom: "20px"}}>
         <Text size="26px" weight="bold" color="black" margin="none">
           Happening now
         </Text>
@@ -101,7 +101,9 @@ export default class Carousel extends Component<Props, State> {
   render() {
     return (
       <>
-        <TrendingTalksList />
+        <Box align="center">
+          <TrendingTalksList />
+        </Box>
         <Box
         // width="100%"
         // height="100%"

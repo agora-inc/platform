@@ -71,6 +71,10 @@ export default class TalkSharingPage extends Component<Props, State> {
     };
   }
 
+  componentDidMount() {
+    window.scrollTo(0, 0)
+  }
+
   componentWillMount() {
     this.fetchAll()
   }
@@ -179,6 +183,12 @@ export default class TalkSharingPage extends Component<Props, State> {
           <meta name="twitter:title" content={talk.name} />
           <meta name="twitter:description" content={talk.description} />
         </Helmet>
+
+        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+          // src={BackgroundImage}
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+        />
+        
         <Box
           margin={{
             top: "10vh", 

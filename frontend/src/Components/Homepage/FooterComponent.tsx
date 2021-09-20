@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Box, Text, Anchor, Heading } from "grommet";
+import { Twitter, Linkedin } from "grommet-icons";
 import "../../Styles/footer.css";
 import FormContainer from "./FormContainer";
+import { Link } from "react-router-dom";
 
 export default class FooterComponent extends Component {
   render() {
@@ -27,15 +29,11 @@ export default class FooterComponent extends Component {
         />
         <Box direction="row" justify="between">
           <Box gap="xsmall" width="50%">
-            {/* <a href="/info/welcome" style={{ color: "grey" }}>
-              About us
-            </a> */}
-            {/* <a href="/info/getting-started" style={{ color: "grey" }}>
-              Getting started
-            </a> */}
-            <a>
+            <p> <a href="https://www.linkedin.com/company/morastream"><Linkedin/></a> <a href="https://twitter.com/morastream"><Twitter/></a></p>
+
+            {/* <a>
               <FormContainer />
-            </a>
+            </a> */}
             <a href="/info/tos" style={{ color: "grey" }}>
               Terms of service
             </a>

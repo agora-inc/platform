@@ -554,6 +554,10 @@ export default class ChannelPage extends Component<Props, State> {
     } else {
       return (
         <Box align="center">
+          <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+            // src={BackgroundImage}
+            src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+          />
           {this.shouldRedirect() ? (
             <Redirect
               to={{

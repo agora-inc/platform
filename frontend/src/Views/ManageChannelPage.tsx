@@ -720,15 +720,20 @@ export default class ManageChannelPage extends Component<Props, State> {
       );
     } else {
       return this.isAllowed() ? (
-        <Box
-         
+        <>
+        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+          // src={BackgroundImage}
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+        />
+        
+        <Box 
           align="center"
           style={{
             position: "absolute",
             top: "5vw",
           }}
 
-        >
+        >        
           <Box
              width="75%"
             height="100%"
@@ -1346,6 +1351,7 @@ export default class ManageChannelPage extends Component<Props, State> {
             </Box>
           </Box>
         </Box>
+      </>
       ) : (
         <Redirect
           to={{
