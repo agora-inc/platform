@@ -13,7 +13,7 @@ import MediaQuery from "react-responsive";
 import ScrollIntoView from 'react-scroll-into-view'
 import ReactTooltip from "react-tooltip";
 import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
-
+import { Channel, ChannelService } from "../Services/ChannelService";
 import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
@@ -23,14 +23,17 @@ import ThreeSidedMarketplaceGraph from "../assets/landing_page/3_sided_marketpla
 import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
 
+
 interface State {
-  user: User | null
+  channel: Channel | null;
+  channelId: number;
   showLogin: boolean
   colorButton: string
   colorHover: string
   showModalGiveATalk: boolean;
   renderMobileView: boolean;
-  showCreateChannelOverlay: boolean
+  showCreateChannelOverlay: boolean;
+  referralCount: number;
 }
 
 //
@@ -81,14 +84,51 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
     super(props);
     this.state = {
       renderMobileView: (window.innerWidth < 1200),
-      user: UserService.getCurrentUser(),
+      channel: null,
+      channelId: 0,
       showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
       colorButton: "color1",
       colorHover: "color5",
       showModalGiveATalk: false,
-      showCreateChannelOverlay: false
+      showCreateChannelOverlay: false,
+      referralCount: NaN,
     };
   }
+
+  componentWillMount() {
+    this.getChannel();
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+        this.setState({channelId: channel.id})
+      }
+    );
+  }
+
+  fetchChannelReferralCount = () => {
+    ChannelService.getReferralsForChannel(
+      this.state.channel!.id,
+      (referralCount: number) => {
+        this.setState({ referralCount });
+      }
+    );
+  };
+
+  getChannel = () => {
+    ChannelService.getChannelByName(
+      this.props.location.pathname.split("/")[1],
+      (channel: Channel) => {
+          this.setState(
+            {
+              channel: channel,
+            },
+            () => {
+              this.fetchChannelReferralCount();
+            }
+          );
+      }
+    );
+  };
 
   componentDidUpdate(prevProps: RouteComponentProps) {
     if (this.props.location !== prevProps.location) {
@@ -206,8 +246,40 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
             Invite colleagues and empower your community for free
           </Text>
           <Text size="20px">
-            Share your unique link via email, Facebook, or Twitter and earn free goods for each members who signs up.
+            Share your unique link via email, Facebook, or Twitter and earn exciting rewards for each members who signs up.
           </Text>
+          <Text 
+                  size="16px"
+                  color="#999999"
+                  weight="bold"
+                  margin={{bottom: "6px", right: "20px"}}
+                >
+                  {this.state.referralCount} referrals
+                </Text>
+                <div style = {{
+                height: '30px',
+                width: '50%',
+                backgroundColor: 'whitesmoke',
+                borderRadius: 40,
+                margin: 50
+            }}>
+                <div style = {{
+                    height: '100%',
+                    width: `${this.state.referralCount/50}%`,
+                    backgroundColor: "#99ccff",
+                    borderRadius:40,
+                    textAlign:'right'
+                }}>
+                    <span style={{
+                        padding: 10,
+                        color: 'black',
+                        fontWeight: 900
+                    }}>
+                        {`${this.state.referralCount} referrals done`}
+                    </span>
+                
+                </div>
+            </div>
           <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>
@@ -355,7 +427,7 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
                   this.toggleCreateChannelOverlay();
                 }}
                 visible={true}
-                user={this.state.user}
+                user={null}
               />
             )}
       </>
