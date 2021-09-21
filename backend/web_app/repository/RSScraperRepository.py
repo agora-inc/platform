@@ -25,6 +25,7 @@ class RSScraperRepository:
 			options=options, 
 			executable_path='/home/cloud-user/plateform/agora/backend/web_app/chromedriver_linux64/chromedriver'
 		)
+		self._login()
 
 	def _login(self):
 		USERNAME = "revolutionisingresearch@gmail.com"
@@ -39,14 +40,15 @@ class RSScraperRepository:
 			return True
 		except NoSuchElementException:
 			return False
+		
 
 	def create_agora_and_get_talk_ids(self, url_agora, user_id, topic_1_id):
 		if "https://researchseminars.org/seminar/" not in url_agora:
-			return 0, []
+			return 0, [], -1, ""
 
 		self.driver.get(url_agora)
 		if self.driver.find_element_by_id("title").text == 'Page not found':
-			return 0, []
+			return 0, [], -1, ""
 		else:
 			# Create channel
 			name = self.driver.find_element_by_xpath("//h1").text
