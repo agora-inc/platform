@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Box, Text, TextArea, Image, Grid } from "grommet";
+import { Box, Text, TextArea, Image, Grid, Layer } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
+import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
@@ -18,19 +20,23 @@ import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
+import PricingPlans from "../Views/PricingPlans";
 import { baseApiUrl } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, SettingsOption, Group, DocumentText, Resources } from "grommet-icons";
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, Checkmark, 
+  MailOption, SettingsOption, Group, DocumentText, Resources, Configure } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
 import RequestsTab from "./ManageChannelPage/RequestsTab";
 import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
+import EmailsTab from "./ManageChannelPage/EmailsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
-import agoraLogo from "../assets/general/agora_logo_v2.png";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
+
 
 interface Props {
   location: any;
@@ -72,6 +78,9 @@ interface State {
   saveButtonFade: boolean;
   topicId: number;
   field: string;
+  showModalPricing: boolean;
+  allPlansId: number[];
+  subscriptionPlans: string[];
 }
 
 export default class ManageChannelPage extends Component<Props, State> {
@@ -111,6 +120,9 @@ export default class ManageChannelPage extends Component<Props, State> {
       saveButtonFade: false,
       topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
       field: "",
+      showModalPricing: false,
+      allPlansId: [],
+      subscriptionPlans: ["free"],
     };
   }
 
@@ -202,6 +214,33 @@ export default class ManageChannelPage extends Component<Props, State> {
     );
   };
 
+  getChannelSubscriptions = () => {
+    if (this.props.channel) {
+      ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+        this.props.channel.id, 
+        (allPlansId: number[]) => {
+          this.setState({ allPlansId })
+          this.setState({
+            subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+          })
+        }
+      );
+    }
+  }
+
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
+  }
+
   storeUserData = () => {
     ChannelService.increaseViewCountForChannel(
       this.state.channel!.id,
@@ -213,7 +252,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.fetchFollowerCount();
     this.fetchOwners();
     this.fetchMembers();
-    // this.fetchFollowers(); // NOTE: follower tech globally disabled atm
+    this.fetchFollowers();
     this.fetchInvitedMembers();
     this.fetchPastTalks();
     this.fetchCurrentTalks();
@@ -372,9 +411,6 @@ export default class ManageChannelPage extends Component<Props, State> {
       listEmailCorrect.push(email.toLowerCase())};
       strEmailWrong = strEmailWrong.replace(email, "");
     }
-    
-    console.log("step2 mailinglist state", this.state.listEmailCorrect)
-
 
     // clean box if empty
     strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
@@ -383,7 +419,7 @@ export default class ManageChannelPage extends Component<Props, State> {
     }
 
     // send invitations for admissible emails
-    ChannelService.addInvitedMembersToChannel(
+    ChannelService.addFollowingMembersToChannel(    
       this.state.channel!.id,
       listEmailCorrect,
       () => {},
@@ -459,11 +495,11 @@ export default class ManageChannelPage extends Component<Props, State> {
     let border = "none";
 
     return {
-      width: "75vw",
+      width: "100%",
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
       background: background,
-      backgroundSize: "75vw 25vw",
+      backgroundSize: "100vw 33vw",
       border: border,
     };
   };
@@ -472,13 +508,19 @@ export default class ManageChannelPage extends Component<Props, State> {
     this.setState({ bannerExtended: !this.state.bannerExtended });
   };
 
+  toggleModalPricing = () => {
+    this.setState({ showModalPricing: !this.state.showModalPricing });
+  };
+
   SavedButtonClicked = () => {
     this.setState({ topicSaved: true });
     this.setState({ saveButtonFade: true});
     ChannelService.editChannelTopic(
       this.state.channel!.id,
       this.state.topics,
-      () => {console.log("channel topic saved");}
+      () => {
+        // console.log("channel topic saved");
+      }
     );
     return (
       <Box></Box>
@@ -530,7 +572,7 @@ export default class ManageChannelPage extends Component<Props, State> {
   banner = () => {
     return (
       <Box
-        width="75vw"
+        // width="75vw"
         background="white"
         round="10px"
         margin={{ bottom: "60px" }}
@@ -618,10 +660,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <p>Recommended avatar dim: 400x400px</p>
                     </ReactTooltip>
               </Box>
-              <DeleteAgoraButton
-                name={this.state.channel!.name}
-                id={this.state.channel!.id}
-                />
             </Box>
             </Box>
           </Box>
@@ -666,13 +704,14 @@ export default class ManageChannelPage extends Component<Props, State> {
             />
           </>
         )}
+        
       </Box>
     );
   };
 
   render() {
     const { channel } = this.state;
-    // console.log(this.state.listEmailCorrect)
+
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
@@ -681,31 +720,37 @@ export default class ManageChannelPage extends Component<Props, State> {
       );
     } else {
       return this.isAllowed() ? (
-        <Box>
+        <>
+        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+          // src={BackgroundImage}
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+        />
+        
+        <Box 
+          align="center"
+          style={{
+            position: "absolute",
+            top: "5vw",
+          }}
+
+        >        
           <Box
-            width="100%"
+             width="75%"
             height="100%"
             align="center"
-            margin={{ top: "100px" }}
+
           >
-            <Box width="75%" align="start">
+            <Box align="start">
               {this.state.role === "owner" && (
-                <Box direction="row" gap="40vw">
+                <Box direction="row" align="center" alignContent="end" gap="17vw">
                   <ScheduleTalkButton
                     margin={{ bottom: "10px" }}
                     channel={this.state.channel}
+                    user={this.state.user}
                     onCreatedCallback={this.fetchAllTalks}
                   />
-                  <Box
-                    width="20vw"
-                    height="40px"
-                    justify="center"
-                    align="center"
-                    pad="small"
-                    round="xsmall"
-                    background="#D7F75B"
-                  >
-                    <Text size="14px" weight="bold">
+                  <Box direction="row" alignContent="end">
+                    <Text size="14px" weight="bold" color="grey">
                       You are an administrator
                     </Text>
                   </Box>
@@ -713,24 +758,88 @@ export default class ManageChannelPage extends Component<Props, State> {
               )}
               {this.banner()}
 
-
-              <Box margin={{ top: "10px", bottom: "20px" }}>
+              <Box direction="row" align="start"  margin={{ top: "10px", bottom: "10px" }}>
                 <Text
-                    size="24px"
-                    weight="bold"
-                    color="black"
-                    margin={{ top: "10px", bottom: "10px" }}
-                  >
-                    {<UserAdmin />} {`Administrator panel`}{" "}
-                  </Text>
-                  <Text size="14">
-                    For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="brand">
-                      <Text color="brand" weight="bold" size="14px">
-                      getting-started page.
-                      </Text>
-                    </Link>
-                    </Text>
+                  size="24px"
+                  weight="bold"
+                  color="black"
+                  style={{width: "69vw"}}
+                >
+                  {<UserAdmin />} {`Administrator panel`}{" "}
+                </Text>
+
+                <Box
+                  onClick={this.toggleModalPricing}
+                  background="#0C385B"
+                  round="xsmall"
+                  pad="xsmall"
+                  width="160px"
+                  height="40px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator="#BAD6DB"
+                >
+                  <Text size="14px" weight="bold"> Pricing options </Text>
                 </Box>
+              </Box>
+
+              
+              { /* this.state.user && 
+              (
+                <>
+                  <StreamingCheckoutPaymentButton
+                    channelId={this.state.channelId}
+                    user={this.state.user}
+                    audienceSize={"big"}
+                    tier={"tier1"}
+                    productType={"subscription"}
+                    quantity={1}
+                    text={"vasy subscribe mec"}
+                  />
+                  <CancelSubscriptionsButton
+                  channelId={this.state.channelId}
+                  
+                  />
+              </>
+              ) */}
+
+              {this.state.showModalPricing && (
+                <Layer
+                  onEsc={this.toggleModalPricing}
+                  onClickOutside={this.toggleModalPricing}
+                  modal
+                  responsive
+                  animation="fadeIn"
+                  style={{
+                    width: "1000px",
+                    height: "65%",
+                    borderRadius: 15,
+                    padding: 0,
+                  }}
+                >
+                  <PricingPlans 
+                    callback={this.toggleModalPricing}
+                    disabled={false}
+                    channelId={this.state.channelId}
+                    userId={this.state.user ? this.state.user.id : null}
+                    showDemo={false}
+                    headerTitle={false} 
+                  />
+
+                </Layer>
+              )}
+              
+
+
+              <Text size="14" margin={{ bottom: "20px" }}>
+                For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="color1">
+                  <Text color="color1" weight="bold" size="14px">
+                  getting-started page.
+                  </Text>
+                </Link>
+              </Text>
+              
 
 
               <Tabs>
@@ -744,6 +853,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Tab>
                   <Tab>
+                  <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <MailOption />
+                      <Text size="14px"> 
+                        Mailing list 
+                      </Text>
+                    </Box>
+                    
+                  </Tab>
+                  <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <Group />
                       <Text size="14px"> 
@@ -751,23 +870,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
-                  {/*<Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <MailOption />
-                      <Text size="24px"> 
-                        Mailing list 
-                      </Text>
-                    </Box>
-                  </Tab>*/}
+
                   <Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
-                      <Resources />
-                      <Text size="14px"> 
-                        Memberships
-                      </Text>
-                    </Box>
-                  </Tab>
-                  <Tab>
+                    <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <DocumentText />
                       <Text size="14px"> 
@@ -775,18 +880,45 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
+
                   <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                      <Configure />
+                      <Text size="14px"> 
+                        Settings 
+                      </Text>
+                    </Box>
+                  </Tab>
+                  {/* 
+                    TAB FOR MEMBERSHIP APPLICATION:
+                  
+                  <Tab>
+                    <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
+                      <Resources />
+                      <Text size="14px"> 
+                        Memberships
+                      </Text>
+                    </Box>
+                  </Tab> */}
+
+                  {/* <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <SettingsOption />
                       <Text size="14px"> 
                         Details 
                       </Text>
                     </Box>
-                  </Tab>
+                  </Tab> */}
                 </TabList>
                 
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                  <ScheduleTalkButton
+                    margin={{ top: "20px", bottom: "40px" }}
+                    channel={this.state.channel}
+                    user={this.state.user}
+                    onCreatedCallback={this.fetchAllTalks}
+                  />
                   <Box
                     width="100%"
                     direction="row"
@@ -807,7 +939,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     />
                     {this.state.showDraftInfo && (
                       <ReactTooltip id='draftInfo' place="right" effect="solid">
-                        These talks are only visible to you.
+                        These drafts are only visible to you.
                       </ReactTooltip>
                     )}
                   </Box>
@@ -824,10 +956,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       margin={{ bottom: "36px" }}
                     >
                       <Text size="14px" weight="bold" color="grey">
-                        No draft saved in{" "}
-                        {this.state.channel
-                          ? this.state.channel.name
-                          : "this channel"}
+                        Future drafts will saved here
                       </Text>
                     </Box>
                   )}
@@ -937,6 +1066,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
 
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                  <EmailsTab channelId={channel!.id} />
+                </TabPanel>
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
                   <Box direction="column">
@@ -986,7 +1118,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         </Box>
                       </Box>
 
-                      <Box
+                      {/* <Box
                         width="58%"
                         height="180px"
                         background="#e5e5e5"
@@ -997,7 +1129,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           <Text weight="bold" size="14px" color="black">
                           <img src={agoraLogo} style={{ height: "14px"}}/> members
                           </Text>
-                          {/* {this.state.role === "owner" && (
+                          {this.state.role === "owner" && (
                             <AddUsersButton
                               role="member"
                               existingUsers={this.state.channelMembers}
@@ -1008,7 +1140,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                                 this.fetchFollowers();
                               }}
                             />
-                          )} */}
+                          )}
                         </Box>
                         <Box
                           direction="row"
@@ -1025,44 +1157,17 @@ export default class ManageChannelPage extends Component<Props, State> {
                             />
                           ))}
                         </Box>
-                      </Box>
-
-{/* 
-                      <Box
-                        width="31.5%"
-                        height="250px"
-                        round="7.5px"
-                        pad="10px"
-                      >
-                        <Text weight="bold" size="20px" color="black" margin={{bottom: "10px"}}>
-                          Invited members
-                        </Text>
-                        {this.state.listInvitedMembers && (
-                          <Box
-                            direction="column"
-                            width="100%"
-                            height="100%"
-                            overflow={{"vertical": "scroll", "horizontal": "auto"}} 
-                            margin={{ top: "5px" }}
-                            gap="xsmall"
-                          >
-                            {this.state.listInvitedMembers.map((item) =>
-                              <Text> {item} </Text>
-                            )}
-                          </Box>
-                        )}                        
                       </Box> */}
 
 
-                      {/*       
                       <Box
-                        width="31.5%"
-                        height="250px"
+                        width="58.5%"
+                        height="180px"
                         background="#e5e5e5"
                         round="7.5px"
                         pad="10px"
-                      >
-                        <Text weight="bold" size="20px" color="black">
+                        >
+                        <Text weight="bold" size="14px" color="black">
                           Followers
                         </Text>
                         <Box
@@ -1070,19 +1175,17 @@ export default class ManageChannelPage extends Component<Props, State> {
                           wrap
                           margin={{ top: "5px" }}
                           gap="xsmall"
-                        >
+                          >
                           {this.state.followers.map((follower: User) => (
                             <ChannelPageUserCircle
-                              user={follower}
-                              showRemoveButton={false}
+                            user={follower}
+                            showRemoveButton={false}
                             />
-                          ))}
+                            ))}
                         </Box>
                       </Box>
-                      */}
-
-
                     </Box>
+
                     <Box 
                       direction="column"
                       margin={{bottom: "60px"}}
@@ -1093,7 +1196,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         margin={{ bottom: "24px" }}
                       >
                         <Text size="14px" weight="bold" color="black">
-                          Invite members
+                          Invite to follow
                         </Text>
                         <StatusInfo
                           data-tip data-for='mailingListInfo'
@@ -1105,15 +1208,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                           }}
                         />
                         {this.state.showMemberEmailInfo && (
-                          <ReactTooltip id='mailingListInfo' place="right" effect="solid">
-                            Enter the emails of the people you want to invite as member of{" "}
-                            {this.state.channel ? this.state.channel.name : "your agora"}.
+                          <ReactTooltip id='mailingListInfo' place="right" effect="solid" multiline={true}>
+                            Enter the emails of the people you want to invite to follow {" "}
+                            {this.state.channel ? this.state.channel.name : "your agora"}. <br />
+                            Example: joe@uni.ac.uk, jack@company.com
                           </ReactTooltip>
                         )}
                       </Box>
                       
                       <TextArea
-                        placeholder="Enter your list of emails"
+                        placeholder="joe@uni.ac.uk, jack@company.com"
                         value={this.state.mailingList}
                         onChange={(e: any) => this.handleMailingList(e)}
                         rows={4}
@@ -1135,7 +1239,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         </Box>
                         <Box
                           onClick={this.parseMailingList}
-                          background="#025377"
+                          background="#0C385B"
                           round="xsmall"
                           // pad="xsmall"
                           height="30px"
@@ -1143,7 +1247,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                           justify="center"
                           align="center"
                           focusIndicator={false}
-                          hoverIndicator="#025377"
+                          hoverIndicator="#BAD6DB"
                         >
                           <Text size="14px"> Add </Text>
                         </Box>
@@ -1152,11 +1256,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
-                  <Box direction="row" margin={{bottom: "60px"}}>
-                    <RequestsTab channelId={this.state.channel!.id}/>
-                  </Box>
-                </TabPanel>
 
 
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
@@ -1164,8 +1263,27 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <RegistrationsTab channelId={channel!.id} />
                   </Box>
                 </TabPanel>
-                
 
+
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                  <Box direction="row" margin={{top: "40px", bottom: "60px"}}>
+                    <DeleteAgoraButton
+                      name={this.state.channel!.name}
+                      id={this.state.channel!.id}
+                    />
+                  </Box>
+                </TabPanel>
+
+                {/* 
+                  TAB FOR MEMBERSHIP APPLICATION:
+                  
+                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                  <Box direction="row" margin={{bottom: "60px"}}>
+                    <RequestsTab channelId={this.state.channel!.id}/>
+                  </Box>
+                </TabPanel> */}
+                
+              {/*   DETAIL SECTION: COMMENTED OUT
                 <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
                   <Grid
                     rows={['xxsmall', 'xxsmall']}
@@ -1185,7 +1303,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                         onDeleteAddress={this.onDeleteContactAddress}
                       />
                     </Box>
-                    {/* <Box gridArea="topic_change">
+                    <Box gridArea="topic_change">
                       <ChannelTopicSelector 
                         onSelectedCallback={this.selectTopic}
                         onCanceledCallback={this.cancelTopic}
@@ -1226,13 +1344,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                       )}
                       </Text>
                       </Box>
-                    </Box> */}
+                    </Box>
                   </Grid>
-                </TabPanel>
+                </TabPanel> */}
               </Tabs>
             </Box>
           </Box>
         </Box>
+      </>
       ) : (
         <Redirect
           to={{

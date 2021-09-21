@@ -1,12 +1,18 @@
+#background-landing {
+  position: fixed;
+  opacity: 0.1;
+  z-index: -1;
+}
+
 .core_box_without_sidebar {
   width: 80%;
   height: 100%;
   overflow:"hidden";
   pad: medium;
   margin-top: 9vh;
-  overflow-y: scroll;
-  margin-left: 25px;
-  margin-right: 25px;
+  overflow-y: hidden;
+  margin-left: 8%;
+  margin-right: 8%;
 }
 
 .sliding-underline {

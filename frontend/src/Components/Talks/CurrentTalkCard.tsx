@@ -45,17 +45,20 @@ export default class CurrentTalkCard extends Component<Props, State> {
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
     const now = new Date();
-    const deltaSec = Math.floor((end.valueOf() - now.valueOf()) / 1000);
-    if (deltaSec < 60) {
-      return `Finishing in ${deltaSec}s`;
-    }
-    if (deltaSec < 3600) {
-      let deltaMin = Math.floor(deltaSec / 60);
-      return `Finishing in ${deltaMin}m`;
-    }
-    let deltaHour = Math.floor(deltaSec / 3600);
-    let remainderMin = Math.floor((deltaSec % 3600) / 60);
-    return `Finishing in ${deltaHour}h ${remainderMin}m`;
+    let deltaMin = Math.floor((end.valueOf() - now.valueOf()) / (60*1000));
+    let message = deltaMin < 0 ? "Finished " : "Finishing in ";
+    const suffix = deltaMin < 0 ? " ago" : "";
+    deltaMin = Math.abs(deltaMin)
+    
+    let hours =  Math.floor(deltaMin / 60);
+    let minutes =  Math.floor(deltaMin % 60);
+    if (hours > 0) {
+      message += `${hours}h `
+    }  
+    if (minutes > 0) {
+      message += `${minutes}m `
+    }  
+    return message + suffix
   };
 
   toggleModal = () => {
@@ -441,14 +444,14 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   !this.state.registered && (
                     <Box
                       onClick={this.onClick}
-                      background="#025377"
+                      background="#0C385B"
                       round="xsmall"
                       pad="xsmall"
                       height="40px"
                       justify="center"
                       align="center"
                       focusIndicator={false}
-                      hoverIndicator="#025377"
+                      hoverIndicator="#BAD6DB"
                     >
                       <Text size="18px">Register</Text>
                     </Box>

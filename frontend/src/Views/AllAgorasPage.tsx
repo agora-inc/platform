@@ -6,8 +6,7 @@ import { User } from "../Services/UserService";
 import { Topic, TopicService } from "../Services/TopicService";
 import TopicClassification from "../Components/Homepage/TopicClassification";
 import "../Styles/all-agoras-page.css";
-import agorasLogo from "../assets/general/agoras_logo_v2.png";
-
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 /*const AllAgorasPage = () => {
   const [agoras, setAgoras] = useState<Channel[]>([]);
@@ -217,9 +216,19 @@ export default class AllAgorasPage extends Component<Props, State> {
   render() {
 
     return (
+      <>
+      {/* <video
+        autoPlay loop muted id="background-landing"
+        style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
+      >
+      <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
+      </video> */}
+      <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+      />
       <div className="all-agoras-page">
         <Text weight="bold" size="28px" margin={{bottom: "15px"}}>
-          Discover new  <img src={agorasLogo} height="30px"/>
+          Discover new  <img src={agoraLogo} height="20px" style={{offset:"50px"}}/>s
           </Text>
           <TopicClassification 
             topicCallback={this.selectTopic}
@@ -231,6 +240,7 @@ export default class AllAgorasPage extends Component<Props, State> {
           ? this.ifNoAgoras()
           : this.ifAgoras()}
       </div>
+    </>
     );
   }
 }

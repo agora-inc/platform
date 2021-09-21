@@ -7,6 +7,9 @@ import { Overlay } from "../Core/Overlay";
 
 interface Props {
   callback: any;
+  width?: string;
+  height?: string;
+  textSize?: string;
 }
 
 interface State {
@@ -16,6 +19,9 @@ interface State {
   password: string;
   confirmPassword: string;
   email: string;
+  width: string;
+  height: string;
+  textSize: string;
 }
 
 export default class SignUpButton extends Component<Props, State> {
@@ -28,6 +34,9 @@ export default class SignUpButton extends Component<Props, State> {
       password: "",
       confirmPassword: "",
       email: "",
+      width: this.props.width ? this.props.width : "100px",
+      height: this.props.height ? this.props.height : "35px",
+      textSize: this.props.textSize ? this.props.textSize : "14px"
     };
   }
 
@@ -68,23 +77,20 @@ export default class SignUpButton extends Component<Props, State> {
 
   render() {
     return (
-      <Box style={{maxHeight: "30px"}}>
-        <Button
-          label="Sign up"
+      <Box style={this.props.height ? {} : {maxHeight: "30px"}}>
+        <Box
           onClick={this.toggleModal}
-          hoverIndicator={false}
-          style={{
-            width: 90,
-            height: 35,
-            fontSize: 16,
-            fontWeight: "bold",
-            color: "white",
-            padding: 0,
-            backgroundColor: "#025377",
-            border: "none",
-            borderRadius: 5,
-          }}
-        />
+          background="#0C385B"
+          hoverIndicator="#BAD6DB"
+          focusIndicator={false}
+          align="center"
+          justify="center"
+          width={this.state.width}
+          height={this.state.height}
+          round="xsmall"
+        >
+          <Text size={this.state.textSize} weight="bold"> Sign up </Text>
+        </Box>
         <Overlay
           width={400}
           height={this.state.error !== "" ? 600 : 500}
@@ -128,7 +134,7 @@ export default class SignUpButton extends Component<Props, State> {
                 you can choose any username you like. After you've signed up
                 you'll be able to create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
-                  <Text color="brand" weight="bold" size="14px">
+                  <Text color="color1" weight="bold" size="14px">
                     Agoras
                   </Text>
                 </Link>
@@ -164,7 +170,7 @@ export default class SignUpButton extends Component<Props, State> {
             >
               By clicking Sign Up, you agree to our{" "}
               <Link to={"/info/tos"} onClick={this.toggleModal}>
-                <Text size="14px" weight="bold" color="brand">
+                <Text size="14px" weight="bold" color="color1">
                   terms.
                 </Text>
               </Link>

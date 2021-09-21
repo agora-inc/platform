@@ -3,11 +3,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
 import jwt
+from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
 
 # for emails
 from flask_mail import Message
 from flask import render_template
+from app.databases import agora_db
 
 
 mail_sys = sendgridApi()
@@ -18,10 +20,11 @@ class User:
         self.password = generate_password_hash(password)
 
 class UserRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.secret = b'\xccu\x9e2\xda\xe8\x16\x8a\x137\xde@G\xc7T\xf1\x16\xca\x05\xee\xa7\xa4\x98\x05'
         self.mail_sys = mail_sys
+        self.institutions = InstitutionRepository(db=self.db)
 
     def getAllUsers(self):
         query = "SELECT * FROM Users"
@@ -111,7 +114,7 @@ class UserRepository:
                 # send confirmation email
                 msg = Message(sender = 'team@agora.stream', recipients = [email])
                 msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif;">Dear <strong>{username}</strong>,</span></p>
-                        <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://agora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">agora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion will be driving forces for many research communities.</span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://mora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">mora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion will be driving forces for many research communities.</span></p>
                         
                         <p><span style="font-family: Arial, Helvetica, sans-serif;">With your new account, you can:</span></p>
                         <ol>
@@ -119,11 +122,11 @@ class UserRepository:
                             <li><span style="font-family: Arial, Helvetica, sans-serif;"><strong>Create your own agora</strong> and/or become the <strong>administrator</strong> of one, allowing you to advertise your events to the audience you desire, receive talk applications from researchers all around the world and much more!</span></li>
                         </ol>
                         {existing_invitation_paragraph}
-                        <p><span style="font-family: Arial, Helvetica, sans-serif;">You can visit our <a href="https://agora.stream/info/getting-started">getting started page</a> to explore all the features of agora.stream.</span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;">You can visit our <a href="https://mora.stream/info/getting-started">getting started page</a> to explore all the features of mora.stream.</span></p>
                         <p><span style="font-family: Arial, Helvetica, sans-serif;">If you have any question, feedback or suggestion, please reach out to us by replying to this email.</span></p>
-                        <p><span style="font-family: Arial, Helvetica, sans-serif;"><em>The agora.stream team</em></span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif;"><em>The mora.stream team</em></span></p>
                     '''
-                msg.subject = f"Welcome to agora.stream!"
+                msg.subject = f"Welcome to mora.stream!"
                 self.mail_sys.send(msg)
 
             # New email formatting (Sendgrid) if no invitations
@@ -135,8 +138,24 @@ class UserRepository:
 
         return self.getUserById(userId)
 
-    def authenticate(self, username, password):
-        user = self.getUser(username)
+    def UserIsVerifiedAcademics(self, userId):
+        # query academic email account
+        get_academic_email = f'''
+            SELECT email FROM Users WHERE user_id = {userId};
+        '''
+        email = self.db.run_query(get_academic_email)["email"]
+
+        # check if in verified domains
+        if email is None:
+            return False
+        else:
+            return self.institutions.isEmailVerifiedAcademicEmail(email)
+
+    def authenticate(self, credential, password):
+        if "@" in credential:
+            user = self.getUserByEmail(credential)
+        else:
+            user = self.getUser(credential)
 
         if user != None and check_password_hash(user["password_hash"], password):
             return user 

@@ -2,11 +2,12 @@ import random
 import logging
 from mailing.sendgridApi import sendgridApi
 from repository import UserRepository
+from app.databases import agora_db
 
 mail_sys = sendgridApi()
 
 class ChannelRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.mail_sys = mail_sys
         self.users = UserRepository.UserRepository(db=self.db)
@@ -144,7 +145,7 @@ class ChannelRepository:
         res = self.db.run_query(query)
 
         if res[0]["has_avatar"] == 1:
-            return f"/home/cloud-user/plateform/agora/images/avatars/{channelId}.jpg"
+            return f"/home/cloud-user/plateform/agora/storage/images/avatars/{channelId}.jpg"
         else:
             return f"/home/cloud-user/plateform/agora/frontend/public/agora_default_avatar_channel_v2.png"
 
@@ -165,9 +166,9 @@ class ChannelRepository:
         res = self.db.run_query(query)
 
         if res[0]["has_cover"] == 1:
-            return f"/home/cloud-user/plateform/agora/images/covers/{channelId}.jpg"
+            return f"/home/cloud-user/plateform/agora/storage/images/covers/{channelId}.jpg"
         else:
-            return f"/home/cloud-user/plateform/agora/images/covers/default.jpg"
+            return f"/home/cloud-user/plateform/agora/storage/images/covers/default.jpg"
 
     def getContactAddresses(self, channelId):
         query = f"SELECT * FROM ChannelContacts WHERE channel_id = {channelId}"
@@ -219,14 +220,11 @@ class ChannelRepository:
         return self.db.run_query(query)
 
     def getEmailAddressesMembersAndAdmins(self, channelId, getMembersAddress: bool, getAdminsAddress: bool):
-        #
-        # TODO: TEST
-        #
         if getMembersAddress:
             if getAdminsAddress:
                 role_sql_str = "('member','owner')"
             else:
-                role_sql_str = "(member)"
+                role_sql_str = "('member')"
         else:
             if getAdminsAddress:
                 role_sql_str = "('owner')"
@@ -243,17 +241,9 @@ class ChannelRepository:
                 )
             ;
             '''
-
-        with open("/home/cloud-user/test/testing_email_query.txt", "w") as file:
-            file.write(str(email_members_and_admins_query))
-
-
         res = self.db.run_query(email_members_and_admins_query)
 
-        with open("/home/cloud-user/test/testing_emails.txt", "w") as file:
-            file.write(str(res))
-
-        return res
+        return [x["email"] for x in res]
 
 
     def applyMembership(self, channelId, userId, fullName, position, institution, email=None, personal_homepage=None):
@@ -317,9 +307,13 @@ class ChannelRepository:
 
             try:
                 # Send notification email administrator
-                contact_addresses = self.getContactAddresses(channelId)
+                admin_addresses = self.getEmailAddressesMembersAndAdmins(
+                    channelId,
+                    getMembersAddress=False, 
+                    getAdminsAddress=True
+                )
 
-                for email in contact_addresses:
+                for email in admin_addresses:
                     self.mail_sys.notify_admin_membership_application(email, agora_name)
             except Exception as e:
                 return str(e)

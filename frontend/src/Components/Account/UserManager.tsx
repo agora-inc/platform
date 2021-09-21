@@ -1,21 +1,21 @@
 import React, { Component } from "react";
-import { Box, Button, Text, TextArea } from "grommet";
+import { Box, Button, Text, TextArea, Layer } from "grommet";
 import {UserSettings} from "grommet-icons";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import DropdownChannelButton from "../Channel/DropdownChannelButton";
 import CreateChannelButton from "../Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Channel/CreateChannelButton/CreateChannelOverlay";
-import { Dropdown, Menu } from "antd";
 import Identicon from "react-identicons";
 import "../../Styles/header.css";
-import "../../Styles/antd.css";
 import "../../Styles/tooltip.css";
 import PreferenceButton from "./PreferenceButton";
 import SignUpButton from "./SignUpButton";
-import agorasLogo from "../../assets/general/agoras_logo_v2.png";
+import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
+import MediaQuery from "react-responsive";
+
 
 const makeProfilePublicInfo =
   "Making your profile public means that it will be shown in the 'speaker marketplace' feature of the platform, and administrators of relevant agoras may reach out to you about speaking opportunities if you have contact details in your bio. This action can be undone at any time.";
@@ -27,7 +27,9 @@ interface Props {
 interface State {
   isLoggedIn: boolean;
   user: { id: number; username: string; bio: string; public: boolean } | null;
-  channels: Channel[];
+  adminChannels: Channel[];
+  memberChannels: Channel[];
+  followingChannels: Channel[];
   showCreateChannelOverlay: boolean;
   showDropdown: boolean;
   editingBio: boolean;
@@ -39,7 +41,9 @@ export default class UserManager extends Component<Props, State> {
     this.state = {
       isLoggedIn: UserService.isLoggedIn(),
       user: UserService.getCurrentUser(),
-      channels: [],
+      adminChannels: [],
+      memberChannels: [],
+      followingChannels: [],
       showCreateChannelOverlay: false,
       showDropdown: false,
       editingBio: false,
@@ -47,16 +51,40 @@ export default class UserManager extends Component<Props, State> {
   }
 
   componentWillMount() {
-    this.fetchChannels();
+    this.fetchAdminChannels();
+    this.fetchMemberChannels();
+    this.fetchFollowingChannels();
   }
 
-  fetchChannels = () => {
+  fetchAdminChannels = () => {
     this.state.user &&
       ChannelService.getChannelsForUser(
         this.state.user.id,
         ["owner"],
-        (channels: Channel[]) => {
-          this.setState({ channels });
+        (adminChannels: Channel[]) => {
+          this.setState({ adminChannels });
+        }
+      );
+  };
+
+  fetchFollowingChannels = () => {
+    this.state.user &&
+      ChannelService.getChannelsForUser(
+        this.state.user.id,
+        ["follower"],
+        (followingChannels: Channel[]) => {
+          this.setState({ followingChannels });
+        }
+      );
+  };
+
+  fetchMemberChannels = () => {
+    this.state.user &&
+      ChannelService.getChannelsForUser(
+        this.state.user.id,
+        ["member"],
+        (memberChannels: Channel[]) => {
+          this.setState({ memberChannels });
         }
       );
   };
@@ -115,41 +143,40 @@ export default class UserManager extends Component<Props, State> {
 
   menu = () => {
     return this.state.showCreateChannelOverlay ? (
-      <Menu
+      <Box
+        height="100%"
+        width="350px"
+        pad="small"
         style={{
-          borderRadius: 10,
-          marginTop: 5,
+          border: "1px solid grey",
           overflow: "hidden",
           paddingBottom: 0,
-          //height: 175,
-          height: "100%",
-          width: 350,
         }}
       >
         <CreateChannelOverlay
           onBackClicked={this.toggleCreateChannelOverlay}
           onComplete={() => {
-            this.fetchChannels();
+            this.fetchAdminChannels();
+            this.fetchMemberChannels();
             this.toggleCreateChannelOverlay();
             this.toggleDropdown();
           }}
           visible={true}
           user={this.state.user}
         />
-      </Menu>
+      </Box>
     ) : (
-      <Menu
+      <Box
+        width="450px"
         onClick={() => {}}
+        round="10px"
         style={{
-          borderRadius: 10,
-          marginTop: 5,
-          paddingBottom: 0,
+          border: "1px solid grey",
           minHeight: 326,
-          width: 450,
         }}
       >
         <Box
-          margin={{ horizontal: "small" }}
+          margin={{ horizontal: "small", top: "15px", bottom: "20px" }}
           gap="xsmall"
           focusIndicator={false}
           style={{ pointerEvents: "none" }}
@@ -166,7 +193,7 @@ export default class UserManager extends Component<Props, State> {
           >
             <UserSettings size="medium"/>
           </Box>
-          <Text weight="bold" size="20px">
+          <Text weight="bold" size="20px" color="grey">
             {this.state.user?.username}
           </Text>
         </Box>
@@ -201,32 +228,70 @@ export default class UserManager extends Component<Props, State> {
             />
           )}
         </Box> */}
-
-
-        <Menu.Divider />
+        {/*
         <Box gap="xsmall" pad={{ vertical: "medium" }} focusIndicator={false}>
           <Link
             to={{ pathname: "/schedule", state: { user: this.state.user } }}
             style={{ textDecoration: "none" }}
           >
+
             <Box
               onClick={this.toggleDropdown}
-              background="#025377"
+              background="#BAD6DB"
               round="xsmall"
               margin={{ horizontal: "small" }}
               pad="xsmall"
-              height="40px"
+              height="50px"
               justify="center"
               align="center"
               focusIndicator={false}
               // hoverIndicator="#2433b5"
               hoverIndicator="#6DA3C7"
             >
-              <Text size="14px"> My schedule </Text>
-            </Box>
+              <Text size="14px" weight="bold"> My schedule </Text>
+            </Box> 
           </Link>
         </Box>
-        <Menu.Divider />
+        */}
+        <Box
+          margin={{
+            bottom: "medium",
+            top: "small",
+            left: "small",
+            right: "small",
+          }}
+          focusIndicator={false}
+          justify="center"
+          gap="xsmall"
+        >
+          <Text size="16px" color="grey">
+            Manage your <img src={agoraLogo} style={{ height: "14px", marginBottom: "-3px"}}/>s
+          </Text>
+          <Box
+            height={{max: "120px"}}
+            overflow="auto"
+          >
+            {this.state.adminChannels.map((channel: Channel) => (
+            <DropdownChannelButton
+              channel={channel}
+              onClick={this.toggleDropdown}
+            />
+            ))}
+          </Box>
+          <CreateChannelButton 
+            // height="50px"
+            onClick={this.toggleCreateChannelOverlay}
+          />
+
+        </Box>
+        <hr  
+          style={{
+            width: "95%", 
+            color: "#EEEEEE", 
+            borderColor: "#EEEEEE",
+            backgroundColor: "#EEEEEE"
+          }} 
+        />
         <Box
           margin={{
             bottom: "medium",
@@ -239,22 +304,24 @@ export default class UserManager extends Component<Props, State> {
           gap="xsmall"
         >
           <Text size="16px" color="grey">
-            Manage your <img src={agorasLogo} style={{ height: "14px"}}/>
+             Following
           </Text>
           <Box
-            height={{max: "200px"}}
+            height={{max: "120px"}}
             overflow="auto"
+            align="center"
           >
-            {this.state.channels.map((channel: Channel) => (
+            {this.state.followingChannels.length === 0 && (
+              <Text size="12px" color="#BBBBBB" style={{fontStyle: "italic"}}> The agoras you follow will be displayed here </Text>
+            )}
+            {this.state.followingChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
               onClick={this.toggleDropdown}
             />
             ))}
           </Box>
-          <CreateChannelButton onClick={this.toggleCreateChannelOverlay} />
         </Box>
-        <Menu.Divider />
         {/*<Text weight="bold" color="black" margin="small">
           Account
           </Text>*/}
@@ -301,7 +368,24 @@ export default class UserManager extends Component<Props, State> {
           </Box>
         </Box> */}
 
-        <Menu.Item>
+        <hr  
+          style={{
+            width: "95%", 
+            color: "#EEEEEE", 
+            borderColor: "#EEEEEE",
+            backgroundColor: "#EEEEEE"
+          }} 
+        />
+
+        {/* <Box
+          margin={{
+            top: "small",
+            left: "small",
+            right: "small",
+          }}
+          focusIndicator={false}
+          gap="xsmall"
+        >
           <Link
             to={{ pathname: "/saved", state: { user: this.state.user } }}
             style={{ textDecoration: "none" }}
@@ -309,9 +393,8 @@ export default class UserManager extends Component<Props, State> {
           >
             <Text size="14px"> Bookmarks </Text>
           </Link>
-        </Menu.Item>
-        <Menu.Item
-          key="2"
+        </Box> */}
+        <Box
           onClick={() => {
             UserService.logout();
             this.setState({
@@ -323,68 +406,100 @@ export default class UserManager extends Component<Props, State> {
             paddingBottom: 5,
             paddingTop: 3,
           }}
+          margin={{
+            bottom: "small",
+            top: "small",
+            left: "small",
+            right: "small",
+          }}
+          hoverIndicator={true}
+          gap="xsmall"
         >
           <Text size="14px"> Log out </Text>
-        </Menu.Item>
-      </Menu>
+        </Box>
+      </Box>
     );
   };
 
+  dynamicGreetings= () => {
+      // random greetings , now works with hours instead of days
+      var dynamicGreetingsList = [
+        "Hello, ",
+        "Bonjour, ",
+        "Ciao, ",
+        "你好, ",
+        "こんにちは, ",
+        "Hallo, ",
+        "سلام, ",
+        "שלום, ",
+        "안녕하세요, ",
+        "Olá, ",
+        "Привет, ",
+        "Hola, "
+      ];
+      var now = new Date;
+      var hour = now.getHours()
+      return dynamicGreetingsList[hour % dynamicGreetingsList.length]
+  }
+
+
   loggedInStuff = (username: string) => {
+    
     return (
-      <Dropdown
-        overlay={this.menu()}
-        trigger={["click"]}
-        overlayStyle={{ width: 450 }}
-        visible={this.state.showDropdown}
-        placement="bottomCenter"
+      <>
+      <Box
+        margin={{right: "1vw"}}
+        focusIndicator={false}
+        onClick={this.toggleDropdown}
+        overflow="hidden"
       >
-        <Button
-          style={{
-            height: 40,
-            width: 40,
-            // borderRadius: 20,
-            overflow: "hidden",
-          }}
-          focusIndicator={false}
-          onClick={this.toggleDropdown}
-        >
+        <Box direction="row" gap="small" justify="center" align="center" margin={{top: "3px"}}>
+          <Text size="14px" margin={{right: "15px"}} color="grey">
+            {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
+            <b>{this.state.user?.username}!</b>
+          </Text>
           <UserSettings size="medium"/>
-        </Button>
-      </Dropdown>
+        </Box>
+      </Box>
+      </>
     );
   };
 
   loggedOutStuff = (
-    <Box direction="row" align="center" justify="center" gap="xsmall">
-      <LoginModal
-        open={this.props.showLogin}
-        callback={() => {
-          this.setState(
-            {
-              isLoggedIn: UserService.isLoggedIn(),
-              user: UserService.getCurrentUser(),
-            },
-            () => {
-              this.fetchChannels();
-            }
-          );
-        }}
-      />
-      <SignUpButton
-        callback={() => {
-          this.setState(
-            {
-              isLoggedIn: UserService.isLoggedIn(),
-              user: UserService.getCurrentUser(),
-            },
-            () => {
-              this.fetchChannels();
-            }
-          );
-        }}
-      />
-    </Box>
+    <MediaQuery minDeviceWidth={800}>
+      <Box direction="row" align="center" justify="end" gap="xsmall" margin={{right: "1vw"}}>
+         
+          <LoginModal
+            open={this.props.showLogin}
+            callback={() => {
+              this.setState(
+                {
+                  isLoggedIn: UserService.isLoggedIn(),
+                  user: UserService.getCurrentUser(),
+                },
+                () => {
+                  this.fetchAdminChannels();
+                  this.fetchMemberChannels();
+                }
+              );
+            }}
+          />
+          <SignUpButton
+            callback={() => {
+              this.setState(
+                {
+                  isLoggedIn: UserService.isLoggedIn(),
+                  user: UserService.getCurrentUser(),
+                },
+                () => {
+                  this.fetchAdminChannels();
+                  this.fetchMemberChannels();
+                }
+              );
+            }}
+          />
+      </Box>
+    </MediaQuery>
   );
 
   render() {
@@ -394,7 +509,24 @@ export default class UserManager extends Component<Props, State> {
         {this.state.isLoggedIn
           ? this.loggedInStuff(username)
           : this.loggedOutStuff}
+        {this.state.showDropdown && (
+          <Layer 
+            modal={false}
+            position="top-right"
+            onEsc={this.toggleDropdown}
+            onClickOutside={this.toggleDropdown}        
+            style={{
+              position: "absolute",
+              top: "6vw",
+              right: "2vw",
+            }}
+            responsive
+          >
+            {this.menu()}
+          </Layer>
+        )}
       </Box>
+
     );
   }
 }

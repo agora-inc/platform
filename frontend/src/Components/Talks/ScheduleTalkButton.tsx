@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import "../../Styles/manage-channel.css";
 import { Channel } from "../../Services/ChannelService";
+import { User } from "../../Services/UserService";
 import EditTalkModal from "./EditTalkModal";
 
 interface Props {
   margin: any;
   channel: Channel | null;
+  user : User | null;
   onCreatedCallback: any;
 }
 
@@ -22,16 +24,20 @@ export default class ScheduleTalkButton extends Component<Props, State> {
     };
   }
 
-  toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal });
+  showModal = () => {
+    this.setState({ showModal: true });
   };
+
+  hideModal = () => {
+    this.setState({ showModal: false })
+  }
 
   render() {
     return (
       <Box margin={this.props.margin} pad="none">
         <Box
-          onClick={this.toggleModal}
-          background="#025377"
+          onClick={this.showModal}
+          background="#0C385B"
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
           height="40px"
@@ -40,19 +46,20 @@ export default class ScheduleTalkButton extends Component<Props, State> {
           align="center"
           focusIndicator={false}
           // hoverIndicator="#2433b5"
-          hoverIndicator="#6DA3C7"
+          hoverIndicator="#BAD6DB"
         >
           <Text size="14px" weight="bold"> Schedule talk </Text>
         </Box>
-        <EditTalkModal
-          visible={this.state.showModal}
-          channel={this.props.channel}
-          onCanceledCallback={this.toggleModal}
-          onFinishedCallback={() => {
-            this.toggleModal();
-            this.props.onCreatedCallback();
-          }}
-        />
+          <EditTalkModal
+            visible={this.state.showModal}
+            channel={this.props.channel}
+            user={this.props.user}
+            onCanceledCallback={this.hideModal}
+            onFinishedCallback={() => {
+              this.hideModal();
+              this.props.onCreatedCallback();
+            }}
+          />
       </Box>
     );
   }

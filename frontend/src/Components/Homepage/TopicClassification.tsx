@@ -86,7 +86,7 @@ export default class TopicClassification extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="100%" direction="column">
+      <Box width="300px" direction="column">
         <div 
           className="classification_box"
         >

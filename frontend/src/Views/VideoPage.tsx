@@ -71,6 +71,12 @@ export default class VideoPage extends Component<Props, State> {
   render() {
     return (
       <Box align="center">
+                <video 
+              autoPlay loop muted
+              style={{ height: "100%", width: "auto"}}
+              >
+              <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+        </video>
         <Grid
           margin={{ top: "xlarge", bottom: "none" }}
           // rows={["streamViewRow1", "medium"]}

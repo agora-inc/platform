@@ -34,7 +34,7 @@ export default class CalendarButtons extends Component<
       this.props.talk.end_date,
       this.props.talk.name,
       this.props.talk.description,
-      `https://agora.stream/${this.props.talk.channel_name.toLowerCase()}?talkId=${
+      `https://mora.stream/${this.props.talk.channel_name.toLowerCase()}?talkId=${
         this.props.talk.id
       }`
     );
@@ -49,9 +49,9 @@ export default class CalendarButtons extends Component<
   }
 
   render() {
+    var rendersMobile = (window.innerWidth < 800);
     return (
       <Box direction="column">
-        <MediaQuery minDeviceWidth={992}>
         <Box
           direction="row"
           width="100%"
@@ -66,7 +66,7 @@ export default class CalendarButtons extends Component<
               this.props.talk.end_date,
               this.props.talk.name,
               this.props.talk.description,
-              `https://agora.stream/event/${
+              `https://mora.stream/event/${
                 this.props.talk.id
               }`
             )}
@@ -77,7 +77,7 @@ export default class CalendarButtons extends Component<
               width="50px"
               height={this.props.height ? this.props.height : "35px"}
               round="xsmall"
-              background="#F2F2F2"
+              background={rendersMobile ? "white" : "#F2F2F2"}
               align="center"
               justify="center"
               direction="row"
@@ -88,9 +88,11 @@ export default class CalendarButtons extends Component<
             >
               <Google size="14px" color="plain" />
             </Box>
-            <ReactTooltip id="google_cal" effect="solid">
-              Save in Google Calendar
-            </ReactTooltip>
+            <MediaQuery minDeviceWidth={992}>
+              <ReactTooltip id="google_cal" effect="solid">
+                Save in Google Calendar
+              </ReactTooltip>
+            </MediaQuery>
           </a>
           <a
             style={{ width: "48%", textDecoration: "none" }}
@@ -102,7 +104,7 @@ export default class CalendarButtons extends Component<
               width="50px"
               height={this.props.height ? this.props.height : "35px"}
               round="xsmall"
-              background="#F2F2F2"
+              background={rendersMobile ? "white" : "#F2F2F2"}
               align="center"
               justify="center"
               pad={{ vertical: "2px", horizontal: "xsmall" }}
@@ -113,12 +115,13 @@ export default class CalendarButtons extends Component<
                 ics
               </Text>
             </Box>
-            <ReactTooltip id="ics" effect="solid">
-              Download .ics file
-            </ReactTooltip>
+            <MediaQuery minDeviceWidth={992}>
+              <ReactTooltip id="ics" effect="solid">
+                Download .ics file
+              </ReactTooltip>
+            </MediaQuery>
           </a>
         </Box>
-        </MediaQuery>
       </Box>
     );
   }

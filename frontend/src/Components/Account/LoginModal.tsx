@@ -75,7 +75,7 @@ export default class LoginModal extends Component<Props, State> {
   isMissing = () => {
     let res: string[] = []
     if (this.state.username === "") {
-      res.push("Username")
+      res.push("Username or email address")
     }
     if (this.state.password === "") {
       res.push("Password")
@@ -86,21 +86,19 @@ export default class LoginModal extends Component<Props, State> {
   render() {
     return (
       <Box style={{maxHeight: "30px"}}>
-        <Button
-          label="Log in"
+        <Box
           onClick={this.toggleModal}
-          style={{
-            width: 90,
-            height: 35,
-            fontSize: 15,
-            fontWeight: "bold",
-            padding: 0,
-            // margin: 6,
-            backgroundColor: "#F2F2F2",
-            border: "none",
-            borderRadius: 7,
-          }}
-        />
+          background="#F2F2F2"
+          hoverIndicator="#BAD6DB"
+          focusIndicator={false}
+          align="center"
+          justify="center"
+          width="100px"
+          height="35px"
+          round="xsmall"
+        >
+          <Text size="14px" weight="bold"> Log in </Text>
+        </Box>
         <Overlay
           width={400}
           height={this.state.failed ? 420 : 320}
@@ -141,7 +139,7 @@ export default class LoginModal extends Component<Props, State> {
           >
             <Box width="100%" gap="2px" margin={{"top": "5px"}}>
               <TextInput
-                placeholder="Username"
+                placeholder="Username or email address"
                 onChange={(e) => this.setState({ username: e.target.value })}
               />
             </Box>

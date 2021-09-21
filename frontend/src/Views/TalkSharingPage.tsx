@@ -4,11 +4,14 @@ import { Box, Text, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
+import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
+import { StreamingProductService } from "../Services/StreamingProductService";
 import { Link } from "react-router-dom";
 import "../Styles/channel-page.css";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import Countdown from "../Components/Talks/Countdown";
 import FooterOverlay from "../Components/Talks/Talkcard/FooterOverlay";
+import CoffeeHangoutRoom from "../Components/Talks/TalkSharingPage/CoffeeHangoutRoom";
 import { textToLatex } from "../Components/Core/LatexRendering";
 import { Helmet } from "react-helmet";
 
@@ -26,6 +29,8 @@ interface State {
   registered: boolean;
   registrationStatus: string;
   showTalkId: number;
+  allPlansId: number[];
+  subscriptionPlans: string[];
 }
 
 export default class TalkSharingPage extends Component<Props, State> {
@@ -61,7 +66,13 @@ export default class TalkSharingPage extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showTalkId: this.getTalkIdFromUrl(),
+      allPlansId: [],
+      subscriptionPlans: [],
     };
+  }
+
+  componentDidMount() {
+    window.scrollTo(0, 0)
   }
 
   componentWillMount() {
@@ -76,11 +87,39 @@ export default class TalkSharingPage extends Component<Props, State> {
     return Number(talkId);
   };
 
+  getChannelSubscriptions = () => {
+    ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
+      this.state.talk.channel_id, 
+      (allPlansId: number[]) => {
+        this.setState({ allPlansId })
+        this.setState({
+          subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
+        })
+      }
+    );
+  }
+
+  getChannelSubscriptionTiers = (allPlansId: number[]) => {
+    let tiers: string[] = []
+    allPlansId.map((id: number) => {
+      StreamingProductService.getStreamingProductById(
+        id, 
+        (product: any) => {
+          tiers.push(product.tier)
+        }
+      )
+    })
+    return tiers
+  }
+
   fetchAll = () => {
     let talkId = this.getTalkIdFromUrl();  
     TalkService.getTalkById(talkId, (talk: Talk) => {
         this.setState({talk: talk}, 
-          () => {this.fetchUserInfo();}
+          () => {
+            this.fetchUserInfo();
+            this.getChannelSubscriptions();
+          }
         );
     });
   }
@@ -128,7 +167,8 @@ export default class TalkSharingPage extends Component<Props, State> {
 
   render() { 
     const talk = this.state.talk;
-
+    var renderMobileView = (window.innerWidth < 800);
+    
       return(
         <>
         <Helmet>
@@ -143,13 +183,23 @@ export default class TalkSharingPage extends Component<Props, State> {
           <meta name="twitter:title" content={talk.name} />
           <meta name="twitter:description" content={talk.description} />
         </Helmet>
+
+        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+          // src={BackgroundImage}
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+        />
+        
         <Box
-          margin={{top: "10vh", left: "20px", right: "20px"}}
+          margin={{
+            top: "10vh", 
+            left: "20px", 
+            right: "20px"
+          }}
           align="center"
         >
           <Box
-            width="60vw"
-            margin={{left: "20px", right: "20px"}}
+            width={renderMobileView ? "100vw" : "60vw"}
+            margin={{left: "20px", right: "20px", bottom: "30px"}}
           >
             <Box 
               direction="row" 
@@ -280,6 +330,13 @@ export default class TalkSharingPage extends Component<Props, State> {
               registrationStatus={this.state.registrationStatus}
               isSharingPage={true}
             />
+
+          <CoffeeHangoutRoom
+            talk={this.state.talk}
+            user={this.state.user}
+            disabled={!this.state.subscriptionPlans.includes("tier1") && 
+              this.state.subscriptionPlans.includes("tier2")}
+          />
           </Box>
         </Box>
       </>

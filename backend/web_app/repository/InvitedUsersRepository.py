@@ -1,6 +1,9 @@
 import random
 import logging
 from repository.ChannelRepository import ChannelRepository
+from mailing.sendgridApi import sendgridApi
+from app.databases import agora_db
+mail_sys = sendgridApi()
 
 # for emails
 from flask_mail import Message
@@ -8,7 +11,7 @@ from flask import render_template
 
 
 class InvitedUsersRepository:
-    def __init__(self, db, mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.mail_sys = mail_sys
         self.channels = ChannelRepository(db=db)
@@ -44,7 +47,14 @@ class InvitedUsersRepository:
             '''
         return self.db.run_query(add_member_query, delete_email_mailing_list_query)
 
-    def addInvitedMemberToChannel(self, emailLists, channelId, role):
+    def addInvitedUserToChannel(self, emailLists, channelId, role):
+        '''
+            TODO: generalise email formats below for other roles than "follower"
+            Role is "follower" or "member"
+        '''
+        if role == "member":
+            return NotImplementedError
+
         # Remove all duplicates in the email_list
         if isinstance(emailLists, str):
             emailLists = [emailLists]
@@ -65,31 +75,31 @@ class InvitedUsersRepository:
         registered_users_emails = [i["email"] for i in registered_users_sql]
 
         # query emails from existing members or admins
-        registered_members_email_query = f'''
+        registered_role_email_query = f'''
             SELECT t1.email, t1.id FROM Users t1
             INNER JOIN ChannelUsers t2
             WHERE t1.id = t2.user_id AND t2.channel_id = {channelId} AND t2.role in ('member', 'owner')
             ;
             '''
-        registered_members_sql = self.db.run_query(registered_members_email_query)
-        registered_members_emails = [i["email"] for i in registered_members_sql]
+        registered_role_sql = self.db.run_query(registered_role_email_query)
+        registered_role_emails = [i["email"] for i in registered_role_sql]
 
         # Gather addresses of non-existing users to be invited
         invitationEmailList = emailLists.copy()
 
         for email in emailLists:
-            if email in registered_members_emails or email in registered_users_emails:
+            if email in registered_role_emails or email in registered_users_emails:
                 invitationEmailList.remove(email)
-            if email in registered_members_emails:
+            if email in registered_role_emails:
                 registered_users_emails.remove(email)
 
-        # B. Make existing users new members (if they are some)
+        # B. Make existing users new followers (if they are some)
         if isinstance(registered_users_emails, list):
             if len(registered_users_emails) > 0:
                 if len(registered_users_emails) == 1:
-                    sql_values_formatting = f'''({channelId}, {registered_users_sql[0]["id"]}, "member")'''
+                    sql_values_formatting = f'''({channelId}, {registered_users_sql[0]["id"]}, {role})'''
                 elif len(registered_users_emails) > 1:
-                    sql_values_formatting = str([tuple([channelId, i["id"], "member"]) for i in registered_users_sql])[1:-1]
+                    sql_values_formatting = str([tuple([channelId, i["id"], role]) for i in registered_users_sql])[1:-1]
 
                 add_query = f'''
                     INSERT INTO ChannelUsers (channel_id, user_id, role)
@@ -101,13 +111,13 @@ class InvitedUsersRepository:
                 # Send emails
                 channel_name = self.channels.getChannelById(channelId)["name"]
                 for email in registered_users_emails:
-                    msg = Message(sender = ("Agora.stream Team", 'team@agora.stream'), recipients = [email])
+                    msg = Message(sender = ("mora.stream Team", 'team@agora.stream'), recipients = [email])
                     msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
-                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been granted a membership by the administrators of <strong>{channel_name}</strong> to their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
+                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been invited by the administrators of <strong>{channel_name}</strong> to join their agora community on <a href="https://mora.stream/{channel_name}">mora.stream</a>!&nbsp;</span></span></p>
                         <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
-                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you very soon!</span></span></p>
-                        <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The agora.stream Team</span></p>'''
-                    msg.subject = f"Agora.stream: you have been granted a membership to {channel_name}"
+                        <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you soon!</span></span></p>
+                        <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The mora.stream Team</span></p>'''
+                    msg.subject = f"mora.stream: you are invited to join {channel_name}"
                     self.mail_sys.send(msg)
 
         # C. Add invitations in DB and send emails to new ones
@@ -126,12 +136,11 @@ class InvitedUsersRepository:
             for email in invitationEmailList:
                 msg = Message(sender = 'team@agora.stream', recipients = [email])
                 msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">Hi there!</span></p>
-                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been granted a membership by the administrators of <strong>{channel_name}</strong> to their agora community on <a href="https://agora.stream/{channel_name}">agora.stream</a>!&nbsp;</span></span></p>
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">You have been invited by the administrators of <strong>{channel_name}</strong> to join their agora community on <a href="https://mora.stream/{channel_name}">mora.stream</a>!&nbsp;</span></span></p>
                     <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;"><span style="color: rgb(0, 0, 0); font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;">As a member, you have the privileged access to talk recordings, members-only events and much more!</span></span></span></p>
-                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">To claim your membership, simply register on <a href="https://agora.stream">agora.stream</a> using this email address.</span></span></p>
-                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you very soon!</span></span></p>
-                    <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The agora.stream Team</span></p>'''
-                msg.subject = f"Agora.stream: you have been granted a membership to {channel_name}"
+                    <p><span style="font-size: 16px;"><span style="font-family: Arial, Helvetica, sans-serif;">See you soon!</span></span></p>
+                    <p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">The mora.stream Team</span></p>'''
+                msg.subject = f"mora.stream: you have been invited to follow {channel_name}"
                 self.mail_sys.send(msg)
 
     def getInvitedMembersEmails(self, channelId):

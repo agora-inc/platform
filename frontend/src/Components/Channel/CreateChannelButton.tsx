@@ -1,13 +1,18 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
+import { Group } from "grommet-icons"
 import Identicon from "react-identicons";
 import { Channel } from "../../Services/ChannelService";
-import agoraLogo from "../../assets/general/agora_logo_v2.png";
+import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   onClick: any;
   width?: string;
-  height?: string
+  height?: string;
+  text?: string;
+  textSize?: string;
+  textColor?: string;
 }
 
 interface State {
@@ -25,6 +30,7 @@ export default class CreateChannelButton extends Component<Props, State> {
   render() {
     return (
       <Box
+        data-tip data-for="create_agora_button"
         onClick={this.props.onClick}
         onMouseEnter={() => {
           this.setState({ hover: true });
@@ -38,20 +44,25 @@ export default class CreateChannelButton extends Component<Props, State> {
         width={this.props.width ? (this.props.width) : "fill"}
         height={this.props.height ? (this.props.height) : "fill"}
         round="xsmall"
-        pad="xsmall"
-        style={{
-          border: "2px solid #C2C2C2",
-        }}
-        hoverIndicator={true}
+        pad="small"
+        background="color1"
+        hoverIndicator="color3"
         focusIndicator={false}
-        justify="start"
-        margin={{top: "small"}}
+        justify="center"
       >
-        {/* background={this.state.hover ? "#f2f2f2" : "white"} */}
-        <Text size="22.5px">🚀</Text>
-        <Text size="14px" color="grey"> Create an <img src={agoraLogo} style={{ height: "14px"}}/> </Text>
-        
+        <Text 
+          size={this.props.textSize ? this.props.textSize : "14px"}  
+          color={this.props.textColor ? this.props.textColor : "white"}
+          weight="bold"
+        ><Group size="medium" style={{marginRight: "10px"}}/>
+            {this.props.text ? this.props.text : "Create an agora"}
+        </Text>
+        {/* <Text size="22.5px">🚀</Text> */}
+        <ReactTooltip id="create_agora_button" effect="solid">
+            Create a new channel (we call it agora) for your seminar series
+        </ReactTooltip>
       </Box>
+
     );
   }
 }

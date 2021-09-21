@@ -18,3 +18,8 @@
         align-content: flex-start;
     }
 }
+
+#vertical-line {
+    border-left: 1px solid #CCCCCC;
+    /* margin-right: 25px; */
+  }

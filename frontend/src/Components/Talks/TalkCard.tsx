@@ -11,8 +11,9 @@ import Countdown from "./Countdown";
 import "../../Styles/talk-card.css"; 
 import MediaQuery from "react-responsive";
 import { textToLatex } from "../Core/LatexRendering";
-
+import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import FooterOverlay from "./Talkcard/FooterOverlay";
+import { thisExpression } from "@babel/types";
 
 interface Props {
   talk: Talk;
@@ -80,20 +81,28 @@ export default class TalkCard extends Component<Props, State> {
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
     const now = new Date();
-    const deltaSec = Math.floor((end.valueOf() - now.valueOf()) / 1000);
-    if (deltaSec < 60) {
-      return `Finishing in ${deltaSec}s`;
-    }
-    if (deltaSec < 3600) {
-      let deltaMin = Math.floor(deltaSec / 60);
-      return `Finishing in ${deltaMin}m`;
-    }
-    let deltaHour = Math.floor(deltaSec / 3600);
-    let remainderMin = Math.floor((deltaSec % 3600) / 60);
-    return `Finishing in ${deltaHour}h ${remainderMin}m`;
+    let deltaMin = Math.floor((end.valueOf() - now.valueOf()) / (60*1000));
+    let message = deltaMin < 0 ? "Finished " : "Finishing in ";
+    const suffix = deltaMin < 0 ? " ago" : "";
+    deltaMin = Math.abs(deltaMin)
+    
+    let hours =  Math.floor(deltaMin / 60);
+    let minutes =  Math.floor(deltaMin % 60);
+    if (hours > 0) {
+      message += `${hours}h `
+    }  
+    if (minutes > 0) {
+      message += `${minutes}m `
+    }  
+    return message + suffix
   };
 
   toggleModal = () => {
+    // track click of the event
+    if (!(this.state.showModal)){
+      TalkService.increaseViewCountForTalk(this.props.talk.id, () => {})
+    }
+    // toggle Modal
     this.setState({ showModal: !this.state.showModal });
   };
 
@@ -177,14 +186,18 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   render() {
-    var breakpoint_width = 992;
+    var renderMobileView = (window.innerWidth < 800);
     return (
-      <div className="talk_card_box_1" style={
-        {"width": this.props.width ? this.props.width : "32%",
-      "height": "180px"}} onClick={() => {
-            !this.state.showModal && this.toggleModal();
+      <Box 
+        className="talk_card_box_1"
+        focusIndicator={false}
+        height="100%"
+        style={{
+          maxHeight: renderMobileView && this.state.showModal ? "600px" : "180px",
+          position: "relative",
+          width: this.props.width ? this.props.width : "32%",
         }}
-        >
+      >
         {/* <Box
       //   width={this.props.width ? this.props.width : "32%"}
       //   onClick={() => {
@@ -200,7 +213,8 @@ export default class TalkCard extends Component<Props, State> {
               this.setState({ showShadow: false });
             }
           }}
-          height="100%"
+          onClick={this.toggleModal}
+          height="180px"
           width="100%"
           background="white"
           round="xsmall"
@@ -295,15 +309,15 @@ export default class TalkCard extends Component<Props, State> {
                   width="170px"
                   height="30px"            
                 >
-                  <Text size="14px">
+                  <Text size="12px">
                     member-only
                   </Text>
                 </Box>
               }
-              {this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
+              {/*this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
                 <Box
                   round="xsmall"
-                  background="#D7F75B"
+                  background="#D3F930"
                   pad="small"
                   justify="center"
                   align="center"
@@ -314,13 +328,13 @@ export default class TalkCard extends Component<Props, State> {
                     on-registration
                   </Text>
                 </Box>
-              }
+            */}
             </Box>
           </Box>
         </Box>
         {this.state.showShadow && (
           <Box
-            height="100%"
+            height="180px"
             width="100%"
             round="xsmall"
             style={{
@@ -338,7 +352,7 @@ export default class TalkCard extends Component<Props, State> {
           {/* //
           // A. DESKTOP OVERLAY (HACK)
           // */}
-          <MediaQuery minDeviceWidth={breakpoint_width}>
+          <MediaQuery minDeviceWidth={800}>
             <Layer
               onEsc={() => {
                 this.toggleModal();
@@ -494,284 +508,23 @@ export default class TalkCard extends Component<Props, State> {
             </Layer>
           </MediaQuery>
 
-
-
-
           
           {/* //
           // B. MOBILE OVERLAY (HACK; copy-pasting code is ugly (R))
           // */}
-         <MediaQuery maxDeviceWidth={breakpoint_width}>
-            <Layer
-              onClick={() => {
-                this.toggleModal();
-                this.setState({ showShadow: false });
-              }}
-              modal
-              responsive
-              animation="fadeIn"
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: 15,
-                overflow: "hidden",
-              }}
-            >
-              <Box
-                //align="center"
-                pad="25px"
-                // width="100%"
-                height="100%"
-                justify="between"
-                gap="small"
-              >
-                <Box
-                  style={{ minHeight: "200px", maxHeight: "400px", marginTop:"50px"}}
-                  direction="column"
-                >
-                  <Box direction="row" gap="xsmall" style={{ minHeight: "30px", marginTop:"10px"}}>
-                    {/* <Link
-                      className="channel"
-                      to={`/${this.props.talk.channel_name}`}
-                      style={{ textDecoration: "none" }}
-                    > */}
-                      <Box
-                        direction="row"
-                        gap="small"
-                        align="center"
-                        round="xsmall"
-                        pad={{ vertical: "6px", horizontal: "6px" }}
-                      >
-                        <Box
-                          justify="center"
-                          align="center"
-                          background="#efeff1"
-                          overflow="hidden"
-                          style={{
-                            minHeight: 30,
-                            minWidth: 30,
-                            borderRadius: 15,
-                          }}
-                        >
-                            <img
-                              src={ChannelService.getAvatar(
-                                this.props.talk.channel_id
-                              )}
-                              height={30}
-                              width={30}
-                            />
-                        </Box>
-                        <Box justify="between">
-                          <Text weight="bold" size="18px" color="grey">
-                            {this.props.talk.channel_name}
-                          </Text>
-                        </Box>
-                      </Box>
-                    {/* </Link> */}
-                  </Box>
-                  <Text
-                    weight="bold"
-                    size="21px"
-                    color="black"
-                    style={{
-                      minHeight: "50px",
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                    }}
-                    margin={{ bottom: "20px", top: "30px" }}
-                  >
-                    {this.props.talk.name}
-                  </Text>
-
-                  {this.props.talk.talk_speaker_url && (
-                    <a href={this.props.talk.talk_speaker_url} target="_blank">
-                      <Box
-                        direction="row"
-                        gap="small"
-                        onClick={() => {}}
-                        hoverIndicator={true}
-                        pad={{ left: "6px", top: "4px" }}
-                      >
-                        <UserExpert size="18px" />
-                        <Text
-                          size="18px"
-                          color="black"
-                          style={{
-                            height: "24px",
-                            overflow: "auto",
-                            fontStyle: "italic",
-                          }}
-                        >
-                          {this.props.talk.talk_speaker
-                            ? this.props.talk.talk_speaker
-                            : "TBA"}
-                        </Text>
-                      </Box>
-                    </a>
-                  )}
-
-                  {!this.props.talk.talk_speaker_url && (
-                    <Box direction="row" gap="small">
-                      <UserExpert size="18px" />
-                      <Text
-                        size="18px"
-                        color="black"
-                        style={{
-                          height: "30px",
-                          overflow: "auto",
-                          fontStyle: "italic",
-                        }}
-                        margin={{ bottom: "10px" }}
-                      >
-                        {this.props.talk.talk_speaker
-                          ? this.props.talk.talk_speaker
-                          : "TBA"}
-                      </Text>
-                    </Box>
-                  )}
-                  
-                  <Box
-                    style={{
-                      minHeight: "50px",
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                    }}
-                    margin={{ top: "10px", bottom: "10px" }}
-                  >
-                    {this.props.talk.description.split('\n').map(
-                      (item, i) => textToLatex(item)
-                    )}
-                  </Box>
-                </Box>
-                <Box direction="column" gap="small">
-                  <Box direction="row" gap="small" height="30px">
-                    <Box 
-                      direction="row" 
-                      gap="small" 
-                      alignSelf="center"
-                      width="100%"
-                    >
-                      <Calendar size="18px"  />
-                      <Text
-                        size="18px"
-                        color="black"
-                      >
-                        {this.formatDateFull(
-                          this.props.talk.date,
-                          this.props.talk.end_date
-                        )}
-                      </Text>
-                    </Box>
-                    {/*this.props.talk.card_visibility === "Members only" && 
-                      <Box
-                        round="xsmall"
-                        background="#C2C2C2"
-                        pad="small"
-                        justify="center"
-                        align="center"
-                        width="33%"                
-                      >
-                        <Text size="14px">
-                          member-only
-                        </Text>
-                      </Box>
-                        */}
-                  </Box>
-                  {this.state.available && (
-                    <Box margin={{ top: "10px", bottom: "20px" }}>
-                      <Countdown talk={this.props.talk} />
-                      {/* {this.props.user !== null && this.state.registered && (
-                      <Box
-                        focusIndicator={false}
-                        background="#FF4040"
-                        round="xsmall"
-                        pad="xsmall"
-                        justify="center"
-                        align="center"
-                        width="20%"
-                        height="35px"
-                        onClick={this.onClick}
-                        margin={{ top: "-35px" }}
-                        alignSelf="end"
-                        hoverIndicator={true}
-                      >
-                        <Text size="14px" weight="bold">
-                          Unregister
-                        </Text>
-                      </Box>
-                      )
-                      } */}
-                    </Box>
-                  )}
-                  {/* {this.state.available &&
-                    this.props.user !== null &&
-                    !this.state.registered && (
-                      <Box
-                        onClick={this.onClick}
-                        background="#025377"
-                        round="xsmall"
-                        pad="xsmall"
-                        height="40px"
-                        justify="center"
-                        align="center"
-                        focusIndicator={false}
-                        hoverIndicator="#025377"
-                      >
-                        <Text size="18px">Register</Text>
-                      </Box>
-                    )} */}
-                  {!this.state.available && this.props.user === null && (
-                    <Text>Link available to members  followers only.</Text>
-                    // <Box direction="row" align="center" gap="10px">
-                    //   <LoginModal callback={() => {}} />
-                    //   <Text size="18px"> or </Text>
-                    //   <SignUpButton callback={() => {}} />
-                    //   <Text size="18px"> to register </Text>
-                    // </Box>
-                  )}
-
-                  {/*
-                    <Box
-                      direction="row"
-                      width="100%"
-                      margin="none"
-                      pad="small"
-                      justify="center"
-                      round="xsmall"
-                      align="center"
-                      alignSelf="center"
-                      background="#F3EACE"
-                  >
-                    <Text size="18px" weight="bold" color="grey">
-                      Log in to register
-                    </Text>
-                  </Box>
-                    */}
-                </Box>
-              </Box>
-              {!this.state.available && (
-                <Box
-                  background="#d5d5d5"
-                  pad="small"
-                  align="center"
-                  justify="center"
-                >
-                  <Text textAlign="center" weight="bold">
-                    {`Sorry, the link to the talk is only available to ${
-                      this.props.talk.visibility === "Followers and members"
-                        ? "followers and members"
-                        : "members"
-                    }
-                    of ${this.props.talk.channel_name}`}
-                  </Text>
-                </Box>
-              )}
-            </Layer>
+          <MediaQuery maxDeviceWidth={800}>
+            <MobileTalkCardOverlay
+              talk={this.props.talk}
+              pastOrFutureTalk="future"
+              user={this.props.user}
+              registered={this.state.registered}
+              registrationStatus={this.state.registrationStatus}
+            />
           </MediaQuery>
+
           </>
         }
-      {/* </Box> */}
-      </div>
+      </Box>
     );
   }
 }
