@@ -179,7 +179,6 @@ export default class TransportSeminars extends Component<Props, State> {
           this.setState({ allTalkIds: res.allTalkIds })
           this.setState({ channelId: res.channelId })
           this.setState({ channelName: res.channelName })
-          this.setState({ talkLinkTEMP: res.talkLink })
           this.toggleProgressOverlay()
           this.scheduleAllTalks(res.channelId, res.channelName, res.allTalkIds, res.talkLink)
         }
