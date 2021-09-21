@@ -720,15 +720,20 @@ export default class ManageChannelPage extends Component<Props, State> {
       );
     } else {
       return this.isAllowed() ? (
-        <Box
-         
+        <>
+        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+          // src={BackgroundImage}
+          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+        />
+        
+        <Box 
           align="center"
           style={{
             position: "absolute",
             top: "5vw",
           }}
 
-        >
+        >        
           <Box
              width="75%"
             height="100%"
@@ -907,7 +912,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TabList>
                 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <ScheduleTalkButton
                     margin={{ top: "20px", bottom: "40px" }}
                     channel={this.state.channel}
@@ -1061,11 +1066,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <EmailsTab channelId={channel!.id} />
                 </TabPanel>
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="column">
                     <Box 
                       direction="row" 
@@ -1253,14 +1258,14 @@ export default class ManageChannelPage extends Component<Props, State> {
 
 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RegistrationsTab channelId={channel!.id} />
                   </Box>
                 </TabPanel>
 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{top: "40px", bottom: "60px"}}>
                     <DeleteAgoraButton
                       name={this.state.channel!.name}
@@ -1272,14 +1277,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {/* 
                   TAB FOR MEMBERSHIP APPLICATION:
                   
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel> */}
                 
               {/*   DETAIL SECTION: COMMENTED OUT
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>             
                   <Grid
                     rows={['xxsmall', 'xxsmall']}
                     columns={['medium', 'xxsmall']}
@@ -1346,6 +1351,7 @@ export default class ManageChannelPage extends Component<Props, State> {
             </Box>
           </Box>
         </Box>
+      </>
       ) : (
         <Redirect
           to={{

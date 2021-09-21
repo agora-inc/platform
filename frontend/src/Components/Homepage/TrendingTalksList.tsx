@@ -52,16 +52,16 @@ export default class TrendingTalksList extends Component<{}, State> {
   render() {
     return (
       <Box height="250px">
-        <Box direction="row" justify="start" style={{minWidth: "50%"}} margin={{bottom: "10px"}}>
+        <Box direction="row" justify="center" style={{minWidth: "50%"}} margin={{bottom: "10px"}}>
           <ReactTooltip id="what-is-an-agora" effect="solid">
           An agora is a hub for a community -- reading group, seminar group, institution, ...
           </ReactTooltip>
           <Text
             size="26px"
-            alignSelf="start"
+            alignSelf="center"
             weight="bold"
           >
-            Trending events
+            Trending <Text size="22px">🔥</Text> 
           </Text>
 
         </Box>
@@ -70,11 +70,11 @@ export default class TrendingTalksList extends Component<{}, State> {
             <Loading color="color1" size={50} />
           </Box>
         )}
-        <Box margin={{ bottom: "15px", left:"8px" }} overflow="auto">
+        <Box margin={{ bottom: "15px", left:"8px", top: "8px" }} overflow="auto">
           {this.state.trendingTalks.map((trendingTalk: any) => (
-            <Link
+            <a
               className="channel"
-              to={`/event/${trendingTalk.id}`}
+              href={`/event/${trendingTalk.id}`}
               style={{ textDecoration: "none" }}
             >
               <Box
@@ -82,6 +82,7 @@ export default class TrendingTalksList extends Component<{}, State> {
                 gap="xsmall"
                 // align="center"
                 pad={{ vertical: "3.5px" }}
+                justify="center"
               >
                 <Box
                   background="white"
@@ -108,7 +109,7 @@ export default class TrendingTalksList extends Component<{}, State> {
                   </Text>
                 </Box>
               </Box>
-            </Link>
+            </a>
           ))}
         </Box>
         {/* <Link

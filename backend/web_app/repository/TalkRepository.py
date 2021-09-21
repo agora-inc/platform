@@ -583,6 +583,23 @@ class TalkRepository:
            
         return self.getTalkById(talkId) 
 
+    def addSpeakerPhoto(self, talkId):
+        query = f'UPDATE Talks SET has_speaker_photo=1 WHERE id = {talkId}'
+        self.db.run_query(query)
+
+    def removeSpeakerPhoto(self, talkId):
+        query = f'UPDATE Talks SET has_speaker_photo=0 WHERE id = {talkId}'
+        self.db.run_query(query)
+
+    def getSpeakerPhotoLocation(self, talkId):
+        query = f'SELECT has_speaker_photo FROM Talks WHERE id = {talkId}'
+        res = self.db.run_query(query)
+
+        if res[0]["has_speaker_photo"] == 1:
+            return f"/home/cloud-user/plateform/agora/storage/images/speakers/{talkId}.jpg"
+        else:
+            return None
+
     def editAutoAcceptanceCustomInstitutions(self, talk_id, institution_ids):
         """Method to edit the custom institutions auto-accepted for a talk.
 

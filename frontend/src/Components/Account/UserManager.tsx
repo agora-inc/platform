@@ -309,7 +309,7 @@ export default class UserManager extends Component<Props, State> {
           <Box
             height={{max: "120px"}}
             overflow="auto"
-            align="center"
+            align="start"
           >
             {this.state.followingChannels.length === 0 && (
               <Text size="12px" color="#BBBBBB" style={{fontStyle: "italic"}}> The agoras you follow will be displayed here </Text>
@@ -447,27 +447,6 @@ export default class UserManager extends Component<Props, State> {
     
     return (
       <>
-      <Box margin={{right:"43px"}}>
-        <Link
-          to={{ pathname: "/info/welcome" }}
-          style={{ textDecoration: "none", marginRight: "100px" }}
-        >
-          <Box
-            onClick={() => ({})}
-            width="120px"
-            height="30px"
-            background="#BAD6DB"
-            round="7px"
-            justify="center"
-            align="center"
-            focusIndicator={false}
-            hoverIndicator="#6DA3C7"
-          >
-            <Text size="14px" weight="bold"> About us </Text>
-          </Box>
-        </Link>
-      </Box>
-
       <Box
         margin={{right: "1vw"}}
         focusIndicator={false}
@@ -489,25 +468,7 @@ export default class UserManager extends Component<Props, State> {
   loggedOutStuff = (
     <MediaQuery minDeviceWidth={800}>
       <Box direction="row" align="center" justify="end" gap="xsmall" margin={{right: "1vw"}}>
-          <Link
-            to={{ pathname: "/info/welcome" }}
-            style={{ textDecoration: "none", marginRight: "100px" }}
-          >
-            <Box
-              onClick={() => ({})}
-              width="120px"
-              height="30px"
-              background="#BAD6DB"
-              round="xsmall"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#6DA3C7"
-            >
-              <Text size="14px" weight="bold"> About us </Text>
-            </Box>
-          </Link>
-          
+         
           <LoginModal
             open={this.props.showLogin}
             callback={() => {

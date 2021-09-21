@@ -194,7 +194,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               Do you have more than 30 people attending your seminars?
           </Text>
           <Switch
-            width="60px"
+            width={(window.innerWidth > 800) ? "60px" : "100px"}
             checked={false}
             callback={(pricingOptionBig: boolean) => {this.setState({ pricingOptionBig })}}
             textOn="Yes"
@@ -235,11 +235,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TableCell>
 
                 <TableCell scope="col" border="bottom" width="170px">
-                  <Text size="14px" weight="bold"> Full automation </Text>
+                  <Text size="14px" weight="bold"> Automation </Text>
                 </TableCell>
 
                 <TableCell scope="col" border="bottom" width="150px">
-                  <Text size="14px" weight="bold"> Excellence </Text>
+                  <Text size="14px" weight="bold"> Hybrid </Text>
                 </TableCell>
 
                 {this.props.showDemo && <TableCell scope="col" border={{ size: "0px" }} width="60px" />}
@@ -351,13 +351,13 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Text weight="bold" size="14px"> Virtual cafeteria </Text>
                 </TableCell>
                 <TableCell scope="row">
-                  <Close size="25px" color="red" style={{ alignSelf: "center" }} />
+                <Text size="14px"> Public</Text>
                 </TableCell>
                 <TableCell scope="row">
-                  <Text size="14px"> For 2 seminars / month </Text>
+                  <Text size="14px"> Public</Text>
                 </TableCell>
                 <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
+                <Text size="14px"> Public or Private</Text>
                 </TableCell>
             </TableRow>
 

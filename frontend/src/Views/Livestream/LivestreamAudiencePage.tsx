@@ -99,7 +99,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   
   const [talkId, setTalkId] = useState('')
   const [callControl, setCallControl] = useState({
-    mic: false
+    mic: false,
+    // video: false
   } as Control)
 
 
@@ -295,24 +296,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 //
 //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   useEffect(()=>{
     unpublish_microphone()
   }, [isUnpublishFromRemote])
@@ -334,6 +317,39 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     }
   }
 
+  // async function unpublish_camera_and_microphone(){
+  //   console.log('unp mic', localAudioTrack)
+  //   if(hasMicRequested) {
+  //     API.removeRequest(hasMicRequested)
+  //   }
+
+  //   setMicRequest('')
+  //   if(localAudioTrack || localVideoTrack) {
+
+  //     localAudioTrack.stop()
+  //     localVideoTrack.stop()
+
+  //     await agoraClient.unpublish(localAudioTrack);
+  //     await agoraClient.unpublish(localVideoTrack);
+
+  //     setLocalAudioTrack(null)
+  //     setLocalVideoTrack(null)
+
+  //     await agoraClient.setClientRole(localUser.role);
+      
+  //     setCallControl({...callControl, mic: false})
+  //     setCallControl({...callControl, video: false})
+  //   }
+
+  //   // if(localVideoTrack) {
+  //   //   localVideoTrack.stop()
+
+  //   //   await agoraClient.unpublish(localVideoTrack);
+  //   //   setCallControl({ video: false})
+  //   //   setLocalVideoTrack(null)
+  //   // }
+  // }
+
   async function publish_microphone(){
     await agoraClient.setClientRole('host');
     let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
@@ -341,6 +357,27 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     await agoraClient.publish(_localAudioTrack);
     setCallControl({...callControl, mic: true})
   }
+
+  // async function publish_camera(){
+  //   await agoraClient.setClientRole('host');
+  //   let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+  //   setLocalVideoTrack(_localVideoTrack)
+  //   await agoraClient.publish([_localVideoTrack]);
+  //   setCallControl({video: true})
+  // }
+
+  // async function publish_camera_and_microphone(){
+  //   await agoraClient.setClientRole('host');
+  //   let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+  //   setLocalAudioTrack(_localAudioTrack)
+  //   await agoraClient.publish(_localAudioTrack);
+  //   // setCallControl({...callControl, mic: true})
+  //   let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+  //   setLocalVideoTrack(_localVideoTrack)
+  //   await agoraClient.publish([_localVideoTrack]);
+  //   setCallControl({...callControl, mic: true, video: true})
+  // }
+
   async function on_message(msg:any, senderId:string){
     let attr = await agoraMessageClient.getUserAttributes(senderId)
     setMessages((m) => {
@@ -474,7 +511,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 </Grid>
               </Box>:
               <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable || isSlideVisible?'screen-share':''}`}
-                style={{height: '90%', position: 'relative'}}>
+                style={{height: '100%', position: 'relative'}}>
                 <Box className='camera-video'>
                   {remoteVideoTrack.map((user)=>(
                     //@ts-ignore
@@ -564,6 +601,9 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
             <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
             {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
           </Box>
+          {/* <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
+            <Text size="12px"> {talkDetail.description} </Text>
+          </Box> */}
         </Grid>
         <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
         <DescriptionAndQuestions
@@ -573,6 +613,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           videoId={state.video.id}
           streamer={false}
           margin={{ top: "-20px" }}
+        
         />
       </Box>
   )
