@@ -14,6 +14,7 @@ import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {db, API} from '../../Services/FirebaseService'
+import { textToLatex } from "../../Components/Core/LatexRendering";
 
 import '../../Styles/all-stream-page.css'
 import { FaMicrophone } from "react-icons/fa";
@@ -37,7 +38,8 @@ interface State {
 interface Message{
   senderId: string;
   text: string;
-  name?: string
+  name?: string;
+  first: boolean;
 }
 const APP_ID = 'f68f8f99e18d4c76b7e03b2505f08ee3'
 const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
@@ -97,7 +99,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   
   const [talkId, setTalkId] = useState('')
   const [callControl, setCallControl] = useState({
-    mic: false
+    mic: false,
+    // video: false
   } as Control)
 
 
@@ -293,24 +296,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 //
 //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   useEffect(()=>{
     unpublish_microphone()
   }, [isUnpublishFromRemote])
@@ -332,6 +317,39 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     }
   }
 
+  // async function unpublish_camera_and_microphone(){
+  //   console.log('unp mic', localAudioTrack)
+  //   if(hasMicRequested) {
+  //     API.removeRequest(hasMicRequested)
+  //   }
+
+  //   setMicRequest('')
+  //   if(localAudioTrack || localVideoTrack) {
+
+  //     localAudioTrack.stop()
+  //     localVideoTrack.stop()
+
+  //     await agoraClient.unpublish(localAudioTrack);
+  //     await agoraClient.unpublish(localVideoTrack);
+
+  //     setLocalAudioTrack(null)
+  //     setLocalVideoTrack(null)
+
+  //     await agoraClient.setClientRole(localUser.role);
+      
+  //     setCallControl({...callControl, mic: false})
+  //     setCallControl({...callControl, video: false})
+  //   }
+
+  //   // if(localVideoTrack) {
+  //   //   localVideoTrack.stop()
+
+  //   //   await agoraClient.unpublish(localVideoTrack);
+  //   //   setCallControl({ video: false})
+  //   //   setLocalVideoTrack(null)
+  //   // }
+  // }
+
   async function publish_microphone(){
     await agoraClient.setClientRole('host');
     let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
@@ -339,9 +357,33 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     await agoraClient.publish(_localAudioTrack);
     setCallControl({...callControl, mic: true})
   }
+
+  // async function publish_camera(){
+  //   await agoraClient.setClientRole('host');
+  //   let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+  //   setLocalVideoTrack(_localVideoTrack)
+  //   await agoraClient.publish([_localVideoTrack]);
+  //   setCallControl({video: true})
+  // }
+
+  // async function publish_camera_and_microphone(){
+  //   await agoraClient.setClientRole('host');
+  //   let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+  //   setLocalAudioTrack(_localAudioTrack)
+  //   await agoraClient.publish(_localAudioTrack);
+  //   // setCallControl({...callControl, mic: true})
+  //   let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+  //   setLocalVideoTrack(_localVideoTrack)
+  //   await agoraClient.publish([_localVideoTrack]);
+  //   setCallControl({...callControl, mic: true, video: true})
+  // }
+
   async function on_message(msg:any, senderId:string){
     let attr = await agoraMessageClient.getUserAttributes(senderId)
-    setMessages((m)=>[...m, {senderId, text: msg.text, name: attr.name ||''}])
+    setMessages((m) => {
+      let first = m.length === 0 ? true : m[m.length-1].senderId !== senderId
+      return [...m, {senderId, text: msg.text, name: attr.name ||'', first: first}]
+    })
   }
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return
@@ -350,7 +392,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     // @ts-ignore
     evt.target.value = ''
     try{
-      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me'}])
+      let first = messages.length === 0 ? true : messages[messages.length-1].senderId !== localUser.uid
+      setMessages([...messages, {senderId: localUser.uid, text: text, name: 'Me', first: first}])
       await messageChannel.sendMessage({text})
     }catch{
       console.log('error sending message')
@@ -468,7 +511,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 </Grid>
               </Box>:
               <Box ref={videoContainer} className={`video-holder ${localUser.role} ${isScreenAvailable || isSlideVisible?'screen-share':''}`}
-                style={{height: '90%', position: 'relative'}}>
+                style={{height: '100%', position: 'relative'}}>
                 <Box className='camera-video'>
                   {remoteVideoTrack.map((user)=>(
                     //@ts-ignore
@@ -538,14 +581,29 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
               </Box>
             </Box>
           </Box>
-          <Box gridArea="chat" background="gray" round="small">
-            {messages.map((msg, i)=>(
-                <Box key={i}>
-                  <span style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}><b>{msg.name}:</b> {msg.text}</span>
-                </Box>
-              ))}
-            <input type='textbox' onKeyUp={send_message} placeholder='type mesasge and press enter.' />
+          <Box gridArea="chat" background="#EAF1F1" round="small" height="20vw" margin={{bottom: "10px"}}>
+            {/* <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Chat</Text> */}
+            <Box height="90%" flex={true} gap="2px" overflow="auto">
+              {messages.map((msg, i)=>(
+                  <Box flex={false} alignSelf={msg.senderId == localUser.uid ? 'end': 'start'} direction="column" key={i} gap={msg.first ? "2px" : "0px"}>
+                    { msg.first && (
+                      <Text color="#0C385B" size="12px" weight="bold" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                        {msg.name}
+                      </Text>
+                    )}
+                    <Text size="14px" style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}>
+                      {textToLatex(msg.text)}
+                    </Text>
+                  </Box>
+                  // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
+                ))}
+            </Box>
+            <TextInput onKeyUp={send_message} placeholder='type message and press enter.' />
+            {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
           </Box>
+          {/* <Box gridArea="description" width="30%" margin={{top: "-20px"}}>
+            <Text size="12px"> {talkDetail.description} </Text>
+          </Box> */}
         </Grid>
         <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
         <DescriptionAndQuestions
@@ -555,6 +613,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           videoId={state.video.id}
           streamer={false}
           margin={{ top: "-20px" }}
+        
         />
       </Box>
   )

@@ -124,10 +124,10 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Box height="300px" margin={{bottom: "15px"}}>
 
             <video 
-                  autoPlay loop muted
+                  autoPlay loop muted 
                   style={{ height: "100%", width: "auto"}}
                   >
-                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+                  <source src="/videos/talk_application.webm" type="video/webm"/> 
             </video>
 
 
@@ -416,7 +416,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Keep up with the hottest discussions of the moment!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Don't be left behind and keep up with the hottest discussions of the moment!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}
