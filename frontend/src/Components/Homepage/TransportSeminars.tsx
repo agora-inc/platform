@@ -38,7 +38,6 @@ interface State {
   channelId: number;
   channelName: string;
   nTalksParsed: number;
-  talkLinkTEMP: string;
 }
 
 export default class TransportSeminars extends Component<Props, State> {
@@ -60,7 +59,6 @@ export default class TransportSeminars extends Component<Props, State> {
       channelId: -1,
       channelName: "",
       nTalksParsed: 0,
-      talkLinkTEMP: ""
     };
 	}
 	
@@ -219,11 +217,6 @@ export default class TransportSeminars extends Component<Props, State> {
   } */
 
   render() {
-    console.log("isValidSeries", this.state.isValidSeries)
-    console.log("allTalkIds", this.state.allTalkIds)
-    console.log("channelId", this.state.channelId)
-    console.log("channelName", this.state.channelName)
-    console.log("talklink", this.state.talkLinkTEMP)
     var auto_accept = "'Automatically accepting a registration' means that the person registering " + 
     "to your event will automatically receive the details by email if they belong to one of the group you selected below";
     return (

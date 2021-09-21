@@ -75,9 +75,7 @@ class RSScraperRepository:
 			if len(idx) > 0:
 				url_talks = url_agora.replace("/seminar/", "/talk/")
 				self.driver.get(url_talks + f"/{idx[0]}")
-				lst_link = self.driver.find_elements_by_xpath('//a')
-				with open(f"/home/cloud-user/test/links.txt", "w") as file:
-					file.write(str([e.text for e in lst_link]))   
+				lst_link = self.driver.find_elements_by_xpath('//a') 
 				link = RSScraperRepository._get_href(lst_link, "available")
 			else:
 				link = ""
