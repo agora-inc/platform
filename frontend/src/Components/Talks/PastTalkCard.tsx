@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer, TextInput } from "grommet";
+import { Box, Text, Button, Layer, TextInput, Image } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { Link } from "react-router-dom";
 import { ChannelService } from "../../Services/ChannelService";
@@ -16,6 +16,7 @@ import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import MediaQuery from "react-responsive";
 import SlidesUploader from "../Core/SlidesUploader";
 import FileDownloader from "../Core/FileDownloader";
+import ImageCropUploader from "../Channel/ImageCropUploader";
 
 
 interface Props {
@@ -168,6 +169,33 @@ export default class PastTalkCard extends Component<Props, State> {
         this.props.onSave && this.props.onSave();
       });
     }
+  };
+
+  getSpeakerPhotoUrl = (): string | undefined => {
+    let current_time = Math.floor(new Date().getTime() / 5000);
+    // HACK: we add the new time at the end of the URL to avoid caching; 
+    // we divide time by value such that all block of requested image have 
+    // the same name (important for the name to be the same for the styling).
+    return TalkService.getSpeakerPhoto(this.props.talk.id, current_time)
+  }
+
+  onSpeakerPhotoUpload = (file: File) => {
+    TalkService.uploadSpeakerPhoto(
+      this.props.talk.id,
+      file,
+      () => {
+        window.location.reload();
+      }
+    );
+  };
+
+  removeSpeakerPhoto = () => {
+    TalkService.removeSpeakerPhoto(
+      this.props.talk.id,
+      () => {
+        window.location.reload();
+      }
+    );
   };
 
   onClick = () => {
@@ -399,10 +427,18 @@ export default class PastTalkCard extends Component<Props, State> {
           round="xsmall"
           overflow="hidden"
           justify="between"
-          gap="small"
           style={{ position: "relative" }}
         >
-          {this.state.hasYoutubeRecording && (
+
+          {this.props.talk.has_speaker_photo === 1 && (
+            <Image 
+              style={{ aspectRatio: "3/2", alignSelf: 'center' }}
+              src={this.getSpeakerPhotoUrl()}
+              height="62%"
+              margin={{top: "20px"}}
+            />
+          )}
+          {this.props.talk.has_speaker_photo === 0 && this.state.hasYoutubeRecording && (
             <img
               src={TalkService.getYoutubeThumbnail(
                 this.props.talk.recording_link,
@@ -414,7 +450,7 @@ export default class PastTalkCard extends Component<Props, State> {
               alignSelf: 'center'}}
             />
           )}
-          {!this.state.hasYoutubeRecording && (
+          {this.props.talk.has_speaker_photo === 0 && !this.state.hasYoutubeRecording && (
             <img
               src={ChannelService.getAvatar(this.props.talk.channel_id)}
               height={renderMobileView ? "125px" : "48%"}
@@ -422,6 +458,45 @@ export default class PastTalkCard extends Component<Props, State> {
               marginTop: "35px", 
               alignSelf: 'center'}}
             />
+          )}
+          {this.props.admin && this.props.talk.has_speaker_photo === 0 && (
+            <div style={{position: 'absolute', top: 10, right: 10, zIndex: 5}}>
+              <ImageCropUploader
+                text="Upload thumbnail"
+                onUpload={this.onSpeakerPhotoUpload}
+                width="95px"
+                height="20px"
+                widthModal={600}
+                heightModal={600}
+                textSize="10px"
+                hideToolTip={true}
+                aspect={3 / 2}
+              />
+            </div>
+          )}
+          {this.props.admin && this.props.talk.has_speaker_photo === 1 && (
+            <Box 
+              style={{ 
+                position: 'absolute', top: 10, right: 10, zIndex: 5,
+                border: "solid black 1px", cursor: "pointer" 
+              }}
+              round="xsmall"
+              width="100px"
+              height="20px"
+              justify="center"
+              align="center"
+              background="#EAF1F1"
+              focusIndicator={true}
+              hoverIndicator="#DDDDDD"
+              onClick={(e: any) => {
+                e.stopPropagation()
+                this.removeSpeakerPhoto()
+              }}
+            >
+              <Text size="10px" weight="bold" color="black">
+                Remove thumbnail
+              </Text>
+            </Box>
           )}
           <Box height="38%" pad="15px" justify="end">
             <Box

@@ -426,8 +426,6 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   Remove speaker pic
                 </Text>
               </Box>
-
-              
             )}
             {this.props.talk.has_speaker_photo === 1 && (
               <Box width="40%">
