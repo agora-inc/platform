@@ -30,6 +30,7 @@ import SeminarImage from "../../assets/general/academic_seminars_photo.jpeg"
 import PricingPlans from "../../Views/PricingPlans";
 
 import DashedLine from "../../assets/landing_page/dashed-line.png"
+import TransportSeminars from "../../Components/Homepage/TransportSeminars";
 
 interface State {
   user: User | null
@@ -491,6 +492,19 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     )
   }
 
+  migrateFromResearchSeminars() {
+    return (
+      <Box align="center" justify="center">
+        <Text size="34px" margin={{bottom: "80px"}} color="color1" weight="bold" alignSelf="center">
+          Already running a series on researchseminars.org? Migrate everything in 3 clicks!
+        </Text>
+        <TransportSeminars 
+          user={this.state.user}
+        />
+      </Box>
+    );
+  }
+
   render() {
     return (
       <Box
@@ -529,8 +543,14 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "500px": "700px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "300px": "400px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
+          </Box>
+        </Box>
+
+        <Box height="100%" width="100%">
+          <Box width="80%" height={this.state.renderMobileView ? "300px": "400px"} direction="column" alignSelf="center">
+            {this.migrateFromResearchSeminars()}
           </Box>
         </Box>
 
