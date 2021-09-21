@@ -465,10 +465,7 @@ class TalkRepository:
                 {auto_accept_custom_institutions}
                 );
             '''
-        
-        with open(f"/home/cloud-user/test/schedule.txt", "w") as file:
-            file.write(query)    
-        
+                
         try:
             self.db.open_connection()
             cursor = self.db.con.cursor()

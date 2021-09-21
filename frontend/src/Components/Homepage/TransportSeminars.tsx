@@ -38,6 +38,7 @@ interface State {
   channelId: number;
   channelName: string;
   nTalksParsed: number;
+  talkLinkTEMP: string;
 }
 
 export default class TransportSeminars extends Component<Props, State> {
@@ -58,7 +59,8 @@ export default class TransportSeminars extends Component<Props, State> {
       allTalkIds: [],
       channelId: -1,
       channelName: "",
-      nTalksParsed: 0, 
+      nTalksParsed: 0,
+      talkLinkTEMP: ""
     };
 	}
 	
@@ -141,6 +143,7 @@ export default class TransportSeminars extends Component<Props, State> {
     channelId: number,
     channelName: string,
     talkIds: number[],
+    talkLink: string,
   ) {
     var chunks = [], i = 0, n = talkIds.length;
     while (i < n) {
@@ -151,7 +154,7 @@ export default class TransportSeminars extends Component<Props, State> {
     for (const ids of chunks) {
       await RSScraping.scheduleTalks(
         this.state.url, 
-        channelId, channelName, ids, 
+        channelId, channelName, ids, talkLink,
         this.state.topics[0].id,
         this.state.audienceLevel, 
         this.state.onRegistration ? "Members only" : "Everybody",
@@ -170,13 +173,17 @@ export default class TransportSeminars extends Component<Props, State> {
         this.state.url,
         this.props.user.id,
         this.state.topics[0].id,
-        (res: {isValidSeries: number, allTalkIds: number[], channelId: number, channelName: string}) => {
+        (res: {
+          isValidSeries: number, allTalkIds: number[], 
+          channelId: number, channelName: string, talkLink: string
+        }) => {
           this.setState({ isValidSeries: res.isValidSeries })
           this.setState({ allTalkIds: res.allTalkIds })
           this.setState({ channelId: res.channelId })
           this.setState({ channelName: res.channelName })
+          this.setState({ talkLinkTEMP: res.talkLink })
           this.toggleProgressOverlay()
-          this.scheduleAllTalks(res.channelId, res.channelName, res.allTalkIds)
+          this.scheduleAllTalks(res.channelId, res.channelName, res.allTalkIds, res.talkLink)
         }
       )
     }
@@ -216,6 +223,7 @@ export default class TransportSeminars extends Component<Props, State> {
     console.log("allTalkIds", this.state.allTalkIds)
     console.log("channelId", this.state.channelId)
     console.log("channelName", this.state.channelName)
+    console.log("talklink", this.state.talkLinkTEMP)
     var auto_accept = "'Automatically accepting a registration' means that the person registering " + 
     "to your event will automatically receive the details by email if they belong to one of the group you selected below";
     return (
@@ -224,8 +232,8 @@ export default class TransportSeminars extends Component<Props, State> {
         direction="row"
         onClick={this.toggleOverlay}
         align="center"
-        width="280px"
-        height="70px"
+        width="400px"
+        height="90px"
         round="xsmall"
         pad="small"
         gap="10px"
@@ -237,10 +245,11 @@ export default class TransportSeminars extends Component<Props, State> {
         focusIndicator={false}
         justify="center"
       >
-        <Text size="16px" color="white" weight="bold">
+        <Text size="22.5px">🚀</Text>
+        <Text size="18px" color="white" weight="bold">
           Migrate your seminars
         </Text>
-        <Text size="22.5px">🚀</Text>
+        
       </Box>
 
       {this.state.showOverlay && (
@@ -426,7 +435,7 @@ export default class TransportSeminars extends Component<Props, State> {
                   <Box
                     round="xsmall"
                     height="25px"
-                    width="300px" 
+                    width="540px" 
                     align="start" 
                     background="#DDDDDD" 
                   />
@@ -434,7 +443,7 @@ export default class TransportSeminars extends Component<Props, State> {
                     height="25px" 
                     round="xsmall"
                     style={{
-                      width: (Math.floor(300*this.state.nTalksParsed/this.state.allTalkIds.length)).toString() + "px",
+                      width: (Math.floor(540*this.state.nTalksParsed/this.state.allTalkIds.length)).toString() + "px",
                     }}
                     background="#0C385B"
                     margin={{top: "-25px", bottom: "50px"}}

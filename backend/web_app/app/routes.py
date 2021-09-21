@@ -2034,14 +2034,15 @@ def createAgoraGetTalkIds():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-    is_valid, talk_ids, channel_id, channel_name = RSScraper.create_agora_and_get_talk_ids(
+    is_valid, talk_ids, channel_id, channel_name, link = RSScraper.create_agora_and_get_talk_ids(
         params['url'], params['user_id'], params['topic_1_id']
     )
     response =  jsonify({
         "isValidSeries": is_valid, 
         "allTalkIds": talk_ids, 
         "channelId": channel_id, 
-        "channelName": channel_name
+        "channelName": channel_name,
+        "talkLink": link,
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
@@ -2055,59 +2056,12 @@ def publishAllTalks():
 
     params = request.json
     talk_ids = params['idx']
-    with open(f"/home/cloud-user/test/routes_{talk_ids[0]}.txt", "w") as file:
-        file.write("done")
 
     talks = RSScraper.parse_create_talks(
-        params['url'], talk_ids, params['channel_id'], params['channel_name'], params['topic_1_id'], 
-        params['audience_level'], params['visibility'], params['auto_accept_group']
+        params['url'], talk_ids, params['channel_id'], params['channel_name'], params['talk_link'],
+        params['topic_1_id'], params['audience_level'], params['visibility'], params['auto_accept_group']
     )
-
-    with open(f"/home/cloud-user/test/fed_{talk_ids[0]}.txt", "w") as file:
-        file.write("done")
 
     response = jsonify(talks)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
-
-        
-"""
-@app.route('/rsscraping/valid', methods=["GET"])
-def getValidSeriesAndNtalks():
-    url = request.args.get("url")
-    response = jsonify(RSScraper.get_valid_series_and_ntalks(url))
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
-@app.route('/rsscraping/scheduleTalk', methods=["POST", "OPTIONS"])
-def scrapeScheduleTalk():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    params = request.json
-    is_valid = RSScraper.scrape_and_schedule_talk(
-        params['url'], params['talk_id'], params['channel_id'], params['channel_name'], params['topic_1_id'], 
-        params['audience_level'], params['visibility'], params['auto_accept_group']
-    )
-
-    with open("/home/cloud-user/test/route.txt", "w") as file:
-        file.write(str(is_valid))
-
-    return jsonify(is_valid)
-@app.route('/rsscraping/allTalks', methods=["POST", "OPTIONS"])
-def publishChannelAllTalks():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    if not checkAuth(request.headers.get('Authorization')):
-        return exceptions.Unauthorized("Authorization header invalid or not present")
-
-    params = request.json
-    channel_id, channel_name = RSScraper.create_agora_and_talks(
-        params['url'], params['user_id'], params['topic_1_id'], 
-        params['audience_level'], params['visibility'], params['auto_accept_group']
-    )
-    
-    return jsonify({"channelId": channel_id, "channelName": channel_name})
-"""
-
