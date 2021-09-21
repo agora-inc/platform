@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer } from "grommet";
+import { Box, Text, Button, Layer, Image } from "grommet";
 import Identicon from "react-identicons";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { User } from "../../Services/UserService";
@@ -25,6 +25,7 @@ import CopyUrlButton from "../Core/ShareButtons/CopyUrlButton";
 import { encryptIdAndRoleInUrl } from "../Core/Encryption/UrlEncryption"
 import { basePoint } from "../../config";
 import ImageCropUploader from "./ImageCropUploader";
+import { baseApiUrl } from "../../config";
 
 
 interface Props {
@@ -49,6 +50,7 @@ interface State {
   registrationStatus: string;
   showShadow: boolean;
   slideUrl?: string;
+  hasSpeakerPhoto: boolean
 }
 
 export default class ChannelPageTalkCard extends Component<Props, State> {
@@ -61,7 +63,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showShadow: false,
-      slideUrl: ''
+      slideUrl: '',
+      hasSpeakerPhoto: false,
     };
   }
 
@@ -72,7 +75,8 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   componentDidMount = () => {
     this.checkIfUserCanAccessLink();
     this.checkIfUserCanViewCard();
-    this.fetchSlide()
+    this.fetchSlide();
+    this.hasSpeakerPhoto();
   };
 
   checkIfAvailableAndRegistered = () => {
@@ -217,8 +221,31 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   };
 
   onSpeakerPhotoUpload = (file: File) => {
-
+    TalkService.uploadSpeakerPhoto(
+      this.props.talk.id,
+      file,
+      () => {
+        window.location.reload();
+      }
+    );
   };
+
+  getSpeakerPhotoUrl = (): string | undefined => {
+    let current_time = Math.floor(new Date().getTime() / 5000);
+    // HACK: we add the new time at the end of the URL to avoid caching; 
+    // we divide time by value such that all block of requested image have 
+    // the same name (important for the name to be the same for the styling).
+    return TalkService.getSpeakerPhoto(this.props.talk.id, current_time)
+  }
+
+  hasSpeakerPhoto = () => {
+    TalkService.hasSpeakerPhoto(
+      this.props.talk.id,
+      (res: any) => {
+        this.setState({hasSpeakerPhoto: res.hasSpeakerPhoto === 1 ? true : false})
+      }
+    )
+  }
 
   formatDate = (d: string) => {
     const date = new Date(d);
@@ -321,37 +348,50 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           overflow="hidden"
         >
           <Box height="100%" pad="10px">
-            <Box
-              direction="row"
-              gap="xsmall"
-              align="center"
-              style={{ height: "40px" }}
-              margin={{ bottom: "10px" }}
-            >
+            <Box direction="column" width={this.state.hasSpeakerPhoto ? "58%" : "75%"} margin={{bottom: "10px"}}> 
               <Box
-                height="30px"
-                width="30px"
-                round="15px"
-                justify="center"
+                direction="row"
+                gap="xsmall"
                 align="center"
-                background="#efeff1"
-                overflow="hidden"
+                style={{ height: "50px" }}
+                margin={{ bottom: "20px" }}
               >
-                {!this.props.talk.has_avatar && (
-                  <Identicon string={this.props.talk.channel_name} size={15} />
-                )}
-                {!!this.props.talk.has_avatar && (
-                  <img
-                    src={ChannelService.getAvatar(this.props.talk.channel_id)}
-                    height={30}
-                    width={30}
-                  />
-                )}
-              </Box>
-              <Text weight="bold" size="14px" color="grey">
-                {this.props.talk.channel_name}
+                <Box
+                  height="30px"
+                  width="30px"
+                  round="15px"
+                  justify="center"
+                  align="center"
+                  background="#efeff1"
+                  overflow="hidden"
+                >
+                  {!this.props.talk.has_avatar && (
+                    <Identicon string={this.props.talk.channel_name} size={15} />
+                  )}
+                  {!!this.props.talk.has_avatar && (
+                    <img
+                      src={ChannelService.getAvatar(this.props.talk.channel_id)}
+                      height={30}
+                      width={30}
+                    />
+                  )}
+                </Box>
+                <Text weight="bold" size="14px" color="grey">
+                  {this.props.talk.channel_name}
+                </Text>
+              </Box> 
+
+              <Text
+                size="14px"
+                color="black"
+                weight="bold"
+                style={{ minHeight: "60px", overflow: "auto" }}
+              >
+                {this.props.talk.name}
               </Text>
-              <div style={{position: 'absolute', top: 10, right: 10}}>
+            </Box> 
+
+            <div style={{position: 'absolute', top: 10, right: 10, zIndex: 5}}>
               <ImageCropUploader
                 text="Upload speaker pic"
                 onUpload={this.onSpeakerPhotoUpload}
@@ -361,16 +401,16 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                 hideToolTip={true}
                 aspect={3 / 2}
               />
-              </div>
-            </Box>
-            <Text
-              size="14px"
-              color="black"
-              weight="bold"
-              style={{ minHeight: "75px", overflow: "auto" }}
-            >
-              {this.props.talk.name}
-            </Text>
+            </div>
+            {this.state.hasSpeakerPhoto && (
+              <Box width="40%">
+                <Image 
+                  style={{position: 'absolute', top: 10, right: 10, aspectRatio: "3/2"}}
+                  src={this.getSpeakerPhotoUrl()}
+                  width="35%"
+                />
+              </Box>
+            )}
             <Box direction="row" gap="small">
               <UserExpert size="18px" />
               <Text
@@ -405,7 +445,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   <Text
                     size="14px"
                     color="black"
-                    style={{ height: "30px", fontStyle: "normal" }}
+                    style={{ height: "20px", fontStyle: "normal" }}
                   >
                     {this.formatDate(this.props.talk.date)}
                   </Text>

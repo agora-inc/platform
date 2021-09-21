@@ -1001,7 +1001,51 @@ def editTalk():
     except Exception as e:
         return str(e)
 
+@app.route('/talks/hasphoto', methods=["GET"])
+def hasSpeakerPhoto():
+    talkId = int(request.args.get("talkId"))
+    fn = talks.getSpeakerPhotoLocation(talkId)
+    if fn is not None:
+        return jsonify({"hasSpeakerPhoto": 1})
+    else:
+        return jsonify({"hasSpeakerPhoto": 0})
 
+
+@app.route('/talks/speakerphoto', methods=["POST", "GET", "DELETE"])
+def speakerPhoto():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if request.method == "POST":
+        logRequest(request)
+        # if not checkAuth(request.headers.get('Authorization')):
+        #     return exceptions.Unauthorized("Authorization header invalid or not present")
+
+        talkId = request.form["talkId"]
+        file = request.files["image"]
+        fn = f"{talkId}.jpg"
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/speakers/{fn}")
+        talks.addSpeakerPhoto(talkId)
+        
+        app.logger.debug(f"Talk with id {talkId} updated speaker photo")
+
+        return jsonify({"filename": fn})
+
+    if request.method == "GET":
+        if "talkId" in request.args:
+            talkId = int(request.args.get("talkId"))
+            fn = talks.getSpeakerPhotoLocation(talkId)
+            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+
+    if request.method == "DELETE":
+        params = request.json 
+        print(params)
+        talkId = params["talkId"]
+        talks.removeSpeakerPhoto(talkId)
+
+        app.logger.debug(f"Talk with id {talkId} remove speaker speaker photo")
+
+        return jsonify("ok")
 
 @app.route('/talks/editCustomInstitutions', methods=['POST', 'OPTIONS'])
 def editAutoAcceptanceCustomInstitutions():
