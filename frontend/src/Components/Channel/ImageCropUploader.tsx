@@ -10,6 +10,8 @@ interface Props {
   onUpload: (file: File) => void;
   width?: string;
   height?: string;
+  widthModal?: number; 
+  heightModal?: number;
   textSize?: string;
   hideToolTip?: boolean;
   aspect?: number;
@@ -72,6 +74,8 @@ export default class ImageCropUploader extends Component<Props, State> {
             )}
           </Text>
         <CropImageModal
+          width={this.props.widthModal}
+          height={this.props.heightModal}
           aspect={this.props.aspect}
           visible={this.state.showModal}
           src={this.state.src}

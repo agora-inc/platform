@@ -56,7 +56,8 @@ export default class LivestreamPage extends Component<Props, State> {
               talk_speaker: "",
               talk_speaker_url: "",
               published: 0,
-              audience_level: "All"
+              audience_level: "All",
+              has_speaker_photo: 0, 
             },
         loading: true,
         user: UserService.getCurrentUser(),

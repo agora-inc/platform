@@ -478,9 +478,17 @@ const getSpeakerPhoto = (talkId: number, cacheDelay?: number) => {
   }
 };
 
-const hasSpeakerPhoto = (talkId: number, callback: any) => {
-  get(`talks/hasphoto?talkId=${talkId}`, callback)
-};
+const removeSpeakerPhoto = (talkId: number, callback: any) => {
+  axios
+    .delete(
+      baseApiUrl + "/talks/speakerphoto", {
+        data: {talkId: talkId},
+        headers: {"Access-Control-Allow-Origin": "*"},
+    },)
+    .then(function (response) {
+      callback(response.data);
+    });
+}
 
 const getViewCountForTalk = (
   talkId: number,
@@ -568,7 +576,7 @@ export const TalkService = {
   // Speaker photo
   uploadSpeakerPhoto,
   getSpeakerPhoto,
-  hasSpeakerPhoto,
+  removeSpeakerPhoto,
   // Talk registration management
   sendEmailonTalkScheduling,
   sendEmailonTalkModification,
@@ -615,5 +623,6 @@ export type Talk = {
   talk_speaker: string;
   talk_speaker_url: string;
   published: number;
-  audience_level: string
+  audience_level: string;
+  has_speaker_photo: number;
 };

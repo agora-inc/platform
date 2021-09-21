@@ -267,7 +267,6 @@ def getChannelsForUser():
 
     userId = int(request.args.get("userId"))
     roles = request.args.getlist("role")
-    print(roles)
     return jsonify(channels.getChannelsForUser(userId, roles))
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
@@ -1000,16 +999,6 @@ def editTalk():
 
     except Exception as e:
         return str(e)
-
-@app.route('/talks/hasphoto', methods=["GET"])
-def hasSpeakerPhoto():
-    talkId = int(request.args.get("talkId"))
-    fn = talks.getSpeakerPhotoLocation(talkId)
-    if fn is not None:
-        return jsonify({"hasSpeakerPhoto": 1})
-    else:
-        return jsonify({"hasSpeakerPhoto": 0})
-
 
 @app.route('/talks/speakerphoto', methods=["POST", "GET", "DELETE"])
 def speakerPhoto():

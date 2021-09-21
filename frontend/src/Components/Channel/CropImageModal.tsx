@@ -5,6 +5,8 @@ import ReactCrop, { Crop } from "react-image-crop";
 import 'react-image-crop/dist/ReactCrop.css'
 
 interface Props {
+  height?: number
+  width?: number
   aspect?: number | null
   visible: boolean,
   src: any,
@@ -103,8 +105,8 @@ export default class CropImageModal extends Component<Props, State> {
 
     return (
       <Overlay
-        width={900}
-        height={450}
+        width={this.props.width ? this.props.width : 900}
+        height={this.props.height ? this.props.height : 450}
         visible={this.props.visible}
         title={"Image Upload"}
         submitButtonText="Save"
