@@ -456,6 +456,40 @@ const hasSlides = async (talkId: number, callback: any) => {
   );
 };
 
+const uploadSpeakerPhoto = (talkId: number, image: File, callback: any) => {
+  const data = new FormData();
+  data.append("talkId", talkId.toString());
+  data.append("image", image);
+
+  axios.post(baseApiUrl + "/talks/speakerphoto", data,       {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  }).then(function (response) {
+    callback(response.data);
+  });
+};
+
+const getSpeakerPhoto = (talkId: number, cacheDelay?: number) => {
+  if (cacheDelay) {
+    return baseApiUrl + `/talks/speakerphoto?talkId=${talkId}&ts=` + cacheDelay;
+  } else {
+    return baseApiUrl + `/talks/speakerphoto?talkId=${talkId}`;
+  }
+};
+
+const removeSpeakerPhoto = (talkId: number, callback: any) => {
+  axios
+    .delete(
+      baseApiUrl + "/talks/speakerphoto", {
+        data: {talkId: talkId},
+        headers: {"Access-Control-Allow-Origin": "*"},
+    },)
+    .then(function (response) {
+      callback(response.data);
+    });
+}
+
 const getViewCountForTalk = (
   talkId: number,
   callback: any
@@ -539,6 +573,10 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  // Speaker photo
+  uploadSpeakerPhoto,
+  getSpeakerPhoto,
+  removeSpeakerPhoto,
   // Talk registration management
   sendEmailonTalkScheduling,
   sendEmailonTalkModification,
@@ -585,5 +623,6 @@ export type Talk = {
   talk_speaker: string;
   talk_speaker_url: string;
   published: number;
-  audience_level: string
+  audience_level: string;
+  has_speaker_photo: number;
 };

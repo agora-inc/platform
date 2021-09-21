@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer } from "grommet";
+import { Box, Text, Button, Layer, Image } from "grommet";
 import Identicon from "react-identicons";
 import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { User } from "../../Services/UserService";
@@ -24,6 +24,8 @@ import SlidesUploader from "../Core/SlidesUploader";
 import CopyUrlButton from "../Core/ShareButtons/CopyUrlButton";
 import { encryptIdAndRoleInUrl } from "../Core/Encryption/UrlEncryption"
 import { basePoint } from "../../config";
+import ImageCropUploader from "./ImageCropUploader";
+import { baseApiUrl } from "../../config";
 
 
 interface Props {
@@ -60,7 +62,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       showShadow: false,
-      slideUrl: ''
+      slideUrl: '',
     };
   }
 
@@ -71,7 +73,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
   componentDidMount = () => {
     this.checkIfUserCanAccessLink();
     this.checkIfUserCanViewCard();
-    this.fetchSlide()
+    this.fetchSlide();
   };
 
   checkIfAvailableAndRegistered = () => {
@@ -215,6 +217,33 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
     this.props.callback()
   };
 
+  onSpeakerPhotoUpload = (file: File) => {
+    TalkService.uploadSpeakerPhoto(
+      this.props.talk.id,
+      file,
+      () => {
+        window.location.reload();
+      }
+    );
+  };
+
+  removeSpeakerPhoto = () => {
+    TalkService.removeSpeakerPhoto(
+      this.props.talk.id,
+      () => {
+        window.location.reload();
+      }
+    );
+  };
+
+  getSpeakerPhotoUrl = (): string | undefined => {
+    let current_time = Math.floor(new Date().getTime() / 5000);
+    // HACK: we add the new time at the end of the URL to avoid caching; 
+    // we divide time by value such that all block of requested image have 
+    // the same name (important for the name to be the same for the styling).
+    return TalkService.getSpeakerPhoto(this.props.talk.id, current_time)
+  }
+
   formatDate = (d: string) => {
     const date = new Date(d);
     const dateStr = date.toDateString().slice(0, -4);
@@ -316,45 +345,97 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           overflow="hidden"
         >
           <Box height="100%" pad="10px">
-            <Box
-              direction="row"
-              gap="xsmall"
-              align="center"
-              style={{ height: "40px" }}
-              margin={{ bottom: "10px" }}
-            >
+            <Box direction="column" width={this.props.talk.has_speaker_photo === 1 ? "65%" : "80%"} margin={{bottom: "10px"}}> 
               <Box
-                height="30px"
-                width="30px"
-                round="15px"
+                direction="row"
+                gap="xsmall"
+                align="center"
+                style={{ height: "45px" }}
+                margin={{ bottom: "15px" }}
+              >
+                <Box
+                  height="30px"
+                  width="30px"
+                  round="15px"
+                  justify="center"
+                  align="center"
+                  background="#efeff1"
+                  overflow="hidden"
+                >
+                  {!this.props.talk.has_avatar && (
+                    <Identicon string={this.props.talk.channel_name} size={15} />
+                  )}
+                  {!!this.props.talk.has_avatar && (
+                    <img
+                      src={ChannelService.getAvatar(this.props.talk.channel_id)}
+                      height={30}
+                      width={30}
+                    />
+                  )}
+                </Box>
+                <Text weight="bold" size="14px" color="grey">
+                  {this.props.talk.channel_name}
+                </Text>
+              </Box> 
+
+              <Text
+                size="14px"
+                color="black"
+                weight="bold"
+                style={{ minHeight: "60px", overflow: "auto" }}
+              >
+                {this.props.talk.name}
+              </Text>
+            </Box> 
+
+            {this.props.admin && this.props.talk.has_speaker_photo === 0 && (
+              <div style={{position: 'absolute', top: 10, right: 10, zIndex: 5}}>
+                <ImageCropUploader
+                  text="Upload speaker pic"
+                  onUpload={this.onSpeakerPhotoUpload}
+                  width="100px"
+                  height="20px"
+                  widthModal={600}
+                  heightModal={600}
+                  textSize="10px"
+                  hideToolTip={true}
+                  aspect={3 / 2}
+                />
+              </div>
+            )}
+            {this.props.admin && this.props.talk.has_speaker_photo === 1 && (
+              <Box 
+                style={{ 
+                  position: 'absolute', top: 10, right: 10, zIndex: 5,
+                  border: "solid black 1px", cursor: "pointer" 
+                }}
+                round="xsmall"
+                width="105px"
+                height="20px"
                 justify="center"
                 align="center"
-                background="#efeff1"
-                overflow="hidden"
+                background="#EAF1F1"
+                focusIndicator={true}
+                hoverIndicator="#DDDDDD"
+                onClick={(e: any) => {
+                  e.stopPropagation()
+                  this.removeSpeakerPhoto()
+                }}
               >
-                {!this.props.talk.has_avatar && (
-                  <Identicon string={this.props.talk.channel_name} size={15} />
-                )}
-                {!!this.props.talk.has_avatar && (
-                  <img
-                    src={ChannelService.getAvatar(this.props.talk.channel_id)}
-                    height={30}
-                    width={30}
-                  />
-                )}
+                <Text size="10px" weight="bold" color="black">
+                  Remove speaker pic
+                </Text>
               </Box>
-              <Text weight="bold" size="14px" color="grey">
-                {this.props.talk.channel_name}
-              </Text>
-            </Box>
-            <Text
-              size="14px"
-              color="black"
-              weight="bold"
-              style={{ minHeight: "75px", overflow: "auto" }}
-            >
-              {this.props.talk.name}
-            </Text>
+            )}
+            {this.props.talk.has_speaker_photo === 1 && (
+              <Box width="40%">
+                <Image 
+                  style={{position: 'absolute', top: 10, right: 10, aspectRatio: "3/2"}}
+                  src={this.getSpeakerPhotoUrl()}
+                  width="30%"
+                />
+              </Box>
+            )}
             <Box direction="row" gap="small">
               <UserExpert size="18px" />
               <Text
@@ -389,7 +470,7 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
                   <Text
                     size="14px"
                     color="black"
-                    style={{ height: "30px", fontStyle: "normal" }}
+                    style={{ height: "20px", fontStyle: "normal" }}
                   >
                     {this.formatDate(this.props.talk.date)}
                   </Text>

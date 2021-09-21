@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer } from "grommet";
+import { Box, Text, Button, Layer, Image } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
@@ -131,6 +131,10 @@ export default class CurrentTalkCard extends Component<Props, State> {
     //   );
   };
 
+  getSpeakerPhotoUrl = (): string | undefined => {
+    return TalkService.getSpeakerPhoto(this.props.talk.id)
+  }
+
   onClick = () => {
     if (this.state.registered) {
       this.unregister();
@@ -167,49 +171,65 @@ export default class CurrentTalkCard extends Component<Props, State> {
           overflow="hidden"
         >
           <Box height="100%" pad="10px">
-            <Box
-              direction="row"
-              gap="xsmall"
-              align="center"
-              style={{ height: "40px" }}
-              margin={{ bottom: "10px" }}
-            >
+
+
+
+            <Box direction="column" width={this.props.talk.has_speaker_photo === 1 ? "65%" : "80%"} margin={{bottom: "10px"}}> 
               <Box
-                height="30px"
-                width="30px"
-                round="15px"
-                justify="center"
+                direction="row"
+                gap="xsmall"
                 align="center"
-                background="#efeff1"
-                overflow="hidden"
+                style={{ height: "45px" }}
+                margin={{ bottom: "15px" }}
               >
-                {!this.props.talk.has_avatar && (
-                  <Identicon string={this.props.talk.channel_name} size={15} />
-                )}
-                {!!this.props.talk.has_avatar && (
-                  <img
-                    src={ChannelService.getAvatar(this.props.talk.channel_id)}
-                    height={30}
-                    width={30}
-                  />
-                )}
-              </Box>
-              <Text weight="bold" size="16px" color="grey">
-                {this.props.talk.channel_name}
+                <Box
+                  height="30px"
+                  width="30px"
+                  round="15px"
+                  justify="center"
+                  align="center"
+                  background="#efeff1"
+                  overflow="hidden"
+                >
+                  {!this.props.talk.has_avatar && (
+                    <Identicon string={this.props.talk.channel_name} size={15} />
+                  )}
+                  {!!this.props.talk.has_avatar && (
+                    <img
+                      src={ChannelService.getAvatar(this.props.talk.channel_id)}
+                      height={30}
+                      width={30}
+                    />
+                  )}
+                </Box>
+                <Text weight="bold" size="14px" color="grey">
+                  {this.props.talk.channel_name}
+                </Text>
+              </Box> 
+
+              <Text
+                size="14px"
+                color="black"
+                weight="bold"
+                style={{ minHeight: "60px", overflow: "auto" }}
+              >
+                {this.props.talk.name}
               </Text>
-            </Box>
-            <Text
-              size="18px"
-              color="black"
-              weight="bold"
-              style={{ minHeight: "75px", overflow: "auto" }}
-            >
-              {this.props.talk.name}
-            </Text>
+            </Box> 
+
+            {this.props.talk.has_speaker_photo && (
+              <Box width="40%">
+                <Image 
+                  style={{position: 'absolute', top: 10, right: 10, aspectRatio: "3/2"}}
+                  src={this.getSpeakerPhotoUrl()}
+                  width="30%"
+                />
+              </Box>
+            )}
             <Box direction="row" gap="small">
               <UserExpert size="18px" />
               <Text
-                size="18px"
+                size="14px"
                 color="black"
                 style={{
                   height: "30px",
@@ -224,15 +244,31 @@ export default class CurrentTalkCard extends Component<Props, State> {
               </Text>
             </Box>
             <Box direction="row" gap="small">
-              <Calendar size="18px" />
-              <Text
-                size="18px"
-                color="#5454A0"
-                weight="bold"
-                style={{ height: "30px", fontStyle: "normal" }}
-              >
-                {this.getTimeRemaining()}
-              </Text>
+              <Calendar size="14px" />
+              <Box direction="row" width="100%">
+                <Text
+                  size="18px"
+                  color="#5454A0"
+                  weight="bold"
+                  style={{ height: "20px", fontStyle: "normal" }}
+                >
+                  {this.getTimeRemaining()}
+                </Text>
+              </Box>
+              {this.props.talk.card_visibility === "Members only" &&
+                <Box
+                  round="xsmall"
+                  background="#EAF1F1"
+                  pad="xsmall"
+                  justify="center"
+                  align="center"
+                  width="160px"
+                >
+                  <Text size="12px">
+                    member-only
+                  </Text>
+                </Box>
+              }
             </Box>
           </Box>
         </Box>
