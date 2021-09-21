@@ -348,13 +348,13 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
           overflow="hidden"
         >
           <Box height="100%" pad="10px">
-            <Box direction="column" width={this.state.hasSpeakerPhoto ? "58%" : "75%"} margin={{bottom: "10px"}}> 
+            <Box direction="column" width={this.state.hasSpeakerPhoto ? "65%" : "75%"} margin={{bottom: "10px"}}> 
               <Box
                 direction="row"
                 gap="xsmall"
                 align="center"
-                style={{ height: "50px" }}
-                margin={{ bottom: "20px" }}
+                style={{ height: "45px" }}
+                margin={{ bottom: "15px" }}
               >
                 <Box
                   height="30px"
@@ -391,23 +391,25 @@ export default class ChannelPageTalkCard extends Component<Props, State> {
               </Text>
             </Box> 
 
-            <div style={{position: 'absolute', top: 10, right: 10, zIndex: 5}}>
-              <ImageCropUploader
-                text="Upload speaker pic"
-                onUpload={this.onSpeakerPhotoUpload}
-                width="100px"
-                height="20px"
-                textSize="10px"
-                hideToolTip={true}
-                aspect={3 / 2}
-              />
-            </div>
+            {this.props.admin && (
+              <div style={{position: 'absolute', top: 10, right: 10, zIndex: 5}}>
+                <ImageCropUploader
+                  text="Upload speaker pic"
+                  onUpload={this.onSpeakerPhotoUpload}
+                  width="100px"
+                  height="20px"
+                  textSize="10px"
+                  hideToolTip={true}
+                  aspect={3 / 2}
+                />
+              </div>
+            )}
             {this.state.hasSpeakerPhoto && (
               <Box width="40%">
                 <Image 
                   style={{position: 'absolute', top: 10, right: 10, aspectRatio: "3/2"}}
                   src={this.getSpeakerPhotoUrl()}
-                  width="35%"
+                  width="30%"
                 />
               </Box>
             )}
