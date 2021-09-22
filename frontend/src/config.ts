@@ -1,10 +1,10 @@
 // LIVE CONFIG:
 // export const basePoint = "https://mora.stream"
-// export const baseApiUrl = "https://mora.stream/api";
+export const baseApiUrl = "https://mora.stream/api";
 
 // LOCAL TEST CONFIG;
 export const basePoint = "http://localhost:3000"
-export const baseApiUrl = "http://localhost:8000";
+// export const baseApiUrl = "http://localhost:8000";
 
 
 export const antmediaWebSocketUrl = 

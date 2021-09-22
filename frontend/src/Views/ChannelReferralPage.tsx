@@ -238,6 +238,7 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
   }
 
   aboveTheFoldMain() {
+    // console.log("refcount" + this.state.referralCount);
     return (
       <>
         <Box>
@@ -254,7 +255,7 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
                   weight="bold"
                   margin={{bottom: "6px", right: "20px"}}
                 >
-                  {this.state.referralCount} referrals
+                  {this.state.referralCount} referrals 
                 </Text>
                 <div style = {{
                 height: '30px',
@@ -270,13 +271,13 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
                     borderRadius:40,
                     textAlign:'right'
                 }}>
-                    <span style={{
+                    {/* <span style={{
                         padding: 10,
                         color: 'black',
                         fontWeight: 900
                     }}>
                         {`${this.state.referralCount} referrals done`}
-                    </span>
+                    </span> */}
                 
                 </div>
             </div>
@@ -406,7 +407,8 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
             <Box>
               <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Keep up with the hottest ideas of the moment!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
-                  <SignUpButton 
+                  <SignUpButton
+                    channelId = {this.state.channelId}
                     callback={()=>{}}
                     height="100px"
                     width="200px"

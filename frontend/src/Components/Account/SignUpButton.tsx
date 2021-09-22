@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { StatusCritical } from "grommet-icons";
 import { UserService } from "../../Services/UserService";
 import { Overlay } from "../Core/Overlay";
+import { Channel, ChannelService } from "../../Services/ChannelService";
 
 interface Props {
+  channelId?: number;
   callback: any;
   width?: string;
   height?: string;
@@ -22,10 +24,11 @@ interface State {
   width: string;
   height: string;
   textSize: string;
+
 }
 
 export default class SignUpButton extends Component<Props, State> {
-  constructor(props: Props) {
+  constructor(props: Props ) {
     super(props);
     this.state = {
       showModal: false,
@@ -41,10 +44,12 @@ export default class SignUpButton extends Component<Props, State> {
   }
 
   onSubmit = () => {
+      
     UserService.register(
       this.state.username,
       this.state.password,
       this.state.email,
+      this.props.channelId !== undefined ? this.props.channelId : NaN ,
       (result: string) => {
         // console.log(result);
         if (result === "ok") {
@@ -56,6 +61,7 @@ export default class SignUpButton extends Component<Props, State> {
       }
     );
   };
+
 
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, error: "" });
@@ -75,6 +81,7 @@ export default class SignUpButton extends Component<Props, State> {
     return re.test(email);
   };
 
+  
   render() {
     return (
       <Box style={this.props.height ? {} : {maxHeight: "30px"}}>
