@@ -81,7 +81,7 @@ export default class Carousel extends Component<Props, State> {
     return (
       <Box width="100%" margin={{bottom: "20px"}}>
         <Text size="26px" weight="bold" color="color1" margin="none">
-          Happening now 🔴
+          Happening now
         </Text>
         <Box
           direction="row"

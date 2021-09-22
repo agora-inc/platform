@@ -254,7 +254,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
             width="100%"
             justify="between"
             align="start"
-            margin={{ bottom: "medium" }}
+            margin={{ bottom: "medium", top: "50px" }}
           >
             <Box width="70%" alignContent="start" direction="row">
               <Link

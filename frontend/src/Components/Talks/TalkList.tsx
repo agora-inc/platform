@@ -33,7 +33,7 @@ export default class TalkList extends Component<Props> {
           margin={{ bottom: "15px" }}
         >
           {this.props.title && (
-            <Text size="26px" weight="bold" color="black" margin="none">
+            <Text size="26px" weight="bold" color="color1" margin="none">
               Upcoming talks
             </Text>
           )}

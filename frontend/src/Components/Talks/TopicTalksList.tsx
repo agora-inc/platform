@@ -276,7 +276,7 @@ export default class TopicTalkList extends Component<Props, State> {
           align="end"
           margin={{ 
             bottom: "15px", 
-            top: (window.innerWidth < 800 ? "30px" : "0px"), 
+            top: (window.innerWidth < 800 ? "30px" : "50px"), 
             
           }}
         >

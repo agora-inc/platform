@@ -665,7 +665,7 @@ export default class ChannelPage extends Component<Props, State> {
                     <Text
                       size="26px"
                       weight="bold"
-                      color="black"
+                      color="color1"
                       margin={{ top: "40px" }}
                     >{`Past talks`}</Text>
                   )}

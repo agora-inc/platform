@@ -91,7 +91,7 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
             margin={{ bottom: "medium" }}
           >
             <Heading
-              color="black"
+              color="color1"
               size="24px"
               margin="none"
               style={{ height: "20px" }}

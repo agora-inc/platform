@@ -762,7 +762,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <Text
                   size="24px"
                   weight="bold"
-                  color="black"
+                  color="color1"
                   style={{width: "69vw"}}
                 >
                   {<UserAdmin />} {`Administrator panel`}{" "}
@@ -925,7 +925,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="small"
                     margin={{ bottom: "24px" }}
                   >
-                    <Text size="20px" weight="bold" color="black">
+                    <Text size="20px" weight="bold" color="color1">
                       {`Drafts`}
                     </Text>
                     <StatusInfo
@@ -1037,7 +1037,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Text
                         size="20px"
                         weight="bold"
-                        color="black"
+                        color="color1"
                         margin={{ top: "40px" }}
                       >
                         {`Past talks`}

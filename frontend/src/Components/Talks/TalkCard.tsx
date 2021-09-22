@@ -256,7 +256,7 @@ export default class TalkCard extends Component<Props, State> {
                     />
                   )}
                 </Box>
-                <Text weight="bold" size="14px" color="color4">
+                <Text weight="bold" size="14px" color="color3">
                   {this.props.talk.channel_name}
                 </Text>
               </Box> 
@@ -436,7 +436,7 @@ export default class TalkCard extends Component<Props, State> {
                             />
                         </Box>
                         <Box justify="between">
-                          <Text weight="bold" size="16px" color="grey">
+                          <Text weight="bold" size="16px" color="color3">
                             {this.props.talk.channel_name}
                           </Text>
                         </Box>

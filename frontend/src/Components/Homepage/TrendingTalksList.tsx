@@ -62,7 +62,7 @@ export default class TrendingTalksList extends Component<{}, State> {
             weight="bold"
             color="color1"
           >
-            Trending <Text size="22px">🔥</Text> 
+            Most popular
           </Text>
 
         </Box>
