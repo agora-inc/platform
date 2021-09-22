@@ -972,10 +972,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Text
                         size="26px"
                         weight="bold"
-                        color="black"
+                        color="color1"
                         margin={{ top: "40px", bottom: "24px" }}
                       >
-                        {`Happening now`}
+                        {`Happening now 🔴`}
                       </Text>
                       {this.state.currentTalks.map((talk: Talk) => (
                         <ChannelPageTalkCard 
@@ -997,7 +997,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text
                       size="20px"
                       weight="bold"
-                      color="black"
+                      color="color1"
                     >
                       {`Upcoming talks`}
                     </Text>

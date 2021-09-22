@@ -232,7 +232,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
       />
       <Box
         pad={{ top: "10vh", bottom: "100px" }}
-        align="center"
+        align="start"
         style={{ overflowY: "auto" }}
         onScroll={this.handleScroll}
         margin={{left: "8%", right: "8%"}}
@@ -243,7 +243,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
         >
           <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
         </video> */}
-        <Box align="center">
+        <Box align="start" margin={{bottom: "20px"}}>
           <TrendingTalksList />
         </Box>
         <Box width="90%">
@@ -267,7 +267,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
                 round="xsmall"
                 pad="xsmall"
                 height="30px"
-                width={this.state.renderMobile ? "150px" : "150px"}
+                width={this.state.renderMobile ? "150px" : "170px"}
                 justify="center"
                 align="center"
                 focusIndicator={false}
@@ -293,7 +293,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
                 round="xsmall"
                 pad="xsmall"
                 height="30px"
-                width={this.state.renderMobile ? "150px" : "150px"}
+                width={this.state.renderMobile ? "150px" : "170px"}
                 justify="center"
                 align="center"
                 focusIndicator={false}

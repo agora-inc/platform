@@ -293,9 +293,9 @@ export default class TopicTalkList extends Component<Props, State> {
                 round="xsmall"
                 pad="xsmall"
                 height="30px"
-                width={this.state.renderMobile ? "150px" : "150px"}
+                width={this.state.renderMobile ? "150px" : "170px"}
                 justify="center"
-                align="center"
+                alignContent="center"
                 focusIndicator={false}
                 hoverIndicator="color2"
                 margin={{ left: "0px" }}
@@ -319,7 +319,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 round="xsmall"
                 pad="xsmall"
                 height="30px"
-                width={this.state.renderMobile ? "150px" : "150px"}
+                width={this.state.renderMobile ? "150px" : "170px"}
                 justify="center"
                 align="center"
                 focusIndicator={false}

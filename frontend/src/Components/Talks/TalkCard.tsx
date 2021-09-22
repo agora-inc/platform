@@ -256,14 +256,14 @@ export default class TalkCard extends Component<Props, State> {
                     />
                   )}
                 </Box>
-                <Text weight="bold" size="14px" color="grey">
+                <Text weight="bold" size="14px" color="color4">
                   {this.props.talk.channel_name}
                 </Text>
               </Box> 
 
               <Text
                 size="14px"
-                color="black"
+                color="color1"
                 weight="bold"
                 style={{ minHeight: "60px", overflow: "auto" }}
               >
@@ -361,9 +361,9 @@ export default class TalkCard extends Component<Props, State> {
               position: "absolute",
               top: 8,
               left: 8,
-              opacity: 0.5,
+              opacity: 0.8,
             }}
-            background="#6DA3C7"
+            background="color1"
           ></Box>
         )}
         {this.state.showModal && 
@@ -446,7 +446,7 @@ export default class TalkCard extends Component<Props, State> {
                   <Text
                     weight="bold"
                     size="18px"
-                    color="black"
+                    color="color1"
                     style={{
                       minHeight: "50px",
                       maxHeight: "120px",
