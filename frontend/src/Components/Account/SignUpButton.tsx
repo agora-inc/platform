@@ -45,6 +45,7 @@ export default class SignUpButton extends Component<Props, State> {
 
   onSubmit = () => {
       
+    console.log("channelID: " + this.props.channelId)
     UserService.register(
       this.state.username,
       this.state.password,

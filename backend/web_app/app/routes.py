@@ -395,7 +395,7 @@ def increaseViewCountForChannel():
     channelId = params["channelId"]
     return jsonify(channels.increaseChannelViewCount(channelId))
 
-@app.route('/channels/referrals/get', methods=["GET"])
+@app.route('/channels/referralscount/get', methods=["GET"])
 def getReferralsForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(channels.getChannelReferalCount(channelId))

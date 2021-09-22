@@ -487,7 +487,7 @@ const getReferralsForChannel = (
   callback: any
 ) => {
   get(
-    `channels/referrals/get?channelId=${channelId}`,
+    `channels/referralscount/get?channelId=${channelId}`,
     callback
   );
 };
