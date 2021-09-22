@@ -267,13 +267,15 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
           <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
             <Box height="230px" pad="medium" gap="10px">
-              <Box direction="row" height="75px" width="100%">
+              <Box direction="row" height="60px" width="100%">
                 <Box width="70px">
                   <SearchAdvanced size="large"/>
                 </Box>
-                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Find or give a talk,
-                </Text>
+                <Box height="170px">
+                  <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                    Find or give a talk,
+                  </Text>
+                </Box>
               </Box>
               <Text size="18px" style={{alignContent: "start"}}> 
                 Browse for seminars as an attendee or apply as a speaker within a community!
@@ -296,17 +298,21 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
           <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
             <Box height="230px" pad="medium" gap="10px">
-              <Box direction="row" height="75px" width="100%">
+              <Box direction="row" height="60px" width="100%">
                 <Box width="70px">
                   <Workshop size="large"/>
                 </Box>
-                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Attend,
+                <Box height="170px">
+                  <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                    Attend,
+                  </Text>
+                </Box>
+              </Box>
+              <Box height="170px">
+                <Text size="18px" style={{alignContent: "start"}}>
+                  Seminars can be run online or hybrid with <img src={ZoomLogo} height="14px"/>, <img src={YoutubeLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech sculpted for academics!
                 </Text>
               </Box>
-              <Text size="18px" style={{alignContent: "start"}}>
-                Seminars can be run online or hybrid with <img src={ZoomLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech made by academics for academics!
-              </Text>
             </Box>
             <Box height="200px" alignSelf="center" direction="row">
               <video 
@@ -325,7 +331,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
           <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
             <Box height="230px" pad="medium" gap="10px">
-              <Box direction="row" height="75px" width="100%">
+              <Box direction="row" height="60px" width="100%">
                 <Box width="70px">
                   <Group size="large"/>
                 </Box>
@@ -333,9 +339,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   Mingle!
                 </Text>
               </Box>
-              <Text size="18px" style={{alignContent: "start"}}>
-                Grab an e-coffee in a 2D world and meet with speakers and audience. Many collaborations started around a coffee (mora.stream included)! 
-              </Text>   
+              <Box height="170px">
+                <Text size="18px" style={{alignContent: "start"}}>
+                  Grab an e-coffee in a 2D world and meet with speakers and audience. Many collaborations started around a coffee (mora.stream included)! 
+                </Text>
+              </Box>
             </Box>
 
             <Box height="200px" alignSelf="center" direction="row">
@@ -416,7 +424,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Don't be left behind and keep up with the hottest discussions of the moment!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Join your peers and keep up with the hottest discussions of the moment!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}

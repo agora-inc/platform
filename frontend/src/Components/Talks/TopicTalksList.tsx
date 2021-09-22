@@ -292,8 +292,8 @@ export default class TopicTalkList extends Component<Props, State> {
                 background="color2"
                 round="xsmall"
                 pad="xsmall"
-                height="60px"
-                width={this.state.renderMobile ? "150px" : "220px"}
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "150px"}
                 justify="center"
                 align="center"
                 focusIndicator={false}
@@ -302,8 +302,8 @@ export default class TopicTalkList extends Component<Props, State> {
                 direction="row"
               >
                 {this.state.renderMobile 
-                  ? <Text size="18px" weight="bold"> Upcoming</Text> 
-                  : <Text size="18px" weight="bold"> Upcoming seminars</Text>
+                  ? <Text size="14px" weight="bold"> Upcoming</Text> 
+                  : <Text size="14px" weight="bold"> Upcoming seminars</Text>
                 }
                 {/* <Text size="22px">🔥</Text> */}
               </Box>
@@ -318,8 +318,8 @@ export default class TopicTalkList extends Component<Props, State> {
                 background="color5"
                 round="xsmall"
                 pad="xsmall"
-                height="60px"
-                width={this.state.renderMobile ? "150px" : "220px"}
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "150px"}
                 justify="center"
                 align="center"
                 focusIndicator={false}
@@ -328,8 +328,8 @@ export default class TopicTalkList extends Component<Props, State> {
                 direction="row"
               >
                 {this.state.renderMobile 
-                  ? <Text size="18px" weight="bold"> Past</Text> 
-                  : <Text size="18px" weight="bold"> Past seminars</Text>
+                  ? <Text size="14px" weight="bold"> Past</Text> 
+                  : <Text size="14px" weight="bold"> Past seminars</Text>
                 }
                 {/* <Text size="22px">🔥</Text> */}
               </Box>
@@ -347,8 +347,8 @@ export default class TopicTalkList extends Component<Props, State> {
                 background="color7"
                 round="xsmall"
                 pad="xsmall"
-                height="60px"
-                width={this.state.renderMobile ? "150px" : "220px"}
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "150px"}
                 justify="center"
                 align="center"
                 focusIndicator={false}
@@ -356,7 +356,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 margin={{ left: "0px" }}
                 direction="row"
               >
-                <Text size="18px" weight="bold"> Give a talk</Text>
+                <Text size="14px" weight="bold"> Give a talk</Text>
               </Box>
               </Link>
               )
