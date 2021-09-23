@@ -25,10 +25,12 @@ import BackgroundImage from "../../assets/general/mora_social_media_cover_#bad6d
 import WavyArrow from "../../assets/landing_page/wavy_arrow_left_right.png"
 
 import InstitutionalUsers from "./InstitutionalUsers";
+import SeminarImage from "../../assets/general/academic_seminars_photo.jpeg"
 
 import PricingPlans from "../../Views/PricingPlans";
 
 import DashedLine from "../../assets/landing_page/dashed-line.png"
+import TransportSeminars from "../../Components/Homepage/TransportSeminars";
 
 interface State {
   user: User | null
@@ -119,7 +121,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Box>
           </Box>
 
-          <Box height="300px" margin={{bottom: "15px"}}>
+          <Box height="200px" margin={{bottom: "15px"}}>
 
             <video 
                   autoPlay loop muted
@@ -164,14 +166,22 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
   aboveTheFoldMain() {
     return (
       <>
-        <Box>
+        <Box direction="column">
           <Text size="48px" weight="bold" color="color4" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
             Empowering seminar organisers, from start to finish
           </Text>
-          <Text size="20px">
-            "I'd love to see this grow into something big." - 
-          </Text>
-          <Text>PLACEHOLDER</Text>
+          {!this.state.renderMobileView && (
+            <Box margin={{bottom: "50px"}}>
+              <CreateChannelButton 
+                      onClick={this.toggleCreateChannelOverlay} 
+                      width="400px"
+                      height="90px"
+                      text={"Publish your seminars"}
+                      textSize="18px"
+                    />
+            </Box>
+          )}
+          <InstitutionalUsers/>
         </Box>
       </>
     )
@@ -185,7 +195,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             ? { width: "90%", alignSelf: "center" } 
             : { width: "90%", marginTop: "120px", alignSelf: "center"}
           }>
-          <img src={moraStreamFullLogo} style={{maxWidth: "600px"}}/>
+          <img src={SeminarImage}/>
         </Box>
       </>
     )
@@ -247,7 +257,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           direction="row"
         >
           <Group size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Launch</b>  your own seminars</Text>
+          <Text size="18px" margin={{left: "10px"}}> <b>Launch</b>  your seminars</Text>
         </Box>
       </Link>
     </Box>
@@ -289,7 +299,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               )}
             </Box>
             <Text size="18px">
-              Your agora, or community homepage, will be the center of your organisational life. It will also be the place where your community will periodically come back! 
+              Your agora, or community homepage, will be the center of your organisational life. It will also be the place where your community will periodically come back to check out your next events! 
             </Text>
             </Box>
 
@@ -346,7 +356,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               </Text>
             </Box>
             <Text size="18px"> 
-                You can use your <img src={ZoomLogo} height="14px"/> subscription but also the <img src={moraStreamFullLettersLogo} height="16px"/> streaming tech sculpted for academics, allowing you to run hybrid seminars, write LateX in chat, go back in the slides, clap for the speaker and much more!
+                You can use your <img src={ZoomLogo} height="14px"/> subscription OR the <img src={moraStreamFullLettersLogo} height="16px"/> streaming tech. The latter allows you to run hybrid seminars, write LateX in chat, go back in the slides, clap for the speaker and much more!
             </Text>
             </Box>
 
@@ -424,7 +434,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Start empowering your community by joining a worldwide network of academics!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now by attracting new teammates to your events!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "20px"}}>
                 <CreateChannelButton 
@@ -482,36 +492,38 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     )
   }
 
+  migrateFromResearchSeminars() {
+    return (
+      <Box align="center" justify="center">
+        <Text size="34px" margin={{bottom: "80px"}} color="color1" weight="bold" alignSelf="center">
+          Already running a series on researchseminars.org? Migrate everything in 3 clicks!
+        </Text>
+        <TransportSeminars 
+          user={this.state.user}
+        />
+      </Box>
+    );
+  }
+
   render() {
     return (
       <Box
         direction="column"
         align="center"
       >
-        {/* <video
-          autoPlay loop muted id="background-landing"
-          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
-        >
-          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
-        </video> */}
-        {/* <img height="200px" src={BackgroundImage}/> */}
         <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
           // src={BackgroundImage}
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
 
 
-
-
-
-
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "1080px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "750px" : "100%"}
+          <Box width="80%" height={this.state.renderMobileView ? "1080px": "700px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+            <Box width={this.state.renderMobileView ? "100%" : "50%"} height={this.state.renderMobileView ? "750px" : "100%"}
               style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
               {this.aboveTheFoldMain()}
             </Box>
-            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "100px" : "100%"}>
+            <Box width={this.state.renderMobileView ? "100%" : "50%"} height={this.state.renderMobileView ? "100px" : "100%"}>
               {this.aboveTheFoldImage()}
             </Box>
           </Box>
@@ -531,8 +543,14 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "500px": "700px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "300px": "400px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
+          </Box>
+        </Box>
+
+        <Box height="100%" width="100%">
+          <Box width="80%" height={this.state.renderMobileView ? "300px": "400px"} direction="column" alignSelf="center">
+            {this.migrateFromResearchSeminars()}
           </Box>
         </Box>
 

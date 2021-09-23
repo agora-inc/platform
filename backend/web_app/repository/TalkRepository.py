@@ -420,7 +420,7 @@ class TalkRepository:
             return
 
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup):
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup, email_on_creation=True):
         query = f'''
             INSERT INTO Talks (
                 channel_id, 
@@ -464,7 +464,8 @@ class TalkRepository:
                 "{auto_accept_group}", 
                 {auto_accept_custom_institutions}
                 );
-            '''    
+            '''
+                
         try:
             self.db.open_connection()
             cursor = self.db.con.cursor()
@@ -482,14 +483,15 @@ class TalkRepository:
             self.editAutoAcceptanceCustomInstitutions(insertId, customInstitutionsIds)
 
             # notify members by email
-            self.notifyCommunityAboutNewTalk(
-                channelId, 
-                channelName, 
-                startDate, 
-                talkName, 
-                insertId, 
-                talk_speaker, 
-                talk_speaker_url)
+            if email_on_creation:
+                self.notifyCommunityAboutNewTalk(
+                    channelId, 
+                    channelName, 
+                    startDate, 
+                    talkName, 
+                    insertId, 
+                    talk_speaker, 
+                    talk_speaker_url)
 
             # Email reminders
             self.email_reminders.addEmailReminders(insertId, startDate, reminderEmailGroup, reminder1, reminder2)
@@ -577,6 +579,23 @@ class TalkRepository:
             return str(e)
            
         return self.getTalkById(talkId) 
+
+    def addSpeakerPhoto(self, talkId):
+        query = f'UPDATE Talks SET has_speaker_photo=1 WHERE id = {talkId}'
+        self.db.run_query(query)
+
+    def removeSpeakerPhoto(self, talkId):
+        query = f'UPDATE Talks SET has_speaker_photo=0 WHERE id = {talkId}'
+        self.db.run_query(query)
+
+    def getSpeakerPhotoLocation(self, talkId):
+        query = f'SELECT has_speaker_photo FROM Talks WHERE id = {talkId}'
+        res = self.db.run_query(query)
+
+        if res[0]["has_speaker_photo"] == 1:
+            return f"/home/cloud-user/plateform/agora/storage/images/speakers/{talkId}.jpg"
+        else:
+            return None
 
     def editAutoAcceptanceCustomInstitutions(self, talk_id, institution_ids):
         """Method to edit the custom institutions auto-accepted for a talk.

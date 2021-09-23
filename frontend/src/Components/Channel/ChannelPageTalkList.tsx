@@ -47,7 +47,13 @@ export default class ChannelPageTalkList extends Component<Props, State> {
 
   render() {
     return (
-      <div className="talk_cards_outer_box">
+      <Box 
+        // className="talk_cards_outer_box"
+        direction="row"
+        width="100%"
+        wrap
+        gap="1.5%"
+      >
         {this.props.talks.map((talk: Talk) => (
             <ChannelPageTalkCard
               width={(window.innerWidth < 800) ? "99%" : "31.5%"}
@@ -62,7 +68,7 @@ export default class ChannelPageTalkList extends Component<Props, State> {
               callback={this.props.callback}
             />
           ))}
-    </div>
+    </Box>
     );
   }
 }

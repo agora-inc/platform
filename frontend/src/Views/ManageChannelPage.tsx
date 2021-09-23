@@ -762,7 +762,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <Text
                   size="24px"
                   weight="bold"
-                  color="black"
+                  color="color1"
                   style={{width: "69vw"}}
                 >
                   {<UserAdmin />} {`Administrator panel`}{" "}
@@ -912,7 +912,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TabList>
                 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <ScheduleTalkButton
                     margin={{ top: "20px", bottom: "40px" }}
                     channel={this.state.channel}
@@ -925,7 +925,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="small"
                     margin={{ bottom: "24px" }}
                   >
-                    <Text size="20px" weight="bold" color="black">
+                    <Text size="20px" weight="bold" color="color1">
                       {`Drafts`}
                     </Text>
                     <StatusInfo
@@ -972,10 +972,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Text
                         size="26px"
                         weight="bold"
-                        color="black"
+                        color="color1"
                         margin={{ top: "40px", bottom: "24px" }}
                       >
-                        {`Happening now`}
+                        {`Happening now 🔴`}
                       </Text>
                       {this.state.currentTalks.map((talk: Talk) => (
                         <ChannelPageTalkCard 
@@ -997,7 +997,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text
                       size="20px"
                       weight="bold"
-                      color="black"
+                      color="color1"
                     >
                       {`Upcoming talks`}
                     </Text>
@@ -1037,7 +1037,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Text
                         size="20px"
                         weight="bold"
-                        color="black"
+                        color="color1"
                         margin={{ top: "40px" }}
                       >
                         {`Past talks`}
@@ -1066,11 +1066,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <EmailsTab channelId={channel!.id} />
                 </TabPanel>
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="column">
                     <Box 
                       direction="row" 
@@ -1258,14 +1258,14 @@ export default class ManageChannelPage extends Component<Props, State> {
 
 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RegistrationsTab channelId={channel!.id} />
                   </Box>
                 </TabPanel>
 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{top: "40px", bottom: "60px"}}>
                     <DeleteAgoraButton
                       name={this.state.channel!.name}
@@ -1277,14 +1277,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {/* 
                   TAB FOR MEMBERSHIP APPLICATION:
                   
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel> */}
                 
               {/*   DETAIL SECTION: COMMENTED OUT
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>             
                   <Grid
                     rows={['xxsmall', 'xxsmall']}
                     columns={['medium', 'xxsmall']}

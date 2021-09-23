@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-// import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
 import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
+import moraStreamFullLettersLogo from "../../assets/general/mora.stream_logo_v2.1.png";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../../Services/UserService";
 import { Search, Java, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
@@ -124,10 +124,10 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Box height="300px" margin={{bottom: "15px"}}>
 
             <video 
-                  autoPlay loop muted
+                  autoPlay loop muted 
                   style={{ height: "100%", width: "auto"}}
                   >
-                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+                  <source src="/videos/talk_application.webm" type="video/webm"/> 
             </video>
 
 
@@ -168,7 +168,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Watch academic seminars and meet your next co-authors 
+            Watch academic seminars and meet your next teammates! 
           </Text>
           <Text size="20px">
             <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking with speakers and audience in a 2D world!
@@ -251,7 +251,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           direction="row"
         >
           <Group size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Publish</b>  your own seminars</Text>
+          <Text size="18px" margin={{left: "10px"}}> <b>Publish</b>  your seminars</Text>
         </Box>
       </Link>
     </Box>
@@ -265,62 +265,73 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+          <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
+            <Box height="230px" pad="medium" gap="10px">
+              <Box direction="row" height="60px" width="100%">
                 <Box width="70px">
                   <SearchAdvanced size="large"/>
                 </Box>
-                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Register,
-                </Text>
+                <Box height="170px">
+                  <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                    Find or give a talk,
+                  </Text>
+                </Box>
               </Box>
-              <Text size="18px"> 
-                Register to a seminar as an attendee or apply as a speaker within a community!
+              <Text size="18px" style={{alignContent: "start"}}> 
+                Browse for seminars as an attendee or apply as a speaker within a community!
               </Text>
             </Box>
-            <Box height="45%" alignSelf="end" direction="column">
+            <Box height="200px" alignSelf="center" direction="row">
               <video 
-                    autoPlay loop muted
-                    style={{ height: "auto", width: "100%"}}
-                    >
-                    <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", alignSelf: "center", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/browse_talk.webm" type="video/webm"/> 
               </video>
             </Box>
           </Box>
 
-          <Box width="120px" direction="column" alignSelf="center"> 
+          <Box width="190px" direction="column" alignSelf="center"> 
             <img src={this.state.renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
               style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+          <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
+            <Box height="230px" pad="medium" gap="10px">
+              <Box direction="row" height="60px" width="100%">
                 <Box width="70px">
                   <Workshop size="large"/>
                 </Box>
-                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Attend,
+                <Box height="170px">
+                  <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                    Attend,
+                  </Text>
+                </Box>
+              </Box>
+              <Box height="170px">
+                <Text size="18px" style={{alignContent: "start"}}>
+                  Seminars can be run online or hybrid with <img src={ZoomLogo} height="14px"/>, <img src={YoutubeLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech sculpted for academics!
                 </Text>
               </Box>
-              <Text size="18px">
-                Seminars can be run online or hybrid using a mobile app. Request the mic, browse through the slides, and clap for the speaker with your space bar!
-              </Text>
             </Box>
-            <Box height="45%" alignSelf="end" direction="column">
-              <img src="/videos/mora_streaming_gif_test.gif"/> 
+            <Box height="200px" alignSelf="center" direction="row">
+              <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/morastreaming_tech_example.webm" type="video/webm"/> 
+              </video>
             </Box>
           </Box>
 
-          <Box width="120px" direction="column" alignSelf="center"> 
+          <Box width="190px" direction="column" alignSelf="center"> 
             <img src={this.state.renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
               style={this.state.renderMobileView ? {alignSelf: "center", height:"70px"}  : {alignSelf: "center", width: "120px"}} />
           </Box>
 
-          <Box width="380px" height={this.state.renderMobileView ? "370px" : "450px"} background="color2" direction="column">
-            <Box height="50%" pad="medium" gap="10px">
-              <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
+          <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
+            <Box height="230px" pad="medium" gap="10px">
+              <Box direction="row" height="60px" width="100%">
                 <Box width="70px">
                   <Group size="large"/>
                 </Box>
@@ -328,17 +339,19 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   Mingle!
                 </Text>
               </Box>
-              <Text size="18px">
-                Grab an e-coffee in a custom 2D world after each seminars and meet with the speakers, the audience, and maybe your future co-authors!
-              </Text>   
+              <Box height="170px">
+                <Text size="18px" style={{alignContent: "start"}}>
+                  Grab an e-coffee in a 2D world and meet with speakers and audience. Many collaborations started around a coffee (mora.stream included)! 
+                </Text>
+              </Box>
             </Box>
 
-            <Box height="45%" alignSelf="end" direction="column">
+            <Box height="200px" alignSelf="center" direction="row">
               <video 
-                    autoPlay loop muted
-                    style={{ height: "auto", width: "100%"}}
-                    >
-                    <source src="/videos/cafeteria_agora_minidemo.mp4" type="video/mp4"/> 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/cafeteria-agora-minidemo.webm" type="video/webm"/> 
               </video>
             </Box>
           </Box>
@@ -411,7 +424,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Keep up with the hottest ideas of the moment!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Join your peers and keep up with the hottest discussions of the moment!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import LivestreamRoomPage from "./LivestreamRoomPage";
+import LivestreamAdminPage from "./LivestreamAdminPage";
+import LivestreamAudiencePage from "./LivestreamAudiencePage";
+import LivestreamSpeakerPage from "./LivestreamSpeakerPage";
 import LivestreamErrorPage from "./LivestreamErrorPage";
 import { UrlEncryption } from "../../Components/Core/Encryption/UrlEncryption";
 import { TalkService, Talk } from "../../Services/TalkService";
@@ -24,8 +26,7 @@ interface State {
   channelRole: "owner" | "member" | any;
   user: User | null;
   talkNotFound: boolean;
-  talkErrorMsg: string;
-  loading: boolean
+  talkErrorMsg: string
 }
 
 
@@ -35,7 +36,7 @@ export default class LivestreamPage extends Component<Props, State> {
       
       this.state = {
           talkId: -1,
-          talkRole: "audience",
+          talkRole: "admin",
           talk: {
               id: NaN,
               channel_id: NaN,
@@ -56,13 +57,13 @@ export default class LivestreamPage extends Component<Props, State> {
               talk_speaker: "",
               talk_speaker_url: "",
               published: 0,
-              audience_level: "All"
+              audience_level: "All",
+              has_speaker_photo: 0, 
             },
-        loading: true,
-        user: UserService.getCurrentUser(),
-        channelRole: "",
-        talkNotFound: false,
-        talkErrorMsg: ""
+            user: UserService.getCurrentUser(),
+            channelRole: "",
+            talkNotFound: false,
+            talkErrorMsg: ""
         };
         //   console.log("talkId extracted")
         //   console.log(UrlEncryption.getIdFromEncryptedEndpoint(this.props.location.pathname.replace("/livestream/", "")))
@@ -110,6 +111,7 @@ export default class LivestreamPage extends Component<Props, State> {
         this.readUrl(() => {
             // fetch talk info
             TalkService.getTalkById(this.state.talkId, (talk: Talk) => {
+                console.log("test")
                 console.log(talk)
                 if (!(talk == null)){
                     this.setState({talk: talk}, 
@@ -122,29 +124,21 @@ export default class LivestreamPage extends Component<Props, State> {
                                     (channelRole: string) => {
                                         this.setState({ channelRole: channelRole }, 
                                             () => {
-                                                // Making channel owners as admin of stream
-                                                if (channelRole == "owner" && this.state.talkRole !== "speaker"){
-                                                    this.setState({talkRole: "admin"}, () => {
-                                                        this.setState({loading: false})
-                                                    })
-                                                } else {
-                                                    this.setState({loading: false})
-                                                }
+                                                // console.log("Channel role:")
+                                                // console.log(channelRole)
                                         });
                                     }
                                     );
-                            } else {
-                                this.setState({loading: false})
+                                }
                             }
-                        }
-                    );
+                            );
                 } else {
                     this.setState({
-                        loading: false,
                         talkNotFound: true,
                         talkErrorMsg: "This event has been modified or no longer exists. Contact an organiser for a new URL."
                     })
                 }
+            
             });
             }
         )
@@ -152,29 +146,40 @@ export default class LivestreamPage extends Component<Props, State> {
     
     
     render() {
-        if (this.state.loading){
-            return (
-                "Loading"
-            )
+        if (!(this.state.talkNotFound)){
+            if (this.state.talkRole == "speaker"){
+                console.log("speaker")
+                return (
+                    <LivestreamSpeakerPage
+                        talkId={this.state.talkId}
+                    />
+                )
+            } else if (
+                (this.state.talkRole == "admin") || (this.state.channelRole == "owner")
+                ){
+                console.log("admin")
+
+                return (
+                    <LivestreamAdminPage
+                        talkId={this.state.talkId}
+                    />
+                )
+            } else {
+                console.log("audience")
+
+                return (
+                    <LivestreamAudiencePage
+                        talkId={this.state.talkId}
+                    />
+                )
+            }
         }
         else {
-            if (!(this.state.talkNotFound)){
-                console.log(this.state.talkRole)
-                return (
-                    <LivestreamRoomPage
-                        talkId={this.state.talkId}
-                        // role={this.state.talkRole}
-                        role={this.state.talkRole}
-                    />
-                )
-            }
-            else {
-                return (
-                    <LivestreamErrorPage
-                        errorMessage={this.state.talkErrorMsg}
-                    />
-                )
-            }
+            return (
+                <LivestreamErrorPage
+                    errorMessage={this.state.talkErrorMsg}
+                />
+            )
         }
     }
 }

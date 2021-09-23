@@ -51,17 +51,18 @@ export default class TrendingTalksList extends Component<{}, State> {
   }
   render() {
     return (
-      <Box height="250px">
-        <Box direction="row" justify="center" style={{minWidth: "50%"}} margin={{bottom: "10px"}}>
+      <Box height="100%" width="100%">
+        <Box direction="row" justify="start" style={{minWidth: "50%"}} margin={{bottom: "10px"}}>
           <ReactTooltip id="what-is-an-agora" effect="solid">
           An agora is a hub for a community -- reading group, seminar group, institution, ...
           </ReactTooltip>
           <Text
             size="26px"
-            alignSelf="center"
+            alignSelf="start"
             weight="bold"
+            color="color1"
           >
-            Trending <Text size="22px">🔥</Text> 
+            Most popular
           </Text>
 
         </Box>
@@ -82,7 +83,7 @@ export default class TrendingTalksList extends Component<{}, State> {
                 gap="xsmall"
                 // align="center"
                 pad={{ vertical: "3.5px" }}
-                justify="center"
+                justify="start"
               >
                 <Box
                   background="white"

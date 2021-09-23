@@ -601,10 +601,10 @@ export default class ChannelPage extends Component<Props, State> {
                       <Text
                         size="26px"
                         weight="bold"
-                        color="black"
+                        color="color1"
                         margin={{ top: "40px", bottom: "24px" }}
                       >
-                        {`Happening now`}
+                        {`Happening now 🔴`}
                       </Text>
                       {this.state.currentTalks.map((talk: Talk) => (
                         <ChannelPageTalkCard
@@ -621,7 +621,7 @@ export default class ChannelPage extends Component<Props, State> {
                   <Text
                     size="26px"
                     weight="bold"
-                    color="black"
+                    color="color1"
                     margin={{ bottom: "10px" }}
                     alignSelf="start"
                   >
@@ -665,7 +665,7 @@ export default class ChannelPage extends Component<Props, State> {
                     <Text
                       size="26px"
                       weight="bold"
-                      color="black"
+                      color="color1"
                       margin={{ top: "40px" }}
                     >{`Past talks`}</Text>
                   )}

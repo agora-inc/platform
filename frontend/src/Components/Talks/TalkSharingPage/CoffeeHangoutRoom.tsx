@@ -109,7 +109,7 @@ export default class CoffeeHangoutRoom extends Component<Props, State> {
                     )}
                     <Box direction="row" gap="30px" align="center"> 
                         <Text size="18px" weight="bold" margin={{top:"20px", bottom: "10px"}}>
-                            Meet the participants in the cafeteria after the seminar!
+                            Meet with speakers and attendees after the event!
                         </Text>
                         <CoffeeHangoutButton
                             talk={this.props.talk}

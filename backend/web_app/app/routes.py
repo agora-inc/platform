@@ -6,7 +6,7 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -15,6 +15,7 @@ from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
+import time
 
 import stripe
 
@@ -35,6 +36,7 @@ products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
+RSScraper = RSScraperRepository.RSScraperRepository()
 
 # BASE_URL = "http://localhost:3000"
 BASE_URL = "https://mora.stream/"
@@ -268,7 +270,6 @@ def getChannelsForUser():
 
     userId = int(request.args.get("userId"))
     roles = request.args.getlist("role")
-    print(roles)
     return jsonify(channels.getChannelsForUser(userId, roles))
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
@@ -1020,7 +1021,41 @@ def editTalk():
     except Exception as e:
         return str(e)
 
+@app.route('/talks/speakerphoto', methods=["POST", "GET", "DELETE"])
+def speakerPhoto():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
 
+    if request.method == "POST":
+        logRequest(request)
+        # if not checkAuth(request.headers.get('Authorization')):
+        #     return exceptions.Unauthorized("Authorization header invalid or not present")
+
+        talkId = request.form["talkId"]
+        file = request.files["image"]
+        fn = f"{talkId}.jpg"
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/speakers/{fn}")
+        talks.addSpeakerPhoto(talkId)
+        
+        app.logger.debug(f"Talk with id {talkId} updated speaker photo")
+
+        return jsonify({"filename": fn})
+
+    if request.method == "GET":
+        if "talkId" in request.args:
+            talkId = int(request.args.get("talkId"))
+            fn = talks.getSpeakerPhotoLocation(talkId)
+            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+
+    if request.method == "DELETE":
+        params = request.json 
+        print(params)
+        talkId = params["talkId"]
+        talks.removeSpeakerPhoto(talkId)
+
+        app.logger.debug(f"Talk with id {talkId} remove speaker speaker photo")
+
+        return jsonify("ok")
 
 @app.route('/talks/editCustomInstitutions', methods=['POST', 'OPTIONS'])
 def editAutoAcceptanceCustomInstitutions():
@@ -2005,3 +2040,47 @@ def stripe_webhook():
 
     except Exception as e:
         return {}, 400
+
+
+# --------------------------------------------
+# Research seminars scraping
+# --------------------------------------------
+@app.route('/rsscraping/createAgora', methods=["POST", "OPTIONS"])
+def createAgoraGetTalkIds():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    is_valid, talk_ids, channel_id, channel_name, link = RSScraper.create_agora_and_get_talk_ids(
+        params['url'], params['user_id'], params['topic_1_id']
+    )
+    response =  jsonify({
+        "isValidSeries": is_valid, 
+        "allTalkIds": talk_ids, 
+        "channelId": channel_id, 
+        "channelName": channel_name,
+        "talkLink": link,
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route('/rsscraping/talks', methods=["POST", "OPTIONS"])
+def publishAllTalks():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    talk_ids = params['idx']
+
+    talks = RSScraper.parse_create_talks(
+        params['url'], talk_ids, params['channel_id'], params['channel_name'], params['talk_link'],
+        params['topic_1_id'], params['audience_level'], params['visibility'], params['auto_accept_group']
+    )
+
+    response = jsonify(talks)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response

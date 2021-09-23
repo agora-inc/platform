@@ -105,7 +105,7 @@ export class Overlay extends Component<OverlayProps> {
               {(this.props.disableSubmitButton == true) || (
                 <Box data-tip data-for='submitbutton' margin={{right: "32px"}}   > 
                   <Button
-                    fill="#025377"
+                    fill={this.props.canProceed ? "#025377" : "#CCCCCC"}
                     disabled={!this.props.canProceed}
                     height="35px"
                     width="170px"

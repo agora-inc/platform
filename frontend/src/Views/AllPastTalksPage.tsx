@@ -232,7 +232,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
       />
       <Box
         pad={{ top: "10vh", bottom: "100px" }}
-        align="center"
+        align="start"
         style={{ overflowY: "auto" }}
         onScroll={this.handleScroll}
         margin={{left: "8%", right: "8%"}}
@@ -243,91 +243,99 @@ export default class AllPastTalksPage extends Component<{}, State> {
         >
           <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
         </video> */}
-        <Box align="center">
+        <Box align="start" margin={{bottom: "20px"}}>
           <TrendingTalksList />
         </Box>
         <Box width="90%">
+
+
           <Box
             direction="row"
             width="100%"
             justify="between"
             align="start"
-            margin={{ bottom: "medium" }}
+            margin={{ bottom: "medium", top: "50px" }}
           >
-            <Link
-            to={{ pathname: "/browse" }}
-            style={{ textDecoration: "none" }}
-            >
-            <Box
-              onClick={()=>{}}
-              background="color5"
-              round="xsmall"
-              pad="xsmall"
-              height="60px"
-              width={this.state.renderMobile ? "150px" : "220px"}
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="color3"
-              margin={{ left: "0px" }}
-              direction="row"
-            >
-              {this.state.renderMobile 
-                ? <Text size="18px" weight="bold"> Upcoming</Text> 
-                : <Text size="18px" weight="bold"> Upcoming seminars</Text>
-              }
-              {/* <Text size="22px">🔥</Text> */}
-            </Box>
-            </Link>
-
-            <Link
-            to={{ pathname: "/past" }}
-            style={{ textDecoration: "none" }}
-            >
-            <Box
-              onClick={()=>{}}
-              background="color2"
-              round="xsmall"
-              pad="xsmall"
-              height="60px"
-              width={this.state.renderMobile ? "150px" : "220px"}
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="color2"
-              margin={{ left: "0px" }}
-              direction="row"
-            >
-              {this.state.renderMobile 
-                ? <Text size="18px" weight="bold"> Past</Text> 
-                : <Text size="18px" weight="bold"> Past seminars</Text>
-              }
-              {/* <Text size="22px">🔥</Text> */}
-            </Box>
-            </Link>
-
-
-            {/* <Box direction="row" align="center" gap="xsmall">
-              <Text color="black" weight="bold">
-                Filter by
-              </Text>
-              <SmallSearchBar placeholder="search tags" />
-            </Box> */}
-            {/* <Box
-              direction="row"
-              align="center"
-              gap="xsmall"
-              margin={{ right: "2.5%" }}
-            >
-              <Text color="black" weight="bold">
-                Sort by
-              </Text>
-              <SmallSelector
-                callback={(sortBy: string) =>
-                  this.setState({ sortBy: sortBy.toLowerCase() })
+            <Box width="70%" alignContent="start" direction="row">
+              <Link
+              to={{ pathname: "/browse" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color5"
+                round="xsmall"
+                pad="xsmall"
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "170px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color2"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                {this.state.renderMobile 
+                  ? <Text size="14px" weight="bold"> Upcoming</Text> 
+                  : <Text size="14px" weight="bold"> Upcoming seminars</Text>
                 }
-              />
-            </Box> */}
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </Link>
+
+              <Link
+              to={{ pathname: "/past" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color2"
+                round="xsmall"
+                pad="xsmall"
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "170px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color2"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                {this.state.renderMobile 
+                  ? <Text size="14px" weight="bold"> Past</Text> 
+                  : <Text size="14px" weight="bold"> Past seminars</Text>
+                }
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </Link>
+            </Box>
+
+            <Box width="30%" justify="end" align="end">
+            {!this.state.renderMobile && (
+              <Link
+              to={{ pathname: "/agoras" }}
+              style={{ textDecoration: "none" }}
+              >
+              <Box
+                onClick={()=>{}}
+                background="color7"
+                round="xsmall"
+                pad="xsmall"
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "150px"}
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="color6"
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                <Text size="14px" weight="bold"> Give a talk</Text>
+              </Box>
+              </Link>
+              )
+            }
+            </Box>
           </Box>
 
           <MediaQuery minDeviceWidth={992}>
