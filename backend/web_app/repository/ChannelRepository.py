@@ -11,6 +11,7 @@ class ChannelRepository:
         self.db = db
         self.mail_sys = mail_sys
         self.users = UserRepository.UserRepository(db=self.db)
+        
 
     def getChannelById(self, id):
         query = f"SELECT * FROM Channels WHERE id = {id}"
@@ -443,11 +444,11 @@ class ChannelRepository:
 
     def getChannelReferalCount(self, channelId):
         get_counter_query = f'''
-            SELECT * FROM ChannelReferrals 
+            SELECT * FROM ChannelViewCounts 
                 WHERE channel_id = {channelId};
             '''
         try:
-            return self.db.run_query(get_counter_query)[0]["num_referrals"]
+            return self.db.run_query(get_counter_query)[0]["total_views"]
         except Exception as e:
             return str(e)
 

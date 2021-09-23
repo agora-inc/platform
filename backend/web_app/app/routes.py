@@ -38,8 +38,8 @@ channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionReposito
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 RSScraper = RSScraperRepository.RSScraperRepository()
 
-# BASE_URL = "http://localhost:3000"
-BASE_URL = "https://mora.stream/"
+BASE_URL = "http://localhost:3000"
+# BASE_URL = "https://mora.stream/"
 
 BASE_API_URL = "https://mora.stream/api"
 # BASE_API_URL = "http://localhost:8000/api"
@@ -396,7 +396,7 @@ def increaseViewCountForChannel():
     channelId = params["channelId"]
     return jsonify(channels.increaseChannelViewCount(channelId))
 
-@app.route('/channels/referrals/get', methods=["GET"])
+@app.route('/channels/referralscount/get', methods=["GET"])
 def getReferralsForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(channels.getChannelReferalCount(channelId))
