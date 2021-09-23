@@ -21,7 +21,7 @@ import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import PricingPlans from "../Views/PricingPlans";
-import { baseApiUrl } from "../config";
+import { baseApiUrl, basePoint } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, Checkmark, 
   MailOption, SettingsOption, Group, DocumentText, Resources, Configure } from "grommet-icons";
@@ -783,9 +783,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                   >
                     <Text size="14px" weight="bold"> Your subscription </Text>
                   </Box>
-                  <a href={baseApiUrl + "/referral/" + this.state.channelId} style={{textDecoration: 0}}>
+                  <a href={basePoint + "/channelreferral/" + this.state.channelId} style={{textDecoration: 0}}>
                     <Box
-                      onClick={() => {}}
+                      onClick={() => {this.setState({loading: false})}}
                       background="color7"
                       round="xsmall"
                       pad="xsmall"

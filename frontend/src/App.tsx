@@ -63,7 +63,9 @@ function App() {
           <Route path="/saved" component={SavedTalksPage} />
           <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
-          <Route path="/:name/referral" component={ChannelReferralPage} />
+          <Route path="/channelreferral/:channelId/" component={ChannelReferralPage} />
+          {/* <Route path="/userreferral/:userId/" component={UserReferralPage} /> */}
+
 
           <Route path="/info/welcome" component={InformationPage} />
           <Route path="/info/agora_creation" component={AgoraCreationPage} />

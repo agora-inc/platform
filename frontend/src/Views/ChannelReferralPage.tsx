@@ -36,47 +36,6 @@ interface State {
   referralCount: number;
 }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-// COPY PASTED FROM LandingPage.tsx. TO BE REWORKED (Remy)
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
 
 
 export default class ChannelReferralPage extends Component<RouteComponentProps, State> {
@@ -85,7 +44,9 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
     this.state = {
       renderMobileView: (window.innerWidth < 1200),
       channel: null,
-      channelId: 0,
+      channelId: (this.props.location.pathname.split("/").length > 1 && Number(this.props.location.pathname.split("/")[2]))
+        ? Number(this.props.location.pathname.split("/")[2])
+        : 0,
       showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
       colorButton: "color1",
       colorHover: "color5",
@@ -93,16 +54,16 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
       showCreateChannelOverlay: false,
       referralCount: NaN,
     };
+    console.log("yiio")
+    console.log(this.state.channelId)
+    console.log(this.props.location.pathname.split("/"))
+
   }
 
   componentWillMount() {
-    this.getChannel();
-    ChannelService.getChannelByName(
-      this.props.location.pathname.split("/")[1],
-      (channel: Channel) => {
-        this.setState({channelId: channel.id})
-      }
-    );
+    if(this.state.channelId){
+      this.fetchChannelAndReferrals();
+    } 
   }
 
   fetchChannelReferralCount = () => {
@@ -114,9 +75,9 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
     );
   };
 
-  getChannel = () => {
-    ChannelService.getChannelByName(
-      this.props.location.pathname.split("/")[1],
+  fetchChannelAndReferrals = () => {
+    ChannelService.getChannelById(
+      this.state.channelId,
       (channel: Channel) => {
           this.setState(
             {
@@ -244,7 +205,12 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
         <Box>
           <Text size="20px" color="grey" margin={this.state.renderMobileView ? {top: "80px"} : {top: "120px"}}>Don't leave your colleagues behind</Text>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "20px", bottom: "40px"} : {top: "20px", bottom: "50px"}}>
-            Invite colleagues and empower your community for free
+            Invite colleagues and empower 
+              <Text size="48px" color="color3">
+                {this.state.channel && ( " " + this.state.channel.name + " ")} 
+                {!this.state.channel && (" your community ")} 
+              </Text>
+            for free
           </Text>
           <Text size="20px">
             Share your unique link via email, Facebook, or Twitter and earn exciting rewards for each members who signs up.

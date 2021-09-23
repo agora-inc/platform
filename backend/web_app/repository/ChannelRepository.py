@@ -442,7 +442,7 @@ class ChannelRepository:
         except Exception as e:
             return str(e)
 
-    def getChannelReferalCount(self, channelId):
+    def getChannelReferralCount(self, channelId):
         get_counter_query = f'''
             SELECT * FROM ChannelViewCounts 
                 WHERE channel_id = {channelId};
