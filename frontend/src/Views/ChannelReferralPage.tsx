@@ -1,42 +1,30 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Heading, Layer } from "grommet";
-// import moraStreamFullLogo from "../assets/general/mora.stream_logo_free_v3.png";
-import moraStreamFullLogo from "../assets/general/mora.stream_logo_v3.svg";
-import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
-import { User, UserService } from "../Services/UserService";
-import { Search, Java, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
-import UserManager from "../Components/Account/UserManager";
-import FooterComponent from "../Components/Homepage/FooterComponent";
-import "../Styles/landing-page.css";
-import MediaQuery from "react-responsive";
-import ScrollIntoView from 'react-scroll-into-view'
-import ReactTooltip from "react-tooltip";
-import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
-
-
-import ThreeSidedMarketplaceGraph from "../assets/landing_page/3_sided_marketplace_graph.jpeg"
+import { Redirect } from "react-router-dom";
+import Loading from "../Components/Core/Loading";
 
 import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
+import { FaThemeisle } from "react-icons/fa";
+
 
 
 interface State {
   channel: Channel | null;
   channelId: number;
-  showLogin: boolean
+  showAsReferee: boolean
   colorButton: string
   colorHover: string
   showModalGiveATalk: boolean;
   renderMobileView: boolean;
   showCreateChannelOverlay: boolean;
   referralCount: number;
+  loading: boolean;
 }
-
-
 
 export default class ChannelReferralPage extends Component<RouteComponentProps, State> {
   constructor(props: any) {
@@ -44,49 +32,66 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
     this.state = {
       renderMobileView: (window.innerWidth < 1200),
       channel: null,
-      channelId: (this.props.location.pathname.split("/").length > 1 && Number(this.props.location.pathname.split("/")[2]))
-        ? Number(this.props.location.pathname.split("/")[2])
+      channelId: (this.props.location.pathname.split("/").length > 2 && Number(this.props.location.pathname.split("/")[3]))
+        ? Number(this.props.location.pathname.split("/")[3])
         : 0,
-      showLogin: new URL(window.location.href).searchParams.get("showLogin") === "true",
+      showAsReferee: new URL(window.location.href).searchParams.get("referee") === "true",
       colorButton: "color1",
       colorHover: "color5",
       showModalGiveATalk: false,
       showCreateChannelOverlay: false,
       referralCount: NaN,
+      loading: true
     };
-    console.log("yiio")
-    console.log(this.state.channelId)
-    console.log(this.props.location.pathname.split("/"))
-
   }
 
   componentWillMount() {
-    if(this.state.channelId){
+    console.log(this.state.channelId)
+    if(this.state.channelId !== 0){
       this.fetchChannelAndReferrals();
-    } 
+    } else {
+      this.setState( {
+        channel: null,
+        channelId: 0,
+        loading: false
+      })
+    }
   }
-
-  fetchChannelReferralCount = () => {
-    ChannelService.getReferralsForChannel(
-      this.state.channel!.id,
-      (referralCount: number) => {
-        this.setState({ referralCount });
-      }
-    );
-  };
-
+  
   fetchChannelAndReferrals = () => {
     ChannelService.getChannelById(
       this.state.channelId,
       (channel: Channel) => {
+        if (channel){
           this.setState(
             {
               channel: channel,
-            },
-            () => {
-              this.fetchChannelReferralCount();
-            }
-          );
+              },
+              () => {
+                try{
+                  this.fetchChannelReferralCount();
+                  this.setState( {loading: false})
+                }
+                catch{
+                  this.setState( {
+                    channel: null,
+                    loading: false})
+                }
+              }
+              );
+        } else {
+          this.setState( {loading: false})
+        }
+      }
+    );
+  };
+    
+  fetchChannelReferralCount = () => {
+    ChannelService.getReferralsForChannel(
+      this.state.channel!.id,
+      (referralCount: number) => {
+        this.setState({ referralCount },
+          () => {this.setState( {loading: false})});
       }
     );
   };
@@ -94,8 +99,8 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
   componentDidUpdate(prevProps: RouteComponentProps) {
     if (this.props.location !== prevProps.location) {
       this.setState({
-        showLogin:
-          new URL(window.location.href).searchParams.get("showLogin") ===
+        showAsReferee:
+          new URL(window.location.href).searchParams.get("referee") ===
           "true",
       });
     }
@@ -111,91 +116,108 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
     this.setState({ showModalGiveATalk: !this.state.showModalGiveATalk });
   };
 
-  giveATalkOverlay() {
+  headTitle() {
+    if(this.state.showAsReferee){
+        return (
+          <>
+            <Text size="20px" color="grey" margin={this.state.renderMobileView ? {top: "80px"} : {top: "120px"}}>Don't leave your colleagues behind</Text>
+            <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "20px", bottom: "40px"} : {top: "20px", bottom: "50px"}}>
+            Invite colleagues and empower 
+              <Text size="48px" color="color3">
+                {this.state.channel && ( " " + this.state.channel.name + " ")} 
+                {!this.state.channel && (" your community ")} 
+              </Text>
+            for free
+            </Text>
+        </>
+        )
+    } else{
+      if(this.state.channel){
+        return (
+          <>
+            <Text size="20px" color="grey" margin={this.state.renderMobileView ? {top: "80px"} : {top: "120px"}}>Join the team effort!</Text>
+            <Box direction="column" height="100%" pad="small">
+              <SignUpButton 
+                channelId={this.state.channelId}  
+                callback={() => {}} 
+                height="90px" 
+                width="700px" 
+                textSize="48px"
+                text="Sign up with this button"/>
+              <Text size="48px" weight="bold" color="color1" margin={{top: "15px"}}>
+              to boost
+              <Text size="48px" color="color3">
+                {this.state.channel && ( " " + this.state.channel.name + " ")} 
+                {!this.state.channel && (" your community ")} 
+              </Text>
+            </Text>
+            </Box>
+          </>
+        )
+      }
+      else{
+        return (
+          <>
+            <Text size="20px" color="grey" margin={this.state.renderMobileView ? {top: "80px"} : {top: "120px"}}>Build a shiny community!</Text>
+            <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "20px", bottom: "40px"} : {top: "20px", bottom: "50px"}}>
+              Invite people and empower your community
+              for free
+            </Text>
+          </>
+        )
+      }
+    }
+  }
+
+
+  propagationAction() {
     return (
-      <Layer
-        onEsc={() => {
-          this.toggleModal();
-        }}
-        onClickOutside={() => {
-          this.toggleModal();
-        }}
-        modal
-        responsive
-        animation="fadeIn"
-        style={{
-          width: 600,
-          height: 480,
-          borderRadius: 15,
-          overflow: "hidden",
-          alignSelf: "center",
-        }}
-      >
-        <Box align="center" width="100%" style={{ overflowY: "auto" }}>
-          <Box
-            justify="start"
-            width="99.7%"
-            background="#eaf1f1"
-            direction="row"
-            style={{
-              borderTopLeftRadius: "10px",
-              borderTopRightRadius: "10px",
-              position: "sticky",
-              top: 0,
-              minHeight: "45px",
-              zIndex: 10,
-            }}
-          >
-            <Box pad="30px" alignSelf="center" fill={true}>
-              <Text size="16px" color="black" weight="bold"  >
-                How to give your talk on mora.stream
-              </Text>
-            </Box>
-            <Box pad="32px" alignSelf="center">
-              <Close onClick={this.toggleModal} />
-            </Box>
-          </Box>
+      <Text size="20px" margin={{top: "80px"}}>
+        Share this unique link via email, Facebook, or Twitter and earn exciting rewards for each members who signs up.
+    </Text>
+    )
+  }
 
-          <Box height="300px" margin={{bottom: "15px"}}>
-
-            <video 
-                  autoPlay loop muted
-                  style={{ height: "100%", width: "auto"}}
-                  >
-                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
-            </video>
-
-
-          </Box>
-
-          <Link
-            to={{ pathname: "/agoras" }}
-            style={{ textDecoration: "none" }}
-          >
-            <Box
-              onClick={() => ({})}
-              direction="row"
-              background="#EAF1F1"
-              round="xsmall"
-              pad="small"
-              gap="xsmall"
-              height="50px"
-              width="250px"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#BAD6DB"
-            >
-              <Multiple size="25px" />
-              <Text size="14px" weight="bold" margin={{left: "2px"}}> 
-                Contact the relevant <img src={agoraLogo} style={{ height: "12px", marginTop: "1px", marginRight: "-1px"}}/>s 
-              </Text>
-            </Box>
-          </Link>
-
+  referralStatus() {
+    return (
+      <>
+        <Text   
+          size="16px"
+          color="#999999"
+          weight="bold"
+          margin={{bottom: "6px", right: "20px"}}
+        >
+          {this.state.referralCount} referrals 
+        </Text>
+        <div style = {{
+          height: '30px',
+          width: '50%',
+          backgroundColor: 'whitesmoke',
+          borderRadius: 40,
+          margin: 50
+        }}>
+            <div style = {{
+                height: '100%',
+                width: `${this.state.referralCount/50}%`,
+                backgroundColor: "#99ccff",
+                borderRadius:40,
+                textAlign:'right'
+            }}>
+                {/* <span style={{
+                    padding: 10,
+                    color: 'black',
+                    fontWeight: 900
+                }}>
+                    {`${this.state.referralCount} referrals done`}
+                </span> */}
+            
+            </div>
+        </div>
+        <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
+          {this.callToActions()}
         </Box>
-              
-      </Layer>
-    );
+      </>
+    )
   }
 
   aboveTheFoldMain() {
@@ -203,53 +225,8 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
     return (
       <>
         <Box>
-          <Text size="20px" color="grey" margin={this.state.renderMobileView ? {top: "80px"} : {top: "120px"}}>Don't leave your colleagues behind</Text>
-          <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "20px", bottom: "40px"} : {top: "20px", bottom: "50px"}}>
-            Invite colleagues and empower 
-              <Text size="48px" color="color3">
-                {this.state.channel && ( " " + this.state.channel.name + " ")} 
-                {!this.state.channel && (" your community ")} 
-              </Text>
-            for free
-          </Text>
-          <Text size="20px">
-            Share your unique link via email, Facebook, or Twitter and earn exciting rewards for each members who signs up.
-          </Text>
-          <Text 
-                  size="16px"
-                  color="#999999"
-                  weight="bold"
-                  margin={{bottom: "6px", right: "20px"}}
-                >
-                  {this.state.referralCount} referrals 
-                </Text>
-                <div style = {{
-                height: '30px',
-                width: '50%',
-                backgroundColor: 'whitesmoke',
-                borderRadius: 40,
-                margin: 50
-            }}>
-                <div style = {{
-                    height: '100%',
-                    width: `${this.state.referralCount/50}%`,
-                    backgroundColor: "#99ccff",
-                    borderRadius:40,
-                    textAlign:'right'
-                }}>
-                    {/* <span style={{
-                        padding: 10,
-                        color: 'black',
-                        fontWeight: 900
-                    }}>
-                        {`${this.state.referralCount} referrals done`}
-                    </span> */}
-                
-                </div>
-            </div>
-          <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
-            {this.callToActions()}
-          </Box>
+            {this.headTitle()}
+            {this.propagationAction()}
         </Box>
       </>
     )
@@ -301,65 +278,7 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
           How does this work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          PLACEHOLDER PROGRESS BAR
-        </Box>
-      </>
-    )
-  }
-  
-  content2() {
-    return (
-      <>
-        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7" weight="bold">boost</Text> research collaborations with tech</Text>
-
-
-        {!this.state.renderMobileView && 
-          <img src={ThreeSidedMarketplaceGraph} height="40%" width="auto" style={{alignSelf: "center"}}/>
-        }
-
-
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" justify="center" margin={{top: "40px"}}>
-          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color4" direction="column" pad="medium">
-            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-              {/* <Box width="70px">
-                <SearchAdvanced size="large"/>
-              </Box> */}
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="black">
-                <Text size="24px" color="color7">More speakers</Text> are matched with communities
-              </Text>
-            </Box>
-            <Text size="18px"> 
-              The whole speaker-community has been matching easy! Speakers can now directly connect with communities by clicking a "Give a talk" button.
-            </Text>
-          </Box>
-
-          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color4" direction="column" pad="medium">
-            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-              {/* <Box width="70px">
-                <SearchAdvanced size="large"/>
-              </Box> */}
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="black">
-              <Text size="24px" weight="bold" color="color7">More seminars</Text> are organised
-              </Text>
-            </Box>
-            <Text size="18px"> 
-              We use tech to made the life of the seminar organisers as easy as possible, from start to finish. Organising seminars now takes less than a minute! 
-            </Text>
-          </Box>
-
-          <Box width="420px" height={this.state.renderMobileView ? "250px" : "320px"} background="color4" direction="column" pad="medium">
-            <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
-              {/* <Box width="70px">
-                <SearchAdvanced size="large"/>
-              </Box> */}
-              <Text size="24px" weight="bold" margin={{left: "5px"}} color="black">
-              <Text size="24px" weight="bold" color="color7">More networking</Text> implies <Text size="24px" weight="bold" color="color7">more future speakers</Text>
-              </Text>
-            </Box>
-            <Text size="18px"> 
-              More seminars means more post seminar-coffees mingling, making new ideas more likely to emerge and mature to the point where they will be presented.
-            </Text>
-          </Box>
+          {this.referralStatus()}
         </Box>
       </>
     )
@@ -404,53 +323,58 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
   }
 
   render() {
-    return (
-      <Box
-        direction="column"
-        align="center"
-      >
-        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
-          // src={BackgroundImage}
-          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
-        />
+    if (this.state.loading){
+      return(
+        <Loading size={16} color="color1"/>
+      )
+    } else {
+        // if(!this.state.channel){
+        //   return(
+        //     <Redirect to={"/referral/channel"} push={true}/>
+        //   )
+        // } 
+        // else {
+          console.log("3")
+          return (
+            <Box
+              direction="column"
+              align="center"
+            >
+              <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+                // src={BackgroundImage}
+                src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+              />
 
-        <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "1480px": "550px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
-            <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "500px" : "100%"}>
-              {this.aboveTheFoldImage()}
+              <Box height="100%" width="100%">
+                <Box width="80%" height={this.state.renderMobileView ? "1480px": "550px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+                  <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "500px" : "100%"}>
+                    {this.aboveTheFoldImage()}
+                  </Box>
+                  <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "1250px" : "100%"}
+                    style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
+                    {this.aboveTheFoldMain()}
+                  </Box>
+                </Box>
+              </Box>
+
+              <Box height="100%" width="100%" background="color5" id="content">
+                <Box width="80%" height={this.state.renderMobileView ? "1750px": "460px"}  direction="column" alignSelf="center">
+                  {this.content1()}
+                </Box>
+              </Box>
+
+              {/* <Box height="100%" width="100%">
+                <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+                  {this.callToActionEndpage()}
+                </Box>
+              </Box>
+
+              <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
+                <FooterComponent />
+              </Box>  */}
+
             </Box>
-            <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "1250px" : "100%"}
-              style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
-              {this.aboveTheFoldMain()}
-            </Box>
-          </Box>
-        </Box>
-
-        <Box height="100%" width="100%" background="color5" id="content">
-          <Box width="80%" height={this.state.renderMobileView ? "1750px": "460px"}  direction="column" alignSelf="center">
-            {this.content1()}
-          </Box>
-        </Box>
-
-        {/* <Box height="100%" width="100%" background="color1">
-          <Box width="80%" height={this.state.renderMobileView ? "1290px": "1100px"} direction="column" alignSelf="center">
-            {this.content2()}
-          </Box>
-        </Box>
-        
-
-        <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
-            {this.callToActionEndpage()}
-          </Box>
-        </Box>
-
-
-        <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
-          <FooterComponent />
-        </Box> */}
-
-      </Box>
-    );
-  }
+          );
+        }
+    }
 }

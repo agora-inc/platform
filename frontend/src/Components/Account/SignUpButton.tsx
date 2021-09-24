@@ -12,6 +12,7 @@ interface Props {
   width?: string;
   height?: string;
   textSize?: string;
+  text?: string;
 }
 
 interface State {
@@ -97,7 +98,7 @@ export default class SignUpButton extends Component<Props, State> {
           height={this.state.height}
           round="xsmall"
         >
-          <Text size={this.state.textSize} weight="bold"> Sign up </Text>
+          <Text size={this.state.textSize} weight="bold"> {this.props.text ? this.props.text : "Sign up"} </Text>
         </Box>
         <Overlay
           width={400}
