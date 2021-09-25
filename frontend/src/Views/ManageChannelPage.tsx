@@ -783,7 +783,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   >
                     <Text size="14px" weight="bold"> Your subscription </Text>
                   </Box>
-                  <a href={basePoint + "/channelreferral/" + this.state.channelId} style={{textDecoration: 0}}>
+                  <a href={basePoint + "/referral/channel/" + this.state.channelId} style={{textDecoration: 0}}>
                     <Box
                       onClick={() => {this.setState({loading: false})}}
                       background="color7"

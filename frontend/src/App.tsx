@@ -63,7 +63,7 @@ function App() {
           <Route path="/saved" component={SavedTalksPage} />
           <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
-          <Route path="/referral/channel/" component={ChannelReferralPage} />
+          <Route path="/referral/channel/:channelId" component={ChannelReferralPage} />
           {/* <Route path="/referral/user/:userId/" component={UserReferralPage} /> */}
 
 

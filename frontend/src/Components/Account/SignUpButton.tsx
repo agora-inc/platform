@@ -54,6 +54,7 @@ export default class SignUpButton extends Component<Props, State> {
       this.props.channelId !== undefined ? this.props.channelId : NaN ,
       (result: string) => {
         // console.log(result);
+        console.log("channelID: " + this.props.channelId)
         if (result === "ok") {
           this.toggleModal();
           this.props.callback();

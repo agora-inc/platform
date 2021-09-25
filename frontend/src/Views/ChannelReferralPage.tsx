@@ -6,7 +6,7 @@ import CreateChannelButton from "../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 import { Redirect } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
-
+import ShareButtons from "../Components/Core/ShareButtons";
 import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
 import { FaThemeisle } from "react-icons/fa";
@@ -226,7 +226,14 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
       <>
         <Box>
             {this.headTitle()}
+            <Box direction="row" gap="xsmall" align="end" width="60%">
+              <ShareButtons
+                channel={this.state.channel}
+                referral={true}
+              />
+          </Box>
             {this.propagationAction()}
+            
         </Box>
       </>
     )
@@ -266,7 +273,7 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
         alignContent="center"
         gap="medium"
       >
-        PLACEHOLDER LINK SHARING
+        
     </Box>
     )
   }
