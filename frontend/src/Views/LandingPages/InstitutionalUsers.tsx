@@ -47,36 +47,36 @@ interface State {
               {/* First line */}
               <Box direction="row" gap={this.state.gap}>
                 <Box height={this.state.width} width={this.state.width}>
-                  <img src={Imperial} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                  <img src={Imperial} className="institutional-logo" width={this.state.width} height="auto"/>
                 </Box>
 
                 <Box height={this.state.width} width={this.state.width}>
-                  <img src={Oxford} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                  <img src={Oxford} className="institutional-logo" width={this.state.width} height="auto"/>
                 </Box>
 
                 <Box height={this.state.width} width={this.state.width}>
-                  <img src={EthLogo} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                  <img src={EthLogo} className="institutional-logo" width={this.state.width} height="auto"/>
                 </Box>
                 <Box height={this.state.width} width={this.state.width}>
-                  <img src={LseLogo} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                  <img src={LseLogo} className="institutional-logo" width={this.state.width} height="auto"/>
                 </Box>
               </Box>
               {/* Second line */}
               <Box direction="row" gap={this.state.gap}>
                 <Box height={this.state.width} width={this.state.width}>
-                  <img src={CambridgeLogo} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                  <img src={CambridgeLogo} className="institutional-logo" width={this.state.width} height="auto"/>
                 </Box>
 
                 <Box height={this.state.width} width={this.state.width}>
-                  <img src={Harvard} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                  <img src={Harvard} className="institutional-logo" width={this.state.width} height="auto"/>
                 </Box>
 
                 <Box height={this.state.width} width={this.state.width}>
-                  <img src={Epfl} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                  <img src={Epfl} className="institutional-logo" width={this.state.width} height="auto"/>
                 </Box>
                 
                 <Box height={this.state.width} width={this.state.width}>
-                  <img src={EcolePolytechnique} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                  <img src={EcolePolytechnique} className="institutional-logo" width={this.state.width} height="auto"/>
                 </Box>
                 
               </Box>
@@ -89,43 +89,43 @@ interface State {
                 {/* First line */}
                 <Box direction="row" gap={this.state.gap}>
                   <Box height={this.state.width} width={this.state.width}>
-                    <img src={Imperial} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                    <img src={Imperial} className="institutional-logo" width={this.state.width} height="auto"/>
                   </Box>
 
                   <Box height={this.state.width} width={this.state.width}>
-                    <img src={Oxford} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                    <img src={Oxford} className="institutional-logo" width={this.state.width} height="auto"/>
                   </Box>
                 </Box>
 
                 {/* SEcondline */}
                 <Box direction="row" gap={this.state.gap}>
                   <Box height={this.state.width} width={this.state.width}>
-                    <img src={EthLogo} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                    <img src={EthLogo} className="institutional-logo" width={this.state.width} height="auto"/>
                   </Box>
                   <Box height={this.state.width} width={this.state.width}>
-                    <img src={LseLogo} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                    <img src={LseLogo} className="institutional-logo" width={this.state.width} height="auto"/>
                   </Box>
                 </Box>
 
                 {/* Third line */}
                 <Box direction="row" gap={this.state.gap}>
                   <Box height={this.state.width} width={this.state.width}>
-                    <img src={CambridgeLogo} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                    <img src={CambridgeLogo} className="institutional-logo" width={this.state.width} height="auto"/>
                   </Box>
 
                   <Box height={this.state.width} width={this.state.width}>
-                    <img src={Harvard} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                    <img src={Harvard} className="institutional-logo" width={this.state.width} height="auto"/>
                   </Box>
                 </Box>
 
                 {/* Forth line */}
                 <Box direction="row" gap={this.state.gap}>
                   <Box height={this.state.width} width={this.state.width}>
-                    <img src={Epfl} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                    <img src={Epfl} className="institutional-logo" width={this.state.width} height="auto"/>
                   </Box>
                 
                   <Box height={this.state.width} width={this.state.width}>
-                    <img src={EcolePolytechnique} className="institutional-logo" width={this.state.width} height={this.state.width}/>
+                    <img src={EcolePolytechnique} className="institutional-logo" width={this.state.width} height="auto"/>
                   </Box>
               </Box>
             </Box>
