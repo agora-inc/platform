@@ -250,8 +250,8 @@ export default class TalkCard extends Component<Props, State> {
                   {!this.props.talk.has_avatar && (
                     <img
                       src={MoraStreamLogo}
-                      height={40}
-                      width={40}
+                      height={36}
+                      width={36}
                     />
                   )}
                   {!!this.props.talk.has_avatar && (
