@@ -195,7 +195,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             ? { width: "90%", alignSelf: "center" } 
             : { width: "90%", marginTop: "120px", alignSelf: "center"}
           }>
-          <img src={SeminarImage}/>
+          <img src={SeminarImage} width="100%" height="auto"/>
         </Box>
       </>
     )
