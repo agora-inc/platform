@@ -127,7 +127,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted 
                   style={{ height: "100%", width: "auto"}}
                   >
-                  <source src="/videos/talk_application.webm" type="video/webm"/> 
+                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
             </video>
 
 
@@ -286,7 +286,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", alignSelf: "center", maxWidth:"100%"}}
                   >
-                  <source src="/videos/browse_talk.webm" type="video/webm"/> 
+                  <source src="/videos/browse_talk.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
@@ -319,7 +319,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", maxWidth:"100%"}}
                   >
-                  <source src="/videos/morastreaming_tech_example.webm" type="video/webm"/> 
+                  <source src="/videos/morastreaming_tech_example.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
@@ -351,7 +351,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", maxWidth:"100%"}}
                   >
-                  <source src="/videos/cafeteria-agora-minidemo.webm" type="video/webm"/> 
+                  <source src="/videos/cafeteria-agora-minidemo.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
