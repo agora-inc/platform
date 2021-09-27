@@ -168,7 +168,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         <Box direction="column">
           <Text size="48px" weight="bold" color="color4" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Empowering seminar organisers, from start to finish
+            Organising seminars made easy, from start to finish
           </Text>
           {!this.state.renderMobileView && (
             <Box margin={{bottom: "50px"}}>
@@ -277,7 +277,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-            Everything seminar organiser need, all in one place
+          Everything seminar organisers need, all in one place
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "50px"}}>
@@ -346,13 +346,14 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
 
         {/* Second line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
-          <Box width="400px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
+          <Box width="380px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column" gap="10px" hoverIndicator={this.state.colorHover}> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Video size="large"/>
               </Box>
               <Text size="24px" weight="bold" margin={{left: "15px"}} color="color7">
-                4. Stream with <img src={ZoomLogo} height="14px"/> or <img src={moraStreamFullLettersLogo} height="18px"/>
+                4. Stream 
+                {/* with <img src={ZoomLogo} height="14px"/> or <img src={moraStreamFullLettersLogo} height="18px"/> */}
               </Text>
             </Box>
             <Text size="18px"> 
@@ -366,12 +367,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Box>
           )}
 
-          <Box width="400px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column"> 
+          <Box width="380px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Group size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">5. Mingle et network
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">5. Network
               </Text>
             </Box>
 
@@ -386,7 +387,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Box>
           )}
 
-          <Box width="400px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
+          <Box width="380px" height={this.state.renderMobileView ? "340px" : "300px"} background="color2" pad="medium" direction="column" gap="10px"> 
             <Box direction="row" margin={{bottom: "25px"}} height="25%" width="100%">
               <Box width="70px">
                 <Play size="large"/>
@@ -407,11 +408,134 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Your life made easy, for free</Text>
-        <Text>
-            Because we want to facilitate the sharing of new knowledge, <b>most of the features are free and no plan is required to deploy your seminars on mora.stream!</b> The option is always there for those who want a premium experience!            
-        </Text>
+        <Box direction="row" margin={{top: "120px", bottom: "50px"}}>
+          <Text size="34px" color="black">
+                Your life made life easy, <b>for free</b>
+          </Text>
+        </Box>
+        <Box margin={{bottom: "30px"}} direction="row">
+          <Text size="18px">           
+            Because we want to facilitate the sharing of new knowledge, we offer all features for free if you use your own external streaming tech!
+          </Text> 
+        </Box>
 
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
+          <Box width="350px" height={this.state.renderMobileView ? "430px" : "450px"} background="color2" direction="column" justify="between">
+            <Box height="250px" pad="medium" gap="10px">
+              <Box direction="row" height="60px" width="100%">
+                <Box height="100px">
+                  <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                    A free customizable homepage
+                  </Text>
+                </Box>
+              </Box>
+              <Box height="150px">
+                <Text size="18px" style={{alignContent: "start"}}> 
+                  A customizable homepage were academics can contact you, register to your future events and consult your past events' recordings and slides!
+                </Text>
+              </Box>
+            </Box>
+
+            <Box height="200px" alignSelf="center" direction="row">
+              <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", alignSelf: "center", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/customize_agora_page.mp4" type="video/mp4"/> 
+              </video>
+            </Box>
+          </Box>
+
+          <Box width="350px" height={this.state.renderMobileView ? "430px" : "450px"} background="color2" direction="column" justify="between">
+            <Box height="250px" pad="medium" gap="10px">
+              <Box direction="row" height="100px" width="100%">
+                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                  A built-in speaker application form
+                </Text>
+              </Box>
+              <Box height="150px">
+                <Text size="18px" style={{alignContent: "start"}}>
+                  Speakers directly come to you by filling an in-built application form (this can be disabled). If it's a match, invite them to speak!
+                </Text>
+              </Box>
+            </Box>
+
+            <Box height="200px" alignSelf="center" direction="row">
+              <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+              </video>
+            </Box>
+          </Box>
+
+          <Box width="350px" height={this.state.renderMobileView ? "430px" : "450px"} background="color2" direction="column" justify="between">
+            <Box height="250px" pad="medium" gap="10px">
+              <Box direction="row" height="100px" width="100%">
+                <Box height="170px">
+                  <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                    Free event scheduling tools
+                  </Text>
+                </Box>
+              </Box>
+              <Box height="150px">
+                <Text size="18px" style={{marginTop: "-10px"}}>
+                  <ul>
+                    <li>Email reminders</li>
+                    <li>Automatically accept verified academic email addresses</li>
+                    <li>Write LateX in description</li>
+                    <li>And many more...!</li>
+                    </ul>
+                </Text>
+              </Box>
+            </Box>
+            <Box height="200px" alignSelf="center" direction="row">
+              <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/schedule_talk.mp4" type="video/mp4"/> 
+              </video>
+            </Box>
+          </Box>
+
+          <Box width="350px" height={this.state.renderMobileView ? "430px" : "450px"} background="color2" direction="column" justify="between">
+            <Box height="250px" pad="medium" gap="10px">
+              <Box direction="row" height="100px" width="100%">
+                <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
+                  A free post-seminar cafeteria
+                </Text>
+              </Box>
+              <Box height="150px">
+                <Text size="18px" style={{alignContent: "start"}}>
+                  Grab an e-coffee in a 2D world and meet with speakers and audience. Many collaborations started around a coffee (mora.stream included)! 
+                </Text>
+              </Box>
+            </Box>
+
+            <Box height="200px" alignSelf="center" direction="row">
+              <video 
+                  autoPlay loop muted
+                  style={{ height: "100%", width: "auto", maxWidth:"100%"}}
+                  >
+                  <source src="/videos/cafeteria-agora-minidemo.mp4" type="video/mp4"/> 
+              </video>
+            </Box>
+          </Box>
+        </Box>
+      </>
+    )
+  }
+
+
+  content3() {
+    return (
+      <>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">The future of seminars is <b>online and hybrid</b></Text>
+        <Text>
+          <b>We, academics</b>, built a unique streaming technology <b>sculpted for academics</b>. The latter allows you to run physical, online, and hybrid seminars where you can write LateX in chat, go back in the slides as an attendee, clap for the speaker and much more!
+        </Text>
 
         <PricingPlans 
             callback={() => {}}
@@ -429,14 +553,16 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     )
   }
 
+
+
   callToActionEndpage() {
     return (
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now by attracting new teammates to your events!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now by attracting world-leading experts to your events!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
-            <Box align="center" margin={{bottom: "20px"}}>
+            <Box align="center" margin={{bottom: "100px"}}>
                 <CreateChannelButton 
                   onClick={this.toggleCreateChannelOverlay} 
                   width="400px"
@@ -446,7 +572,14 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 />
             </Box>
 
-
+            <Box align="center" justify="center">
+              <Text size="34px" margin={{bottom: "80px"}} color="color1" weight="bold" alignSelf="center">
+                Already running a series? Migrate everything in 3 clicks!
+              </Text>
+              <TransportSeminars 
+                user={this.state.user}
+              />
+            </Box>
             {/* TODO: INTEGRATE SCRAPPER RESEARCHSEMINARS.ORG before commenting out
 
             <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Already running a series? Import everything in a minute!</Text>
@@ -492,19 +625,6 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     )
   }
 
-  migrateFromResearchSeminars() {
-    return (
-      <Box align="center" justify="center">
-        <Text size="34px" margin={{bottom: "80px"}} color="color1" weight="bold" alignSelf="center">
-          Already running a series on researchseminars.org? Migrate everything in 3 clicks!
-        </Text>
-        <TransportSeminars 
-          user={this.state.user}
-        />
-      </Box>
-    );
-  }
-
   render() {
     return (
       <Box
@@ -536,23 +656,24 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         </Box>
 
         <Box height="100%" width="100%" background="color6">
-          <Box width="80%" height={this.state.renderMobileView ? "1150px": "820px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "2250px": "820px"} direction="column" alignSelf="center">
             {this.content2()}
+          </Box>
+        </Box>
+
+        <Box height="100%" width="100%" background="color5" style={{}}>
+          <Box width="80%" height={this.state.renderMobileView ? "1150px": "790px"} direction="column" alignSelf="center">
+            {this.content3()}
           </Box>
         </Box>
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "300px": "400px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "300px": "800px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
           </Box>
         </Box>
 
-        <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "300px": "400px"} direction="column" alignSelf="center">
-            {this.migrateFromResearchSeminars()}
-          </Box>
-        </Box>
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />

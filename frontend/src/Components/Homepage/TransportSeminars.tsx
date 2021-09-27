@@ -239,7 +239,7 @@ export default class TransportSeminars extends Component<Props, State> {
       >
         <Text size="22.5px">🚀</Text>
         <Text size="18px" color="white" weight="bold">
-          Migrate your seminars
+          Import from researchseminars.org
         </Text>
         
       </Box>
