@@ -78,113 +78,32 @@ class TalkRepository:
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalks())
 
-    def getAllFutureTalksFiltered(self, topic_ids, audience_levels, limit, offset):
-        # get id of all childs
-        children_ids = []
-        for topic_id in topic_ids:
-            children_ids.append(self.topics.getAllChildrenIdRecursive(topic_id=topic_id))
-
-        with open(f"/home/cloud-user/test/fed1.txt", "w") as file:
-            file.write(str(children_ids))
-
-        mysql_cond_string = str(children_ids).replace("[", "(").replace("]", ")")
-        talk_query = f"SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND audience_level in {audience_levels} AND published = 1 AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
-        talks = self.db.run_query(talk_query)
-
-        with open(f"/home/cloud-user/test/fed2.txt", "w") as file:
-            file.write(str(talk_query))
-
-        # setup local data for topics
-        query_all_topics = "SELECT * FROM ClassificationGraphNodes"
-        all_topics_info = self.db.run_query(query_all_topics)
-
-        with open(f"/home/cloud-user/test/fed3.txt", "w") as file:
-            file.write(str(all_topics_info))
-
-        topics_dic = {}
-        for topic_dic in all_topics_info:
-            topics_dic[topic_dic["id"]] = topic_dic 
-
-        with open(f"/home/cloud-user/test/fed3half.txt", "w") as file:
-            file.write(str(topics_dic))
-
-        def _get_topic_info_for_talk(talk_sql_dic):
-            talk_topics_info = []
-            for topic_key in ["topic_1_id", "topic_2_id", "topic_3_id"]:
-                topic_id = talk_sql_dic[topic_key]
-                if topic_id != None and topic_id > 0:
-                    with open(f"/home/cloud-user/test/fed111.txt", "w") as file:
-                        file.write(str(topic_id))
-                    talk_topics_info.append(topics_dic[topic_id]) 
-
-            return talk_topics_info
-
-        with open(f"/home/cloud-user/test/fed4.txt", "w") as file:
-            file.write("ok")
-
-        if isinstance(talks, list):
-            with open(f"/home/cloud-user/test/fed5.txt", "w") as file:
-                file.write(str(talks))
-            if len(talks) != 0:
-                for talk in talks:
-                    channel = self.channels.getChannelById(talk["channel_id"])
-                    talk["channel_colour"] = channel["colour"]
-                    talk["has_avatar"] = channel["has_avatar"]
-                    # talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
-                    talk["topics"] = _get_topic_info_for_talk(talk)
-            
-            with open(f"/home/cloud-user/test/fed6.txt", "w") as file:
-                file.write("ok")
-            return talks
-            
-        else:
-            return []
-
     def getAllFutureTalksForTopicWithChildren(self, topic_id, limit, offset):
         # get id of all childs
         children_ids = self.topics.getAllChildrenIdRecursive(topic_id=topic_id)
-
-        with open(f"/home/cloud-user/test/fed1.txt", "w") as file:
-            file.write(str(children_ids))
 
         mysql_cond_string = str(children_ids).replace("[", "(").replace("]", ")")
         talk_query = f"SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND published = 1 AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         talks = self.db.run_query(talk_query)
 
-        with open(f"/home/cloud-user/test/fed2.txt", "w") as file:
-            file.write(str(talk_query))
-
         # setup local data for topics
         query_all_topics = "SELECT * FROM ClassificationGraphNodes"
         all_topics_info = self.db.run_query(query_all_topics)
-
-        with open(f"/home/cloud-user/test/fed3.txt", "w") as file:
-            file.write(str(all_topics_info))
 
         topics_dic = {}
         for topic_dic in all_topics_info:
             topics_dic[topic_dic["id"]] = topic_dic 
 
-        with open(f"/home/cloud-user/test/fed3half.txt", "w") as file:
-            file.write(str(topics_dic))
-
         def _get_topic_info_for_talk(talk_sql_dic):
             talk_topics_info = []
             for topic_key in ["topic_1_id", "topic_2_id", "topic_3_id"]:
                 topic_id = talk_sql_dic[topic_key]
-                if topic_id != None and topic_id > 0:
-                    with open(f"/home/cloud-user/test/fed111.txt", "w") as file:
-                        file.write(str(topic_id))
+                if topic_id != None:
                     talk_topics_info.append(topics_dic[topic_id]) 
 
             return talk_topics_info
 
-        with open(f"/home/cloud-user/test/fed4.txt", "w") as file:
-            file.write("ok")
-
         if isinstance(talks, list):
-            with open(f"/home/cloud-user/test/fed5.txt", "w") as file:
-                file.write(str(talks))
             if len(talks) != 0:
                 for talk in talks:
                     channel = self.channels.getChannelById(talk["channel_id"])
@@ -193,8 +112,6 @@ class TalkRepository:
                     # talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
                     talk["topics"] = _get_topic_info_for_talk(talk)
             
-            with open(f"/home/cloud-user/test/fed6.txt", "w") as file:
-                file.write("ok")
             return talks
             
         else:
