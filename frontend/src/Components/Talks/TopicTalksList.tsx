@@ -27,13 +27,14 @@ interface Props {
 }
 
 interface State {
-  allTalks: Talk[];
+  // allTalks: Talk[];
   allTopics: Topic[];
   chosenTopic: Topic;
   chosenSubtopics: Topic[];
   audienceLevel: string[];
   allAudienceLevels: string[];
   renderMobile: boolean
+  talks: Talk[]
 }
 
 var emptyTopic = {
@@ -49,13 +50,14 @@ export default class TopicTalkList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      allTalks: [],
+      // allTalks: [],
       allTopics: [],
       chosenTopic: emptyTopic,
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
-      renderMobile: window.innerWidth < 800
+      renderMobile: window.innerWidth < 800,
+      talks: []
     };
   }
 
@@ -64,16 +66,17 @@ export default class TopicTalkList extends Component<Props, State> {
       this.setState({ allTopics });
     });
 
+    /*
     TalkService.getAvailableFutureTalks(
-      100, 
+      45, 
       0, 
       this.props.user ? this.props.user.id : null,  
       (allTalks: Talk[]) => {
       this.setState({
         allTalks: allTalks,
       });
-    });
-  }
+    }); */
+  } 
 
   /*
   filterChosenTalksByAudience = () => {
@@ -91,8 +94,17 @@ export default class TopicTalkList extends Component<Props, State> {
     this.setState({chosenTalks: filteredTopics});
     }
   }; */
+    /*
+  getTalksByTopicAndAudience = (talks: Talk[], topicId: number, audienceLevel: string[]): Talk[] => {
+    TalkService.getAllFutureTalksForTopicWithChildren(
+      100, 0, topicId, 
+      (talks: Talk[]) => {
+        console.log("TALKS", talks[0])
+        res = res.concat(talks[0])
+      }
+    )
 
-  getTalksByTopicsAndAudience = (talks: Talk[], topicsId: number[], audienceLevel: string[]): Talk[] => {
+
     let res: Talk[] = [];
     for (let talk of talks) {
       let isIn: boolean = false;
@@ -104,9 +116,10 @@ export default class TopicTalkList extends Component<Props, State> {
       }
     }
     return res;
-  };
+    
+  }; */
 
-  getTalksByAudience = (talks: Talk[], audienceLevel: string[]): Talk[] => {
+  /* getTalksByAudience = (talks: Talk[], audienceLevel: string[]): Talk[] => {
     let res: Talk[] = [];
     for (let talk of talks) {
       let isIn: boolean = false;
@@ -116,7 +129,7 @@ export default class TopicTalkList extends Component<Props, State> {
       }
     } 
     return res;
-  };
+  }; */
 
   getChildren = (topic: Topic) => {
     return this.state.allTopics
@@ -162,11 +175,11 @@ export default class TopicTalkList extends Component<Props, State> {
       this.setState({
         chosenTopic: empty, 
         chosenSubtopics: []
-      })
+      }, this.fetchFilteredTalks)
     } else {
-      this.setState({chosenTopic: topic, chosenSubtopics: []})
+      this.setState({chosenTopic: topic, chosenSubtopics: []}, this.fetchFilteredTalks)
     }
-    this.fetchFilteredTalks()
+    
   }
 
   updateSubtopics = (topic: Topic) => {
@@ -183,7 +196,7 @@ export default class TopicTalkList extends Component<Props, State> {
     
   }
 
-  getIdTopicsToFetch = () => {
+  /* getIdTopicsToFetch = () => {
     if (this.state.chosenTopic.field === "-") {
       return []
     } else if (this.state.chosenSubtopics.length === 0) {
@@ -191,18 +204,46 @@ export default class TopicTalkList extends Component<Props, State> {
     } else {
       return this.state.chosenSubtopics.map(topic => topic.id)
     }
-  }
-
+  } */
 
   fetchFilteredTalks = () => {
-    let topicsId = this.getIdTopicsToFetch()
     let audienceLevel = this.state.audienceLevel.length > 0 ? this.state.audienceLevel : this.state.allAudienceLevels
+    console.log("TOPIC ID", this.state.chosenTopic.id)
+    if (this.state.chosenTopic.id > 0) {
+      if (this.state.chosenSubtopics.length === 0) {
+        TalkService.getAllFutureTalksForTopicWithChildren(
+          45, 0, this.state.chosenTopic.id, 
+          (talks: Talk[]) => {
+            console.log("TALKS", talks[0])
+            this.setState({ talks })
+          }
+        )
+      } else {
+        TalkService.getAllFutureTalksForTopicWithChildren(
+          45, 0, this.state.chosenTopic.id, 
+          (talks: Talk[]) => {
+            console.log("TALKS", talks[0])
+            this.setState({ talks })
+          }
+        )
+      }
+    }
+  }
+
+  
+
+
+  /* fetchFilteredTalks = () => {
+    // let topicsId = this.getIdTopicsToFetch()
+    let audienceLevel = this.state.audienceLevel.length > 0 ? this.state.audienceLevel : this.state.allAudienceLevels
+    return this.getTalksByTopicsAndAudience(this.state.allTalks, this.state.chosenTopic.id, audienceLevel)
+
     if (topicsId.length > 0) {
       return this.getTalksByTopicsAndAudience(this.state.allTalks, topicsId, audienceLevel)
     } else {
       return this.getTalksByAudience(this.state.allTalks, audienceLevel)
-    }
-  };
+    } 
+  };*/
 
   selectTopicMobile = (temp: Topic) => {
     this.setState({
@@ -223,7 +264,7 @@ export default class TopicTalkList extends Component<Props, State> {
           margin={{ top: "24px" }}
           > */}
         {this.props.past &&
-          this.fetchFilteredTalks().map((talk: Talk) => (
+          this.state.talks.map((talk: Talk) => (
             <PastTalkCard
               talk={talk}
               user={this.props.user}
@@ -232,7 +273,7 @@ export default class TopicTalkList extends Component<Props, State> {
             />
           ))}
         {!this.props.past &&
-          this.fetchFilteredTalks().map((talk: Talk) => (
+          this.state.talks.map((talk: Talk) => (
             <TalkCard talk={talk} user={this.props.user} />
           ))}
       {/* </Box> */}
@@ -496,7 +537,7 @@ export default class TopicTalkList extends Component<Props, State> {
           />
         </MediaQuery>
 
-        {this.fetchFilteredTalks().length === 0
+        {this.state.talks.length === 0
           ? this.ifNoTalks()
           : this.ifTalks()}
 
