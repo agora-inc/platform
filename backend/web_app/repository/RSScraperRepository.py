@@ -56,6 +56,7 @@ class RSScraperRepository:
 
 		self.driver.get(url_agora)
 		if self.driver.find_element_by_id("title").text == 'Page not found':
+			self.driver.close()
 			return 0, [], -1, ""
 		else:
 			# Create channel
@@ -81,6 +82,7 @@ class RSScraperRepository:
 				link = ""
 
 			self._logout()
+			self.driver.close()
 			return 1, idx, channel['id'], name, link
 
 	def parse_create_talks(self, url_agora, idx, channel_id, channel_name, talk_link, topic_1_id, audience_level, visibility, auto_accept_group):
@@ -163,6 +165,7 @@ class RSScraperRepository:
 
 			talks.append(talk_created)
 
+		self.driver.close()
 		return talks
 
 	@staticmethod
@@ -220,5 +223,5 @@ class RSScraperRepository:
 # TESTING
 if __name__ == "__main__":
 	scraper = RSScraperRepository()
-	url_agora = "https://researchseminars.org/seminar/cogentseminarkkkkk"
+	url_agora = "https://researchseminars.org/seminar/cogentseminar"
 	# print(scraper.get_valid_series_and_ntalks(url_agora))
