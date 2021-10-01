@@ -415,7 +415,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         </Box>
         <Box margin={{bottom: "30px"}} direction="row">
           <Text size="18px">           
-            Because we want to facilitate the sharing of new knowledge, we offer all features for free if you use your own external streaming tech!
+            Because we want to facilitate the sharing of new knowledge, we offer <b>all features for free</b> if you use your own external streaming tech!
           </Text> 
         </Box>
 
@@ -532,9 +532,10 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
   content3() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">The future of seminars is <b>online and hybrid</b></Text>
+        {/* <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">The future of seminars is <b>online and hybrid</b></Text> */}
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">A streaming tech sculpted for academics</Text>
         <Text>
-          <b>We, academics</b>, built a unique streaming technology <b>sculpted for academics</b>. The latter allows you to run physical, online, and hybrid seminars where you can write LateX in chat, go back in the slides as an attendee, clap for the speaker and much more!
+          <b>We, academics</b>, built a unique streaming technology <b>sculpted for academics</b>. The latter allows you to run online seminars where you can write LateX in chat, go back in the slides as an attendee, clap for the speaker and much more!
         </Text>
 
         <PricingPlans 
@@ -560,7 +561,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Empower your community now by attracting world-leading experts to your events!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Make your life easier + attract world-leading experts to your events now!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "100px"}}>
                 <CreateChannelButton 
@@ -574,7 +575,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
 
             <Box align="center" justify="center">
               <Text size="34px" margin={{bottom: "80px"}} color="color1" weight="bold" alignSelf="center">
-                Already running a series? Migrate everything in 3 clicks!
+                Already running a series? Import everything in 3 clicks!
               </Text>
               <TransportSeminars 
                 user={this.state.user}
