@@ -10,8 +10,8 @@ import ShareButtons from "../Components/Core/ShareButtons";
 import LoginModal from "../Components/Account/LoginModal";
 import SignUpButton from "../Components/Account/SignUpButton";
 import { FaThemeisle } from "react-icons/fa";
-
-
+import "react-step-progress-bar/styles.css";
+import { ProgressBar, Step } from "react-step-progress-bar";
 
 interface State {
   channel: Channel | null;
@@ -189,7 +189,102 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
         >
           {this.state.referralCount} referrals 
         </Text>
-        <div style = {{
+        {/* replace 75 with {this.state.referralCount * 2} */}
+  <ProgressBar percent={75} width={750} filledBackground="black" unfilledBackground="grey" hasStepZero = {true} stepPositions = {[0,10,20,50,100]} height = {10}>
+    <Step>
+    {({ accomplished, index  } : {accomplished : boolean, index :  number}) => (
+      <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "50%",
+        width: 20,
+        height: 20,
+        color: "white",
+        backgroundColor: accomplished ? "blue" : "gray"
+      }}
+    >
+      {0}
+    </div>
+    )}
+  </Step>
+  <Step>
+    {({ accomplished, index  } : {accomplished : boolean, index :  number}) => (
+      <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "50%",
+        width: 20,
+        height: 20,
+        color: "white",
+        backgroundColor: accomplished ? "blue" : "gray"
+      }}
+    >
+      {5}
+    </div>
+    )}
+  </Step>
+  <Step>
+    {({ accomplished, index  } : {accomplished : boolean, index :  number}) => (
+      <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "50%",
+        width: 20,
+        height: 20,
+        color: "white",
+        backgroundColor: accomplished ? "blue" : "gray"
+      }}
+    >
+      {10}
+    </div>
+    )}
+  </Step>
+  <Step>
+    {({ accomplished, index  } : {accomplished : boolean, index :  number}) => (
+      <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "50%",
+        width: 20,
+        height: 20,
+        color: "white",
+        backgroundColor: accomplished ? "blue" : "gray"
+      }}
+    >
+      {25}
+    </div>
+    )}
+  </Step>
+  <Step>
+    {({ accomplished, index  } : {accomplished : boolean, index :  number}) => (
+      <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "50%",
+        width: 20,
+        height: 20,
+        color: "white",
+        backgroundColor: accomplished ? "blue" : "gray"
+      }}
+    >
+      {50}
+    </div>
+    )}
+  </Step>
+
+</ProgressBar>
+
+        {/* <div style = {{
           height: '30px',
           width: '50%',
           backgroundColor: 'whitesmoke',
@@ -203,16 +298,10 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
                 borderRadius:40,
                 textAlign:'right'
             }}>
-                {/* <span style={{
-                    padding: 10,
-                    color: 'black',
-                    fontWeight: 900
-                }}>
-                    {`${this.state.referralCount} referrals done`}
-                </span> */}
             
             </div>
-        </div>
+        </div> */}
+        
         <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
           {this.callToActions()}
         </Box>
