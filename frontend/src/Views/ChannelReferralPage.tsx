@@ -190,6 +190,7 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
           {this.state.referralCount} referrals 
         </Text>
         {/* replace 75 with {this.state.referralCount * 2} */}
+        <Box direction="row" justify="center" align="center" gap="60px" style={{position: 'relative', zIndex:0}}>
   <ProgressBar percent={75} width={750} filledBackground="black" unfilledBackground="grey" hasStepZero = {true} stepPositions = {[0,10,20,50,100]} height = {10}>
     <Step>
     {({ accomplished, index  } : {accomplished : boolean, index :  number}) => (
@@ -283,6 +284,13 @@ export default class ChannelReferralPage extends Component<RouteComponentProps, 
   </Step>
 
 </ProgressBar>
+</Box>
+<Box direction="row" align="center" margin={{bottom: "20px"}} style={{minHeight: "30px",position: 'relative', zIndex: 1}}>
+          <Text weight="bold" color="grey" size="13px"> Sharing events via Twiter </Text>
+          <Text weight="bold" color="grey" size="13px"> Free automation plan </Text>
+          <Text weight="bold" color="grey" size="13px"> Mora.stream branded mug </Text>
+          <Text weight="bold" color="grey" size="13px"> Free Hybrid Plan  </Text>
+</Box>
 
         {/* <div style = {{
           height: '30px',
