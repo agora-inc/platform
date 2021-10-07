@@ -354,8 +354,9 @@ export default class AllPastTalksPage extends Component<{}, State> {
               {this.getPrimitiveNodes().map((topic: Topic) =>
                 <Box
                   onClick={() => {this.updateTopic(topic)}}
-                  background={"white"} 
-                  border={this.state.chosenTopic === topic ? {color: "#0C385B", size: "2px"} : {size: "0px"}}
+                  background={this.state.chosenTopic === topic? "#0C385B" : "white"}
+                  // background={this.state.chosenTopic.id != -1? "#0C385B" : "white"} 
+                  // border={this.state.chosenTopic === topic ? {color: "#0C385B", size: "2px"} : {size: "0px"}}
                   round="xsmall"
                   pad="5px"
                   width="80%"
