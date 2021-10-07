@@ -387,7 +387,7 @@ export default class TopicTalkList extends Component<Props, State> {
               {this.getPrimitiveNodes().map((topic: Topic) =>
                 <Box
                   onClick={() => {this.updateTopic(topic)}}
-                  background={"white"} 
+                  background={this.state.chosenTopic === topic? "#0C385B" : "white"}
                   round="xsmall"
                   pad="5px"
                   width="80%"
