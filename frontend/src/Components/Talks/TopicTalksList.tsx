@@ -408,7 +408,7 @@ export default class TopicTalkList extends Component<Props, State> {
               <Text size="12px" weight="bold" margin={{bottom: "10px"}}> 
                 Topic
               </Text>
-              {this.getPrimitiveNodes().map((topic: Topic) =>
+              {this.getPrimitiveNodes().filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic)=>
                 
                 <Box
                   onClick={() => {
@@ -443,7 +443,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 </Text>
               )}
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(0, 7).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(0, 7).filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
@@ -468,7 +468,7 @@ export default class TopicTalkList extends Component<Props, State> {
 
             <Box direction="column" width="25%" margin={{top: "24px", right: "60px"}}>
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(7).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(7).filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
