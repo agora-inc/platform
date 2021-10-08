@@ -92,12 +92,36 @@ export default class TopicTalkList extends Component<Props, State> {
     }
   }; */
 
+  getTalksByTopicOnly = (talks: Talk[], topicsId: number[]): Talk[] => {
+    let res: Talk[] = [];
+    let talkCount: number = 0;
+    for (let talk of talks) {
+      let isIn: boolean = false;
+      
+      for (let topic of talk.topics) {
+        
+        if (!isIn && (topicsId.includes(topic.id) 
+        || topicsId.includes(topic.parent_1_id!)
+        || topicsId.includes(topic.parent_2_id!)
+        || topicsId.includes(topic.parent_3_id!))) {
+          isIn = true;
+          res.push(talk);
+          ++talkCount;
+        }
+      }
+    }
+    console.log(res.length , talkCount)
+    return res;
+  };
+  
   getTalksByTopicsAndAudience = (talks: Talk[], topicsId: number[], audienceLevel: string[]): Talk[] => {
     let res: Talk[] = [];
     for (let talk of talks) {
       let isIn: boolean = false;
       for (let topic of talk.topics) {
-        if (!isIn && topicsId.includes(topic.id) && audienceLevel.includes(talk.audience_level)) {
+        if (!isIn && (topicsId.includes(topic.id)|| topicsId.includes(topic.parent_1_id!)
+        || topicsId.includes(topic.parent_2_id!)
+        || topicsId.includes(topic.parent_3_id!)) && audienceLevel.includes(talk.audience_level)) {
           isIn = true;
           res.push(talk);
         }
@@ -385,8 +409,11 @@ export default class TopicTalkList extends Component<Props, State> {
                 Topic
               </Text>
               {this.getPrimitiveNodes().map((topic: Topic) =>
+                
                 <Box
-                  onClick={() => {this.updateTopic(topic)}}
+                  onClick={() => {
+                    this.updateTopic(topic)
+                    console.log(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]))}}
                   background={this.state.chosenTopic === topic? "#0C385B" : "white"}
                   round="xsmall"
                   pad="5px"
@@ -398,7 +425,9 @@ export default class TopicTalkList extends Component<Props, State> {
                   hoverIndicator="#DDDDDD"
                 >
                   <Text size="12px" margin={{left: "5px"}}>
-                    {topic.field}
+                    {topic.field + 
+                    " " +  
+                    String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length)}
                   </Text>
                 </Box>
               )}
@@ -428,7 +457,8 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                      {topic.field}
+                      {topic.field  + " " +  
+                    String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id], this.state.audienceLevel).length)}
                     </Text>
                   </Box>
                 )
@@ -452,7 +482,8 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px">
-                      {topic.field}
+                      {topic.field + " " +  
+                    String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id], this.state.audienceLevel).length)}
                     </Text>
                   </Box>
                 )
