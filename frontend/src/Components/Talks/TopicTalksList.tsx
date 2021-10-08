@@ -425,9 +425,7 @@ export default class TopicTalkList extends Component<Props, State> {
                   hoverIndicator="#DDDDDD"
                 >
                   <Text size="12px" margin={{left: "5px"}}>
-                    {topic.field + 
-                    " " +  
-                    String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length)}
+                    {topic.field}
                   </Text>
                 </Box>
               )}
@@ -457,8 +455,7 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                      {topic.field  + " " +  
-                    String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id], this.state.audienceLevel).length)}
+                      {topic.field }
                     </Text>
                   </Box>
                 )
@@ -482,8 +479,7 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px">
-                      {topic.field + " " +  
-                    String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id], this.state.audienceLevel).length)}
+                      {topic.field}
                     </Text>
                   </Box>
                 )
