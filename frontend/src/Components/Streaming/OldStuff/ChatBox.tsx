@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { Box, Text, TextInput, Keyboard } from "grommet";
-import Loading from "../Core/Loading";
+import Loading from "../../Core/Loading";
 import { Send, Emoji } from "grommet-icons";
-import { User, UserService } from "../../Services/UserService";
+import { User, UserService } from "../../../Services/UserService";
 import Identicon from "react-identicons";
 import Sockette from "sockette";
 import "emoji-mart/css/emoji-mart.css";
-import "../../Styles/emoji-picker.css";
+import "../../../Styles/emoji-picker.css";
 import { Picker } from "emoji-mart";
 import { InlineMath } from "react-katex";
-import { chatUrl } from "../../config";
+import { chatUrl } from "../../../config";
 
 type Message = {
   username: string;

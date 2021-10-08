@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Tabs, Tab, Text } from "grommet";
 import QandA from "./QandA";
-import Tag from "../Core/Tag";
+import Tag from "../../Core/Tag";
 
 interface Props {
   description: string;

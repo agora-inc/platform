@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { Link } from "react-router-dom";
-import VideoCard from "../Streaming/VideoCard";
+import VideoCard from "../Streaming/OldStuff/VideoCard";
 import { Video, VideoService } from "../../Services/VideoService";
 import { FormNextLink } from "grommet-icons";
 import "../../Styles/see-more-button.css";
