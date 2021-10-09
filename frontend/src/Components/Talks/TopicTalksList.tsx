@@ -92,12 +92,36 @@ export default class TopicTalkList extends Component<Props, State> {
     }
   }; */
 
+  getTalksByTopicOnly = (talks: Talk[], topicsId: number[]): Talk[] => {
+    let res: Talk[] = [];
+    let talkCount: number = 0;
+    for (let talk of talks) {
+      let isIn: boolean = false;
+      
+      for (let topic of talk.topics) {
+        
+        if (!isIn && (topicsId.includes(topic.id) 
+        || topicsId.includes(topic.parent_1_id!)
+        || topicsId.includes(topic.parent_2_id!)
+        || topicsId.includes(topic.parent_3_id!))) {
+          isIn = true;
+          res.push(talk);
+          ++talkCount;
+        }
+      }
+    }
+    console.log(res.length , talkCount)
+    return res;
+  };
+  
   getTalksByTopicsAndAudience = (talks: Talk[], topicsId: number[], audienceLevel: string[]): Talk[] => {
     let res: Talk[] = [];
     for (let talk of talks) {
       let isIn: boolean = false;
       for (let topic of talk.topics) {
-        if (!isIn && topicsId.includes(topic.id) && audienceLevel.includes(talk.audience_level)) {
+        if (!isIn && (topicsId.includes(topic.id)|| topicsId.includes(topic.parent_1_id!)
+        || topicsId.includes(topic.parent_2_id!)
+        || topicsId.includes(topic.parent_3_id!)) && audienceLevel.includes(talk.audience_level)) {
           isIn = true;
           res.push(talk);
         }
@@ -384,10 +408,13 @@ export default class TopicTalkList extends Component<Props, State> {
               <Text size="12px" weight="bold" margin={{bottom: "10px"}}> 
                 Topic
               </Text>
-              {this.getPrimitiveNodes().map((topic: Topic) =>
+              {this.getPrimitiveNodes().filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic)=>
+                
                 <Box
-                  onClick={() => {this.updateTopic(topic)}}
-                  background={"white"} 
+                  onClick={() => {
+                    this.updateTopic(topic)
+                    console.log(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]))}}
+                  background={this.state.chosenTopic === topic? "#0C385B" : "white"}
                   round="xsmall"
                   pad="5px"
                   width="80%"
@@ -414,7 +441,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 </Text>
               )}
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(0, 7).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(0, 7).filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
@@ -428,7 +455,7 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                      {topic.field}
+                      {topic.field }
                     </Text>
                   </Box>
                 )
@@ -438,7 +465,7 @@ export default class TopicTalkList extends Component<Props, State> {
 
             <Box direction="column" width="25%" margin={{top: "24px", right: "60px"}}>
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(7).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(7).filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 

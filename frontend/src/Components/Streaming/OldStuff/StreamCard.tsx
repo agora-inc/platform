@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { Link } from "react-router-dom";
-import { Stream } from "../Services/StreamService";
+import { Stream } from "../../../Services/StreamService"
 import "../Styles/videocard.css";
-import { baseApiUrl } from "../config";
+import { baseApiUrl } from "../../../config";
 
 interface Props {
   height?: any;
