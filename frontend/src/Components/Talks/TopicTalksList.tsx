@@ -110,7 +110,7 @@ export default class TopicTalkList extends Component<Props, State> {
         }
       }
     }
-    console.log(res.length , talkCount)
+    // console.log(res.length , talkCount)
     return res;
   };
   
@@ -413,7 +413,8 @@ export default class TopicTalkList extends Component<Props, State> {
                 <Box
                   onClick={() => {
                     this.updateTopic(topic)
-                    console.log(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]))}}
+                    // console.log(this.state.audienceLevel.length)
+                  }}
                   background={this.state.chosenTopic === topic? "#0C385B" : "white"}
                   round="xsmall"
                   pad="5px"
@@ -425,7 +426,12 @@ export default class TopicTalkList extends Component<Props, State> {
                   hoverIndicator="#DDDDDD"
                 >
                   <Text size="12px" margin={{left: "5px"}}>
-                    {topic.field}
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
+                
                   </Text>
                 </Box>
               )}
@@ -455,7 +461,11 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                      {topic.field }
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
                     </Text>
                   </Box>
                 )
@@ -479,7 +489,11 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px">
-                      {topic.field}
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
                     </Text>
                   </Box>
                 )
