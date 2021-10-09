@@ -1,11 +1,11 @@
 import React, { Component, useState, useEffect, useRef } from "react";
 import { Box, Text, Button } from "grommet";
 import { Link } from "react-router-dom";
-import { Stream } from "../Services/StreamService";
-import "../Styles/videocard.css";
-import { baseApiUrl } from "../config";
+import { Stream } from "../../../Services/StreamService";
+import "../../../Styles/videocard.css";
+import { baseApiUrl } from "../../../config";
 import { Document, Page , pdfjs } from 'react-pdf/dist/esm/entry.webpack';
-import { db, API } from "../Services/FirebaseService";
+import { db, API } from "../../../Services/FirebaseService";
 
 interface Props {
     url: string;
@@ -33,6 +33,7 @@ export default function({presenter=false, ...props}:Props) {
   function onDocumentLoadSuccess(pdf: any) {
     setNumPages(pdf.numPages);
   }
+
   function navigate(n:number) {
     n = Math.min(numPages, Math.max(1, n))
     if(n == pageNumber) {
@@ -46,6 +47,7 @@ export default function({presenter=false, ...props}:Props) {
     }
   }
   
+  // Grab pageNumber from props if any
   useEffect(()=>{
     if(!props.pageNumber){
       return
@@ -53,6 +55,7 @@ export default function({presenter=false, ...props}:Props) {
     setPageNumber(props.pageNumber)
   }, [props.pageNumber])
 
+  // Keep track live page number if 'Live' enabled
   useEffect(()=>{
     if(!isLive) {
       return
@@ -60,9 +63,11 @@ export default function({presenter=false, ...props}:Props) {
     setPageNumber(livePageNumber)
   }, [livePageNumber, isLive])
 
+  // Broadcast or update live slides
   useEffect(()=>{
-    if(presenter) {
-      if(props.slideShareId) {
+    if(props.slideShareId){
+      // Broadcast slides if presenter
+      if(presenter) {
         db.collection('slide').doc(props.slideShareId).get()
         .then((doc)=>{
           let data = doc.data()
@@ -70,26 +75,24 @@ export default function({presenter=false, ...props}:Props) {
             setLivePageNumber(data.pageNumber)
           }
         })
+        return
+      } 
+      // Listen live slides if attendee
+      else {
+        let slide_unsubs = db.collection('slide').doc(props.slideShareId).onSnapshot(snaps=>{
+          let data = snaps.data() as any
+          console.log(data)
+          if(data) {
+            setLivePageNumber(data.pageNumber)
+          }
+        })
+        return slide_unsubs()
       }
-
-      return
     }
-
-
-    let slide_unsubs = db.collection('slide').doc(props.slideShareId).onSnapshot(snaps=>{
-      let data = snaps.data() as any
-      console.log(data)
-      if(data) {
-        setLivePageNumber(data.pageNumber)
-      }
-    })
-
-    return ()=>{
-      slide_unsubs()
-    }
-
   }, [props.slideShareId, presenter])
 
+
+  // rendering pdf dimensions
   useEffect(()=>{
     let a:any = null
     if(numPages) {
@@ -133,7 +136,7 @@ export default function({presenter=false, ...props}:Props) {
             background="color1"
             hoverIndicator="#BAD6DB"
             style={{borderRadius:'6px'}}
-            onClick={() => {navigate(pageNumber-1)}}>
+            onClick={() => {navigate(pageNumber - 1)}}>
               Prev
           </Box>
           <Text style={{width: '140px', textAlign: 'center', padding: '10px'}}> Page {pageNumber} of {numPages} </Text>

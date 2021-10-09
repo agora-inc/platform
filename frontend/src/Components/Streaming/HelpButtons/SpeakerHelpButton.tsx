@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import { Box, Layer, Button, TextInput, Text } from "grommet";
-import { Overlay } from "../Core/Overlay";
+import { Help} from "grommet-icons";
+
+import { Overlay } from "../../Core/Overlay";
 import ReactTooltip from "react-tooltip";
 import { StatusInfo } from "grommet-icons";
-import SlidesUploader from "../Core/SlidesUploader";
-import { TalkService } from "../../Services/TalkService";
-import shareScreenButtonImage from "../../assets/tutorial_images/streaming/share_screen_button.jpeg";
-import moveSlidesViewButtonImage from "../../assets/tutorial_images/streaming/move_to_slides_view.png";
-import uploadButtonImage from "../../assets/tutorial_images/streaming/upload_button_image.png";
-import slidesButtonImage from "../../assets/tutorial_images/streaming/slides_button.png";
-import AgoraLogo from "../../assets/general/agora_logo_v2.png";
+import SlidesUploader from "../../Core/SlidesUploader";
+import { TalkService } from "../../../Services/TalkService";
+import shareScreenButtonImage from "../../../assets/tutorial_images/streaming/share_screen_button.jpeg";
+import moveSlidesViewButtonImage from "../../../assets/tutorial_images/streaming/move_to_slides_view.png";
+import uploadButtonImage from "../../../assets/tutorial_images/streaming/upload_button_image.png";
+import slidesButtonImage from "../../../assets/tutorial_images/streaming/slides_button.png";
+import AgoraLogo from "../../../assets/general/agora_logo_v2.png";
 
 
 interface Props {
@@ -52,13 +54,13 @@ export default class SpeakerHelpButton extends Component<Props, State> {
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
           height="50px"
-          width={this.props.width ? this.props.width : "15vw"}
+          width={this.props.width ? this.props.width : "50px"}
           justify="center"
           align="center"
           focusIndicator={false}
           hoverIndicator="#BAD6DB"
         >
-          <Text size="14px" weight="bold">Help</Text>
+          <Help size="medium"/>
         </Box>
         <Overlay
           width={400}

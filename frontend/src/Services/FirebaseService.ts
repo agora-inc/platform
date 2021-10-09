@@ -38,9 +38,20 @@ const API = {
         let r = await db.collection('talk').doc(talk_id).update({status: 'ENDED'});
         return true
     },
-    thankTheSpeaker: async (talk_id:string, value=true) =>{
-        let r = await db.collection('talk').doc(talk_id).update({isClapping: value, clapping_status: Math.floor(10000 + Math.random()*10000)});
-    },
+    thankTheSpeaker: async (talk_id:string) =>{
+        // Event triggered by updating isClapping to "true"
+        let r1 = await db.collection('talk').doc(talk_id).update({isClapping: true, clapping_status: Math.floor(10000 + Math.random()*10000)});
+        
+        // 5sec later, back to "false" to clean event
+        let r2 = setTimeout(
+            () => {
+                db.collection('talk').doc(talk_id).update({isClapping: false, clapping_status: Math.floor(10000 + Math.random()*10000)})
+            }, 5000);
+        },
+
+    ////////////////////////////
+    // Mic API calls
+    ////////////////////////////
     requestMic: async (talk_id:string, user_id:string, user_name:string) => {
         let req = await db.collection('requests').where('requester_id', '==', user_id).get()
         if(req.size > 0) {
@@ -69,13 +80,19 @@ const API = {
     removeRequest(id:string) {
         db.collection('requests').doc(id).delete();
     },
+
+    ////////////////////////////
+    // SLIDES API CALLs
+    ////////////////////////////
+    // (For presenter only: updates userId of presenter)
     slideShare: async(user_id:string, talk_id:string) => {
         let req = await db.collection('slide').where('talk_id', '==', talk_id).get()
         console.log(req)
+        // if there is a slide sharing
         if(req.size > 0) {
             // @ts-ignore
             if(req.docs[0].user_id !== user_id){
-                await db.collection('slide').doc(req.docs[0].id).update({ageNumber: 1,user_id});
+                await db.collection('slide').doc(req.docs[0].id).update({pageNumber: 1,user_id});
                 req = await db.collection('slide').where('talk_id', '==', talk_id).get()
                 return req.docs[0]
             }
@@ -83,8 +100,10 @@ const API = {
         }
         return await db.collection('slide').add({pageNumber: 1, talk_id, user_id});
     },
-    slideNavigate: async (id:string, pageNumber:number=1) => {
-        await db.collection('slide').doc(id).update({pageNumber});
+
+    // (For other people)
+    slideNavigate: async (slide_id:string, pageNumber:number=1) => {
+        await db.collection('slide').doc(slide_id).update({pageNumber});
     },
     slideStop: async (id:string) => {
         await db.collection('slide').doc(id).delete();
