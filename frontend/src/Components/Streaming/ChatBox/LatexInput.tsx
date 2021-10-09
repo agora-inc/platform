@@ -1,8 +1,8 @@
 import React, { Component, RefObject } from "react";
 import { Box, Text, TextArea, Heading } from "grommet";
 import { InlineMath } from "react-katex";
-import Switch from "../Core/Switch";
-import Loading from "../Core/Loading";
+import Switch from "../../Core/Switch";
+import Loading from "../../Core/Loading";
 import "katex/dist/katex.min.css";
 
 interface State {

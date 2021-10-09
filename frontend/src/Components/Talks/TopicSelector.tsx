@@ -74,12 +74,14 @@ export default class TopicSelector extends Component<Props, State> {
   };
 
   onFieldChoose = (choice: number, topic: Topic, fieldDepth: number) => {
+    console.log("ON FIELD CHOOSE ", fieldDepth)
     let tempShown = this.state.topicsShown;
     if (topic.id >= 0) {
       tempShown[choice] = fieldDepth + 1;
-      this.props.onSelectedCallback(topic, choice);
+      this.props.onSelectedCallback(topic, choice, fieldDepth+1);
     } else {
-      tempShown[choice] = fieldDepth; 
+      tempShown[choice] = fieldDepth;
+      this.props.onSelectedCallback(topic, choice, fieldDepth+1); 
     }
     let tempTopics = this.state.topics;
     tempTopics[choice] = tempTopics[choice].slice(0, fieldDepth);

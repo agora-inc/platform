@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, Component, createRef, FunctionComponent, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Box, Grid, Text, TextInput, Layer, Button, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
-import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
-import ChatBox from "../../Components/Streaming/ChatBox";
+// import DescriptionAndQuestions from "../../Components/Streaming/DescriptionAndQuestions";
+// import ChatBox from "../../Components/Streaming/ChatBox";
 import ChannelIdCard from "../../Components/Channel/ChannelIdCard";
 import Tag from "../../Components/Core/Tag";
 import Loading from "../../Components/Core/Loading";
@@ -12,21 +12,21 @@ import { Video, VideoService } from "../../Services/VideoService";
 import { StreamService } from "../../Services/StreamService";
 import { TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
-import VideoPlayerAgora from "../../Components/Streaming/VideoPlayerAgora";
+import VideoPlayerAgora from "../../Components/Streaming/VideoPlayer/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdClear, MdSlideshow} from 'react-icons/md'
 import {db, API} from '../../Services/FirebaseService'
 import '../../Styles/all-stream-page.css'
-import PDFViewer from "../../Components/PDFViewer";
+import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 
 // Admin-only features
-import Clapping from "../../Components/Streaming/Clapping";
+import Clapping from "../../Components/Streaming/Clapping/Clapping";
 
 // Speaker-only features
 import SlidesUploader from "../../Components/Core/SlidesUploader";
-import SpeakerHelpButton from "../../Components/Streaming/SpeakerHelpButton"
+import SpeakerHelpButton from "../../Components/Streaming/HelpButtons/SpeakerHelpButton"
 
 
 interface Props {
@@ -965,8 +965,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   function talkDetailsDescription() {
     return (
-      <>
-        <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="5px">
+        <>
+          <Box direction="row" justify="between" align="center" margin={{top: "10px"}} gap="5px">
               <Link
                   className="channel"
                   to={`/${talkDetail.channel_name}`}
@@ -990,13 +990,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                         borderRadius: 15,
                       }}
                     >
-                        <img
-                          src={ChannelService.getAvatar(
-                            talkDetail.channel_id
-                          )}
-                          height={30}
-                          width={30}
-                        />
+                      <img
+                        src={ChannelService.getAvatar(
+                          talkDetail.channel_id
+                        )}
+                        height={30}
+                        width={30}
+                      />
                     </Box>
                     <Box justify="between">
                       <Text weight="bold" size="16px" color="grey">
@@ -1028,9 +1028,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               >
               </Box>
           </Box>
-
-        <Text size="12px"> {talkDetail.description} </Text>
-      </>
+          <Text size="12px"> {talkDetail.description} </Text>
+        </>
     )
   }
 
@@ -1071,7 +1070,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       {/* {((props.role == "admin" || props.role == "speaker") || name == "") && ( */}
       {!(storedName == "" && (props.role != "speaker" && props.role != "admin")) && (
         <Box style={{position: "absolute", left: "20px", top: "5px"}} margin={{bottom: "50px", top: "80px"}} width="100%">
-          {isTimeover && (
+          {/* {isTimeover && (
             <Box 
               margin={{ top: "xlarge", bottom: "xsmall" }} 
               style={{ 
@@ -1082,7 +1081,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               {talkStatus === 'ENDED' ? <Text> Talk ended </Text> : 
               <Text>Seminar time over. It will end automatically in 15 mins.</Text> }
             </Box>
-          )}
+          )} */}
         
           <Grid
             columns={["75%", "20%"]}

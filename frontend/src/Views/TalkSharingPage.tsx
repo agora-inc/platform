@@ -73,7 +73,8 @@ export default class TalkSharingPage extends Component<Props, State> {
   }
 
   componentDidMount() {
-    window.scrollTo(0, 0)
+    let scroll_element = window.document.querySelector('.StyledGrommet-sc-19lkkz7-0');
+    (scroll_element as HTMLInputElement).scrollTo(0,0);
   }
 
   componentWillMount() {
@@ -196,7 +197,7 @@ export default class TalkSharingPage extends Component<Props, State> {
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
         
-        <Box
+        <Box /* this element is responsible for scrolling */
           margin={{
             top: "10vh", 
             left: "20px", 
