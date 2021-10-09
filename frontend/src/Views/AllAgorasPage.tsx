@@ -163,7 +163,9 @@ export default class AllAgorasPage extends Component<Props, State> {
         wrap
         margin={{ top: "24px" }}
         > */}
-        {this.state.chosenAgoras.map((agora: Channel) => (
+        {this.state.chosenAgoras.filter((agora: Channel)=>{
+          return !['mora','agora'].some(x => agora.name.toLowerCase().includes(x))
+        }).map((agora: Channel) => (
             <Link className="agora-card" to={`/${agora.name}`}>
             <div
               className="agora-card-banner"
