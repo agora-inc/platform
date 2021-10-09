@@ -27,7 +27,8 @@ export default class TimeZoneInfo extends Component<{}, State> {
   //   }
 
   render() {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone.replaceAll("_", " ");
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/_/g, " ");
+
     return (
       <div className="tooltip" style={{ fontSize: 14, marginRight: 5 }}>
         {tz} {this.state.time}

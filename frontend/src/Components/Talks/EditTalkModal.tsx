@@ -496,12 +496,17 @@ export default class EditTalkModal extends Component<Props, State> {
     });
   };
 
-  selectTopic = (topic: Topic, num: number) => {
-    let tempTopics = this.state.topics;
-    tempTopics[num] = topic;
-    this.setState({
-      topics: tempTopics
-    });
+  selectTopic = (topic: Topic, num: number, depth: number) => {
+    if (topic.id > 0) {
+      let tempTopics = this.state.topics;
+      tempTopics[num] = topic;
+      this.setState({ topics: tempTopics });
+    }
+    let tempIsPrevTopics = this.state.isPrevTopics
+    if (depth > 2) {
+      tempIsPrevTopics[num] = true
+      this.setState({ isPrevTopics: tempIsPrevTopics })
+    }
   }
 
   cancelTopic = (num: number) => {
@@ -747,6 +752,8 @@ export default class EditTalkModal extends Component<Props, State> {
     var domains_list = "Enter the name of the domains you want to automatically accept, separated by commas. <br/>" + 
     "Example: ox.ac.uk, cam.ac.uk"
     const numbers = [1, 2, 3, 4, 5];
+
+    console.log("topics", this.state.topics)
 
     return (
       <>
@@ -1217,7 +1224,7 @@ export default class EditTalkModal extends Component<Props, State> {
               onSelectedCallback={this.selectTopic}
               onCanceledCallback={this.cancelTopic}
               isPrevTopics={this.state.isPrevTopics}
-              prevTopics={this.props.talk ? this.props.talk.topics : []} 
+              prevTopics={this.state.topics}  // {this.props.talk ? this.props.talk.topics : []} 
               size="small" 
             />
 

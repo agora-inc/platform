@@ -105,13 +105,13 @@ export default class CropImageModal extends Component<Props, State> {
 
     return (
       <Overlay
-        width={this.props.width ? this.props.width : 900}
-        height={this.props.height ? this.props.height : 450}
+        width={this.props.width ? this.props.width : 1100}
+        height={this.props.height ? this.props.height : 650}
         visible={this.props.visible}
         title={"Image Upload"}
         submitButtonText="Save"
         onSubmitClick={this.onFinish}
-        contentHeight="450px"
+        contentHeight="550px"
         canProceed={true}
         isMissing={[]}
         onCancelClick={this.props.onCanceledCallback}

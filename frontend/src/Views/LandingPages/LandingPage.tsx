@@ -127,7 +127,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted 
                   style={{ height: "100%", width: "auto"}}
                   >
-                  <source src="/videos/talk_application.webm" type="video/webm"/> 
+                  <source src="/videos/talk_application.mp4" type="video/mp4"/> 
             </video>
 
 
@@ -273,7 +273,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 </Box>
                 <Box height="170px">
                   <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                    Find or give a talk,
+                    Find a talk,
                   </Text>
                 </Box>
               </Box>
@@ -286,7 +286,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", alignSelf: "center", maxWidth:"100%"}}
                   >
-                  <source src="/videos/browse_talk.webm" type="video/webm"/> 
+                  <source src="/videos/browse_talk.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
@@ -319,7 +319,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", maxWidth:"100%"}}
                   >
-                  <source src="/videos/morastreaming_tech_example.webm" type="video/webm"/> 
+                  <source src="/videos/morastreaming_tech_example.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
@@ -351,7 +351,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", maxWidth:"100%"}}
                   >
-                  <source src="/videos/cafeteria-agora-minidemo.webm" type="video/webm"/> 
+                  <source src="/videos/cafeteria-agora-minidemo.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
@@ -363,7 +363,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7" weight="bold">boost</Text> research collaborations with tech</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7" weight="bold">empower</Text> attendees, speakers, and organisers with tech</Text>
 
 
         {!this.state.renderMobileView && 
@@ -424,7 +424,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Join your peers and keep up with the hottest discussions of the moment!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Join your peers and keep up with the hottest research of the moment!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}

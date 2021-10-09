@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
 import { Close, Checkmark, FormNextLink } from "grommet-icons";
 import Switch from "../Components/Core/Switch";
-import agoraLogo from "../assets/general/agora_logo_v2.1.png";
+import moraStreamFullLettersLogo from "../assets/general/mora.stream_logo_v2.1.png";
 import { User, UserService } from "../Services/UserService";
 import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
 import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
@@ -284,7 +284,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   <Text weight="bold" size="14px"> Email reminders </Text>
                 </TableCell>
                 <TableCell scope="row">
-                  <Text size="14px"> 100 emails / month </Text>
+                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
                 </TableCell>
                 <TableCell scope="row">
                   <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
@@ -296,7 +296,23 @@ export default class ManageChannelPage extends Component<Props, State> {
 
               <TableRow>
                 <TableCell scope="row">
-                  <Text weight="bold" size="14px"> <img src={agoraLogo} style={{ height: "14px", marginTop: "1px", marginRight: "-1px" }} /> streaming tech </Text>
+                  <Text weight="bold" size="14px"> Virtual cafeteria </Text>
+                </TableCell>
+                <TableCell scope="row">
+                <Text size="14px"> Public</Text>
+                </TableCell>
+                <TableCell scope="row">
+                  <Text size="14px"> Public or Private</Text>
+                </TableCell>
+                <TableCell scope="row">
+                <Text size="14px"> Public or Private</Text>
+                </TableCell>
+            </TableRow>
+
+
+              <TableRow>
+                <TableCell scope="row">
+                  <Text weight="bold" size="14px"> <img src={moraStreamFullLettersLogo} style={{ height: "14px", marginTop: "1px"}}/> streaming tech </Text>
                 </TableCell>
                 <TableCell scope="row">
                   <Close size="25px" color="red" style={{ alignSelf: "center" }} />
@@ -346,22 +362,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TableCell>
               </TableRow>
 
-              <TableRow>
-                <TableCell scope="row">
-                  <Text weight="bold" size="14px"> Virtual cafeteria </Text>
-                </TableCell>
-                <TableCell scope="row">
-                <Text size="14px"> Public</Text>
-                </TableCell>
-                <TableCell scope="row">
-                  <Text size="14px"> Public</Text>
-                </TableCell>
-                <TableCell scope="row">
-                <Text size="14px"> Public or Private</Text>
-                </TableCell>
-            </TableRow>
 
-            <TableRow>
+            {/* <TableRow>
               <TableCell scope="row">
                 <Text weight="bold" size="14px"> Mobile app (coming soon!) </Text>
               </TableCell>
@@ -395,7 +397,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TableCell>
               )}
-            </TableRow>
+            </TableRow> */}
 
                 <TableRow>
                   <TableCell />

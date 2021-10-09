@@ -12,15 +12,15 @@ import {
 // Find another library to make this component work
 // import { Steps } from
 import "../../Styles/manage-channel.css";
-import TagSelector from "../Core/TagSelector";
+import TagSelector from "../../Core/TagSelector";
 import { ReactComponent as TitleImage } from "../title.svg";
 import { ReactComponent as DescriptionImage } from "../description.svg";
 import { ReactComponent as TagImage } from "../tags.svg";
 import { ReactComponent as DoneImage } from "../finished.svg";
-import { Stream, StreamService } from "../../Services/StreamService";
-import { Channel } from "../../Services/ChannelService";
-import { Tag } from "../../Services/TagService";
-import Loading from "../Core/Loading";
+import { Stream, StreamService } from "../../../Services/StreamService";
+import { Channel } from "../../../Services/ChannelService";
+import { Tag } from "../../../Services/TagService";
+import Loading from "../../Core/Loading";
 
 // const { Step } = Steps;
 

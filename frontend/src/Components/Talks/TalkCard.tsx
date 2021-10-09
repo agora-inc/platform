@@ -16,6 +16,8 @@ import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import FooterOverlay from "./Talkcard/FooterOverlay";
 import { thisExpression } from "@babel/types";
 
+import MoraStreamLogo from "../../assets/general/mora_simplified_logo.jpeg"
+
 interface Props {
   talk: Talk;
   user: User | null;
@@ -246,7 +248,11 @@ export default class TalkCard extends Component<Props, State> {
                   overflow="hidden"
                 >
                   {!this.props.talk.has_avatar && (
-                    <Identicon string={this.props.talk.channel_name} size={15} />
+                    <img
+                      src={MoraStreamLogo}
+                      height={36}
+                      width={36}
+                    />
                   )}
                   {!!this.props.talk.has_avatar && (
                     <img

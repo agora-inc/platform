@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Heading, Text, DropButton } from "grommet";
 import { Video, VideoService } from "../Services/VideoService";
-import VideoCard from "../Components/Streaming/VideoCard";
+import VideoCard from "../Components/Streaming/OldStuff/VideoCard";
 import Loading from "../Components/Core/Loading";
 import SmallSelector from "../Components/Core/SmallSelector";
 
