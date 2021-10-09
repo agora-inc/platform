@@ -8,8 +8,8 @@ export default class ClapSoundList extends Component {
   }
 
   claps = {
-    clapBase: require("../../assets/auditorium.mp3"),
-    clapUser: require("../../assets/applause-7.mp3"),
+    clapBase: require("../../../assets/auditorium.mp3"),
+    clapUser: require("../../../assets/applause-7.mp3"),
   };
 
   toHowl(path: string): Howl {

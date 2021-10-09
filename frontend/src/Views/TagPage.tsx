@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Grommet, Heading, Text } from "grommet";
 import { Video, VideoService } from "../Services/VideoService";
 import SmallSelector from "../Components/Core/SmallSelector";
-import VideoCard from "../Components/Streaming/VideoCard";
+import VideoCard from "../Components/Streaming/OldStuff/VideoCard";
 import { Talk, TalkService } from "../Services/TalkService";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import { User, UserService } from "../Services/UserService";

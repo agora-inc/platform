@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Box, Text } from "grommet";
 import { Link } from "react-router-dom";
-import { Video } from "../../Services/VideoService";
-import { ChannelService } from "../../Services/ChannelService";
-import "../../Styles/videocard.css";
-import { baseApiUrl } from "../../config";
+import { Video } from "../../../Services/VideoService";
+import { ChannelService } from "../../../Services/ChannelService";
+import "../../../Styles/videocard.css";
+import { baseApiUrl } from "../../../config";
 import Identicon from "react-identicons";
 
 interface Props {

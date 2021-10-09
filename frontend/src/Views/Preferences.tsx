@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
 import { User, UserService } from "../Services/UserService";
 import LoginModal from "../Components/Account/LoginModal";
-import ClapSoundList from "../Components/Streaming/ClapSoundList";
+import ClapSoundList from "../Components/Streaming/Clapping/ClapSoundList";
 
 interface Props {
   location: { pathname: string };

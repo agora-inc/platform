@@ -102,3 +102,9 @@
 .pdf-viewer.limit-height{
     flex-direction: row;
 }
+
+#background-streaming {
+    position: fixed;
+    opacity: 0.2;
+    z-index: -1;
+  }
