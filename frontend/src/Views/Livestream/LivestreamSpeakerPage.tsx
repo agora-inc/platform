@@ -10,7 +10,7 @@ import { textToLatex } from "../../Components/Core/LatexRendering";
 import { Java } from "grommet-icons";
 import { Video, VideoService } from "../../Services/VideoService";
 import { StreamService } from "../../Services/StreamService";
-import { TalkService } from "../../Services/TalkService";
+import { TalkService, Talk } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import VideoPlayerAgora from "../../Components/Streaming/VideoPlayer/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
@@ -211,14 +211,18 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }, [talkDetail])
 
   async function get_token_for_talk(talkId: string) {
-    // Get dynamic access token
-    return new Promise((res:any, rej:any)=>{
-      StreamService.getToken(talkId, 1, Math.floor(Date.now()/1000 + 600 ), null, localUser.uid, (tk:string)=>{
-        if(tk)
+    // fetch talkdetails + get time
+    var res = TalkService.getTalkById(Number(talkId), (talk: Talk)=> {
+      // Set endtime token 1 hour after end of talk
+      var endTimeSecond = new Date(talk.end_date).getTime() / 3600
+      // Get dynamic access token
+      return new Promise((res:any, rej:any)=>{
+        StreamService.getToken(talkId, 1, Math.floor(endTimeSecond), null, localUser.uid, (tk:string)=>{
+          if(tk)
           return res(tk)
-        rej()
+          rej()
+        })
       })
-
     })
   }
 
