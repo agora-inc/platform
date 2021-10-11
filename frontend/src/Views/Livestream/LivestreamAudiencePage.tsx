@@ -230,17 +230,13 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   }
 
   async function get_token_for_talk(talkId: string) {
-    // fetch talkdetails + get time
-    var res = TalkService.getTalkById(Number(talkId), (talk: Talk)=> {
-      // Set endtime token 1 hour after end of talk
-      var endTimeSecond = new Date(talk.end_date).getTime() / 3600
-      // Get dynamic access token
-      return new Promise((res:any, rej:any)=>{
-        StreamService.getToken(talkId, 1, Math.floor(endTimeSecond), null, localUser.uid, (tk:string)=>{
-          if(tk)
+    // Get dynamic access token
+    return new Promise((res:any, rej:any)=>{
+      // Making token available for 3 hours
+      StreamService.getToken(talkId, 1, Math.floor(Date.now()/1000 + 10800 ), null, localUser.uid, (tk:string)=>{
+        if(tk)
           return res(tk)
-          rej()
-        })
+        rej()
       })
     })
   }
