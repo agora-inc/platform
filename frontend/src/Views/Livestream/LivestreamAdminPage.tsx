@@ -20,13 +20,12 @@ import {MdScreenShare, MdStopScreenShare, MdClear, MdSlideshow} from 'react-icon
 import {db, API} from '../../Services/FirebaseService'
 import Loader from "react-loader-spinner";
 import ReactTooltip from "react-tooltip";
-
-
 import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_invitation.jpg"
-
 import '../../Styles/all-stream-page.css'
 import Clapping from "../../Components/Streaming/Clapping/Clapping";
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
+import ChatBox from "./LivestreamChatBox";
+
 
 
 interface Props {
@@ -781,9 +780,9 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         </Box>
         // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
         ))}
-        </Box>
-        <TextInput onKeyUp={send_message} placeholder='Aa' />
-        {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
+      </Box>
+      <TextInput onKeyUp={send_message} placeholder='Aa' />
+      {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
       </>
     )
   }
@@ -1070,7 +1069,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </Box>
 
               <Box gridArea="chat" background="#EAF1F1" round="small" margin={{bottom: "10px"}}>
-                  {chatBox()}
+                  {ChatBox(localUser)}
               </Box>
 
               <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}
