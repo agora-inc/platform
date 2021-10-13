@@ -26,6 +26,8 @@ import Clapping from "../../Components/Streaming/Clapping/Clapping";
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 import ChatBox from "./LivestreamChatBox";
 
+import AdminHelpButton from "../../Components/Streaming/HelpButtons/AdminHelpButton"
+import Switch from "../../Components/Core/Switch";
 
 
 interface Props {
@@ -515,8 +517,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       hoverIndicator="#6DA3C7"
       focusIndicator={true}
       style={{
-        background: "#0C385B", width: "120px",
-        color: 'white', textAlign: 'center', borderRadius: '6px', height: '50px'
+        background: "#0C385B", width: "100px",
+        color: 'white', textAlign: 'center', borderRadius: '6px', height: '45px'
       }}
     >
       <Text size="14px" weight="bold"> {talkStatus === 'ENDED'? 'Restart': 'Start'} </Text>
@@ -533,8 +535,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         hoverIndicator="#6DA3C7"
         focusIndicator={true}
         style={{
-          background: "#0C385B", width: "120px",
-          color: 'white', textAlign: 'center', borderRadius: '6px', height: '50px'
+          background: "#0C385B", width: "100px",
+          color: 'white', textAlign: 'center', borderRadius: '6px', height: '45px'
         }}
       >
       <Text size="14px" weight="bold"> Stop </Text>
@@ -549,7 +551,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         align="center"
         pad="small"
         focusIndicator={false}
-        height="50px"
+        height="40px"
         background={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "color1"}
         hoverIndicator={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "#BAD6DB"}
         style={{borderRadius:'6px'}}
@@ -576,7 +578,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       align="center"
       pad="small"
       focusIndicator={false}
-      height="50px"
+      height="40px"
       background="color1"
       hoverIndicator="#BAD6DB"
       style={{borderRadius:'6px'}}
@@ -604,7 +606,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         align="center"
         pad="small"
         focusIndicator={false}
-        height="50px"
+        height="40px"
         background="color1"
         hoverIndicator="#BAD6DB"
         style={{borderRadius:'6px'}}
@@ -631,7 +633,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         align="center"
         pad="small"
         focusIndicator={false}
-        height="50px"
+        height="40px"
         background="color1"
         hoverIndicator="#BAD6DB"
         style={{borderRadius:'6px'}}
@@ -653,6 +655,19 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   function viewChangeButton () {
     return (
+      <Switch
+        checked={true}
+        width={150}
+        height={30}
+        textOn="View speaker"
+        textOff="View slides"
+      />
+    )
+
+
+
+
+      {/*
       <Box
       justify="center"
       align="center"
@@ -674,8 +689,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       <Text weight="bold" color="white" size="14px" textAlign="center">
         {callControl.slideShare? "View speaker" : "View slides"}
       </Text>
-    </Box>
-    )
+    </Box> */}
   }
 
   function streamingButtons () {
@@ -683,18 +697,22 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       <>
       {/* MAIN BUTTONS */}
         <Box 
-            direction='row'
-            // gap="10px"
-            align="center"
-          >
+          direction='column'
+          gap="10px"
+          align="start"
+        >
           {(role == "admin") && (
-            <>
+            <Box direction="row" gap="10px">
               {startTalkButton()}
-              {stopTalkButton()}
               <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
-              {viewChangeButton()}
-            </>
-            )}
+              {stopTalkButton()}
+              <AdminHelpButton />
+            </Box>
+          )}
+
+          <Box >
+            {viewChangeButton()}
+          </Box>
         
           {/* {(role == "speaker") && (
             <>
@@ -727,18 +745,18 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             </>
             ) 
           } */}
-        </Box>
+
         
         {/* SECONDARY BUTTONS */}
         <Box direction="row">
-            {(role == "admin") && (
-            <>
+          {(role == "admin") && (
+            <Box direction="row" gap="10px">
               {micButton()}
               {webcamButton()}
               {screenShareButton()}
               {fullscreenButton()}
-            </>
-            )}
+            </Box>
+          )}
 
             {/* {(role == "speaker") && (
             <>
@@ -758,6 +776,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             </>
             )} */}
         </Box>
+      </Box>
       </>
     )
   }
@@ -892,12 +911,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             background="color5"
             round={"medium"}
             onClick={() => {}}
-            height="45px"
-            width="150px"
+            height="30px"
+            width="300px"
+            pad="10px"
             focusIndicator={false}
             direction="row"
           >
-            <Text>Starting soon</Text>
+            <Text size="14px" color="grey">Starting soon</Text>
           </Box>
           <ReactTooltip id="talk_status" effect="solid">
               Speakers and admins can talk to each other but audience cannot see yet.
@@ -1021,7 +1041,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           )} */}
           <Grid
               columns={["75%", "20%"]}
-              rows={["2vh", "15vh", "55vh", "25vh"]}
+              rows={["2vh", "25vh", "45vh", "25vh"]}
               gap="medium"
               areas={[
                 { name: "player", start: [0, 0], end: [0, 3] },

@@ -5,8 +5,8 @@ import { RadialSelected } from "grommet-icons";
 
 interface Props {
   checked: boolean;
-  width: string;
-  height?: number;
+  width: number;
+  height: number;
   callback?: any;
   textOn?: string;
   textOff?: string;
@@ -38,7 +38,7 @@ export default class Switch extends Component<Props, State> {
     if (this.state.checked) {
       return (
         <Box
-          width={this.props.width}
+          width={this.props.width + "px"}
           height={height}
           round={round}
           onClick={this.toggleChecked} 
@@ -47,20 +47,24 @@ export default class Switch extends Component<Props, State> {
             border: "1px solid gray"
           }}
           align="center"
+          justify="center"
           background="#025377"
           focusIndicator={false}
         >
           <RadialSelected size={height} color="#EEEEEE" />
-          <Box width={this.props.width}> </Box>
-          <Text size="12px" margin={{right: "10px"}} weight="bold" color="#EEEEEE"> 
-            {this.props.textOn ? this.props.textOn : ""} 
-          </Text>
+          <Box alignContent="center" alignSelf="center" align="center">
+            <Text size="12px" margin={{right: "5px"}} weight="bold" color="#EEEEEE" textAlign="center"
+              style={{width: (this.props.width - this.props.height) + "px"}}
+            > 
+              {this.props.textOn ? this.props.textOn : ""} 
+            </Text>
+          </Box>
         </Box>
       );
     } else {
       return (
         <Box
-          width={this.props.width}
+          width={this.props.width + "px"}
           height={height}
           round={round}
           onClick={this.toggleChecked}  
@@ -70,13 +74,15 @@ export default class Switch extends Component<Props, State> {
             border: "1px solid gray"
           }}
           align="center"
+          justify="center"
           background="white"
         >
-          <Text size="12px" margin={{left: "10px"}} weight="bold"> 
+          <Text size="12px" margin={{left: "5px"}} weight="bold" textAlign="center"
+            style={{width: (this.props.width - this.props.height) + "px"}}
+          > 
             {this.props.textOff ? this.props.textOff : ""} 
           </Text>
-          <Box width={this.props.width}> </Box>
-          <RadialSelected size={height} />
+          <RadialSelected size={height}  />
         </Box>
       );
     }

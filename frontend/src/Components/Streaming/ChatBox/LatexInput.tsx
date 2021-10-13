@@ -217,7 +217,8 @@ export default class LatexInput extends Component<Props, State> {
               >
                 <Text>Enable inline math</Text>
                 <Switch
-                  width="70px"
+                  height={25}
+                  width={70}
                   checked={this.state.latex}
                   callback={(checked: boolean) => {
                     this.setState({ latex: checked });
