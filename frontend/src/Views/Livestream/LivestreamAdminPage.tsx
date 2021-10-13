@@ -89,7 +89,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       } as any)
   const [talkDetail, setTalkDetail] = useState({} as any)
   
-  //
   const [role, setRole] = useState("admin")
 
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
@@ -105,6 +104,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [isTimeover, setTimeover] = useState(false)
 
   const [messages, setMessages] = useState<Message[]>([])
+
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
   
   const [talkId, setTalkId] = useState('')
@@ -229,7 +229,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   async function join_live_chat(){
-    console.log('joining...')
+    console.log('joining live chat...')
     let {appId , uid} = localUser
     let talkId = props.talkId.toString()
 
@@ -762,8 +762,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     )
   }
 
-  function chatBox() {
+  const messagesEndRef = useRef<null | HTMLDivElement>(null)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: 'nearest' })
+  }
+  useEffect(scrollToBottom, [messages]);
 
+  function chatBox() {
     return (
       <>
       <Box height="85%" flex={true} gap="5px" overflow="auto" margin="small" style={{position : "relative", bottom: 0}}>
@@ -781,6 +786,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         </Box>
         // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
         ))}
+        <Box ref={messagesEndRef} />
       </Box>
       <TextInput onKeyUp={send_message} placeholder='Aa' />
       {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
@@ -1070,7 +1076,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </Box>
 
               <Box gridArea="chat" background="#EAF1F1" round="small" margin={{bottom: "10px"}}>
-                  {ChatBox(localUser)}
+                  { chatBox() }
+                  {/* ChatBox(localUser, talkId) */}
               </Box>
 
               <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}

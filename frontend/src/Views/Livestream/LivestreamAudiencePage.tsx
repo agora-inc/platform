@@ -618,6 +618,12 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     )
   }
 
+  const messagesEndRef = useRef<null | HTMLDivElement>(null)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: 'nearest' })
+  }
+  useEffect(scrollToBottom, [messages]);
+
   function chatBox() {
     return (
       <>
@@ -636,6 +642,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           </Box>
           // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
         ))}
+        <Box ref={messagesEndRef} />
         </Box>
         <TextInput onKeyUp={send_message} placeholder="Aa" />
         {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
