@@ -661,6 +661,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         height={30}
         textOn="View speaker"
         textOff="View slides"
+        color="#D3F930"
       />
     )
 
@@ -698,7 +699,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       {/* MAIN BUTTONS */}
         <Box 
           direction='column'
-          gap="10px"
+          gap="2vw"
           align="start"
         >
           {(role == "admin") && (
@@ -939,7 +940,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           width="140px"
           focusIndicator={false}
         >
-          <Text>Ended</Text>
+          <Text color="#EEEEEE">Ended</Text>
         </Box>
         <ReactTooltip id="talk_status" effect="solid">
             Stream has been ended.

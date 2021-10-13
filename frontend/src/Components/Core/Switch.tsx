@@ -10,6 +10,7 @@ interface Props {
   callback?: any;
   textOn?: string;
   textOff?: string;
+  color?: string
 }
 
 interface State {
@@ -32,14 +33,13 @@ export default class Switch extends Component<Props, State> {
   }
 
   render() {
-    let height: string = this.props.height ? this.props.height + "px" : "24px";
     let round: string = this.props.height ? (this.props.height / 2) + "px" : "12px";
 
     if (this.state.checked) {
       return (
         <Box
           width={this.props.width + "px"}
-          height={height}
+          height={this.props.height + "px"}
           round={round}
           onClick={this.toggleChecked} 
           direction="row"
@@ -48,12 +48,12 @@ export default class Switch extends Component<Props, State> {
           }}
           align="center"
           justify="center"
-          background="#025377"
+          background={this.props.color ? this.props.color : "#025377"}
           focusIndicator={false}
         >
-          <RadialSelected size={height} color="#EEEEEE" />
+          <RadialSelected size={this.props.height + "px"} />
           <Box alignContent="center" alignSelf="center" align="center">
-            <Text size="12px" margin={{right: "5px"}} weight="bold" color="#EEEEEE" textAlign="center"
+            <Text size="12px" margin={{right: "5px"}} weight="bold" textAlign="center"
               style={{width: (this.props.width - this.props.height) + "px"}}
             > 
               {this.props.textOn ? this.props.textOn : ""} 
@@ -65,7 +65,7 @@ export default class Switch extends Component<Props, State> {
       return (
         <Box
           width={this.props.width + "px"}
-          height={height}
+          height={this.props.height + "px"}
           round={round}
           onClick={this.toggleChecked}  
           direction="row"
@@ -82,7 +82,7 @@ export default class Switch extends Component<Props, State> {
           > 
             {this.props.textOff ? this.props.textOff : ""} 
           </Text>
-          <RadialSelected size={height}  />
+          <RadialSelected size={this.props.height + "px"}  />
         </Box>
       );
     }
