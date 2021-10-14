@@ -545,6 +545,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   function screenShareButton () {
+    let disabled: boolean = (talkStatus == "NOT_STARTED" || talkStatus == "ENDED")
     return (
       <Box
         justify="center"
@@ -552,19 +553,22 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         pad="small"
         focusIndicator={false}
         height="40px"
-        background={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "color1"}
-        hoverIndicator={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "#BAD6DB"}
+        background={disabled ? "#CCCCCC" : "color1"}
+        hoverIndicator={disabled ? "#CCCCCC" : "#BAD6DB"}
         style={{borderRadius:'6px'}}
-        onClick={()=>{
-          if (callControl.screenShare){
-            stop_share_screen()
-          } else {
-            share_screen()
+        onClick={() => {
+          if (!disabled) {
+            if (callControl.screenShare){
+              stop_share_screen()
+            } else {
+              share_screen()
+            }
           }
-
         }}
       >
-      <Text weight="bold" color="white" size="14px" textAlign="center">
+      <Text weight="bold" size="12px" textAlign="center"
+        color={disabled ? "grey" : "white"}
+      >
         {callControl.screenShare? "Unshare" : "Share screen"}
       </Text>
       </Box>
@@ -654,14 +658,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   function viewChangeButton () {
+    let disabled: boolean = (talkStatus == "NOT_STARTED" || talkStatus == "ENDED")
     return (
       <Switch
         checked={true}
         width={150}
         height={30}
-        textOn="View speaker"
-        textOff="View slides"
-        color="#D3F930"
+        textOn="Speaker view"
+        textOff="Slides view"
+        color={disabled ? "#CCCCCC" : "color1"}
+        callback={(check: boolean) => { if (!disabled) { slideShare(!check) }}}
+        disabled={disabled}
       />
     )
 
@@ -932,7 +939,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           data-tip data-for='talk_status'
           justify="center"
           align="center"
-          background="grey"
+          background="#CCCCCC"
           round={"medium"}
           onClick={() => {}}
           pad={{ horizontal: "medium", vertical: "small" }}
@@ -940,7 +947,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           width="140px"
           focusIndicator={false}
         >
-          <Text color="#EEEEEE">Ended</Text>
+          <Text color="black">Ended</Text>
         </Box>
         <ReactTooltip id="talk_status" effect="solid">
             Stream has been ended.

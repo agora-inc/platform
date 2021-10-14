@@ -10,7 +10,8 @@ interface Props {
   callback?: any;
   textOn?: string;
   textOff?: string;
-  color?: string
+  color?: string;
+  disabled?: boolean;
 }
 
 interface State {
@@ -34,6 +35,7 @@ export default class Switch extends Component<Props, State> {
 
   render() {
     let round: string = this.props.height ? (this.props.height / 2) + "px" : "12px";
+    let disabled: boolean = this.props.disabled ? this.props.disabled : false;
 
     if (this.state.checked) {
       return (
@@ -51,10 +53,11 @@ export default class Switch extends Component<Props, State> {
           background={this.props.color ? this.props.color : "#025377"}
           focusIndicator={false}
         >
-          <RadialSelected size={this.props.height + "px"} />
+          <RadialSelected size={this.props.height + "px"} color={disabled ? "grey" : "white"} />
           <Box alignContent="center" alignSelf="center" align="center">
             <Text size="12px" margin={{right: "5px"}} weight="bold" textAlign="center"
               style={{width: (this.props.width - this.props.height) + "px"}}
+              color={disabled ? "grey" : "white"}
             > 
               {this.props.textOn ? this.props.textOn : ""} 
             </Text>
