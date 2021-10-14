@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Box, Layer, Button, TextInput, Text } from "grommet";
-import { Help} from "grommet-icons";
+import { Help, StatusCriticalSmall } from "grommet-icons";
 
 import { Overlay } from "../../Core/Overlay";
 import ReactTooltip from "react-tooltip";
@@ -89,20 +89,30 @@ export default class SpeakerHelpButton extends Component<Props, State> {
               <Text size="16px" weight="bold" margin={{"bottom": "5px"}}> 
                 Upload your slides to mora
               </Text>
-              <Text size="14px">
-                Click on "Upload slides" and select a pdf document. <br/>
-                Toggle the button "Speaker view" to "Slides view" <br/>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                Click on "Upload slides" and select a pdf document.
+              </Text>              
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                Toggle the button "Speaker view" to "Slides view"
+              </Text>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
                 Present your slides using the "Prev" and "Next" buttons. The audience can see you changing the slides.
-                They are also able to browse the slides independently, and go back to where you are.
+              </Text>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                They are also able to browse the slides, and go back to where you are presenting.
               </Text>
               <Text size="16px" weight="bold" margin={{"bottom": "5px", "top": "20px"}}> 
                 Share your screen
               </Text>
-              <Text size="14px">
-                Click on "Share screen" and select the window you want to share. <br/>
-              </Text>              
-
-
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                Click on "Share screen" and select the window you want to share.
+              </Text>
+        
               {/*
               <Box width="100%" height="30px" background="color7" alignContent="center">
                 <Text weight="bold" size={this.state.headerSize}>Option A: <img src={AgoraLogo} height={this.state.headerSize}/> slide sharing tool <StatusInfo size="small" data-tip data-for='slide-upload-info'/></Text>

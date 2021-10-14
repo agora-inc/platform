@@ -4,7 +4,7 @@ import { Help} from "grommet-icons";
 
 import { Overlay } from "../../Core/Overlay";
 import ReactTooltip from "react-tooltip";
-import { StatusInfo } from "grommet-icons";
+import { StatusInfo, StatusCriticalSmall } from "grommet-icons";
 
 
 interface Props {
@@ -78,26 +78,44 @@ export default class AdminHelpButton extends Component<Props, State> {
               <Text size="16px" weight="bold" margin={{"bottom": "5px"}}> 
                 Before the seminar
               </Text>
-              <Text size="14px">
-                You can discuss in the chat box with the speaker and the other admins only. <br/>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                You can discuss in the chat box with the speaker and the other admins only. 
+              </Text>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                The chat supports LateX formatting (e.g. $3^2=9$)
+              </Text>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
                 Click on "Start" to start streaming.
               </Text>
               <Text size="16px" weight="bold" margin={{"bottom": "5px", "top": "20px"}}> 
                 During the seminar
               </Text>
-              <Text size="14px">
-                Toggle the button "Speaker view" to switch from the speakers screen to the slides. <br/>
-                Manage which participant can speak in the "Requests for mic" box. <br/>
-                You can also mute yourself, switch off the camera, share your screen, and go full screen using the corresponding buttons. <br/>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                Toggle the button "Speaker view" to switch from the speakers screen to the slides. 
+              </Text>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                Manage which participant can speak in the "Requests for mic" box. 
+              </Text>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                You can also mute yourself, switch off the camera, share your screen, and go full screen using the corresponding buttons. 
               </Text>
               <Text size="16px" weight="bold" margin={{"bottom": "5px",  "top": "20px"}}> 
                 At the end of the seminar
               </Text>
-              <Text size="14px">
-                Click on "Thank speaker" to broadcast a clap to the speaker and the participants. <br/>
-                Click on "Stop" to end the stream and redirect everyone to the cafeteria. <br/>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                Click on "Thank speaker" to broadcast a clap to the speaker and the participants.
               </Text>
-
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                Click on "Stop" to end the stream and redirect everyone to the cafeteria.
+              </Text>
             </Box>
           </Box>
         </Overlay>

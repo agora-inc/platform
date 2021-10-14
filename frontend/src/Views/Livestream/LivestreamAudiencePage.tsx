@@ -23,10 +23,8 @@ import '../../Styles/all-stream-page.css'
 import Clapping from "../../Components/Streaming/Clapping/Clapping";
 import { ChannelService } from "../../Services/ChannelService";
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
-
-
+import Switch from "../../Components/Core/Switch";
 import AudienceHelpButton from "../../Components/Streaming/HelpButtons/AudienceHelpButton";
-
 
 import BeforeStartImage from "../../assets/streaming/waiting_start_image.jpeg"
 import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_invitation.jpg"
@@ -546,7 +544,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         align="center"
         pad="small"
         focusIndicator={false}
-        height="50px"
+        height="40px"
         background="color1"
         hoverIndicator="#BAD6DB"
         style={{borderRadius:'6px'}}
@@ -562,6 +560,21 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   }
 
   function viewChangeButton () {
+    let disabled: boolean = (talkStatus == "NOT_STARTED" || talkStatus == "ENDED")
+    return (
+      <Switch
+        checked={true}
+        width={150}
+        height={30}
+        textOn="Speaker view"
+        textOff="Slides view"
+        color={disabled ? "#CCCCCC" : "color1"}
+        callback={(check: boolean) => { if (!disabled) { toggleSlide(!check) }}}
+        disabled={disabled}
+      />
+    )
+
+    /*
     return (
       <Box
       justify="center"
@@ -587,6 +600,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       </Text>
     </Box>
     )
+    */
   }
 
   function requestMicButton () {
@@ -596,7 +610,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       align="center"
       pad="small"
       focusIndicator={false}
-      height="50px"
+      height="40px"
       background={talkStatus == "NOT_STARTED" ? "grey" : "color1"}
       hoverIndicator={talkStatus == "NOT_STARTED" ? "grey" : "#BAD6DB"}
       style={{borderRadius:'6px'}}
@@ -749,16 +763,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
             background="color5"
             round={"medium"}
             onClick={() => {}}
-            height="45px"
-            width="150px"
+            height="30px"
+            width="300px"
+            pad="10px"
             focusIndicator={false}
             direction="row"
           >
-            <Text>Starting soon</Text>
+            <Text size="14px" color="grey">Starting soon</Text>
           </Box>
           <ReactTooltip id="talk_status" effect="solid">
               Speakers and admins can talk to each other but audience cannot see yet.
-            </ReactTooltip>
+          </ReactTooltip>
         </>
       )}
 
@@ -768,7 +783,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           data-tip data-for='talk_status'
           justify="center"
           align="center"
-          background="grey"
+          background="#CCCCCC"
           round={"medium"}
           onClick={() => {}}
           pad={{ horizontal: "medium", vertical: "small" }}
@@ -776,7 +791,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           width="140px"
           focusIndicator={false}
         >
-          <Text>Ended</Text>
+          <Text color="black">Ended</Text>
         </Box>
         <ReactTooltip id="talk_status" effect="solid">
             Stream has been ended.
@@ -791,84 +806,60 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     return (
       <>
       {/* MAIN BUTTONS */}
-        <Box 
-            direction='row'
-            // gap="10px"
-            align="center"
-          >
-          {/* {(role == "admin") && (
-            <>
-              {startTalkButton()}
-              {stopTalkButton()}
-              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
-              {viewChangeButton()}
-            </>
-            )}
-        
-          {(role == "speaker") && (
-            <>
-              {screenShareButton()}
-              <SlidesUploader
-                text={slidesGotUploaded ? "Uploaded ✔️ (click to reupload)" : "Upload slides"}
-                onUpload={(e: any) => {
-                  TalkService.uploadSlides(
-                    props.talkId, 
-                    e.target.files[0],
-                    (res: any) => {
-                      if (res){
-                        setSlidesGotUploaded(true)
-                        // this.setState({slidesAlreadyUploaded: true})
-                      }
+      <Box 
+        direction='column'
+        gap="2vw"
+        align="start"
+      >
+        {/* {(role == "admin") && (
+          <>
+            {startTalkButton()}
+            {stopTalkButton()}
+            <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+            {viewChangeButton()}
+          </>
+          )}
+      
+        {(role == "speaker") && (
+          <>
+            {screenShareButton()}
+            <SlidesUploader
+              text={slidesGotUploaded ? "Uploaded ✔️ (click to reupload)" : "Upload slides"}
+              onUpload={(e: any) => {
+                TalkService.uploadSlides(
+                  props.talkId, 
+                  e.target.files[0],
+                  (res: any) => {
+                    if (res){
+                      setSlidesGotUploaded(true)
+                      // this.setState({slidesAlreadyUploaded: true})
                     }
-                    )
-                  }}
-                  />
-              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />     
-              {viewChangeButton()}
-            </>
-          )}   */}
-          {(role != "admin" && role != "speaker") && (
-            <>
-              {requestMicButton()}
-              {viewChangeButton()}
+                  }
+                  )
+                }}
+                />
+            <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />     
+            {viewChangeButton()}
+          </>
+        )}   */}
+        {role != "admin" && role != "speaker" && (
+          <Box direction="row" gap="50px">
+            {requestMicButton()}
+            <Box direction="row" gap="10px" >
               {fullscreenButton()}
               <AudienceHelpButton/>
-            </>
-            ) 
-          }
-
-
-        </Box>
+            </Box>
+          </Box>
+        )}
         
         {/* SECONDARY BUTTONS */}
-        <Box direction="row">
-            {/* {(role == "admin") && (
-            <>
-              {micButton()}
-              {webcamButton()}
-              {screenShareButton()}
-              {fullscreenButton()}
-            </>
-            )}
-
-            {(role == "speaker") && (
-            <>
-              {micButton()}
-              {webcamButton()}
-              {fullscreenButton()}
-              <SpeakerHelpButton
-                talkId={props.talkId}
-                width="5vw"
-                callback={()=>{}}
-              />
-            </>
-            )} */}
-
-            {(role !== "admin" && role != "speaker") && (
-            <>
-            </>
-            )}
-        </Box>
+        {(role !== "admin" && role != "speaker") && (
+          <Box direction="row" gap="40px">
+            {viewChangeButton()}
+            
+          </Box>
+        )}
+      </Box>
       </>
     )
   }
@@ -890,7 +881,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           }}
         >
           <Text weight="bold" color="white" size="14px" textAlign="center">
-            <Java size="medium"/> Grab a coffee and meet your peers!
+          <Java size="medium" style={{marginRight: "5px"}}/> Grab a coffee and meet your peers
           </Text>
         </Box>
       </a>

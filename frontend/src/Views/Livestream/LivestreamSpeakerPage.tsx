@@ -915,16 +915,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             background="color5"
             round={"medium"}
             onClick={() => {}}
-            height="45px"
-            width="150px"
+            height="30px"
+            width="300px"
+            pad="10px"
             focusIndicator={false}
             direction="row"
           >
-            <Text>Starting soon</Text>
+            <Text size="14px" color="grey">Starting soon</Text>
           </Box>
           <ReactTooltip id="talk_status" effect="solid">
               Speakers and admins can talk to each other but audience cannot see yet.
-            </ReactTooltip>
+          </ReactTooltip>
         </>
       )}
 
@@ -971,7 +972,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         >
           
           <Text weight="bold" color="white" size="14px" textAlign="center">
-            <Java size="medium" style={{marginRight: "5px"}}/> { } Grab a coffee and meet your peers!
+            <Java size="medium" style={{marginRight: "5px"}}/> { } Grab a coffee and meet your peers
           </Text>
         </Box>
       </a>
