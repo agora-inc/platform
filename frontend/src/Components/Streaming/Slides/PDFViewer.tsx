@@ -5,7 +5,7 @@ import { Stream } from "../../../Services/StreamService";
 import "../../../Styles/videocard.css";
 import { baseApiUrl } from "../../../config";
 import { Document, Page , pdfjs } from 'react-pdf/dist/esm/entry.webpack';
-import { db, API } from "../../../Services/FirebaseService";
+import { db, SlidesService } from "../../../Services/FirebaseService";
 
 interface Props {
     url: string;
@@ -41,7 +41,7 @@ export default function({presenter=false, ...props}:Props) {
     }
     setPageNumber(n)
     if(presenter) {
-      API.slideNavigate(props.slideShareId, n)
+      SlidesService.slideNavigate(props.slideShareId, n)
     }else{
       toggleLive(false)
     }

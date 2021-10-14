@@ -17,7 +17,7 @@ import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdClear, MdSlideshow} from 'react-icons/md'
-import {db, API} from '../../Services/FirebaseService'
+import {db, StreamingService, SlidesService, ClappingService} from '../../Services/FirebaseService'
 import Loader from "react-loader-spinner";
 import ReactTooltip from "react-tooltip";
 import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_invitation.jpg"
@@ -25,7 +25,7 @@ import '../../Styles/all-stream-page.css'
 import Clapping from "../../Components/Streaming/Clapping/Clapping";
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 import ChatBox from "./LivestreamChatBox";
-
+import MicrophoneRequests from "../../Components/Streaming/RequestMicrophone/MicrophoneRequests"
 
 
 interface Props {
@@ -101,7 +101,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [remoteAudioTrack, setRemoteAudioTrack] = useState(null as any)
   const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
 
-  const [micRequests, setMicRequests] = useState([] as any[])
   const [isTimeover, setTimeover] = useState(false)
 
   const [messages, setMessages] = useState<Message[]>([])
@@ -244,6 +243,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       console.log(e)
     }
   }
+
   async function join(){
     console.log('joining...')
     let {appId , uid} = localUser
@@ -405,14 +405,14 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       speaker_id: '',
       meta: ''
     }
-    let ret = await API.startSeminar(talkId, data)
+    let ret = await StreamingService.startSeminar(talkId, data)
   }
   
   async function stopTalk(){
     if(!window.confirm('Are you sure? Doing so will redirect people to the Cafeteria.')) {
       return
     }
-    let ret = await API.endSeminar(talkId)
+    let ret = await StreamingService.endSeminar(talkId)
   }
 
 
@@ -446,16 +446,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setTalkStatus(data.status)
       }
     })
-    let request_unsubs = db.collection('requests').where('talk_id', '==', talkId).onSnapshot(snaps=>{
-      let req = snaps.docs.filter(d=>d.exists).map(d=>{
-        let _d = d.data()
-        _d.id = d.id
-        return _d
-      }).filter((d:any)=> d.status !== 'DENIED')
-      setMicRequests([...req])
-    })
-
-
+    
     let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
@@ -487,18 +478,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     return ()=>{
       leave()
       unsubs()
-      request_unsubs()
       slide_unsubs()
     }
   }, [talkId])
 
   async function slideShare(slideShare: boolean) {
     if(slideShare) {
-      let req = await API.slideShare(localUser.uid, talkId) as any
+      let req = await SlidesService.slideShare(localUser.uid, talkId) as any
       setSlideShareId(req.id)
       setCallControl({slideShare: true})
     }else{
-      let req = await API.slideStop(slideShareId) as any
+      let req = await SlidesService.slideStop(slideShareId) as any
       setSlideShareId('')
       setCallControl({slideShare: false})
     }
@@ -691,7 +681,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <>
               {startTalkButton()}
               {stopTalkButton()}
-              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+              <Clapping onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
               {viewChangeButton()}
             </>
             )}
@@ -948,52 +938,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     )
   }
 
-  //////////////////
-  // Request mic (admin)
-  //////////////////
-  function requestMicBox() {
-    return (
-      <>
-        <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Requests for mic</Text>
-        <Table>
-          <TableBody>
-            {micRequests.map((req, i)=>(
-              <TableRow key={i} className='request-item'>
-                <TableCell>
-                  <Text weight="bold" size="14px"> {req.requester_name || req.requester_id} </Text>
-                </TableCell>
-                {req.status ==='REQUESTED' && (
-                  <Button 
-                    margin={{left: '10px'}}
-                    onClick={()=>API.grantRequest(req.id, true)} 
-                    hoverIndicator="#6DA3C7"
-                    focusIndicator={true}
-                    style={{
-                      background: "#0C385B", width: "90px",
-                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
-                    }}
-                  >
-                    <Text size="14px" weight="bold"> Accept </Text>
-                  </Button>
-                )}
-                <Button 
-                  margin={{left: '30px'}} 
-                  onClick={()=>API.grantRequest(req.id, false)}
-                  style={{
-                    background: "#FF4040", width: "90px",
-                    color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
-                  }}
-                >
-                  <Text size="14px" weight="bold"> {req.status =='GRANTED' ? 'Remove': 'Refuse'} </Text>
-                </Button>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </>
-    )
-  }
-
 
   return (
     <>
@@ -1075,7 +1019,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
               <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}
                   {(role == "admin") && (
-                    requestMicBox()
+                    <MicrophoneRequests
+                      talkId={props.talkId}
+                      firebaseDb={db}
+                    />
                   )}
                   {/* <DescriptionAndQuestions
                     gridArea="questions"

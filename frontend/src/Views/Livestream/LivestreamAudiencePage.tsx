@@ -13,7 +13,7 @@ import { TalkService, Talk } from "../../Services/TalkService";
 import VideoPlayerAgora from "../../Components/Streaming/VideoPlayer/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
-import {db, API} from '../../Services/FirebaseService'
+import {db, StreamingService, SlidesService, ClappingService, MicRequestService} from '../../Services/FirebaseService'
 import { textToLatex } from "../../Components/Core/LatexRendering";
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import Loader from "react-loader-spinner";
@@ -313,7 +313,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   async function unpublish_microphone(){
     console.log('unp mic', localAudioTrack)
     if(hasMicRequested) {
-      API.removeRequest(hasMicRequested)
+      MicRequestService.removeRequest(hasMicRequested)
     }
 
     setMicRequest('')
@@ -603,7 +603,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       onClick={()=>{
         if (talkStatus == "STARTED"){
           if (hasMicRequested || !callControl.mic){
-            API.requestMic(talkId, localUser.uid, storedName)
+            MicRequestService.requestMic(talkId, localUser.uid, storedName)
           }
           else {
             unpublish_microphone()

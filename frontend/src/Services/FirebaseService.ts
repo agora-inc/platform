@@ -14,10 +14,12 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const db = firebase.firestore();
 
-const API = {
+////////////////////////////
+// Streaming services
+////////////////////////////
+const StreamingService = {
     startSeminar: async (talk_id:string, data:any) => {
         // NOT_STARTED/STARTED/ENDED
         let doc = await db.collection('talk').doc(talk_id).get()
@@ -37,7 +39,10 @@ const API = {
         }
         let r = await db.collection('talk').doc(talk_id).update({status: 'ENDED'});
         return true
-    },
+    }
+}
+
+const ClappingService = {
     thankTheSpeaker: async (talk_id:string) =>{
         // Event triggered by updating isClapping to "true"
         let r1 = await db.collection('talk').doc(talk_id).update({isClapping: true, clapping_status: Math.floor(10000 + Math.random()*10000)});
@@ -48,10 +53,12 @@ const API = {
                 db.collection('talk').doc(talk_id).update({isClapping: false, clapping_status: Math.floor(10000 + Math.random()*10000)})
             }, 5000);
         },
+    }
 
-    ////////////////////////////
-    // Mic API calls
-    ////////////////////////////
+////////////////////////////
+// Mic API calls
+////////////////////////////
+const MicRequestService = {
     requestMic: async (talk_id:string, user_id:string, user_name:string) => {
         let req = await db.collection('requests').where('requester_id', '==', user_id).get()
         if(req.size > 0) {
@@ -74,16 +81,18 @@ const API = {
         }
         await db.collection('requests').doc(id).update({status: 'DENIED'});
         setTimeout(()=>{
-            API.removeRequest(id)
+            MicRequestService.removeRequest(id)
         }, 5000)
     },
     removeRequest(id:string) {
         db.collection('requests').doc(id).delete();
     },
+}
 
-    ////////////////////////////
-    // SLIDES API CALLs
-    ////////////////////////////
+////////////////////////////
+// SLIDES API CALLs
+////////////////////////////
+const SlidesService = {
     // (For presenter only: updates userId of presenter)
     slideShare: async(user_id:string, talk_id:string) => {
         let req = await db.collection('slide').where('talk_id', '==', talk_id).get()
@@ -108,7 +117,6 @@ const API = {
     slideStop: async (id:string) => {
         await db.collection('slide').doc(id).delete();
     },
-
 }
 
-export { firebase, db, API };
+export { firebase, db, StreamingService, MicRequestService, SlidesService, ClappingService };

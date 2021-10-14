@@ -17,7 +17,8 @@ import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdSlideshow, MdClear} from 'react-icons/md'
-import {db, API} from '../../Services/FirebaseService'
+import {db, StreamingService, SlidesService, ClappingService, MicRequestService} from '../../Services/FirebaseService'
+
 import '../../Styles/all-stream-page.css'
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 import ReactTooltip from "react-tooltip";
@@ -467,11 +468,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   async function slideShare(slideShare: boolean) {
     if(slideShare) {
-      let req = await API.slideShare(localUser.uid, talkId) as any
+      let req = await SlidesService.slideShare(localUser.uid, talkId) as any
       setSlideShareId(req.id)
       setCallControl({slideShare: true})
     }else{
-      let req = await API.slideStop(slideShareId) as any
+      let req = await SlidesService.slideStop(slideShareId) as any
       setSlideShareId('')
       setCallControl({slideShare: false})
     }
