@@ -26,52 +26,32 @@ import '../../../Styles/all-stream-page.css'
 import Clapping from "../../../Components/Streaming/Clapping/Clapping";
 import PDFViewer from "../../../Components/Streaming/Slides/PDFViewer";
 
-
-
+import {FirebaseDb} from "../../../Services/FirebaseService"
 
 
 interface Props {
     talkId: number;
-    firebaseDb: any
   }
-  
-interface State {
-    // options: any;
-    // video: Video;
-    // viewCount: number;
-    // overlay: boolean;
-}
-
-// interface Control {
-//     mic: boolean;
-//     video: boolean;
-//     screenShare: boolean;
-//     slideShare: boolean;
-//     fullscreen: boolean
-// }
 
 const MicrophoneRequests:FunctionComponent<Props> = (props) => {
     const [micRequests, setMicRequests] = useState([] as any[])
-    console.log("WEEEEEEEESH")
-    console.log(typeof(props.firebaseDb))
-    
-    // // Init listening
-    // useEffect(()=>{
-    //     console.log("yoyo")
-    //     console.log(props.firebaseDb.collection('requests'))
-    //     let request_unsubs = props.firebaseDb.collection('requests').where('talk_id', '==', props.talkId).onSnapshot(snaps=>{
-    //         let req = snaps.docs.filter(d=>d.exists).map(d=>{
-    //             let _d = d.data()
-    //             _d.id = d.id
-    //             return _d
-    //         }).filter((d:any)=> d.status !== 'DENIED')
-    //         setMicRequests([...req])
-    //         })
 
-    //     return ()=>{
-    //         request_unsubs()
-    //         }
-    //   }, [props.talkId])
+    // Init listening
+    useEffect(()=>{
+        let request_unsubs = FirebaseDb.collection('requests').where('talk_id', '==', props.talkId.toString()).onSnapshot(snaps=>{
+            console.log("testing toto")
+            let req = snaps.docs.filter(d=>d.exists).map(d=>{
+                let _d = d.data()
+                _d.id = d.id
+                return _d
+            }).filter((d:any)=> d.status !== 'DENIED')
+            setMicRequests([...req])
+            })
+
+        return ()=>{
+            request_unsubs()
+            }
+      }, [props.talkId])
 
 
 
@@ -90,7 +70,7 @@ const MicrophoneRequests:FunctionComponent<Props> = (props) => {
                     {req.status ==='REQUESTED' && (
                         <Button 
                         margin={{left: '10px'}}
-                        onClick={()=>props.firebaseDb.grantRequest(req.id, true)} 
+                        onClick={()=>MicRequestService.grantRequest(req.id, true)} 
                         hoverIndicator="#6DA3C7"
                         focusIndicator={true}
                         style={{
@@ -103,7 +83,7 @@ const MicrophoneRequests:FunctionComponent<Props> = (props) => {
                     )}
                     <Button 
                     margin={{left: '30px'}} 
-                    onClick={()=>props.firebaseDb.grantRequest(req.id, false)}
+                    onClick={()=>MicRequestService.grantRequest(req.id, false)}
                     style={{
                         background: "#FF4040", width: "90px",
                         color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'

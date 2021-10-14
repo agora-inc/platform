@@ -17,7 +17,7 @@ import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdClear, MdSlideshow} from 'react-icons/md'
-import {db, StreamingService, SlidesService, ClappingService} from '../../Services/FirebaseService'
+import {FirebaseDb, StreamingService, SlidesService, ClappingService} from '../../Services/FirebaseService'
 import Loader from "react-loader-spinner";
 import ReactTooltip from "react-tooltip";
 import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_invitation.jpg"
@@ -428,7 +428,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     if(!talkId) {
       return
     }
-    let unsubs = db.collection('talk').doc(talkId).onSnapshot(doc=>{
+    let unsubs = FirebaseDb.collection('talk').doc(talkId).onSnapshot(doc=>{
       if(!doc.exists){
         return
       }
@@ -447,7 +447,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       }
     })
     
-    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
+    let slide_unsubs = FirebaseDb.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
         _d.id = d.id
@@ -1021,7 +1021,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                   {(role == "admin") && (
                     <MicrophoneRequests
                       talkId={props.talkId}
-                      firebaseDb={db}
                     />
                   )}
                   {/* <DescriptionAndQuestions

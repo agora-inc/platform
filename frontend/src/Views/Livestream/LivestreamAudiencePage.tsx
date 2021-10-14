@@ -13,7 +13,7 @@ import { TalkService, Talk } from "../../Services/TalkService";
 import VideoPlayerAgora from "../../Components/Streaming/VideoPlayer/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
-import {db, StreamingService, SlidesService, ClappingService, MicRequestService} from '../../Services/FirebaseService'
+import {FirebaseDb, MicRequestService} from '../../Services/FirebaseService'
 import { textToLatex } from "../../Components/Core/LatexRendering";
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import Loader from "react-loader-spinner";
@@ -424,7 +424,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     if(!talkId) {
       return
     }
-    let unsubs = db.collection('talk').doc(talkId).onSnapshot(doc=>{
+    let unsubs = FirebaseDb.collection('talk').doc(talkId).onSnapshot(doc=>{
       if(!doc.exists){
         return
       }
@@ -448,7 +448,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     })
 
     // listen to mic requests
-    let request_unsubs = db.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
+    let request_unsubs = FirebaseDb.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
         _d.id = d.id
@@ -468,7 +468,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     })
 
     // listen to slides (grab url, SlideShareId, and set listening port)
-    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
+    let slide_unsubs = FirebaseDb.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
         _d.id = d.id
