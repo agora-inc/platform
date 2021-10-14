@@ -74,6 +74,65 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
       }, [props.talkId])
 
 
+
+
+
+
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!! (Remy)
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+    //   WIP WIP WIP!!!!!!!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       function requestMicButton () {
         return (
           <Box
