@@ -376,17 +376,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   //   setCallControl({video: true})
   // }
 
-  // async function publish_camera_and_microphone(){
-  //   await agoraClient.setClientRole('host');
-  //   let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-  //   setLocalAudioTrack(_localAudioTrack)
-  //   await agoraClient.publish(_localAudioTrack);
-  //   // setCallControl({...callControl, mic: true})
-  //   let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-  //   setLocalVideoTrack(_localVideoTrack)
-  //   await agoraClient.publish([_localVideoTrack]);
-  //   setCallControl({...callControl, mic: true, video: true})
-  // }
+  async function publish_camera_and_microphone(){
+    await agoraClient.setClientRole('host');
+    let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    setLocalAudioTrack(_localAudioTrack)
+    await agoraClient.publish(_localAudioTrack);
+    // setCallControl({...callControl, mic: true})
+    let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+    setLocalVideoTrack(_localVideoTrack)
+    await agoraClient.publish([_localVideoTrack]);
+    setCallControl({...callControl, mic: true, video: true})
+  }
 
   async function on_message(msg:any, senderId:string){
     let attr = await agoraMessageClient.getUserAttributes(senderId)
@@ -447,7 +447,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       }
     })
 
-    // listen to mic requests
+
+
+
+
+
+
+
+
+
+    
+    // listen to mic request accepts/denials
     let request_unsubs = FirebaseDb.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
@@ -460,12 +470,21 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       if(req) {
         setMicRequest(req.id)
         if(req.status === 'GRANTED') {
-          publish_microphone()
+          publish_camera_and_microphone()
         }
       }else{
         unpublishFromRemote(Math.random().toString())
       }
     })
+
+
+
+
+
+
+
+
+
 
     // listen to slides (grab url, SlideShareId, and set listening port)
     let slide_unsubs = FirebaseDb.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
@@ -512,32 +531,32 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   ///////////////////////
   // Frontend methods
   //////////////////////
-  function micButton () {
-    return (
-      <Box
-      justify="center"
-      align="center"
-      pad="small"
-      focusIndicator={false}
-      height="50px"
-      background="color1"
-      hoverIndicator="#BAD6DB"
-      style={{borderRadius:'6px'}}
-      onClick={()=>{
-        if (callControl.mic){
-          unpublish_microphone()
-        } else {
-          publish_microphone()
-        }
+  // function micButton () {
+  //   return (
+  //     <Box
+  //     justify="center"
+  //     align="center"
+  //     pad="small"
+  //     focusIndicator={false}
+  //     height="50px"
+  //     background="color1"
+  //     hoverIndicator="#BAD6DB"
+  //     style={{borderRadius:'6px'}}
+  //     onClick={()=>{
+  //       if (callControl.mic){
+  //         publish_camera_and_microphone()
+  //       } else {
+  //         publish_camera_and_microphone()
+  //       }
     
-      }}
-    >
-      <Text weight="bold" color="white" size="14px" textAlign="center">
-        {callControl.mic? <FaMicrophone/> : <FaMicrophoneSlash/>}
-      </Text>
-    </Box>
-    )
-  }
+  //     }}
+  //   >
+  //     <Text weight="bold" color="white" size="14px" textAlign="center">
+  //       {callControl.mic? <FaMicrophone/> : <FaMicrophoneSlash/>}
+  //     </Text>
+  //   </Box>
+  //   )
+  // }
 
   function fullscreenButton () {
     return (

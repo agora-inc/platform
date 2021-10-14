@@ -74,17 +74,24 @@ const MicRequestService = {
         let r = await FirebaseDb.collection('requests').add(data);
         return true
     },
-    grantRequest: async (id:string, value:boolean) => {
-        if(value){
-            await FirebaseDb.collection('requests').doc(id).update({status: 'GRANTED'});
-            return
-        }
+    grantRequest: async (id:string) => {
+        await FirebaseDb.collection('requests').doc(id).update({status: 'GRANTED'});
+    },
+    denyRequest: async (id:string) => {
         await FirebaseDb.collection('requests').doc(id).update({status: 'DENIED'});
+        // delete DB entry after 5s
         setTimeout(()=>{
-            MicRequestService.removeRequest(id)
+            MicRequestService.deleteRequest(id)
         }, 5000)
     },
-    removeRequest(id:string) {
+    revokeRequest: async (id:string) => {
+        await FirebaseDb.collection('requests').doc(id).update({status: 'REVOKED'});
+        // delete DB entry after 5s
+        setTimeout(()=>{
+            MicRequestService.deleteRequest(id)
+        }, 5000)
+    },
+    deleteRequest(id:string) {
         FirebaseDb.collection('requests').doc(id).delete();
     },
 }
@@ -109,7 +116,6 @@ const SlidesService = {
         }
         return await FirebaseDb.collection('slide').add({pageNumber: 1, talk_id, user_id});
     },
-
     // (For other people)
     slideNavigate: async (slide_id:string, pageNumber:number=1) => {
         await FirebaseDb.collection('slide').doc(slide_id).update({pageNumber});

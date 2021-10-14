@@ -7,7 +7,7 @@ import ChannelIdCard from "../../../Components/Channel/ChannelIdCard";
 import Tag from "../../../Components/Core/Tag";
 import Loading from "../../../Components/Core/Loading";
 import { textToLatex } from "../../../Components/Core/LatexRendering";
-import { Java } from "grommet-icons";
+import { Volume } from "grommet-icons";
 import { Video, VideoService } from "../../../Services/VideoService";
 import { StreamService } from "../../../Services/StreamService";
 import { TalkService, Talk } from "../../../Services/TalkService";
@@ -32,6 +32,7 @@ import {FirebaseDb} from "../../../Services/FirebaseService"
 interface Props {
     talkId: number;
   }
+
 
 const MicrophoneRequests:FunctionComponent<Props> = (props) => {
     const [micRequests, setMicRequests] = useState([] as any[])
@@ -64,33 +65,60 @@ const MicrophoneRequests:FunctionComponent<Props> = (props) => {
             <TableBody>
                 {micRequests.map((req, i)=>(
                     <TableRow key={i} className='request-item'>
-                    <TableCell>
-                    <Text weight="bold" size="14px"> {req.requester_name || req.requester_id} </Text>
-                    </TableCell>
-                    {req.status ==='REQUESTED' && (
-                        <Button 
-                        margin={{left: '10px'}}
-                        onClick={()=>MicRequestService.grantRequest(req.id, true)} 
-                        hoverIndicator="#6DA3C7"
-                        focusIndicator={true}
-                        style={{
-                            background: "#0C385B", width: "90px",
-                            color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
-                        }}
-                        >
-                        <Text size="14px" weight="bold"> Accept </Text>
-                    </Button>
-                    )}
-                    <Button 
-                    margin={{left: '30px'}} 
-                    onClick={()=>MicRequestService.grantRequest(req.id, false)}
-                    style={{
-                        background: "#FF4040", width: "90px",
-                        color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
-                        }}
-                        >
-                    <Text size="14px" weight="bold"> {req.status =='GRANTED' ? 'Remove': 'Refuse'} </Text>
-                    </Button>
+                        <TableCell>
+                            {req.status ==='REQUESTED' && (
+                                <Text size="14px"> {req.requester_name || req.requester_id} </Text>
+                            )}
+                            {req.status ==='GRANTED' && (
+                                <>
+                                <Volume size="small"/>
+                                <Text weight="bold" size="14px"> {req.requester_name || req.requester_id} </Text>
+                                </>
+                            )}
+                        </TableCell>
+                        
+                        {req.status ==='REQUESTED' && (
+                            <>
+                                <Button 
+                                    margin={{left: '10px'}}
+                                    onClick={()=>MicRequestService.grantRequest(req.id)} 
+                                    hoverIndicator="#6DA3C7"
+                                    focusIndicator={true}
+                                    style={{
+                                        background: "#0C385B", width: "90px",
+                                        color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
+                                    }}
+                                >
+                                    <Text size="14px" weight="bold"> Accept </Text>
+                                </Button>
+                                <Button 
+                                    margin={{left: '10px'}}
+                                    onClick={()=>MicRequestService.denyRequest(req.id)} 
+                                    hoverIndicator="#6DA3C7"
+                                    focusIndicator={true}
+                                    style={{
+                                        background: "#0C385B", width: "90px",
+                                        color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
+                                    }}
+                                >
+                                    <Text size="14px" weight="bold"> Deny </Text>
+                                </Button>
+                            </>
+                        )}
+                        {req.status ==='GRANTED' && (
+                            <Button 
+                                margin={{left: '10px'}}
+                                onClick={()=>MicRequestService.revokeRequest(req.id)} 
+                                hoverIndicator="#6DA3C7"
+                                focusIndicator={true}
+                                style={{
+                                    background: "#0C385B", width: "90px",
+                                    color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
+                                }}
+                            >
+                            <Text size="14px" weight="bold"> Revoke </Text>
+                        </Button>
+                        )}
                 </TableRow>
                 ))}
             </TableBody>
