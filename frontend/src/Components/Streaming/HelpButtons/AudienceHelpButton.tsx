@@ -50,7 +50,7 @@ export default class AudienceHelpButton extends Component<Props, State> {
           focusIndicator={false}
           hoverIndicator="#BAD6DB"
         >
-          <Help size="medium"/>
+          <Help size="20px"/>
         </Box>
         <Overlay
           width={400}

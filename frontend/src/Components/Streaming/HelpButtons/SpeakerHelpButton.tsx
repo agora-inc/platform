@@ -53,20 +53,20 @@ export default class SpeakerHelpButton extends Component<Props, State> {
           background="#0C385B"
           round="xsmall"
           pad={{bottom: "small", top: "small", left: "small", right: "small"}}
-          height="50px"
+          height="40px"
           width={this.props.width ? this.props.width : "50px"}
           justify="center"
           align="center"
           focusIndicator={false}
           hoverIndicator="#BAD6DB"
         >
-          <Help size="medium"/>
+          <Help size="20px"/>
         </Box>
         <Overlay
-          width={400}
-          height={520}
+          width={600}
+          height={500}
           visible={this.state.showModal}
-          title="Two ways of presenting"
+          title="How to present your seminar?"
           onEsc={this.toggleModal}
           onClickOutside={this.toggleModal}
           onCancelClick={this.toggleModal}
@@ -75,7 +75,7 @@ export default class SpeakerHelpButton extends Component<Props, State> {
           submitButtonText={""}
           canProceed={true}
           isMissing={[]}
-          contentHeight={"820px"}
+          contentHeight={"350px"}
         >
           <Box
             width="100%"
@@ -86,6 +86,24 @@ export default class SpeakerHelpButton extends Component<Props, State> {
             gap="xsmall"
           >
             <Box width="100%" gap="2px" margin={{"top": "5px"}}>
+              <Text size="16px" weight="bold" margin={{"bottom": "5px"}}> 
+                Upload your slides to mora
+              </Text>
+              <Text size="14px">
+                Click on "Upload slides" and select a pdf document. <br/>
+                Toggle the button "Speaker view" to "Slides view" <br/>
+                Present your slides using the "Prev" and "Next" buttons. The audience can see you changing the slides.
+                They are also able to browse the slides independently, and go back to where you are.
+              </Text>
+              <Text size="16px" weight="bold" margin={{"bottom": "5px", "top": "20px"}}> 
+                Share your screen
+              </Text>
+              <Text size="14px">
+                Click on "Share screen" and select the window you want to share. <br/>
+              </Text>              
+
+
+              {/*
               <Box width="100%" height="30px" background="color7" alignContent="center">
                 <Text weight="bold" size={this.state.headerSize}>Option A: <img src={AgoraLogo} height={this.state.headerSize}/> slide sharing tool <StatusInfo size="small" data-tip data-for='slide-upload-info'/></Text>
               </Box>
@@ -97,12 +115,10 @@ export default class SpeakerHelpButton extends Component<Props, State> {
                 <Text size={this.state.textSize} margin={{top: "25px", bottom: "5px"}}>3) Present using arrow keys</Text>
                 <img src={slidesButtonImage} width="100%"/>
               </Box>
-
             </Box>
             <ReactTooltip id='slide-upload-info' effect="solid">
                 <Text size={this.state.textSize}>(Prefered) Doing so will allow your physical and online audience to freely browse through the slides during your presentation. </Text>
               </ReactTooltip>
-              {/* <img src={shareScreenButtonImage} width="100%" margin-top="20px"/> */}
             <Box width="100%" gap="2px">
             <Box width="100%" height="30px" background="color7" margin={{top: "20px", bottom: "20px"}} alignContent="center">
                 <Text weight="bold" size={this.state.headerSize}>Option B: Share your screen <StatusInfo size="small" data-tip data-for='share-screen-info'/></Text>
@@ -110,8 +126,8 @@ export default class SpeakerHelpButton extends Component<Props, State> {
             <ReactTooltip id='share-screen-info' effect="solid">
                 <Text size={this.state.textSize}>Your online and physical audience will only see your current view. </Text>
               </ReactTooltip>
-              <img src={shareScreenButtonImage} width="100%" margin-top="20px"/>
-            </Box>
+              <img src={shareScreenButtonImage} width="100%" margin-top="20px"/> */}
+            </Box> 
           </Box>
         </Overlay>
       </Box>

@@ -49,7 +49,7 @@ export default class AdminHelpButton extends Component<Props, State> {
           focusIndicator={false}
           hoverIndicator="#BAD6DB"
         >
-          <Help size="medium"/>
+          <Help size="20px"/>
         </Box>
         <Overlay
           width={600}
