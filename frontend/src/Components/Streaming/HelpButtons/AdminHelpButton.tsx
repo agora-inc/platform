@@ -52,10 +52,10 @@ export default class AdminHelpButton extends Component<Props, State> {
           <Help size="medium"/>
         </Box>
         <Overlay
-          width={400}
-          height={520}
+          width={600}
+          height={500}
           visible={this.state.showModal}
-          title="Two ways of presenting"
+          title="How to run a seminar on mora?"
           onEsc={this.toggleModal}
           onClickOutside={this.toggleModal}
           onCancelClick={this.toggleModal}
@@ -64,7 +64,7 @@ export default class AdminHelpButton extends Component<Props, State> {
           submitButtonText={""}
           canProceed={true}
           isMissing={[]}
-          contentHeight={"820px"}
+          contentHeight={"350px"}
         >
           <Box
             width="100%"
@@ -75,7 +75,29 @@ export default class AdminHelpButton extends Component<Props, State> {
             gap="xsmall"
           >
             <Box width="100%" gap="2px" margin={{"top": "5px"}}>
-              TBC
+              <Text size="16px" weight="bold" margin={{"bottom": "5px"}}> 
+                Before the seminar
+              </Text>
+              <Text size="14px">
+                You can discuss in the chat box with the speaker and the other admins only. <br/>
+                Click on "Start" to start streaming.
+              </Text>
+              <Text size="16px" weight="bold" margin={{"bottom": "5px", "top": "20px"}}> 
+                During the seminar
+              </Text>
+              <Text size="14px">
+                Toggle the button "Speaker view" to switch from the speakers screen to the slides. <br/>
+                Manage which participant can speak in the "Requests for mic" box. <br/>
+                You can also mute yourself, switch off the camera, share your screen, and go full screen using the corresponding buttons. <br/>
+              </Text>
+              <Text size="16px" weight="bold" margin={{"bottom": "5px",  "top": "20px"}}> 
+                At the end of the seminar
+              </Text>
+              <Text size="14px">
+                Click on "Thank speaker" to broadcast a clap to the speaker and the participants. <br/>
+                Click on "Stop" to end the stream and redirect everyone to the cafeteria. <br/>
+              </Text>
+
             </Box>
           </Box>
         </Overlay>
