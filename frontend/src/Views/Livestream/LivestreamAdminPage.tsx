@@ -703,7 +703,12 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           {(role == "admin") && (
             <Box direction="row" gap="10px">
               {startTalkButton()}
-              <Clapping onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+              <Clapping 
+                role="admin" 
+                onClick={()=> ClappingService.thankTheSpeaker(talkId)} 
+                clapBase='/claps/auditorium.mp3' 
+                clapUser='/claps/applause-5.mp3' 
+              /> 
               {stopTalkButton()}
               <AdminHelpButton />
             </Box>

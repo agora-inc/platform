@@ -3,8 +3,8 @@ import { Box, Layer, Heading, Text } from "grommet";
 import { Howl } from "howler";
 
 interface Props {
-  clapOnAttach?: boolean;
-  clapOnChange?: string;
+  clapOnChange?: boolean;
+  role: string;
   [label: string]: any;
   onClick?: any;
 }
@@ -30,11 +30,11 @@ export default class Clapping extends Component<Props, State> {
     totalTimeOverlay: 7000.0,
     updateFrequency: 200.0,
     startVolume: 0.2,
-    clapOnAttach: false,
-    clapOnChange: ''
+    clapOnChange: false,
   };
+
   componentDidUpdate(oldProps: Props) {
-    if(this.props.clapOnChange && oldProps.clapOnChange != this.props.clapOnChange) {
+    if(this.props.clapOnChange && !oldProps.clapOnChange) {
       this.startClapping()
     }
   }
@@ -51,11 +51,6 @@ export default class Clapping extends Component<Props, State> {
     this.state.sounds[tag].play("cut");
   };
 
-  componentDidMount() {
-    if(this.props.clapOnAttach){
-      this.startClapping()
-    }
-  }
   
   /*
   componentWillUnmount() {
@@ -121,7 +116,7 @@ export default class Clapping extends Component<Props, State> {
   render() {
     return (
       <Box>
-        {!this.props.clapOnAttach && 
+        {this.props.role === "admin" && 
         <Box
           justify="center"
           align="center"
@@ -146,15 +141,15 @@ export default class Clapping extends Component<Props, State> {
         {this.state.overlay && (
           <Layer modal={true} position="center">
             <Heading
-              level={2}
+              level={3}
               margin={{
-                top: "100px",
-                bottom: "100px",
-                left: "100px",
-                right: "100px",
+                top: "80px",
+                bottom: "80px",
+                left: "80px",
+                right: "80px",
               }}
             >
-              Press "space" to clap
+              {this.props.role === "speaker" ? "The audience is thanking you!" :  "Press the space bar to clap"}
             </Heading>
           </Layer>
         )}

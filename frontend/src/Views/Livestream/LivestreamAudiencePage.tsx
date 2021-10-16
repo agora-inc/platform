@@ -111,7 +111,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
 
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
-  const [isClapping, setClapping] = useState('')
+  const [isClapping, setClapping] = useState(false)
   const [isTimeover, setTimeover] = useState(false)
   const [isUnpublishFromRemote, unpublishFromRemote] = useState('')
   const [slideUrl, setSlideUrl] = useState('')
@@ -435,10 +435,10 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       if(data.status === 'ENDED') {
         setTalkStatus(data.status)
       }
-      if(data.clapping_status) {
-        setClapping(data.clapping_status)
-      }else{
-        setClapping('')
+      if (data.clapping_status !== '') {
+        setClapping(data.isClapping)
+      } else{
+        setClapping(false)
       }
     })
 
@@ -1080,7 +1080,12 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         </Box>
 
         <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}
-          <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+          <Clapping 
+            role="audience"
+            clapOnChange={isClapping} 
+            clapBase='/claps/auditorium.mp3' 
+            clapUser='/claps/applause-5.mp3' 
+          /> 
         </Box>
 
         <Box gridArea="description" margin={{top: "-20px"}}>
