@@ -6,7 +6,7 @@ interface Props {
   clapOnAttach?: boolean;
   clapOnChange?: string;
   [label: string]: any;
-  onClick?: ()=>{}
+  onClick?: any;
 }
 
 interface State {

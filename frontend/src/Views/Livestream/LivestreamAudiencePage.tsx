@@ -1117,6 +1117,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         </Box>
 
         <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}
+          <Clapping clapOnChange={isClapping} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
         </Box>
 
         <Box gridArea="description" margin={{top: "-20px"}}>
