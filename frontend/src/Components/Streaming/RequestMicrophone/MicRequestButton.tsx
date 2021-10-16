@@ -36,6 +36,7 @@ interface Props {
     storedName: string;
     onGranted?: any; // functions
     onRevoked?: any; // functions
+    onCancelled?: any; // functions
     onDenied?: any; // functions
     onRequested?: any; // functions
     callback?: any
@@ -70,10 +71,6 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                 setMicRequestId(req.id)
                 setMicRequestStatus(req.status)
                 
-                console.log("ANSWER FOR MICS")
-                console.log(req.status)
-
-                
                 if (req.status === 'REQUESTED') {
                   setTextMicButton("Microphone request pending")
                   setButtonColor("color7")
@@ -92,8 +89,6 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                       props.onGranted()
                     }
                 } else if(req.status === 'DENIED'){
-                  console.log("wesh, t'as ete DNIED ton mic mec!!")
-                  console.log("DENIED")
                   setTextMicButton("Denied request")
                   setButtonColor("color7")
                   setButtonHoverColor("color7")
@@ -103,24 +98,29 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                   }
                   
                   //Reset memory after 5sec
-                  setInterval(() => {
-                    _resetMicRequest()
-                    console.log("denieddddd")
-                  }, 5000)
+                  setInterval(_resetMicRequest, 5000)
                   
                 } else if(req.status === 'REVOKED'){
-                  console.log("wesh, t'as ete revoked ton mic mec!!")
-                  console.log("REVOKED")
                   setTextMicButton("Thank's for your input!")
                   setButtonColor("color7")
                   setButtonHoverColor("color7")
 
-                  if (props.onDenied){
+                  if (props.onRevoked){
                     props.onRevoked()
                   }
                   // Reset memory after 5sec
                   setInterval(_resetMicRequest, 5000)
-              }
+                } else if(req.status === 'CANCELLED'){
+                  setTextMicButton("Thank's for your input!")
+                  setButtonColor("color7")
+                  setButtonHoverColor("color7")
+
+                  if (props.onCancelled){
+                    props.onCancelled()
+                  }
+                  // Reset memory after 5sec
+                  setInterval(_resetMicRequest, 5000)
+                }
             }
         })
         return ()=>{

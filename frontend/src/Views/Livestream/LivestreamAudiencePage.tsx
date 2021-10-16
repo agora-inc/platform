@@ -383,6 +383,10 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     setCallControl({...callControl, mic: true, video: true})
   }
 
+
+
+
+
   async function on_message(msg:any, senderId:string){
     let attr = await agoraMessageClient.getUserAttributes(senderId)
     setMessages((m) => {
@@ -414,7 +418,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     })()
   }, [])
 
-  // Set all Firestore listening ports (video)
+  // Listen firestore Talk general info
   useEffect(()=>{
     if(!talkId) {
       return
@@ -486,33 +490,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   ///////////////////////
   // Frontend methods
   //////////////////////
-  // function micButton () {
-  //   return (
-  //     <Box
-  //     justify="center"
-  //     align="center"
-  //     pad="small"
-  //     focusIndicator={false}
-  //     height="50px"
-  //     background="color1"
-  //     hoverIndicator="#BAD6DB"
-  //     style={{borderRadius:'6px'}}
-  //     onClick={()=>{
-  //       if (callControl.mic){
-  //         publish_camera_and_microphone()
-  //       } else {
-  //         publish_camera_and_microphone()
-  //       }
-    
-  //     }}
-  //   >
-  //     <Text weight="bold" color="white" size="14px" textAlign="center">
-  //       {callControl.mic? <FaMicrophone/> : <FaMicrophoneSlash/>}
-  //     </Text>
-  //   </Box>
-  //   )
-  // }
-
   function fullscreenButton () {
     return (
       <Box
@@ -801,9 +778,12 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 publish_camera_and_microphone()
               }}
               onDenied={() => {
-
+                unpublish_camera_and_microphone()
               }}
               onRevoked={() => {
+                unpublish_camera_and_microphone()
+              }}
+              onCancelled={() => {
                 unpublish_camera_and_microphone()
               }}
             />
