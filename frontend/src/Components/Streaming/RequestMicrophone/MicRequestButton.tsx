@@ -34,16 +34,28 @@ interface Props {
     talkId: number;
     uid: string;
     storedName: string;
-    onGranted: any; // functions
+    onGranted?: any; // functions
     onRevoked?: any; // functions
     onDenied?: any; // functions
-    callback: any
+    onRequested?: any; // functions
+    callback?: any
 }
 
 
 const MicRequestButton:FunctionComponent<Props> = (props) => {
-    const [micRequestStatus, setMicRequestStatus] = useState<"PENDING"|"GRANTED"|"DENIED"|null>(null)
+    const [micRequestStatus, setMicRequestStatus] = useState<"REQUESTED"|"GRANTED"|"DENIED"|"CANCELLED"|null>(null)
     const [micRequestId, setMicRequestId] = useState("")
+    const [textMicButton, setTextMicButton] = useState("Request microphone")
+    const [buttonColor, setButtonColor] = useState("color1")
+    const [buttonHoverColor, setButtonHoverColor] = useState("#BAD6DB")
+
+    function _resetMicRequest() {
+      setMicRequestStatus(null)
+      setMicRequestId("")
+      setTextMicButton("Request microphone")
+      setButtonColor("color1")
+      setButtonHoverColor("#BAD6DB")
+    }
 
     // Listens to acceptance / denial of requests
     useEffect(()=>{
@@ -52,85 +64,69 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
             let _d = d.data()
             _d.id = d.id
             return _d
-            }).filter(d=>d.requester_id === props.uid).find(d=>d.status === 'GRANTED' || d.status === 'REQUESTED')
+            }).filter(d=>d.requester_id === props.uid).find(d=>d.status === 'REQUESTED' || d.status === 'GRANTED' || d.status === 'DENIED' || d.status === 'REVOKED')
     
             if(req) {
                 setMicRequestId(req.id)
                 setMicRequestStatus(req.status)
                 
-                if(req.status === 'GRANTED') {
-                    props.onGranted()
-                } else if(req.status === 'DENIED'){
-                    props.onGranted()
-                }
-             }else{
-                    props.onRevoked()
-                }
-        })
+                console.log("ANSWER FOR MICS")
+                console.log(req.status)
 
+                
+                if (req.status === 'REQUESTED') {
+                  setTextMicButton("Microphone request pending")
+                  setButtonColor("color7")
+                  setButtonHoverColor("color7")
+
+                  if (props.onRequested){
+                      props.onRequested()
+                    }
+                }
+                else if (req.status === 'GRANTED') {
+                  setTextMicButton("Give up mic")
+                  setButtonColor("color2")
+                  setButtonHoverColor("color3")
+
+                  if (props.onGranted){
+                      props.onGranted()
+                    }
+                } else if(req.status === 'DENIED'){
+                  console.log("wesh, t'as ete DNIED ton mic mec!!")
+                  console.log("DENIED")
+                  setTextMicButton("Denied request")
+                  setButtonColor("color7")
+                  setButtonHoverColor("color7")
+
+                  if (props.onDenied){
+                    props.onDenied()
+                  }
+                  
+                  //Reset memory after 5sec
+                  setInterval(() => {
+                    _resetMicRequest()
+                    console.log("denieddddd")
+                  }, 5000)
+                  
+                } else if(req.status === 'REVOKED'){
+                  console.log("wesh, t'as ete revoked ton mic mec!!")
+                  console.log("REVOKED")
+                  setTextMicButton("Thank's for your input!")
+                  setButtonColor("color7")
+                  setButtonHoverColor("color7")
+
+                  if (props.onDenied){
+                    props.onRevoked()
+                  }
+                  // Reset memory after 5sec
+                  setInterval(_resetMicRequest, 5000)
+              }
+            }
+        })
         return ()=>{
             request_unsubs()
             }
       }, [props.talkId])
-
-
-
-
-
-
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!! (Remy)
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-    //   WIP WIP WIP!!!!!!!!!!
-
-
-
-
-
-
-
-
-
-
-
-
 
 
       function requestMicButton () {
@@ -141,20 +137,30 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
             pad="small"
             focusIndicator={false}
             height="50px"
-            background={props.disabled ? "grey" : "color1"}
-            hoverIndicator={props.disabled ? "grey" : "#BAD6DB"}
+            background={props.disabled ? "grey" : buttonColor}
+            hoverIndicator={props.disabled ? "grey" : buttonHoverColor}
             style={{borderRadius:'6px'}}
             onClick={()=>{
-                if (!hasPendingMicRequest){
+                if(micRequestStatus == null){
                     MicRequestService.requestMic(props.talkId.toString(), props.uid, props.storedName)
-                }
-                else {
-                    console.log("User has already a pending mic request.")
+                } else if (micRequestStatus == "REQUESTED"){
+                  return
+                } else if(micRequestStatus == "GRANTED"){
+                  MicRequestService.giveUpMic(micRequestId)
+                  setTextMicButton("Thank's for your input!")
+                  setButtonColor("color7")
+                  setButtonHoverColor("color7")
+
+                  // Reset memory after 5sec
+                  setInterval(_resetMicRequest, 5000)
+
+                } else if(micRequestStatus == "DENIED"){
+                  return
                 }
           }}
         >
           <Text weight="bold" color="white" size="14px" textAlign="center">
-            {(hasMicRequested || !callControl.mic) ? "Request microphone" : "Give up microphone"}
+            {textMicButton}
           </Text>
         </Box>
         )

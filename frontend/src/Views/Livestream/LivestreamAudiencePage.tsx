@@ -25,6 +25,11 @@ import { ChannelService } from "../../Services/ChannelService";
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 
 
+import MicRequestButton from "../../Components/Streaming/RequestMicrophone/MicRequestButton";
+
+
+
+
 import AudienceHelpButton from "../../Components/Streaming/HelpButtons/AudienceHelpButton";
 
 
@@ -313,7 +318,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   async function unpublish_microphone(){
     console.log('unp mic', localAudioTrack)
     if(hasMicRequested) {
-      MicRequestService.removeRequest(hasMicRequested)
+      MicRequestService.deleteRequest(hasMicRequested)
     }
 
     setMicRequest('')
@@ -841,7 +846,12 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
           )}   */}
           {(role != "admin" && role != "speaker") && (
             <>
-              {requestMicButton()}
+              <MicRequestButton 
+                disabled={false}
+                talkId={Number(talkId)}
+                uid={localUser.uid}
+                storedName={storedName}
+              />
               {viewChangeButton()}
               {fullscreenButton()}
               <AudienceHelpButton/>

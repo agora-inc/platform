@@ -373,7 +373,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   async function unpublish_microphone(){
     if (role == "audience"){
       if(hasMicRequested) {
-        MicRequestService.removeRequest(hasMicRequested)
+        MicRequestService.deleteRequest(hasMicRequested)
       }
       setMicRequest('')
     }
@@ -935,7 +935,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                 {req.status ==='REQUESTED' && (
                   <Button 
                     margin={{left: '10px'}}
-                    onClick={()=>MicRequestService.grantRequest(req.id, true)} 
+                    onClick={()=>MicRequestService.grantRequest(req.id)} 
                     hoverIndicator="#6DA3C7"
                     focusIndicator={true}
                     style={{
@@ -948,7 +948,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                 )}
                 <Button 
                   margin={{left: '30px'}} 
-                  onClick={()=>MicRequestService.grantRequest(req.id, false)}
+                  onClick={()=>MicRequestService.grantRequest(req.id)}
                   style={{
                     background: "#FF4040", width: "90px",
                     color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'

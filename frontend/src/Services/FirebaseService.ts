@@ -74,6 +74,13 @@ const MicRequestService = {
         let r = await FirebaseDb.collection('requests').add(data);
         return true
     },
+    giveUpMic: async (id:string) => {
+        await FirebaseDb.collection('requests').doc(id).update({status: 'CANCELLED'});
+        // delete DB entry after 5s
+        setTimeout(()=>{
+            MicRequestService.deleteRequest(id)
+        }, 5000)
+    },
     grantRequest: async (id:string) => {
         await FirebaseDb.collection('requests').doc(id).update({status: 'GRANTED'});
     },
