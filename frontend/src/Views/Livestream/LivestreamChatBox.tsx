@@ -1,10 +1,13 @@
 import React, { useRef, useEffect, FunctionComponent, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
 import { Box, Text, TextInput } from "grommet";
 import { textToLatex } from "../../Components/Core/LatexRendering";
+import AgoraRTM from 'agora-rtm-sdk';
 
 
 interface Props {
   localUser: LocalUser;
+  talkId: string;
 }
 
 interface LocalUser {
@@ -22,14 +25,48 @@ interface Message {
   first: boolean;
 }
 
+const APP_ID_MESSAGING = 'c80c76c5fa6348d3b6c022cb3ff0fd38'
+
 const ChatBox:FunctionComponent<Props> = (props) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [messageChannel, setMessageChannel] = useState(null as any)
+  const [agoraMessageClient] = useState(AgoraRTM.createInstance(APP_ID_MESSAGING))
+
+  useEffect(() => {
+    (async () => {join_live_chat()})()
+  }, [])
+
+  // Autoscroll to the end 
   const messagesEndRef = useRef<null | HTMLDivElement>(null)
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
   useEffect(() => { scrollToBottom() }, [messages]);
+
+  // methods to send messages via agora.io
+  async function on_message(msg:any, senderId:string){
+    let attr = await agoraMessageClient.getUserAttributes(senderId)
+    setMessages((m) => {
+      let first = m.length === 0 ? true : m[m.length-1].senderId !== senderId
+      return [...m, {senderId, text: msg.text, name: attr.name ||'', first: first}]
+    })
+  }
+
+  async function join_live_chat(){
+    console.log('joining live chat...')
+    let talkId = props.talkId.toString()
+    let uid = props.localUser.uid
+    try{
+      await agoraMessageClient.login({ uid })
+      let _messageChannel = agoraMessageClient.createChannel(talkId)
+      await agoraMessageClient.addOrUpdateLocalUserAttributes({name: `Admin`})
+      await _messageChannel.join()
+      _messageChannel.on('ChannelMessage', on_message)
+      setMessageChannel(_messageChannel)
+    }catch(e) {
+      console.log(e)
+    }
+  }
 
   async function send_message(evt:React.KeyboardEvent<HTMLInputElement>){
     if(evt.key !== 'Enter') return

@@ -308,7 +308,7 @@ export default class TransportSeminars extends Component<Props, State> {
               <Box direction="row" gap="10px"  align="center" margin={{top: "20px", bottom: "10px"}}>
                 <Text size="14px" weight="bold"> 4. Do you require registration on your events? </Text>
                 <Switch
-                  width="60px"
+                  width={60}
                   height={24}
                   checked={this.state.onRegistration}
                   textOn="Yes" 
@@ -332,7 +332,7 @@ export default class TransportSeminars extends Component<Props, State> {
                       Automatically accept some users?
                     </Text>
                     <Switch
-                      width="60px"
+                      width={60}
                       height={24}
                       checked={this.state.autoAcceptEnabled}
                       textOn="Yes" 

@@ -129,6 +129,7 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
       }, [props.talkId])
 
 
+
       function requestMicButton () {
         return (
           <Box
@@ -136,7 +137,7 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
             align="center"
             pad="small"
             focusIndicator={false}
-            height="50px"
+            height="40px"
             background={props.disabled ? "grey" : buttonColor}
             hoverIndicator={props.disabled ? "grey" : buttonHoverColor}
             style={{borderRadius:'6px'}}

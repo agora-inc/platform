@@ -127,7 +127,8 @@ export default class Clapping extends Component<Props, State> {
           align="center"
           pad="small"
           focusIndicator={false}
-          height="50px"
+          width="100px"
+          height="45px"
           background="color1"
           hoverIndicator="#BAD6DB"
           style={{borderRadius:'6px'}}
