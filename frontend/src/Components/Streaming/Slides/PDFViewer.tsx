@@ -5,7 +5,7 @@ import { Stream } from "../../../Services/StreamService";
 import "../../../Styles/videocard.css";
 import { baseApiUrl } from "../../../config";
 import { Document, Page , pdfjs } from 'react-pdf/dist/esm/entry.webpack';
-import { db, API } from "../../../Services/FirebaseService";
+import { FirebaseDb, SlidesService } from "../../../Services/FirebaseService";
 
 interface Props {
     url: string;
@@ -41,7 +41,7 @@ export default function({presenter=false, ...props}:Props) {
     }
     setPageNumber(n)
     if(presenter) {
-      API.slideNavigate(props.slideShareId, n)
+      SlidesService.slideNavigate(props.slideShareId, n)
     }else{
       toggleLive(false)
     }
@@ -68,7 +68,7 @@ export default function({presenter=false, ...props}:Props) {
     if(props.slideShareId){
       // Broadcast slides if presenter
       if(presenter) {
-        db.collection('slide').doc(props.slideShareId).get()
+        FirebaseDb.collection('slide').doc(props.slideShareId).get()
         .then((doc)=>{
           let data = doc.data()
           if(data) {
@@ -79,7 +79,7 @@ export default function({presenter=false, ...props}:Props) {
       } 
       // Listen live slides if attendee
       else {
-        let slide_unsubs = db.collection('slide').doc(props.slideShareId).onSnapshot(snaps=>{
+        let slide_unsubs = FirebaseDb.collection('slide').doc(props.slideShareId).onSnapshot(snaps=>{
           let data = snaps.data() as any
           console.log(data)
           if(data) {
