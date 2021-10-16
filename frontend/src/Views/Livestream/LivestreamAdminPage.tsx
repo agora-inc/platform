@@ -999,15 +999,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           )} */}
           <Grid
               columns={["75%", "20%"]}
-              rows={["2vh", "25vh", "45vh", "25vh"]}
+              rows={["2vh", "25vh", "35vh", "10vh", "25vh"]}
               gap="medium"
               areas={[
-                { name: "player", start: [0, 0], end: [0, 3] },
+                { name: "player", start: [0, 0], end: [0, 4] },
                 { name: "display_role", start: [1, 0], end: [1, 0] },
                 { name: "main_buttons", start: [1, 1], end: [1, 1] },
                 { name: "chat", start: [1, 2], end: [1, 2] },
-                { name: "description", start: [0, 3], end: [0, 3] },
-                { name: "extra_feature", start: [1, 3], end: [1, 3] },
+                { name: "description", start: [0, 4], end: [0, 4] },
+                { name: "extra_feature", start: [1, 3], end: [1, 4] },
               ]}
             >
               <Box gridArea="player" justify="between" gap="small">

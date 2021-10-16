@@ -47,6 +47,7 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
     const [textMicButton, setTextMicButton] = useState("Request microphone")
     const [buttonColor, setButtonColor] = useState("color1")
     const [buttonHoverColor, setButtonHoverColor] = useState("#BAD6DB")
+    const [textColor, setTextColor] = useState("white")
 
     function _resetMicRequest() {
       setMicRequestStatus(null)
@@ -54,6 +55,7 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
       setTextMicButton("Request microphone")
       setButtonColor("color1")
       setButtonHoverColor("#BAD6DB")
+      setTextColor("white")
     }
 
     // Listens to acceptance / denial of requests
@@ -75,17 +77,17 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                 
                 if (req.status === 'REQUESTED') {
                   setTextMicButton("Microphone request pending")
-                  setButtonColor("color7")
-                  setButtonHoverColor("color7")
+                  setButtonColor("color5")
+                  setButtonHoverColor("color5")
 
                   if (props.onRequested){
                       props.onRequested()
                     }
                 }
                 else if (req.status === 'GRANTED') {
-                  setTextMicButton("Give up mic")
-                  setButtonColor("color2")
-                  setButtonHoverColor("color3")
+                  setTextMicButton("Give up microphone")
+                  setButtonColor("color3")
+                  setButtonHoverColor("color2")
 
                   if (props.onGranted){
                       props.onGranted()
@@ -93,9 +95,10 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                 } else if(req.status === 'DENIED'){
                   console.log("wesh, t'as ete DNIED ton mic mec!!")
                   console.log("DENIED")
-                  setTextMicButton("Denied request")
+                  setTextMicButton("Request denied")
                   setButtonColor("color7")
                   setButtonHoverColor("color7")
+                  setTextColor("grey")
 
                   if (props.onDenied){
                     props.onDenied()
@@ -110,9 +113,10 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                 } else if(req.status === 'REVOKED'){
                   console.log("wesh, t'as ete revoked ton mic mec!!")
                   console.log("REVOKED")
-                  setTextMicButton("Thank's for your input!")
+                  setTextMicButton("Thanks for your input")
                   setButtonColor("color7")
                   setButtonHoverColor("color7")
+                  setTextColor("grey")
 
                   if (props.onDenied){
                     props.onRevoked()
@@ -147,9 +151,10 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                   return
                 } else if(micRequestStatus == "GRANTED"){
                   MicRequestService.giveUpMic(micRequestId)
-                  setTextMicButton("Thank's for your input!")
+                  setTextMicButton("Thanks for your input!")
                   setButtonColor("color7")
                   setButtonHoverColor("color7")
+                  setTextColor("grey")
 
                   // Reset memory after 5sec
                   setInterval(_resetMicRequest, 5000)
@@ -159,7 +164,7 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                 }
           }}
         >
-          <Text weight="bold" color="white" size="14px" textAlign="center">
+          <Text weight="bold" color={textColor} size="12px" textAlign="center">
             {textMicButton}
           </Text>
         </Box>
