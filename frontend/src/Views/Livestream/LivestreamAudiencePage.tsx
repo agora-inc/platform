@@ -112,7 +112,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
   const [isClapping, setClapping] = useState('')
-  const [hasMicRequested, setMicRequest] = useState('')
   const [isTimeover, setTimeover] = useState(false)
   const [isUnpublishFromRemote, unpublishFromRemote] = useState('')
   const [slideUrl, setSlideUrl] = useState('')
@@ -317,11 +316,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   async function unpublish_microphone(){
     console.log('unp mic', localAudioTrack)
-    if(hasMicRequested) {
-      MicRequestService.deleteRequest(hasMicRequested)
-    }
 
-    setMicRequest('')
     if(localAudioTrack) {
       localAudioTrack.stop()
 
@@ -332,38 +327,33 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     }
   }
 
-  // async function unpublish_camera_and_microphone(){
-  //   console.log('unp mic', localAudioTrack)
-  //   if(hasMicRequested) {
-  //     API.removeRequest(hasMicRequested)
-  //   }
+  async function unpublish_camera_and_microphone(){
+    console.log('unp mic', localAudioTrack)
 
-  //   setMicRequest('')
-  //   if(localAudioTrack || localVideoTrack) {
+    if(localAudioTrack || localVideoTrack) {
+      localAudioTrack.stop()
+      localVideoTrack.stop()
 
-  //     localAudioTrack.stop()
-  //     localVideoTrack.stop()
+      await agoraClient.unpublish(localAudioTrack);
+      await agoraClient.unpublish(localVideoTrack);
 
-  //     await agoraClient.unpublish(localAudioTrack);
-  //     await agoraClient.unpublish(localVideoTrack);
+      setLocalAudioTrack(null)
+      setLocalVideoTrack(null)
 
-  //     setLocalAudioTrack(null)
-  //     setLocalVideoTrack(null)
-
-  //     await agoraClient.setClientRole(localUser.role);
+      await agoraClient.setClientRole(localUser.role);
       
-  //     setCallControl({...callControl, mic: false})
-  //     setCallControl({...callControl, video: false})
-  //   }
+      setCallControl({...callControl, mic: false})
+      setCallControl({...callControl, video: false})
+    }
 
-  //   // if(localVideoTrack) {
-  //   //   localVideoTrack.stop()
+    // if(localVideoTrack) {
+    //   localVideoTrack.stop()
 
-  //   //   await agoraClient.unpublish(localVideoTrack);
-  //   //   setCallControl({ video: false})
-  //   //   setLocalVideoTrack(null)
-  //   // }
-  // }
+    //   await agoraClient.unpublish(localVideoTrack);
+    //   setCallControl({ video: false})
+    //   setLocalVideoTrack(null)
+    // }
+  }
 
   async function publish_microphone(){
     await agoraClient.setClientRole('host');
@@ -424,7 +414,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     })()
   }, [])
 
-  // Set all Firestore listening ports (slides + clapping + video)
+  // Set all Firestore listening ports (video)
   useEffect(()=>{
     if(!talkId) {
       return
@@ -452,45 +442,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       }
     })
 
-
-
-
-
-
-
-
-
-
-    
-    // listen to mic request accepts/denials
-    let request_unsubs = FirebaseDb.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
-      let req = snaps.docs.filter(d=>d.exists).map(d=>{
-        let _d = d.data()
-        _d.id = d.id
-        return _d
-      }).filter(d=>d.requester_id === localUser.uid).find(d=>d.status === 'GRANTED' || d.status === 'REQUESTED')
-
-      
-      setMicRequest('')
-      if(req) {
-        setMicRequest(req.id)
-        if(req.status === 'GRANTED') {
-          publish_camera_and_microphone()
-        }
-      }else{
-        unpublishFromRemote(Math.random().toString())
-      }
-    })
-
-
-
-
-
-
-
-
-
-
     // listen to slides (grab url, SlideShareId, and set listening port)
     let slide_unsubs = FirebaseDb.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
@@ -514,7 +465,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
     return ()=>{
       unsubs()
-      request_unsubs()
       slide_unsubs()
     }
   }, [talkId])
@@ -628,35 +578,6 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     )
     */
   }
-
-  // function requestMicButton () {
-  //   return (
-  //     <Box
-  //     justify="center"
-  //     align="center"
-  //     pad="small"
-  //     focusIndicator={false}
-  //     height="40px"
-  //     background={talkStatus == "NOT_STARTED" ? "grey" : "color1"}
-  //     hoverIndicator={talkStatus == "NOT_STARTED" ? "grey" : "#BAD6DB"}
-  //     style={{borderRadius:'6px'}}
-  //     onClick={()=>{
-  //       if (talkStatus == "STARTED"){
-  //         if (hasMicRequested || !callControl.mic){
-  //           MicRequestService.requestMic(talkId, localUser.uid, storedName)
-  //         }
-  //         else {
-  //           unpublish_microphone()
-  //         }
-  //       }
-  //     }}
-  //   >
-  //     <Text weight="bold" color="white" size="14px" textAlign="center">
-  //       {(hasMicRequested || !callControl.mic) ? "Request microphone" : "Give up microphone"}
-  //     </Text>
-  //   </Box>
-  //   )
-  // }
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null)
   const scrollToBottom = () => {
@@ -870,12 +791,23 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         )}   */}
         {role != "admin" && role != "speaker" && (
           <Box direction="row" gap="50px">
+
             <MicRequestButton
               talkId={Number(talkId)}
               uid={localUser.uid}
               disabled={false}
               storedName={storedName}
+              onGranted={() => {
+                publish_camera_and_microphone()
+              }}
+              onDenied={() => {
+
+              }}
+              onRevoked={() => {
+                unpublish_camera_and_microphone()
+              }}
             />
+
             <Box direction="row" gap="10px" >
               {fullscreenButton()}
               <AudienceHelpButton/>
