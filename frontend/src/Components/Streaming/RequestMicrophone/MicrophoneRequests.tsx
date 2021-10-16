@@ -23,7 +23,6 @@ import ReactTooltip from "react-tooltip";
 import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_invitation.jpg"
 import '../../../Styles/all-stream-page.css'
 
-import Clapping from "../../../Components/Streaming/Clapping/Clapping";
 import PDFViewer from "../../../Components/Streaming/Slides/PDFViewer";
 
 import {FirebaseDb} from "../../../Services/FirebaseService"
@@ -85,23 +84,23 @@ const MicrophoneRequests:FunctionComponent<Props> = (props) => {
                                     hoverIndicator="#6DA3C7"
                                     focusIndicator={true}
                                     style={{
-                                        background: "#0C385B", width: "90px",
+                                        background: "#0C385B", width: "70px",
                                         color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
                                     }}
                                 >
-                                    <Text size="14px" weight="bold"> Accept </Text>
+                                    <Text size="12px" weight="bold"> Accept </Text>
                                 </Button>
                                 <Button 
-                                    margin={{left: '10px'}}
+                                    margin={{left: '30px'}}
                                     onClick={()=>MicRequestService.denyRequest(req.id)} 
                                     hoverIndicator="#6DA3C7"
                                     focusIndicator={true}
                                     style={{
-                                        background: "#0C385B", width: "90px",
+                                        background: "#6DA3C7", width: "70px",
                                         color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
                                     }}
                                 >
-                                    <Text size="14px" weight="bold"> Deny </Text>
+                                    <Text size="12px" weight="bold"> Deny </Text>
                                 </Button>
                             </>
                         )}

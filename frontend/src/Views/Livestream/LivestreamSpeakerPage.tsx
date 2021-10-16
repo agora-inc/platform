@@ -18,7 +18,7 @@ import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdSlideshow, MdClear} from 'react-icons/md'
 import {FirebaseDb, StreamingService, SlidesService, ClappingService, MicRequestService} from '../../Services/FirebaseService'
-
+import Clapping from "../../Components/Streaming/Clapping/Clapping";
 import '../../Styles/all-stream-page.css'
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 import ReactTooltip from "react-tooltip";
@@ -116,6 +116,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [isSlideVisible, toggleSlide] = useState(false)
 
   const [isTimeover, setTimeover] = useState(false)
+  const [isClapping, setClapping] = useState(false)
 
   // speaker only feature
   const [slidesGotUploaded, setSlidesGotUploaded] = useState(false)
@@ -429,6 +430,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       // Start chat + video
       if(data.status == "NOT_STARTED" || data.status == "STARTED"){
         setup_connection_video_and_screen_sharing()
+      }
+      if (data.clapping_status !== '') {
+        setClapping(data.isClapping)
+      } else {
+        setClapping(false)
       }
     })
 
@@ -1292,7 +1298,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               {chatBox()}
           </Box>
 
-          <Box gridArea="extra_feature" direction='column' height="20vw"> 
+          <Box gridArea="extra_feature" direction='column' height="20vw">
+            <Clapping 
+              role="speaker"
+              clapOnChange={isClapping} 
+              clapBase='/claps/auditorium.mp3' 
+              clapUser='/claps/applause-5.mp3' 
+            /> 
           </Box>
 
           <Box gridArea="description" margin={{top: "-20px"}}>

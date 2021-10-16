@@ -625,7 +625,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <>
               {startTalkButton()}
               {stopTalkButton()}
-              <Clapping onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+              <Clapping role={role} onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
               {viewChangeButton()}
             </>
             )}
@@ -648,7 +648,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                     )
                   }}
                   />
-              <Clapping onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />     
+              <Clapping role={role} onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />     
               {viewChangeButton()}
             </>
           )}  
@@ -656,7 +656,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <>
               {requestMicButton()}
               {fullscreenButton()}
-              <Clapping onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+              <Clapping role="audience" onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
               {viewChangeButton()}
             </>
             ) 
