@@ -179,8 +179,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   async function setup() {
     // Fetch talk details
-
     fetchTalkDetails()
+
     // Setting client as Audience
     agoraClient.setClientRole(localUser.role);
     agoraScreenShareClient.setClientRole(localUser.role);
@@ -194,6 +194,15 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   async function onClient(user: any, mediaType: "audio" | "video") {
     await agoraClient.subscribe(user, mediaType);
     setRemoteVideoTrack([...agoraClient.remoteUsers])
+    
+    
+    
+    console.log("PTIT LINE")
+    console.log(agoraClient.remoteUsers)
+
+
+
+
     if(mediaType == 'video'){
       return
     }
@@ -275,9 +284,9 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
 
   async function join_live_chat(){
     agoraMessageClient.on('ConnectionStateChanged', (newState, reason) => {
-      console.log('on connection state changed to ' + newState + ' reason: ' + reason);
+      // console.log('on connection state changed to ' + newState + ' reason: ' + reason);
     });
-    console.log('joining live chat...')
+    // console.log('joining live chat...')
     let {appId , uid} = localUser
     let talkId = props.talkId.toString()
 
@@ -314,6 +323,17 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     unpublish_microphone()
   }, [isUnpublishFromRemote])
 
+
+  async function publish_microphone(){
+    await agoraClient.setClientRole('host');
+    let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    setLocalAudioTrack(_localAudioTrack)
+    console.log("publish mic: audiotrack")
+    console.log(localAudioTrack)
+    await agoraClient.publish(_localAudioTrack);
+    setCallControl({...callControl, mic: true})
+  }
+
   async function unpublish_microphone(){
     console.log('unp mic', localAudioTrack)
 
@@ -327,63 +347,69 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     }
   }
 
-  async function unpublish_camera_and_microphone(){
-    console.log('unp mic', localAudioTrack)
+  async function publish_camera(){
+    await agoraClient.setClientRole('host');
+    let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+    setLocalVideoTrack(_localVideoTrack)
+    console.log("publish cam: videotrack")
+    console.log(localVideoTrack)
+    await agoraClient.publish([_localVideoTrack]);
+    setCallControl({...callControl, video: true})
+  }
 
-    if(localAudioTrack || localVideoTrack) {
-      localAudioTrack.stop()
+  async function unpublish_camera(){
+    console.log('unp cam', localVideoTrack)
+
+    if(localVideoTrack) {
       localVideoTrack.stop()
 
-      await agoraClient.unpublish(localAudioTrack);
       await agoraClient.unpublish(localVideoTrack);
-
       setLocalAudioTrack(null)
-      setLocalVideoTrack(null)
-
       await agoraClient.setClientRole(localUser.role);
-      
-      setCallControl({...callControl, mic: false})
       setCallControl({...callControl, video: false})
     }
-
-    // if(localVideoTrack) {
-    //   localVideoTrack.stop()
-
-    //   await agoraClient.unpublish(localVideoTrack);
-    //   setCallControl({ video: false})
-    //   setLocalVideoTrack(null)
-    // }
   }
 
-  async function publish_microphone(){
-    await agoraClient.setClientRole('host');
-    let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    setLocalAudioTrack(_localAudioTrack)
-    await agoraClient.publish(_localAudioTrack);
-    setCallControl({...callControl, mic: true})
-  }
-
-  // async function publish_camera(){
+  // async function publish_camera_and_microphone(){
+  //   let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    
   //   await agoraClient.setClientRole('host');
+  //   setLocalAudioTrack(_localAudioTrack)
+  //   await agoraClient.publish(_localAudioTrack);
+  //   // setCallControl({...callControl, mic: true})
   //   let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
   //   setLocalVideoTrack(_localVideoTrack)
   //   await agoraClient.publish([_localVideoTrack]);
-  //   setCallControl({video: true})
+  //   setCallControl({...callControl, mic: true, video: true})
   // }
 
-  async function publish_camera_and_microphone(){
-    await agoraClient.setClientRole('host');
-    let _localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    setLocalAudioTrack(_localAudioTrack)
-    await agoraClient.publish(_localAudioTrack);
-    // setCallControl({...callControl, mic: true})
-    let _localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    setLocalVideoTrack(_localVideoTrack)
-    await agoraClient.publish([_localVideoTrack]);
-    setCallControl({...callControl, mic: true, video: true})
-  }
+  // async function unpublish_camera_and_microphone(){
+  //   console.log('unp mic', localAudioTrack)
 
+  //   if(localAudioTrack || localVideoTrack) {
+  //     localAudioTrack.stop()
+  //     localVideoTrack.stop()
 
+  //     await agoraClient.unpublish(localAudioTrack);
+  //     await agoraClient.unpublish(localVideoTrack);
+
+  //     setLocalAudioTrack(null)
+  //     setLocalVideoTrack(null)
+
+  //     await agoraClient.setClientRole(localUser.role);
+      
+  //     setCallControl({...callControl, mic: false})
+  //     setCallControl({...callControl, video: false})
+  //   }
+
+  //   if(localVideoTrack) {
+  //     localVideoTrack.stop()
+
+  //     await agoraClient.unpublish();
+  //     setCallControl({ video: false, mic: false})
+  //     setLocalVideoTrack(null)
+  //   }
+  // }
 
 
 
@@ -775,16 +801,16 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
               disabled={false}
               storedName={storedName}
               onGranted={() => {
-                publish_camera_and_microphone()
-              }}
-              onDenied={() => {
-                unpublish_camera_and_microphone()
+                publish_microphone()
+                publish_camera()
               }}
               onRevoked={() => {
-                unpublish_camera_and_microphone()
+                unpublish_microphone()
+                unpublish_camera()
               }}
               onCancelled={() => {
-                unpublish_camera_and_microphone()
+                unpublish_microphone()
+                unpublish_camera()
               }}
             />
 
@@ -1015,7 +1041,11 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                   //@ts-ignore
                   <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
                 ))}
-                <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
+                
+                {role == "speaker" && (
+                // JUST FOR THE LOCALVIDEOPLAYER HERE
+                  <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
+                )}
               </Box>
             )}
 

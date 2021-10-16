@@ -69,6 +69,11 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
             }).filter(d=>d.requester_id === props.uid).find(d=>d.status === 'REQUESTED' || d.status === 'GRANTED' || d.status === 'DENIED' || d.status === 'REVOKED')
     
             if(req) {
+                console.log("voila la req")
+                console.log(req)
+
+
+
                 setMicRequestId(req.id)
                 setMicRequestStatus(req.status)
                 

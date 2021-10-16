@@ -111,8 +111,8 @@ export default class LivestreamPage extends Component<Props, State> {
         this.readUrl(() => {
             // fetch talk info
             TalkService.getTalkById(this.state.talkId, (talk: Talk) => {
-                console.log("test")
-                console.log(talk)
+                // console.log("test")
+                // console.log(talk)
                 if (!(talk == null)){
                     this.setState({talk: talk}, 
                         () => {
