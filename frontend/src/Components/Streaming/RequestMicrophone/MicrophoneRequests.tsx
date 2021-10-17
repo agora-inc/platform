@@ -44,7 +44,7 @@ const MicrophoneRequests:FunctionComponent<Props> = (props) => {
                 let _d = d.data()
                 _d.id = d.id
                 return _d
-            }).filter((d:any)=> d.status !== 'DENIED')
+            }).filter((d:any)=> d.status !== 'CANCELLED')
             setMicRequests([...req])
             })
 
