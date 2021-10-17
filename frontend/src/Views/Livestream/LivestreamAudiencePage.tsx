@@ -213,10 +213,15 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       return
     }
   }
+
   async function onClientStop(user: any, mediaType: "audio" | "video") {
     console.log("left", agoraClient.remoteUsers)
     setTimeout(()=>{
       setRemoteVideoTrack([...agoraClient.remoteUsers])
+      console.log("agora video track")
+      console.log(agoraClient.remoteUsers)
+      console.log("remoteVideoTrack: total")
+      console.log(remoteVideoTrack)
     }, 200)
     if(mediaType == 'video'){
       return
@@ -301,6 +306,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       console.log(e)
     }
   }
+
   async function join(){
     console.log('joining...')
     let {appId , uid} = localUser
@@ -333,18 +339,18 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     await agoraClient.publish(_localAudioTrack);
     setCallControl({...callControl, mic: true})
   }
-
   async function unpublish_microphone(){
     console.log('unp mic', localAudioTrack)
-
     if(localAudioTrack) {
-      localAudioTrack.stop()
-
-      await agoraClient.unpublish(localAudioTrack);
-      setLocalAudioTrack(null)
-      await agoraClient.setClientRole(localUser.role);
-      setCallControl({...callControl, mic: false})
+      localAudioTrack.close()
     }
+    await agoraClient.unpublish(localAudioTrack).then( 
+      () => {
+        setLocalVideoTrack(null)
+        setCallControl({...callControl, video: false})
+        agoraClient.setClientRole(localUser.role);
+      }
+    );
   }
 
   async function publish_camera(){
@@ -356,18 +362,19 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     await agoraClient.publish([_localVideoTrack]);
     setCallControl({...callControl, video: true})
   }
-
   async function unpublish_camera(){
     console.log('unp cam', localVideoTrack)
 
     if(localVideoTrack) {
-      localVideoTrack.stop()
-
-      await agoraClient.unpublish(localVideoTrack);
-      setLocalAudioTrack(null)
-      await agoraClient.setClientRole(localUser.role);
-      setCallControl({...callControl, video: false})
+      localVideoTrack.close()
     }
+    await agoraClient.unpublish(localVideoTrack).then( 
+      () => {
+        setLocalVideoTrack(null)
+        setCallControl({...callControl, video: false})
+        agoraClient.setClientRole(localUser.role);
+      }
+    );
   }
 
   // async function publish_camera_and_microphone(){
@@ -387,8 +394,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   //   console.log('unp mic', localAudioTrack)
 
   //   if(localAudioTrack || localVideoTrack) {
-  //     localAudioTrack.stop()
-  //     localVideoTrack.stop()
+  //     localAudioTrack.close()
+  //     localVideoTrack.close()
 
   //     await agoraClient.unpublish(localAudioTrack);
   //     await agoraClient.unpublish(localVideoTrack);
@@ -403,7 +410,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   //   }
 
   //   if(localVideoTrack) {
-  //     localVideoTrack.stop()
+  //     localVideoTrack.close()
 
   //     await agoraClient.unpublish();
   //     setCallControl({ video: false, mic: false})
@@ -805,10 +812,12 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 publish_camera()
               }}
               onRevoked={() => {
+                console.log("INSIDE LIVESTREAM: REVOKED CALLBACK")
                 unpublish_microphone()
                 unpublish_camera()
               }}
               onCancelled={() => {
+                console.log("inside livestream: oncancell prop")
                 unpublish_microphone()
                 unpublish_camera()
               }}
@@ -1042,7 +1051,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                   <VideoPlayerAgora key={user.uid} id={user.uid} className='camera' stream={user.videoTrack} mute={!user.hasAudio} />
                 ))}
                 
-                {role == "speaker" && (
+                {localVideoTrack && (
                 // JUST FOR THE LOCALVIDEOPLAYER HERE
                   <VideoPlayerAgora id='speaker' className='camera' stream={localVideoTrack} />
                 )}

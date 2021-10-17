@@ -45,10 +45,12 @@ interface Props {
 const MicRequestButton:FunctionComponent<Props> = (props) => {
     const [micRequestStatus, setMicRequestStatus] = useState<"REQUESTED"|"GRANTED"|"DENIED"|"CANCELLED"|null>(null)
     const [micRequestId, setMicRequestId] = useState("")
+    // const [pending]
     const [textMicButton, setTextMicButton] = useState("Request microphone")
     const [buttonColor, setButtonColor] = useState("color1")
     const [buttonHoverColor, setButtonHoverColor] = useState("#BAD6DB")
     const [textColor, setTextColor] = useState("white")
+    const [isMemoryResetOnCue, setIsMemoryResetOnCue] = useState(false)
 
     function _resetMicRequest() {
       setMicRequestStatus(null)
@@ -57,6 +59,7 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
       setButtonColor("color1")
       setButtonHoverColor("#BAD6DB")
       setTextColor("white")
+      setIsMemoryResetOnCue(false)
     }
 
     // Listens to acceptance / denial of requests
@@ -69,11 +72,6 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
             }).filter(d=>d.requester_id === props.uid).find(d=>d.status === 'REQUESTED' || d.status === 'GRANTED' || d.status === 'DENIED' || d.status === 'REVOKED')
     
             if(req) {
-                console.log("voila la req")
-                console.log(req)
-
-
-
                 setMicRequestId(req.id)
                 setMicRequestStatus(req.status)
                 
@@ -104,9 +102,11 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                     props.onDenied()
                   }
                   
-                  //Reset memory after 5sec
-                  setInterval(_resetMicRequest, 5000)
-                  
+                  //Reset memory after 2sec
+                  if(!isMemoryResetOnCue){
+                    setIsMemoryResetOnCue(true)
+                    setTimeout(_resetMicRequest, 2000)
+                  }
                 } else if(req.status === 'REVOKED'){
                   setTextMicButton("Thank's for your input!")
                   setButtonColor("color7")
@@ -116,8 +116,11 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                   if (props.onRevoked){
                     props.onRevoked()
                   }
-                  // Reset memory after 5sec
-                  setInterval(_resetMicRequest, 5000)
+                  //Reset memory after 2sec
+                  if(!isMemoryResetOnCue){
+                    setIsMemoryResetOnCue(true)
+                    setTimeout(_resetMicRequest, 2000)
+                  }
                 } else if(req.status === 'CANCELLED'){
                   setTextMicButton("Thank's for your input!")
                   setButtonColor("color7")
@@ -126,8 +129,12 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                   if (props.onCancelled){
                     props.onCancelled()
                   }
-                  // Reset memory after 5sec
-                  setInterval(_resetMicRequest, 5000)
+
+                  //Reset memory after 2sec
+                  if(!isMemoryResetOnCue){
+                    setIsMemoryResetOnCue(true)
+                    setTimeout(_resetMicRequest, 2000)
+                  }
                 }
             }
         })
@@ -136,6 +143,25 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
             }
       }, [props.talkId])
 
+      // NOTE: no messages with 'CANCELLED' are sent so this case is handled below.      
+      function giveUpMic() {
+        MicRequestService.giveUpMic(micRequestId)
+        setMicRequestStatus("CANCELLED")
+        setTextMicButton("Thanks for your input!")
+        setButtonColor("color7")
+        setButtonHoverColor("color7")
+        setTextColor("grey")
+
+        //Reset memory after 2sec
+        if(!isMemoryResetOnCue){
+          setIsMemoryResetOnCue(true)
+          setTimeout(_resetMicRequest, 2000)
+        }
+
+        if (props.onCancelled){
+          props.onCancelled()
+        }
+      }
 
 
       function requestMicButton () {
@@ -155,14 +181,7 @@ const MicRequestButton:FunctionComponent<Props> = (props) => {
                 } else if (micRequestStatus == "REQUESTED"){
                   return
                 } else if(micRequestStatus == "GRANTED"){
-                  MicRequestService.giveUpMic(micRequestId)
-                  setTextMicButton("Thanks for your input!")
-                  setButtonColor("color7")
-                  setButtonHoverColor("color7")
-                  setTextColor("grey")
-
-                  // Reset memory after 5sec
-                  setInterval(_resetMicRequest, 5000)
+                  giveUpMic()
 
                 } else if(micRequestStatus == "DENIED"){
                   return
