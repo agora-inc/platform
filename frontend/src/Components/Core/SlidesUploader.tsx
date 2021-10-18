@@ -15,11 +15,12 @@ export default class SlidesUploader extends Component<Props> {
   render() {
     return (
       <Box
+        width={this.props.width ? this.props.width : "100%"}
         justify="center"
         alignSelf="center"
         pad="small"
         focusIndicator={false}
-        height="40px"
+        height="30px"
         background={this.props.disabled ? "grey" : "color1"}
         hoverIndicator={this.props.disabled ? "grey" : "#BAD6DB"}
         style={{borderRadius:'6px'}}
