@@ -1275,8 +1275,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                   <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
               }
               {(callControl.slideShare || isSlideVisible) &&
-                <PDFViewer url="https://arxiv.org/pdf/2101.01150.pdf" slideShareId={slideShareId} presenter={(role == "speaker")} />
-                /* <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={(role == "speaker")} /> */
+                /* <PDFViewer url="https://arxiv.org/pdf/2101.01150.pdf" slideShareId={slideShareId} presenter={(role == "speaker")} /> */
+                <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={(role == "speaker")} /> 
               }
             </Box>
           </Box>

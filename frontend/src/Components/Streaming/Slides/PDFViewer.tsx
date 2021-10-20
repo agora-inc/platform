@@ -6,6 +6,8 @@ import "../../../Styles/videocard.css";
 import { baseApiUrl } from "../../../config";
 import { Document, Page , pdfjs } from 'react-pdf/dist/esm/entry.webpack';
 import { FirebaseDb, SlidesService } from "../../../Services/FirebaseService";
+import Switch from "../../../Components/Core/Switch";
+
 
 interface Props {
     url: string;
@@ -52,7 +54,7 @@ export default function({presenter=false, ...props}:Props) {
     if(!props.pageNumber){
       return
     }
-    setPageNumber(props.pageNumber)
+    setLivePageNumber(props.pageNumber)
   }, [props.pageNumber])
 
   // Keep track live page number if 'Live' enabled
@@ -79,18 +81,28 @@ export default function({presenter=false, ...props}:Props) {
       } 
       // Listen live slides if attendee
       else {
-        console.log("PDF 1", props.slideShareId)
-        let slide_unsubs = FirebaseDb.collection('slide').doc(props.slideShareId).onSnapshot(snaps=>{
+        if (isLive) {
+          setPageNumber(props.pageNumber ? props.pageNumber : 1)
+        }
+
+        /*
+        let xxx = FirebaseDb.collection('slide').doc(slideShareId).onSnapshot(snaps => {
+          if(!snaps.exists) {
+            console.log("PDF 2: out")
+            return
+          }
+          
           let data = snaps.data() as any
-          console.log("PDF 2: ", data)
+          console.log("PDF 3: ", data)
           if(data) {
             setLivePageNumber(data.pageNumber)
           }
         })
-        return slide_unsubs()
+        return xxx()
+        */
       }
     }
-  }, [props.slideShareId, presenter])
+  }, [props.slideShareId, presenter, isLive])
 
 
   // rendering pdf dimensions
@@ -127,8 +139,22 @@ export default function({presenter=false, ...props}:Props) {
         <Page pageNumber={pageNumber} {...dimension} renderAnnotationLayer={false} />
       </Document>
       <Box direction='row'>
-        <Box direction="row" className="pdf-control">
+        <Box direction="row" className="pdf-control" justify="center" alignContent="center">
+          {!presenter &&
+            <Switch
+              checked={isLive}
+              width={105}
+              height={30}
+              textOn={"Live"}
+              textOff={"Your view"}
+              color={"color1"}
+              callback={(check: boolean) => {
+                toggleLive(check)
+              }}
+            />
+          }
           <Box
+            margin={{left: "40px"}}
             justify="center"
             align="center"
             pad="small"
@@ -138,9 +164,11 @@ export default function({presenter=false, ...props}:Props) {
             hoverIndicator="#BAD6DB"
             style={{borderRadius:'6px'}}
             onClick={() => {navigate(pageNumber - 1)}}>
-              Prev
+              <Text size="14px" weight="bold"> Prev </Text>
           </Box>
-          <Text style={{width: '140px', textAlign: 'center', padding: '10px'}}> Page {pageNumber} of {numPages} </Text>
+          <Box background="#EEEEEE" width='120px' height="30px" justify="center" align="center">
+            <Text size="14px" weight="bold" style={{textAlign: 'center', padding: '10px'}}> Page {pageNumber} of {numPages} </Text>
+          </Box>
           <Box
             justify="center"
             align="center"
@@ -151,24 +179,8 @@ export default function({presenter=false, ...props}:Props) {
             hoverIndicator="#BAD6DB"
             style={{borderRadius:'6px'}}
             onClick={()=> navigate(pageNumber + 1)}>
-              Next
+              <Text size="14px" weight="bold"> Next </Text>
           </Box>
-
-
-          {!presenter && !isLive && 
-            <Box
-              justify="center"
-              align="center"
-              pad="small"
-              focusIndicator={false}
-              height="30px"
-              background="color1"
-              hoverIndicator="#BAD6DB"
-              style={{borderRadius:'6px'}}
-              onClick={()=> toggleLive(true)}>
-              Live
-            </Box>
-          }
         </Box>
       </Box>
     </div>

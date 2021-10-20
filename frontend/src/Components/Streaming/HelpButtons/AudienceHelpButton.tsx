@@ -91,6 +91,10 @@ export default class AudienceHelpButton extends Component<Props, State> {
                 <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
                 Toggle the button "Speaker view" to switch from the speakers screen to the slides.
               </Text>
+              <Text size="14px" margin={{bottom: "5px"}}>
+                <StatusCriticalSmall size="15px" style={{marginRight: "5px"}} /> 
+                Go back and forth the slides independently of the speaker using "Prev" and "Next". Toggle the "Your view/Live" button to switch back to the speaker location.
+              </Text>
             </Box>
           </Box>
         </Overlay>

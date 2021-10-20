@@ -113,6 +113,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   
   const [slideShareId, setSlideShareId] = useState('')
   const [isSlideVisible, toggleSlide] = useState(false)
+  const [speakerPageNumber, setSpeakerPageNumber] = useState(1 as number);
 
   const [slideUrl, setSlideUrl] = useState('')
 
@@ -463,14 +464,13 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       }
       let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
+      setSpeakerPageNumber(req[0].pageNumber)
 
       if(req[0].user_id === localUser.uid) {
-        console.log('okay')
         setSlideShareId(req[0].id)
         toggleSlide(false)
         setCallControl({slideShare: true})
       }else{
-        console.log("haha")
         setSlideShareId(req[0].id)
         toggleSlide(true)
         setCallControl({ slideShare: false})
@@ -648,7 +648,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   function viewChangeButton () {
-    console.log("ADMIN SLIDES: ", isSlideVisible)
     let disabled: boolean = (talkStatus == "NOT_STARTED" || talkStatus == "ENDED")
     return (
       <Switch
@@ -1044,8 +1043,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                       <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
                   }
                   {(callControl.slideShare || isSlideVisible) &&
-                    <PDFViewer url="https://arxiv.org/pdf/2101.01150.pdf" slideShareId={slideShareId} />
-                    /* <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} /> */
+                    /* <PDFViewer pageNumber={speakerPageNumber} url="https://arxiv.org/pdf/2101.01150.pdf" slideShareId={slideShareId} /> */
+                    <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} />
                   }
                 </Box>
               </Box>

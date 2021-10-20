@@ -116,6 +116,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
   const [isUnpublishFromRemote, unpublishFromRemote] = useState('')
   const [slideUrl, setSlideUrl] = useState('')
   const [isSlideVisible, toggleSlide] = useState(false)
+  const [speakerPageNumber, setSpeakerPageNumber] = useState(1 as number);
 
   const [slideShareId, setSlideShareId] = useState('')
   
@@ -494,6 +495,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
       }
       let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
+      setSpeakerPageNumber(req[0].pageNumber)
 
       // automatically displays slides when speaker uploads slides (i.e. slide URL is known)
       setSlideShareId(req[0].id)
@@ -1072,8 +1074,8 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
                 <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
             }
             { isSlideVisible &&
-              <PDFViewer url="https://arxiv.org/pdf/2101.01150.pdf" slideShareId={slideShareId} />
-              /* <PDFViewer url={slideUrl} slideShareId={slideShareId} /> */
+              /* <PDFViewer pageNumber={speakerPageNumber} url="https://arxiv.org/pdf/2101.01150.pdf" slideShareId={slideShareId} /> */
+              <PDFViewer url={slideUrl} slideShareId={slideShareId} /> 
             }
           </Box>
         </Box>

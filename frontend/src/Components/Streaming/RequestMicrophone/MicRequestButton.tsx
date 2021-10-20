@@ -23,8 +23,6 @@ import ReactTooltip from "react-tooltip";
 import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_invitation.jpg"
 import '../../../Styles/all-stream-page.css'
 
-import PDFViewer from "../Slides/PDFViewer";
-
 import {FirebaseDb} from "../../../Services/FirebaseService"
 
 
