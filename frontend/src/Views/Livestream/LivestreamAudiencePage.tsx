@@ -486,7 +486,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
         _d.id = d.id
         return _d
       })
-      console.log(req)
+      console.log(req[0])
       if(req.length == 0){
         toggleSlide(false)
         setSlideShareId('')
@@ -549,7 +549,7 @@ const AgoraStreamCall:FunctionComponent<Props> = (props) => {
     let disabled: boolean = (talkStatus == "NOT_STARTED" || talkStatus == "ENDED")
     return (
       <Switch
-        checked={true}
+        checked={!isSlideVisible}
         width={150}
         height={30}
         textOn="Speaker view"

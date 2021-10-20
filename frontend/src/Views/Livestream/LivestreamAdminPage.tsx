@@ -473,7 +473,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         console.log("haha")
         setSlideShareId(req[0].id)
         toggleSlide(true)
-
         setCallControl({ slideShare: false})
       }
     })
@@ -649,16 +648,21 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   function viewChangeButton () {
+    console.log("ADMIN SLIDES: ", isSlideVisible)
     let disabled: boolean = (talkStatus == "NOT_STARTED" || talkStatus == "ENDED")
     return (
       <Switch
-        checked={true}
+        checked={!isSlideVisible}
         width={150}
         height={30}
         textOn="Speaker view"
         textOff="Slides view"
         color={disabled ? "#CCCCCC" : "color1"}
-        callback={(check: boolean) => { if (!disabled) { slideShare(!check) }}}
+        callback={(check: boolean) => { 
+          if (!disabled) {
+            slideShare(!check)
+          }
+        }}
         disabled={disabled}
       />
     )

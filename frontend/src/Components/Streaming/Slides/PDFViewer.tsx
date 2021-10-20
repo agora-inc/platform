@@ -79,9 +79,10 @@ export default function({presenter=false, ...props}:Props) {
       } 
       // Listen live slides if attendee
       else {
+        console.log("PDF 1", props.slideShareId)
         let slide_unsubs = FirebaseDb.collection('slide').doc(props.slideShareId).onSnapshot(snaps=>{
           let data = snaps.data() as any
-          console.log(data)
+          console.log("PDF 2: ", data)
           if(data) {
             setLivePageNumber(data.pageNumber)
           }

@@ -26,6 +26,12 @@ export default class Switch extends Component<Props, State> {
     }
   }
 
+  componentDidUpdate(nextProps: Props) {
+    if (nextProps.checked !== this.props.checked) {
+      this.setState({checked: this.props.checked})
+    }
+  }
+
   toggleChecked = () => {
     this.setState({ checked: !this.state.checked})
     if (this.props.callback) {
