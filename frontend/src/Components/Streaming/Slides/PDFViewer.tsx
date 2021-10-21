@@ -102,7 +102,7 @@ export default function({presenter=false, ...props}:Props) {
         */
       }
     }
-  }, [props.slideShareId, presenter, isLive])
+  }, [props.slideShareId, props.pageNumber ,presenter, isLive])
 
 
   // rendering pdf dimensions
