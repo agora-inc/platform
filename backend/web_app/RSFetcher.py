@@ -1,3 +1,6 @@
+# Import RSScraper
+from app.routes import RSScraperRepository
+
 from bs4 import BeautifulSoup 
 import requests
 import ast
@@ -16,7 +19,7 @@ seminar_urls = []
 for row in rows:
     href_a = row.find("td", {"class" : "seriesname"}).find("a")
     topic_a = row.find("td", {"class" : "topics"}).find("span", {"class" : "topic_label"}).text
-    # Change this to 
+    # get primitive topic for tag, works most of the time  
     for vals in [15,17,18,19,89,142,172]:
         if topic_a.lower() in dictionary[vals]:
             topic_dropdown = vals 
@@ -24,8 +27,7 @@ for row in rows:
         
 
     seminar_urls.append([f"https://researchseminars.org{href_a['href']}",topic_a, topic_dropdown])
+
 for seminar_url in seminar_urls:
     print(seminar_url)
 
-# Import RSScraper
-from RSScraperRepository import RSScraperRepository
