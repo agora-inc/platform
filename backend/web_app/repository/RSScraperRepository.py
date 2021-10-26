@@ -88,7 +88,7 @@ class RSScraperRepository:
 			return 1, idx, channel['id'], name, link
 
 	def get_topic_mapping(topic_str: str):
-		file = open("topics.txt")
+		file = open("repository/topics.txt")
 		contents = file.read()
 		dictionary = ast.literal_eval(contents)
 		file.close()
