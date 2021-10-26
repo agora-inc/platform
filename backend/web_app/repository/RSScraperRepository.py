@@ -106,7 +106,7 @@ class RSScraperRepository:
 
 
 
-	def parse_create_talks(self, url_agora, idx, channel_id, channel_name, talk_link, audience_level, visibility, auto_accept_group):
+	def parse_create_talks(self, url_agora, idx, channel_id, channel_name, talk_link, topic_1_id, audience_level, visibility, auto_accept_group):
 		# Talks
 		url_talks = url_agora.replace("/seminar/", "/talk/")
 		talks = []
@@ -172,9 +172,9 @@ class RSScraperRepository:
 				showLinkOffset=15, 
 				visibility=visibility, 
 				cardVisibility="Everybody", 
-				topic_1_id=83, 
-				topic_2_id=84, 
-				topic_3_id=85,
+				topic_1_id=topic_1_id, 
+				topic_2_id=talk["topics_parsed"][0], 
+				topic_3_id=talk["topics_parsed"][1],
 				talk_speaker=talk['speaker'], 
 				talk_speaker_url=talk['speaker_url'], 
 				published=1, 
