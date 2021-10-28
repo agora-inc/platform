@@ -3,6 +3,8 @@ from app.routes import RSScraperRepository
 from bs4 import BeautifulSoup 
 import requests
 import ast
+from joblib import Parallel, delayed
+import multiprocessing
 
 # Create RSScraper object.
 rs_scraper = RSScraperRepository.RSScraperRepository()
@@ -30,8 +32,15 @@ for row in rows:
         
     seminar_urls.append([f"https://researchseminars.org{href_a['href']}",topic_a, topic_dropdown])
 
-for seminar_url in seminar_urls[:2]:
-    print(seminar_url)
-    is_valid, talk_ids, channel_id, channel_name, link = rs_scraper.create_agora_and_get_talk_ids(seminar_url[0], 360, seminar_url[2])    
-    if(len(talk_ids) and is_valid):
-        talks = rs_scraper.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
+def convert_seminar_to_agora(seminar_url):
+    try:
+        print(seminar_url)
+        is_valid, talk_ids, channel_id, channel_name, link = rs_scraper.create_agora_and_get_talk_ids(seminar_url[0], 360, seminar_url[2])    
+        if(len(talk_ids) and is_valid):
+            talks = rs_scraper.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
+    except (AttributeError, TypeError, IndexError) as e:
+        print("For some reason no talks were parsed!")
+
+# Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(convert_seminar_to_agora)(seminar_url) for seminar_url in seminar_urls[:15])
+for seminar_url in seminar_urls[:15]:
+    convert_seminar_to_agora(seminar_url)

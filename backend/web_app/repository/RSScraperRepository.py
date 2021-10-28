@@ -1,3 +1,4 @@
+import multiprocessing
 from repository.ChannelRepository import ChannelRepository
 from repository.TalkRepository import TalkRepository
 from app.databases import agora_db
@@ -12,6 +13,7 @@ from datetime import datetime
 import time
 import ast
 from typing import List
+from joblib import Parallel, delayed
 
 
 class RSScraperRepository:
@@ -112,6 +114,7 @@ class RSScraperRepository:
 		talks = []
 		
 		for i in idx:
+		# def get_talk_details(i):
 			self.driver.get(url_talks + f"/{i}")
 			talk = {}
 			lst_link = self.driver.find_elements_by_xpath('//a')
@@ -189,6 +192,10 @@ class RSScraperRepository:
 			)
 
 			talks.append(talk_created)
+
+		# Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(get_talk_details)(i) for i in idx)
+		# for i in idx:
+		# 	get_talk_details(i)
 
 		return talks
 
