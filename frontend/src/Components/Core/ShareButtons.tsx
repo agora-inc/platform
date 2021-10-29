@@ -12,6 +12,7 @@ import CopyUrlButton from "./ShareButtons/CopyUrlButton";
 interface Props {
     talk?: Talk | any;
     channel?: Channel | any;
+    referral?:boolean;
     height?: string;
     width?: string;
     widthPixel?: number;
@@ -44,8 +45,13 @@ interface Props {
       if (this.props.talk) {
         return `https://mora.stream/event/${this.props.talk.id}`
       } else if (this.props.channel){
-        const name = this.props.channel.name.replace(/\s/g, '%20')
-        return `https://mora.stream/${name}`
+        if(this.props.referral){
+          const channelId = this.props.channel.id
+          return `https://mora.stream/referral/channel/${channelId}`
+        }
+        else{
+          const name = this.props.channel.name.replace(/\s/g, '%20')
+          return `https://mora.stream/${name}`}
       } else {
         return 'https://mora.stream/'
       }
@@ -56,8 +62,14 @@ interface Props {
         let url = baseApiUrl + `/event-link?eventId=${this.props.talk.id}`
         return url
       } else if (this.props.channel){
+        if(this.props.referral){
+          const channelId = this.props.channel.id
+          return `https://mora.stream/referral/channel/${channelId}`
+        }
+        else{
         let url = baseApiUrl + `/channel-link?channelId=${this.props.channel.id}`
         return url
+      }
       } else {
         return baseApiUrl
       }

@@ -66,6 +66,7 @@
     "react-rte": "^0.16.1",
     "react-scripts": "^3.4.1",
     "react-scroll-into-view": "^1.9.4",
+    "react-step-progress-bar": "^1.0.3",
     "react-tabs": "^3.1.1",
     "react-tooltip": "^4.2.9",
     "sharethis-reactjs": "^1.6.0",

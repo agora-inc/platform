@@ -573,6 +573,9 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 />
             </Box>
 
+            {/*
+            
+            
             <Box align="center" justify="center">
               <Text size="34px" margin={{bottom: "80px"}} color="color1" weight="bold" alignSelf="center">
                 Already running a series? Import everything in 3 clicks!
@@ -580,31 +583,8 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               <TransportSeminars 
                 user={this.state.user}
               />
-            </Box>
-            {/* TODO: INTEGRATE SCRAPPER RESEARCHSEMINARS.ORG before commenting out
-
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Already running a series? Import everything in a minute!</Text>
-            <Box align="center" margin={{bottom: "20px"}} gap="small">
-            <CreateChannelButton 
-                  onClick={this.toggleCreateChannelOverlay} 
-                  width="400px"
-                  height="90px"
-                  text={"Import from researchseminars.org"}
-                  textSize="18px"
-                />
-            <CreateChannelButton 
-                  onClick={this.toggleCreateChannelOverlay} 
-                  width="400px"
-                  height="90px"
-                  text={"Import from custom website"}
-                  textSize="18px"
-                />
             </Box> */}
           </>
-
-
-
-
 
         )}
         {this.state.renderMobileView && (
@@ -670,7 +650,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         
 
         <Box height="100%" width="100%">
-          <Box width="80%" height={this.state.renderMobileView ? "300px": "800px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "300px": "500px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
           </Box>
         </Box>

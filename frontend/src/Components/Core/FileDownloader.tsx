@@ -30,7 +30,7 @@ const FileDownloader:FunctionComponent<Props> = (props) => {
     }
     return(
       <Box
-        background="#EAF1F1"
+        background="color1" // "#EAF1F1"
         round="xsmall"
         justify="center"
         align="center"
@@ -43,7 +43,7 @@ const FileDownloader:FunctionComponent<Props> = (props) => {
         {/* <Text alignSelf="center" color="grey" size="14px">
           {this.state.saved ? "Save talk": "Remove from saved"}
         </Text> */}
-        <Text alignSelf="center" color="black" size="14px"> 
+        <Text alignSelf="center" color="white" size="14px" weight="bold"> 
           Download slides
         </Text>
       </Box>

@@ -482,6 +482,16 @@ const increaseViewCountForChannel = (
   );
 };
 
+const getReferralsForChannel = (
+  channelId: number,
+  callback: any
+) => {
+  get(
+    `channels/referralscount/get?channelId=${channelId}`,
+    callback
+  );
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -544,5 +554,6 @@ export const ChannelService = {
   cancelMembershipApplication,
   getMembershipApplications,
   getViewCountForChannel,
-  increaseViewCountForChannel
+  increaseViewCountForChannel,
+  getReferralsForChannel
 };
