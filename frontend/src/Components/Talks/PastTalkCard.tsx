@@ -248,7 +248,8 @@ export default class PastTalkCard extends Component<Props, State> {
   deleteSlidesButton = () => {
     return (
       <Box
-      background="red"
+      background="#DDDDDD"
+      hoverIndicator="#CCCCCC"
       round="xsmall"
       justify="center"
       align="center"
@@ -264,12 +265,11 @@ export default class PastTalkCard extends Component<Props, State> {
         }
       }
       focusIndicator={false}
-      hoverIndicator="#BAD6DB"
     >
       {/* <Text alignSelf="center" color="grey" size="14px">
         {this.state.saved ? "Save talk": "Remove from saved"}
       </Text> */}
-      <Text alignSelf="center" color="black" size="14px"> 
+      <Text alignSelf="center" weight="bold" color="grey" size="14px"> 
         Delete slides
       </Text>
     </Box>
@@ -282,7 +282,7 @@ export default class PastTalkCard extends Component<Props, State> {
       // console.log(document.getElementById("upload"))
       return (
         <Box direction="column">  
-          <Box gap="small" direction="row" margin={{ top: "10px", bottom: "10px" }}>
+          <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
             {this.state.recordingLink !== "" && (
               <a
                 href={this.state.recordingLink}
@@ -324,7 +324,7 @@ export default class PastTalkCard extends Component<Props, State> {
               background="white"
               round="xsmall"
               height="30px"
-              width="35%"
+              width="36.5%"
               justify="center"
               align="start"
               focusIndicator={false}
@@ -339,13 +339,13 @@ export default class PastTalkCard extends Component<Props, State> {
                   : "Enter link recording"}
               </Text>
             </Box>
-            <Box width="30%" />
-            <Box width="35%" height="30px">
-                <SlidesUploader
-                      text={this.state.hasSlides ? "Re-upload slides": "Upload slides"}
-                      onUpload={this.onSlideUpload}
-                      width="100%"
-                />
+            <Box width="27%" />
+            <Box width="36.5%" height="30px">
+              <SlidesUploader
+                text={this.state.hasSlides ? "Re-upload slides": "Upload slides"}
+                onUpload={this.onSlideUpload}
+                width="100%"
+              />
             </Box>  
           </Box>
         </Box>
@@ -613,7 +613,7 @@ export default class PastTalkCard extends Component<Props, State> {
                 gap="xsmall"
               >
                 <Box
-                  style={{ minHeight: "200px", maxHeight: "420px" }}
+                  style={{ minHeight: "200px", maxHeight: "400px" }}
                   direction="column"
                 >
                   <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>

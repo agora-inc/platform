@@ -110,7 +110,7 @@ export default class TopicTalkList extends Component<Props, State> {
         }
       }
     }
-    console.log(res.length , talkCount)
+    // console.log(res.length , talkCount)
     return res;
   };
   
@@ -408,12 +408,17 @@ export default class TopicTalkList extends Component<Props, State> {
               <Text size="12px" weight="bold" margin={{bottom: "10px"}}> 
                 Topic
               </Text>
-              {this.getPrimitiveNodes().filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic)=>
+              {this.getPrimitiveNodes().filter((topic: Topic) =>{
+                return this.state.audienceLevel.length != 0 ? 
+                this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 })
+                .map((topic: Topic)=>
                 
                 <Box
                   onClick={() => {
                     this.updateTopic(topic)
                     // console.log(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]))
+                    // console.log(this.state.audienceLevel.length)
                   }}
                   background={this.state.chosenTopic === topic? "#0C385B" : "white"}
                   round="xsmall"
@@ -426,7 +431,12 @@ export default class TopicTalkList extends Component<Props, State> {
                   hoverIndicator="#DDDDDD"
                 >
                   <Text size="12px" margin={{left: "5px"}}>
-                    {topic.field}
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
+                
                   </Text>
                 </Box>
               )}
@@ -442,7 +452,9 @@ export default class TopicTalkList extends Component<Props, State> {
                 </Text>
               )}
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(0, 7).filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(0, 7).filter((topic: Topic) =>{return this.state.audienceLevel.length != 0 ? 
+                  this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                  this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
@@ -456,7 +468,11 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                      {topic.field }
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
                     </Text>
                   </Box>
                 )
@@ -466,7 +482,9 @@ export default class TopicTalkList extends Component<Props, State> {
 
             <Box direction="column" width="25%" margin={{top: "24px", right: "60px"}}>
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(7).filter((topic: Topic) =>{return this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(7).filter((topic: Topic) =>{return this.state.audienceLevel.length != 0 ? 
+                  this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                  this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
@@ -480,7 +498,11 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px">
-                      {topic.field}
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
                     </Text>
                   </Box>
                 )

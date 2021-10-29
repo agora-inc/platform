@@ -100,7 +100,7 @@ export default class VideoPage extends Component<Props, State> {
                 </Text>
               </Box>
               <Box direction="row" gap="xsmall" justify="end">
-                <Clapping {...claps} />
+                {/* <Clapping {...claps} /> */}
                 <ChannelIdCard channelName={this.state.stream!.channel_name} />
                 <Box direction="row" align="center" gap="xxsmall">
                   <View color="black" size="40px" />

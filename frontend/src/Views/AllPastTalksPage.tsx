@@ -99,12 +99,36 @@ export default class AllPastTalksPage extends Component<{}, State> {
     return 0;
   };
 
+  getTalksByTopicOnly = (talks: Talk[], topicsId: number[]): Talk[] => {
+    let res: Talk[] = [];
+    let talkCount: number = 0;
+    for (let talk of talks) {
+      let isIn: boolean = false;
+      
+      for (let topic of talk.topics) {
+        
+        if (!isIn && (topicsId.includes(topic.id) 
+        || topicsId.includes(topic.parent_1_id!)
+        || topicsId.includes(topic.parent_2_id!)
+        || topicsId.includes(topic.parent_3_id!))) {
+          isIn = true;
+          res.push(talk);
+          ++talkCount;
+        }
+      }
+    }
+    // console.log(res.length , talkCount)
+    return res;
+  };
+  
   getTalksByTopicsAndAudience = (talks: Talk[], topicsId: number[], audienceLevel: string[]): Talk[] => {
     let res: Talk[] = [];
     for (let talk of talks) {
       let isIn: boolean = false;
       for (let topic of talk.topics) {
-        if (!isIn && topicsId.includes(topic.id) && audienceLevel.includes(talk.audience_level)) {
+        if (!isIn && (topicsId.includes(topic.id)|| topicsId.includes(topic.parent_1_id!)
+        || topicsId.includes(topic.parent_2_id!)
+        || topicsId.includes(topic.parent_3_id!)) && audienceLevel.includes(talk.audience_level)) {
           isIn = true;
           res.push(talk);
         }
@@ -351,12 +375,18 @@ export default class AllPastTalksPage extends Component<{}, State> {
               <Text size="12px" weight="bold" margin={{bottom: "10px"}}> 
                 Topic
               </Text>
-              {this.getPrimitiveNodes().map((topic: Topic) =>
+              {this.getPrimitiveNodes().filter((topic: Topic) =>{
+                return this.state.audienceLevel.length != 0 ? 
+                this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 })
+                .map((topic: Topic)=>
+                
                 <Box
-                  onClick={() => {this.updateTopic(topic)}}
+                  onClick={() => {
+                    this.updateTopic(topic)
+                    // console.log(this.state.audienceLevel.length)
+                  }}
                   background={this.state.chosenTopic === topic? "#0C385B" : "white"}
-                  // background={this.state.chosenTopic.id != -1? "#0C385B" : "white"} 
-                  // border={this.state.chosenTopic === topic ? {color: "#0C385B", size: "2px"} : {size: "0px"}}
                   round="xsmall"
                   pad="5px"
                   width="80%"
@@ -367,7 +397,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
                   hoverIndicator="#DDDDDD"
                 >
                   <Text size="12px" margin={{left: "5px"}}>
-                    {topic.field}
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
+                
                   </Text>
                 </Box>
               )}
@@ -383,7 +418,9 @@ export default class AllPastTalksPage extends Component<{}, State> {
                 </Text>
               )}
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(0, 7).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(0, 7).filter((topic: Topic) =>{return this.state.audienceLevel.length != 0 ? 
+                  this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                  this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
@@ -397,7 +434,11 @@ export default class AllPastTalksPage extends Component<{}, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                      {topic.field}
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
                     </Text>
                   </Box>
                 )
@@ -406,8 +447,10 @@ export default class AllPastTalksPage extends Component<{}, State> {
             </Box> 
 
             <Box direction="column" width="25%" margin={{top: "24px", right: "60px"}}>
-              {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(7).map((topic: Topic) =>
+            {this.state.chosenTopic.field !== "-" && (
+                this.getChildren(this.state.chosenTopic).slice(7).filter((topic: Topic) =>{return this.state.audienceLevel.length != 0 ? 
+                  this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                  this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
@@ -420,8 +463,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
                     margin="3px"
                     hoverIndicator="#DDDDDD"
                   >
-                    <Text size="12px" margin={{left: "5px"}}>
-                      {topic.field}
+                    <Text size="12px">
+                    {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`}
                     </Text>
                   </Box>
                 )
