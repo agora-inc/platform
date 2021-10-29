@@ -925,7 +925,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   callback={(checked: boolean) => {
                     this.setState({ latex: checked });
                   }}
-                  width="30px"
+                  width={30}
                 />
                 Preview <InlineMath math={"{\\small \\LaTeX}"} />
               </Box>
@@ -1117,7 +1117,7 @@ export default class EditTalkModal extends Component<Props, State> {
             <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
               <Text size="13px" weight="bold"> Registration required? </Text>
               <Switch
-                width="60px"
+                width={60}
                 height={24}
                 checked={this.state.onRegistration}
                 textOn="Yes" 
@@ -1142,7 +1142,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     Automatically accept some users?
                   </Text>
                   <Switch
-                      width="60px"
+                      width={60}
                       height={24}
                       checked={this.state.autoAcceptEnabled}
                       textOn="Yes" 

@@ -10,23 +10,25 @@ import { textToLatex } from "../../Components/Core/LatexRendering";
 import { Java } from "grommet-icons";
 import { Video, VideoService } from "../../Services/VideoService";
 import { StreamService } from "../../Services/StreamService";
-import { TalkService } from "../../Services/TalkService";
+import { TalkService, Talk } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import VideoPlayerAgora from "../../Components/Streaming/VideoPlayer/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdClear, MdSlideshow} from 'react-icons/md'
-import {db, API} from '../../Services/FirebaseService'
+import {FirebaseDb, StreamingService, SlidesService, ClappingService} from '../../Services/FirebaseService'
 import Loader from "react-loader-spinner";
 import ReactTooltip from "react-tooltip";
-
-
 import PostSeminarCoffeeImage from "../../assets/streaming/post_seminar_coffee_invitation.jpg"
-
 import '../../Styles/all-stream-page.css'
 import Clapping from "../../Components/Streaming/Clapping/Clapping";
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
+import ChatBox from "./LivestreamChatBox";
+import MicrophoneRequests from "../../Components/Streaming/RequestMicrophone/MicrophoneRequests"
+
+import AdminHelpButton from "../../Components/Streaming/HelpButtons/AdminHelpButton"
+import Switch from "../../Components/Core/Switch";
 
 
 interface Props {
@@ -90,7 +92,6 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       } as any)
   const [talkDetail, setTalkDetail] = useState({} as any)
   
-  //
   const [role, setRole] = useState("admin")
 
   const [localAudioTrack, setLocalAudioTrack] = useState(null as any)
@@ -102,15 +103,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   const [remoteAudioTrack, setRemoteAudioTrack] = useState(null as any)
   const [isScreenAvailable, setScreenAvailability] = useState(false as boolean)
 
-  const [micRequests, setMicRequests] = useState([] as any[])
   const [isTimeover, setTimeover] = useState(false)
 
   const [messages, setMessages] = useState<Message[]>([])
+
   const [talkStatus, setTalkStatus] = useState('NOT_STARTED' as string)
   
   const [talkId, setTalkId] = useState('')
+  
   const [slideShareId, setSlideShareId] = useState('')
   const [isSlideVisible, toggleSlide] = useState(false)
+  const [speakerPageNumber, setSpeakerPageNumber] = useState(1 as number);
 
   const [slideUrl, setSlideUrl] = useState('')
 
@@ -207,12 +210,12 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   async function get_token_for_talk(talkId: string) {
     // Get dynamic access token
     return new Promise((res:any, rej:any)=>{
-      StreamService.getToken(talkId, 1, Math.floor(Date.now()/1000 + 600 ), null, localUser.uid, (tk:string)=>{
+      // Making token available for 3 hours
+      StreamService.getToken(talkId, 1, Math.floor(Date.now()/1000 + 10800 ), null, localUser.uid, (tk:string)=>{
         if(tk)
           return res(tk)
         rej()
       })
-
     })
   }
 
@@ -229,7 +232,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   async function join_live_chat(){
-    console.log('joining...')
+    console.log('joining live chat...')
     let {appId , uid} = localUser
     let talkId = props.talkId.toString()
 
@@ -244,6 +247,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       console.log(e)
     }
   }
+
   async function join(){
     console.log('joining...')
     let {appId , uid} = localUser
@@ -405,22 +409,22 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       speaker_id: '',
       meta: ''
     }
-    let ret = await API.startSeminar(talkId, data)
+    let ret = await StreamingService.startSeminar(talkId, data)
   }
   
   async function stopTalk(){
     if(!window.confirm('Are you sure? Doing so will redirect people to the Cafeteria.')) {
       return
     }
-    let ret = await API.endSeminar(talkId)
+    let ret = await StreamingService.endSeminar(talkId)
   }
 
 
   useEffect(()=>{
     (async ()=>{
       setTalkId(props.talkId.toString())
-      join_live_chat()
       fetchTalkDetails()
+      join_live_chat()
     })()
   }, [])
 
@@ -428,7 +432,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     if(!talkId) {
       return
     }
-    let unsubs = db.collection('talk').doc(talkId).onSnapshot(doc=>{
+    let unsubs = FirebaseDb.collection('talk').doc(talkId).onSnapshot(doc=>{
       if(!doc.exists){
         return
       }
@@ -446,17 +450,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setTalkStatus(data.status)
       }
     })
-    let request_unsubs = db.collection('requests').where('talk_id', '==', talkId).onSnapshot(snaps=>{
-      let req = snaps.docs.filter(d=>d.exists).map(d=>{
-        let _d = d.data()
-        _d.id = d.id
-        return _d
-      }).filter((d:any)=> d.status !== 'DENIED')
-      setMicRequests([...req])
-    })
-
-
-    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
+    
+    let slide_unsubs = FirebaseDb.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
         _d.id = d.id
@@ -469,17 +464,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       }
       let {url} = await TalkService.getSlides(Number(props.talkId))
       setSlideUrl(url)
+      setSpeakerPageNumber(req[0].pageNumber)
 
       if(req[0].user_id === localUser.uid) {
-        console.log('okay')
         setSlideShareId(req[0].id)
         toggleSlide(false)
         setCallControl({slideShare: true})
       }else{
-        console.log("haha")
         setSlideShareId(req[0].id)
         toggleSlide(true)
-
         setCallControl({ slideShare: false})
       }
     })
@@ -487,18 +480,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     return ()=>{
       leave()
       unsubs()
-      request_unsubs()
       slide_unsubs()
     }
   }, [talkId])
 
   async function slideShare(slideShare: boolean) {
     if(slideShare) {
-      let req = await API.slideShare(localUser.uid, talkId) as any
+      let req = await SlidesService.slideShare(localUser.uid, talkId) as any
       setSlideShareId(req.id)
       setCallControl({slideShare: true})
     }else{
-      let req = await API.slideStop(slideShareId) as any
+      let req = await SlidesService.slideStop(slideShareId) as any
       setSlideShareId('')
       setCallControl({slideShare: false})
     }
@@ -515,8 +507,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       hoverIndicator="#6DA3C7"
       focusIndicator={true}
       style={{
-        background: "#0C385B", width: "120px",
-        color: 'white', textAlign: 'center', borderRadius: '6px', height: '50px'
+        background: "#0C385B", width: "100px",
+        color: 'white', textAlign: 'center', borderRadius: '6px', height: '45px'
       }}
     >
       <Text size="14px" weight="bold"> {talkStatus === 'ENDED'? 'Restart': 'Start'} </Text>
@@ -533,8 +525,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         hoverIndicator="#6DA3C7"
         focusIndicator={true}
         style={{
-          background: "#0C385B", width: "120px",
-          color: 'white', textAlign: 'center', borderRadius: '6px', height: '50px'
+          background: "#0C385B", width: "100px",
+          color: 'white', textAlign: 'center', borderRadius: '6px', height: '45px'
         }}
       >
       <Text size="14px" weight="bold"> Stop </Text>
@@ -543,26 +535,30 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   function screenShareButton () {
+    let disabled: boolean = (talkStatus == "NOT_STARTED" || talkStatus == "ENDED")
     return (
       <Box
         justify="center"
         align="center"
         pad="small"
         focusIndicator={false}
-        height="50px"
-        background={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "color1"}
-        hoverIndicator={(talkStatus == "NOT_STARTED" || talkStatus == "ENDED") ? "grey" : "#BAD6DB"}
+        height="40px"
+        background={disabled ? "#CCCCCC" : "color1"}
+        hoverIndicator={disabled ? "#CCCCCC" : "#BAD6DB"}
         style={{borderRadius:'6px'}}
-        onClick={()=>{
-          if (callControl.screenShare){
-            stop_share_screen()
-          } else {
-            share_screen()
+        onClick={() => {
+          if (!disabled) {
+            if (callControl.screenShare){
+              stop_share_screen()
+            } else {
+              share_screen()
+            }
           }
-
         }}
       >
-      <Text weight="bold" color="white" size="14px" textAlign="center">
+      <Text weight="bold" size="12px" textAlign="center"
+        color={disabled ? "grey" : "white"}
+      >
         {callControl.screenShare? "Unshare" : "Share screen"}
       </Text>
       </Box>
@@ -576,7 +572,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       align="center"
       pad="small"
       focusIndicator={false}
-      height="50px"
+      height="40px"
       background="color1"
       hoverIndicator="#BAD6DB"
       style={{borderRadius:'6px'}}
@@ -604,7 +600,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         align="center"
         pad="small"
         focusIndicator={false}
-        height="50px"
+        height="40px"
         background="color1"
         hoverIndicator="#BAD6DB"
         style={{borderRadius:'6px'}}
@@ -631,7 +627,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         align="center"
         pad="small"
         focusIndicator={false}
-        height="50px"
+        height="40px"
         background="color1"
         hoverIndicator="#BAD6DB"
         style={{borderRadius:'6px'}}
@@ -652,7 +648,28 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   }
 
   function viewChangeButton () {
+    let disabled: boolean = (talkStatus == "NOT_STARTED" || talkStatus == "ENDED")
     return (
+      <Switch
+        checked={!isSlideVisible}
+        width={150}
+        height={30}
+        textOn="Speaker view"
+        textOff="Slides view"
+        color={disabled ? "#CCCCCC" : "color1"}
+        callback={(check: boolean) => { 
+          if (!disabled) {
+            slideShare(!check)
+          }
+        }}
+        disabled={disabled}
+      />
+    )
+
+
+
+
+      {/*
       <Box
       justify="center"
       align="center"
@@ -674,8 +691,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       <Text weight="bold" color="white" size="14px" textAlign="center">
         {callControl.slideShare? "View speaker" : "View slides"}
       </Text>
-    </Box>
-    )
+    </Box> */}
   }
 
   function streamingButtons () {
@@ -683,18 +699,27 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       <>
       {/* MAIN BUTTONS */}
         <Box 
-            direction='row'
-            // gap="10px"
-            align="center"
-          >
+          direction='column'
+          gap="2vw"
+          align="start"
+        >
           {(role == "admin") && (
-            <>
+            <Box direction="row" gap="10px">
               {startTalkButton()}
+              <Clapping 
+                role="admin" 
+                onClick={()=> ClappingService.thankTheSpeaker(talkId)} 
+                clapBase='/claps/auditorium.mp3' 
+                clapUser='/claps/applause-5.mp3' 
+              /> 
               {stopTalkButton()}
-              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
-              {viewChangeButton()}
-            </>
-            )}
+              <AdminHelpButton />
+            </Box>
+          )}
+
+          <Box >
+            {viewChangeButton()}
+          </Box>
         
           {/* {(role == "speaker") && (
             <>
@@ -727,18 +752,18 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             </>
             ) 
           } */}
-        </Box>
+
         
         {/* SECONDARY BUTTONS */}
         <Box direction="row">
-            {(role == "admin") && (
-            <>
+          {(role == "admin") && (
+            <Box direction="row" gap="10px">
               {micButton()}
               {webcamButton()}
               {screenShareButton()}
               {fullscreenButton()}
-            </>
-            )}
+            </Box>
+          )}
 
             {/* {(role == "speaker") && (
             <>
@@ -758,12 +783,18 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             </>
             )} */}
         </Box>
+      </Box>
       </>
     )
   }
 
-  function chatBox() {
+  const messagesEndRef = useRef<null | HTMLDivElement>(null)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: 'nearest' })
+  }
+  useEffect(scrollToBottom, [messages]);
 
+  function chatBox() {
     return (
       <>
       <Box height="85%" flex={true} gap="5px" overflow="auto" margin="small" style={{position : "relative", bottom: 0}}>
@@ -781,9 +812,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         </Box>
         // style={{textAlign: msg.senderId == localUser.uid?'right': 'left'}}
         ))}
-        </Box>
-        <TextInput onKeyUp={send_message} placeholder='Aa' />
-        {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
+        <Box ref={messagesEndRef} />
+      </Box>
+      <TextInput onKeyUp={send_message} placeholder='Aa' />
+      {/* <input type='textbox' onKeyUp={send_message} placeholder='type message and press enter.' /> */}
       </>
     )
   }
@@ -886,16 +918,17 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             background="color5"
             round={"medium"}
             onClick={() => {}}
-            height="45px"
-            width="150px"
+            height="30px"
+            width="300px"
+            pad="10px"
             focusIndicator={false}
             direction="row"
           >
-            <Text>Starting soon</Text>
+            <Text size="14px" color="grey">Starting soon</Text>
           </Box>
           <ReactTooltip id="talk_status" effect="solid">
               Speakers and admins can talk to each other but audience cannot see yet.
-            </ReactTooltip>
+          </ReactTooltip>
         </>
       )}
 
@@ -905,7 +938,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           data-tip data-for='talk_status'
           justify="center"
           align="center"
-          background="grey"
+          background="#CCCCCC"
           round={"medium"}
           onClick={() => {}}
           pad={{ horizontal: "medium", vertical: "small" }}
@@ -913,7 +946,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           width="140px"
           focusIndicator={false}
         >
-          <Text>Ended</Text>
+          <Text color="black">Ended</Text>
         </Box>
         <ReactTooltip id="talk_status" effect="solid">
             Stream has been ended.
@@ -941,56 +974,10 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           }}
         >
           <Text weight="bold" color="white" size="14px" textAlign="center">
-            <Java size="medium"/> Grab a coffee and meet your peers!
+            <Java size="medium" style={{marginRight: "5px"}}/> Grab a coffee and meet your peers
           </Text>
         </Box>
       </a>
-    )
-  }
-
-  //////////////////
-  // Request mic (admin)
-  //////////////////
-  function requestMicBox() {
-    return (
-      <>
-        <Text size="16px" color="grey" style={{marginBottom: "10px"}}>Requests for mic</Text>
-        <Table>
-          <TableBody>
-            {micRequests.map((req, i)=>(
-              <TableRow key={i} className='request-item'>
-                <TableCell>
-                  <Text weight="bold" size="14px"> {req.requester_name || req.requester_id} </Text>
-                </TableCell>
-                {req.status ==='REQUESTED' && (
-                  <Button 
-                    margin={{left: '10px'}}
-                    onClick={()=>API.grantRequest(req.id, true)} 
-                    hoverIndicator="#6DA3C7"
-                    focusIndicator={true}
-                    style={{
-                      background: "#0C385B", width: "90px",
-                      color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
-                    }}
-                  >
-                    <Text size="14px" weight="bold"> Accept </Text>
-                  </Button>
-                )}
-                <Button 
-                  margin={{left: '30px'}} 
-                  onClick={()=>API.grantRequest(req.id, false)}
-                  style={{
-                    background: "#FF4040", width: "90px",
-                    color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
-                  }}
-                >
-                  <Text size="14px" weight="bold"> {req.status =='GRANTED' ? 'Remove': 'Refuse'} </Text>
-                </Button>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </>
     )
   }
 
@@ -1015,15 +1002,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
           )} */}
           <Grid
               columns={["75%", "20%"]}
-              rows={["2vh", "15vh", "55vh", "25vh"]}
+              rows={["2vh", "25vh", "35vh", "10vh", "25vh"]}
               gap="medium"
               areas={[
-                { name: "player", start: [0, 0], end: [0, 3] },
+                { name: "player", start: [0, 0], end: [0, 4] },
                 { name: "display_role", start: [1, 0], end: [1, 0] },
                 { name: "main_buttons", start: [1, 1], end: [1, 1] },
                 { name: "chat", start: [1, 2], end: [1, 2] },
-                { name: "description", start: [0, 3], end: [0, 3] },
-                { name: "extra_feature", start: [1, 3], end: [1, 3] },
+                { name: "description", start: [0, 4], end: [0, 4] },
+                { name: "extra_feature", start: [1, 3], end: [1, 4] },
               ]}
             >
               <Box gridArea="player" justify="between" gap="small">
@@ -1056,7 +1043,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                       <VideoPlayerAgora id='screen' stream={remoteScreenTrack} />
                   }
                   {(callControl.slideShare || isSlideVisible) &&
-                    <PDFViewer url={slideUrl} slideShareId={slideShareId} presenter={callControl.slideShare} />
+                    <PDFViewer pageNumber={speakerPageNumber} url={slideUrl} slideShareId={slideShareId} /> 
+                    // <PDFViewer pageNumber={speakerPageNumber} url="https://arxiv.org/pdf/2101.01150.pdf" slideShareId={slideShareId} /> 
                   }
                 </Box>
               </Box>
@@ -1070,12 +1058,15 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
               </Box>
 
               <Box gridArea="chat" background="#EAF1F1" round="small" margin={{bottom: "10px"}}>
-                  {chatBox()}
+                  { chatBox() }
+                  {/* ChatBox(localUser, talkId) */}
               </Box>
 
               <Box gridArea="extra_feature" direction='column' height="20vw">   {/*flex width='70vw'>*/}
                   {(role == "admin") && (
-                    requestMicBox()
+                    <MicrophoneRequests
+                      talkId={props.talkId}
+                    />
                   )}
                   {/* <DescriptionAndQuestions
                     gridArea="questions"

@@ -10,14 +10,14 @@ import { textToLatex } from "../../Components/Core/LatexRendering";
 import { Chat, View } from "grommet-icons";
 import { Video, VideoService } from "../../Services/VideoService";
 import { StreamService } from "../../Services/StreamService";
-import { TalkService } from "../../Services/TalkService";
+import { TalkService, Talk } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import VideoPlayerAgora from "../../Components/Streaming/VideoPlayer/VideoPlayerAgora";
 import AgoraRTC, { IAgoraRTCClient, ClientRole } from "agora-rtc-sdk-ng"
 import AgoraRTM from 'agora-rtm-sdk';
 import {FaMicrophone, FaVideo, FaExpand, FaCompress, FaVideoSlash, FaMicrophoneSlash} from 'react-icons/fa'
 import {MdScreenShare, MdStopScreenShare, MdClear, MdSlideshow} from 'react-icons/md'
-import {db, API} from '../../Services/FirebaseService'
+import {FirebaseDb, StreamingService, SlidesService, ClappingService, MicRequestService} from '../../Services/FirebaseService'
 import '../../Styles/all-stream-page.css'
 import PDFViewer from "../../Components/Streaming/Slides/PDFViewer";
 
@@ -248,7 +248,8 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   async function get_token_for_talk(talkId: string) {
     // Get dynamic access token
     return new Promise((res:any, rej:any)=>{
-      StreamService.getToken(talkId, 1, Math.floor(Date.now()/1000 + 600 ), null, localUser.uid, (tk:string)=>{
+      // Making token available for 3 hours
+      StreamService.getToken(talkId, 1, Math.floor(Date.now()/1000 + 10800 ), null, localUser.uid, (tk:string)=>{
         if(tk)
           return res(tk)
         rej()
@@ -372,7 +373,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
   async function unpublish_microphone(){
     if (role == "audience"){
       if(hasMicRequested) {
-        API.removeRequest(hasMicRequested)
+        MicRequestService.deleteRequest(hasMicRequested)
       }
       setMicRequest('')
     }
@@ -481,14 +482,14 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       speaker_id: '',
       meta: ''
     }
-    let ret = await API.startSeminar(talkId, data)
+    let ret = await StreamingService.startSeminar(talkId, data)
   }
   
   async function stopTalk(){
     if(!window.confirm('Are you sure? Doing so will redirect people to the Cafeteria.')) {
       return
     }
-    let ret = await API.endSeminar(talkId)
+    let ret = await StreamingService.endSeminar(talkId)
   }
 
 
@@ -505,7 +506,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     if(!talkId) {
       return
     }
-    let unsubs = db.collection('talk').doc(talkId).onSnapshot(doc=>{
+    let unsubs = FirebaseDb.collection('talk').doc(talkId).onSnapshot(doc=>{
       if(!doc.exists){
         return
       }
@@ -529,7 +530,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
     // Unsub mic requests
     let request_unsubs = () => {}
     if (role == "admin" || role == "speaker"){
-      let request_unsubs = db.collection('requests').where('talk_id', '==', talkId).onSnapshot(snaps=>{
+      let request_unsubs = FirebaseDb.collection('requests').where('talk_id', '==', talkId).onSnapshot(snaps=>{
         let req = snaps.docs.filter(d=>d.exists).map(d=>{
           let _d = d.data()
           _d.id = d.id
@@ -538,7 +539,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
         setMicRequests([...req])
       })
     } else if (role == "audience") {
-      let request_unsubs = db.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
+      let request_unsubs = FirebaseDb.collection('requests').where('requester_id', '==', localUser.uid).onSnapshot(snaps=>{
         let req = snaps.docs.filter(d=>d.exists).map(d=>{
           let _d = d.data()
           _d.id = d.id
@@ -558,7 +559,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       })
     }
     // Unsub slides
-    let slide_unsubs = db.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
+    let slide_unsubs = FirebaseDb.collection('slide').where('talk_id', '==', talkId).onSnapshot(async(snaps)=>{
       let req = snaps.docs.filter(d=>d.exists).map(d=>{
         let _d = d.data()
         _d.id = d.id
@@ -597,11 +598,11 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
 
   async function slideShare(slideShare: boolean) {
     if(slideShare) {
-      let req = await API.slideShare(localUser.uid, talkId) as any
+      let req = await SlidesService.slideShare(localUser.uid, talkId) as any
       setSlideShareId(req.id)
       setCallControl({slideShare: true})
     }else{
-      let req = await API.slideStop(slideShareId) as any
+      let req = await SlidesService.slideStop(slideShareId) as any
       setSlideShareId('')
       setCallControl({slideShare: false})
     }
@@ -624,7 +625,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <>
               {startTalkButton()}
               {stopTalkButton()}
-              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+              <Clapping role={role} onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
               {viewChangeButton()}
             </>
             )}
@@ -647,7 +648,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                     )
                   }}
                   />
-              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />     
+              <Clapping role={role} onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' />     
               {viewChangeButton()}
             </>
           )}  
@@ -655,7 +656,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
             <>
               {requestMicButton()}
               {fullscreenButton()}
-              <Clapping onClick={()=> API.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
+              <Clapping role="audience" onClick={()=> ClappingService.thankTheSpeaker(talkId)} clapBase='/claps/auditorium.mp3' clapUser='/claps/applause-5.mp3' /> 
               {viewChangeButton()}
             </>
             ) 
@@ -880,7 +881,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
       style={{borderRadius:'6px'}}
       onClick={()=>{
         if (hasMicRequested || !callControl.mic){
-          API.requestMic(talkId, localUser.uid, storedName)
+          MicRequestService.requestMic(talkId, localUser.uid, storedName)
         }
         else {
           unpublish_microphone()
@@ -934,7 +935,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                 {req.status ==='REQUESTED' && (
                   <Button 
                     margin={{left: '10px'}}
-                    onClick={()=>API.grantRequest(req.id, true)} 
+                    onClick={()=>MicRequestService.grantRequest(req.id)} 
                     hoverIndicator="#6DA3C7"
                     focusIndicator={true}
                     style={{
@@ -947,7 +948,7 @@ const AgoraStream:FunctionComponent<Props> = (props) => {
                 )}
                 <Button 
                   margin={{left: '30px'}} 
-                  onClick={()=>API.grantRequest(req.id, false)}
+                  onClick={()=>MicRequestService.grantRequest(req.id)}
                   style={{
                     background: "#FF4040", width: "90px",
                     color: 'white', textAlign: 'center', borderRadius: '6px', height: '30px'
