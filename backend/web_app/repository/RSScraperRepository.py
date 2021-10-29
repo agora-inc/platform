@@ -1,3 +1,4 @@
+import multiprocessing
 from repository.ChannelRepository import ChannelRepository
 from repository.TalkRepository import TalkRepository
 from app.databases import agora_db
@@ -10,6 +11,9 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from datetime import datetime
 import time
+import ast
+from typing import List
+from joblib import Parallel, delayed
 
 
 class RSScraperRepository:
@@ -50,6 +54,8 @@ class RSScraperRepository:
 		except NoSuchElementException:
 			return False
 
+	
+
 	def create_agora_and_get_talk_ids(self, url_agora, user_id, topic_1_id):
 		if "https://researchseminars.org/seminar/" not in url_agora:
 			return 0, [], -1, ""
@@ -83,12 +89,32 @@ class RSScraperRepository:
 			self._logout()
 			return 1, idx, channel['id'], name, link
 
+	def get_topic_mapping(topic_str: str):
+		file = open("repository/topics.txt")
+		contents = file.read()
+		dictionary = ast.literal_eval(contents)
+		file.close()
+		
+		search_results = []
+		if topic_str != None:
+			for vals in list(dictionary.values()):
+				vals_lower = [x.lower() for x in vals]
+				if topic_str.lower() in vals_lower:
+					search_results += [list(dictionary.keys())[list(dictionary.values()).index(vals)][1]]
+		if(len(search_results)):
+			return search_results[-1]
+		else:
+			return None
+
+
+
 	def parse_create_talks(self, url_agora, idx, channel_id, channel_name, talk_link, topic_1_id, audience_level, visibility, auto_accept_group):
 		# Talks
 		url_talks = url_agora.replace("/seminar/", "/talk/")
 		talks = []
 		
 		for i in idx:
+		# def get_talk_details(i):
 			self.driver.get(url_talks + f"/{i}")
 			talk = {}
 			lst_link = self.driver.find_elements_by_xpath('//a')
@@ -101,6 +127,10 @@ class RSScraperRepository:
 			talk['topics'] = [t.text for t in topics][:3]
 			if len(talk['topics']) < 3:
 				talk['topics'] += [None] * (3 - len(talk['topics']))
+			
+			talk['topics_parsed'] = []
+			for topic_str in talk['topics']:
+				talk['topics_parsed'] += [RSScraperRepository.get_topic_mapping(topic_str)]
 
 			# Speaker 
 			talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
@@ -110,7 +140,7 @@ class RSScraperRepository:
 			str_time = self.driver.find_element_by_xpath('//b').text
 			talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
 
-			# Description + Comments
+			# Description + Comments	
 			e = self.driver.find_element_by_xpath("//div[@class= 'talk-details-container']")
 			lst = []
 			for elem in e.find_elements_by_xpath("./child::*"):
@@ -146,8 +176,8 @@ class RSScraperRepository:
 				visibility=visibility, 
 				cardVisibility="Everybody", 
 				topic_1_id=topic_1_id, 
-				topic_2_id=None, 
-				topic_3_id=None,
+				topic_2_id=talk["topics_parsed"][0], 
+				topic_3_id=talk["topics_parsed"][1],
 				talk_speaker=talk['speaker'], 
 				talk_speaker_url=talk['speaker_url'], 
 				published=1, 
@@ -162,6 +192,10 @@ class RSScraperRepository:
 			)
 
 			talks.append(talk_created)
+
+		# Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(get_talk_details)(i) for i in idx)
+		# for i in idx:
+		# 	get_talk_details(i)
 
 		return talks
 

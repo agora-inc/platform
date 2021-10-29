@@ -2077,8 +2077,8 @@ def publishAllTalks():
     talk_ids = params['idx']
 
     talks = RSScraper.parse_create_talks(
-        params['url'], talk_ids, params['channel_id'], params['channel_name'], params['talk_link'],
-        params['topic_1_id'], params['audience_level'], params['visibility'], params['auto_accept_group']
+                params['url'], talk_ids, params['channel_id'], params['channel_name'], params['talk_link'],
+                params['topic_1_id'], params['audience_level'], params['visibility'], params['auto_accept_group']
     )
 
     response = jsonify(talks)
