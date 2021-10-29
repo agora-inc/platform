@@ -77,7 +77,6 @@ function App() {
           {/* PAYMENT ENDPOINTS: */}
           <Route path="/thankyou/:status" component={AfterTransaction} />
 
-
           {/* OLD ENDPOINTS: UNUSED */}
           {/* <Route path="/video" component={VideoPage} /> */}
           {/* <Route path="/stream" component={StreamPage} /> */}
