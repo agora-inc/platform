@@ -460,7 +460,7 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ bottom: "20px", top: "10px" }}
                   >
-                    {this.props.talk.name}
+                    {textToLatex(this.props.talk.name)}
                   </Text>
 
                   {this.props.talk.talk_speaker_url && (

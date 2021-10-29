@@ -417,6 +417,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 <Box
                   onClick={() => {
                     this.updateTopic(topic)
+                    // console.log(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]))
                     // console.log(this.state.audienceLevel.length)
                   }}
                   background={this.state.chosenTopic === topic? "#0C385B" : "white"}

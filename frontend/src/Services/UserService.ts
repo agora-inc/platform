@@ -15,17 +15,19 @@ const register = (
   username: string,
   password: string,
   email: string,
+  refChannel: number,
   callback: any
 ) => {
   axios
     .post(
       baseApiUrl + "/users/add",
-      { username: username, password: password, email: email },
+      { username: username, password: password, email: email, refChannel: refChannel },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
       localStorage.setItem("user", JSON.stringify(response.data));
       callback("ok");
+      // getting weird error about expecting no arguments
       window.location.reload(false);
     })
     .catch(function (error) {
