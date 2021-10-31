@@ -15,6 +15,9 @@ import ast
 from typing import List
 from joblib import Parallel, delayed
 
+from alphabet_detector import AlphabetDetector
+ad = AlphabetDetector()
+
 
 class RSScraperRepository:
 	def __init__(self, db=agora_db):
@@ -54,7 +57,13 @@ class RSScraperRepository:
 		except NoSuchElementException:
 			return False
 
-	
+	def isEnglish(s):
+		try:
+			s.encode(encoding='utf-8').decode('ascii')
+		except UnicodeDecodeError:
+			return False
+		else:
+			return True
 
 	def create_agora_and_get_talk_ids(self, url_agora, user_id, topic_1_id):
 		if "https://researchseminars.org/seminar/" not in url_agora:
@@ -70,24 +79,28 @@ class RSScraperRepository:
 			description = [e.text for e in description if e.text != '']
 			description = '\n'.join(description)
 			
-			channel = self.channelRepo.getChannelByName(name)
-			if not channel:
-				channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id)
+			if(RSScraperRepository.isEnglish(name)):	
+				channel = self.channelRepo.getChannelByName(name)
+				if not channel:
+					channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id)
 
-			# Get talk index
-			idx = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
-			
-			# Get a link
-			if len(idx) > 0:
-				url_talks = url_agora.replace("/seminar/", "/talk/")
-				self.driver.get(url_talks + f"/{idx[0]}")
-				lst_link = self.driver.find_elements_by_xpath('//a') 
-				link = RSScraperRepository._get_href(lst_link, "available")
+				# Get talk index
+				idx = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
+				
+				# Get a link
+				if len(idx) > 0:
+					url_talks = url_agora.replace("/seminar/", "/talk/")
+					self.driver.get(url_talks + f"/{idx[0]}")
+					lst_link = self.driver.find_elements_by_xpath('//a') 
+					link = RSScraperRepository._get_href(lst_link, "available")
+				else:
+					link = ""
+
+				self._logout()
+				return 1, idx, channel['id'], name, link
 			else:
-				link = ""
-
-			self._logout()
-			return 1, idx, channel['id'], name, link
+				print('Non latin characters detected, not supported by DB')
+				return 0, [], -1, ""
 
 	def get_topic_mapping(topic_str: str):
 		file = open("repository/topics.txt")
@@ -189,6 +202,7 @@ class RSScraperRepository:
 				reminder2=None, 
 				reminderEmailGroup=[],
 				email_on_creation=False,
+				main_talk_link=url_talks + f"/{i}"
 			)
 
 			talks.append(talk_created)

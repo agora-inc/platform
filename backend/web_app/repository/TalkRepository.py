@@ -420,7 +420,7 @@ class TalkRepository:
             return
 
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup, email_on_creation=True):
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup, email_on_creation=True, main_talk_link=None):
         query = f'''
             INSERT INTO Talks (
                 channel_id, 
@@ -441,7 +441,8 @@ class TalkRepository:
                 published,
                 audience_level,
                 auto_accept_group, 
-                auto_accept_custom_institutions
+                auto_accept_custom_institutions,
+                main_talk_link
                 ) 
             VALUES (
                 {channelId}, 
@@ -462,7 +463,8 @@ class TalkRepository:
                 {published},
                 "{audience_level}",
                 "{auto_accept_group}", 
-                {auto_accept_custom_institutions}
+                {auto_accept_custom_institutions},
+                "{main_talk_link}"
                 );
             '''
                 
