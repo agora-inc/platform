@@ -264,6 +264,39 @@ class RSScraperRepository:
 			
 		return start_time, end_time
 
+	def squash_duplicates_and_update(self):
+		# Does not work atm as this uses CTE ( MySQL 8)
+		# Will change if upgrade does not go through
+		query_string = '''WITH CTE_Dup AS 
+		(
+		SELECT *
+		, ROW_NUMBER OVER() PARTITION BY (channel_id,
+											channel_name,
+											date,
+											name,
+											description,
+											end_date,
+											talk_	speaker 
+											ORDER BY id ASC) AS RN 
+		FROM Talks
+		)
+		DELETE 
+		FROM CTE_Dup WHERE RN>1'''
+		self.db.run_query(query_string)
+		#  DO NOT RUN
+		#  NEED TO ADD LOGIC TO TRANSFER values from later to earlier talk
+		#  Might make more sense to use temporary tables here
+		update_query_string = '''WITH CTE_Dup AS 
+		(
+		SELECT *
+		, ROW_NUMBER OVER() PARTITION BY (main_talk_link ORDER BY id ASC) AS RN 
+		FROM Talks
+		)
+		DELETE 
+		FROM CTE_Dup WHERE RN>1'''
+
+
+
 	
 # TESTING
 if __name__ == "__main__":
