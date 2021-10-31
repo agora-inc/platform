@@ -82,7 +82,7 @@ class RSScraperRepository:
 			if(RSScraperRepository.isEnglish(name)):	
 				channel = self.channelRepo.getChannelByName(name)
 				if not channel:
-					channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id)
+					channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id, claimed=0)
 
 				# Get talk index
 				idx = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
