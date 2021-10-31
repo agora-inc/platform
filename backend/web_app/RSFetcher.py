@@ -42,5 +42,8 @@ def convert_seminar_to_agora(seminar_url):
         print("For some reason no talks were parsed!")
 
 # Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(convert_seminar_to_agora)(seminar_url) for seminar_url in seminar_urls[:15])
-for seminar_url in seminar_urls[:15]:
+total = len(seminar_urls)
+for seminar_url in seminar_urls:
+    total = total - 1
+    print(f"{total} of {(len(seminar_urls))} remaining")
     convert_seminar_to_agora(seminar_url)
