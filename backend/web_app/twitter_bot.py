@@ -66,12 +66,7 @@ class TwitterBot:
 
     def run(self):
         try:
-            # rates = self.twitter_api.rate_limit_status()["resources"]
-            # print("yes:", rates)
-            # A. Post talks
             # self.post_tweets()
-            
-            # # B. Unfollow / Follow
             self.follow_in_mass()
             self.mass_unfollow()
 
@@ -99,7 +94,7 @@ class TwitterBot:
                 text = self.get_twitter_message(talk_id, talk_name, channel_name, speaker_name, date, talk_topics_list)
                 # 1. Advertise
                 try:
-                    # self.twitter_api.send(FILL THIS UP)
+                    # self.twitter_api.update_status(FILL THIS UP)
                     # self.tweets.updateTweetSendingStatus("advertise", talk_id, True)
                     pass
             
@@ -169,7 +164,6 @@ class TwitterBot:
                         break
         except Exception as e:
             print("(follow_in_mass). Error:", e)
-
         print(f"Followed {n_calls} users.")
 
 
@@ -190,7 +184,11 @@ class TwitterBot:
             print("(Unfollow_in_mass). Error:", e)
         print(f"Unfollowed {n_calls} users.")
 
+    def retweet(self):
+        raise NotImplementedError
 
+    def thankNewFollowers(self):
+        raise NotImplementedError
 
 if __name__ == "__main__":
     print("Init")
