@@ -65,6 +65,16 @@ class RSScraperRepository:
 		else:
 			return True
 
+	def squash(self):
+		query = '''DELETE t1 FROM Talks t1, Talks t2
+		WHERE t1.id > t2.id
+		AND  t1.date =t2.date
+		AND  t1.name =t2.name
+		AND  t1.description =t2.description
+		AND  t1.end_date=t2.end_date
+		AND t1.talk_speaker = t2.talk_speaker'''
+		self.db.run_query(query)
+
 	def create_agora_and_get_talk_ids(self, url_agora, user_id, topic_1_id):
 		if "https://researchseminars.org/seminar/" not in url_agora:
 			return 0, [], -1, ""
@@ -126,8 +136,9 @@ class RSScraperRepository:
 		url_talks = url_agora.replace("/seminar/", "/talk/")
 		talks = []
 		
-		for i in idx:
+		for i in idx[:15]:
 		# def get_talk_details(i):
+
 			self.driver.get(url_talks + f"/{i}")
 			talk = {}
 			lst_link = self.driver.find_elements_by_xpath('//a')
@@ -175,43 +186,57 @@ class RSScraperRepository:
 			talk['slides'] = RSScraperRepository._get_href(lst_link, "slides")
 			talk['video'] = RSScraperRepository._get_href(lst_link, "video")
 
+			duplicate_check = self.talkRepo.get_similar_talks_for_channel(channelId = channel_id,
+												channelName = channel_name,
+												talkName = talk['title'],
+												startDate=str(talk['start_time']),
+												endDate=str(talk['end_time']),
+												talkDescription = talk['description']
+												)
+			print(duplicate_check , url_talks + f"/{i}")
+			if(duplicate_check == 0):
 			# Store in database
-			talk_created = self.talkRepo.scheduleTalk(
-				channelId=channel_id, 
-				channelName=channel_name, 
-				talkName=talk['title'], 
-				startDate=str(talk['start_time']), 
-				endDate=str(talk['end_time']), 
-				talkDescription=talk['description'], 
-				talkLink=talk['link'], 
-				talkTags=[], 
-				showLinkOffset=15, 
-				visibility=visibility, 
-				cardVisibility="Everybody", 
-				topic_1_id=topic_1_id, 
-				topic_2_id=talk["topics_parsed"][0], 
-				topic_3_id=talk["topics_parsed"][1],
-				talk_speaker=talk['speaker'], 
-				talk_speaker_url=talk['speaker_url'], 
-				published=1, 
-				audience_level=audience_level, 
-				auto_accept_group=auto_accept_group, 
-				auto_accept_custom_institutions=False, 
-				customInstitutionsIds=[], 
-				reminder1=None, 
-				reminder2=None, 
-				reminderEmailGroup=[],
-				email_on_creation=False,
-				main_talk_link=url_talks + f"/{i}"
-			)
+				talk_created = self.talkRepo.scheduleTalk(
+					channelId=channel_id, 
+					channelName=channel_name, 
+					talkName=talk['title'], 
+					startDate=str(talk['start_time']), 	
+					endDate=str(talk['end_time']), 
+					talkDescription=talk['description'], 
+					talkLink=talk['link'], 
+					talkTags=[], 
+					showLinkOffset=15, 
+					visibility=visibility, 
+					cardVisibility="Everybody", 
+					topic_1_id=topic_1_id, 
+					topic_2_id=talk["topics_parsed"][0], 
+					topic_3_id=talk["topics_parsed"][1],
+					talk_speaker=talk['speaker'], 
+					talk_speaker_url=talk['speaker_url'], 
+					published=1, 
+					audience_level=audience_level, 
+					auto_accept_group=auto_accept_group, 
+					auto_accept_custom_institutions=False, 
+					customInstitutionsIds=[], 
+					reminder1=None, 
+					reminder2=None, 
+					reminderEmailGroup=[],
+					email_on_creation=False,
+					main_talk_link=url_talks + f"/{i}"
+				)
 
-			talks.append(talk_created)
+				talks.append(talk_created)
+			
+			self.squash()
 
 		# Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(get_talk_details)(i) for i in idx)
 		# for i in idx:
 		# 	get_talk_details(i)
 
 		return talks
+
+	# def update(talk_link):
+
 
 	@staticmethod
 	def _get_all_talks_id(lst):
@@ -264,42 +289,11 @@ class RSScraperRepository:
 			
 		return start_time, end_time
 
-	def squash_duplicates_and_update(self):
-		# Does not work atm as this uses CTE ( MySQL 8)
-		# Will change if upgrade does not go through
-		query_string = '''WITH CTE_Dup AS 
-		(
-		SELECT *
-		, ROW_NUMBER OVER() PARTITION BY (channel_id,
-											channel_name,
-											date,
-											name,
-											description,
-											end_date,
-											talk_	speaker 
-											ORDER BY id ASC) AS RN 
-		FROM Talks
-		)
-		DELETE 
-		FROM CTE_Dup WHERE RN>1'''
-		self.db.run_query(query_string)
-		#  DO NOT RUN
-		#  NEED TO ADD LOGIC TO TRANSFER values from later to earlier talk
-		#  Might make more sense to use temporary tables here
-		update_query_string = '''WITH CTE_Dup AS 
-		(
-		SELECT *
-		, ROW_NUMBER OVER() PARTITION BY (main_talk_link ORDER BY id ASC) AS RN 
-		FROM Talks
-		)
-		DELETE 
-		FROM CTE_Dup WHERE RN>1'''
-
 
 
 	
-# TESTING
-if __name__ == "__main__":
-	scraper = RSScraperRepository()
-	url_agora = "https://researchseminars.org/seminar/cogentseminarkkkkk"
-	# print(scraper.get_valid_series_and_ntalks(url_agora))
+# # TESTING
+# if __name__ == "__main__":
+# 	scraper = RSScraperRepository()
+# 	url_agora = "https://researchseminars.org/seminar/cogentseminarkkkkk"
+# 	# print(scraper.get_valid_series_and_ntalks(url_agora))
