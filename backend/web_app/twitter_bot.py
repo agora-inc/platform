@@ -153,15 +153,14 @@ class TwitterBot:
             print("Retrieving and following followers")
             n_calls = 0
             for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids).items():
-                for sub_follower in self.twitter_api.get_followers(user_id=follower_id, count=5):
-                    print("in")
-                    if n_calls < API_CALLS_FOR_TWEETS:
-                        n_calls += 1
-                        if not sub_follower.following:
+                for sub_follower in self.twitter_api.get_followers(user_id=follower_id, count=10):
+                    if not sub_follower.following:
+                        if n_calls < API_CALLS_FOR_TWEETS:
+                            n_calls += 1
                             self.twitter_api.create_friendship(id=sub_follower.id)
                             print("Followed ", sub_follower.name)
                     else:
-                        break
+                        pass
         except Exception as e:
             print("(follow_in_mass). Error:", e)
         print(f"Followed {n_calls} users.")
@@ -189,6 +188,7 @@ class TwitterBot:
 
     def thankNewFollowers(self):
         raise NotImplementedError
+
 
 if __name__ == "__main__":
     print("Init")
