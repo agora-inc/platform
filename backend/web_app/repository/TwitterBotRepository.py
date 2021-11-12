@@ -57,9 +57,7 @@ class TwitterBotRepository:
             return talks_to_tweet
 
     def updateTweetSendingStatus(self, action, talk_id, success, params={}, error_msg=""):
-        print("he1")
-        assert(action in ["advertise", "remind", "retweet", "follow"])
-        print("he2")
+        assert(action in ["advertise", "remind", "retweet"])
         
         try:
             if "exec_time" in params:
