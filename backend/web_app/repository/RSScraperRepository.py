@@ -193,7 +193,7 @@ class RSScraperRepository:
 												endDate=str(talk['end_time']),
 												talkDescription = talk['description']
 												)
-			print(duplicate_check , url_talks + f"/{i}")
+			# print(duplicate_check , url_talks + f"/{i}")
 			if(duplicate_check == 0):
 			# Store in database
 				talk_created = self.talkRepo.scheduleTalk(
@@ -227,7 +227,7 @@ class RSScraperRepository:
 
 				talks.append(talk_created)
 			
-			self.squash()
+			# self.squash()
 
 		# Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(get_talk_details)(i) for i in idx)
 		# for i in idx:
@@ -235,8 +235,40 @@ class RSScraperRepository:
 
 		return talks
 
-	# def update(talk_link):
+	def update(self):
+		self.squash()
+		
+		query = '''SELECT t1.* 
+				from Talks t1, Talks t2
+				WHERE t1.id > t2.id
+				AND t1.main_talk_link = t2.main_talk_link;''' 
+		talks_new = self.db.run_query(query)
 
+		query = '''SELECT t2.* 
+				from Talks t1, Talks t2
+				WHERE t1.id > t2.id
+				AND t1.main_talk_link = t2.main_talk_link;''' 
+		talks_old = self.db.run_query(query)
+		
+
+		try:
+			if(len(talks_old) == len(talks_new)):
+				for talk_new in talks_new:
+					for talk_old in talks_old:
+						query = "UPDATE Talks SET "
+						if(talk_new["main_talk_link"] == talk_old["main_talk_link"] and talk_new['id'] > talk_old['id']):
+							diff = list(set(set(talk_new.items()) - set(talk_old.items())))
+							print(diff)
+							for field in diff:
+								if(field[0] != 'id'):
+									query += f''' {field[0]} = "{field[1]}"'''
+						query += f''' WHERE id = {talk_old['id']}'''
+						print(query)
+						print('-----------')
+						self.db.run_query(query)
+			self.squash()
+		except Exception as e:
+			print(e)
 
 	@staticmethod
 	def _get_all_talks_id(lst):

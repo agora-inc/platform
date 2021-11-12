@@ -25,6 +25,7 @@ for row in rows:
     href_a = row.find("td", {"class" : "seriesname"}).find("a")
     topic_a = row.find("td", {"class" : "topics"}).find("span", {"class" : "topic_label"}).text
     # Get primitive topic for tag, works most of the time.  
+    topic_dropdown = 15
     for vals in [15,17,18,19,89,142,172]:
         if topic_a.lower() in dictionary[vals]:
             topic_dropdown = vals 
@@ -43,7 +44,8 @@ def convert_seminar_to_agora(seminar_url):
 
 # Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(convert_seminar_to_agora)(seminar_url) for seminar_url in seminar_urls[:15])
 total = len(seminar_urls)
-for seminar_url in seminar_urls[:1]:
-    total = total - 1
-    print(f"{total} of {(len(seminar_urls))} remaining")
-    convert_seminar_to_agora(seminar_url)
+# for seminar_url in seminar_urls[:1]:
+#     total = total - 1
+#     print(f"{total} of {(len(seminar_urls))} remaining")
+#     convert_seminar_to_agora(seminar_url)
+rs_scraper.update()
