@@ -1,5 +1,6 @@
 # import hack (Remy); TODO: make import directly from repository folder.
 from logging import exception
+from os import name
 from app.routes import TalkRepository
 from app.routes import TwitterBotRepository
 from app.databases import agora_db
@@ -154,7 +155,8 @@ class TwitterBot:
             n_calls = 0
             for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids).items():
                 for sub_follower in self.twitter_api.get_followers(user_id=follower_id, count=10):
-                    if not sub_follower.following:
+                    print(sub_follower.id)
+                    if not sub_follower.following and sub_follower.id.lower() != "morastream":
                         if n_calls < API_CALLS_FOR_TWEETS:
                             n_calls += 1
                             self.twitter_api.create_friendship(id=sub_follower.id)
@@ -173,7 +175,8 @@ class TwitterBot:
             n_calls = 0
 
             # get list inversed (oldest following to new)
-            for follower in tweepy.Cursor(self.twitter_api.get_followers(cursor=2)).items():
+            followers = list(tweepy.Cursor(self.twitter_api.get_followers()).items())
+            for follower in followers.reverse():
                 if n_calls < API_CALLS_FOR_TWEETS:
                     n_calls += 1
                     self.twitter_api.destroy_friendship(screen_name=follower.screen_name, id=follower.id)
