@@ -153,15 +153,16 @@ class TwitterBot:
         try:
             print("Retrieving and following followers")
             n_calls = 0
-            for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids).items():
-                for sub_follower in self.twitter_api.get_followers(user_id=follower_id, count=10):
-                    print(sub_follower.id)
-                    if not sub_follower.following and sub_follower.id.lower() != "morastream":
+            for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids, count=10).items():
+                for sub_follower in self.twitter_api.get_followers(user_id=follower_id):
+                    # NB: 136779035865927270 is the id of mora.stream account
+                    n_calls += 1
+                    if not sub_follower.following and sub_follower.id != 1367790358659272704:
                         if n_calls < API_CALLS_FOR_TWEETS:
-                            n_calls += 1
                             self.twitter_api.create_friendship(id=sub_follower.id)
                             print("Followed ", sub_follower.name)
                     else:
+                        print("Already following: ", sub_follower.name)  
                         pass
         except Exception as e:
             print("(follow_in_mass). Error:", e)
@@ -175,7 +176,7 @@ class TwitterBot:
             n_calls = 0
 
             # get list inversed (oldest following to new)
-            followers = list(tweepy.Cursor(self.twitter_api.get_followers()).items())
+            followers = list(tweepy.Cursor(self.twitter_api.get_followers).items())
             for follower in followers.reverse():
                 if n_calls < API_CALLS_FOR_TWEETS:
                     n_calls += 1
