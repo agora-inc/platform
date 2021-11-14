@@ -52,7 +52,7 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
-    def createChannel(self, channelName, channelDescription, userId, topic_1_id, claimed=1):
+    def createChannel(self, channelName, channelDescription, userId, topic_1_id, claimed=1, organiser_contact = []):
         # colours = [
         #     "orange",
         #     "goldenrod",
@@ -66,6 +66,8 @@ class ChannelRepository:
         # ]
         colour = "#5454A0"
 
+        #  TODO : Add query to store email addresses of organisers
+        
         query = f'INSERT INTO Channels(name, long_description, colour, topic_1_id, claimed) VALUES ("{channelName}", "{channelDescription}", "{colour}", "{topic_1_id}", "{claimed}")'
         insertId = self.db.run_query(query)[0]
     

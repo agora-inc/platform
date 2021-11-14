@@ -33,19 +33,12 @@ for row in rows:
         
     seminar_urls.append([f"https://researchseminars.org{href_a['href']}",topic_a, topic_dropdown])
 
-def convert_seminar_to_agora(seminar_url):
-    # try:
-        print(seminar_url)
-        is_valid, talk_ids, channel_id, channel_name, link = rs_scraper.create_agora_and_get_talk_ids(seminar_url[0], 360, seminar_url[2])    
-        if(len(talk_ids) and is_valid):
-            talks = rs_scraper.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
-    # except (AttributeError, TypeError, IndexError, ValueError) as e:
-    #     print(e)
+
 
 # Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(convert_seminar_to_agora)(seminar_url) for seminar_url in seminar_urls[:15])
 total = len(seminar_urls)
-# for seminar_url in seminar_urls[:1]:
-#     total = total - 1
-#     print(f"{total} of {(len(seminar_urls))} remaining")
-#     convert_seminar_to_agora(seminar_url)
+for seminar_url in seminar_urls:
+    total = total - 1
+    print(f"{total} of {(len(seminar_urls))} remaining")
+    rs_scraper.convert_seminar_to_agora(seminar_url)
 rs_scraper.update()
