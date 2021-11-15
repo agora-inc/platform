@@ -21,6 +21,7 @@ const AllProfilesPage = () => {
         justify="between"
         align="end"
         margin={{ bottom: "medium" }}
+        style={{ position: "relative", top: "12vh" }}
       >
         <Heading
           color="color1"
@@ -28,7 +29,7 @@ const AllProfilesPage = () => {
           margin="none"
           style={{ height: "20px" }}
         >
-          All upcoming talks
+          All speakers
         </Heading>
       </Box>
       <Box

@@ -139,6 +139,7 @@ export type User = {
   institution?: string | undefined;
   personal_homepage?: string | undefined;
   position?: string | undefined;
+  has_photo?: boolean | undefined;
 };
 
 export const UserService = {
