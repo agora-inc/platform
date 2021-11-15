@@ -10,6 +10,7 @@ import multiprocessing
 rs_scraper = RSScraperRepository.RSScraperRepository()
 
 # Load dictionary for primitive node classification. 
+print("1/3: Fetching classification dictionary.")
 file = open("primitive_topics.txt")
 contents = file.read()
 dictionary = ast.literal_eval(contents)
@@ -21,6 +22,7 @@ content = requests.get(URL)
 soup = BeautifulSoup(content.text, 'html.parser')
 rows = soup.findAll("tr", {"class" : "talk"})
 seminar_urls = []
+print("2/3: scraping researchseminars.org for semianr series .")
 for row in rows:
     href_a = row.find("td", {"class" : "seriesname"}).find("a")
     topic_a = row.find("td", {"class" : "topics"}).find("span", {"class" : "topic_label"}).text
@@ -32,6 +34,7 @@ for row in rows:
             break
         
     seminar_urls.append([f"https://researchseminars.org{href_a['href']}",topic_a, topic_dropdown])
+    print(f"2/3: Updated seminar URL list: {seminar_urls}")
 
 
 
