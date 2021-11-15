@@ -153,20 +153,29 @@ class TwitterBot:
         try:
             print("Retrieving and following followers")
             n_calls = 0
-            for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids, count=10).items():
-                for sub_follower in self.twitter_api.get_followers(user_id=follower_id):
+            n_follows = 0
+            for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids).items():
+                if n_calls > API_CALLS_FOR_FOLLOW:
+                    break
+                sub_followers = list(self.twitter_api.get_followers(user_id=follower_id))
+                sub_followers.reverse()
+                for sub_follower in sub_followers:
                     # NB: 136779035865927270 is the id of mora.stream account
                     n_calls += 1
                     if not sub_follower.following and sub_follower.id != 1367790358659272704:
                         if n_calls < API_CALLS_FOR_TWEETS:
                             self.twitter_api.create_friendship(id=sub_follower.id)
                             print("Followed ", sub_follower.name)
-                    else:
-                        print("Already following: ", sub_follower.name)  
-                        pass
+                            n_follows += 1
+                    elif sub_follower.id != 1367790358659272704:
+                        print("Already following: ", sub_follower.name)
+    
+                    if n_calls > API_CALLS_FOR_FOLLOW:
+                        break
+
         except Exception as e:
             print("(follow_in_mass). Error:", e)
-        print(f"Followed {n_calls} users.")
+        print(f"Followed {n_follows} users.")
 
 
     def mass_unfollow(self):
@@ -177,7 +186,8 @@ class TwitterBot:
 
             # get list inversed (oldest following to new)
             followers = list(tweepy.Cursor(self.twitter_api.get_followers).items())
-            for follower in followers.reverse():
+            followers.reverse()
+            for follower in followers:
                 if n_calls < API_CALLS_FOR_TWEETS:
                     n_calls += 1
                     self.twitter_api.destroy_friendship(screen_name=follower.screen_name, id=follower.id)
