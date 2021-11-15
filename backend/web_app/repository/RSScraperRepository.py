@@ -76,6 +76,26 @@ class RSScraperRepository():
 		AND t1.talk_speaker = t2.talk_speaker'''
 		self.db.run_query(query)
 
+	def email_anti_obsfucator(self, email:str, name:str)->str:
+		temp_email = ""
+		if('[at]' in email or '_at_' in email or ' at ' in email):
+			temp_email = email.replace("[at]","@").replace("_at_","@").replace(" at ","@")
+		
+		if('[dot]' in email or '_dot_' in email or ' dot ' in email):
+			temp_email = temp_email.replace("[dot]",".").replace("_dot_",".").replace(" dot ",".")
+
+		if('firstname' in email or 'givenname' in email or 'lastname' in email or 'familyname' in email):
+			name_list = name.split(" ")
+			temp_email = temp_email.replace("myfirstname",f"{name_list[0]}").replace("firstname",f"{name_list[0]}").replace("mygivenname",f"{name_list[0]}").replace("givenname",f"{name_list[0]}")
+			temp_email = temp_email.replace("mylastname",f"{name_list[-1]}").replace("lastname",f"{name_list[-1]}").replace("myfamilyname",f"{name_list[-1]}").replace("familyname",f"{name_list[-1]}")
+			
+		return temp_email
+
+	def email_id_obtainer(self, url:str)->str:
+		'''Hiding your email ID is futile, we will find it anyways'''
+		'''Pass a homepage url, then search for all tags with email in text or id ( or even alt text of an image or using cv to convert an image into an email address) , then everything with @ and a domain name, then use email obsfucator along with it for world domination.'''
+		pass
+
 	def create_agora_and_get_talk_ids(self, url_agora, user_id, topic_1_id):
 		if "https://researchseminars.org/seminar/" not in url_agora:
 			return 0, [], -1, ""
@@ -103,12 +123,22 @@ class RSScraperRepository():
 					organiser_details['homepage'] = organiser_href
 				contactable_organisers.append(organiser_details)
 
-			print(contactable_organisers)
+			emails = [contact for contact in contactable_organisers if 'email_address' in contact]
+			homepages = [contact for contact in contactable_organisers if 'homepage' in contact]
 
+			contact = None
+			if(len(emails)):
+				contact = emails[0]
+			elif (len(homepages)):
+				contact = homepages[0]
+
+			print(contactable_organisers)
+			print(contact)
+			
 			if(RSScraperRepository.isEnglish(name)):	
 				channel = self.channelRepo.getChannelByName(name)
 				if not channel:
-					channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id, claimed=0, organiser_contact=contactable_organisers)
+					channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id, claimed=0, organiser_contact=contact)
 
 				# Get talk index	
 				idx = RSScraperRepository._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))

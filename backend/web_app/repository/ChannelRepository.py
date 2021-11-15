@@ -52,7 +52,7 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
-    def createChannel(self, channelName, channelDescription, userId, topic_1_id, claimed=1, organiser_contact = []):
+    def createChannel(self, channelName, channelDescription, userId, topic_1_id, claimed=1, organiser_contact = None):
         # colours = [
         #     "orange",
         #     "goldenrod",
@@ -67,12 +67,26 @@ class ChannelRepository:
         colour = "#5454A0"
 
         #  TODO : Add query to store email addresses of organisers
-        
+
         query = f'INSERT INTO Channels(name, long_description, colour, topic_1_id, claimed) VALUES ("{channelName}", "{channelDescription}", "{colour}", "{topic_1_id}", "{claimed}")'
         insertId = self.db.run_query(query)[0]
     
         query = f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {insertId}, "owner")'
         self.db.run_query(query)
+
+        if(organiser_contact is not None):
+            if 'email_address' in organiser_contact:
+                query = f'''INSERT INTO FetchedChannels 
+                (channel_id, user_id, claimed, organiser_name, organiser_email) 
+                VALUES 
+                ({insertId}, "{organiser_contact['name']}", {userId}, {claimed}, "{organiser_contact['email_address']}")'''
+                self.db.run_query(query)
+            elif 'homepage' in organiser_contact:
+                query = f'''INSERT INTO FetchedChannels 
+                (channel_id, user_id, claimed, organiser_name, organiser_homepage_url) 
+                VALUES 
+                ({insertId}, "{organiser_contact['name']}", {userId}, {claimed}, "{organiser_contact['homepage']}")'''
+                self.db.run_query(query)
 
         return self.getChannelById(insertId)
 
