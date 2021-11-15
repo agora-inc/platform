@@ -25,6 +25,7 @@ for row in rows:
     href_a = row.find("td", {"class" : "seriesname"}).find("a")
     topic_a = row.find("td", {"class" : "topics"}).find("span", {"class" : "topic_label"}).text
     # Get primitive topic for tag, works most of the time.  
+    topic_dropdown = 15
     for vals in [15,17,18,19,89,142,172]:
         if topic_a.lower() in dictionary[vals]:
             topic_dropdown = vals 
@@ -32,15 +33,12 @@ for row in rows:
         
     seminar_urls.append([f"https://researchseminars.org{href_a['href']}",topic_a, topic_dropdown])
 
-def convert_seminar_to_agora(seminar_url):
-    try:
-        print(seminar_url)
-        is_valid, talk_ids, channel_id, channel_name, link = rs_scraper.create_agora_and_get_talk_ids(seminar_url[0], 360, seminar_url[2])    
-        if(len(talk_ids) and is_valid):
-            talks = rs_scraper.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
-    except (AttributeError, TypeError, IndexError) as e:
-        print("For some reason no talks were parsed!")
+
 
 # Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(convert_seminar_to_agora)(seminar_url) for seminar_url in seminar_urls[:15])
-for seminar_url in seminar_urls[:15]:
-    convert_seminar_to_agora(seminar_url)
+total = len(seminar_urls)
+for seminar_url in seminar_urls:
+    total = total - 1
+    print(f"{total} of {(len(seminar_urls))} remaining")
+    rs_scraper.convert_seminar_to_agora(seminar_url)
+rs_scraper.update()
