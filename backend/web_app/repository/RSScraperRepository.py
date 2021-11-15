@@ -1,4 +1,3 @@
-from __future__ import annotations
 import multiprocessing
 from repository.ChannelRepository import ChannelRepository
 from repository.TalkRepository import TalkRepository
@@ -66,7 +65,7 @@ class RSScraperRepository():
 			return True
 
 	# Remove duplicate talks
-	def squash(self:RSScraperRepository) -> None:
+	def squash(self):
 		query = '''DELETE t1 FROM Talks t1, Talks t2
 		WHERE t1.id > t2.id
 		AND  t1.date =t2.date
@@ -91,7 +90,7 @@ class RSScraperRepository():
 			
 		return temp_email
 
-	def email_id_obtainer(self, url:str)->str:
+	def email_id_obtainer(self, url):
 		'''Hiding your email ID is futile, we will find it anyways'''
 		'''Pass a homepage url, then search for all tags with email in text or id ( or even alt text of an image or using cv to convert an image into an email address) , then everything with @ and a domain name, then use email obsfucator along with it for world domination.'''
 		pass
@@ -158,7 +157,7 @@ class RSScraperRepository():
 				print('Non latin characters detected, not supported by DB')
 				return 0, [], -1, ""
 
-	def get_topic_mapping(topic_str: str):
+	def get_topic_mapping(topic_str):
 		file = open("repository/topics.txt")
 		contents = file.read()
 		dictionary = ast.literal_eval(contents)
@@ -291,7 +290,7 @@ class RSScraperRepository():
 			print(e)
 
 	# update talks
-	def update(self : RSScraperRepository) -> None:
+	def update(self) -> None:
 		self.squash()
 		
 		#  get new talks
