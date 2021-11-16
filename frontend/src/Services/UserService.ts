@@ -134,6 +134,7 @@ export type User = {
   id: number;
   username: string;
   verified_academic?: boolean;
+  public?: boolean;
   email?: string;
   bio?: string | undefined;
   institution?: string | undefined;
