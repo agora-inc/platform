@@ -1,10 +1,10 @@
 import React, { useState, useEffect, FunctionComponent } from "react";
 import { Box, Heading, Text, Image } from "grommet";
-import { User, UserService } from "../../Services/UserService";
+import { Profile, ProfileService } from "../../Services/ProfileService";
 import { Calendar, UserExpert } from "grommet-icons";
 
 interface Props {
-  profile: User;
+  profile: Profile;
   width: string;
 }
 
@@ -51,7 +51,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
               margin={{ bottom: "15px" }}
             >
               <Text weight="bold" size="14px" color="color3">
-                {props.profile.username}
+                {props.profile.user.username}
               </Text>
             </Box> 
 
@@ -61,7 +61,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
               weight="bold"
               style={{ minHeight: "60px", overflow: "auto" }}
             >
-              {props.profile.institution}
+              {props.profile.user.institution}
             </Text>
           </Box> 
           {props.profile.has_photo && (

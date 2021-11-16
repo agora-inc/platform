@@ -3,14 +3,14 @@ import { Box, Heading, Text } from "grommet";
 import { ProfileCard } from "../Components/Profile/ProfileCard";
 import Identicon from "react-identicons";
 
-import { User, UserService } from "../Services/UserService";
+import { Profile, ProfileService } from "../Services/ProfileService";
 import "../Styles/all-profiles-page.css";
 
 const AllProfilesPage = () => {
-  const [profiles, setProfiles] = useState<User[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
 
   useEffect(() => {
-    UserService.getAllPublicUsers(setProfiles);
+    ProfileService.getAllPublicProfiles(setProfiles);
   });
 
   return (
@@ -39,8 +39,8 @@ const AllProfilesPage = () => {
         // justify="center"
         margin={{ top: "20px" }}
       >
-        {profiles.map((user: User) => (
-          <ProfileCard profile={user} width="24%" />
+        {profiles.map((profile: Profile) => (
+          <ProfileCard profile={profile} width="24%" />
         ))}
       </Box>
     </Box>
