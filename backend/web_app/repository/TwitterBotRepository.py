@@ -55,9 +55,21 @@ class TwitterBotRepository:
                 if i["id"] not in list_ids:
                     talks_to_tweet.append(i)
             return talks_to_tweet
+    
+    def hasReminderAlreadyBeenSent(self, talk_id):
+        select_future_talks =  f'''
+            SELECT * FROM TwitterBot 
+            WHERE talk_id = {talk_id} AND action = 'remind' AND success = 1;
+            '''
+        try:
+            res = self.db.run_query(select_future_talks)
+            if len(res) > 0:
+                return True
+        except:
+            return False
 
-    def updateTweetSendingStatus(self, action, talk_id, success, params={}, error_msg=""):
-        assert(action in ["advertise", "remind", "retweet"])
+    def updateTweetSendingStatus(self, action, success, talk_id=None, params={}, error_msg=""):
+        assert(action in ["advertise", "remind", "retweet", "follow", "unfollow"])
         
         try:
             if "exec_time" in params:
@@ -65,13 +77,17 @@ class TwitterBotRepository:
                 insert_query = f'''
                     INSERT INTO TwitterBot (action, talk_id, success, error_msg, exec_time) VALUES ('{action}',{talk_id},{success},'{error_msg}', '{exec_time}');
                 '''
+            elif "count" in params:
+                count = params["count"]
+                insert_query = f'''
+                    INSERT INTO TwitterBot (action, talk_id, success, error_msg, exec_time) VALUES ('{action}',{talk_id},{success},'{error_msg}', '{count}');
+                '''
             else:
                 insert_query = f'''
                     INSERT INTO TwitterBot (action, talk_id, success, error_msg) VALUES ('{action}',{talk_id},{success},'{error_msg}');
                 '''
             self.db.run_query(insert_query)
         except Exception as e:
-            print("heyo", e)
             insert_query = f'''
                 INSERT INTO TwitterBot (action, talk_id, success, error_msg) VALUES ('{action}',{talk_id},0,'{e}');
                 '''

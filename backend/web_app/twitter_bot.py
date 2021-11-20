@@ -3,20 +3,34 @@ from logging import exception
 from os import name
 from app.routes import TalkRepository
 from app.routes import TwitterBotRepository
+from app.routes import TopicRepository
 from app.databases import agora_db
 import tweepy
 import json
 import random
+import datetime
 
 # HYPERPARAMS FOR TWEETING
 MINIMUM_CLICKCOUNT = 3
 MAX_DAYS_IN_ADVANCE = 5
-REMINDER_MINUTES_BEFORE = 15
+MAX_REMINDER_MINUTES_BEFORE = 180
 
-# NOTE: 100 API calls PER HOUR in total regardless of which Twitter applications you use.
-API_CALLS_FOR_TWEETS = 10
-API_CALLS_FOR_FOLLOW = 50
-API_CALLS_FOR_UNFOLLOW = 50
+# NOTE: 100 API calls PER 15 minutes in total regardless of which Twitter applications you use.
+# https://developer.twitter.com/en/docs/twitter-api/rate-limits
+
+# POSTS limit:
+# - every 15 minutes: 50
+# - every 3 hours: 300
+# FOLLOWS limit: 
+# - every 15 minutes: 30
+# - every 24 hours: 100
+# UNFOLLOW limit: 
+# - every 15 minutes: 50
+# - every 24 hours: 500
+# RETWEET limit:
+# - every 15 minutes: 50
+# - everyt 3 hours: 300
+
 
 TWITT_CONS_KEY = "D4zmrvANW7FnvBMrtPfWgeUXR"
 TWITT_CONS_KEY_SEC = "kdc38sf10nZOEPNhELZqPAVwThaD0V0uxTauo4zGtzNv8dvcj8"
@@ -26,13 +40,17 @@ TWITT_BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAP48VQEAAAAAv5HzJKbUiH8tUZEvLhUmUVvjO9
 TWITTER_HASHTAGS_JSON_PATH = "/home/cloud-user/plateform/agora/backend/twitter_bot/hashtags_per_id.json"
 
 
+
 class TwitterBot:
     def __init__(self, db=agora_db):
         self.db = db
         self.tweets = TwitterBotRepository.TwitterBotRepository()
         self.talks = TalkRepository.TalkRepository(db=db)
+        self.topics = TopicRepository.TopicRepository(db=db)
         self.hashtags_per_id = {}
-        self.api_call = 0
+        self.api_call_post = 0
+        self.api_call_follow = 0
+        self.api_call_unfollow = 0
 
         self._load_mapping()
         self.twitter_api = self._create_api()
@@ -52,7 +70,7 @@ class TwitterBot:
         # Create API object
         api = tweepy.API(
             auth,
-            # wait_on_rate_limit=True
+            wait_on_rate_limit=True
             )
         try:
             api.verify_credentials()
@@ -67,6 +85,7 @@ class TwitterBot:
 
     def run(self):
         try:
+            # self._rebalance_remaining_api_calls()
             # self.post_tweets()
             self.follow_in_mass()
             self.mass_unfollow()
@@ -74,13 +93,20 @@ class TwitterBot:
         except Exception as e:
             print(e)
 
+    def _rebalance_remaining_api_calls(self):
+        # https://developer.twitter.com/en/docs/twitter-api/rate-limits
+        # self.api_call_post = 0
+        # self.api_call_follow = 0
+        # self.api_call_unfollow = 0
+        pass
 
     def post_tweets(self):
         talks = self.tweets.getIncomingTalksToTweet(MINIMUM_CLICKCOUNT, MAX_DAYS_IN_ADVANCE)
 
+        print(f"list of talks to tweet: {talks}")
         n_calls = 0 
         for talk in talks:
-            if n_calls < API_CALLS_FOR_TWEETS:
+            if n_calls < 50:
                 n_calls += 1
                 talk_id = talk["id"]
                 talk_name = talk["name"]
@@ -92,55 +118,122 @@ class TwitterBot:
                     topic_id = talk[key]
                     if topic_id != 0:
                         talk_topics_list.append(topic_id)
-                text = self.get_twitter_message(talk_id, talk_name, channel_name, speaker_name, date, talk_topics_list)
-                # 1. Advertise
-                try:
-                    # self.twitter_api.update_status(FILL THIS UP)
-                    # self.tweets.updateTweetSendingStatus("advertise", talk_id, True)
-                    pass
-            
-                except Exception as e:
-                    print(f"exception yo: {e}")
-                    self.tweets.updateTweetSendingStatus("advertise", talk_id, success=False, error_message=e)
 
-                # 2. Remind N minutes before the start
-                try:
-                    exec_time = talk["date"]
-                    print("date") 
-                    print(exec_time) 
-                    # self.twitter_api.send(FILL THIS UP)
-                    self.tweets.updateTweetSendingStatus("remind", talk_id, True, params={"exec_time": exec_time})
-            
-                except Exception as e:
-                    print(f"exception yo: {e}")
-                    self.tweets.updateTweetSendingStatus("remind", talk_id, success=False, error_message=e)
+                # check if happening within the next MAX_REMINDER_MINUTES_BEFORE minutes
+                start_time = talk["date"] # format: 2021-11-23 15:00:00
+                talk_happens_soon = (
+                    ((datetime.datetime.now() - start_time).seconds // 60) < MAX_REMINDER_MINUTES_BEFORE
+                    )
 
-    def get_twitter_message(self, talk_id: int, talk_name: str, channel_name: str, speaker_name: str, date: str, topic_ids: list):
+                # Send reminder if happens soon
+                if talk_happens_soon:
+                    try:
+                        reminder_already_sent = self.tweets.hasReminderAlreadyBeenSent(talk_id)
+                        if not reminder_already_sent:
+                            message = self.get_twitter_message("reminder", talk_id, talk_name, channel_name, speaker_name, date, talk_topics_list, speaker_university=None, speaker_hashtag=None)
+                            print(f"reminder nr {n_calls}")
+                            print(message,)
+                            # self.twitter_api.update_status(message)
+                            self.tweets.updateTweetSendingStatus("remind", success=True, talk_id=talk_id, params={"exec_time": datetime.datetime.now()})
+                    except Exception as e:
+                        print(f"exception yo: {e}")
+                        self.tweets.updateTweetSendingStatus("remind", success=False, talk_id=talk_id, error_msg=e)
+                # General advertisement if far
+                else:
+                    try:
+                        message = self.get_twitter_message("advertisement", talk_id, talk_name, channel_name, speaker_name, date, talk_topics_list, speaker_university=None, speaker_hashtag=None)
+                        print(f"advertisement nr {n_calls}")
+                        print(message)
+                        # self.twitter_api.update_status(message)
+                        self.tweets.updateTweetSendingStatus("advertise", True, talk_id=talk_id)
+                
+                    except Exception as e:
+                        print(f"exception yo: {e}")
+                        self.tweets.updateTweetSendingStatus("advertise", success=False, talk_id=talk_id, error_message=e)
+            
+            else:
+                break
+
+
+    def get_twitter_message(self, event_type, talk_id: int, talk_name: str, channel_name: str, speaker_name: str, date: datetime, topic_ids: list, speaker_university=None, speaker_hashtag=None):
         # human_readable_date (TODO)
         event_url = f"https://mora.stream/event/{talk_id}"
         hashtags_string = " "
         for topic_id in topic_ids:
             if topic_id in self.hashtags_per_id:
                 hashtags_string += f"#{self.hashtags_per_id[topic_id]} "
-        hashtags_string += " #academicTwitter"
         
-        message = random.choice([
-            "Popular event incoming!",
-            "The {channel_name} agora is hosting a talk on '{talk_name}' and it is currently trending! Have a look",
-            "Something big seems to be happening soon: this seminar has ",
-            "The most trending talk of the moment is {talk_name} organised by the {channel_name}",
-            "Among the mass of incoming seminars, this one has been experiencing a huge number of clicks. Check it out!",
-            "What do researchers",
-            "To not miss out this week:",
-            "Here's a seminar that hundreds of academics have ",
-            "Wondering what"
-        ])
+        # fetch topic_id (first one only)
+        if len(topic_ids) != 0:
+            topic_string = self.topics.getFieldFromId(topic_ids[-1])[0]["field"]
 
-        # Check Twitter char limit.
-        #
-        #
-        #
-        return message
+
+        hashtags_string += "#academicTwitter #seminars"
+        
+        # Enforce hashtag instead of name if given
+        if speaker_hashtag is not None:
+            speaker_name = speaker_hashtag
+
+
+        # Human readable date
+        minutes_before_start = (datetime.datetime.now() - date).seconds // 60
+        hour_plus_timezone = datetime.datetime.strftime(date, "%H:%M GMT")
+        talk_day = datetime.datetime.strftime(date, "%A, %d %B")
+
+        got_a_admissible_message = False
+        trial = 0
+        MAX_NUMBER_TRIAL = 20
+        while not got_a_admissible_message:
+            try:
+                if trial > MAX_NUMBER_TRIAL:
+                    return ""
+
+                if event_type == "advertisement":
+                    message = random.choice([
+                        f"Don’t miss out on your chance to listen to {speaker_name} as part of the {channel_name}. Registrations are free and open!",
+                        # f"{speaker_name} is giving a talk on '{talk_name}' as part of {channel_name}. Add this event to your calendar",
+                        # f"{speaker_name} is giving a talk entitled '{talk_name}' as part of the {channel_name}. Register now!",
+                        f"Check out {speaker_name}’s talk hosted by the '{channel_name}' and happening in a few days!",
+                        f"{speaker_name} will discuss '{talk_name}' at {channel_name} on {talk_day} at {hour_plus_timezone}.",
+                        f"Don't miss out on {speaker_name}’s talk!",
+                        f"Check out {speaker_name}'s talk as part of {channel_name} on {talk_day} at {hour_plus_timezone}!",
+                        f"One of the most trending seminars on @morastream this week has been the one by {speaker_name} on '{talk_name}': don't miss out!",
+                        f"The most trending talk on @morastream at the moment is '{talk_name}' organised by the {channel_name}. Be sure to check it out!",
+                        f"Among the mass of incoming seminars, this one by {speaker_name} on '{talk_name}' has been experiencing a huge number of clicks! Join the mass by adding this event in your calendar!",
+                        f"Hot this week: '{talk_name}' given by {speaker_name} within the '{channel_name}' agora!",
+                        f"The '{channel_name}' is hosting a talk on '{talk_name}' which has been recently trending! Have a look!",
+
+                        # f"Want to learn more about talk_topic? speaker_name will be giving a talk on talk_subtopic talk_date as part of {channel_name}.",
+                        # f"{speaker_name}, who spoke speaker_last_talk_date on mora, is back for a new talk!",
+                        # f"Learn more about talk_subtopic on {date}! speaker_name is giving a seminar as part of {channel_name}.",
+                        # f"Learn more about talk_subtopic on {date} with speaker_name.",
+                        # f"Learn more about talk_subtopic on {date}! speaker_name is giving a seminar as part of {channel_name}.",
+                    ])
+
+                elif event_type == "reminder":
+                    # Time remaining before it starts
+                    if (datetime.datetime.now() - date).seconds // 60 > 59:
+                        time_before_it_starts = (datetime.datetime.now() - date).seconds // 3600 + " hours"
+                    else:
+                        time_before_it_starts = (datetime.datetime.now() - date).seconds // 60 + " minutes"
+
+                    message = random.choice([
+                        f"Don't miss out on your chance to listen to {speaker_name}: it's happening in {time_before_it_starts}!",
+                        f"Grab yourself a tea or coffee and come listen to {speaker_name} who is about to start talking about '{talk_name}'!",
+                        f"{speaker_name} is giving a talk starting in {time_before_it_starts} on '{talk_name}'!"
+                        f"Check out {speaker_name}'s talk as part of {channel_name}! Starting very soon!",
+                        f"spaker_name is discussing talk_title in time_to_speak!",
+                        f"Happening in {time_before_it_starts}: {speaker_name} talking about '{talk_name}'. Don't miss that out!",
+                        f"Want to hear about the lattest trends in {topic_string}? {speaker_name} is giving a talk on talk_subtopic in time_to_talk!"
+                    ])
+
+                if len(message) < 280: # Twitter limit
+                    got_a_admissible_message = True
+                
+            except Exception as e:
+                print(f"Error in finding message: {e}")
+
+        return message + f" https://mora.stream/event/{talk_id}" + hashtags_string
 
     def _track_status_tweet(self, sent: str, error_message: str):
         raise NotImplementedError
@@ -152,50 +245,49 @@ class TwitterBot:
         # Follow the followers of our followers that do not follow us
         try:
             print("Retrieving and following followers")
-            n_calls = 0
             n_follows = 0
             for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids).items():
-                if n_calls > API_CALLS_FOR_FOLLOW:
-                    break
                 sub_followers = list(self.twitter_api.get_followers(user_id=follower_id))
                 sub_followers.reverse()
                 for sub_follower in sub_followers:
                     # NB: 136779035865927270 is the id of mora.stream account
-                    n_calls += 1
                     if not sub_follower.following and sub_follower.id != 1367790358659272704:
-                        if n_calls < API_CALLS_FOR_TWEETS:
-                            self.twitter_api.create_friendship(id=sub_follower.id)
-                            print("Followed ", sub_follower.name)
-                            n_follows += 1
+                        self.twitter_api.create_friendship(id=sub_follower.id)
+                        print("Following: ", sub_follower.name)
+                        n_follows += 1
                     elif sub_follower.id != 1367790358659272704:
                         print("Already following: ", sub_follower.name)
     
-                    if n_calls > API_CALLS_FOR_FOLLOW:
-                        break
-
         except Exception as e:
             print("(follow_in_mass). Error:", e)
-        print(f"Followed {n_follows} users.")
+            print(f"Followed {n_follows} users.")
+
+        # Logs
+        if n_follows != 0:
+            self.tweets.updateTweetSendingStatus("follow", True, params={"count": n_follows})
 
 
     def mass_unfollow(self):
         # Unfollow everybody following us
         try:
             print("Retrieving and unfollowing followers")
-            n_calls = 0
+            n_unfollow = 0
 
             # get list inversed (oldest following to new)
             followers = list(tweepy.Cursor(self.twitter_api.get_followers).items())
             followers.reverse()
             for follower in followers:
-                if n_calls < API_CALLS_FOR_TWEETS:
-                    n_calls += 1
-                    self.twitter_api.destroy_friendship(screen_name=follower.screen_name, id=follower.id)
-                    print("Unfollowed ", follower.name)
+                self.twitter_api.destroy_friendship(screen_name=follower.screen_name, id=follower.id)
+                print("Unfollowed ", follower.name)
+                n_unfollow += 1
 
         except Exception as e:
             print("(Unfollow_in_mass). Error:", e)
-        print(f"Unfollowed {n_calls} users.")
+        print(f"Unfollowed {n_unfollow} users.")
+
+        # Logs
+        if n_unfollow != 0:
+            self.tweets.updateTweetSendingStatus("unfollow", True, params={"count": n_unfollow})
 
     def retweet(self):
         raise NotImplementedError
