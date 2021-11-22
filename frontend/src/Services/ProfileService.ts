@@ -4,9 +4,15 @@ import { get, post } from "../Middleware/httpMiddleware";
 import { Topic } from "./TopicService";
 import { User } from "./UserService";
 
+
 const getAllPublicProfiles = (callback: any) => {
-  get(`profile/public`, callback);
-}
+  axios
+    .get(baseApiUrl + "/profile/public")
+    .then((response) => {
+      callback(response.data);
+    })
+    .catch((error) => console.error(error));
+};
 
 const getProfile = (userId: number, callback: any) => {
   get(`profile/id=${userId}`, callback);
@@ -72,8 +78,7 @@ export type Profile = {
   topics: Topic[];
   tags: string[];
   papers: string[];
-  talks: string[];
-  twitter_username: string
+  twitter_username?: string
 };
 
 export type Paper = {

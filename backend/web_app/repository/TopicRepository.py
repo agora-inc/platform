@@ -14,6 +14,10 @@ class TopicRepository:
         result = self.db.run_query(query)
         return result
 
+    def getTopicFromId(self, topic_id):
+        query = f'SELECT field, is_primitive_node, id, parent_1_id, parent_2_id, parent_3_id FROM ClassificationGraphNodes WHERE id = {topic_id};'
+        return self.db.run_query(query)[0]
+        
     def _addPrimitiveNode(self, field):
         """Method to add a primitive node, i.e. node which do not have parents
          (e.g. Mathematics, Biology)

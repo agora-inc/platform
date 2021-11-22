@@ -5,8 +5,12 @@
 from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
+
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository
+from repository import EmailRemindersRepository, ChannelSubscriptionRepository, ProfileRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository
+from repository import CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
+
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -20,6 +24,7 @@ import time
 import stripe
 
 users = UserRepository.UserRepository()
+profiles = ProfileRepository.ProfileRepository()
 tags = TagRepository.TagRepository()
 topics = TopicRepository.TopicRepository()
 questions = QandARepository.QandARepository()
@@ -41,8 +46,8 @@ RSScraper = RSScraperRepository.RSScraperRepository()
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://mora.stream/"
 
-BASE_API_URL = "https://mora.stream/api"
-# BASE_API_URL = "http://localhost:8000/api"
+# BASE_API_URL = "https://mora.stream/api"
+BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
@@ -239,6 +244,15 @@ def updatePublic():
     params = request.json
     updatedUser = users.updatePublic(userId, params["public"])
     return jsonify(updatedUser)
+
+
+# --------------------------------------------
+# PROFILE ROUTES
+# --------------------------------------------
+@app.route('/profile/public')
+def getPublicProfiles():
+    return jsonify(profiles.getAllPublicProfiles())
+
 
 
 # --------------------------------------------
