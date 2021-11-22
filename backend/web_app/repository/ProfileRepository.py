@@ -53,12 +53,9 @@ class ProfileRepository:
             if user_id in ids:
                 result[tag['user_id']]['tags'].append(tag['tag'])
 
-        with open(f"/home/cloud-user/test/profiles.txt", "w") as file:
-            file.write(str(result.values()))
-
         return list(result.values())
 
-    def getAllPublicProfilesByTopic(self, topic_id):
+    def getAllPublicProfilesByTopicRecursive(self, topic_id):
         pass
 
     
