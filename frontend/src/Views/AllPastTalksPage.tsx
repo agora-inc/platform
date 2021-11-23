@@ -70,12 +70,13 @@ export default class AllPastTalksPage extends Component<{}, State> {
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
     if (bottom && this.state.allTalks.length !== this.state.totalNumberOfTalks) {
       this.fetchTalks();
+      console.log('More past talks fetched')
     }
   };
 
   fetchTalks = () => {
     TalkService.getAllPastTalks(
-      100,
+      20,
       this.state.allTalks.length,
       (data: { count: number; talks: Talk[] }) => {
         this.setState({

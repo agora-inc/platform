@@ -3,12 +3,15 @@ import { Box, Heading } from "grommet";
 import TalkCard from "../Components/Talks/TalkCard";
 import { Talk, TalkService } from "../Services/TalkService";
 import { User, UserService } from "../Services/UserService";
+import { Topic, TopicService } from "../Services/TopicService";
 
 interface State {
   talks: Talk[];
   //   totalNumberOfTalks: number;
   loading: boolean;
   user: User | null;
+  allTopics: Topic[];
+  totalNumberOfTalks: number;
   //   sortBy: string;
 }
 
@@ -17,6 +20,8 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
     super(props);
     this.state = {
       talks: [],
+      allTopics: [],
+      totalNumberOfTalks: 0,
       //   totalNumberOfTalks: 0,
       loading: true,
       user: UserService.getCurrentUser(),
@@ -25,53 +30,57 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
   }
 
   componentWillMount() {
-    // window.addEventListener("scroll", this.handleScroll, true);
+    TopicService.getAll((allTopics: Topic[]) => {
+      this.setState({ allTopics });
+    });
+    window.addEventListener("scroll", this.handleScroll, true);
     this.fetchTalks();
   }
 
   componentWillUnmount() {
-    // window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   }
 
-  //   handleScroll = (e: any) => {
-  //     const bottom =
-  //       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-  //     if (bottom && this.state.talks.length !== this.state.totalNumberOfTalks) {
-  //       this.fetchTalks();
-  //     }
-  //   };
+    handleScroll = (e: any) => {
+      const bottom =
+        e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+      if (bottom && this.state.talks.length !== this.state.totalNumberOfTalks) {
+        this.fetchTalks();
+      }
+    };
 
   fetchTalks = () => {
     TalkService.getAllFutureTalks(
       12,
       this.state.talks.length,
-      (talks: Talk[]) => {
+      (data: { count: number; talks: Talk[] }) => {
         this.setState({
-          talks: this.state.talks.concat(talks),
-          //   totalNumberOfTalks: data.count,
+          talks: this.state.talks.concat(data.talks),
+          totalNumberOfTalks: data.count,
           loading: false,
         });
       }
     );
+
   };
 
-  //   compareTalksByDate = (a: Talk, b: Talk) => {
-  //     const aDate = new Date(a.date);
-  //     const bDate = new Date(b.date);
-  //     if (aDate < bDate) {
-  //       return 1;
-  //     }
-  //     if (aDate > bDate) {
-  //       return -1;
-  //     }
-  //     return 0;
-  //   };
+    compareTalksByDate = (a: Talk, b: Talk) => {
+      const aDate = new Date(a.date);
+      const bDate = new Date(b.date);
+      if (aDate < bDate) {
+        return 1;
+      }
+      if (aDate > bDate) {
+        return -1;
+      }
+      return 0;
+    };
 
-  //   sortVideos = () => {
-  //     return this.state.sortBy === "date"
-  //       ? this.state.videos.sort(this.compareVideosByDate)
-  //       : this.state.videos.sort(this.compareVideosByViews);
-  //   };
+    // sortVideos = () => {
+    //   return this.state.sortBy === "date"
+    //     ? this.state.videos.sort(this.compareVideosByDate)
+    //     : this.state.videos.sort(this.compareVideosByViews);
+    // };
 
   render() {
     // console.log("TALKS:", this.state.talks);
@@ -80,7 +89,7 @@ export default class AllUpcomingTalksPage extends Component<{}, State> {
         pad={{ top: "10vh", bottom: "100px" }}
         align="center"
         style={{ overflowY: "scroll" }}
-        // onScroll={this.handleScroll}
+        onScroll={this.handleScroll}
       >
         <Box width="90%" margin={{ left: "2.5%" }}>
           <Box
