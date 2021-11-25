@@ -14,14 +14,13 @@ const AllProfilesPage = () => {
   });
 
   return (
-    <Box width="90%" margin={{ left: "2.5%" }}>
+    <Box width="90%" margin={{ left: "2.5%" }} style={{ position: "relative", top: "12vh" }}>
       <Box
         direction="row"
         width="100%"
         justify="between"
         align="end"
         margin={{ bottom: "medium" }}
-        style={{ position: "relative", top: "12vh" }}
       >
         <Heading
           color="color1"

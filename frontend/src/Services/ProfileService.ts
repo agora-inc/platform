@@ -73,12 +73,13 @@ const updateTags = (userId: number, tags: string[], callback: any) => {
 
 export type Profile = {
   user: User;
+  full_name: string;
   has_photo: boolean;
   open_give_talk: boolean; 
   topics: Topic[];
   tags: string[];
   papers: string[];
-  twitter_username?: string
+  twitter_handle?: string
 };
 
 export type Paper = {

@@ -15,7 +15,7 @@ class ProfileRepository:
         ids = [user['id'] for user in users]
         tuple_ids = ProfileRepository.list_to_tuple(ids)
         # all profiles of public users
-        query_profiles = f"SELECT user_id, has_photo, open_give_talk, twitter_handle FROM Profiles WHERE user_id in {tuple_ids};"
+        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle FROM Profiles WHERE user_id in {tuple_ids};"
         profiles = self.db.run_query(query_profiles)
         # all topics of public users
         query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
