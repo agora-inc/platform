@@ -14,6 +14,7 @@ import TopicClassification from "../../Components/Homepage/TopicClassification";
 // import GlobalClassification from "../../Components/Homepage/GlobalClassification";
 import MediaQuery from "react-responsive";
 import TopicSelector from "./TopicSelector";
+import Loading from "../Core/Loading";
 
 interface Props {
   gridArea?: string;
@@ -27,6 +28,8 @@ interface Props {
 }
 
 interface State {
+  totalNumberOfTalks: number;
+  loading: boolean;
   allTalks: Talk[];
   allTopics: Topic[];
   chosenTopic: Topic;
@@ -49,6 +52,8 @@ export default class TopicTalkList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      totalNumberOfTalks: 0,
+      loading: true,
       allTalks: [],
       allTopics: [],
       chosenTopic: emptyTopic,
@@ -64,16 +69,40 @@ export default class TopicTalkList extends Component<Props, State> {
       this.setState({ allTopics });
     });
 
-    TalkService.getAvailableFutureTalks(
-      100, 
-      0, 
-      this.props.user ? this.props.user.id : null,  
-      (allTalks: Talk[]) => {
-      this.setState({
-        allTalks: allTalks,
-      });
-    });
+    window.addEventListener("scroll", this.handleScroll, true);
+    this.fetchTalks();
   }
+
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  handleScroll = (e: any) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom && this.state.allTalks.length !== this.state.totalNumberOfTalks) {
+      this.fetchTalks();
+    }
+  };
+
+  fetchTalks = () => {
+    console.log(this.props.user!.id);
+    TalkService.getAvailableFutureTalks(
+      20, 
+      this.state.allTalks.length, 
+      this.props.user ? this.props.user.id : null,  
+      (data: { count: number; talks: Talk[] }) => {
+        this.setState({
+          allTalks: this.state.allTalks.concat(data.talks),
+          totalNumberOfTalks: data.count,
+          loading: false,
+        });
+        console.log(this.state.allTalks.length);
+    });
+  };
+
+
 
   /*
   filterChosenTalksByAudience = () => {
@@ -92,9 +121,22 @@ export default class TopicTalkList extends Component<Props, State> {
     }
   }; */
 
+  compareTalksByDate = (a: Talk, b: Talk) => {
+    const aDate = new Date(a.date);
+    const bDate = new Date(b.date);
+    if (aDate < bDate) {
+      return 1;
+    }
+    if (aDate > bDate) {
+      return -1;
+    }
+    return 0;
+  };
+
   getTalksByTopicOnly = (talks: Talk[], topicsId: number[]): Talk[] => {
     let res: Talk[] = [];
     let talkCount: number = 0;
+    console.log(talks)
     for (let talk of talks) {
       let isIn: boolean = false;
       
@@ -110,7 +152,7 @@ export default class TopicTalkList extends Component<Props, State> {
         }
       }
     }
-    // console.log(res.length , talkCount)
+    console.log(res.length , talkCount)
     return res;
   };
   
@@ -417,7 +459,7 @@ export default class TopicTalkList extends Component<Props, State> {
                 <Box
                   onClick={() => {
                     this.updateTopic(topic)
-                    // console.log(this.state.audienceLevel.length)
+                    console.log(this.state.audienceLevel.length)
                   }}
                   background={this.state.chosenTopic === topic? "#0C385B" : "white"}
                   round="xsmall"

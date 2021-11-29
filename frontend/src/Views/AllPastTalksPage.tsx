@@ -28,6 +28,15 @@ interface State {
   
 }
 
+var emptyTopic = {
+  field: "-",
+  id: -1,
+  is_primitive_node: false,
+  parent_1_id: -1,
+  parent_2_id: -1,
+  parent_3_id: -1,
+}
+
 export default class AllPastTalksPage extends Component<{}, State> {
   constructor(props: any) {
     super(props);
@@ -38,14 +47,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
       //   sortBy: "date",
       allTalks: [],
       allTopics: [],
-      chosenTopic: {
-        field: "-",
-        id: -1,
-        is_primitive_node: false,
-        parent_1_id: -1,
-        parent_2_id: -1,
-        parent_3_id: -1,
-      },
+      chosenTopic: emptyTopic,
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
@@ -70,11 +72,11 @@ export default class AllPastTalksPage extends Component<{}, State> {
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
     if (bottom && this.state.allTalks.length !== this.state.totalNumberOfTalks) {
       this.fetchTalks();
-      console.log('More past talks fetched')
     }
   };
 
   fetchTalks = () => {
+    console.log(this.state.user!.id);
     TalkService.getAllPastTalks(
       20,
       this.state.allTalks.length,
