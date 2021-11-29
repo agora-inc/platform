@@ -783,6 +783,9 @@ export default class ManageChannelPage extends Component<Props, State> {
                   >
                     <Text size="14px" weight="bold"> Your subscription </Text>
                   </Box>
+                  {/* 
+                  REFERAL BUTTON: TO UNCOMMENT SOON
+                  
                   <a href={basePoint + "/referral/channel/" + this.state.channelId + "?referee=true"} style={{textDecoration: 0}}>
                     <Box
                       onClick={() => {this.setState({loading: false})}}
@@ -798,7 +801,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     >
                       <Text size="14px" weight="bold"> Upgrade for free </Text>
                     </Box>
-                  </a>
+                  </a> */}
                 </Box>
               </Box>
 
