@@ -69,7 +69,7 @@ class TwitterBot:
         # Create API object
         api = tweepy.API(
             auth,
-            wait_on_rate_limit=True
+            wait_on_rate_limit=False
             )
         try:
             api.verify_credentials()
