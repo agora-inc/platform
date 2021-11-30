@@ -6,7 +6,7 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, TwitterBotRepository
 from repository import EmailRemindersRepository, ChannelSubscriptionRepository, ProfileRepository
 from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository
 from repository import CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
@@ -41,7 +41,7 @@ products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
-RSScraper = RSScraperRepository.RSScraperRepository()
+# RSScraper = RSScraperRepository.RSScraperRepository()
 tweets = TwitterBotRepository.TwitterBotRepository()
 
 BASE_URL = "http://localhost:3000"
