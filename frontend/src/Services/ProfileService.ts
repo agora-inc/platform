@@ -71,6 +71,15 @@ const updateTags = (userId: number, tags: string[], callback: any) => {
   );
 }
 
+const sendTalkInvitation = (userId: number, message: string, channelId: number, callback: any) => {
+  //
+  //
+  //
+  // TO BE IMPLEMENTED
+  //
+  //
+}
+
 export type Profile = {
   user: User;
   has_photo: boolean;
@@ -90,6 +99,7 @@ export type Paper = {
 }
 
 export const ProfileService = {
+  // PROFILE MANAGEMENT
   getAllPublicProfiles,
   getProfile,
   updateProfile,
@@ -97,4 +107,7 @@ export const ProfileService = {
   updatePapers,
   getTags,
   updateTags,
+
+  // COMMUNICATIONS
+  sendTalkInvitation,
 };
