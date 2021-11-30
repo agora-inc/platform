@@ -6,7 +6,7 @@ import Identicon from "react-identicons";
 import { Profile, ProfileService } from "../Services/ProfileService";
 import "../Styles/all-profiles-page.css";
 
-const AllProfilesPage = () => {
+const AllSpeakersPage = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
 
   useEffect(() => {
@@ -23,21 +23,21 @@ const AllProfilesPage = () => {
         margin={{ bottom: "medium" }}
         style={{ position: "relative", top: "12vh" }}
       >
-        <Heading
+        <Text
           color="color1"
           size="24px"
           margin="none"
           style={{ height: "20px" }}
         >
-          All speakers
-        </Heading>
+          Find your speaker
+        </Text>
       </Box>
       <Box
         direction="row"
         gap="1%"
         wrap
         // justify="center"
-        margin={{ top: "20px" }}
+        margin={{ top: "10%" }}
       >
         {profiles.map((profile: Profile) => (
           <ProfileCard profile={profile} width="24%" />
@@ -47,4 +47,4 @@ const AllProfilesPage = () => {
   );
 };
 
-export default AllProfilesPage;
+export default AllSpeakersPage;
