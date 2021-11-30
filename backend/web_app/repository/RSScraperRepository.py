@@ -29,7 +29,7 @@ class RSScraperRepository():
 		options.add_argument("--window-size=1920,1200")
 		self.driver = webdriver.Chrome(
 			options=options, 
-			executable_path='/home/cloud-user/plateform/agora/backend/web_app/chromedriver_linux64/chromedriver'
+			executable_path='/home/cloud-user/chromedriver_96'
 		)
 		self._login()
 		
@@ -284,8 +284,8 @@ class RSScraperRepository():
 		try:
 			print(seminar_url)
 			is_valid, talk_ids, channel_id, channel_name, link = self.create_agora_and_get_talk_ids(seminar_url[0], 360, seminar_url[2])    
-			# if(len(talk_ids) and is_valid):
-			# 	talks = self.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
+			if(len(talk_ids) and is_valid):
+				talks = self.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
 		except (AttributeError, TypeError, IndexError, ValueError) as e:
 			print(e)
 

@@ -3,6 +3,8 @@ import logging
 from mailing.sendgridApi import sendgridApi
 from repository import UserRepository
 from app.databases import agora_db
+import hashlib
+from datetime import datetime
 
 mail_sys = sendgridApi()
 
@@ -76,17 +78,19 @@ class ChannelRepository:
         self.db.run_query(query)
 
         if(organiser_contact is not None):
+            h = hashlib.new('ripemd160')
+            h.update(f"2{insertId} {datetime.now()}".encode('utf-8'))
             if 'email_address' in organiser_contact:
                 query = f'''INSERT INTO FetchedChannels 
-                (channel_id, user_id, claimed, organiser_name, organiser_email) 
+                (channel_id, user_id, claimed, organiser_name, organiser_email, mailToken) 
                 VALUES 
-                ({insertId}, "{organiser_contact['name']}", {userId}, {claimed}, "{organiser_contact['email_address']}")'''
+                ({insertId}, {userId}, {claimed}, "{organiser_contact['name']}", "{organiser_contact['email_address']}", "{h.hexdigest()}")'''
                 self.db.run_query(query)
             elif 'homepage' in organiser_contact:
                 query = f'''INSERT INTO FetchedChannels 
-                (channel_id, user_id, claimed, organiser_name, organiser_homepage_url) 
+                (channel_id, user_id, claimed, organiser_name, organiser_homepage_url, mailToken) 
                 VALUES 
-                ({insertId}, "{organiser_contact['name']}", {userId}, {claimed}, "{organiser_contact['homepage']}")'''
+                ({insertId}, {userId}, {claimed}, "{organiser_contact['name']}" , "{organiser_contact['homepage']}" , "{h.hexdigest()}")'''
                 self.db.run_query(query)
 
         return self.getChannelById(insertId)
