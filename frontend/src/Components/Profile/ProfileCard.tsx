@@ -2,7 +2,8 @@ import React, { useState, useEffect, FunctionComponent } from "react";
 import { Box, Heading, Text, Image, Layer } from "grommet";
 import { Link } from "react-router-dom";
 import { Profile, ProfileService } from "../../Services/ProfileService";
-import { Calendar, UserExpert } from "grommet-icons";
+import { FooterOverlayProfileCard } from "./FooterOverlayProfileCard";
+import { } from "grommet-icons";
 
 interface Props {
   profile: Profile;
@@ -129,10 +130,10 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
               style={{ minHeight: "200px", maxHeight: "540px" }}
               direction="column"
             >
-              <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
+              <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }} align="center">
                 <Link
                   className="channel"
-                  to={`/profile/${props.profile.user.username}`}
+                  to={`/profile/${props.profile.user.id}`}
                   style={{ textDecoration: "none" }}
                 >
                   <Box
@@ -150,6 +151,9 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
               </Box>
             </Box>
           </Box>
+          <FooterOverlayProfileCard
+            user={props.profile.user}
+          />
         </Layer>
       )}
     </Box>
