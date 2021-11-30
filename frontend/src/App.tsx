@@ -30,6 +30,7 @@ import AvatarPage from "./Views/AvatarPage";
 import LivestreamPage from "./Views/Livestream/LivestreamPage";
 import AfterTransaction from "./Views/AfterTransaction"
 import {useTracking} from './Components/Core/Analytics/useTracking';
+import AllProfilesPage from "./Views/AllProfilesPage";
 
 function App() {
   // // Initialize google analytics page view tracking
@@ -49,6 +50,7 @@ function App() {
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
           <Route path="/past" component={AllPastTalksPage} />
+          <Route exact path="/profiles" component={AllProfilesPage} />
           {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
           <Route path={`/:name/manage`} component={ManageChannelPage} />
 
