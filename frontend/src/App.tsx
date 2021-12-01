@@ -7,7 +7,7 @@ import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
 import ChannelReferralPage from "./Views/ChannelReferralPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
-// import StreamPage from "./Views/StreamPage";
+import AllSpeakersPage from "./Views/AllSpeakersPage";
 import TagPage from "./Views/TagPage";
 import AllVideosPage from "./Views/AllVideosPage";
 import HeaderBar from "./Components/Core/HeaderBar";
@@ -30,8 +30,6 @@ import AvatarPage from "./Views/AvatarPage";
 import LivestreamPage from "./Views/Livestream/LivestreamPage";
 import AfterTransaction from "./Views/AfterTransaction"
 import {useTracking} from './Components/Core/Analytics/useTracking';
-import AllProfilesPage from "./Views/AllProfilesPage";
-import ProfilePage from "./Views/ProfilePage";
 
 function App() {
   // // Initialize google analytics page view tracking
@@ -51,7 +49,7 @@ function App() {
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
           <Route path="/past" component={AllPastTalksPage} />
-          {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
+          <Route exact path="/speakers" component={AllSpeakersPage} />
           <Route path={`/:name/manage`} component={ManageChannelPage} />
 
           {/* REFERAL ENDPOINT: not deployed yet */}
