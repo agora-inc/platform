@@ -30,6 +30,7 @@ import AvatarPage from "./Views/AvatarPage";
 import LivestreamPage from "./Views/Livestream/LivestreamPage";
 import AfterTransaction from "./Views/AfterTransaction"
 import {useTracking} from './Components/Core/Analytics/useTracking';
+import ProfilePage from './Views/ProfilePage';
 
 function App() {
   // // Initialize google analytics page view tracking
@@ -66,7 +67,6 @@ function App() {
           <Route path="/saved" component={SavedTalksPage} />
 
           {/* PROFILES ENDPOINTS: */}
-          <Route exact path="/profiles" component={AllProfilesPage} />
           <Route exact path="/profile/:user_id" component={ProfilePage} />
 
           {/* INFO ENDPOINT: */}
