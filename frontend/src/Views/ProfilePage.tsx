@@ -27,7 +27,7 @@ const ProfilePage = (props: Props) => {
 
   return (
     <Box width="90%" margin={{ left: "2.5%" }} style={{ position: "relative", top: "12vh" }}>
-      {111}
+      {profile?.user.id}
     </Box>
   );
 };

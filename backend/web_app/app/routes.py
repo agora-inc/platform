@@ -249,10 +249,14 @@ def updatePublic():
 # --------------------------------------------
 # PROFILE ROUTES
 # --------------------------------------------
-@app.route('/profile/public')
+@app.route('/profiles/public')
 def getPublicProfiles():
     return jsonify(profiles.getAllPublicProfiles())
 
+@app.route('/profiles/profile', methods=["GET"])
+def getProfile():    
+    id = int(request.args.get("id"))
+    return jsonify(profiles.getProfile(id))
 
 
 # --------------------------------------------

@@ -8,6 +8,35 @@ class ProfileRepository:
         self.db = db
         self.topics = TopicRepository(db=self.db)
 
+    def getProfile(self, user_id):
+        query_user = f"SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage FROM Users WHERE id = {user_id};"
+        user = self.db.run_query(query_user)[0]
+        # profile
+        query_profile = f"SELECT full_name, has_photo, open_give_talk, twitter_handle FROM Profiles WHERE user_id = {user_id};"
+        profile = self.db.run_query(query_profile)[0]
+        # topics
+        query_topics = f"SELECT topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id = {user_id};"
+        topics = self.db.run_query(query_topics)[0]
+        # papers
+        query_papers = f"SELECT title, authors, publisher, year, link FROM ProfilePapers WHERE user_id = {user_id};"
+        papers = self.db.run_query(query_papers)
+        # tags
+        query_tags = f"SELECT tag FROM ProfileTags WHERE user_id = {user_id};"
+        tags = self.db.run_query(query_tags)
+
+        # package everything in a dict
+        res = {'user': user, 'papers': papers, 'tags': [], 'topics': [], 'has_photo': 0, 'open_give_talk': 1}
+        res.update(profile)
+
+        for topic_id in topics.values():
+            if topic_id:
+                res['topics'].append(self.topics.getTopicFromId(topic_id))
+
+        for tag in tags:
+            res['tags'].append(tag['tag'])
+
+        return res
+
     def getAllPublicProfiles(self):
         query_public_user = "SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage FROM Users WHERE public = 1;"
         users = self.db.run_query(query_public_user)

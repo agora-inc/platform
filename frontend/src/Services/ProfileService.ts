@@ -7,7 +7,7 @@ import { User } from "./UserService";
 
 const getAllPublicProfiles = (callback: any) => {
   axios
-    .get(baseApiUrl + "/profile/public")
+    .get(baseApiUrl + "/profiles/public")
     .then((response) => {
       callback(response.data);
     })
@@ -15,7 +15,7 @@ const getAllPublicProfiles = (callback: any) => {
 };
 
 const getProfile = (userId: number, callback: any) => {
-  get(`profile/id=${userId}`, callback);
+  get(`profiles/profile?id=${userId}`, callback);
 }
 
 const updateProfile = (
@@ -28,7 +28,7 @@ const updateProfile = (
   callback: any,
 ) => {
   post(
-    "profile/update",
+    "profiles/update",
     {
       user_id: userId,
       open_give_talk: open_give_talk,
@@ -42,12 +42,12 @@ const updateProfile = (
 }
 
 const getPapers = (userId: number, callback: any) => {
-  get(`profile/papers/id=${userId}`, callback);
+  get(`profiles/papers/id=${userId}`, callback);
 }
 
 const updatePapers = (userId: number, papers: Paper[], callback: any) => {
   post(
-    "profile/papers/update",
+    "profiles/papers/update",
     {
       user_id: userId,
       papers: papers,
@@ -57,12 +57,12 @@ const updatePapers = (userId: number, papers: Paper[], callback: any) => {
 }
 
 const getTags = (userId: number, callback: any) => {
-  get(`profile/tags/id=${userId}`, callback);
+  get(`profiles/tags/id=${userId}`, callback);
 }
 
 const updateTags = (userId: number, tags: string[], callback: any) => {
   post(
-    "profile/tags/update",
+    "profiles/tags/update",
     {
       user_id: userId,
       tags: tags,
