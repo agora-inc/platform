@@ -85,7 +85,7 @@ class TwitterBot:
     def run(self):
         try:
             # self._rebalance_remaining_api_calls()
-            # self.post_tweets()
+            self.post_tweets()
             self.follow_in_mass()
             self.mass_unfollow()
 
@@ -238,6 +238,8 @@ class TwitterBot:
 
                 if len(message) < 280: # Twitter limit
                     got_a_admissible_message = True
+
+                print(message)
                 
             except Exception as e:
                 print(f"Error in finding message: {e}")
