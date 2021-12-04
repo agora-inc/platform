@@ -1,9 +1,9 @@
 # import hack (Remy); TODO: make import directly from repository folder.
 from logging import exception
 from os import name
-from app.routes import TalkRepository
-from app.routes import TwitterBotRepository
-from app.routes import TopicRepository
+from repository import TalkRepository
+from repository import TwitterBotRepository
+from repository import TopicRepository
 from app.databases import agora_db
 import tweepy
 import json
@@ -42,11 +42,10 @@ TWITTER_HASHTAGS_JSON_PATH = "/home/cloud-user/plateform/agora/backend/twitter_b
 
 
 class TwitterBot:
-    def __init__(self, db=agora_db):
-        self.db = db
-        self.tweets = TwitterBotRepository.TwitterBotRepository()
-        self.talks = TalkRepository.TalkRepository(db=db)
-        self.topics = TopicRepository.TopicRepository(db=db)
+    def __init__(self):
+        self.tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
+        self.talks = TalkRepository.TalkRepository(db=agora_db)
+        self.topics = TopicRepository.TopicRepository(db=agora_db)
         self.hashtags_per_id = {}
         self.api_call_post = 0
         self.api_call_follow = 0
@@ -70,7 +69,7 @@ class TwitterBot:
         # Create API object
         api = tweepy.API(
             auth,
-            wait_on_rate_limit=True
+            wait_on_rate_limit=False
             )
         try:
             api.verify_credentials()
@@ -221,6 +220,7 @@ class TwitterBot:
                         f"One of the most trending talk on mora this week is happening on {talk_day} at {hour_plus_timezone}! Check it out 🚀!",
                         f"One of the most trending talk on mora this week is happening on {talk_day} at {hour_plus_timezone}, thanks to '{channel_name}'! Check it out 🚀!",
 
+                        # OLD SENTENCES:
                         # f"The '{channel_name}' seminar serie has a great line up for the next few weeks! {speaker_name} will discuss talk_subtopic on talk_date!",
                         # f"Want to learn more about talk_topic? speaker_name will be giving a talk on talk_subtopic talk_date as part of {channel_name}.",
                         # f"{speaker_name}, who spoke speaker_last_talk_date on mora, is back for a new talk!",
@@ -252,6 +252,8 @@ class TwitterBot:
 
                 if len(message) < 280: # Twitter limit
                     got_a_admissible_message = True
+
+                print(message)
                 
             except Exception as e:
                 print(f"Error in finding message: {e}")

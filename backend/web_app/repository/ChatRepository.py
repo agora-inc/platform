@@ -1,8 +1,7 @@
 import logging
-from app.databases import agora_db
 
 class ChatRepository():
-    def __init__(self, db=agora_db):
+    def __init__(self, db):
         self.db = db
         
     def setup_chat_backend(self, chat_type, channel_id=None):
