@@ -1,7 +1,6 @@
 import multiprocessing
 from repository.ChannelRepository import ChannelRepository
 from repository.TalkRepository import TalkRepository
-from app.databases import agora_db
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -20,7 +19,7 @@ ad = AlphabetDetector()
 
 
 class RSScraperRepository():
-	def __init__(self, db=agora_db):
+	def __init__(self, db):
 		self.db = db
 		self.channelRepo = ChannelRepository(db=db)
 		self.talkRepo = TalkRepository(db=db)
