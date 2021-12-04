@@ -102,7 +102,7 @@ class TwitterBot:
     def post_tweets(self):
         talks = self.tweets.getIncomingTalksToTweet(MINIMUM_CLICKCOUNT, MAX_DAYS_IN_ADVANCE)
 
-        print(f"list of talks to tweet: {talks}")
+        print(f"List of talks to tweet: {talks}")
         n_calls = 0 
         for talk in talks:
             if n_calls < 50:
@@ -149,6 +149,8 @@ class TwitterBot:
                     except Exception as e:
                         print(f"exception yo: {e}")
                         self.tweets.updateTweetSendingStatus("advertise", success=False, talk_id=talk_id, error_message=e)
+
+                print(message)
             
             else:
                 break
@@ -217,6 +219,18 @@ class TwitterBot:
                         f"Trending seminar of the week: '{talk_name}' given by {speaker_name} within the '{channel_name}' series: register with the link down below!",
                         f"One of the most trending talk on mora this week is happening on {talk_day} at {hour_plus_timezone}! Check it out 🚀!",
                         f"One of the most trending talk on mora this week is happening on {talk_day} at {hour_plus_timezone}, thanks to '{channel_name}'! Check it out 🚀!",
+
+                        # OLD SENTENCES:
+                        # f"The '{channel_name}' seminar serie has a great line up for the next few weeks! {speaker_name} will discuss talk_subtopic on talk_date!",
+                        # f"Want to learn more about talk_topic? speaker_name will be giving a talk on talk_subtopic talk_date as part of {channel_name}.",
+                        # f"{speaker_name}, who spoke speaker_last_talk_date on mora, is back for a new talk!",
+                        # f"Learn more about talk_subtopic on {date}! speaker_name is giving a seminar as part of {channel_name}.",
+                        # f"Learn more about talk_subtopic on {date} with speaker_name.",
+                        # f"Learn more about talk_subtopic on {date}! speaker_name is giving a seminar as part of {channel_name}.",
+                        # f"Check out {speaker_name}’s talk as part of agora_name on talk_date!",
+                        # f"Check out {speaker_name}'s' talk as part of {channel_name} on {talk_day} 🚀!",
+                        # f"{channel_name} has a great line up for the next few weeks! {speaker_name} will discuss talk_subtopic on talk_date!",
+                        # f"Save the date for {speaker_name}'s talk on talk_date!",
                     ])
 
                 elif event_type == "reminder":
@@ -225,13 +239,13 @@ class TwitterBot:
                         time_before_it_starts = (datetime.datetime.now() - date).seconds // 3600 + " hours"
                     else:
                         time_before_it_starts = (datetime.datetime.now() - date).seconds // 60 + " minutes"
-
+ 
                     message = random.choice([
                         f"Don't miss out on your chance to listen to {speaker_name}: it's happening in {time_before_it_starts}!",
                         f"Grab yourself a tea or coffee ☕☕ and come listen to {speaker_name} who is about to start talking about '{talk_name}'!",
                         f"{speaker_name} is giving a talk starting in {time_before_it_starts} on '{talk_name}'!"
                         f"Check out {speaker_name}'s talk as part of {channel_name}! Starting very soon!",
-                        f"spaker_name is discussing talk_title in time_to_speak!",
+                        f"spaker_name is discussing '{talk_name}' in time_to_speak!",
                         f"Happening in {time_before_it_starts}: {speaker_name} talking about '{talk_name}'. Don't miss that out!",
                         f"Want to hear about the lattest trends in {topic_string}? {speaker_name} is giving a talk on talk_subtopic in time_to_talk!"
                     ])
