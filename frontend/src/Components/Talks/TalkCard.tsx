@@ -273,7 +273,7 @@ export default class TalkCard extends Component<Props, State> {
                 weight="bold"
                 style={{ minHeight: "60px", overflow: "auto" }}
               >
-                {this.props.talk.name}
+                {textToLatex(this.props.talk.name)}
               </Text>
             </Box> 
             {this.props.talk.has_speaker_photo === 1 && (
