@@ -5,13 +5,15 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import ReactTooltip from "react-tooltip";
 import ImageUploader from "../Components/Core/ImageUploader";
-import { UserService } from "../Services/UserService";
+import { User, UserService } from "../Services/UserService";
 import { Paper, Profile, ProfileService } from "../Services/ProfileService";
 import "../Styles/all-profiles-page.css";
 
+import InviteToTalkButton from "../Components/Profile/InviteToTalkButton";
 
 interface Props {
   location: { pathname: string };
+  user: User
 }
 
 const ProfilePage = (props: Props) => {
@@ -71,6 +73,14 @@ const ProfilePage = (props: Props) => {
               >
                 {profile.full_name}
               </Text>
+              
+              INVITE TO GIVE A TALK BUTTON (REMY - TO BE MOVED)
+              <InviteToTalkButton
+                senderUserId={this.props.user.id}
+                profile={profile}
+              />
+
+
               <Box 
                 direction="row"
                 align="end"

@@ -71,13 +71,19 @@ const updateTags = (userId: number, tags: string[], callback: any) => {
   );
 }
 
-const sendTalkInvitation = (userId: number, message: string, channelId: number, callback: any) => {
-  //
-  //
-  //
-  // TO BE IMPLEMENTED
-  //
-  //
+const sendTalkInvitation = (invitingUserid: number, invitedUserid: number, channelId: number, date: string, message: string, contactEmail: string, callback: any) => {
+  post(
+    "profiles/invitation/speaker",
+    {
+      inviting_user_id: invitingUserid,
+      invited_user_id: invitedUserid,
+      channel_id: channelId,
+      date: date,
+      message: message,
+      contact_email: contactEmail
+    },
+    callback
+  );
 }
 
 export type Profile = {

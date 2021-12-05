@@ -1,11 +1,15 @@
 import os
 from app.databases import agora_db
+from mailing.sendgridApi import sendgridApi
+
 from repository.TopicRepository import TopicRepository
 
+mail_sys = sendgridApi()
 
 class ProfileRepository:
-    def __init__(self, db=agora_db):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
+        self.mail_sys = mail_sys
         self.topics = TopicRepository(db=self.db)
 
     def getProfile(self, user_id):
@@ -94,3 +98,26 @@ class ProfileRepository:
             return "('" + str(lst[0]) + "')"
         else:
             return str(tuple(lst))
+
+
+    def inviteToTalk(self, inviting_user_id, invited_user_id, channel_id, date, message, contact_email):
+        # take note in DB of sending
+        add_db = f'''
+            INSERT INTO SpeakerInvitations (
+                inviting_user_id, 
+                invited_user_id,
+                channel_id,
+                message)
+            VALUES (
+                {inviting_user_id},
+                {invited_user_id},
+                {channel_id},
+                '{message}'
+            );
+        '''
+        res = self.db.run_query(add_db)
+
+        # send email
+        recipient_name = self.getProfile(user_id)["full_name"]
+        channel_name = self.channels.getChannelById(channel_id)["name"]
+        self.mail_sys.invite_user_to_talk(recipient_name, message, date, contact_email, channel_name)

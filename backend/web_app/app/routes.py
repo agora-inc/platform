@@ -259,6 +259,33 @@ def getProfile():
     id = int(request.args.get("id"))
     return jsonify(profiles.getProfile(id))
 
+@app.route('/profiles/invitation/speaker', methods=["POST"])
+def inviteToTalk():    
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+
+    inviting_user_id = params["inviting_user_id"]
+    invited_user_id = params["invited_user_id"]
+    channel_id = params["channel_id"]
+    date = params["date"]
+    message = params["message"]
+    contact_email = params["contact_email"]
+
+
+    return jsonify(profiles.inviteToTalk(
+        inviting_user_id, 
+        invited_user_id, 
+        channel_id,
+        date,
+        message,
+        contact_email
+    ))
+
+
 
 # --------------------------------------------
 # CHANNEL ROUTES

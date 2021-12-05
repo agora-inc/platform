@@ -96,7 +96,7 @@ class sendgridApi:
         raise NotImplementedError
         
     ##############################
-    # B. User talk notifications #
+    # B. User notifications #
     ##############################
     def send_confirmation_talk_registration_request(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None, user_hour_offset=None):
         template_id_02 = "d-7778766bf8764d379f19bf2822aa38c2"
@@ -174,6 +174,44 @@ class sendgridApi:
             template_id=template_id_04
         )
         return response
+
+    def invite_user_to_talk(self, recipient_name, message, dates, contact_email, channel_name):
+        #
+        # WIP : Remyyyyyyyyyy
+        # WIP
+        # WIP
+        # WIP
+        # WIP
+        # template_id_04 = "d-d789a156a6f94442851b056ca5d7b620"
+        # response = self._post_sendgrid_request(
+        #     target_email=target_email,
+        #     dynamic_template_data={
+        #             "talk_name": talk_name,
+        #             "recipient_name": recipient_name,
+        #             "talk_id": talk_id,
+        #             "agora_name": agora_name,
+        #             "conference_url": conference_url
+        #         },
+        #     template_id=template_id_04
+        # )
+        # return response
+
+        '''
+        Topic: Invitation to give a talk within {channel_name}
+        Dear {recipient_name},
+
+        The administrators of the {channel_name} agora would like to invite you to come give a talk within their communities.
+        
+        Message: {message}
+        Prefered dates (if any): {date}
+        Contact email: {contact_email}
+        
+        Use the above contact email to follow up.
+
+        Best,
+        The mora.stream team
+        '''
+        pass
 
     ###########################################
     # C. Notifying modification event details #
