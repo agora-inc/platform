@@ -12,18 +12,17 @@ import "../Styles/all-profiles-page.css";
 import InviteToTalkButton from "../Components/Profile/InviteToTalkButton";
 
 interface Props {
-  location: { pathname: string };
-  user: User
+  location: { pathname: string }
 }
 
 const ProfilePage = (props: Props) => {
   const [profile, setProfile] = useState<Profile>();
   const [home, setHome] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User>(UserService.getCurrentUser());
 
   useEffect(() => {
     ProfileService.getProfile(getUserIdFromUrl(), setProfile);
-    let user = UserService.getCurrentUser();
-    if (profile && user.id === profile.user.id) {
+    if (profile && currentUser.id === profile.user.id) {
       setHome(true)
     }
   });
@@ -73,13 +72,13 @@ const ProfilePage = (props: Props) => {
               >
                 {profile.full_name}
               </Text>
-              
-              INVITE TO GIVE A TALK BUTTON (REMY - TO BE MOVED)
-              <InviteToTalkButton
-                senderUserId={this.props.user.id}
-                profile={profile}
-              />
 
+              {currentUser && 
+                <InviteToTalkButton
+                  invitingUser={currentUser}
+                  profile={profile}
+                />
+              }
 
               <Box 
                 direction="row"

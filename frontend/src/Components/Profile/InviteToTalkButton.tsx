@@ -6,12 +6,15 @@ import {
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import ReactTooltip from "react-tooltip";
-import { Profile } from "../../Services/ProfileService"
-import { ProfileService } from "../../Services/ProfileService";
+import { Channel, ChannelService } from "../../Services/ChannelService"
+import { User } from "../../Services/UserService"
+import { Profile, ProfileService } from "../../Services/ProfileService";
 import { Workshop } from "grommet-icons";
+import CreateChannelButton from "../Channel/CreateChannelButton";
+import CreateChannelOverlay from "../Channel/CreateChannelButton/CreateChannelOverlay";
 
 interface Props {
-  invitingUserId: number;
+  invitingUser: User;
   profile: Profile;
   widthButton?: string;
   textButton?: string;
@@ -22,9 +25,11 @@ interface State {
         contactEmail: string,
         date: string,
         message: string,
-        channelId: number
-    },
+        hostingChannel: Channel | null,
+      },
+    ownedChannels: Channel[]
     showForm: boolean;
+    showCreateChannelOverlay: boolean
 }
 
 export default class InviteToTalkButton extends Component<Props, State> {
@@ -35,10 +40,17 @@ export default class InviteToTalkButton extends Component<Props, State> {
             contactEmail: "",
             date: "",
             message: "",
-            channelId: -1
+            hostingChannel: null
         },
         showForm: false,
+        ownedChannels: [],
+        showCreateChannelOverlay: false
     };
+    ChannelService.getChannelsForUser(props.invitingUser.id, ["owner"], 
+    (res: Channel[]) =>{
+      this.setState({ownedChannels: res})
+      }
+    )
   }
 
   handleInput = (e: any, key: string) => {
@@ -56,19 +68,20 @@ export default class InviteToTalkButton extends Component<Props, State> {
   };
 
   contactSpeaker = () => {
-    ProfileService.sendTalkInvitation(
-      this.props.invitingUserId,
-      this.props.profile.user.id,
-      this.state.content.channelId,
-      this.state.content.date,
-      this.state.content.message,
-      this.state.content.contactEmail,
-      //TODO: Error handling
-      (answer: any) => {
-        console.log("Successful application!")
-      }
-     );
-
+    if (this.state.content.hostingChannel){
+      ProfileService.sendTalkInvitation(
+        this.props.invitingUser.id,
+        this.props.profile.user.id,
+        this.state.content.hostingChannel.id,
+        this.state.content.date,
+        this.state.content.message,
+        this.state.content.contactEmail,
+        //TODO: Error handling
+        (answer: any) => {
+          console.log("Successful application!")
+        }
+      );
+    }
 
     // TODO: add error handling if email is not succesffully sent.
     this.handleClearForm();
@@ -81,7 +94,7 @@ export default class InviteToTalkButton extends Component<Props, State> {
           contactEmail: "",
           message: "",
           date: "",
-          channelId: -1
+          hostingChannel: null
       },
       }
     );
@@ -89,19 +102,20 @@ export default class InviteToTalkButton extends Component<Props, State> {
 
   toggleModal = () => {
     this.setState({ showForm: !this.state.showForm });
+    this.handleClearForm()
   };
 
   isComplete = () => {
     return (
       this.state.content.message !== "" &&
       this.state.content.contactEmail !== "" &&
-      this.state.content.channelId !== -1
+      this.state.content.hostingChannel !== null
     );
   };
 
   isMissing = () => {
     let res: string[] = []
-    if (this.state.content.channelId === -1) {
+    if (!this.state.content.hostingChannel) {
       res.push("Channel name")
     }
     if (this.state.content.message === "") {
@@ -112,6 +126,12 @@ export default class InviteToTalkButton extends Component<Props, State> {
     }
     return res;
   }
+
+  toggleCreateChannelOverlay = () => {
+    this.setState({
+      showCreateChannelOverlay: !this.state.showCreateChannelOverlay,
+    });
+  };
 
   render() {
     return (
@@ -138,6 +158,7 @@ export default class InviteToTalkButton extends Component<Props, State> {
               {this.props.profile.full_name} is looking to give talks: invite him!
             </ReactTooltip>
         </Box>
+
         <Overlay
           visible={this.state.showForm}
           onEsc={this.toggleModal}
@@ -150,40 +171,110 @@ export default class InviteToTalkButton extends Component<Props, State> {
           width={900}
           height={500}
           contentHeight="400px"
-          title={"Inviting " + this.props.profile.full_name + " to give a talk"}
+          title={this.state.content.hostingChannel 
+            ? "Invite " + this.props.profile.full_name + " to talk within " + this.state.content.hostingChannel.name
+            : "Invite " + this.props.profile.full_name + " to give a talk"}
         >
 
-        <OverlaySection>
-          <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="Your channel name"
-              value={this.state.content.channelId}
-              onChange={(e: any) => this.handleInput(e, "channelId")}
-              />
-            </Box>
-          <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="Prefered dates (if any)"
-              value={this.state.content.date}
-              onChange={(e: any) => this.handleInput(e, "date")}
-              />
-          </Box>
-          <Box width="100%" gap="2px">
-            <TextArea
-              placeholder={"Your message"}
-              value={this.state.content.message}
-              onChange={(e: any) => this.handleInput(e, "message")}
-              rows={8}
-              />
-          </Box>
-          <Box width="100%" gap="2px">
-            <TextInput
-              placeholder="Contact email"
-              value={this.state.content.contactEmail}
-              onChange={(e: any) => this.handleInput(e, "contactEmail")}
-              />
-          </Box>
-          </OverlaySection>
+          {/* IF ADMIN HASN'T SELECTED AN AGORA + ADMIN DOES NOT HAVE AN AGORA */}
+          {((!(this.state.content.hostingChannel)) && this.state.ownedChannels.length == 0) && (
+            <OverlaySection>
+                You must first create a channel before inviting speakers.
+                <CreateChannelButton
+                    // height="50px"
+                  onClick={this.toggleCreateChannelOverlay}
+                />
+              </OverlaySection>
+            )}
+
+            {this.state.showCreateChannelOverlay && (
+              <CreateChannelOverlay
+                onBackClicked={this.toggleCreateChannelOverlay}
+                onComplete={() => {
+                  this.toggleCreateChannelOverlay();
+                }}
+                visible={true}
+                user={this.props.invitingUser}
+                />
+              )}
+
+
+          {/* IF ADMIN HASN'T SELECTED AN AGORA + HAS AGORAS */}
+          {(!(this.state.content.hostingChannel) && this.state.ownedChannels.length > 0) && (
+            <OverlaySection>
+                {/* select an agora */}
+                Select your hosting channel.
+
+                <Box margin={{ bottom: "15px", left:"8px", top: "8px" }} overflow="scroll">
+                        {this.state.ownedChannels.map((channel: Channel) => (
+                            <Box
+                              direction="row"
+                              gap="xsmall"
+                              // align="center"
+                              pad={{ vertical: "3.5px" }}
+                              justify="start"
+                              onClick={()=>{this.setState(
+                                (prevState: any) => ({
+                                  content: { ...prevState.content, hostingChannel: channel }
+                                }))}}
+                              hoverIndicator={true}
+                            >
+                              <Box
+                                background="white"
+                                justify="center"
+                                align="center"
+                                overflow="hidden"
+                                style={{
+                                  minHeight: 30,
+                                  minWidth: 30,
+                                  maxHeight: 30,
+                                  maxWidth: 30,
+                                  borderRadius: 15,
+                                }}
+                              >
+                              <img
+                                  src={ChannelService.getAvatar(channel.id)}
+                                  height={30}
+                                  width={30}
+                              />
+                              </Box>
+                              <Box justify="center">
+                                  {channel.name}
+                              </Box>
+                            </Box>
+                        ))}
+                      </Box>
+              </OverlaySection>
+            )}
+
+          {/* AFTER ADMIN SELECTED AGORA */}
+          {(this.state.content.hostingChannel) && (
+            <OverlaySection>
+              <Box width="100%" gap="2px">
+                <TextInput
+                  placeholder="Prefered dates (if any)"
+                  value={this.state.content.date}
+                  onChange={(e: any) => this.handleInput(e, "date")}
+                  />
+              </Box>
+              <Box width="100%" gap="2px">
+                <TextArea
+                  placeholder={"Your message"}
+                  value={this.state.content.message}
+                  onChange={(e: any) => this.handleInput(e, "message")}
+                  rows={8}
+                  />
+              </Box>
+              <Box width="100%" gap="2px">
+                <TextInput
+                  placeholder="Contact email"
+                  value={this.state.content.contactEmail}
+                  onChange={(e: any) => this.handleInput(e, "contactEmail")}
+                  />
+              </Box>
+              </OverlaySection>
+            )}
+
         </Overlay>
       </Box>
     );
