@@ -2,7 +2,7 @@ import random
 import logging
 from repository.ChannelRepository import ChannelRepository
 from mailing.sendgridApi import sendgridApi
-from app.databases import agora_db
+from databases import agora_db
 mail_sys = sendgridApi()
 
 # for emails

@@ -1,4 +1,4 @@
-from app.databases import agora_db
+from databases import agora_db
 
 class TagRepository:
     def __init__(self, db=agora_db):

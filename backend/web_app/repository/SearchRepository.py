@@ -1,5 +1,5 @@
 from repository import TagRepository, ChannelRepository
-from app.databases import agora_db
+from databases import agora_db
 
 class SearchRepository:
     def __init__(self, db=agora_db):

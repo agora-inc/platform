@@ -1,5 +1,5 @@
 # Imports.
-from app.routes import RSScraperRepository
+from backend.web_app.scrapping import OLD_RSScraperRepository
 from bs4 import BeautifulSoup 
 import requests
 import ast
@@ -7,7 +7,7 @@ from joblib import Parallel, delayed
 import multiprocessing
 
 # Create RSScraper object.
-rs_scraper = RSScraperRepository.RSScraperRepository()
+rs_scraper = OLD_RSScraperRepository.RSScraperRepository()
 
 # Load dictionary for primitive node classification. 
 print("1/3: Fetching classification dictionary.")

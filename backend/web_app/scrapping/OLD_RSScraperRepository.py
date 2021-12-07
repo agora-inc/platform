@@ -1,7 +1,7 @@
 import multiprocessing
 from repository.ChannelRepository import ChannelRepository
 from repository.TalkRepository import TalkRepository
-from app.databases import agora_db
+from backend.web_app.databases import agora_db
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -67,12 +67,13 @@ class RSScraperRepository():
 	# Remove duplicate talks
 	def squash(self):
 		query = '''DELETE t1 FROM Talks t1, Talks t2
-		WHERE t1.id > t2.id
-		AND  t1.date =t2.date
-		AND  t1.name =t2.name
-		AND  t1.description =t2.description
-		AND  t1.end_date=t2.end_date
-		AND t1.talk_speaker = t2.talk_speaker'''
+			WHERE t1.id > t2.id
+			AND  t1.date =t2.date
+			AND  t1.name =t2.name
+			AND  t1.description =t2.description
+			AND  t1.end_date=t2.end_date
+			AND t1.talk_speaker = t2.talk_speaker
+		'''
 		self.db.run_query(query)
 
 	def email_anti_obsfucator(self, email:str, name:str)->str:

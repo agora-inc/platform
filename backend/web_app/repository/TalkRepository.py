@@ -6,8 +6,8 @@ from repository.EmailRemindersRepository import EmailRemindersRepository
 
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
-from app.databases import agora_db
 import os 
+from databases import agora_db
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """

@@ -1,7 +1,6 @@
 from repository import TagRepository, ChannelRepository
 from datetime import datetime
-from app.databases import agora_db
-
+from databases import agora_db
 class StreamRepository:
     def __init__(self, db=agora_db):
         self.db = db

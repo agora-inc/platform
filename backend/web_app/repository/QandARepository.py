@@ -1,8 +1,7 @@
 from repository import UserRepository
 from datetime import datetime
 import re
-from app.databases import agora_db
-
+from databases import agora_db
 
 class Question:
     def __init__(self, id, content, username, postedAt, streamId, score, answers):

@@ -4,7 +4,7 @@ from os import name
 from app.routes import TalkRepository
 from app.routes import TwitterBotRepository
 from app.routes import TopicRepository
-from app.databases import agora_db
+from databases import agora_db
 import tweepy
 import json
 import random

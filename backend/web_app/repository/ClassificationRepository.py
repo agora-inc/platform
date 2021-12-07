@@ -1,6 +1,5 @@
 import logging
-from app.databases import agora_db
-
+from databases import agora_db
 
 class ClassificationGraphRepository:
     """Manages graph classification of topics in the following MYSQL table:

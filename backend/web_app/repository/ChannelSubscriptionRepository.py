@@ -5,8 +5,8 @@
 # from repository.EmailRemindersRepository import EmailRemindersRepository
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
-from app.databases import agora_db
 from payment.apis.StripeApi import StripeApi 
+from databases import agora_db
 
 stripeApi = StripeApi()
 mail_sys = sendgridApi()

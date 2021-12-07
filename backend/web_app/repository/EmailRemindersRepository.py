@@ -1,7 +1,6 @@
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
-from app.databases import agora_db
-
+from databases import agora_db
 
 # NOTE: times are in the format: "2020-12-31 23:59"
 """

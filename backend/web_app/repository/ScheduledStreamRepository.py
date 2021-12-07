@@ -1,6 +1,6 @@
 from repository.ChannelRepository import ChannelRepository
 from repository.TagRepository import TagRepository
-from app.databases import agora_db
+from databases import agora_db
 
 class ScheduledStreamRepository:
     def __init__(self, db=agora_db):

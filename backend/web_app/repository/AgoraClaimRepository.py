@@ -1,6 +1,6 @@
 from __future__ import annotations
 from repository.ChannelRepository import ChannelRepository
-from app.databases import agora_db
+from databases import agora_db
 
 
 class AgoraClaimRepository():
