@@ -5,6 +5,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import ReactTooltip from "react-tooltip";
 import ImageUploader from "../Components/Core/ImageUploader";
+import { AddPaperButton } from "../Components/Profile/AddPaperButton";
 import { UserService } from "../Services/UserService";
 import { Paper, Profile, ProfileService } from "../Services/ProfileService";
 import "../Styles/all-profiles-page.css";
@@ -27,11 +28,11 @@ const ProfilePage = (props: Props) => {
   });
 
   function getUserIdFromUrl(): number {
-    let talkId = props.location.pathname.split("/")[2]
-    if (!talkId) {
+    let userId = props.location.pathname.split("/")[2]
+    if (!userId) {
       return -1;
     }
-    return Number(talkId);
+    return Number(userId);
   };
 
   if (profile) {
@@ -42,10 +43,8 @@ const ProfilePage = (props: Props) => {
           height="160px"
           align="center"
           justify="between"
-          margin={{bottom: "20px"}}
-
         >
-          <Box direction="row" align="center" gap="small" width="65%">
+          <Box direction="row" align="center" gap="small" width="55%">
             <Box
               width="100px"
               height="100px"
@@ -89,12 +88,12 @@ const ProfilePage = (props: Props) => {
               </Box>
             </Box>
           </Box>
-          <Box direction="column" gap="10px" width="35%">
+          <Box direction="column" gap="10px" width="45%">
             <Box direction="row">
               <CheckBox
                 name="feature"
                 label="Verified academic"
-                checked={profile.user.verified_academic}
+                checked={profile.user.verified_academic ? profile.user.verified_academic : false}
                 onChange={() => {}}
               />
             </Box>
@@ -110,17 +109,13 @@ const ProfilePage = (props: Props) => {
           </Box>
         </Box>
 
+        <Box width="55%" margin={{bottom: "30px"}} style={{maxHeight: "50px"}} overflow="auto">
+          {profile.user.bio}
+        </Box>
+
         <Box>
           <Tabs>
             <TabList>
-              <Tab>
-                <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                  <Overview />
-                  <Text size="14px"> 
-                    Short bio 
-                  </Text>
-                </Box>
-              </Tab>
               <Tab>
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                   <DocumentText />
@@ -133,7 +128,7 @@ const ProfilePage = (props: Props) => {
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                   <Twitter color="grey" />
                   <Text size="14px"> 
-                    Tweets
+                    Tags & Tweets
                   </Text>
                 </Box>
               </Tab>
@@ -146,12 +141,6 @@ const ProfilePage = (props: Props) => {
                 </Box>
               </Tab>
             </TabList>
-            
-            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              <Box>
-                Bio
-              </Box>
-            </TabPanel>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               {profile.papers.length !== 0 && (
@@ -167,6 +156,9 @@ const ProfilePage = (props: Props) => {
                 <Text size="14px" style={{fontStyle: 'italic'}}>
                   No paper available
                 </Text>
+              )}
+              {home && (
+                <AddPaperButton profile={profile} />
               )}
             </TabPanel>
 
