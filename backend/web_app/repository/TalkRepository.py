@@ -160,7 +160,7 @@ class TalkRepository:
             query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
-                    WHERE Talks.published = 1 AND Talks.link <> '' and Talks.link <> 'https://' and Talks.link <> 'https://TBC'
+                    WHERE Talks.published = 1 
                         AND (Talks.card_visibility = 'Everybody' 
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
@@ -179,7 +179,7 @@ class TalkRepository:
                                         )
                                     )
                             )
-                        AND Talks.date < CURRENT_TIMESTAMP AND Talks.end_date > CURRENT_TIMESTAMP
+                        AND Talks.date < CURRENT_TIMESTAMP AND Talks.end_date > CURRENT_TIMESTAMP AND Talks.link <> '' and Talks.link <> 'https://' and Talks.link <> 'https://TBC' and Talks.name <> 'TBA'
                     ORDER BY Talks.date ASC LIMIT {limit}
                     OFFSET {offset}
                     '''
@@ -422,7 +422,7 @@ class TalkRepository:
 
     def get_similar_talks_for_channel(self, channelId, channelName, talkName, startDate, endDate, talkDescription,  main_talk_link = True):
         # print(f'''SELECT COUNT(*) FROM Talks WHERE channel_id = {channelId} AND channel_name = "{channelName}" AND date = "{startDate}" AND end_date ="{endDate}" AND name = "{talkName}" AND description = "{talkDescription}";''')
-        query = f'''SELECT COUNT(*) FROM Talks WHERE channel_id = {channelId} AND channel_name = "{channelName}" AND date = "{startDate}" AND end_date ="{endDate}" AND name = "{talkName}" AND description = "{talkDescription}";'''
+        query = f'''SELECT COUNT(*) FROM Talks WHERE channel_id = {channelId} AND channel_name = "{channelName}" AND date = "{startDate}" AND end_date ="{endDate} AND name = {talkName} AND description = {talkDescription}" AND name = "{talkName}" AND description = "{talkDescription}";'''
         talks = self.db.run_query(query)
         if not talks:
             return 0
@@ -659,7 +659,7 @@ class TalkRepository:
         self.db.run_query(query)
 
     def getFutureTalksForUser(self, userId):
-        query = f"SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link, Talks.show_link_offset, Talks.visibility FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP AND Talks.published = 1"
+        query = f"SELECT Talks.id, Talks.channel_id, Talks.channel_name, Talks.name, Talks.description, Talks.date, Talks.end_date, Talks.link, Talks.show_link_offset, Talks.visibility FROM Talks INNER JOIN TalkRegistrations ON Talks.id = TalkRegistrations.talk_id WHERE TalkRegistrations.user_id = {userId} AND Talks.date > CURRENT_TIMESTAMP AND Talks.published = 1 AND Talks.link <> '' and Talks.link <> 'https://' and Talks.link <> 'https://TBC' and Talks.name <> 'TBA'"
         talks = self.db.run_query(query)
 
         for talk in talks:
