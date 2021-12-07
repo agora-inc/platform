@@ -160,7 +160,7 @@ class TalkRepository:
             query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND date < CURRENT_TIMESTAMP AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
-                    WHERE Talks.published = 1 
+                    WHERE Talks.published = 1 AND Talks.link <> '' and Talks.link <> 'https://' and Talks.link <> 'https://TBC'
                         AND (Talks.card_visibility = 'Everybody' 
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
