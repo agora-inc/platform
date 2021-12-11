@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Box, CheckBox, Text } from "grommet";
-import { Overview, DocumentText, Twitter, Configure } from "grommet-icons";
+import { DocumentText, Twitter, Configure } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import ReactTooltip from "react-tooltip";
 import ImageUploader from "../Components/Core/ImageUploader";
-import { AddPaperButton } from "../Components/Profile/AddPaperButton";
-import { UserService } from "../Services/UserService";
+import { PaperEntry } from "../Components/Profile/PaperEntry";
+import { User, UserService } from "../Services/UserService";
 import { Paper, Profile, ProfileService } from "../Services/ProfileService";
 import "../Styles/all-profiles-page.css";
 
@@ -17,15 +17,25 @@ interface Props {
 
 const ProfilePage = (props: Props) => {
   const [profile, setProfile] = useState<Profile>();
-  const [home, setHome] = useState<boolean>(false);
+  const [papers, setPapers] = useState<Paper[]>([]);
+  const [home, setHome] = useState<boolean>(true);
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     ProfileService.getProfile(getUserIdFromUrl(), setProfile);
-    let user = UserService.getCurrentUser();
-    if (profile && user.id === profile.user.id) {
-      setHome(true)
+  }, []);
+  useEffect(() => {
+    setUser(UserService.getCurrentUser())
+  }, []);
+
+  useEffect(() => {
+    if (profile) {
+      if (user && user.id === profile.user.id) {
+        setHome(true)
+      }
+      setPapers(profile.papers)
     }
-  });
+  }, [profile, user]);
 
   function getUserIdFromUrl(): number {
     let userId = props.location.pathname.split("/")[2]
@@ -35,7 +45,25 @@ const ProfilePage = (props: Props) => {
     return Number(userId);
   };
 
+  function createNewPaper(): void {
+    let temp = papers;
+    temp.push({title: "", authors: "", publisher: "", year: 2021, link: ""})
+    setPapers(temp)
+  }
+
+
+  function addPaper(title: string, authors: string, publisher: string, year: number, link: string): void {
+    papers.push({
+      title: title,
+      authors: authors,
+      publisher: publisher,
+      year: year,
+      link: link
+    })
+  }
+
   if (profile) {
+    console.log("pap", papers)
     return (
       <Box width="80%" margin={{ left: "7.5%" }} style={{ position: "relative", top: "12vh" }}>
         <Box
@@ -143,22 +171,37 @@ const ProfilePage = (props: Props) => {
             </TabList>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              {profile.papers.length !== 0 && (
-                <Box>
-                  {profile.papers.map((paper: string) => (
-                    <Box>
-                      ---  
-                    </Box>
+              {papers.length !== 0 && (
+                <Box direction="column" gap="12px">
+                  {papers.map((paper: Paper, index: number) => (
+                    <PaperEntry paper={paper} index={index} />
                   ))}
                 </Box>
               )}
-              {profile.papers.length === 0 && (
+              {papers.length === 0 && (
                 <Text size="14px" style={{fontStyle: 'italic'}}>
                   No paper available
                 </Text>
               )}
               {home && (
-                <AddPaperButton profile={profile} />
+                <Box
+                  focusIndicator={false}
+                  background="white"
+                  round="xsmall"
+                  pad={{ vertical: "2px", horizontal: "xsmall" }}
+                  onClick={createNewPaper}
+                  style={{
+                    width: "15%",
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}
+                  align="center"
+                  margin={{top: "20px" }}   
+                >
+                  <Text color="grey" size="small"> 
+                    + Add 
+                  </Text>
+                </Box>
               )}
             </TabPanel>
 

@@ -78,7 +78,7 @@ export type Profile = {
   open_give_talk: boolean; 
   topics: Topic[];
   tags: string[];
-  papers: string[];
+  papers: Paper[];
   twitter_handle?: string
 };
 
@@ -87,7 +87,7 @@ export type Paper = {
   authors: string;
   publisher: string;
   link: string;
-  number: number;
+  year: number;
 }
 
 export const ProfileService = {
