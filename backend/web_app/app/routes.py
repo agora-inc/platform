@@ -260,11 +260,19 @@ def getProfile():
 
 @app.route('/profiles/papers/update', methods=["POST"])
 def updatePaper():
-    with open(f"/home/cloud-user/test/paper-route.txt", "w") as file:
-        file.write(str(request.json))
-
     params = request.json     
     return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
+
+@app.route('/profiles/papers/delete', methods=["OPTIONS", "POST"])
+def deletePaper():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    return jsonify(profiles.deletePaper(params['paper_id']))
 
 # --------------------------------------------
 # CHANNEL ROUTES

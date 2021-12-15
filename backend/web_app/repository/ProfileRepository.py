@@ -101,22 +101,23 @@ class ProfileRepository:
                 link="{paper['link']}"
             WHERE id={paper['id']}; '''
 
-            self.db.run_query(update_query)[0]
+            self.db.run_query(update_query)
             return int(paper['id'])
             
         else:
             insert_query = f'''INSERT INTO ProfilePapers (
                 user_id, title, authors, publisher, year, link
             ) VALUES (
-                {user_id}, {paper['title']}, {paper['authors']},
-                {paper['publisher']}, {paper['year']}, {paper['link']}
+                {user_id}, "{paper['title']}", "{paper['authors']}",
+                "{paper['publisher']}", "{paper['year']}", "{paper['link']}"
             ); '''
 
-            self.db.run_query(insert_query)
-            with open(f"/home/cloud-user/test/output.txt", "w") as file:
-                file.write(str(t))
-            return 0
-    
+            return int(self.db.run_query(insert_query)[0])
+
+    def deletePaper(self, paper_id):
+        query = f'DELETE FROM ProfilePapers where id = {paper_id}'
+        self.db.run_query(query)
+            
     @staticmethod
     def list_to_tuple(lst):
         if len(lst) == 1:

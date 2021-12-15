@@ -46,9 +46,17 @@ const ProfilePage = (props: Props) => {
   };
 
   function createNewPaper(): void {
-    let temp = papers;
-    temp.push({id: -1, title: "", authors: "", publisher: "", year: "", link: ""})
+    setPapers([...papers, {id: -1, title: "", authors: "", publisher: "", year: "", link: ""} ])
+  }
+
+  function updatePaper(index: number, new_paper: Paper): void {
+    const temp = papers
+    temp[index] = new_paper
     setPapers(temp)
+  }
+
+  function deletePaper(id: number): void {
+    setPapers(papers.filter(paper => paper.id !== id))
   }
 
   if (profile) {
@@ -163,7 +171,9 @@ const ProfilePage = (props: Props) => {
               {papers.length !== 0 && (
                 <Box direction="column" gap="12px">
                   {papers.map((paper: Paper, index: number) => (
-                    <PaperEntry paper={paper} userId={profile.user.id} index={index} />
+                    <PaperEntry paper={paper} userId={profile.user.id} index={index} 
+                      updatePaper={updatePaper} deletePaper={deletePaper} 
+                    />
                   ))}
                 </Box>
               )}

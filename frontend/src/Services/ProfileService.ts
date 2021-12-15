@@ -56,6 +56,16 @@ const updatePaper = (userId: number, paper: Paper, callback: any) => {
   );
 }
 
+const deletePaper = (paper_id: number, callback: any) => {
+  post(
+    "profiles/papers/delete",
+    {
+      paper_id: paper_id,
+    },
+    callback
+  );
+}
+
 const getTags = (userId: number, callback: any) => {
   get(`profiles/tags/id=${userId}`, callback);
 }
@@ -97,6 +107,7 @@ export const ProfileService = {
   updateProfile,
   getPapers,
   updatePaper,
+  deletePaper, 
   getTags,
   updateTags,
 };
