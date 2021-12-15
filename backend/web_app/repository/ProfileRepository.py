@@ -88,9 +88,6 @@ class ProfileRepository:
         pass
 
     def updatePaper(self, user_id, paper):
-        with open(f"/home/cloud-user/test/paper.txt", "w") as file:
-            file.write(str(user_id) + str(paper))
-
         if int(paper['id']) > 0:
             update_query = f'''UPDATE ProfilePapers SET
                 user_id={user_id},

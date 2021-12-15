@@ -206,7 +206,23 @@ const ProfilePage = (props: Props) => {
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               <Box direction="column">
-                Twitter
+                <Text size="14px" weight="bold" margin={{bottom: "10px"}}>
+                  Tags
+                </Text>
+                <Box height="60%" direction="row" pad="10px" gap="8px" margin={{bottom: "30px"}}>
+                  {profile.tags.map((tag: string) => (
+                    <Box height="20px" background="#EEEEEE" round="xsmall" pad="small" justify="center"  >
+                      <Text size="11px" weight="bold"> 
+                        {tag}
+                      </Text>
+                    </Box> 
+                  ))}
+                </Box>
+              
+                <Text size="14px" weight="bold">
+                  Twitter feed
+                </Text>
+
               </Box>
             </TabPanel>
 
