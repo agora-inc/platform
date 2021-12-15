@@ -258,6 +258,13 @@ def getProfile():
     id = int(request.args.get("id"))
     return jsonify(profiles.getProfile(id))
 
+@app.route('/profiles/papers/update', methods=["POST"])
+def updatePaper():
+    with open(f"/home/cloud-user/test/paper-route.txt", "w") as file:
+        file.write(str(request.json))
+
+    params = request.json     
+    return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
 
 # --------------------------------------------
 # CHANNEL ROUTES

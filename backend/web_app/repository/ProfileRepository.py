@@ -18,7 +18,7 @@ class ProfileRepository:
         query_topics = f"SELECT topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id = {user_id};"
         topics = self.db.run_query(query_topics)[0]
         # papers
-        query_papers = f"SELECT title, authors, publisher, year, link FROM ProfilePapers WHERE user_id = {user_id};"
+        query_papers = f"SELECT id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id = {user_id};"
         papers = self.db.run_query(query_papers)
         # tags
         query_tags = f"SELECT tag FROM ProfileTags WHERE user_id = {user_id};"
@@ -50,7 +50,7 @@ class ProfileRepository:
         query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
         topics = self.db.run_query(query_topics)
         # all papers of public users
-        query_papers = f"SELECT user_id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id in {tuple_ids};"
+        query_papers = f"SELECT user_id, id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id in {tuple_ids};"
         papers = self.db.run_query(query_papers)
         # all tags of public users
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
@@ -87,6 +87,35 @@ class ProfileRepository:
     def getAllPublicProfilesByTopicRecursive(self, topic_id):
         pass
 
+    def updatePaper(self, user_id, paper):
+        with open(f"/home/cloud-user/test/paper.txt", "w") as file:
+            file.write(str(user_id) + str(paper))
+
+        if int(paper['id']) > 0:
+            update_query = f'''UPDATE ProfilePapers SET
+                user_id={user_id},
+                title="{paper['title']}",
+                authors="{paper['authors']}",
+                publisher="{paper['publisher']}",
+                year="{paper['year']}",
+                link="{paper['link']}"
+            WHERE id={paper['id']}; '''
+
+            self.db.run_query(update_query)[0]
+            return int(paper['id'])
+            
+        else:
+            insert_query = f'''INSERT INTO ProfilePapers (
+                user_id, title, authors, publisher, year, link
+            ) VALUES (
+                {user_id}, {paper['title']}, {paper['authors']},
+                {paper['publisher']}, {paper['year']}, {paper['link']}
+            ); '''
+
+            self.db.run_query(insert_query)
+            with open(f"/home/cloud-user/test/output.txt", "w") as file:
+                file.write(str(t))
+            return 0
     
     @staticmethod
     def list_to_tuple(lst):

@@ -45,12 +45,12 @@ const getPapers = (userId: number, callback: any) => {
   get(`profiles/papers/id=${userId}`, callback);
 }
 
-const updatePapers = (userId: number, papers: Paper[], callback: any) => {
+const updatePaper = (userId: number, paper: Paper, callback: any) => {
   post(
     "profiles/papers/update",
     {
       user_id: userId,
-      papers: papers,
+      paper: paper,
     },
     callback
   );
@@ -83,11 +83,12 @@ export type Profile = {
 };
 
 export type Paper = {
+  id: number;
   title: string;
   authors: string;
   publisher: string;
   link: string;
-  year: number;
+  year: string;
 }
 
 export const ProfileService = {
@@ -95,7 +96,7 @@ export const ProfileService = {
   getProfile,
   updateProfile,
   getPapers,
-  updatePapers,
+  updatePaper,
   getTags,
   updateTags,
 };
