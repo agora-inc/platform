@@ -4,16 +4,13 @@ import { Box, Button, Text } from "grommet";
 import TalkCard from "./TalkCard";
 import PastTalkCard from "./PastTalkCard";
 import { Talk, TalkService } from "../../Services/TalkService";
-import { FormNextLink } from "grommet-icons";
 import "../../Styles/home.css";
 import "../../Styles/see-more-button.css";
 import "../../Styles/topic-talks-list.css";
 import { User } from "../../Services/UserService";
 import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
-// import GlobalClassification from "../../Components/Homepage/GlobalClassification";
 import MediaQuery from "react-responsive";
-import TopicSelector from "./TopicSelector";
 
 interface Props {
   gridArea?: string;
@@ -57,6 +54,37 @@ export default class TopicTalkList extends Component<Props, State> {
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
       renderMobile: window.innerWidth < 800
     };
+  }
+
+  handleScroll = (e: any) => {
+    var totalHeight = e.target.scrollHeight
+    var scrolledFromTop = e.target.scrollTop
+    var screenClientHeight = e.target.clientHeight
+
+    var scrollingRemaining = totalHeight - scrolledFromTop
+    console.log(scrollingRemaining)
+
+    // Trigger when 1.2 screenClient remaining
+    var almostReachedBottom = ( scrollingRemaining / screenClientHeight < 1.5)
+    
+    if (almostReachedBottom) {
+      //
+      //
+      //
+      //
+      // ADD FETCHING TALK: REMY
+      //
+      //
+      //
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener("scroll", this.handleScroll, true);
+  }
+
+  componentDidUnmount() {
+    document.removeEventListener("scroll", this.handleScroll);
   }
 
   componentWillMount() {
@@ -235,7 +263,6 @@ export default class TopicTalkList extends Component<Props, State> {
   };
 
   ifTalks = () => {
-
     return (
         <div className="talk_cards_outer_box">
           {/* <Box 
