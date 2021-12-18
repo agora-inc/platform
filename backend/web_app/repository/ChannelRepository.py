@@ -71,13 +71,13 @@ class ChannelRepository:
                         query = f'''INSERT INTO FetchedChannels 
                         (channel_id, user_id, claimed, organiser_name, organiser_email) 
                         VALUES 
-                        ({insertId}, "{organiser_contact['name']}", {userId}, {claimed}, "{organiser_contact['email_address']}")'''
+                        ({insertId}, {userId}, {claimed}, "{organiser_contact['name']}", "{organiser_contact['email_address']}")'''
                         self.db.run_query(query)
                     elif 'homepage' in organiser_contact:
                         query = f'''INSERT INTO FetchedChannels 
                         (channel_id, user_id, claimed, organiser_name, organiser_homepage_url) 
                         VALUES 
-                        ({insertId}, "{organiser_contact['name']}", {userId}, {claimed}, "{organiser_contact['homepage']}")'''
+                        ({insertId}, {userId}, {claimed}, "{organiser_contact['name']}", "{organiser_contact['homepage']}")'''
                         self.db.run_query(query)
 
         return self.getChannelById(insertId)
