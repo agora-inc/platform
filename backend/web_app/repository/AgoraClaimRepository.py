@@ -2,6 +2,7 @@ from __future__ import annotations
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from repository.ChannelRepository import ChannelRepository
+from repository.UserRepository import UserRepository
 from databases import agora_db
 from typing import Final
 
@@ -12,6 +13,7 @@ class AgoraClaimRepository():
     def __init__(self, db=agora_db, VIEW_THRESHOLD = None, MAX_EMAIL_COUNT = 4):
         self.db = db
         self.channelRepo = ChannelRepository(db=db)
+        self.userRepo = UserRepository(db=db)
         self.mail_sys = mail_sys
         self.VIEW_THRESHOLD : Final = VIEW_THRESHOLD
         self.MAX_EMAIL_COUNT : Final = MAX_EMAIL_COUNT
@@ -106,7 +108,10 @@ class AgoraClaimRepository():
         self.db.run_query(token_query)
 
     
-    def assignClaimEmail(self):
+    def assignClaimEmail(self, mailToken):
+        assign_claim_query = f'''SELECT channel_id, organiser_name, organiser_email FROM FetchedChannels WHERE mailToken = {mailToken}'''
+        channel = self.db.run_query(assign_claim_query)
+        self.userRepo.addUser(channel['organiser_name'], "miseazero0", channel['organiser_email'],channel['channel_id'], autoCreate=True )
         pass
 
 
