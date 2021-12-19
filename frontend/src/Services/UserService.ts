@@ -15,13 +15,14 @@ const register = (
   username: string,
   password: string,
   email: string,
-  refChannel: number,
+  channel_id: number,
+  mode: string,
   callback: any
 ) => {
   axios
     .post(
       baseApiUrl + "/users/add",
-      { username: username, password: password, email: email, refChannel: refChannel },
+      { username: username, password: password, email: email, channel_id: channel_id, mode: mode },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {

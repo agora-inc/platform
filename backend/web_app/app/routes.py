@@ -136,8 +136,9 @@ def addUser():
     username = params['username']
     password = params['password']
     email = params['email']
-    refChannel = params['channelId']
-    user = users.addUser(username, password, email, refChannel)
+    channel_id = params['channelId']
+    mode = params['mode']
+    user = users.addUser(username, password, email, channel_id, mode)
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")

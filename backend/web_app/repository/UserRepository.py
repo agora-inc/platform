@@ -56,7 +56,7 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password, email, channelId = 0):
+    def addUser(self, username: str, password: str, email: str, channelId: int = 0, mode: str = 'referral'):
         email = str(email).lower()
 
         if self.getUserByEmail(email):
@@ -72,31 +72,48 @@ class UserRepository:
 
         # check if user has been referred by a channel
         # let me know if you also want to add the user as a follower to an agora automatically
-        query_channel_id = f"SELECT * FROM Channels WHERE id = {id}"
-        result = self.db.run_query(query_channel_id)
-        if result:
-            try:
-                increase_counter_query = f'''
-                UPDATE ChannelReferrals
-                    SET num_referrals = num_referrals + 1
-                    WHERE channel_id = {channelId};'''
-                res = self.db.run_query(increase_counter_query)
+        if(mode == 'referral'):
+            query_channel_id = f"SELECT * FROM Channels WHERE id = {id}"
+            result = self.db.run_query(query_channel_id)
+            if result:
+                try:
+                    increase_counter_query = f'''
+                    UPDATE ChannelReferrals
+                        SET num_referrals = num_referrals + 1
+                        WHERE channel_id = {channelId};'''
+                    res = self.db.run_query(increase_counter_query)
 
-                if type(res) == list:
-                    if res[0] == 0 and res[1] == 0:
-                        initialise_counter_query = f'''
-                            INSERT INTO ChannelReferrals (channel_id, num_referrals) 
-                                VALUES ({channelId}, 1);
-                    '''
-                        res = self.db.run_query(initialise_counter_query)
-                        print("this works?")
-            
-            except Exception as e:
-                print(e)
-            
-        if(self.channels.getChannelById(channelId)):
-            self.channel.increaseChannelReferralCount(channelId)
-            # channel.acceptMembershipApplication(channelId, self.getUserById(username) )
+                    if type(res) == list:
+                        if res[0] == 0 and res[1] == 0:
+                            initialise_counter_query = f'''
+                                INSERT INTO ChannelReferrals (channel_id, num_referrals) 
+                                    VALUES ({channelId}, 1);
+                        '''
+                            res = self.db.run_query(initialise_counter_query)
+                            print("this works?")
+                
+                except Exception as e:
+                    print(e)
+                
+            if(self.channels.getChannelById(channelId)):
+                self.channel.increaseChannelReferralCount(channelId)
+                # channel.acceptMembershipApplication(channelId, self.getUserById(username) )
+
+        if(mode == 'claim'):
+            # Update channel owner to userId
+            query_channel_id = f"SELECT * FROM Channels WHERE id = {id}"
+            result = self.db.run_query(query_channel_id)
+            if result:
+                try:
+                    change_owner_query = f'''
+                    UPDATE ChannelUsers
+                        SET user_id = {userId}
+                        WHERE channel_id = {channelId};'''
+                    res = self.db.run_query(change_owner_query)
+                
+                except Exception as e:
+                    print(e)
+
 
         # check if user has been invited to some agoras
         query_existing_invitations = f'''
