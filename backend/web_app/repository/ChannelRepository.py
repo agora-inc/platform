@@ -495,3 +495,29 @@ class ChannelRepository:
         query = f'SELECT * FROM Channels WHERE topic_1_id = {topicId} LIMIT {limit} OFFSET {offset};'
         result = self.db.run_query(query)
         return result
+
+    def getChannelClaimStatus(self, channelId):
+        try: 
+            query = f'''SELECT FetchedChannels.claimed FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
+            WHERE Channels.id = {channelId};'''
+            result = self.db.run_query(query)
+            return result
+        except Exception as e:
+            print(e)
+
+    def getChannelOrganiserEmail(self, channelId):
+        try:
+            query = f'''SELECT FetchedChannels.organiser_email FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
+            WHERE Channels.id = {channelId};'''
+            result = self.db.run_query(query)
+            return result
+        except Exception as e:
+            print(e)
+
+    def changeChannelClaimStatus(self, channelId):
+        try: 
+            query = f'''UPDATE FetchedChannels SET FetchedChannels.claimed = 1 WHERE FetchedChannel.channel_id = {channelId};'''
+            result = self.db.run_query(query)
+            return result
+        except Exception as e:
+            print(e)

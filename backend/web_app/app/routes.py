@@ -39,8 +39,8 @@ channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionReposito
 RSScraper = RSScraperRepository.RSScraperRepository(db=agora_db)
 tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
 
-BASE_URL = "http://localhost:3000"
-# BASE_URL = "https://mora.stream/"
+# BASE_URL = "http://localhost:3000"
+BASE_URL = "https://mora.stream/"
 
 BASE_API_URL = "https://mora.stream/api"
 # BASE_API_URL = "http://localhost:8000/api"
@@ -402,6 +402,22 @@ def increaseViewCountForChannel():
 def getReferralsForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(channels.getChannelReferralCount(channelId))
+
+@app.route('/channels/claimstatus/get', methods=["GET"])
+def getClaimStatusForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelClaimStatus(channelId))
+
+@app.route('/channels/claimstatus/change', methods=["POST"])
+def increaseViewCountForChannel():
+    params = request.json 
+    channelId = params["channelId"]
+    return jsonify(channels.changeChannelClaimStatus(channelId))
+
+@app.route('/channels/organiseremail/get', methods=["GET"])
+def getOrganiserEmailForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelOrganiserEmail(channelId))
 
 # don't really think this is needed , but adding this in a comment anyways
 # @app.route('/channels/referrals/add', methods=["POST"])
