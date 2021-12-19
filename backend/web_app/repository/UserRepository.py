@@ -57,7 +57,7 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password, email, channelId = 0, autoCreate = False):
+    def addUser(self, username, password, email, channelId = 0):
         email = str(email).lower()
 
         if self.getUserByEmail(email):
