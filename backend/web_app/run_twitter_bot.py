@@ -1,9 +1,9 @@
 # import hack (Remy); TODO: make import directly from repository folder.
 from logging import exception
 from os import name
-from repository.TalkRepository import TalkRepository
-from repository.TwitterBotRepository import TwitterBotRepository
-from repository.TopicRepository import TopicRepository
+from app.routes import TalkRepository
+from app.routes import TwitterBotRepository
+from app.routes import TopicRepository
 from databases import agora_db
 import tweepy
 import json
@@ -44,9 +44,9 @@ TWITTER_HASHTAGS_JSON_PATH = "/home/cloud-user/plateform/agora/backend/twitter_b
 class TwitterBot:
     def __init__(self, db=agora_db):
         self.db = db
-        self.tweets = TwitterBotRepository()
-        self.talks = TalkRepository(db=db)
-        self.topics = TopicRepository(db=db)
+        self.tweets = TwitterBotRepository.TwitterBotRepository()
+        self.talks = TalkRepository.TalkRepository(db=db)
+        self.topics = TopicRepository.TopicRepository(db=db)
         self.hashtags_per_id = {}
         self.api_call_post = 0
         self.api_call_follow = 0
