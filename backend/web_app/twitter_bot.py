@@ -43,9 +43,9 @@ TWITTER_HASHTAGS_JSON_PATH = "/home/cloud-user/plateform/agora/backend/twitter_b
 
 class TwitterBot:
     def __init__(self):
-        self.tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
-        self.talks = TalkRepository.TalkRepository(db=agora_db)
-        self.topics = TopicRepository.TopicRepository(db=agora_db)
+        self.tweets = TwitterBotRepository(db=agora_db)
+        self.talks = TalkRepository(db=agora_db)
+        self.topics = TopicRepository(db=agora_db)
         self.hashtags_per_id = {}
         self.api_call_post = 0
         self.api_call_follow = 0

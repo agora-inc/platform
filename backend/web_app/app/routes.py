@@ -2085,3 +2085,12 @@ def publishAllTalks():
     response = jsonify(talks)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
+
+# --------------------------------------------
+# Claim routes
+# --------------------------------------------
+@app.route('/claim', methods=["GET","OPTIONS"])
+def claimAgora():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    pass
