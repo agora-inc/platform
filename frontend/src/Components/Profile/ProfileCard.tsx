@@ -3,7 +3,7 @@ import { Box, Heading, Text, Image, Layer } from "grommet";
 import { Link } from "react-router-dom";
 import { Profile, ProfileService } from "../../Services/ProfileService";
 import { FooterOverlayProfileCard } from "./FooterOverlayProfileCard";
-import { } from "grommet-icons";
+import { DocumentText } from "grommet-icons";
 
 interface Props {
   profile: Profile;
@@ -55,9 +55,9 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
             </Text>
           
             <Text
-              size="14px"
-              color="color1"
+              size="11px"
               weight="bold"
+              color="color1"
               style={{ height: "30px", overflow: "auto" }}
             >
               {props.profile.user.position}, {props.profile.user.institution}
@@ -141,7 +141,6 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
                     gap="xsmall"
                     align="center"
                     round="xsmall"
-                    pad={{ vertical: "6px", horizontal: "6px" }}
                   >
                     <Text weight="bold" size="16px" color="color3">
                       {name}
@@ -149,8 +148,24 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
                   </Box>
                 </Link>
               </Box>
+              <Text
+                size="11px"
+                color="color1"
+                weight="bold"
+                style={{ height: "30px", overflow: "auto" }}
+              >
+                {props.profile.user.position}, {props.profile.user.institution}
+              </Text>
+              <Box direction="row" gap="8px" align="center">
+                <DocumentText size="15px" />
+                <Text size="12px" weight="bold"> 
+                  Selected papers
+                </Text>
+              </Box>
+
             </Box>
           </Box>
+          
           <FooterOverlayProfileCard
             user={props.profile.user}
           />
