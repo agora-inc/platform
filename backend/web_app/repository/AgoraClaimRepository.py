@@ -74,7 +74,7 @@ class AgoraClaimRepository():
                             WHERE channel_id = {channel['id']};'''
             self.db.run_query(query_email_2)
 
-        elif(channel['claim_email_count'] == self.MAX_EMAIL_COUNT - 1):
+        elif(channel['claim_email_count'] == self.MAX_EMAIL_COUNT):
             # Send email using sendgrid
             self.mail_sys.send_confirmation_agora_claim_request_final(
                 channel['organiser_email'],
