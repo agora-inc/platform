@@ -6,6 +6,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTooltip from "react-tooltip";
 import ImageUploader from "../Components/Core/ImageUploader";
 import { PaperEntry } from "../Components/Profile/PaperEntry";
+import { TagsEntry } from "../Components/Profile/TagsEntry";
 import { User, UserService } from "../Services/UserService";
 import { Paper, Profile, ProfileService } from "../Services/ProfileService";
 import "../Styles/all-profiles-page.css";
@@ -206,19 +207,8 @@ const ProfilePage = (props: Props) => {
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               <Box direction="column">
-                <Text size="14px" weight="bold" margin={{bottom: "10px"}}>
-                  Tags
-                </Text>
-                <Box height="60%" direction="row" pad="10px" gap="8px" margin={{bottom: "30px"}}>
-                  {profile.tags.map((tag: string) => (
-                    <Box height="20px" background="#EEEEEE" round="xsmall" pad="small" justify="center"  >
-                      <Text size="11px" weight="bold"> 
-                        {tag}
-                      </Text>
-                    </Box> 
-                  ))}
-                </Box>
-              
+                <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} updateTags={() => {}} />
+
                 <Text size="14px" weight="bold">
                   Twitter feed
                 </Text>
