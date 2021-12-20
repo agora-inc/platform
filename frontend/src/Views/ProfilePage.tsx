@@ -4,7 +4,8 @@ import { DocumentText, Twitter, Configure } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import ReactTooltip from "react-tooltip";
-import ImageUploader from "../Components/Core/ImageUploader";
+
+import ImageCropUploader from "../Components/Channel/ImageCropUploader";
 import { PaperEntry } from "../Components/Profile/PaperEntry";
 import { TagsEntry } from "../Components/Profile/TagsEntry";
 import { User, UserService } from "../Services/UserService";
@@ -46,6 +47,26 @@ const ProfilePage = (props: Props) => {
     return Number(userId);
   };
 
+  function getProfilePhotoUrl(): string {
+    if (profile) {
+      return ProfileService.getProfilePhoto(profile.user.id)
+    } else {
+      return ""
+    }
+  }
+
+  function onProfilePhotoUpload(file: File): void {
+    if (home && profile) {
+      ProfileService.uploadProfilePhoto(
+        profile.user.id,
+        file,
+        () => {
+          window.location.reload();
+        }
+      );
+    }
+  };
+
   function createNewPaper(): void {
     setPapers([...papers, {id: -1, title: "", authors: "", publisher: "", year: "", link: ""} ])
   }
@@ -81,7 +102,7 @@ const ProfilePage = (props: Props) => {
               overflow="hidden"
             >
               <img
-                src={""}
+                src={getProfilePhotoUrl()}
                 height={120}
                 width={120}
               />
@@ -101,11 +122,17 @@ const ProfilePage = (props: Props) => {
                 gap="5px"
               >
                 <Box data-tip data-for="avatar_info">
-                  <ImageUploader
-                    text="Upload profile picture"
-                    width={"150px"}
-                    onUpload={() => {}}
-                  />
+                <ImageCropUploader
+                  text="Upload profile picture"
+                  onUpload={onProfilePhotoUpload}
+                  width="150px"
+                  height="25px"
+                  widthModal={600}
+                  heightModal={600}
+                  textSize="12px"
+                  hideToolTip={true}
+                  aspect={3 / 2}
+                />
                   <ReactTooltip id='avatar_info' place="right" effect="solid">
                     <p>Recommended avatar dim: 400x400px</p>
                   </ReactTooltip>

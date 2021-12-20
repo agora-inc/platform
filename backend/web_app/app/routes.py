@@ -263,6 +263,38 @@ def updatePaper():
     params = request.json     
     return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
 
+@app.route('/profiles/photo', methods=["POST", "GET", "DELETE"])
+def profilePhoto():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if request.method == "POST":
+        logRequest(request)
+        userId = request.form["userId"]
+        file = request.files["image"]
+        fn = f"{userId}.jpg"
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/profiles/{fn}")
+        profiles.addProfilePhoto(userId)
+        
+        app.logger.debug(f"User with id {userId} updated profile photo")
+
+        return jsonify({"filename": fn})
+
+    if request.method == "GET":
+        if "userId" in request.args:
+            userId = int(request.args.get("userId"))
+            fn = profiles.getProfilePhotoLocation(userId)
+            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+
+    if request.method == "DELETE":
+        params = request.json 
+        userId = params["userId"]
+        profiles.removeProfilePhoto(userId)
+
+        app.logger.debug(f"User with id {userId} remove profile photo")
+
+        return jsonify("ok")
+
 @app.route('/profiles/papers/delete', methods=["OPTIONS", "POST"])
 def deletePaper():
     if request.method == "OPTIONS":

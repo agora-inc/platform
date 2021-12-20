@@ -81,6 +81,40 @@ const updateTags = (userId: number, tags: string[], callback: any) => {
   );
 }
 
+const uploadProfilePhoto = (userId: number, image: File, callback: any) => {
+  const data = new FormData();
+  data.append("userId", userId.toString());
+  data.append("image", image);
+
+  axios.post(baseApiUrl + "/profiles/photo", data,       {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  }).then(function (response) {
+    callback(response.data);
+  });
+};
+
+const getProfilePhoto = (userId: number, cacheDelay?: number) => {
+  if (cacheDelay) {
+    return baseApiUrl + `/profiles/photo?userId=${userId}&ts=` + cacheDelay;
+  } else {
+    return baseApiUrl + `/profiles/photo?userId=${userId}`;
+  }
+};
+
+const removeProfilePhoto = (userId: number, callback: any) => {
+  axios
+    .delete(
+      baseApiUrl + "/profiles/photo", {
+        data: {userId: userId},
+        headers: {"Access-Control-Allow-Origin": "*"},
+    },)
+    .then(function (response) {
+      callback(response.data);
+    });
+}
+
 export type Profile = {
   user: User;
   full_name: string;
@@ -105,6 +139,9 @@ export const ProfileService = {
   getAllPublicProfiles,
   getProfile,
   updateProfile,
+  uploadProfilePhoto,
+  getProfilePhoto,
+  removeProfilePhoto,
   getPapers,
   updatePaper,
   deletePaper, 

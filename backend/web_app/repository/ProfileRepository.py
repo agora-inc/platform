@@ -115,6 +115,23 @@ class ProfileRepository:
         query = f'DELETE FROM ProfilePapers where id = {paper_id}'
         self.db.run_query(query)
 
+    def addProfilePhoto(self, userId):
+        query = f'UPDATE Profiles SET has_photo=1 WHERE user_id = {userId}'
+        self.db.run_query(query)
+
+    def removeProfilePhoto(self, userId):
+        query = f'UPDATE Profiles SET has_photo=0 WHERE user_id = {userId}'
+        self.db.run_query(query)
+
+    def getProfilePhotoLocation(self, userId):
+        query = f'SELECT has_photo FROM Profiles WHERE user_id = {userId}'
+        res = self.db.run_query(query)
+
+        if res[0]["has_photo"] == 1:
+            return f"/home/cloud-user/plateform/agora/storage/images/profiles/{userId}.jpg"
+        else:
+            return None
+
     def updateTags(self, user_id, tags):
         delete_query = f"DELETE FROM ProfileTags where user_id = {user_id};"
         self.db.run_query(delete_query)
