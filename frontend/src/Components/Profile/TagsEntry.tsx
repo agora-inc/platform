@@ -9,7 +9,6 @@ interface Props {
   tags: string[];
   home: boolean;
   hasTitle: boolean;
-  marginTop?: string;
   marginBottom?: string;
   userId?: number;
   updateTags?: any;
@@ -27,11 +26,10 @@ export const TagsEntry = (props: Props) => {
     setTags(str.split(","))
   }
 
-  const marginTop: string = props.marginTop ? props.marginTop : "0px"
   const marginBottom: string = props.marginBottom ? props.marginBottom : "0px" 
 
   return (
-    <Box direction="column" margin={{top: marginTop, bottom: marginBottom}}>
+    <Box direction="column" margin={{bottom: marginBottom}}>
       <Box direction="row" align="center" gap="30px"  margin={{bottom: "10px"}}>
         {props.hasTitle && (
           <Text size="14px" weight="bold">

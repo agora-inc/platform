@@ -159,23 +159,26 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
               >
                 {props.profile.user.position}, {props.profile.user.institution}
               </Text>
-              <Text size="12px" margin={{bottom: "25px"}} style={{width: "60%"}} >
-                {props.profile.user.bio}
-              </Text>
+              <Box 
+                margin={{bottom: "25px"}}
+                style={{width: "60%", maxHeight: "100px", overflow: "auto"}}
+              >
+                <Text size="12px"  >
+                  {props.profile.user.bio}
+                </Text>
+              </Box>
               <Box direction="row" gap="8px" align="center" margin={{bottom: "15px"}}>
                 <DocumentText size="15px" />
-                <Text size="12px" weight="bold"> 
+                <Text size="12px" style={{fontStyle: "italic"}}> 
                   Selected papers
                 </Text>
               </Box>
-              {props.profile.papers.slice(0, 3).map((paper: Paper, index: number) => (
-                <PaperEntry paper={paper} index={index} home={false} width="100%" />
-              ))}
-
-              <TagsEntry tags={props.profile.tags} home={false} hasTitle={false} 
-                marginTop="30px" marginBottom="10px" />
-            
-
+              <Box margin={{bottom: "30px"}} gap="5px">
+                {props.profile.papers.slice(0, 3).map((paper: Paper, index: number) => (
+                  <PaperEntry paper={paper} index={index} home={false} width="100%" />
+                ))}
+              </Box>
+              <TagsEntry tags={props.profile.tags} home={false} hasTitle={false} marginBottom="10px" />
             </Box>
           </Box>
           
