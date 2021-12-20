@@ -235,13 +235,13 @@ class TalkRepository:
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
-        return (talks, len(talks))
+        return talks
 
     def getAvailableFutureTalksForChannel(self, channelId, user_id):
         if user_id is None:
             query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND published = 1 AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date"
         else:
-            query = f'''SELECT DISTINCT * FROM Talks 
+            query = f'''SELECT DISTINCT * FROM Talks
                     WHERE channel_id = {channelId} AND Talks.published = 1 
                         AND (Talks.card_visibility = 'Everybody' 
                                 OR (Talks.card_visibility = 'Followers and members' 

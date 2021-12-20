@@ -29,7 +29,15 @@ interface State {
   hadFirstTalkFetch: boolean,
   isFetchingNewTalks: boolean,
   displayedTalks: Talk[],
-  
+}
+
+var emptyTopic = {
+  field: "-",
+  id: -1,
+  is_primitive_node: false,
+  parent_1_id: -1,
+  parent_2_id: -1,
+  parent_3_id: -1,
 }
 
 export default class AllPastTalksPage extends Component<{}, State> {
@@ -38,18 +46,11 @@ export default class AllPastTalksPage extends Component<{}, State> {
     this.state = {
       totalNumberOfTalks: 0,
       loading: true,
-      user: UserService.getCurrentUser(),
+      user: null,
       //   sortBy: "date",
       allTalks: [],
       allTopics: [],
-      chosenTopic: {
-        field: "-",
-        id: -1,
-        is_primitive_node: false,
-        parent_1_id: -1,
-        parent_2_id: -1,
-        parent_3_id: -1,
-      },
+      chosenTopic: emptyTopic,
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
@@ -62,28 +63,31 @@ export default class AllPastTalksPage extends Component<{}, State> {
 
   componentDidMount() {
     document.addEventListener("scroll", this.handleScroll, true);
+    TopicService.getAll((allTopics: Topic[]) => {
+      this.setState({ allTopics },
+        () => {
+          this.setState({user: UserService.getCurrentUser()},
+          () => {
+            TalkService.getAvailablePastTalks(
+                10, 
+                0, 
+                this.state.user ? this.state.user.id : null,  
+                (allTalks: Talk[]) => {
+                  console.log("nike sa mere", allTalks)
+                  this.setState({
+                  allTalks: allTalks,
+                  hadFirstTalkFetch: true,
+                  displayedTalks: allTalks,
+                });
+              });
+            } 
+          ) 
+        });
+    });
   }
 
   componentDidUnmount() {
     document.removeEventListener("scroll", this.handleScroll);
-  }
-
-  componentWillMount() {
-    TopicService.getAll((allTopics: Topic[]) => {
-      this.setState({ allTopics });
-    });
-
-    TalkService.getAvailablePastTalks(
-      50, 
-      0, 
-      this.state.user ? this.state.user.id : null,  
-      (allTalks: Talk[]) => {
-      this.setState({
-        allTalks: allTalks,
-        hadFirstTalkFetch: true,
-        displayedTalks: allTalks,
-      });
-    });
   }
 
 
@@ -202,38 +206,38 @@ export default class AllPastTalksPage extends Component<{}, State> {
       }
   };
 
-  fetchTalks = () => {
-    TalkService.getAllPastTalks(
-      100,
-      this.state.allTalks.length,
-      (data: { count: number; talks: Talk[] }) => {
-        this.setState({
-          allTalks: this.state.allTalks.concat(data.talks),
-          totalNumberOfTalks: data.count,
-          loading: false,
-        });
-      }
-    );
-  };
+  // fetchTalks = () => {
+  //   TalkService.getAllPastTalks(
+  //     100,
+  //     this.state.allTalks.length,
+  //     (data: { count: number; talks: Talk[] }) => {
+  //       this.setState({
+  //         allTalks: this.state.allTalks.concat(data.talks),
+  //         totalNumberOfTalks: data.count,
+  //         loading: false,
+  //       });
+  //     }
+  //   );
+  // };
 
-  compareTalksByDate = (a: Talk, b: Talk) => {
-    const aDate = new Date(a.date);
-    const bDate = new Date(b.date);
-    if (aDate < bDate) {
-      return 1;
-    }
-    if (aDate > bDate) {
-      return -1;
-    }
-    return 0;
-  };
+  // compareTalksByDate = (a: Talk, b: Talk) => {
+  //   const aDate = new Date(a.date);
+  //   const bDate = new Date(b.date);
+  //   if (aDate < bDate) {
+  //     return 1;
+  //   }
+  //   if (aDate > bDate) {
+  //     return -1;
+  //   }
+  //   return 0;
+  // };
 
   getTalksByTopicOnly = (talks: Talk[], topicsId: number[]): Talk[] => {
     let res: Talk[] = [];
     let talkCount: number = 0;
     for (let talk of talks) {
       let isIn: boolean = false;
-      if(!(talk === undefined)){
+      if(!(talk.topics === undefined)){
         for (let topic of talk.topics) {
           
           if (!isIn && (topicsId.includes(topic.id) 
@@ -697,7 +701,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
 
         </Box>
               
-        {this.fetchFilteredTalks().length === 0 && (
+        {this.state.displayedTalks.length === 0 && (
           <Box
             direction="row"
             width="280px"

@@ -61,31 +61,28 @@ export default class TopicTalkList extends Component<Props, State> {
       displayedTalks: [],
     };
   }
-
+  
   componentDidMount() {
     document.addEventListener("scroll", this.handleScroll, true);
-  }
-
-  componentDidUnmount() {
-    document.removeEventListener("scroll", this.handleScroll);
-  }
-
-  componentWillMount() {
     TopicService.getAll((allTopics: Topic[]) => {
       this.setState({ allTopics });
     });
-
+    
     TalkService.getAvailableFutureTalks(
       50, 
       0, 
       this.props.user ? this.props.user.id : null,  
       (allTalks: Talk[]) => {
-      this.setState({
+        this.setState({
         allTalks: allTalks,
         hadFirstTalkFetch: true,
         displayedTalks: allTalks,
       });
     });
+  }
+
+  componentDidUnmount() {
+    document.removeEventListener("scroll", this.handleScroll);
   }
 
   handleScroll = (e: any) => {
@@ -223,7 +220,6 @@ export default class TopicTalkList extends Component<Props, State> {
     let res: Talk[] = [];
     let talkCount: number = 0;
     for (let talk of talks) {
-
       let isIn: boolean = false;
       if(!(talk.topics === undefined)){
         for (let topic of talk.topics) {
