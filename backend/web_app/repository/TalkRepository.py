@@ -204,7 +204,7 @@ class TalkRepository:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1
                         AND Talks.link IS NOT NULL
-                        AND recording_link IS NOT NULL
+                        AND Talks.recording_link IS NOT NULL
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
                                         SELECT Channels.id FROM Channels 
