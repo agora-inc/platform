@@ -45,6 +45,18 @@ const getAllFutureTalksForTopicWithChildren = (
   );
 };
 
+const getAllPastTalksForTopicWithChildren = (
+  limit: number,
+  offset: number,
+  topicId: number,
+  callback: any
+) => {
+  get(
+    `talks/topic/children/past?topicId=${topicId}&limit=${limit}&offset=${offset}`,
+    callback
+  );
+};
+
 const getPastTalksForTopic = (topicId: number, callback: any) => {
   get(`talks/topic/past?topicId=${topicId}`, callback);
 };
@@ -554,6 +566,7 @@ export const TalkService = {
   getDraftedTalksForChannel,
   getFutureTalksForTopic,
   getAllFutureTalksForTopicWithChildren,
+  getAllPastTalksForTopicWithChildren,
   getPastTalksForTopic,
   getPastTalksForTag,
   getAvailableFutureTalks,

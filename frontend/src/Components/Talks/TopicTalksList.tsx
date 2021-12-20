@@ -109,38 +109,72 @@ export default class TopicTalkList extends Component<Props, State> {
         this.setState({isFetchingNewTalks: true})
         // All fetches are maxed to 40
         if (fetchTalkByTopic){
-          TalkService.getAllFutureTalksForTopicWithChildren(
-            40, 
-            this.state.displayedTalks.length, 
-            this.state.chosenTopic.id, 
-            (talks: Talk[]) => {
-              this.setState({
-                allTalks: this.state.allTalks.concat(talks),
-                displayedTalks: this.state.displayedTalks.concat(talks)
-              }, () => {
-                this.setState({isFetchingNewTalks: false})
-              })
-            }
-            )
-          } else if (fetchTalkBySubtopic){
-            // NB: we only have methods to fetch for 1 subtopic at a time.
-            for(let topic of this.state.chosenSubtopics){
-              var fetchedTalks = []
-              TalkService.getAllFutureTalksForTopicWithChildren(
-                40, 
-                this.state.displayedTalks.length, 
-                topic.id,  
-                (talks: Talk[]) => {
+          if(this.props.past){
+            TalkService.getAllPastTalksForTopicWithChildren(
+              40, 
+              this.state.displayedTalks.length, 
+              this.state.chosenTopic.id, 
+              (talks: Talk[]) => {
                 this.setState({
                   allTalks: this.state.allTalks.concat(talks),
                   displayedTalks: this.state.displayedTalks.concat(talks)
-                }, () => {
-                  this.setState({isFetchingNewTalks: false})
-                })
-              })
-            };
+                  }, () => {
+                    this.setState({isFetchingNewTalks: false})
+                  })
+              }
+            )
+          } else {
+            TalkService.getAllFutureTalksForTopicWithChildren(
+              40, 
+              this.state.displayedTalks.length, 
+              this.state.chosenTopic.id, 
+              (talks: Talk[]) => {
+                this.setState({
+                  allTalks: this.state.allTalks.concat(talks),
+                  displayedTalks: this.state.displayedTalks.concat(talks)
+                  }, () => {
+                    this.setState({isFetchingNewTalks: false})
+                  })
+                }
+              )
+            } 
+          } else if (fetchTalkBySubtopic){
+            // NB: we only have methods to fetch for 1 subtopic at a time.
+              if(this.props.past){
+                for(let topic of this.state.chosenSubtopics){
+                  var fetchedTalks = []
+                  TalkService.getAllFutureTalksForTopicWithChildren(
+                    40, 
+                    this.state.displayedTalks.length, 
+                    topic.id,  
+                    (talks: Talk[]) => {
+                    this.setState({
+                      allTalks: this.state.allTalks.concat(talks),
+                      displayedTalks: this.state.displayedTalks.concat(talks)
+                    }, () => {
+                      this.setState({isFetchingNewTalks: false})
+                    })
+                  })
+                };
+              } else {
+                for(let topic of this.state.chosenSubtopics){
+                  var fetchedTalks = []
+                  TalkService.getAllPastTalksForTopicWithChildren(
+                    40, 
+                    this.state.displayedTalks.length, 
+                    topic.id,  
+                    (talks: Talk[]) => {
+                    this.setState({
+                      allTalks: this.state.allTalks.concat(talks),
+                      displayedTalks: this.state.displayedTalks.concat(talks)
+                    }, () => {
+                      this.setState({isFetchingNewTalks: false})
+                    })
+                  })
+              }
+            }
         } else {
-          TalkService.getAvailableFutureTalks(
+          TalkService.getAvailablePastTalks(
             40,
             this.state.displayedTalks.length, 
             this.props.user ? this.props.user.id : null,  

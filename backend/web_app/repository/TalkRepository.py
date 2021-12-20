@@ -78,12 +78,15 @@ class TalkRepository:
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalks())
 
-    def getAllFutureTalksForTopicWithChildren(self, topic_id, limit, offset):
+    def getAllTalksForTopicWithChildren(self, topic_id, limit, offset, time):
+        assert(time in ["future", "past"])
+        mysql_time_operator = ">" if time == "future" else "<"
+
         # get id of all childs
         children_ids = self.topics.getAllChildrenIdRecursive(topic_id=topic_id)
 
         mysql_cond_string = str(children_ids).replace("[", "(").replace("]", ")")
-        talk_query = f"SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND published = 1 AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+        talk_query = f"SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND published = 1 AND end_date {mysql_time_operator} CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         talks = self.db.run_query(talk_query)
 
         # setup local data for topics
