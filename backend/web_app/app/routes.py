@@ -931,8 +931,7 @@ def getAvailablePastTalks():
     offset = int(request.args.get("offset"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    data = talks.getAvailablePastTalks(limit, offset, user_id)
-    return jsonify({"talks": data[0],"count": data[1]})
+    return jsonify(talks.getAvailablePastTalks(limit, offset, user_id))
 
 @app.route('/talks/channel/available/future', methods=["GET"])
 def getAvailableFutureTalksForChannel():
