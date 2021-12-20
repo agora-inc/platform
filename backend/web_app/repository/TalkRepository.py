@@ -80,7 +80,7 @@ class TalkRepository:
 
     def getAllTalksForTopicWithChildren(self, topic_id, limit, offset, time):
         assert(time in ["future", "past"])
-        mysql_time_operator = ">" if time == "future" else "<"
+        mysql_time_operator = '>' if time == "future" else '<'
 
         # get id of all childs
         children_ids = self.topics.getAllChildrenIdRecursive(topic_id=topic_id)
@@ -199,12 +199,12 @@ class TalkRepository:
 
     def getAvailablePastTalks(self, limit, offset, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link IS NOT NULL AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link IS NOT NULL AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1
                         AND Talks.link IS NOT NULL
-                        AND Talks.recording_link IS NOT NULL
+                        AND (Talks.recording_link IS NOT NULL AND Talks.recording_link <> '')
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
                                         SELECT Channels.id FROM Channels 
