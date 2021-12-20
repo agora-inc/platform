@@ -11,7 +11,6 @@ interface Props {
   hasTitle: boolean;
   marginBottom?: string;
   userId?: number;
-  updateTags?: any;
 }
 
 export const TagsEntry = (props: Props) => {
@@ -19,7 +18,9 @@ export const TagsEntry = (props: Props) => {
   const [tags, setTags] = useState<string[]>(props.tags)
 
   function updateTags(): void {
-
+    if (props.home && props.userId) {    
+      ProfileService.updateTags(props.userId, tags, () => {})
+    }
   }
 
   function parse(str: string): void {
@@ -65,7 +66,7 @@ export const TagsEntry = (props: Props) => {
           <TextInput
             style={{width: "90%"}}
             placeholder="Tags"
-            value={tags.join(', ')}
+            value={tags.join(',')}
             onChange={(e: any) => parse(e.target.value)}
           />
         </Box>

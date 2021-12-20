@@ -114,7 +114,13 @@ class ProfileRepository:
     def deletePaper(self, paper_id):
         query = f'DELETE FROM ProfilePapers where id = {paper_id}'
         self.db.run_query(query)
-            
+
+    def updateTags(self, user_id, tags):
+        delete_query = f"DELETE FROM ProfileTags where user_id = {user_id};"
+        self.db.run_query(delete_query)
+        add_query = "INSERT INTO ProfileTags (user_id, tag) VALUES " + ', '.join([f'({user_id}, "{tag}")' for tag in tags]) + ";"
+        self.db.run_query(add_query)
+
     @staticmethod
     def list_to_tuple(lst):
         if len(lst) == 1:

@@ -61,7 +61,6 @@ const ProfilePage = (props: Props) => {
   }
 
   if (profile) {
-    console.log("pap", papers)
     return (
       <Box width="80%" margin={{ left: "7.5%" }} style={{ position: "relative", top: "12vh" }}>
         <Box
@@ -206,9 +205,8 @@ const ProfilePage = (props: Props) => {
             </TabPanel>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              <Box direction="column">
-                <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} 
-                  hasTitle={true} updateTags={() => {}} />
+              <Box direction="column" gap="30px">
+                <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} hasTitle={true} />
 
                 <Text size="14px" weight="bold">
                   Twitter feed

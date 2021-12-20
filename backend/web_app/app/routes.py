@@ -274,6 +274,11 @@ def deletePaper():
     params = request.json
     return jsonify(profiles.deletePaper(params['paper_id']))
 
+@app.route('/profiles/tags/update', methods=["POST"])
+def updateTags():
+    params = request.json     
+    return jsonify(profiles.updateTags(params['user_id'], params['tags']))
+
 # --------------------------------------------
 # CHANNEL ROUTES
 # --------------------------------------------
