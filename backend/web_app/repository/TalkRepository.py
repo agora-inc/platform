@@ -203,7 +203,7 @@ class TalkRepository:
         if user_id is None:
             query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link IS NOT NULL AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
         else:
-            query = f'''SELECT DISTINCT * FROM Talks 
+            query = f'''SELECT DISTINCT * FROM Talks
                     WHERE Talks.published = 1
                         AND Talks.name <> 'TBA' AND Talks.name <> 'TBD' AND Talks.name IS NOT NULL
                         AND (Talks.recording_link IS NOT NULL AND Talks.recording_link <> '')
@@ -223,7 +223,6 @@ class TalkRepository:
                                             AND ChannelUsers.user_id = {user_id}
                                         )
                                     )
-                            )
                         AND Talks.end_date < CURRENT_TIMESTAMP 
                     ORDER BY Talks.date DESC LIMIT {limit}
                     OFFSET {offset}
