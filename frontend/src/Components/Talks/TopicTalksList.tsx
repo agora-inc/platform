@@ -32,6 +32,8 @@ interface State {
   allAudienceLevels: string[];
   renderMobile: boolean,
   hadFirstTalkFetch: boolean,
+  isFetchingNewTalks: boolean,
+  displayedTalks: Talk[]
 }
 
 var emptyTopic = {
@@ -55,6 +57,8 @@ export default class TopicTalkList extends Component<Props, State> {
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
       renderMobile: window.innerWidth < 800,
       hadFirstTalkFetch: false,
+      isFetchingNewTalks: false,
+      displayedTalks: []
     };
   }
 
@@ -72,25 +76,24 @@ export default class TopicTalkList extends Component<Props, State> {
     });
 
     TalkService.getAvailableFutureTalks(
-      200, 
+      50, 
       0, 
       this.props.user ? this.props.user.id : null,  
       (allTalks: Talk[]) => {
       this.setState({
         allTalks: allTalks,
-        hadFirstTalkFetch: true
+        hadFirstTalkFetch: true,
+        displayedTalks: allTalks,
       });
     });
   }
 
   handleScroll = (e: any) => {
-    console.log(this.state.chosenSubtopics)
     var totalHeight = e.target.scrollHeight
     var scrolledFromTop = e.target.scrollTop
     var screenClientHeight = e.target.clientHeight
 
     var scrollingRemaining = totalHeight - scrolledFromTop
-    console.log(scrollingRemaining)
 
     // Trigger when 1.2 times the size of screenClient is remaining
     var almostReachedBottom = ( scrollingRemaining / screenClientHeight < 1.5)
@@ -100,46 +103,58 @@ export default class TopicTalkList extends Component<Props, State> {
       // check if fetch talks by topics, subtopics, or general
       var fetchTalkByTopic = (this.state.chosenSubtopics.length == 0 && this.state.chosenTopic.id !== -1)
       var fetchTalkBySubtopic = (this.state.chosenSubtopics.length !== 0)
-      
-      console.log("fetchTalkByTopic:", fetchTalkByTopic)
-      console.log("fetchTalkBySubtopic:", fetchTalkBySubtopic)
 
-
-      // All fetches are maxed to 40
-      if (fetchTalkByTopic){
-        TalkService.getAllFutureTalksForTopicWithChildren(
-          40, this.state.allTalks.length, this.state.chosenTopic.id, 
-          (talks: Talk[]) => {
-            this.setState({
-              allTalks: this.state.allTalks.concat(talks)
-            })
-          }
-          )
-        } else if (fetchTalkBySubtopic){
-          // NB: we only have methods to fetch for 1 subtopic at a time.
-          for(let topic of this.state.chosenSubtopics){
-            var fetchedTalks = []
-            TalkService.getAllFutureTalksForTopicWithChildren(
-              40, 
-              this.state.allTalks.length, 
-              topic.id,  
-              (talks: Talk[]) => {
+      // check if it's currently fetching
+      if (!this.state.isFetchingNewTalks){
+        this.setState({isFetchingNewTalks: true})
+        // All fetches are maxed to 40
+        if (fetchTalkByTopic){
+          TalkService.getAllFutureTalksForTopicWithChildren(
+            40, 
+            this.state.displayedTalks.length, 
+            this.state.chosenTopic.id, 
+            (talks: Talk[]) => {
               this.setState({
-                allTalks: this.state.allTalks.concat(talks)
-              });
+                allTalks: this.state.allTalks.concat(talks),
+                displayedTalks: this.state.displayedTalks.concat(talks)
+              }, () => {
+                this.setState({isFetchingNewTalks: false})
+              })
+            }
+            )
+          } else if (fetchTalkBySubtopic){
+            // NB: we only have methods to fetch for 1 subtopic at a time.
+            for(let topic of this.state.chosenSubtopics){
+              var fetchedTalks = []
+              TalkService.getAllFutureTalksForTopicWithChildren(
+                40, 
+                this.state.displayedTalks.length, 
+                topic.id,  
+                (talks: Talk[]) => {
+                this.setState({
+                  allTalks: this.state.allTalks.concat(talks),
+                  displayedTalks: this.state.displayedTalks.concat(talks)
+                }, () => {
+                  this.setState({isFetchingNewTalks: false})
+                })
+              })
+            };
+        } else {
+          TalkService.getAvailableFutureTalks(
+            40,
+            this.state.displayedTalks.length, 
+            this.props.user ? this.props.user.id : null,  
+            (talks: Talk[]) => {
+              this.setState({
+                allTalks: this.state.allTalks.concat(talks),
+                displayedTalks: this.state.displayedTalks.concat(talks)
+              }, () => {
+                this.setState({isFetchingNewTalks: false})
+              })
             })
-          };
-      } else {
-        TalkService.getAllFutureTalks(
-          40,
-          this.state.allTalks.length,
-          (talks: Talk[]) => {
-            this.setState({
-              allTalks: this.state.allTalks.concat(talks)
-            })
-          })
+        }
+       }
       }
-    }
   };
 
 
@@ -232,13 +247,20 @@ export default class TopicTalkList extends Component<Props, State> {
     if (this.state.audienceLevel.includes(txt)) {
       this.setState(prevState => ({
         audienceLevel: prevState.audienceLevel.filter(e => e != txt)
-      }))
+      }),
+      () => {
+        this.setState({displayedTalks: this.fetchFilteredTalks()})
+        }
+      )
     } else {
       this.setState(prevState => ({
         audienceLevel: prevState.audienceLevel.concat(txt)
-      }))
+      }),
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+          }
+      )
     }
-    this.fetchFilteredTalks()
   }
 
   updateTopic = (topic: Topic) => {
@@ -253,26 +275,41 @@ export default class TopicTalkList extends Component<Props, State> {
       }
       this.setState({
         chosenTopic: empty, 
-        chosenSubtopics: []
-      })
-    } else {
-      this.setState({chosenTopic: topic, chosenSubtopics: []})
+        chosenSubtopics: []},
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+          }
+        )
+      } else {
+      this.setState({chosenTopic: topic, chosenSubtopics: []}, 
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+        }
+      )
     }
-    this.fetchFilteredTalks()
   }
 
   updateSubtopics = (topic: Topic) => {
     if (this.state.chosenSubtopics.length === 0) {
-      this.setState({ chosenSubtopics: [topic] })
+      this.setState({ chosenSubtopics: [topic] },
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+        })
     }
     if (this.state.chosenSubtopics.includes(topic)) {
       let subtopics = this.state.chosenSubtopics.filter(e => e.id !== topic.id)
-      this.setState({ chosenSubtopics: subtopics })
+      this.setState({ chosenSubtopics: subtopics },
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+        })
     } else {
       let subtopics = this.state.chosenSubtopics.concat(topic)
-      this.setState({ chosenSubtopics: subtopics })
+      this.setState({ chosenSubtopics: subtopics },
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+        }
+      )
     }
-    
   }
 
   getIdTopicsToFetch = () => {
@@ -303,6 +340,7 @@ export default class TopicTalkList extends Component<Props, State> {
   };
 
   ifTalks = () => {
+    // this.setState({displayedTalks: this.fetchFilteredTalks()})
     return (
         <div className="talk_cards_outer_box">
           {/* <Box 
@@ -314,7 +352,7 @@ export default class TopicTalkList extends Component<Props, State> {
           margin={{ top: "24px" }}
           > */}
         {this.props.past &&
-          this.fetchFilteredTalks().map((talk: Talk) => (
+          this.state.displayedTalks.map((talk: Talk) => (
             <PastTalkCard
               talk={talk}
               user={this.props.user}
@@ -323,7 +361,7 @@ export default class TopicTalkList extends Component<Props, State> {
             />
           ))}
         {!this.props.past &&
-          this.fetchFilteredTalks().map((talk: Talk) => (
+          this.state.displayedTalks.map((talk: Talk) => (
             <TalkCard talk={talk} user={this.props.user} />
           ))}
       {/* </Box> */}
@@ -563,11 +601,12 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px">
-                    {`${topic.field} (${
+                    {topic.field}
+                    {/* {`${topic.field} (${
                       this.state.audienceLevel.length != 0 ? 
                       String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
                       String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
-                      })`}
+                      })`} */}
                     </Text>
                   </Box>
                 )
@@ -611,27 +650,9 @@ export default class TopicTalkList extends Component<Props, State> {
           />
         </MediaQuery>
 
-        {this.fetchFilteredTalks().length === 0
+        {this.state.displayedTalks.length === 0
           ? this.ifNoTalks()
           : this.ifTalks()}
-
-        {/*this.props.seeMore && (
-          <Link to="/upcoming" style={{ textDecoration: "none" }}>
-            <Box
-              className="see-more-button"
-              pad={{ vertical: "2px", horizontal: "xsmall" }}
-              round="xsmall"
-              style={{
-                border: "2px solid #C2C2C2",
-              }}
-              direction="row"
-              align="end"
-            >
-              <Text color="grey">See all </Text>
-              <FormNextLink color="grey" />
-            </Box>
-          </Link>
-          )*/}
       </Box>
     );
   }
