@@ -205,7 +205,6 @@ class TalkRepository:
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1
-                        AND Talks.link IS NOT NULL AND Talks.link <> ''
                         AND Talks.name <> 'TBA' AND Talks.name <> 'TBD' AND Talks.name IS NOT NULL
                         AND (Talks.recording_link IS NOT NULL AND Talks.recording_link <> '')
                                 OR (Talks.card_visibility = 'Followers and members' 
@@ -318,7 +317,7 @@ class TalkRepository:
             query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND TIMESTAMPADD(MINUTE, 30, end_date) < CURRENT_TIMESTAMP ORDER BY date DESC;"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
-                    WHERE Talks.published = 1 AND channel_id = {channelId}
+                    WHERE Talks.published = 1 AND Talks.channel_id = {channelId}
                         AND (Talks.card_visibility = 'Everybody'
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (

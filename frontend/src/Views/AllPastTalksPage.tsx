@@ -73,7 +73,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
       this.setState({ allTopics });
     });
 
-    TalkService.getAvailableFutureTalks(
+    TalkService.getAvailablePastTalks(
       50, 
       0, 
       this.state.user ? this.state.user.id : null,  

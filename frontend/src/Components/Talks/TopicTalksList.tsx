@@ -223,6 +223,7 @@ export default class TopicTalkList extends Component<Props, State> {
     let res: Talk[] = [];
     let talkCount: number = 0;
     for (let talk of talks) {
+
       let isIn: boolean = false;
       if(!(talk.topics === undefined)){
         for (let topic of talk.topics) {
