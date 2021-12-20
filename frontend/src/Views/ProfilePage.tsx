@@ -172,7 +172,7 @@ const ProfilePage = (props: Props) => {
               {papers.length !== 0 && (
                 <Box direction="column" gap="12px">
                   {papers.map((paper: Paper, index: number) => (
-                    <PaperEntry paper={paper} userId={profile.user.id} index={index} 
+                    <PaperEntry paper={paper} home={home} userId={profile.user.id} index={index} 
                       updatePaper={updatePaper} deletePaper={deletePaper} 
                     />
                   ))}
@@ -207,7 +207,8 @@ const ProfilePage = (props: Props) => {
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               <Box direction="column">
-                <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} updateTags={() => {}} />
+                <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} 
+                  hasTitle={true} updateTags={() => {}} />
 
                 <Text size="14px" weight="bold">
                   Twitter feed

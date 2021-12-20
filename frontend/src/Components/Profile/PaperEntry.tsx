@@ -7,10 +7,12 @@ import { Edit, Save, Trash } from "grommet-icons";
 
 interface Props {
   paper: Paper;
-  userId: number;
   index: number;
-  updatePaper: any;
-  deletePaper: any
+  home: boolean;
+  userId?: number;
+  width?: string;
+  updatePaper?: any;
+  deletePaper?: any
 }
 
 export const PaperEntry = (props: Props) => {
@@ -23,33 +25,39 @@ export const PaperEntry = (props: Props) => {
   const [publisher, setPublisher] = useState<string>(props.paper.id > 0 ? props.paper.publisher : "")
 
   function updatePaper(): void {
-    let temp_paper: Paper = {
-      id: id,
-      title: title,
-      authors: authors,
-      year: year,
-      link: link,
-      publisher: publisher
-    }
-    ProfileService.updatePaper(
-      props.userId, temp_paper, 
-      (id: number) => {
-        setId(id)
-        temp_paper.id = id
-        props.updatePaper(props.index, temp_paper)
+    if (props.home && props.updatePaper && props.userId) {
+      let temp_paper: Paper = {
+        id: id,
+        title: title,
+        authors: authors,
+        year: year,
+        link: link,
+        publisher: publisher
       }
-    )
+      ProfileService.updatePaper(
+        props.userId, temp_paper, 
+        (id: number) => {
+          setId(id)
+          temp_paper.id = id
+          props.updatePaper(props.index, temp_paper)
+        }
+      )
+    }
   }
 
   function deletePaper(): void {
-    props.deletePaper(id)
-    ProfileService.deletePaper(id, () => {})
+    if (props.home && props.deletePaper) {
+      props.deletePaper(id)
+      ProfileService.deletePaper(id, () => {})
+    }
   }
+
+  const width : string = props.width ? props.width : "50%"  
 
   return (
     <Box direction="row" align="center">
-      {isEdit && (
-        <Box direction="column" gap="6px" width="50%">
+      {props.home && isEdit && (
+        <Box direction="column" gap="6px" width={width}>
           <Box direction="row" gap="5px" width="90%" align="center">
             <Text size="14px" weight="bold"> 
               {props.index+1}.
@@ -86,7 +94,7 @@ export const PaperEntry = (props: Props) => {
           />
         </Box>
       )}
-      {isEdit && (
+      {props.home && isEdit && (
         <Box
           height="30px" pad="5px"
           style={{border: "1px solid grey"}} 
@@ -99,7 +107,7 @@ export const PaperEntry = (props: Props) => {
           <Save size="20px"/>
         </Box>
       )}
-      {isEdit && (
+      {props.home && isEdit && (
         <Box
           height="30px" pad="5px"
           margin={{left: "30px"}}
@@ -111,7 +119,7 @@ export const PaperEntry = (props: Props) => {
         </Box>
       )}
       {!isEdit && (
-        <Box direction="column" gap="3px" width="50%">
+        <Box direction="column" gap="3px" width={width}>
           <Text size="14px" weight="bold"> 
             {props.index+1}. {title}
           </Text>
@@ -127,7 +135,7 @@ export const PaperEntry = (props: Props) => {
           </Box>
         </Box>
       )}
-      {!isEdit && (
+      {props.home && !isEdit && (
         <Box
           height="30px" pad="5px"
           style={{border: "1px solid grey"}} 

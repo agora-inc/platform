@@ -1,9 +1,11 @@
 import React, { useState, useEffect, FunctionComponent } from "react";
 import { Box, Heading, Text, Image, Layer } from "grommet";
 import { Link } from "react-router-dom";
-import { Profile, ProfileService } from "../../Services/ProfileService";
+import { Paper, Profile, ProfileService } from "../../Services/ProfileService";
 import { FooterOverlayProfileCard } from "./FooterOverlayProfileCard";
+import { PaperEntry } from "./PaperEntry";
 import { DocumentText } from "grommet-icons";
+import { TagsEntry } from "./TagsEntry";
 
 interface Props {
   profile: Profile;
@@ -130,7 +132,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
               style={{ minHeight: "200px", maxHeight: "540px" }}
               direction="column"
             >
-              <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }} align="center">
+              <Box direction="row" gap="xsmall" style={{ height: "30px" }} align="center">
                 <Link
                   className="channel"
                   to={`/profile/${props.profile.user.id}`}
@@ -142,26 +144,37 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
                     align="center"
                     round="xsmall"
                   >
-                    <Text weight="bold" size="16px" color="color3">
+                    <Text weight="bold" size="18px" color="color3">
                       {name}
                     </Text>
                   </Box>
                 </Link>
               </Box>
               <Text
-                size="11px"
+                size="13px"
                 color="color1"
                 weight="bold"
-                style={{ height: "30px", overflow: "auto" }}
+                style={{ height: "20px", overflow: "auto" }}
+                margin={{ bottom: "20px"}}
               >
                 {props.profile.user.position}, {props.profile.user.institution}
               </Text>
-              <Box direction="row" gap="8px" align="center">
+              <Text size="12px" margin={{bottom: "25px"}} style={{width: "60%"}} >
+                {props.profile.user.bio}
+              </Text>
+              <Box direction="row" gap="8px" align="center" margin={{bottom: "15px"}}>
                 <DocumentText size="15px" />
                 <Text size="12px" weight="bold"> 
                   Selected papers
                 </Text>
               </Box>
+              {props.profile.papers.slice(0, 3).map((paper: Paper, index: number) => (
+                <PaperEntry paper={paper} index={index} home={false} width="100%" />
+              ))}
+
+              <TagsEntry tags={props.profile.tags} home={false} hasTitle={false} 
+                marginTop="30px" marginBottom="10px" />
+            
 
             </Box>
           </Box>
