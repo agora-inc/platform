@@ -122,10 +122,11 @@ class TalkRepository:
 
     def getAvailableFutureTalks(self, limit, offset, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND name <> 'TBA' AND name <> 'TBD' AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 
+                        AND Talks.name <> 'TBA' AND Talks.name <> 'TBD' AND Talks.name IS NOT NULL
                         AND (Talks.card_visibility = 'Everybody' 
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
@@ -164,6 +165,7 @@ class TalkRepository:
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 
+                        AND Talks.name <> 'TBA' AND Talks.name <> 'TBD' AND Talks.name IS NOT NULL
                         AND (Talks.card_visibility = 'Everybody' 
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
@@ -203,7 +205,8 @@ class TalkRepository:
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1
-                        AND Talks.link IS NOT NULL
+                        AND Talks.link IS NOT NULL AND Talks.link <> ''
+                        AND Talks.name <> 'TBA' AND Talks.name <> 'TBD' AND Talks.name IS NOT NULL
                         AND (Talks.recording_link IS NOT NULL AND Talks.recording_link <> '')
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
