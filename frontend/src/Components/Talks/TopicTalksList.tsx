@@ -30,7 +30,8 @@ interface State {
   chosenSubtopics: Topic[];
   audienceLevel: string[];
   allAudienceLevels: string[];
-  renderMobile: boolean
+  renderMobile: boolean,
+  hadFirstTalkFetch: boolean,
 }
 
 var emptyTopic = {
@@ -52,32 +53,10 @@ export default class TopicTalkList extends Component<Props, State> {
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
-      renderMobile: window.innerWidth < 800
+      renderMobile: window.innerWidth < 800,
+      hadFirstTalkFetch: false,
     };
   }
-
-  handleScroll = (e: any) => {
-    var totalHeight = e.target.scrollHeight
-    var scrolledFromTop = e.target.scrollTop
-    var screenClientHeight = e.target.clientHeight
-
-    var scrollingRemaining = totalHeight - scrolledFromTop
-    console.log(scrollingRemaining)
-
-    // Trigger when 1.2 screenClient remaining
-    var almostReachedBottom = ( scrollingRemaining / screenClientHeight < 1.5)
-    
-    if (almostReachedBottom) {
-      //
-      //
-      //
-      //
-      // ADD FETCHING TALK: REMY
-      //
-      //
-      //
-    }
-  };
 
   componentDidMount() {
     document.addEventListener("scroll", this.handleScroll, true);
@@ -93,15 +72,76 @@ export default class TopicTalkList extends Component<Props, State> {
     });
 
     TalkService.getAvailableFutureTalks(
-      100, 
+      200, 
       0, 
       this.props.user ? this.props.user.id : null,  
       (allTalks: Talk[]) => {
       this.setState({
         allTalks: allTalks,
+        hadFirstTalkFetch: true
       });
     });
   }
+
+  handleScroll = (e: any) => {
+    console.log(this.state.chosenSubtopics)
+    var totalHeight = e.target.scrollHeight
+    var scrolledFromTop = e.target.scrollTop
+    var screenClientHeight = e.target.clientHeight
+
+    var scrollingRemaining = totalHeight - scrolledFromTop
+    console.log(scrollingRemaining)
+
+    // Trigger when 1.2 times the size of screenClient is remaining
+    var almostReachedBottom = ( scrollingRemaining / screenClientHeight < 1.5)
+    
+    if (almostReachedBottom == true && this.state.hadFirstTalkFetch == true) {
+      var n_talks = 0
+      // check if fetch talks by topics, subtopics, or general
+      var fetchTalkByTopic = (this.state.chosenSubtopics.length == 0 && this.state.chosenTopic.id !== -1)
+      var fetchTalkBySubtopic = (this.state.chosenSubtopics.length !== 0)
+      
+      console.log("fetchTalkByTopic:", fetchTalkByTopic)
+      console.log("fetchTalkBySubtopic:", fetchTalkBySubtopic)
+
+
+      // All fetches are maxed to 40
+      if (fetchTalkByTopic){
+        TalkService.getAllFutureTalksForTopicWithChildren(
+          40, this.state.allTalks.length, this.state.chosenTopic.id, 
+          (talks: Talk[]) => {
+            this.setState({
+              allTalks: this.state.allTalks.concat(talks)
+            })
+          }
+          )
+        } else if (fetchTalkBySubtopic){
+          // NB: we only have methods to fetch for 1 subtopic at a time.
+          for(let topic of this.state.chosenSubtopics){
+            var fetchedTalks = []
+            TalkService.getAllFutureTalksForTopicWithChildren(
+              40, 
+              this.state.allTalks.length, 
+              topic.id,  
+              (talks: Talk[]) => {
+              this.setState({
+                allTalks: this.state.allTalks.concat(talks)
+              });
+            })
+          };
+      } else {
+        TalkService.getAllFutureTalks(
+          40,
+          this.state.allTalks.length,
+          (talks: Talk[]) => {
+            this.setState({
+              allTalks: this.state.allTalks.concat(talks)
+            })
+          })
+      }
+    }
+  };
+
 
   /*
   filterChosenTalksByAudience = () => {
@@ -413,9 +453,6 @@ export default class TopicTalkList extends Component<Props, State> {
               )
             }
             </Box>
-
-
-
             </>
           )}
 
@@ -458,12 +495,12 @@ export default class TopicTalkList extends Component<Props, State> {
                   hoverIndicator="#DDDDDD"
                 >
                   <Text size="12px" margin={{left: "5px"}}>
-                    {`${topic.field} (${
+                    {topic.field}
+                    {/* {`${topic.field} (${
                       this.state.audienceLevel.length != 0 ? 
                       String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
                       String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
-                      })`}
-                
+                      })`} */}
                   </Text>
                 </Box>
               )}
@@ -495,11 +532,12 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                    {`${topic.field} (${
+                    {topic.field}
+                    {/* {`${topic.field} (${
                       this.state.audienceLevel.length != 0 ? 
                       String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
                       String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
-                      })`}
+                      })`} */}
                     </Text>
                   </Box>
                 )

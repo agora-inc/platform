@@ -6,7 +6,7 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -36,7 +36,6 @@ products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
-RSScraper = RSScraperRepository.RSScraperRepository()
 tweets = TwitterBotRepository.TwitterBotRepository()
 
 BASE_URL = "http://localhost:3000"
@@ -836,16 +835,9 @@ def getTalkById():
 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
-    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
-    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-
-    try:
-        user_id = int(request.args.get("offset"))
-        return jsonify(talks.getAllFutureTalks(limit, offset, user_id))
-    except:
-        return jsonify(talks.getAllFutureTalks(limit, offset))
+    return jsonify(talks.getAllFutureTalks(limit, offset))
 
 @app.route('/talks/all/current', methods=["GET"])
 def getAllCurrentTalks():

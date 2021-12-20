@@ -397,11 +397,12 @@ export default class AllPastTalksPage extends Component<{}, State> {
                   hoverIndicator="#DDDDDD"
                 >
                   <Text size="12px" margin={{left: "5px"}}>
-                    {`${topic.field} (${
+                    {topic.field}
+                    {/* {`${topic.field} (${
                       this.state.audienceLevel.length != 0 ? 
                       String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
                       String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
-                      })`}
+                      })`} */}
                 
                   </Text>
                 </Box>
@@ -434,11 +435,14 @@ export default class AllPastTalksPage extends Component<{}, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                    {`${topic.field} (${
+                    {topic.field}
+                    {/* {`${topic.field} 
+                    (${
                       this.state.audienceLevel.length != 0 ? 
                       String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
                       String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
-                      })`}
+                      })`
+                      } */}
                     </Text>
                   </Box>
                 )
