@@ -33,7 +33,7 @@ interface State {
   renderMobile: boolean,
   hadFirstTalkFetch: boolean,
   isFetchingNewTalks: boolean,
-  displayedTalks: Talk[]
+  displayedTalks: Talk[],
 }
 
 var emptyTopic = {
@@ -58,7 +58,7 @@ export default class TopicTalkList extends Component<Props, State> {
       renderMobile: window.innerWidth < 800,
       hadFirstTalkFetch: false,
       isFetchingNewTalks: false,
-      displayedTalks: []
+      displayedTalks: [],
     };
   }
 
@@ -109,21 +109,21 @@ export default class TopicTalkList extends Component<Props, State> {
         this.setState({isFetchingNewTalks: true})
         // All fetches are maxed to 40
         if (fetchTalkByTopic){
-          if(this.props.past){
-            TalkService.getAllPastTalksForTopicWithChildren(
-              40, 
-              this.state.displayedTalks.length, 
-              this.state.chosenTopic.id, 
-              (talks: Talk[]) => {
-                this.setState({
-                  allTalks: this.state.allTalks.concat(talks),
-                  displayedTalks: this.state.displayedTalks.concat(talks)
-                  }, () => {
-                    this.setState({isFetchingNewTalks: false})
-                  })
-              }
-            )
-          } else {
+          // if(this.props.past){
+          //   TalkService.getAllPastTalksForTopicWithChildren(
+          //     40, 
+          //     this.state.displayedTalks.length, 
+          //     this.state.chosenTopic.id, 
+          //     (talks: Talk[]) => {
+          //       this.setState({
+          //         allTalks: this.state.allTalks.concat(talks),
+          //         displayedTalks: this.state.displayedTalks.concat(talks)
+          //         }, () => {
+          //           this.setState({isFetchingNewTalks: false})
+          //         })
+          //     }
+          //   )
+          // } else {
             TalkService.getAllFutureTalksForTopicWithChildren(
               40, 
               this.state.displayedTalks.length, 
@@ -137,12 +137,25 @@ export default class TopicTalkList extends Component<Props, State> {
                   })
                 }
               )
-            } 
           } else if (fetchTalkBySubtopic){
             // NB: we only have methods to fetch for 1 subtopic at a time.
-              if(this.props.past){
+              // if(this.props.past){
+              //   for(let topic of this.state.chosenSubtopics){
+              //     TalkService.getAllPastTalksForTopicWithChildren(
+              //       40, 
+              //       this.state.displayedTalks.length, 
+              //       topic.id,  
+              //       (talks: Talk[]) => {
+              //       this.setState({
+              //         allTalks: this.state.allTalks.concat(talks),
+              //         displayedTalks: this.state.displayedTalks.concat(talks)
+              //       }, () => {
+              //         this.setState({isFetchingNewTalks: false})
+              //       })
+              //     })
+              //   };
+              // } else {
                 for(let topic of this.state.chosenSubtopics){
-                  var fetchedTalks = []
                   TalkService.getAllFutureTalksForTopicWithChildren(
                     40, 
                     this.state.displayedTalks.length, 
@@ -155,37 +168,34 @@ export default class TopicTalkList extends Component<Props, State> {
                       this.setState({isFetchingNewTalks: false})
                     })
                   })
-                };
-              } else {
-                for(let topic of this.state.chosenSubtopics){
-                  var fetchedTalks = []
-                  TalkService.getAllPastTalksForTopicWithChildren(
-                    40, 
-                    this.state.displayedTalks.length, 
-                    topic.id,  
-                    (talks: Talk[]) => {
-                    this.setState({
-                      allTalks: this.state.allTalks.concat(talks),
-                      displayedTalks: this.state.displayedTalks.concat(talks)
-                    }, () => {
-                      this.setState({isFetchingNewTalks: false})
-                    })
-                  })
-              }
             }
         } else {
-          TalkService.getAvailablePastTalks(
-            40,
-            this.state.displayedTalks.length, 
-            this.props.user ? this.props.user.id : null,  
-            (talks: Talk[]) => {
-              this.setState({
-                allTalks: this.state.allTalks.concat(talks),
-                displayedTalks: this.state.displayedTalks.concat(talks)
-              }, () => {
-                this.setState({isFetchingNewTalks: false})
+          // if(this.props.past){
+          //   TalkService.getAvailablePastTalks(
+          //     40,
+          //     this.state.displayedTalks.length, 
+          //     this.props.user ? this.props.user.id : null,  
+          //     (talks: Talk[]) => {
+          //       this.setState({
+          //         allTalks: this.state.allTalks.concat(talks),
+          //         displayedTalks: this.state.displayedTalks.concat(talks)
+          //       }, () => {
+          //         this.setState({isFetchingNewTalks: false})
+          //       })
+          //     })
+          // } else {
+            TalkService.getAvailableFutureTalks(
+              40,
+              this.state.displayedTalks.length, 
+              this.props.user ? this.props.user.id : null,  
+              (talks: Talk[]) => {
+                this.setState({
+                  allTalks: this.state.allTalks.concat(talks),
+                  displayedTalks: this.state.displayedTalks.concat(talks)
+                }, () => {
+                  this.setState({isFetchingNewTalks: false})
+                })
               })
-            })
         }
        }
       }
@@ -214,16 +224,17 @@ export default class TopicTalkList extends Component<Props, State> {
     let talkCount: number = 0;
     for (let talk of talks) {
       let isIn: boolean = false;
-      
-      for (let topic of talk.topics) {
-        
-        if (!isIn && (topicsId.includes(topic.id) 
-        || topicsId.includes(topic.parent_1_id!)
-        || topicsId.includes(topic.parent_2_id!)
-        || topicsId.includes(topic.parent_3_id!))) {
-          isIn = true;
-          res.push(talk);
-          ++talkCount;
+      if(!(talk.topics === undefined)){
+        for (let topic of talk.topics) {
+          
+          if (!isIn && (topicsId.includes(topic.id) 
+          || topicsId.includes(topic.parent_1_id!)
+          || topicsId.includes(topic.parent_2_id!)
+          || topicsId.includes(topic.parent_3_id!))) {
+            isIn = true;
+            res.push(talk);
+            ++talkCount;
+          }
         }
       }
     }
@@ -473,8 +484,8 @@ export default class TopicTalkList extends Component<Props, State> {
               </Link>
 
               <Link
-              to={{ pathname: "/past" }}
-              style={{ textDecoration: "none" }}
+                to={{ pathname: "/past" }}
+                style={{ textDecoration: "none" }}
               >
               <Box
                 onClick={()=>{}}
