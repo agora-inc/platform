@@ -73,12 +73,13 @@ export default class AllPastTalksPage extends Component<{}, State> {
                 0, 
                 this.state.user ? this.state.user.id : null,  
                 (allTalks: Talk[]) => {
-                  console.log("nike sa mere", allTalks)
-                  this.setState({
-                  allTalks: allTalks,
-                  hadFirstTalkFetch: true,
-                  displayedTalks: allTalks,
-                });
+                  if(allTalks){
+                    this.setState({
+                    allTalks: allTalks,
+                    hadFirstTalkFetch: true,
+                    displayedTalks: allTalks,
+                  });
+                }
               });
             } 
           ) 
@@ -118,13 +119,15 @@ export default class AllPastTalksPage extends Component<{}, State> {
               this.state.displayedTalks.length, 
               this.state.chosenTopic.id, 
               (talks: Talk[]) => {
-                this.setState({
-                  allTalks: this.state.allTalks.concat(talks),
-                  displayedTalks: this.state.displayedTalks.concat(talks)
-                  }, () => {
-                    this.setState({isFetchingNewTalks: false})
-                  })
-              }
+                if(talks.length > 0){
+                  this.setState({
+                    allTalks: this.state.allTalks.concat(talks),
+                    displayedTalks: this.state.displayedTalks.concat(talks)
+                    }, () => {
+                      this.setState({isFetchingNewTalks: false})
+                    })
+                  }
+                }
             )
           // } else {
           // TalkService.getAllFutureTalksForTopicWithChildren(
@@ -149,12 +152,14 @@ export default class AllPastTalksPage extends Component<{}, State> {
                   this.state.displayedTalks.length, 
                   topic.id,  
                   (talks: Talk[]) => {
-                  this.setState({
-                    allTalks: this.state.allTalks.concat(talks),
-                    displayedTalks: this.state.displayedTalks.concat(talks)
-                  }, () => {
-                    this.setState({isFetchingNewTalks: false})
-                  })
+                    if(talks.length > 0){
+                      this.setState({
+                        allTalks: this.state.allTalks.concat(talks),
+                        displayedTalks: this.state.displayedTalks.concat(talks)
+                      }, () => {
+                        this.setState({isFetchingNewTalks: false})
+                      })
+                    }
                 })
             //   };
             // } else {
@@ -179,10 +184,10 @@ export default class AllPastTalksPage extends Component<{}, State> {
               this.state.displayedTalks.length, 
               this.state.user ? this.state.user.id : null,  
               (res: any) => {
-                if(res){
+                if(res !== undefined && res.length > 0){
                   this.setState({
-                    allTalks: this.state.allTalks.concat(res["talks"]),
-                    displayedTalks: this.state.displayedTalks.concat(res["talks"])
+                    allTalks: this.state.allTalks.concat(res),
+                    displayedTalks: this.state.displayedTalks.concat(res)
                   }, () => {
                     this.setState({isFetchingNewTalks: false})
                   })
@@ -237,16 +242,18 @@ export default class AllPastTalksPage extends Component<{}, State> {
     let talkCount: number = 0;
     for (let talk of talks) {
       let isIn: boolean = false;
-      if(!(talk.topics === undefined)){
-        for (let topic of talk.topics) {
-          
-          if (!isIn && (topicsId.includes(topic.id) 
-          || topicsId.includes(topic.parent_1_id!)
-          || topicsId.includes(topic.parent_2_id!)
-          || topicsId.includes(topic.parent_3_id!))) {
-            isIn = true;
-            res.push(talk);
-            ++talkCount;
+      if(talk !== undefined){
+        if(!(talk.topics === undefined)){
+          for (let topic of talk.topics) {
+            
+            if (!isIn && (topicsId.includes(topic.id) 
+            || topicsId.includes(topic.parent_1_id!)
+            || topicsId.includes(topic.parent_2_id!)
+            || topicsId.includes(topic.parent_3_id!))) {
+              isIn = true;
+              res.push(talk);
+              ++talkCount;
+            }
           }
         }
       }

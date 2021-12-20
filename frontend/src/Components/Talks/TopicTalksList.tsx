@@ -221,16 +221,18 @@ export default class TopicTalkList extends Component<Props, State> {
     let talkCount: number = 0;
     for (let talk of talks) {
       let isIn: boolean = false;
-      if(!(talk.topics === undefined)){
-        for (let topic of talk.topics) {
-          
-          if (!isIn && (topicsId.includes(topic.id) 
-          || topicsId.includes(topic.parent_1_id!)
-          || topicsId.includes(topic.parent_2_id!)
-          || topicsId.includes(topic.parent_3_id!))) {
-            isIn = true;
-            res.push(talk);
-            ++talkCount;
+      if(talk !== undefined){
+        if(!(talk.topics === undefined)){
+          for (let topic of talk.topics) {
+            
+            if (!isIn && (topicsId.includes(topic.id) 
+            || topicsId.includes(topic.parent_1_id!)
+            || topicsId.includes(topic.parent_2_id!)
+            || topicsId.includes(topic.parent_3_id!))) {
+              isIn = true;
+              res.push(talk);
+              ++talkCount;
+            }
           }
         }
       }
