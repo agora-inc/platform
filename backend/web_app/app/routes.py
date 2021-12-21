@@ -19,24 +19,25 @@ import time
 
 import stripe
 
-users = UserRepository.UserRepository()
-tags = TagRepository.TagRepository()
-topics = TopicRepository.TopicRepository()
-questions = QandARepository.QandARepository()
-streams = StreamRepository.StreamRepository()
-talks = TalkRepository.TalkRepository()
-emailReminders = EmailRemindersRepository.EmailRemindersRepository()
-videos = VideoRepository.VideoRepository()
-channels = ChannelRepository.ChannelRepository()
-search = SearchRepository.SearchRepository()
-invitations = InvitedUsersRepository.InvitedUsersRepository()
-mailinglist = MailingListRepository.MailingListRepository()
-credits = CreditRepository.CreditRepository()
-products = ProductRepository.ProductRepository()
-paymentsApi = StripeApi()
-channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
+users = UserRepository.UserRepository(db=agora_db)
+tags = TagRepository.TagRepository(db=agora_db)
+topics = TopicRepository.TopicRepository(db=agora_db)
+questions = QandARepository.QandARepository(db=agora_db)
+streams = StreamRepository.StreamRepository(db=agora_db)
+talks = TalkRepository.TalkRepository(db=agora_db)
+emailReminders = EmailRemindersRepository.EmailRemindersRepository(db=agora_db)
+videos = VideoRepository.VideoRepository(db=agora_db)
+channels = ChannelRepository.ChannelRepository(db=agora_db)
+search = SearchRepository.SearchRepository(db=agora_db)
+invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db)
+mailinglist = MailingListRepository.MailingListRepository(db=agora_db)
+credits = CreditRepository.CreditRepository(db=agora_db)
+products = ProductRepository.ProductRepository(db=agora_db)
+paymentsApi = StripeApi(db=agora_db)
+channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository(db=agora_db)
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
-tweets = TwitterBotRepository.TwitterBotRepository()
+tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
+
 
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://mora.stream/"
@@ -1182,7 +1183,6 @@ def increaseViewCountForTalk():
     channelId = params["channelId"]
     return jsonify(talks.increaseTalkViewCount(channelId))
 
-
 # --------------------------------------------
 # TALK ACCESS REQUESTS ROUTES
 # --------------------------------------------
@@ -2039,7 +2039,6 @@ def stripe_webhook():
 
     except Exception as e:
         return {}, 400
-
 
 # --------------------------------------------
 # Research seminars scraping

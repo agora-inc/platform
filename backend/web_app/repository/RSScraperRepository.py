@@ -1,7 +1,6 @@
 import multiprocessing
 from repository.ChannelRepository import ChannelRepository
 from repository.TalkRepository import TalkRepository
-from app.databases import agora_db
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -13,13 +12,14 @@ import time
 import ast
 from typing import List
 from joblib import Parallel, delayed
+import requests
 
 from alphabet_detector import AlphabetDetector
 ad = AlphabetDetector()
 
 
 class RSScraperRepository():
-	def __init__(self, db=agora_db):
+	def __init__(self, db):
 		self.db = db
 		self.channelRepo = ChannelRepository(db=db)
 		self.talkRepo = TalkRepository(db=db)
@@ -29,7 +29,7 @@ class RSScraperRepository():
 		options.add_argument("--window-size=1920,1200")
 		self.driver = webdriver.Chrome(
 			options=options, 
-			executable_path='/home/cloud-user/plateform/agora/backend/web_app/chromedriver_linux64/chromedriver'
+			executable_path='/home/cloud-user/chromedriver_96'
 		)
 		self._login()
 		
@@ -105,9 +105,16 @@ class RSScraperRepository():
 		else:
 			# Create channel
 			name = self.driver.find_element_by_xpath("//h1").text
-			description = self.driver.find_elements_by_xpath("//p")[2:]
-			description = [e.text for e in description if e.text != '']
-			description = '\n'.join(description)
+			# description = self.driver.find_elements_by_xpath("//p")[2:]
+			# description = [e.text for e in description if e.text != '']
+			# description = '\n'.join(description)
+
+
+			agoraBaseUrl = '''https://researchseminars.org/seminar/'''
+			seriesChannel = url_agora.split(agoraBaseUrl)[1]
+			response = requests.get(f'''https://researchseminars.org/api/0/lookup/series?series_id=%22{seriesChannel}%22&series_ctr=1''')
+			description = response.json()['properties']['comments'].replace("\\","\\\\")
+			# print(description)
 
 			organisers = self.driver.find_element_by_xpath("//tr[.//*[text()='Organizer:']] | //tr[.//*[text()='Organizers:']] | //tr[.//*[text()='Curator:']] | //tr[.//*[text()='Curators:']]")
 			ids = organisers.find_elements_by_xpath(".//td[2]//a[@href]")
@@ -117,7 +124,7 @@ class RSScraperRepository():
 				organiser_details['name'] = id.get_attribute('text')
 				organiser_href = id.get_attribute('href')
 				if('mailto:' in organiser_href):
-					organiser_details['email_address'] = organiser_href[6:]
+					organiser_details['email_address'] = organiser_href[7:]
 				elif('https://' in organiser_href or 'http://' in organiser_href):
 					organiser_details['homepage'] = organiser_href
 				contactable_organisers.append(organiser_details)
@@ -187,8 +194,13 @@ class RSScraperRepository():
 			talk = {}
 			lst_link = self.driver.find_elements_by_xpath('//a')
 
+			talkBaseUrl = '''https://researchseminars.org/talk/'''
+			seriesChannel = url_talks.split(talkBaseUrl)[1]
+			response = requests.get(f'''https://researchseminars.org/api/0/lookup/talk?series_id=%22{seriesChannel}%22&series_ctr={i}''')
+
 			# Title
-			talk['title'] = self.driver.find_element_by_xpath("//h1").text
+			talk['title'] = response.json()['properties']['title'].replace("\\","\\\\") if response.json()['properties']['title'] != "" else "TBA" 
+			print(f"title: {talk['title']} \n\n")
 
 			#Topics
 			topics = list(self.driver.find_elements_by_xpath("//p//span[@class='topic_label']"))
@@ -217,7 +229,9 @@ class RSScraperRepository():
 				else:
 					break
 			desc_idx = [n for n, txt in enumerate(lst) if txt[:10] == "Audience: "][0]
-			talk['description'] = '\n'.join(lst[:desc_idx - 1] + lst[desc_idx + 1:]).replace('Abstract: ', '')
+			
+			talk['description'] = response.json()['properties']['abstract'].replace("\\","\\\\")
+			print(f"description: {talk['description']} \n\n")
 
 			# Audience level
 			talk['audience'] = lst[desc_idx][10:]
@@ -284,8 +298,8 @@ class RSScraperRepository():
 		try:
 			print(seminar_url)
 			is_valid, talk_ids, channel_id, channel_name, link = self.create_agora_and_get_talk_ids(seminar_url[0], 360, seminar_url[2])    
-			# if(len(talk_ids) and is_valid):
-			# 	talks = self.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
+			if(len(talk_ids) and is_valid):
+				talks = self.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
 		except (AttributeError, TypeError, IndexError, ValueError) as e:
 			print(e)
 
