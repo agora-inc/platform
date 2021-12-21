@@ -309,7 +309,7 @@ class sendgridApi:
     # G. Send claim request #
     #################################
     def send_confirmation_agora_claim_request(self, target_email, recipient_name, agora_name, mailToken):
-        template_id_13 = "TODO"
+        template_id_13 = "d-6a860a7691dd4d1783561e60ed96160a"
         response = self._post_sendgrid_request(
             target_email = target_email,
             dynamic_template_data = {
@@ -322,7 +322,7 @@ class sendgridApi:
         return response
 
     def send_confirmation_agora_claim_request_final(self, target_email, recipient_name, agora_name, mailToken):
-        template_id_14 = "TODO"
+        template_id_14 = "d-f956e41dba094162bbfeed67e3ae4d1c"
         response = self._post_sendgrid_request(
             target_email = target_email,
             dynamic_template_data = {
@@ -335,7 +335,7 @@ class sendgridApi:
         return response
 
     def send_confirmation_agora_claim_acceptance(self, target_email, recipient_name, agora_name, mailToken):
-        template_id_15 = "TODO"
+        template_id_15 = " d-526162ffe2d946829886ab5f7648ad90"
         response = self._post_sendgrid_request(
             target_email = target_email,
             dynamic_template_data = {
