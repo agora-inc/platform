@@ -5,7 +5,7 @@ DELTA_TIME_WINDOW = 2  # Reminders are sent with an imprecision of 2 hours
 
 assert DELTA_TIME_WINDOW == 2 , 'Imprecision is more than 2 hours'
 
-emailReminders = EmailRemindersRepository()
+emailReminders = EmailRemindersRepository.EmailRemindersRepository()
 
 
 def sendAllEmailReminders() -> None:

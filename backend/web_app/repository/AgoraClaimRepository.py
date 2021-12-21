@@ -20,6 +20,32 @@ class AgoraClaimRepository():
         self.VIEW_THRESHOLD : Final = VIEW_THRESHOLD
         self.MAX_EMAIL_COUNT : Final = MAX_EMAIL_COUNT
 
+    def get_all_fetched_channels(self):
+        get_all_fetched_channels_query = f''' SELECT FetchedChannels.id FROM FetchedChannels WHERE claimReminder = 0
+        '''
+        unreminded_channels = self.db.run_query(get_all_fetched_channels_query)
+        return unreminded_channels
+
+
+    def generate_reminders(self, start_datetime, intervals, channel_id):
+        for interval in intervals:
+            start_datetime =  datetime.strptime(start_datetime, "%Y-%m-%d %H:%M")
+            send_datetime = start_datetime +  timedelta(days=interval)
+            now = datetime.now()
+            if now < send_datetime: send_datetime = send_datetime.strftime("%Y-%m-%d %H:%M")
+            claim_reminder_query = f'''
+                        INSERT INTO claimReminders (
+                            send_time,
+                            fetchedchannelID,
+                            status,
+                        ) VALUES (
+                            {send_datetime},
+                            {channel_id},
+                            "pending"
+                        );
+                    '''
+            self.db.run_query(claim_reminder_query)
+            claimReminderQuery = f'''UPDATE FetchedChannels SET claimReminder = 1 WHERE id = {channel_id}'''
 
     # Get channel(name,org_name,org_email, claimEmail count, mailToken)
     def getUnclaimedChannels(self: AgoraClaimRepository):
@@ -59,40 +85,39 @@ class AgoraClaimRepository():
             
 
     # Placeholder for pseudocode
-    def send_email(self, channel):
-        # Get channel name and mailing address and do magic
-        if(channel['claim_email_count'] < self.MAX_EMAIL_COUNT - 1):
-            # Send emails using sendgrid
-            self.mail_sys.send_confirmation_agora_claim_request(
-                channel['organiser_email'],
-                channel['organiser_name'],
-                channel['name'],
-                channel['mailToken']
-            )
+    def send_email(self, channel, reminder_times):
+        for reminder in reminder_times:
+            # Get channel name and mailing address and do magic
+            if(channel['claim_email_count'] < self.MAX_EMAIL_COUNT - 1):
+                # Send emails using sendgrid
+                self.mail_sys.send_confirmation_agora_claim_request(
+                    channel['organiser_email'],
+                    channel['organiser_name'],
+                    channel['name'],
+                    channel['mailToken']
+                )
 
-            # Update tables
-            query_email = f'''INSERT INTO claimEmails (channel_id, time) 
-                            VALUES ({channel['id']}, {datetime.now()});'''
-            self.db.run_query(query_email)
+                # Update tables
+                query_email = f'''INSERT INTO claimEmails (channel_id, time) 
+                                VALUES ({channel['id']}, {datetime.now()});'''
+                self.db.run_query(query_email)
+
+            elif(channel['claim_email_count'] == self.MAX_EMAIL_COUNT - 1):
+                # Send email using sendgrid
+                self.mail_sys.send_confirmation_agora_claim_request_final(
+                    channel['organiser_email'],
+                    channel['organiser_name'],
+                    channel['name'],
+                    channel['mailToken']
+                )
+
+                # Update tables
+                query_email = f'''INSERT INTO claimEmails (channel_id, time) 
+                                VALUES ({channel['id']}, {datetime.now()});'''
+                self.db.run_query(query_email)
+
             query_email_2 = f'''UPDATE FetchedChannels SET claim_email_count = {channel['claim_email_count'] + 1} 
-                            WHERE channel_id = {channel['id']};'''
-            self.db.run_query(query_email_2)
-
-        elif(channel['claim_email_count'] == self.MAX_EMAIL_COUNT - 1):
-            # Send email using sendgrid
-            self.mail_sys.send_confirmation_agora_claim_request_final(
-                channel['organiser_email'],
-                channel['organiser_name'],
-                channel['name'],
-                channel['mailToken']
-            )
-
-            # Update tables
-            query_email = f'''INSERT INTO claimEmails (channel_id, time) 
-                            VALUES ({channel['id']}, {datetime.now()});'''
-            self.db.run_query(query_email)
-            query_email_2 = f'''UPDATE FetchedChannels SET claim_email_count = {channel['claim_email_count'] + 1} 
-                            WHERE channel_id = {channel['id']};'''
+                                WHERE channel_id = {channel['id']};'''
             self.db.run_query(query_email_2)
 
     
