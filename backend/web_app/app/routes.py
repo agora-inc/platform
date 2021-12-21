@@ -6,7 +6,7 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -36,7 +36,6 @@ products = ProductRepository.ProductRepository(db=agora_db)
 paymentsApi = StripeApi(db=agora_db)
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository(db=agora_db)
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
-RSScraper = RSScraperRepository.RSScraperRepository(db=agora_db)
 tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
 
 BASE_URL = "http://localhost:3000"
@@ -836,16 +835,9 @@ def getTalkById():
 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
-    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
-    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-
-    try:
-        user_id = int(request.args.get("offset"))
-        return jsonify(talks.getAllFutureTalks(limit, offset, user_id))
-    except:
-        return jsonify(talks.getAllFutureTalks(limit, offset))
+    return jsonify(talks.getAllFutureTalks(limit, offset))
 
 @app.route('/talks/all/current', methods=["GET"])
 def getAllCurrentTalks():
@@ -900,7 +892,14 @@ def getAllFutureTalksForTopicWithChildren():
     topicId = int(request.args.get("topicId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllFutureTalksForTopicWithChildren(topicId, limit, offset))
+    return jsonify(talks.getAllTalksForTopicWithChildren(topicId, limit, offset, "future"))
+
+@app.route('/talks/topic/children/past', methods=["GET"])
+def getAllPastTalksForTopicWithChildren():
+    topicId = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(talks.getAllTalksForTopicWithChildren(topicId, limit, offset, "past"))
 
 @app.route('/talks/topic/past', methods=["GET"])
 def getAllPastTalksForTopic():
@@ -932,8 +931,7 @@ def getAvailablePastTalks():
     offset = int(request.args.get("offset"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    data = talks.getAvailablePastTalks(limit, offset, user_id)
-    return jsonify({"talks": data[0],"count": data[1]})
+    return jsonify(talks.getAvailablePastTalks(limit, offset, user_id))
 
 @app.route('/talks/channel/available/future', methods=["GET"])
 def getAvailableFutureTalksForChannel():

@@ -77,12 +77,15 @@ class TalkRepository:
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalks())
 
-    def getAllFutureTalksForTopicWithChildren(self, topic_id, limit, offset):
+    def getAllTalksForTopicWithChildren(self, topic_id, limit, offset, time):
+        assert(time in ["future", "past"])
+        mysql_time_operator = '>' if time == "future" else '<'
+
         # get id of all childs
         children_ids = self.topics.getAllChildrenIdRecursive(topic_id=topic_id)
 
         mysql_cond_string = str(children_ids).replace("[", "(").replace("]", ")")
-        talk_query = f"SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND published = 1 AND end_date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+        talk_query = f"SELECT * FROM Talks WHERE (topic_1_id in {mysql_cond_string} OR topic_2_id in {mysql_cond_string} OR topic_3_id in {mysql_cond_string}) AND published = 1 AND end_date {mysql_time_operator} CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         talks = self.db.run_query(talk_query)
 
         # setup local data for topics
@@ -118,10 +121,11 @@ class TalkRepository:
 
     def getAvailableFutureTalks(self, limit, offset, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND name <> 'TBA' AND name <> 'TBD' AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset}"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 
+                        AND Talks.name <> 'TBA' AND Talks.name <> 'TBD' AND Talks.name IS NOT NULL
                         AND (Talks.card_visibility = 'Everybody' 
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
@@ -160,6 +164,7 @@ class TalkRepository:
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
                     WHERE Talks.published = 1 
+                        AND Talks.name <> 'TBA' AND Talks.name <> 'TBD' AND Talks.name IS NOT NULL
                         AND (Talks.card_visibility = 'Everybody' 
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
@@ -195,11 +200,12 @@ class TalkRepository:
 
     def getAvailablePastTalks(self, limit, offset, user_id):
         if user_id is None:
-            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
+            query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link IS NOT NULL AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
         else:
-            query = f'''SELECT DISTINCT * FROM Talks 
-                    WHERE Talks.published = 1 
-                        AND (Talks.card_visibility = 'Everybody' AND recording_link <> ''
+            query = f'''SELECT DISTINCT * FROM Talks
+                    WHERE Talks.published = 1
+                        AND Talks.name <> 'TBA' AND Talks.name <> 'TBD' AND Talks.name IS NOT NULL
+                        AND (Talks.recording_link IS NOT NULL AND Talks.recording_link <> '')
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
                                         SELECT Channels.id FROM Channels 
@@ -216,7 +222,6 @@ class TalkRepository:
                                             AND ChannelUsers.user_id = {user_id}
                                         )
                                     )
-                            )
                         AND Talks.end_date < CURRENT_TIMESTAMP 
                     ORDER BY Talks.date DESC LIMIT {limit}
                     OFFSET {offset}
@@ -229,13 +234,13 @@ class TalkRepository:
             talk["has_avatar"] = channel["has_avatar"]
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
-        return (talks, len(talks))
+        return talks
 
     def getAvailableFutureTalksForChannel(self, channelId, user_id):
         if user_id is None:
             query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND published = 1 AND card_visibility = 'Everybody' AND date > CURRENT_TIMESTAMP ORDER BY date"
         else:
-            query = f'''SELECT DISTINCT * FROM Talks 
+            query = f'''SELECT DISTINCT * FROM Talks
                     WHERE channel_id = {channelId} AND Talks.published = 1 
                         AND (Talks.card_visibility = 'Everybody' 
                                 OR (Talks.card_visibility = 'Followers and members' 
@@ -310,7 +315,7 @@ class TalkRepository:
             query = f"SELECT * FROM Talks WHERE published = 1 AND channel_id = {channelId} AND card_visibility = 'Everybody' AND TIMESTAMPADD(MINUTE, 30, end_date) < CURRENT_TIMESTAMP ORDER BY date DESC;"
         else:
             query = f'''SELECT DISTINCT * FROM Talks 
-                    WHERE Talks.published = 1 AND channel_id = {channelId}
+                    WHERE Talks.published = 1 AND Talks.channel_id = {channelId}
                         AND (Talks.card_visibility = 'Everybody'
                                 OR (Talks.card_visibility = 'Followers and members' 
                                     AND Talks.channel_id in (
@@ -364,6 +369,17 @@ class TalkRepository:
             talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, self.getNumberOfPastTalks())
+
+    def getAllFutureTalks(self, limit, offset):
+        query = f"SELECT * FROM Talks WHERE published = 1 AND TIMESTAMPADD(MINUTE, 30, end_date) > CURRENT_TIMESTAMP ORDER BY date ASC LIMIT {limit} OFFSET {offset};"
+        talks = self.db.run_query(query)
+        for talk in talks:
+            channel = self.channels.getChannelById(talk["channel_id"])
+            talk["channel_colour"] = channel["colour"]
+            talk["has_avatar"] = channel["has_avatar"]
+            talk["tags"] = self.tags.getTagsOnTalk(talk["id"])
+            talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
+        return talks
 
     def getAllFutureTalksForChannel(self, channelId):
         query = f"SELECT * FROM Talks WHERE channel_id = {channelId} AND date > CURRENT_TIMESTAMP AND published = 1 ORDER BY date ASC;"
