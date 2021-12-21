@@ -408,12 +408,6 @@ def getClaimStatusForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(channels.getChannelClaimStatus(channelId))
 
-@app.route('/channels/claimstatus/change', methods=["POST"])
-def increaseViewCountForChannel():
-    params = request.json 
-    channelId = params["channelId"]
-    return jsonify(channels.changeChannelClaimStatus(channelId))
-
 @app.route('/channels/organiseremail/get', methods=["GET"])
 def getOrganiserEmailForChannel():
     channelId = int(request.args.get("channelId"))

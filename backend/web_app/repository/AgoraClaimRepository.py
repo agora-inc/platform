@@ -5,14 +5,13 @@ from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from repository.ChannelRepository import ChannelRepository
 from repository.UserRepository import UserRepository
-from app.databases import agora_db
 from typing import Final
 
 mail_sys = sendgridApi()
 
 class AgoraClaimRepository():
     
-    def __init__(self, db=agora_db, VIEW_THRESHOLD = None, MAX_EMAIL_COUNT = 4):
+    def __init__(self, db, mail_sys = mail_sys, VIEW_THRESHOLD = None, MAX_EMAIL_COUNT = 4):
         self.db = db
         self.channelRepo = ChannelRepository(db=db)
         self.userRepo = UserRepository(db=db)
@@ -21,34 +20,36 @@ class AgoraClaimRepository():
         self.MAX_EMAIL_COUNT : Final = MAX_EMAIL_COUNT
 
     def get_all_fetched_channels(self):
-        get_all_fetched_channels_query = f''' SELECT FetchedChannels.id FROM FetchedChannels WHERE claimReminder = 0
+        get_all_fetched_channels_query = f'''SELECT FetchedChannels.id FROM FetchedChannels WHERE claimed = 0 and reminderSet = 0 and claim_email_count  = 0;
         '''
         unreminded_channels = self.db.run_query(get_all_fetched_channels_query)
-        return unreminded_channels
+        print
+        return [i['id'] for i in unreminded_channels]
 
 
-    def generate_reminders(self, start_datetime, intervals, channel_id):
+    def generate_claim_reminders(self, start_datetime, intervals, fetched_channel_id):
         for interval in intervals:
-            start_datetime =  datetime.strptime(start_datetime, "%Y-%m-%d %H:%M")
             send_datetime = start_datetime +  timedelta(days=interval)
             now = datetime.now()
             if now < send_datetime: send_datetime = send_datetime.strftime("%Y-%m-%d %H:%M")
+            print(f"{interval},{send_datetime},{fetched_channel_id}")
             claim_reminder_query = f'''
                         INSERT INTO claimReminders (
-                            send_time,
+                            sendtime,
                             fetchedchannelID,
                             status,
                         ) VALUES (
                             {send_datetime},
-                            {channel_id},
+                            {fetched_channel_id},
                             "pending"
                         );
                     '''
             self.db.run_query(claim_reminder_query)
-            claimReminderQuery = f'''UPDATE FetchedChannels SET claimReminder = 1 WHERE id = {channel_id}'''
+            claimReminderQuery = f'''UPDATE FetchedChannels SET claimReminder = 1 WHERE id = {fetched_channel_id}'''
+            self.db.run_query(claimReminderQuery)
 
     # Get channel(name,org_name,org_email, claimEmail count, mailToken)
-    def getUnclaimedChannels(self: AgoraClaimRepository):
+    def getUnclaimedChannelDetails(self: AgoraClaimRepository, reminderID: int):
 
         if(self.VIEW_THRESHOLD == None):
             channel_query = '''SELECT Channels.id, Channels.name, FetchedChannels.organiser_name , 
@@ -61,9 +62,10 @@ class AgoraClaimRepository():
                             ON Channels.id = FetchedChannels.channel_id 
                             WHERE ChannelUsers.user_id = 360 and ChannelUsers.`role` = 'owner'
                             and FetchedChannels.user_id = 360 and FetchedChannels.claimed = 0
-                            and FetchedChannels.organiser_email IS NOT NULL;'''
-            unacquired_channels = self.db.run_query(channel_query)
-            return unacquired_channels
+                            and FetchedChannels.organiser_email IS NOT NULL and FetchedChannels.id = {reminderID};'''
+            unacquired_channel = self.db.run_query(channel_query)
+            return unacquired_channel
+
         elif(isinstance(self.VIEW_THRESHOLD, int) and  self.VIEW_THRESHOLD > 0):
             channel_query = f'''SELECT Channels.id, Channels.name, 
                         FetchedChannels.organiser_name , FetchedChannels.organiser_email, 
@@ -79,15 +81,15 @@ class AgoraClaimRepository():
                         WHERE ChannelUsers.user_id = 360 and ChannelUsers.`role` = 'owner'
                         and FetchedChannels.user_id = 360 and FetchedChannels.claimed = 0
                         and FetchedChannels.organiser_email IS NOT NULL and
-                        ChannelViewCounts.total_views >= {self.VIEW_THRESHOLD};'''
-            unacquired_channels = self.db.run_query(channel_query)
-            return unacquired_channels
+                        ChannelViewCounts.total_views >= {self.VIEW_THRESHOLD} and FetchedChannels.id  = {reminderID};'''
+            unacquired_channel = self.db.run_query(channel_query)
+            return unacquired_channel
             
 
     # Placeholder for pseudocode
-    def send_email(self, channel, reminder_times):
-        for reminder in reminder_times:
+    def send_email(self, reminder_id):
             # Get channel name and mailing address and do magic
+            channel = self.getUnclaimedChannelDetails(reminder_id)
             if(channel['claim_email_count'] < self.MAX_EMAIL_COUNT - 1):
                 # Send emails using sendgrid
                 self.mail_sys.send_confirmation_agora_claim_request(
@@ -121,11 +123,11 @@ class AgoraClaimRepository():
             self.db.run_query(query_email_2)
 
     
-    def sendUnclaimedEmails(self):
-        unclaimedChannels = self.getUnclaimedChannels()
+    def sendUnclaimedEmails(self, reminderIds):
+        unclaimedChannels = self.getReminderIdsToBeSent
         map(self.send_email(), unclaimedChannels)
-        channelsToBeDeleted = [channel['id'] for channel in unclaimedChannels if channel['claim_email_count'] == self.MAX_EMAIL_COUNT]
-        map(self.channelRepo.deleteChannel() , channelsToBeDeleted )
+        # channelsToBeDeleted = [channel['id'] for channel in unclaimedChannels if channel['claim_email_count'] == self.MAX_EMAIL_COUNT]
+        # map(self.channelRepo.deleteChannel() , channelsToBeDeleted )
         # Run a query to update the claim_email_sent field in TABLE Channels
         # It should update it by one everytime until a certain limit
         # After the limit has been reached and the user doesn't claim within x days we delete the agora
@@ -140,3 +142,25 @@ class AgoraClaimRepository():
         # channel = self.db.run_query(assign_claim_query)
         # userId = self.userRepo.addUser(channel['organiser_name'], self.safePassword(), channel['organiser_email'],channel['channel_id'], mode= 'claim' )
         # return userId
+
+    
+    def getReminderIdsToBeSent(self, delta_time_window):
+        # get reminders whose time_sending are within [time_sending-delta_time_window; time_sending + delta_time_window]
+        delete_reminders_query = f'''DELETE * FROM claimReminders WHERE sendtime < DATE_ADD(NOW(), INTERVAL - {delta_time_window} HOUR);
+        '''
+        self.db.run_query(delete_reminders_query)
+        get_reminders_query = f'''
+            SELECT id from claimReminders
+            WHERE (
+                sendtime > DATE_ADD(NOW(), INTERVAL - {delta_time_window} HOUR)
+                AND sendtime < DATE_ADD(NOW(), INTERVAL {delta_time_window} HOUR)
+                )
+                AND status != "sent"
+            ;
+        '''
+        res = self.db.run_query(get_reminders_query)
+
+        if res is None:
+            return []
+        else:
+            return [i["id"] for i in res]

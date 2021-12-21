@@ -2,7 +2,7 @@ import random
 import logging
 from mailing.sendgridApi import sendgridApi
 from repository import UserRepository
-from app.databases import agora_db
+# from app.databases import agora_db
 import hashlib
 from datetime import datetime
 
