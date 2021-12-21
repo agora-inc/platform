@@ -56,6 +56,11 @@ function App() {
           {/* <Route path="/referral/channel" component={ChannelReferralPage} /> */}
           {/* <Route path="/referral/user/:userId/" component={UserReferralPage} /> */}
 
+
+          {/* CLAIM ENDPOINT: not deployed yet */}
+          {/* <Route path="/claim/channel" component={ChannelClaimPage} /> */}
+          
+
           {/* EVENT ENDPOINTS: */}
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
           <Route path="/livestream/:encoded_endpoint" component={LivestreamPage} />

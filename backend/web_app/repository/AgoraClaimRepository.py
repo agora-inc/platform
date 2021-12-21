@@ -111,7 +111,7 @@ class AgoraClaimRepository():
     def updateAndAssignClaim(self : AgoraClaimRepository, mailToken : str):
         token_query = f'''UPDATE FetchedChannels SET claimed = 1 WHERE mailToken = {mailToken}'''
         self.db.run_query(token_query)
-        assign_claim_query = f'''SELECT channel_id, organiser_name, organiser_email FROM FetchedChannels WHERE mailToken = {mailToken}'''
-        channel = self.db.run_query(assign_claim_query)
-        userId = self.userRepo.addUser(channel['organiser_name'], self.safePassword(), channel['organiser_email'],channel['channel_id'], mode= 'claim' )
-        return userId
+        # assign_claim_query = f'''SELECT channel_id, organiser_name, organiser_email FROM FetchedChannels WHERE mailToken = {mailToken}'''
+        # channel = self.db.run_query(assign_claim_query)
+        # userId = self.userRepo.addUser(channel['organiser_name'], self.safePassword(), channel['organiser_email'],channel['channel_id'], mode= 'claim' )
+        # return userId
