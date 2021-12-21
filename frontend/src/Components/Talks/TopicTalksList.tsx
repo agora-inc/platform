@@ -81,8 +81,8 @@ export default class TopicTalkList extends Component<Props, State> {
     });
   }
 
-  componentDidUnmount() {
-    document.removeEventListener("scroll", this.handleScroll);
+  componentWillUnmount() {
+    document.removeEventListener("scroll", this.handleScroll, true);
   }
 
   handleScroll = (e: any) => {

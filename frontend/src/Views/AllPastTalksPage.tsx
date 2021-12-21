@@ -87,8 +87,8 @@ export default class AllPastTalksPage extends Component<{}, State> {
     });
   }
 
-  componentDidUnmount() {
-    document.removeEventListener("scroll", this.handleScroll);
+  componentWillUnmount() {
+    document.removeEventListener("scroll", this.handleScroll, true);
   }
 
 
