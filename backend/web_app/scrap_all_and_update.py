@@ -14,7 +14,9 @@ class ScrapperWrapper:
         for scrapper in self.scrappers:
             try:
                 scrapper().run()
+                print("yse")
             except Exception as e:
+                print(f"Exception: {e}")
                 scrapper._close
 
 

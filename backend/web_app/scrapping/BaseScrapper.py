@@ -1,17 +1,18 @@
 '''
-    Base class for scrapper. Example setup:
+    Base class for scrapper. 
 
-    params = {
-        "use_selenium": False,
-        "need_primitive_topics": False,
-        # "repositories": [
-        #     ChannelRepository,
-        #     TalkRepository
-        # ]
+    Example setup:
+                params = {
+                    "use_selenium": False,
+                    "need_primitive_topics": False,
+                    # "repositories": [
+                    #     ChannelRepository,
+                    #     TalkRepository
+                    # ]
 
-        "
+                    "
+                }
 
-    }
 '''
 import abc
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
@@ -20,7 +21,7 @@ import ast
 from databases import agora_db
 
 
-CHROME_V_93_PATH = "/home/cloud-user/plateform/agora/backend/web_app/chromedriver_linux64/chromedriver"
+CHROME_V_96_PATH = "/home/cloud-user/plateform/agora/backend/web_app/scrapping/chromedrivers/v_96/chromedriver"
 
 
 class BaseScrapper(metaclass=abc.ABCMeta):
@@ -124,6 +125,6 @@ class BaseScrapper(metaclass=abc.ABCMeta):
         options.add_argument("--window-size=1920,1200")
         self.selenium_driver = webdriver.Chrome(
 			options=options, 
-			executable_path = CHROME_V_93_PATH
+			executable_path = CHROME_V_96_PATH
         )
 

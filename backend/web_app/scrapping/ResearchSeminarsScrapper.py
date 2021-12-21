@@ -21,33 +21,41 @@ class ResearchSeminarsScrapper(BaseScrapper):
                 ]
             }
         ):
-
         super().__init__(params)
-
 		
     def _selenium_login(self):
         USERNAME = "revolutionisingresearch@gmail.com"
         PASSWORD = "234.wer.sdf"
         
         # Log in 
-        self.driver.get("https://researchseminars.org/user/info")
-        self.driver.find_element_by_name("email").send_keys(USERNAME)
-        self.driver.find_element_by_name("password").send_keys(PASSWORD)
-        self.driver.find_element_by_name("submit").click()
+        self.selenium_driver.get("https://researchseminars.org/user/info")
+        self.selenium_driver.find_element_by_name("email").send_keys(USERNAME)
+        self.selenium_driver.find_element_by_name("password").send_keys(PASSWORD)
+        self.selenium_driver.find_element_by_name("submit").click()
         try:
-        	self.driver.find_element_by_class_name("side-cancel")
+        	self.selenium_driver.find_element_by_class_name("side-cancel")
         except NoSuchElementException:
             raise Exception
 	
     def _selenium_logout(self):
         try:
-            self.driver.get("https://researchseminars.org/user/info")
-            self.driver.find_element_by_class_name("side-cancel").click()
+            self.selenium_driver.get("https://researchseminars.org/user/info")
+            self.selenium_driver.find_element_by_class_name("side-cancel").click()
             return True
         except NoSuchElementException:
             return False
 
+    def run(self):
+        print("ResearchSeminarScrapper: running")
 
+    def add_new_data_point(self):
+        pass
+    
+    def fetch_data(self):
+        pass
+    
+    def update_data_point(self):
+        pass
 
 # 	def _isEnglish(s):
 # 		try:
@@ -93,17 +101,17 @@ class ResearchSeminarsScrapper(BaseScrapper):
 # 		if "https://researchseminars.org/seminar/" not in url_agora:
 # 			return 0, [], -1, ""
 
-# 		self.driver.get(url_agora)
-# 		if self.driver.find_element_by_id("title").text == 'Page not found':
+# 		self.selenium_driver.get(url_agora)
+# 		if self.selenium_driver.find_element_by_id("title").text == 'Page not found':
 # 			return 0, [], -1, ""
 # 		else:
 # 			# Create channel
-# 			name = self.driver.find_element_by_xpath("//h1").text
-# 			description = self.driver.find_elements_by_xpath("//p")[2:]
+# 			name = self.selenium_driver.find_element_by_xpath("//h1").text
+# 			description = self.selenium_driver.find_elements_by_xpath("//p")[2:]
 # 			description = [e.text for e in description if e.text != '']
 # 			description = '\n'.join(description)
 
-# 			organisers = self.driver.find_element_by_xpath("//tr[.//*[text()='Organizer:']] | //tr[.//*[text()='Organizers:']] | //tr[.//*[text()='Curator:']] | //tr[.//*[text()='Curators:']]")
+# 			organisers = self.selenium_driver.find_element_by_xpath("//tr[.//*[text()='Organizer:']] | //tr[.//*[text()='Organizers:']] | //tr[.//*[text()='Curator:']] | //tr[.//*[text()='Curators:']]")
 # 			ids = organisers.find_elements_by_xpath(".//td[2]//a[@href]")
 # 			contactable_organisers = []
 # 			for id in ids:
@@ -134,13 +142,13 @@ class ResearchSeminarsScrapper(BaseScrapper):
 # 					channel = self.channelRepo.createChannel(name, description, user_id, topic_1_id, claimed=0, organiser_contact=contact)
 
 # 				# Get talk index	
-# 				idx = self._get_all_talks_id(self.driver.find_elements_by_xpath('//a'))
+# 				idx = self._get_all_talks_id(self.selenium_driver.find_elements_by_xpath('//a'))
 				
 # 				# Get a link
 # 				if len(idx) > 0:
 # 					url_talks = url_agora.replace("/seminar/", "/talk/")
-# 					self.driver.get(url_talks + f"/{idx[0]}")
-# 					lst_link = self.driver.find_elements_by_xpath('//a') 
+# 					self.selenium_driver.get(url_talks + f"/{idx[0]}")
+# 					lst_link = self.selenium_driver.find_elements_by_xpath('//a') 
 # 					link = self._get_href(lst_link, "available")
 # 				else:
 # 					link = ""
@@ -177,15 +185,15 @@ class ResearchSeminarsScrapper(BaseScrapper):
 		
 # 		for i in idx:
 
-# 			self.driver.get(url_talks + f"/{i}")
+# 			self.selenium_driver.get(url_talks + f"/{i}")
 # 			talk = {}
-# 			lst_link = self.driver.find_elements_by_xpath('//a')
+# 			lst_link = self.selenium_driver.find_elements_by_xpath('//a')
 
 # 			# Title
-# 			talk['title'] = self.driver.find_element_by_xpath("//h1").text
+# 			talk['title'] = self.selenium_driver.find_element_by_xpath("//h1").text
 
 # 			#Topics
-# 			topics = list(self.driver.find_elements_by_xpath("//p//span[@class='topic_label']"))
+# 			topics = list(self.selenium_driver.find_elements_by_xpath("//p//span[@class='topic_label']"))
 # 			talk['topics'] = [t.text for t in topics][:3]
 # 			if len(talk['topics']) < 3:
 # 				talk['topics'] += [None] * (3 - len(talk['topics']))
@@ -195,15 +203,15 @@ class ResearchSeminarsScrapper(BaseScrapper):
 # 				talk['topics_parsed'] += [RSScraperRepository.get_topic_mapping(topic_str)]
 
 # 			# Speaker 
-# 			talk['speaker'] = self.driver.find_element_by_xpath("//h3").text
+# 			talk['speaker'] = self.selenium_driver.find_element_by_xpath("//h3").text
 # 			talk['speaker_url'] = RSScraperRepository._get_href(lst_link, talk['speaker'], substring=True)
 
 # 			# Time
-# 			str_time = self.driver.find_element_by_xpath('//b').text
+# 			str_time = self.selenium_driver.find_element_by_xpath('//b').text
 # 			talk['start_time'], talk['end_time'] = RSScraperRepository._parse_time(str_time)
 
 # 			# Description + Comments	
-# 			e = self.driver.find_element_by_xpath("//div[@class= 'talk-details-container']")
+# 			e = self.selenium_driver.find_element_by_xpath("//div[@class= 'talk-details-container']")
 # 			lst = []
 # 			for elem in e.find_elements_by_xpath("./child::*"):
 # 				if elem.text != '':
