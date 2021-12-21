@@ -1,7 +1,6 @@
-from app.databases import agora_db
 
 class TagRepository:
-    def __init__(self, db=agora_db):
+    def __init__(self, db):
         self.db = db
 
     def getTagById(self, id):
