@@ -5,13 +5,27 @@ import { Topic } from "./TopicService";
 import { User } from "./UserService";
 
 
-const getAllPublicProfiles = (callback: any) => {
-  axios
-    .get(baseApiUrl + "/profiles/public")
-    .then((response) => {
-      callback(response.data);
-    })
-    .catch((error) => console.error(error));
+const getAllPublicProfiles = (
+  limit: number,
+  offset: number,
+  callback: any
+) => {
+  get(
+    `profiles/public?limit=${limit}&offset=${offset}`,
+    callback
+  );
+};
+
+const getPublicProfilesByTopicRecursive = (
+  topicId: number,
+  limit: number,
+  offset: number,
+  callback: any
+) => {
+  get(
+    `profiles/public/topic?topicId=${topicId}&limit=${limit}&offset=${offset}`,
+    callback
+  );
 };
 
 const getProfile = (userId: number, callback: any) => {
@@ -137,6 +151,7 @@ export type Paper = {
 
 export const ProfileService = {
   getAllPublicProfiles,
+  getPublicProfilesByTopicRecursive,
   getProfile,
   updateProfile,
   uploadProfilePhoto,

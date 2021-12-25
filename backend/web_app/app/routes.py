@@ -251,7 +251,16 @@ def updatePublic():
 # --------------------------------------------
 @app.route('/profiles/public')
 def getPublicProfiles():
-    return jsonify(profiles.getAllPublicProfiles())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(profiles.getAllPublicProfiles(limit, offset))
+
+@app.route('/profiles/public/topic')
+def getPublicProfilesByTopicRecursive():
+    topic_id = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(profiles.getAllPublicProfilesByTopicRecursive(topic_id, limit, offset))
 
 @app.route('/profiles/profile', methods=["GET"])
 def getProfile():    

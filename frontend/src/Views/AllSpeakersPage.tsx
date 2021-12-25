@@ -11,10 +11,13 @@ const AllSpeakersPage = () => {
   const [topic, setTopic] = useState<Topic>();
 
   useEffect(() => {
-    ProfileService.getAllPublicProfiles(setProfiles);
-  });
+    if (topic && topic.id > 0) {
+      ProfileService.getPublicProfilesByTopicRecursive(topic.id, 50, 0, setProfiles)
+    } else {
+      ProfileService.getAllPublicProfiles(50, 0, setProfiles);
+    }
+  }, [topic]);
 
-  console.log("TOPTPOT", topic)
   return (
     <Box 
       width="90%" 
