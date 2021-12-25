@@ -88,6 +88,10 @@ class ProfileRepository:
 
         return self._queries_to_dict(ids, users, profiles, topics, papers, tags)
 
+    def updateBio(self, user_id, bio):
+        update_query = f'''UPDATE Users SET bio="{bio}" WHERE id={user_id};'''
+        self.db.run_query(update_query)
+
     def updatePaper(self, user_id, paper):
         if int(paper['id']) > 0:
             update_query = f'''UPDATE ProfilePapers SET

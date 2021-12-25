@@ -231,11 +231,11 @@ def changePassword():
 
 @app.route('/users/update_bio', methods=["POST"])
 def updateBio():
-   authToken = request.headers.get('Authorization').split(" ")[1]
-   userId = users.decodeAuthToken(authToken)
-   params = request.json
-   updatedUser = users.updateBio(userId, params["newBio"])
-   return jsonify(updatedUser)
+    authToken = request.headers.get('Authorization').split(" ")[1]
+    userId = users.decodeAuthToken(authToken)
+    params = request.json
+    updatedUser = users.updateBio(userId, params["newBio"])
+    return jsonify(updatedUser)
 
 @app.route('/users/update_public', methods=["POST"])
 def updatePublic():
@@ -266,6 +266,11 @@ def getPublicProfilesByTopicRecursive():
 def getProfile():    
     id = int(request.args.get("id"))
     return jsonify(profiles.getProfile(id))
+
+@app.route('/profiles/bio/update', methods=["POST"])
+def updateProfileBio():
+    params = request.json     
+    return jsonify(profiles.updateBio(params['user_id'], params['bio']))
 
 @app.route('/profiles/papers/update', methods=["POST"])
 def updatePaper():

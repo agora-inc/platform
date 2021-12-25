@@ -16,7 +16,7 @@ export const FooterOverlayProfileCard = (props: Props) => {
     return <Redirect to={`/profile/${props.user.id}`} push={true} />
   } else {
     return (
-      <Box direction="row" background="#d5d5d5" width="100%" align="center" height="20%" justify="center" gap="150px">
+      <Box direction="row" background="#d5d5d5" width="100%" align="center" height="15%" justify="center" gap="150px">
         <Box
           width="150px"
           height="40px"

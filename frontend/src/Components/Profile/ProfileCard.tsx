@@ -123,7 +123,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
         >
           <Box
             pad="25px"
-            height="80%"
+            height="85%"
             justify="between"
             // gap="xsmall"
           >

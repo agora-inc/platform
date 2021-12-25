@@ -6,6 +6,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTooltip from "react-tooltip";
 
 import ImageCropUploader from "../Components/Channel/ImageCropUploader";
+import { BioEntry } from "../Components/Profile/BioEntry";
 import { PaperEntry } from "../Components/Profile/PaperEntry";
 import { TagsEntry } from "../Components/Profile/TagsEntry";
 import { User, UserService } from "../Services/UserService";
@@ -161,9 +162,7 @@ const ProfilePage = (props: Props) => {
           </Box>
         </Box>
 
-        <Box width="55%" margin={{bottom: "30px"}} style={{maxHeight: "50px"}} overflow="auto">
-          {profile.user.bio}
-        </Box>
+        <BioEntry bio={profile.user.bio ? profile.user.bio : ""} home={home} userId={profile.user.id} /> 
 
         <Box>
           <Tabs>

@@ -70,6 +70,17 @@ const updatePaper = (userId: number, paper: Paper, callback: any) => {
   );
 }
 
+const updateBio = (userId: number, bio: string, callback: any) => {
+  post(
+    "profiles/bio/update",
+    {
+      user_id: userId,
+      bio: bio,
+    },
+    callback
+  );
+}
+
 const deletePaper = (paper_id: number, callback: any) => {
   post(
     "profiles/papers/delete",
@@ -154,6 +165,7 @@ export const ProfileService = {
   getPublicProfilesByTopicRecursive,
   getProfile,
   updateProfile,
+  updateBio,
   uploadProfilePhoto,
   getProfilePhoto,
   removeProfilePhoto,
