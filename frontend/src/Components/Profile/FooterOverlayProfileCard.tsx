@@ -27,7 +27,7 @@ export const FooterOverlayProfileCard = (props: Props) => {
           justify="center"
           hoverIndicator="color1"
         >
-          <Text size="14px" weight="bold"> View profile </Text>
+          <Text size="14px" weight="bold"> View more </Text>
         </Box>
         <Box
           width="150px"
@@ -39,7 +39,7 @@ export const FooterOverlayProfileCard = (props: Props) => {
           justify="center"
           hoverIndicator="color1"
         >
-          <Text size="14px" weight="bold"> Contact speaker </Text>
+          <Text size="14px" weight="bold"> Invite speaker </Text>
         </Box> 
       </Box>
     );

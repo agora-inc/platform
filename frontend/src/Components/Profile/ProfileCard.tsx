@@ -68,7 +68,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
           {props.profile.has_photo && (
             <Box width="40%">
               <Image 
-                style={{position: 'absolute', top: 10, right: 10, aspectRatio: "3/2"}}
+                style={{position: 'absolute', top: 15, right: 15, aspectRatio: "3/2"}}
                 src={getProfilePhotoUrl()}
                 width="30%"
               />
@@ -125,7 +125,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
             pad="25px"
             height="80%"
             justify="between"
-            gap="xsmall"
+            // gap="xsmall"
           >
             <Box
               direction="row"
@@ -180,10 +180,10 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
             <Box direction="row" gap="8px" align="center">
               <DocumentText size="15px" />
               <Text size="12px" style={{fontStyle: "italic"}}> 
-                Selected papers
+                Latest papers
               </Text>
             </Box>
-            <Box margin={{bottom: "30px"}} gap="5px">
+            <Box margin={{bottom: "30px", top: "-20px"}} gap="5px">
               {props.profile.papers.slice(0, 3).map((paper: Paper, index: number) => (
                 <PaperEntry paper={paper} index={index} home={false} width="100%" />
               ))}
