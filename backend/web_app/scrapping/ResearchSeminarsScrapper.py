@@ -3,8 +3,10 @@ import time
 import ast
 from typing import List
 from joblib import Parallel, delayed
-
 from scrapping.BaseScrapper import BaseScrapper
+import requests
+from bs4 import BeautifulSoup 
+
 from selenium.common.exceptions import NoSuchElementException
 
 from alphabet_detector import AlphabetDetector
@@ -14,7 +16,8 @@ ad = AlphabetDetector()
 class ResearchSeminarsScrapper(BaseScrapper):
     def __init__(self, 
         params={
-            "use_selenium": True,
+            "use_selenium": False,
+            "need_primitive_topics": True,
             "repositories": [
                 "TalkRepository",
                 "ChannelRepository"
@@ -26,7 +29,7 @@ class ResearchSeminarsScrapper(BaseScrapper):
     def _selenium_login(self):
         USERNAME = "revolutionisingresearch@gmail.com"
         PASSWORD = "234.wer.sdf"
-        
+
         # Log in 
         self.selenium_driver.get("https://researchseminars.org/user/info")
         self.selenium_driver.find_element_by_name("email").send_keys(USERNAME)
@@ -46,12 +49,67 @@ class ResearchSeminarsScrapper(BaseScrapper):
             return False
 
     def run(self):
+        # GENRAL OVERVIEW OF PREVIOUS CODE:
+        # 1. get all seminar urls with topics and topics_dropdown
+        # 2. for each seminar url, create an agora + add new talks
+        # 3. Delete all duplicates + delete all new additions of talks with newer research_seminar_talk_link
+        #
+        #
+        # CODE STRUCTURE WE WANT:
+        # 1. fetch all channel URLs
+        # 2. for each channel URL, 
+        # # i) check if new channel is in DB
+        # # ii) get all past and future events (i.e. title, description, topics, speaker_name, speaker_url)
+        # 3. check if line is in DB or not (do so by fetching all talks for a channel and see if its in the list)
+        # if not in the list, look if there is one that is close to it
+        #
+        #
+        #
         print("ResearchSeminarScrapper: running")
+        print("1/n: Fetching all seminar series URLs")
+        seminar_urls = self.fetch_data(data_name="seminar_series_urls")
+        for seminar_url in seminar_urls:
+            raw_data = 
+            scrapped_data = self.scrap_data(raw_data, data_type="seminar_talks")
+
+
+    def fetch_data(self, data_name="seminar_series_urls", params={}):
+        assert(data_name in ["seminar_series_urls", "event_urls"] )
+
+        if data_name == "seminar_series_urls":
+            ALL_SERIES_URL = 'https://researchseminars.org/seminar_series'
+            content = requests.get(ALL_SERIES_URL)
+            soup = BeautifulSoup(content.text, 'html.parser')
+            rows = soup.findAll("tr", {"class" : "talk"})
+            seminar_urls = []
+            print("Scraping researchseminars.org for semianr series .")
+            for row in rows:
+                href_a = row.find("td", {"class" : "seriesname"}).find("a")
+                topic_a = row.find("td", {"class" : "topics"}).find("span", {"class" : "topic_label"}).text
+                # Get primitive topic for tag, works most of the time.  
+                topic_dropdown = 15
+                for vals in [15,17,18,19,89,142,172]:
+                    if topic_a.lower() in self.primitive_topics_dic[vals]:
+                        topic_dropdown = vals 
+                        break
+                    
+                seminar_urls.append([f"https://researchseminars.org{href_a['href']}",topic_a, topic_dropdown])
+                return seminar_urls  
+
+    def scrap_data(self, raw_data, data_type="seminar_series"):
+        ALL_SERIES_URL = 'https://researchseminars.org/seminar_series'
+        content = requests.get(ALL_SERIES_URL)
+        soup = BeautifulSoup(content.text, 'html.parser')
+        return soup.findAll("tr", {"class" : "talk"})
+
+    def has_data_already_been_fetched(self, type):
+        assert(type in ["seminar_series"])
+        pass
+
+    def does_data_need_update(self):
+        pass
 
     def add_new_data_point(self):
-        pass
-    
-    def fetch_data(self):
         pass
     
     def update_data_point(self):

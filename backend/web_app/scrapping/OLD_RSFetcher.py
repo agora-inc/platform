@@ -1,5 +1,5 @@
 # Imports.
-from backend.web_app.scrapping import OLD_RSScraperRepository
+from web_app.scrapping import OLD_RSScraperRepository
 from bs4 import BeautifulSoup 
 import requests
 import ast

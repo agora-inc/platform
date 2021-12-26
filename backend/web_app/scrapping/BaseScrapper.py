@@ -41,17 +41,24 @@ class BaseScrapper(metaclass=abc.ABCMeta):
     # BASE METHODS
     #####################
     @abc.abstractmethod
-    def fetch_data():
+    def fetch_data(self, data_name, params={}):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_new_data_point():
+    def scrap_data(self, raw_data, data_name, params={}):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_data_point():
+    def add_data_in_db(self, scrapped_data, data_name, params={}):
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def update_data_point(self, scrapped_data, data_name, params={}):
+        raise NotImplementedError
+
+    #####################
+    # LOGIN METHODS
+    #####################
     def _selenium_login(self):
         raise NotImplementedError
 
