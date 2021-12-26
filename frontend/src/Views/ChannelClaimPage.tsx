@@ -12,6 +12,7 @@ import SignUpButton from "../Components/Account/SignUpButton";
 import { FaThemeisle } from "react-icons/fa";
 import "react-step-progress-bar/styles.css";
 import { ProgressBar, Step } from "react-step-progress-bar";
+import FooterComponent from "../Components/Homepage/FooterComponent";
 
 interface State {
   channel: Channel | null;
@@ -94,6 +95,12 @@ export default class ChannelClaimPage extends Component<RouteComponentProps, Sta
         );
       }; 
 
+      toggleCreateChannelOverlay = () => {
+        this.setState({
+          showCreateChannelOverlay: !this.state.showCreateChannelOverlay
+        });
+      };
+
       componentDidUpdate(prevProps: RouteComponentProps) {
         if (this.props.location !== prevProps.location) {
           this.setState({
@@ -119,4 +126,142 @@ export default class ChannelClaimPage extends Component<RouteComponentProps, Sta
             )
         } 
     }
+
+    propagationAction() {
+        return (
+          <Text size="20px" margin={{top: "80px"}}>
+            Share this unique link via email, Facebook, or Twitter and earn exciting rewards for each members who signs up.
+        </Text>
+        )
+      }
+
+    aboveTheFoldMain() {
+        // console.log("refcount" + this.state.referralCount);
+        return (
+          <>
+            <Box>
+                {this.headTitle()}
+                <Box direction="row" gap="xsmall" align="end" width="60%">
+                  <ShareButtons
+                    channel={this.state.channel}
+                    referral={true}
+                  />
+              </Box>
+                {this.propagationAction()}
+                
+            </Box>
+          </>
+        )
+    
+    }
+    
+      aboveTheFoldImage() {
+        return (
+          <>
+            <Box direction="column" style={this.state.renderMobileView 
+                ? { width: "90%", alignSelf: "center", marginTop: "20px" } 
+                : { width: "90%", marginTop: "120px", alignSelf: "center"}
+              }>
+    
+              <video 
+                autoPlay loop muted
+                style={{ height: "auto", width: "100%"}}
+                >
+                <source src="/videos/referral_page_faces_ai_generated.webm" type="video/webm"/> 
+              </video>
+    
+            </Box>
+          </>
+        )
+    }
+
+
+    callToActionEndpage() {
+        return (
+          <>
+            {!this.state.renderMobileView && (
+              <>
+                <Box>
+                  <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Keep up with the hottest ideas of the moment!</Text>
+                  <Box align="center" margin={{bottom: "90px"}}>
+                      <SignUpButton
+                        channelId = {this.state.channel?.id}
+                        callback={()=>{}}
+                        height="100px"
+                        width="200px"
+                        textSize="18px"
+                      />
+                  </Box>
+                </Box>
+              </>
+            )}
+            {this.state.renderMobileView && (
+                <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Come back to this page using a Desktop browser to get started! 🚀</Text>
+            )}
+    
+            {this.state.showCreateChannelOverlay && (
+                  <CreateChannelOverlay
+                    onBackClicked={this.toggleCreateChannelOverlay}
+                    onComplete={() => {
+                      this.toggleCreateChannelOverlay();
+                    }}
+                    visible={true}
+                    user={null}
+                  />
+                )}
+          </>
+          
+        )
+      }
+
+    render() {
+        if (this.state.loading){
+          return(
+            <Loading size={16} color="color1"/>
+          )
+        } else {
+            // if(!this.state.channel){
+            //   return(
+            //     <Redirect to={"/referral/channel"} push={true}/>
+            //   )
+            // } 
+            // else {
+              console.log("3")
+              return (
+                <Box
+                  direction="column"
+                  align="center"
+                >
+                  <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+                    // src={BackgroundImage}
+                    src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+                  />
+    
+                  <Box height="100%" width="100%">
+                    <Box width="80%" height={this.state.renderMobileView ? "1480px": "550px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
+                      <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "500px" : "100%"}>
+                        {this.aboveTheFoldImage()}
+                      </Box>
+                      <Box width={this.state.renderMobileView ? "100%" : "40%"} height={this.state.renderMobileView ? "1250px" : "100%"}
+                        style={this.state.renderMobileView ? {} : {minWidth: "780px"}}>
+                        {this.aboveTheFoldMain()}
+                      </Box>
+                    </Box>
+                  </Box>
+    
+    
+                  <Box height="100%" width="100%">
+                    <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+                      {this.callToActionEndpage()}
+                    </Box>
+                  </Box>
+    
+                  <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
+                    <FooterComponent />
+                  </Box> 
+    
+                </Box>
+              );
+            }
+        }
 }
