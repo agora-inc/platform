@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Box, CheckBox, Text } from "grommet";
 import { DocumentText, Twitter, Configure } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
 import ReactTooltip from "react-tooltip";
 
 import ImageCropUploader from "../Components/Channel/ImageCropUploader";
@@ -11,6 +10,7 @@ import { PaperEntry } from "../Components/Profile/PaperEntry";
 import { TagsEntry } from "../Components/Profile/TagsEntry";
 import { User, UserService } from "../Services/UserService";
 import { Paper, Profile, ProfileService } from "../Services/ProfileService";
+import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
 
 
@@ -254,9 +254,17 @@ const ProfilePage = (props: Props) => {
     );
   } else {
     return (
-      <Text size="16px" weight="bold" style={{ position: "relative", top: "15vh", left: "15vh" }}>
-        This profile does not exist.
-      </Text>
+      <Box 
+        direction="row" 
+        gap="8px"
+        align="center" 
+        style={{ position: "relative", top: "15vh", left: "15vh" }}
+      >
+        <Loading size={21} color="black" />
+        <Text size="16px" weight="bold" >
+          Loading profile... 
+        </Text>
+      </Box>
     );
   }
 };
