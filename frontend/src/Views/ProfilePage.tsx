@@ -12,6 +12,7 @@ import { User, UserService } from "../Services/UserService";
 import { Paper, Profile, ProfileService } from "../Services/ProfileService";
 import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
+import { DetailsEntry } from "../Components/Profile/DetailsEntry";
 
 
 interface Props {
@@ -242,8 +243,53 @@ const ProfilePage = (props: Props) => {
             </TabPanel>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              <Box direction="row" margin={{bottom: "60px"}}>
-                Settings
+              <Box direction="column" gap="30px">
+                <Box direction="column" gap="5px">
+                  <Text size="14px" weight="bold">
+                    Update your details
+                  </Text>
+                  <DetailsEntry
+                    title='Full name'
+                    key='full_name'
+                    value={profile.full_name}
+                    userId={profile.user.id}
+                    home={home}
+                  />
+                  <DetailsEntry
+                    title='Academic position'
+                    key='position'
+                    value={profile.user.position}
+                    userId={profile.user.id}
+                    home={home}
+                  />
+                  <DetailsEntry
+                    title='Username'
+                    key='full_name'
+                    value={profile.user.username}
+                    userId={profile.user.id}
+                    home={home}
+                  />
+                  <DetailsEntry
+                    title='Email address'
+                    key='email'
+                    value={profile.user.email}
+                    userId={profile.user.id}
+                    home={home}
+                  />
+                </Box>
+
+                <Text size="14px" weight="bold">
+                  Change profile picture
+                </Text>
+
+                <Text size="14px" weight="bold">
+                  Are you open to give a talk?
+                </Text>
+
+                <Text size="14px" weight="bold">
+                  Become a verified academic
+                </Text>
+
               </Box>
             </TabPanel>
 

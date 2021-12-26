@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Box, Text, TextArea } from "grommet";
 import { Paper, ProfileService } from "../../Services/ProfileService";
 import { Edit, Save, Trash } from "grommet-icons";
@@ -24,9 +23,8 @@ export const BioEntry = (props: Props) => {
       )
     }
   }
-
-  const width : string = props.width ? props.width : "47.4%"  
-
+  const width : string = props.width ? props.width : "47.4%" 
+   
   return (
     <Box 
       direction="row" 

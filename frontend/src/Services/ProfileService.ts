@@ -59,6 +59,18 @@ const getPapers = (userId: number, callback: any) => {
   get(`profiles/papers/id=${userId}`, callback);
 }
 
+const updateDetails = (userId: number, key: string, value: string, callback: any) => {
+  post(
+    "profiles/details/update",
+    {
+      user_id: userId,
+      key: key,
+      value: value,
+    },
+    callback
+  )
+}
+
 const updatePaper = (userId: number, paper: Paper, callback: any) => {
   post(
     "profiles/papers/update",
@@ -165,6 +177,7 @@ export const ProfileService = {
   getPublicProfilesByTopicRecursive,
   getProfile,
   updateProfile,
+  updateDetails,
   updateBio,
   uploadProfilePhoto,
   getProfilePhoto,
