@@ -5,6 +5,7 @@ import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPages/LandingPage";
 import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
 import ChannelReferralPage from "./Views/ChannelReferralPage";
+import ChannelClaimPage from "./Views/ChannelClaimPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
 // import StreamPage from "./Views/StreamPage";
@@ -58,7 +59,7 @@ function App() {
 
 
           {/* CLAIM ENDPOINT: not deployed yet */}
-          {/* <Route path="/claim/channel" component={ChannelClaimPage} /> */}
+          <Route path="/claim/" component={ChannelClaimPage} />
           
 
           {/* EVENT ENDPOINTS: */}

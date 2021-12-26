@@ -521,11 +521,21 @@ class ChannelRepository:
             result = self.db.run_query(query)
             return result
         except Exception as e:
-            print(e)
+            print(e)    
 
     def changeFetchedChannelClaimStatus(self, channelId):
         try: 
             query = f'''UPDATE FetchedChannels SET FetchedChannels.claimed = 1 WHERE FetchedChannel.channel_id = {channelId};'''
+            result = self.db.run_query(query)
+            return result
+        except Exception as e:
+            print(e)
+
+
+    def getChannelFromMailToken(self, mailToken):
+        try:
+            query = f'''SELECT FetchedChannels.channel_id FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
+            WHERE FetchedChannels.mailToken = {mailToken};'''
             result = self.db.run_query(query)
             return result
         except Exception as e:

@@ -6,7 +6,7 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository, AgoraClaimRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -38,6 +38,7 @@ channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionReposito
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 RSScraper = RSScraperRepository.RSScraperRepository(db=agora_db)
 tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
+claimRepo = AgoraClaimRepository.AgoraClaimRepository(db = agora_db)
 
 # BASE_URL = "http://localhost:3000"
 BASE_URL = "https://mora.stream/"
@@ -412,6 +413,11 @@ def getClaimStatusForChannel():
 def getOrganiserEmailForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(channels.getChannelOrganiserEmail(channelId))
+
+@app.route('/channel/fetchedchannel/get', methods=["GET"])
+def getChannelIDFromMailToken():
+    mailToken = str(request.args.get("mailToken"))
+    return jsonify(channels.getChannelFromMailToken(mailToken))
 
 # don't really think this is needed , but adding this in a comment anyways
 # @app.route('/channels/referrals/add', methods=["POST"])
@@ -2100,8 +2106,21 @@ def publishAllTalks():
 # --------------------------------------------
 # Claim routes
 # --------------------------------------------
-@app.route('/claim', methods=["GET","OPTIONS"])
-def claimAgora():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    pass
+
+# @app.route('/claim/')
+
+
+# @app.route('channel/claim', methods=["GET","OPTIONS"])
+# def claimAgora():
+#     if request.method == "OPTIONS":
+#         return jsonify("ok")
+#     mailToken = request.args.get("mailToken") if "mailToken" in request.args else None
+#     try:
+#         if mailToken != None:
+#             res = claimRepo.getChannelFromMailToken(mailToken)
+#             return jsonify(res)
+
+#     except Exception as e:
+#         return jsonify(400, str(e))
+    
+#     pass

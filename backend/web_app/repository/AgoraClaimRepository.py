@@ -164,3 +164,4 @@ class AgoraClaimRepository():
             return []
         else:
             return [i["id"] for i in res]
+
