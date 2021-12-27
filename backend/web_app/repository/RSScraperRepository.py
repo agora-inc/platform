@@ -29,13 +29,13 @@ class RSScraperRepository():
 		options.add_argument("--window-size=1920,1200")
 		self.driver = webdriver.Chrome(
 			options=options, 
-			executable_path='/home/cloud-user/plateform/agora/backend/web_app/chromedriver_linux64/chromedriver'
+			executable_path='/home/cloud-user/plateform/agora/backend/web_app/scrapping/chromedrivers/v97/chromedriver_linux64/chromedriver'
 		)
 		self._login()
 		
 
 	def _login(self):
-		USERNAME = "revolutionisingresearch@gmail.com"
+		USERNAME = "rm3217@ic.ac.uk"
 		PASSWORD = "234.wer.sdf"
 		# Log in 
 		self.driver.get("https://researchseminars.org/user/info")
