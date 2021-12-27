@@ -14,7 +14,7 @@ class ProfileRepository:
         query_user = f"SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage FROM Users WHERE id = {user_id};"
         user = self.db.run_query(query_user)[0]
         # profile
-        query_profile = f"SELECT full_name, has_photo, open_give_talk, twitter_handle FROM Profiles WHERE user_id = {user_id};"
+        query_profile = f"SELECT full_name, has_photo, open_give_talk, twitter_handle, google_scholar_link FROM Profiles WHERE user_id = {user_id};"
         profile = self.db.run_query(query_profile)[0]
         # topics
         query_topics = f"SELECT topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id = {user_id};"
@@ -47,7 +47,7 @@ class ProfileRepository:
         ids = [user['id'] for user in users]
         tuple_ids = ProfileRepository.list_to_tuple(ids)
         # all profiles of public users
-        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle FROM Profiles WHERE user_id in {tuple_ids};"
+        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle, google_scholar_link FROM Profiles WHERE user_id in {tuple_ids};"
         profiles = self.db.run_query(query_profiles)
         # all topics of public users
         query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
@@ -76,7 +76,7 @@ class ProfileRepository:
         ids = [user['id'] for user in users]
         tuple_ids = ProfileRepository.list_to_tuple(ids)
         # all profiles of public users + selected topics
-        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle FROM Profiles WHERE user_id in {tuple_ids};"
+        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle, google_scholar_link FROM Profiles WHERE user_id in {tuple_ids};"
         profiles = self.db.run_query(query_profiles)
         # all topics of public users + selected topics
         query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
@@ -140,7 +140,7 @@ class ProfileRepository:
             return None
 
     def updateDetails(self, user_id, dbKey, value):
-        if dbKey in ["full_name"]:
+        if dbKey in ["full_name", "twitter_handle", "google_scholar_link"]:
             query = f'UPDATE Profiles SET {dbKey}="{value}" WHERE user_id = {user_id};'
             self.db.run_query(query)
         elif dbKey in ["position", "institution"]:

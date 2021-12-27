@@ -36,6 +36,7 @@ const updateProfile = (
   userId: number,
   open_give_talk: boolean,
   twitter_handle: string,
+  google_scholar_link: string,
   topic_id_1: number,
   topic_id_2: number,
   topic_id_3: number,
@@ -47,6 +48,7 @@ const updateProfile = (
       user_id: userId,
       open_give_talk: open_give_talk,
       twitter_handle: twitter_handle,
+      google_scholar_link: google_scholar_link,
       topic_id_1: topic_id_1,
       topic_id_2: topic_id_2,
       topic_id_3: topic_id_3,
@@ -160,7 +162,8 @@ export type Profile = {
   topics: Topic[];
   tags: string[];
   papers: Paper[];
-  twitter_handle?: string
+  twitter_handle?: string;
+  google_scholar_link?: string;
 };
 
 export type Paper = {

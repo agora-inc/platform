@@ -31,19 +31,24 @@ export const BioEntry = (props: Props) => {
       align="center"
       gap="2%"
       margin={{bottom: "30px"}} 
-      style={{height: "50px"}} 
+      style={{height: "70px"}} 
       overflow="auto"
     >
-      {!isEdit && (
+      {!isEdit && bio !== "" && (
         <Text size="14px" style={{width: width}}>
           {bio}
+        </Text>
+      )}
+      {!isEdit && bio === "" && (
+        <Text size="14px" style={{width: "4%", fontStyle: "italic"}}>
+          Short bio
         </Text>
       )}
       {props.home && isEdit && (
         <TextArea
           placeholder="Write a short bio"
           value={bio}
-          style={{width: width, height: "50px"}}
+          style={{width: width, height: "70px"}}
           onChange={(e: any) => setBio(e.target.value)}
         />
       )}

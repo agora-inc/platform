@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, CheckBox, Text } from "grommet";
+import { Box, CheckBox, Image, Text } from "grommet";
 import { DocumentText, Twitter, Configure } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTooltip from "react-tooltip";
@@ -104,27 +104,18 @@ const ProfilePage = (props: Props) => {
           justify="between"
         >
           <Box direction="row" align="center" gap="small" width="55%">
-            <Box
-              width="100px"
-              height="100px"
-              round="50px"
-              background="white"
-              justify="center"
-              align="center"
-              style={{ minWidth: 100, minHeight: 100 }}
-              overflow="hidden"
-            >
-              <img
+            <Box width="150px" height="100px" round="50px">
+              <Image 
+                style={{aspectRatio: "3/2"}}
                 src={getProfilePhotoUrl()}
-                height={120}
-                width={120}
+                width="150px"
               />
             </Box>
 
             <Box direction="column" gap="6px" align="start">
               <Text 
                 size="26px"
-                color="black"
+                color="color3"
                 weight="bold"
               >
                 {profile.full_name}
@@ -141,7 +132,7 @@ const ProfilePage = (props: Props) => {
 
             </Box>
           </Box>
-          <Box direction="column" gap="10px" width="45%">
+          {/* <Box direction="column" gap="10px" width="45%">
             <Box direction="row">
               <CheckBox
                 name="feature"
@@ -158,8 +149,7 @@ const ProfilePage = (props: Props) => {
                 onChange={() => {}}
               />
             </Box>
-            
-          </Box>
+          </Box> */}
         </Box>
 
         <BioEntry bio={profile.user.bio ? profile.user.bio : ""} home={home} userId={profile.user.id} /> 
@@ -245,7 +235,7 @@ const ProfilePage = (props: Props) => {
 
             {home && (
               <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-                <Box direction="column" gap="30px">
+                <Box direction="column" gap="50px">
                   <Box direction="column" gap="5px">
                     <Text size="14px" weight="bold">
                       Update your details
@@ -291,7 +281,7 @@ const ProfilePage = (props: Props) => {
                     <Text size="14px" weight="bold">
                       Profile picture
                     </Text>
-                    <Box direction="row" gap="50px">
+                    <Box direction="row" gap="30px">
                       <Box 
                         direction="row"
                         align="end"
@@ -313,37 +303,56 @@ const ProfilePage = (props: Props) => {
                           </ReactTooltip>
                         </Box>
                       </Box>
-                      <Box 
-                        style={{ 
-                          border: "solid black 1px", cursor: "pointer" 
-                        }}
-                        round="xsmall"
-                        width="150px"
-                        height="25px"
-                        justify="center"
-                        align="center"
-                        background="#EAF1F1"
-                        focusIndicator={true}
-                        hoverIndicator="#DDDDDD"
-                        onClick={(e: any) => {
-                          e.stopPropagation()
-                          removeProfilePhoto()
-                        }}
-                      >
-                        <Text size="12px" weight="bold" color="black">
-                          Remove
-                        </Text>
-                      </Box>
+                      {profile.has_photo && (
+                        <Box 
+                          style={{ 
+                            border: "solid black 1px", cursor: "pointer" 
+                          }}
+                          round="xsmall"
+                          width="150px"
+                          height="25px"
+                          justify="center"
+                          align="center"
+                          background="#EAF1F1"
+                          focusIndicator={true}
+                          hoverIndicator="#DDDDDD"
+                          onClick={(e: any) => {
+                            e.stopPropagation()
+                            removeProfilePhoto()
+                          }}
+                        >
+                          <Text size="12px" weight="bold" color="black">
+                            Remove
+                          </Text>
+                        </Box>
+                      )}
                     </Box>
                   </Box>
 
-                  <Text size="14px" weight="bold">
-                    Are you open to give a talk?
-                  </Text>
+                  <Box direction="column" gap="15px">
+                    <Text size="14px" weight="bold">
+                      External profiles
+                    </Text>
+                    <DetailsEntry
+                      title='Twitter handle'
+                      dbKey='twitter_handle'
+                      value={profile.twitter_handle}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Google Scholar'
+                      dbKey='google_scholar_link'
+                      value={profile.google_scholar_link}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                  </Box>
 
-                  <Text size="14px" weight="bold">
+
+                  {/* <Text size="14px" weight="bold">
                     Become a verified academic
-                  </Text>
+                      </Text> */}
 
                 </Box>
               </TabPanel>
