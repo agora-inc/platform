@@ -69,6 +69,17 @@ const ProfilePage = (props: Props) => {
     }
   };
 
+  function removeProfilePhoto(): void {
+    if (home && profile) {
+      ProfileService.removeProfilePhoto(
+        profile.user.id,
+        () => {
+          window.location.reload();
+        }
+      );
+    }
+  };
+
   function createNewPaper(): void {
     setPapers([...papers, {id: -1, title: "", authors: "", publisher: "", year: "", link: ""} ])
   }
@@ -280,14 +291,14 @@ const ProfilePage = (props: Props) => {
                     <Text size="14px" weight="bold">
                       Profile picture
                     </Text>
-                    <Box direction="row">
+                    <Box direction="row" gap="50px">
                       <Box 
                         direction="row"
                         align="end"
                       >
                         <Box data-tip data-for="avatar_info">
                         <ImageCropUploader
-                          text="Upload profile picture"
+                          text="Upload new picture"
                           onUpload={onProfilePhotoUpload}
                           width="150px"
                           height="25px"
@@ -301,6 +312,27 @@ const ProfilePage = (props: Props) => {
                             <p>Recommended avatar dim: 400x400px</p>
                           </ReactTooltip>
                         </Box>
+                      </Box>
+                      <Box 
+                        style={{ 
+                          border: "solid black 1px", cursor: "pointer" 
+                        }}
+                        round="xsmall"
+                        width="150px"
+                        height="25px"
+                        justify="center"
+                        align="center"
+                        background="#EAF1F1"
+                        focusIndicator={true}
+                        hoverIndicator="#DDDDDD"
+                        onClick={(e: any) => {
+                          e.stopPropagation()
+                          removeProfilePhoto()
+                        }}
+                      >
+                        <Text size="12px" weight="bold" color="black">
+                          Remove
+                        </Text>
                       </Box>
                     </Box>
                   </Box>
