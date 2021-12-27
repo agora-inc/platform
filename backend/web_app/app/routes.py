@@ -267,6 +267,11 @@ def getProfile():
     id = int(request.args.get("id"))
     return jsonify(profiles.getProfile(id))
 
+@app.route('/profiles/details/update', methods=["POST"])
+def updateDetails():
+    params = request.json
+    return jsonify(profiles.updateDetails(params['user_id'], params['dbKey'], params['value']))
+
 @app.route('/profiles/bio/update', methods=["POST"])
 def updateProfileBio():
     params = request.json     

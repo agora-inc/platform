@@ -6,7 +6,7 @@ import { Edit, Save, Trash } from "grommet-icons";
 
 interface Props {
   title: string,
-  key: string,
+  dbKey: string,
   value: string | undefined,
   userId: number,
   home: boolean,
@@ -15,12 +15,21 @@ interface Props {
 export const DetailsEntry = (props: Props) => {
   const [value, setValue] = useState<string>(props.value ? props.value : "")
   const [isEdit, setIsEdit] = useState<boolean>(false)
+  const [errorMsg, setErrorMsg] = useState<string>("")
 
   function postDetails(): void {
     if (props.home && props.userId) {
       ProfileService.updateDetails(
-        props.userId, props.key, value,
-        () => {}
+        props.userId, props.dbKey, value,
+        (response: [string, number]) => {
+          console.log("DETAILS: ", response[0], response[1])
+          if (response[1] === 400) {
+            setValue(props.value ? props.value : "")
+            setErrorMsg(response[0])
+          } else if (response[1] == 200) {
+            setErrorMsg("")
+          }
+        }
       )
     }
   }
@@ -72,6 +81,11 @@ export const DetailsEntry = (props: Props) => {
         >
           <Save size="20px"/>
         </Box>
+      )}
+      {props.home && errorMsg !== "" && (
+        <Text size="14px" color="color3" weight="bold">
+          {errorMsg}
+        </Text>
       )}
     </Box>
   );

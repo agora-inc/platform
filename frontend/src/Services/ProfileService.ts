@@ -59,12 +59,12 @@ const getPapers = (userId: number, callback: any) => {
   get(`profiles/papers/id=${userId}`, callback);
 }
 
-const updateDetails = (userId: number, key: string, value: string, callback: any) => {
+const updateDetails = (userId: number, dbKey: string, value: string, callback: any) => {
   post(
     "profiles/details/update",
     {
       user_id: userId,
-      key: key,
+      dbKey: dbKey,
       value: value,
     },
     callback

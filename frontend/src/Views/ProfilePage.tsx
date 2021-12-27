@@ -250,28 +250,35 @@ const ProfilePage = (props: Props) => {
                   </Text>
                   <DetailsEntry
                     title='Full name'
-                    key='full_name'
+                    dbKey='full_name'
                     value={profile.full_name}
                     userId={profile.user.id}
                     home={home}
                   />
                   <DetailsEntry
                     title='Academic position'
-                    key='position'
+                    dbKey='position'
                     value={profile.user.position}
                     userId={profile.user.id}
                     home={home}
                   />
                   <DetailsEntry
+                    title='Institution'
+                    dbKey='institution'
+                    value={profile.user.institution}
+                    userId={profile.user.id}
+                    home={home}
+                  />
+                  <DetailsEntry
                     title='Username'
-                    key='full_name'
+                    dbKey='username'
                     value={profile.user.username}
                     userId={profile.user.id}
                     home={home}
                   />
                   <DetailsEntry
                     title='Email address'
-                    key='email'
+                    dbKey='email'
                     value={profile.user.email}
                     userId={profile.user.id}
                     home={home}

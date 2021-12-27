@@ -1,11 +1,13 @@
 import os
 from app.databases import agora_db
+from repository.UserRepository import UserRepository
 from repository.TopicRepository import TopicRepository
 
 
 class ProfileRepository:
     def __init__(self, db=agora_db):
         self.db = db
+        self.users = UserRepository(db=self.db)
         self.topics = TopicRepository(db=self.db)
 
     def getProfile(self, user_id):
@@ -136,6 +138,32 @@ class ProfileRepository:
             return f"/home/cloud-user/plateform/agora/storage/images/profiles/{userId}.jpg"
         else:
             return None
+
+    def updateDetails(self, user_id, dbKey, value):
+        if dbKey in ["full_name"]:
+            query = f'UPDATE Profiles SET {dbKey}="{value}" WHERE user_id = {user_id};'
+            self.db.run_query(query)
+        elif dbKey in ["position", "institution"]:
+            query = f'UPDATE Users SET {dbKey}="{value}" WHERE id = {user_id};'
+            self.db.run_query(query)
+        elif dbKey == "username":
+            user = self.users.getUser(value)
+            if user and user['id'] != user_id:
+                return f"Username '{value}' already exists", 400
+            else:
+                query = f'UPDATE Users SET {dbKey}="{value}" WHERE id = {user_id};'
+                self.db.run_query(query)
+        elif dbKey == "email":
+            user = self.users.getUserByEmail(value)
+            if user and user['id'] != user_id:
+                return f"Email address '{value}' already registered with another account", 400
+            else:
+                query = f'UPDATE Users SET {dbKey}="{value}" WHERE id = {user_id};'
+                self.db.run_query(query)
+        else:
+            return "Invalid key", 400
+
+        return "ok", 200
 
     def updateTags(self, user_id, tags):
         delete_query = f"DELETE FROM ProfileTags where user_id = {user_id};"
