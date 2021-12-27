@@ -110,7 +110,7 @@ const ProfilePage = (props: Props) => {
               />
             </Box>
 
-            <Box direction="column" gap="10px" align="start">
+            <Box direction="column" gap="6px" align="start">
               <Text 
                 size="26px"
                 color="black"
@@ -118,28 +118,16 @@ const ProfilePage = (props: Props) => {
               >
                 {profile.full_name}
               </Text>
-              <Box 
-                direction="row"
-                align="end"
-                gap="5px"
-              >
-                <Box data-tip data-for="avatar_info">
-                <ImageCropUploader
-                  text="Upload profile picture"
-                  onUpload={onProfilePhotoUpload}
-                  width="150px"
-                  height="25px"
-                  widthModal={600}
-                  heightModal={600}
-                  textSize="12px"
-                  hideToolTip={true}
-                  aspect={3 / 2}
-                />
-                  <ReactTooltip id='avatar_info' place="right" effect="solid">
-                    <p>Recommended avatar dim: 400x400px</p>
-                  </ReactTooltip>
-                </Box>
-              </Box>
+              <Text
+                  size="16px"
+                  color="color1"
+                  weight="bold"
+                  style={{ height: "20px", overflow: "auto" }}
+                  margin={{ bottom: "20px"}}
+                >
+                  {profile.user.position}, {profile.user.institution}
+                </Text>
+
             </Box>
           </Box>
           <Box direction="column" gap="10px" width="45%">
@@ -184,14 +172,16 @@ const ProfilePage = (props: Props) => {
                   </Text>
                 </Box>
               </Tab>
-              <Tab>
-                <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                  <Configure />
-                  <Text size="14px"> 
-                    Settings 
-                  </Text>
-                </Box>
-              </Tab>
+              {home && (
+                <Tab>
+                  <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                    <Configure />
+                    <Text size="14px"> 
+                      Settings 
+                    </Text>
+                  </Box>
+                </Tab>
+              )}
             </TabList>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
@@ -242,64 +232,90 @@ const ProfilePage = (props: Props) => {
               </Box>
             </TabPanel>
 
-            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              <Box direction="column" gap="30px">
-                <Box direction="column" gap="5px">
+            {home && (
+              <TabPanel style={{width: "78vw", minHeight: "800px"}}>
+                <Box direction="column" gap="30px">
+                  <Box direction="column" gap="5px">
+                    <Text size="14px" weight="bold">
+                      Update your details
+                    </Text>
+                    <DetailsEntry
+                      title='Full name'
+                      dbKey='full_name'
+                      value={profile.full_name}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Academic position'
+                      dbKey='position'
+                      value={profile.user.position}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Institution'
+                      dbKey='institution'
+                      value={profile.user.institution}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Username'
+                      dbKey='username'
+                      value={profile.user.username}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Email address'
+                      dbKey='email'
+                      value={profile.user.email}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                  </Box>
+
+                  <Box direction="column" gap="15px">
+                    <Text size="14px" weight="bold">
+                      Profile picture
+                    </Text>
+                    <Box direction="row">
+                      <Box 
+                        direction="row"
+                        align="end"
+                      >
+                        <Box data-tip data-for="avatar_info">
+                        <ImageCropUploader
+                          text="Upload profile picture"
+                          onUpload={onProfilePhotoUpload}
+                          width="150px"
+                          height="25px"
+                          widthModal={600}
+                          heightModal={600}
+                          textSize="12px"
+                          hideToolTip={true}
+                          aspect={3 / 2}
+                        />
+                          <ReactTooltip id='avatar_info' place="right" effect="solid">
+                            <p>Recommended avatar dim: 400x400px</p>
+                          </ReactTooltip>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Box>
+
                   <Text size="14px" weight="bold">
-                    Update your details
+                    Are you open to give a talk?
                   </Text>
-                  <DetailsEntry
-                    title='Full name'
-                    dbKey='full_name'
-                    value={profile.full_name}
-                    userId={profile.user.id}
-                    home={home}
-                  />
-                  <DetailsEntry
-                    title='Academic position'
-                    dbKey='position'
-                    value={profile.user.position}
-                    userId={profile.user.id}
-                    home={home}
-                  />
-                  <DetailsEntry
-                    title='Institution'
-                    dbKey='institution'
-                    value={profile.user.institution}
-                    userId={profile.user.id}
-                    home={home}
-                  />
-                  <DetailsEntry
-                    title='Username'
-                    dbKey='username'
-                    value={profile.user.username}
-                    userId={profile.user.id}
-                    home={home}
-                  />
-                  <DetailsEntry
-                    title='Email address'
-                    dbKey='email'
-                    value={profile.user.email}
-                    userId={profile.user.id}
-                    home={home}
-                  />
+
+                  <Text size="14px" weight="bold">
+                    Become a verified academic
+                  </Text>
+
                 </Box>
-
-                <Text size="14px" weight="bold">
-                  Change profile picture
-                </Text>
-
-                <Text size="14px" weight="bold">
-                  Are you open to give a talk?
-                </Text>
-
-                <Text size="14px" weight="bold">
-                  Become a verified academic
-                </Text>
-
-              </Box>
-            </TabPanel>
-
+              </TabPanel>
+            )}
           </Tabs>
         </Box>
           
