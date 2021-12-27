@@ -70,7 +70,7 @@ class TwitterBot:
         # Create API object
         api = tweepy.API(
             auth,
-            wait_on_rate_limit=True
+            wait_on_rate_limit=False
             )
         try:
             api.verify_credentials()
@@ -121,9 +121,8 @@ class TwitterBot:
 
                 # check if happening within the next MAX_REMINDER_MINUTES_BEFORE minutes
                 start_time = talk["date"] # format: 2021-11-23 15:00:00
-                talk_happens_soon = (
-                    ((datetime.datetime.now() - start_time).seconds // 60) < MAX_REMINDER_MINUTES_BEFORE
-                    )
+                minutes_until_it_starts = (start_time - datetime.datetime.now()).total_seconds() // 60
+                talk_happens_soon = (minutes_until_it_starts < MAX_REMINDER_MINUTES_BEFORE) and (0 < minutes_until_it_starts)
 
                 # Send reminder if happens soon
                 if talk_happens_soon:
@@ -132,11 +131,11 @@ class TwitterBot:
                         if not reminder_already_sent:
                             message = self.get_twitter_message("reminder", talk_id, talk_name, channel_name, speaker_name, date, talk_topics_list, speaker_university=None, speaker_hashtag=None)
                             print(f"reminder nr {n_calls}")
-                            print(message,)
-                            # self.twitter_api.update_status(message)
+                            self.twitter_api.update_status(message)
                             self.tweets.updateTweetSendingStatus("remind", success=True, talk_id=talk_id, params={"exec_time": datetime.datetime.now()})
+                            print("Posted")
                     except Exception as e:
-                        print(f"exception yo: {e}")
+                        print(f"Exception: {e}")
                         self.tweets.updateTweetSendingStatus("remind", success=False, talk_id=talk_id, error_msg=e)
                 # General advertisement if far
                 else:
@@ -144,12 +143,12 @@ class TwitterBot:
                         message = self.get_twitter_message("advertisement", talk_id, talk_name, channel_name, speaker_name, date, talk_topics_list, speaker_university=None, speaker_hashtag=None)
                         print(f"advertisement nr {n_calls}")
                         print(message)
-                        # self.twitter_api.update_status(message)
+                        self.twitter_api.update_status(message)
                         self.tweets.updateTweetSendingStatus("advertise", True, talk_id=talk_id)
                 
                     except Exception as e:
                         print(f"exception yo: {e}")
-                        self.tweets.updateTweetSendingStatus("advertise", success=False, talk_id=talk_id, error_message=e)
+                        self.tweets.updateTweetSendingStatus("advertise", success=False, talk_id=talk_id, error_msg=e)
 
                 print(message)
             
@@ -185,6 +184,7 @@ class TwitterBot:
         got_a_admissible_message = False
         trial = 0
         MAX_NUMBER_TRIAL = 20
+
         while not got_a_admissible_message:
             try:
                 if trial > MAX_NUMBER_TRIAL:
@@ -236,21 +236,25 @@ class TwitterBot:
                 elif event_type == "reminder":
                     # Time remaining before it starts
                     if (datetime.datetime.now() - date).seconds // 60 > 59:
-                        time_before_it_starts = (datetime.datetime.now() - date).seconds // 3600 + " hours"
+                        n_hours = (datetime.datetime.now() - date).seconds // 3600
+                        time_before_it_starts = str(n_hours) + " hour"
+                        if n_hours > 1:
+                            time_before_it_starts += "s"
+
                     else:
-                        time_before_it_starts = (datetime.datetime.now() - date).seconds // 60 + " minutes"
+                        time_before_it_starts = str((datetime.datetime.now() - date).seconds // 60) + " minutes"
  
                     message = random.choice([
                         f"Don't miss out on your chance to listen to {speaker_name}: it's happening in {time_before_it_starts}!",
                         f"Grab yourself a tea or coffee ☕☕ and come listen to {speaker_name} who is about to start talking about '{talk_name}'!",
                         f"{speaker_name} is giving a talk starting in {time_before_it_starts} on '{talk_name}'!"
                         f"Check out {speaker_name}'s talk as part of {channel_name}! Starting very soon!",
-                        f"spaker_name is discussing '{talk_name}' in time_to_speak!",
+                        f"{speaker_name} is discussing '{talk_name}' in {time_before_it_starts}!",
                         f"Happening in {time_before_it_starts}: {speaker_name} talking about '{talk_name}'. Don't miss that out!",
-                        f"Want to hear about the lattest trends in {topic_string}? {speaker_name} is giving a talk on talk_subtopic in time_to_talk!"
+                        f"Want to hear about the lattest trends in {topic_string}? Join us to hear {speaker_name} talk on '{talk_name}' in {time_before_it_starts}!"
                     ])
 
-                if len(message) < 280: # Twitter limit
+                if len(message) < 140: # Twitter limit
                     got_a_admissible_message = True
                 
             except Exception as e:
@@ -264,31 +268,71 @@ class TwitterBot:
     def _notify_error(self, error):
         raise NotImplementedError()
 
-    def follow_in_mass(self):
+    def follow_in_mass(self, mode="selected_follower_base"):
+        assert(mode in ["followers_of_followers", "selected_follower_base"])
+        
         # Follow the followers of our followers that do not follow us
-        try:
-            print("Retrieving and following followers")
-            n_follows = 0
-            for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids).items():
-                sub_followers = list(self.twitter_api.get_followers(user_id=follower_id))
-                sub_followers.reverse()
-                for sub_follower in sub_followers:
-                    # NB: 136779035865927270 is the id of mora.stream account
-                    if not sub_follower.following and sub_follower.id != 1367790358659272704:
-                        self.twitter_api.create_friendship(id=sub_follower.id)
-                        print("Following: ", sub_follower.name)
-                        n_follows += 1
-                    elif sub_follower.id != 1367790358659272704:
-                        print("Already following: ", sub_follower.name)
-    
-        except Exception as e:
-            print("(follow_in_mass). Error:", e)
-            print(f"Followed {n_follows} users.")
+        n_follows = 0
+        if mode == "followers_of_followers":
+            try:
+                print("Retrieving and following followers")
+                for follower_id in tweepy.Cursor(self.twitter_api.get_follower_ids).items():
+                    sub_followers = list(self.twitter_api.get_followers(user_id=follower_id))
+                    sub_followers.reverse()
+                    for sub_follower in sub_followers:
+                        # NB: 136779035865927270 is the id of mora.stream account
+                        if not sub_follower.following and sub_follower.id != 1367790358659272704:
+                            self.twitter_api.create_friendship(id=sub_follower.id)
+                            print("Following: ", sub_follower.name)
+                            n_follows += 1
+                        elif sub_follower.id != 1367790358659272704:
+                            print("Already following: ", sub_follower.name)
+        
+            except Exception as e:
+                print("(follow_in_mass). Error:", e)
+                print(f"Followed {n_follows} users.")
 
-        # Logs
+        # Follow the followers of hardcoded users
+        elif mode == "selected_follower_base":
+            profile_username = random.choice([
+                # AI people
+                "gabrielpeyre",
+                "PetarV_93",
+                "ylecun",
+                "mmbronstein",
+                "hugo_larochelle",
+                "thomaskipf",#
+
+                # MISCELLANEOUS
+                "cassyniapp",
+            ])
+
+            follower_ids = self.twitter_api.get_follower_ids(screen_name=profile_username)
+            our_follower_ids = self.twitter_api.get_follower_ids(screen_name="morastream")
+
+            for follower_id in follower_ids:
+                # NB: 136779035865927270 is the id of morastream account
+                if follower_id != 1367790358659272704 and follower_id not in our_follower_ids:
+                    try:
+                        self.twitter_api.create_friendship(id=follower_id)
+                        print("Following: ", follower_id)
+                        n_follows += 1
+
+                    except Exception as e:
+                        print("error:", e)
+
+
+        Logs
         if n_follows != 0:
             self.tweets.updateTweetSendingStatus("follow", True, params={"count": n_follows})
 
+
+    def get_followers(self, username):
+        users = []
+        for i, user in enumerate(tweepy.Cursor(self.twitter_api.get_followers, username=username, count=200).pages()):
+            print(f'Getting page {i} for followers')
+            users += user
+        return users
 
     def mass_unfollow(self):
         # Unfollow everybody following us
