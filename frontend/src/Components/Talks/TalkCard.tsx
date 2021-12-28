@@ -194,52 +194,6 @@ export default class TalkCard extends Component<Props, State> {
     }
   };
 
-  // getSubstitutedTbaTbd = (talk: Talk) => {
-  //   // TopicService
-  //   var subtopic = "";
-  //   for(let topic of talk.topics){
-  //     if(!subtopic){
-  //       if(!topic.is_primitive_node){
-  //         subtopic = topic.field
-  //       }
-  //     }
-  //   }
-
-  //   var substituedTbaTbds = [
-  //     "Seminar with " + talk.talk_speaker,
-  //     "Talk by " + talk.talk_speaker,
-  //     "'" + talk.channel_name + "' talk with " + talk.talk_speaker,
-  //     "Latest advancements with " + talk.talk_speaker,
-  //     "Recent advancements with " + talk.talk_speaker,
-  //   ]
-
-  //   if(subtopic !== ""){
-  //     substituedTbaTbds.push(
-  //       talk.talk_speaker + " on " + subtopic,
-  //       "Topics on " + subtopic + " with " + talk.talk_speaker,
-  //       "Advancements in " +  subtopic,
-  //       "Seminar on " + subtopic,
-  //       "Talk on " + subtopic
-  //     )
-  //   }
-
-  //   // HACK: return value depending on talk id (reason: if using random, the title keep changing after mouseover)
-  //   var index = talk.id  % substituedTbaTbds.length
-  //   return substituedTbaTbds[index]
-  // }
-
-  // getTalkTitle = () => {
-  //   if(this.state.substituteTbaTbd){
-  //     if(this.state.processedTalk.name == "TBA" || this.state.processedTalk.name == "TBD" || this.state.processedTalk.name == ""){
-  //       return this.getSubstitutedTbaTbd(this.state.processedTalk)
-  //     } else{
-  //       return textToLatex(this.state.processedTalk.name)
-  //     }}
-  //   else{
-  //     return textToLatex(this.state.processedTalk.name)
-  //   }
-  // }
-
   render() {
     var renderMobileView = (window.innerWidth < 800);
     return (
