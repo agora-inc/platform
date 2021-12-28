@@ -5,12 +5,13 @@
 # from repository.EmailRemindersRepository import EmailRemindersRepository
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
-from payment.apis.StripeApi import StripeApi 
+from payment.apis.StripeApi import StripeApi
+from app.databases import agora_db
 
 mail_sys = sendgridApi()
 
 class ChannelSubscriptionRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
 
         stripeApi = StripeApi(db)
         self.db = db

@@ -1,5 +1,6 @@
 from repository import TalkRepository, ChannelRepository
 from mailing.sendgridApi import sendgridApi
+from app.databases import agora_db
 
 mail_sys = sendgridApi()
 
@@ -7,7 +8,7 @@ mail_sys = sendgridApi()
 # TODO: to test all methods
 
 class CreditRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.mail_sys = mail_sys
         self.channels = ChannelRepository.ChannelRepository(db=self.db)

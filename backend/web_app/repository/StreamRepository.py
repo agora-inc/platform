@@ -1,8 +1,9 @@
 from repository import TagRepository, ChannelRepository
 from datetime import datetime
+from app.databases import agora_db
 
 class StreamRepository:
-    def __init__(self, db):
+    def __init__(self, db=agora_db):
         self.db = db
         self.tags = TagRepository.TagRepository(db=self.db)
         self.channels = ChannelRepository.ChannelRepository(db=self.db)

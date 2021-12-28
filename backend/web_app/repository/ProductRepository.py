@@ -1,10 +1,10 @@
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
-
+from app.databases import agora_db
 mail_sys = sendgridApi()
 
 class ProductRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.mail_sys = mail_sys
 

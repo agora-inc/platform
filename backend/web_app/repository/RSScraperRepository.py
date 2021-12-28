@@ -13,13 +13,13 @@ import ast
 from typing import List
 from joblib import Parallel, delayed
 import requests
-
+from app.databases import agora_db
 from alphabet_detector import AlphabetDetector
 ad = AlphabetDetector()
 
 
 class RSScraperRepository():
-	def __init__(self, db):
+	def __init__(self, db=agora_db):
 		self.db = db
 		self.channelRepo = ChannelRepository(db=db)
 		self.talkRepo = TalkRepository(db=db)

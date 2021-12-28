@@ -5,12 +5,12 @@ from repository import UserRepository
 from app.databases import agora_db
 import hashlib
 from datetime import datetime
-
+from app.databases import agora_db
 
 mail_sys = sendgridApi()
 
 class ChannelRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.mail_sys = mail_sys
         self.users = UserRepository.UserRepository(db=self.db)

@@ -1,10 +1,7 @@
 # import hack (Remy); TODO: make import directly from repository folder.
 from logging import exception
 from os import name
-from repository import TalkRepository
-from repository import TwitterBotRepository
-from repository import TopicRepository
-from app.databases import agora_db
+from app.routes import TalkRepository, TwitterBotRepository, TopicRepository
 import tweepy
 import json
 import random
@@ -43,9 +40,9 @@ TWITTER_HASHTAGS_JSON_PATH = "/home/cloud-user/plateform/agora/backend/twitter_b
 
 class TwitterBot:
     def __init__(self):
-        self.tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
-        self.talks = TalkRepository.TalkRepository(db=agora_db)
-        self.topics = TopicRepository.TopicRepository(db=agora_db)
+        self.tweets = TwitterBotRepository.TwitterBotRepository()
+        self.talks = TalkRepository.TalkRepository()
+        self.topics = TopicRepository.TopicRepository()
         self.hashtags_per_id = {}
         self.api_call_post = 0
         self.api_call_follow = 0
@@ -272,7 +269,8 @@ class TwitterBot:
 
     def follow_in_mass(self, mode="selected_follower_base"):
         assert(mode in ["followers_of_followers", "selected_follower_base"])
-        
+        bot_will_follow = True
+
         # Follow the followers of our followers that do not follow us
         n_follows = 0
         if mode == "followers_of_followers":
@@ -283,11 +281,11 @@ class TwitterBot:
                     sub_followers.reverse()
                     for sub_follower in sub_followers:
                         # NB: 136779035865927270 is the id of mora.stream account
-                        if not sub_follower.following and sub_follower.id != 1367790358659272704:
+                        if not sub_follower.following and sub_follower.id != 1367790358659272704 and bot_will_follow:
                             self.twitter_api.create_friendship(id=sub_follower.id)
                             print("Following: ", sub_follower.name)
                             n_follows += 1
-                        elif sub_follower.id != 1367790358659272704:
+                        elif sub_follower.id != 1367790358659272704 and bot_will_follow:
                             print("Already following: ", sub_follower.name)
         
             except Exception as e:
@@ -314,17 +312,18 @@ class TwitterBot:
 
             for follower_id in follower_ids:
                 # NB: 136779035865927270 is the id of morastream account
-                if follower_id != 1367790358659272704 and follower_id not in our_follower_ids:
+                if follower_id != 1367790358659272704 and follower_id not in our_follower_ids and bot_will_follow:
                     try:
                         self.twitter_api.create_friendship(id=follower_id)
                         print("Following: ", follower_id)
                         n_follows += 1
 
                     except Exception as e:
-                        print("error:", e)
+                        if e == '''403 Forbidden
+                            161 - You are unable to follow more people at this time. Learn more <a href='http://support.twitter.com/articles/66885-i-can-t-follow-people-follow-limits'>here</a>.''':
+                            print("Stop following due to rates reached: ", e)
+                            bot_will_follow = False
 
-
-        Logs
         if n_follows != 0:
             self.tweets.updateTweetSendingStatus("follow", True, params={"count": n_follows})
 
