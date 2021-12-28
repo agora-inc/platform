@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import Loading from "../Core/Loading";
-import { TalkService } from "../../Services/TalkService";
+import { TalkService, Talk } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../../Styles/trending-channels-box.css";
@@ -14,19 +14,17 @@ import ReactTooltip from "react-tooltip";
 
 
 
-type TrendingTalk = {
-    id: number;
-    Channels: {
-        id: number}; // NOT WORKING
-    channel_name: string;
-    has_avatar: boolean;
-    name: string;
-  };
+// type TrendingTalk = {
+//     id: number;
+//     channel_name: string;
+//     has_avatar: boolean;
+//     name: string;
+//   };
 
 
 
 interface State {
-  trendingTalks: TrendingTalk[];
+  trendingTalks: Talk[];
   loading: boolean;
 }
 
@@ -41,7 +39,13 @@ export default class TrendingTalksList extends Component<{}, State> {
   }
 
   componentWillMount() {
-    TalkService.getTrendingTalks((trendingTalks: any[]) => {
+    TalkService.getTrendingTalks((rawTrendingTalks: any[]) => {
+      var trendingTalks = []
+      for(let i=0; i<rawTrendingTalks.length; i++){
+        trendingTalks.push(TalkService.polishTalkData(
+          rawTrendingTalks[i], true, true
+        ))
+      }
       this.setState({
         trendingTalks: trendingTalks,
         loading: false,
