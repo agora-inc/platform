@@ -72,10 +72,12 @@ export const TagsEntry = (props: Props) => {
         </Box>
       )}
       {!isEdit && (
-        <Box height="60%" direction="row" gap="8px">
+        <Box direction="row" gap="8px" wrap={true} overflow="scroll">
           {tags.map((tag: string) => (
-            <Box height="20px" background="#EEEEEE" round="xsmall" pad="small" justify="center"  >
-              <Text size="11px" weight="bold"> 
+            <Box height="18px" background="#EEEEEE" round="xsmall" pad="small" justify="center"
+              margin={{top: "2px", bottom: "2px"}}
+            >
+              <Text size="10px" weight="bold"> 
                 {tag}
               </Text>
             </Box> 

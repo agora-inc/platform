@@ -104,12 +104,14 @@ const ProfilePage = (props: Props) => {
           justify="between"
         >
           <Box direction="row" align="center" gap="small" width="55%">
-            <Box width="150px" height="100px" round="50px">
-              <Image 
+            <Box width="150px" height="100px" round="50px"                   
+              justify="center" align="center" overflow="hidden">
+              {/*<Image 
                 style={{aspectRatio: "3/2"}}
                 src={getProfilePhotoUrl()}
                 width="150px"
-              />
+              /> */}
+              <img width={150} height={100} src={getProfilePhotoUrl()} />
             </Box>
 
             <Box direction="column" gap="6px" align="start">
