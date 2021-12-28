@@ -16,10 +16,12 @@ const register = (
   password: string,
   email: string,
   channel_id: number,
-  mode: string,
+  mode: string | undefined,
   callback: any
 ) => {
-  axios
+  if(mode !== null)
+  {
+    axios
     .post(
       baseApiUrl + "/users/add",
       { username: username, password: password, email: email, channel_id: channel_id, mode: mode },
@@ -29,11 +31,13 @@ const register = (
       localStorage.setItem("user", JSON.stringify(response.data));
       callback("ok");
       // getting weird error about expecting no arguments
-      window.location.reload(false);
+      window.location.reload();
     })
     .catch(function (error) {
       callback(error.response.data);
     });
+  }
+  
 };
 
 const login = (credential: string, password: string, callback: any) => {

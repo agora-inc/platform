@@ -186,6 +186,7 @@ export default class ChannelClaimPage extends Component<RouteComponentProps, Sta
                   <Box align="center" margin={{bottom: "90px"}}>
                       <SignUpButton
                         channelId = {this.state.channel?.id}
+                        mode = "claim"
                         callback={()=>{}}
                         height="100px"
                         width="200px"
@@ -220,12 +221,6 @@ export default class ChannelClaimPage extends Component<RouteComponentProps, Sta
             <Loading size={16} color="color1"/>
           )
         } else {
-            // if(!this.state.channel){
-            //   return(
-            //     <Redirect to={"/referral/channel"} push={true}/>
-            //   )
-            // } 
-            // else {
               console.log("3")
               return (
                 <Box

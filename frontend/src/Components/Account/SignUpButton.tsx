@@ -13,6 +13,7 @@ interface Props {
   height?: string;
   textSize?: string;
   text?: string;
+  mode?: string;
 }
 
 interface State {
@@ -52,6 +53,7 @@ export default class SignUpButton extends Component<Props, State> {
       this.state.password,
       this.state.email,
       this.props.channelId !== undefined ? this.props.channelId : NaN ,
+      this.props.mode,
       (result: string) => {
         // console.log(result);
         console.log("channelID: " + this.props.channelId)
