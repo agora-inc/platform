@@ -3,7 +3,7 @@ from repository.TagRepository import TagRepository
 from repository.TopicRepository import TopicRepository
 from repository.InstitutionRepository import InstitutionRepository
 from repository.EmailRemindersRepository import EmailRemindersRepository
-
+from app.databases import agora_db
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 import os 
@@ -15,7 +15,7 @@ import os
 mail_sys = sendgridApi()
 
 class TalkRepository:
-    def __init__(self, db, mail_sys=mail_sys):
+    def __init__(self, db=agora_db, mail_sys=mail_sys):
         self.db = db
         self.channels = ChannelRepository(db=db)
         self.tags = TagRepository(db=self.db)

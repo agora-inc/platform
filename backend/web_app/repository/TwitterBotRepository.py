@@ -2,7 +2,7 @@ import random
 import logging
 from mailing.sendgridApi import sendgridApi
 import json
-
+from app.databases import agora_db
 
 # DELETE BELOW LINE IN PRODUCTION
 # from TalkRepository import TalkRepository
@@ -14,7 +14,7 @@ MAIL_SYS = sendgridApi()
 
 
 class TwitterBotRepository:
-    def __init__(self, db, mail_sys=MAIL_SYS):
+    def __init__(self, db=agora_db, mail_sys=MAIL_SYS):
         self.db = db
         self.mail_sys = mail_sys
         # self.talks = TalkRepository(db=agora_db)

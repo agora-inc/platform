@@ -1,9 +1,9 @@
 from __future__ import annotations
 from repository.ChannelRepository import ChannelRepository
-
+from app.databases import agora_db
 
 class AgoraClaimRepository():
-    def __init__(self, db):
+    def __init__(self, db=agora_db):
 		self.db = db
 		self.channelRepo = ChannelRepository(db=db)
 

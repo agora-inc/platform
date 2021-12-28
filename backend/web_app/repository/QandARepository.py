@@ -1,7 +1,7 @@
 from repository import UserRepository
 from datetime import datetime
 import re
-
+from app.databases import agora_db
 
 class Question:
     def __init__(self, id, content, username, postedAt, streamId, score, answers):
@@ -23,7 +23,7 @@ class Answer:
         self.score = score 
 
 class QandARepository:
-    def __init__(self, db):
+    def __init__(self, db=agora_db):
         self.db = db
 
     def getQuestionById(self, id):

@@ -37,7 +37,6 @@ for row in rows:
     print(f"2/3: Updated seminar URL list: {seminar_urls}")
 
 
-
 # Parallel(n_jobs = multiprocessing.cpu_count(), prefer="threads")(delayed(convert_seminar_to_agora)(seminar_url) for seminar_url in seminar_urls[:15])
 total = len(seminar_urls)
 for seminar_url in seminar_urls:

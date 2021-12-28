@@ -1,5 +1,6 @@
 import stripe
 from repository import ProductRepository
+from app.databases import agora_db
 # https://www.youtube.com/watch?v=XKWJFpZYVAQ
 # https://www.youtube.com/watch?v=cC9jK3WntR8
 
@@ -9,7 +10,7 @@ from repository import ProductRepository
 
 
 class StripeApi:
-    def __init__(self, db):
+    def __init__(self, db=agora_db):
         self.db = db
         self.public_api_key = "pk_live_51Iw99yLrLOIeFgs2HOEbW5vMi4o5PR2wSGYv5KidblGkq7XL9YjyAiOUgsxvPhtEmnFokUvmCoNvuAGiPXAnXGFl00BJiasPo1"
         self.secret_api_key = "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"

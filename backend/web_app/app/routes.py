@@ -4,9 +4,9 @@
 """ 
 from flask.globals import session
 from app import app, mail
-from app.databases import agora_db
+# from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -19,24 +19,24 @@ import time
 
 import stripe
 
-users = UserRepository.UserRepository(db=agora_db)
-tags = TagRepository.TagRepository(db=agora_db)
-topics = TopicRepository.TopicRepository(db=agora_db)
-questions = QandARepository.QandARepository(db=agora_db)
-streams = StreamRepository.StreamRepository(db=agora_db)
-talks = TalkRepository.TalkRepository(db=agora_db)
-emailReminders = EmailRemindersRepository.EmailRemindersRepository(db=agora_db)
-videos = VideoRepository.VideoRepository(db=agora_db)
-channels = ChannelRepository.ChannelRepository(db=agora_db)
-search = SearchRepository.SearchRepository(db=agora_db)
-invitations = InvitedUsersRepository.InvitedUsersRepository(db=agora_db)
-mailinglist = MailingListRepository.MailingListRepository(db=agora_db)
-credits = CreditRepository.CreditRepository(db=agora_db)
-products = ProductRepository.ProductRepository(db=agora_db)
-paymentsApi = StripeApi(db=agora_db)
-channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository(db=agora_db)
+users = UserRepository.UserRepository()
+tags = TagRepository.TagRepository()
+topics = TopicRepository.TopicRepository()
+questions = QandARepository.QandARepository()
+streams = StreamRepository.StreamRepository()
+talks = TalkRepository.TalkRepository()
+emailReminders = EmailRemindersRepository.EmailRemindersRepository()
+videos = VideoRepository.VideoRepository()
+channels = ChannelRepository.ChannelRepository()
+search = SearchRepository.SearchRepository()
+invitations = InvitedUsersRepository.InvitedUsersRepository()
+mailinglist = MailingListRepository.MailingListRepository()
+credits = CreditRepository.CreditRepository()
+products = ProductRepository.ProductRepository()
+paymentsApi = StripeApi()
+channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
+tweets = TwitterBotRepository.TwitterBotRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
-tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
 
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://mora.stream/"
