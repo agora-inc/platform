@@ -49,11 +49,17 @@ const getFieldFromId = (topicId: number, callback: any) => {
 //     });
 // };
 
+const getPrimitiveNodesId = () => {
+  console.log("(Info): Primitive nodes id: hardcoded")
+  return [15, 16, 17, 18, 19, 89, 142, 151, 166, 172]
+}
+
 export const TopicService = {
   getAll,
   getDataTreeStructure,
   getDescendenceId,
   getFieldFromId,
+  getPrimitiveNodesId
 };
 
 export type Topic = {

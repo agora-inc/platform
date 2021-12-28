@@ -15,7 +15,7 @@ import { textToLatex } from "../Core/LatexRendering";
 import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import FooterOverlay from "./Talkcard/FooterOverlay";
 import { thisExpression } from "@babel/types";
-
+import { TopicService } from "../../Services/TopicService"
 import MoraStreamLogo from "../../assets/general/mora_simplified_logo.jpeg"
 
 interface Props {
@@ -23,6 +23,7 @@ interface Props {
   user: User | null;
   width?: string;
   isCurrent?: boolean;
+  substituteTbaTbd?: boolean;  // Substitution of TBA/TBD by more pleasant sentences; default to "Yes" (Remy)
 }
 
 interface State {
@@ -31,7 +32,8 @@ interface State {
   registered: boolean;
   registrationStatus: string;
   available: boolean;
-  role: string
+  role: string;
+  substituteTbaTbd?: boolean;
 }
 
 export default class TalkCard extends Component<Props, State> {
@@ -43,7 +45,8 @@ export default class TalkCard extends Component<Props, State> {
       registered: false,
       registrationStatus: "",
       available: true,
-      role: "none"
+      role: "none",
+      substituteTbaTbd: this.props.substituteTbaTbd ? this.props.substituteTbaTbd : true 
     };
   }
 
@@ -192,6 +195,46 @@ export default class TalkCard extends Component<Props, State> {
     }
   };
 
+  substitutionTbaTbd = (talk: Talk) => {
+    // TopicService
+    var subtopic = "";
+    for(let topic of talk.topics){
+      if(!subtopic){
+        if(!topic.is_primitive_node){
+          subtopic = topic.field
+        }
+      }
+    }
+
+    var substituedTbaTbds = [
+      "Seminar with " + talk.talk_speaker,
+      "Talk by " + talk.talk_speaker,
+      "'" + talk.channel_name + "' talk with " + talk.talk_speaker,
+      "Latest advancements with " + talk.talk_speaker,
+      "Recent advancements with " + talk.talk_speaker,
+    ]
+
+    if(subtopic !== ""){
+      substituedTbaTbds.push(
+        talk.talk_speaker + " on " + subtopic,
+        "Topics on " + subtopic + " with " + talk.talk_speaker,
+        "Advancements in " +  subtopic,
+        "Seminar on " + subtopic,
+        "Talk on " + subtopic
+      )
+    }
+
+    return substituedTbaTbds[Math.floor(Math.random() * substituedTbaTbds.length - 1)]
+  }
+
+  getTalkTitle = () => {
+    if(this.state.substituteTbaTbd){
+        return this.substitutionTbaTbd(this.props.talk)
+    } else{
+      return textToLatex(this.props.talk.name)
+    }
+  }
+
   render() {
     var renderMobileView = (window.innerWidth < 800);
     return (
@@ -273,7 +316,7 @@ export default class TalkCard extends Component<Props, State> {
                 weight="bold"
                 style={{ minHeight: "60px", overflow: "auto" }}
               >
-                {textToLatex(this.props.talk.name)}
+                {this.getTalkTitle()}
               </Text>
             </Box> 
             {this.props.talk.has_speaker_photo === 1 && (
