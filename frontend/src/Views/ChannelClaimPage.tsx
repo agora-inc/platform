@@ -130,7 +130,7 @@ export default class ChannelClaimPage extends Component<RouteComponentProps, Sta
     propagationAction() {
         return (
           <Text size="20px" margin={{top: "80px"}}>
-            Share this unique link via email, Facebook, or Twitter and earn exciting rewards for each members who signs up.
+            Claiming this channel will give you access to amazing communities!
         </Text>
         )
       }

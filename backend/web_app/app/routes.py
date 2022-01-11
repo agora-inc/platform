@@ -2107,20 +2107,20 @@ def publishAllTalks():
 # Claim routes
 # --------------------------------------------
 
-# @app.route('/claim/')
+@app.route('/claim/')
 
 
-# @app.route('channel/claim', methods=["GET","OPTIONS"])
-# def claimAgora():
-#     if request.method == "OPTIONS":
-#         return jsonify("ok")
-#     mailToken = request.args.get("mailToken") if "mailToken" in request.args else None
-#     try:
-#         if mailToken != None:
-#             res = claimRepo.getChannelFromMailToken(mailToken)
-#             return jsonify(res)
+@app.route('channel/claim', methods=["GET","OPTIONS"])
+def claimAgora():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    mailToken = request.args.get("mailToken") if "mailToken" in request.args else None
+    try:
+        if mailToken != None:
+            res = claimRepo.getChannelFromMailToken(mailToken)
+            return jsonify(res)
 
-#     except Exception as e:
-#         return jsonify(400, str(e))
+    except Exception as e:
+        return jsonify(400, str(e))
     
-#     pass
+    pass

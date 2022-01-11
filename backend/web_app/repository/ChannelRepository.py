@@ -4,7 +4,7 @@ from mailing.sendgridApi import sendgridApi
 from repository import UserRepository
 # from app.databases import agora_db
 import hashlib
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 mail_sys = sendgridApi()
@@ -531,12 +531,16 @@ class ChannelRepository:
         except Exception as e:
             print(e)
 
-
     def getChannelFromMailToken(self, mailToken):
+        # Small update, checks time before retrieving channel from DB
+        # If within a 30 
         try:
-            query = f'''SELECT FetchedChannels.channel_id FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
+            query = f'''SELECT FetchedChannels.channel_id, FetchedChannels.added_date FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
             WHERE FetchedChannels.mailToken = {mailToken};'''
             result = self.db.run_query(query)
-            return result
+            added_date = datetime.strptime(result['added_date'], "%Y-%m-%d %H:%M")
+            if(added_date + timedelta(days=30) < datetime.now()):
+                return result['channel_id']
+            else: return None
         except Exception as e:
             print(e)
