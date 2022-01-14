@@ -282,6 +282,11 @@ def updatePaper():
     params = request.json     
     return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
 
+@app.route('/profiles/presentations/update', methods=["POST"])
+def updatePresentation():
+    params = request.json     
+    return jsonify(profiles.updatePaper(params['user_id'], params['presentation']))
+
 @app.route('/profiles/photo', methods=["POST", "GET", "DELETE"])
 def profilePhoto():
     if request.method == "OPTIONS":
@@ -324,6 +329,17 @@ def deletePaper():
 
     params = request.json
     return jsonify(profiles.deletePaper(params['paper_id']))
+
+@app.route('/profiles/presentations/delete', methods=["OPTIONS", "POST"])
+def deletePresentation():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    return jsonify(profiles.deletePresentation(params['presentation_id']))
 
 @app.route('/profiles/tags/update', methods=["POST"])
 def updateTags():

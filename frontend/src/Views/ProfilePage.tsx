@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Box, CheckBox, Image, Text } from "grommet";
-import { DocumentText, Twitter, Configure } from "grommet-icons";
+import { Workshop, DocumentText, Twitter, Configure } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTooltip from "react-tooltip";
 
 import ImageCropUploader from "../Components/Channel/ImageCropUploader";
 import { BioEntry } from "../Components/Profile/BioEntry";
 import { PaperEntry } from "../Components/Profile/PaperEntry";
+import { PresentationEntry } from "../Components/Profile/PresentationEntry";
 import { TagsEntry } from "../Components/Profile/TagsEntry";
 import { User, UserService } from "../Services/UserService";
-import { Paper, Profile, ProfileService } from "../Services/ProfileService";
+import { Paper, Profile, ProfileService, Presentation } from "../Services/ProfileService";
 import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
 import { DetailsEntry } from "../Components/Profile/DetailsEntry";
@@ -21,6 +22,7 @@ interface Props {
 
 const ProfilePage = (props: Props) => {
   const [profile, setProfile] = useState<Profile>();
+  const [presentations, setPresentations] = useState<Presentation[]>([]);
   const [papers, setPapers] = useState<Paper[]>([]);
   const [home, setHome] = useState<boolean>(true);
   const [user, setUser] = useState<User>();
@@ -38,6 +40,7 @@ const ProfilePage = (props: Props) => {
         setHome(true)
       }
       setPapers(profile.papers)
+      setPresentations(profile.presentations)
     }
   }, [profile, user]);
 
@@ -84,14 +87,28 @@ const ProfilePage = (props: Props) => {
     setPapers([...papers, {id: -1, title: "", authors: "", publisher: "", year: "", link: ""} ])
   }
 
+  function createNewPresentation(): void {
+    setPresentations([...presentations, {id: -1, user_id: -1, title: "", description: "", link: "", duration: 0, open: false} ])
+  }
+
   function updatePaper(index: number, new_paper: Paper): void {
     const temp = papers
     temp[index] = new_paper
     setPapers(temp)
   }
 
+  function updatePresentation(index: number, new_presentation: Presentation): void {
+    const temp = presentations
+    temp[index] = new_presentation
+    setPresentations(temp)
+  }
+
   function deletePaper(id: number): void {
     setPapers(papers.filter(paper => paper.id !== id))
+  }
+
+  function deletePresentation(id: number): void {
+    setPresentations(presentations.filter(presentation => presentation.id !== id))
   }
 
   if (profile) {
@@ -161,6 +178,14 @@ const ProfilePage = (props: Props) => {
             <TabList>
               <Tab>
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                  <Workshop />
+                  <Text size="14px"> 
+                    Presentations
+                  </Text>
+                </Box>
+              </Tab>
+              <Tab>
+                <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                   <DocumentText />
                   <Text size="14px"> 
                     Papers
@@ -209,6 +234,43 @@ const ProfilePage = (props: Props) => {
                   round="xsmall"
                   pad={{ vertical: "2px", horizontal: "xsmall" }}
                   onClick={createNewPaper}
+                  style={{
+                    width: "15%",
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}
+                  align="center"
+                  margin={{top: "20px" }}   
+                >
+                  <Text color="grey" size="small"> 
+                    + Add 
+                  </Text>
+                </Box>
+              )}
+            </TabPanel>
+
+            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
+              {presentations.length !== 0 && (
+                <Box direction="column" gap="12px">
+                  {presentations.map((presentation: Presentation, index: number) => (
+                    <PresentationEntry presentation={presentation} home={home} userId={profile.user.id} index={index} 
+                      updatePresentation={updatePresentation} deletePresentation={deletePresentation} 
+                    />
+                  ))}
+                </Box>
+              )}
+              {presentations.length === 0 && (
+                <Text size="14px" style={{fontStyle: 'italic'}}>
+                  No presentation available
+                </Text>
+              )}
+              {home && (
+                <Box
+                  focusIndicator={false}
+                  background="white"
+                  round="xsmall"
+                  pad={{ vertical: "2px", horizontal: "xsmall" }}
+                  onClick={createNewPresentation}
                   style={{
                     width: "15%",
                     border: "1px solid #C2C2C2",

@@ -22,12 +22,15 @@ class ProfileRepository:
         # papers
         query_papers = f"SELECT id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id = {user_id};"
         papers = self.db.run_query(query_papers)
+        # presentations
+        query_presentations = f"SELECT id, user_id, title, description, link, duration, open FROM Presentations WHERE user_id = {user_id};"
+        presentations = self.db.run_query(query_presentations)
         # tags
         query_tags = f"SELECT tag FROM ProfileTags WHERE user_id = {user_id};"
         tags = self.db.run_query(query_tags)
 
         # package everything in a dict
-        res = {'user': user, 'papers': papers, 'tags': [], 'topics': [], 'has_photo': 0, 'open_give_talk': 1}
+        res = {'user': user, 'papers': papers, 'presentations': presentations, 'tags': [], 'topics': [], 'has_photo': 0, 'open_give_talk': 1}
         res.update(profile)
 
         for topic_id in topics.values():
@@ -55,11 +58,14 @@ class ProfileRepository:
         # all papers of public users
         query_papers = f"SELECT user_id, id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id in {tuple_ids};"
         papers = self.db.run_query(query_papers)
+        # all presentations of public users
+        query_presentations = f"SELECT id, user_id, title, description, link, duration, open FROM Presentations WHERE user_id in {tuple_ids};"
+        presentations = self.db.run_query(query_presentations)
         # all tags of public users
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
         tags = self.db.run_query(query_tags)
 
-        return self._queries_to_dict(ids, users, profiles, topics, papers, tags)
+        return self._queries_to_dict(ids, users, profiles, topics, papers, presentations, tags)
 
     def getAllPublicProfilesByTopicRecursive(self, topic_id, limit, offset):
         children_topic_ids = str(tuple(self.topics.getAllChildrenIdRecursive(topic_id)))
@@ -84,11 +90,14 @@ class ProfileRepository:
         # all papers of public users + selected topics
         query_papers = f"SELECT user_id, id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id in {tuple_ids};"
         papers = self.db.run_query(query_papers)
+        # all presentations of public users + selected topics
+        query_presentations = f"SELECT id, user_id, title, description, link, duration, open FROM Presentations WHERE user_id in {tuple_ids};"
+        presentations = self.db.run_query(query_presentations)
         # all tags of public users + selected topics
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
         tags = self.db.run_query(query_tags)
 
-        return self._queries_to_dict(ids, users, profiles, topics, papers, tags)
+        return self._queries_to_dict(ids, users, profiles, topics, papers, presentations, tags)
 
     def updateBio(self, user_id, bio):
         update_query = f'''UPDATE Users SET bio="{bio}" WHERE id={user_id};'''
@@ -117,9 +126,37 @@ class ProfileRepository:
             ); '''
 
             return int(self.db.run_query(insert_query)[0])
+    
+    def updatePresentation(self, user_id, presentation):
+        if int(presentation['id']) > 0:
+            update_query = f'''UPDATE Presentations SET
+                user_id={user_id},
+                title="{presentation['title']}",
+                description="{presentation['description']}",
+                link="{presentation['link']}",
+                duration={presentation['duration']},
+                open={presentation['open']}
+            WHERE id={presentation['id']}; '''
+
+            self.db.run_query(update_query)
+            return int(presentation['id'])
+            
+        else:
+            insert_query = f'''INSERT INTO Presentations (
+                user_id, title, description, link, duration, open
+            ) VALUES (
+                {user_id}, "{presentation['title']}", "{presentation['description']}",
+                "{presentation['link']}", {presentation['duration']}, {presentation['open']}
+            ); '''
+
+            return int(self.db.run_query(insert_query)[0])
 
     def deletePaper(self, paper_id):
         query = f'DELETE FROM ProfilePapers where id = {paper_id}'
+        self.db.run_query(query)
+
+    def deletePresentation(self, presentation_id):
+        query = f'DELETE FROM Presentations where id = {presentation_id}'
         self.db.run_query(query)
 
     def addProfilePhoto(self, userId):
@@ -171,10 +208,10 @@ class ProfileRepository:
         add_query = "INSERT INTO ProfileTags (user_id, tag) VALUES " + ', '.join([f'({user_id}, "{tag}")' for tag in tags]) + ";"
         self.db.run_query(add_query)
 
-    def _queries_to_dict(self, ids, users, profiles, topics, papers, tags):
+    def _queries_to_dict(self, ids, users, profiles, topics, papers, presentations, tags):
         result = {}
         for user in users:
-            result[user['id']] = {'user': user, 'papers': [], 'tags': [], 'topics': [], 'has_photo': 0, 'open_give_talk': 1}
+            result[user['id']] = {'user': user, 'papers': [], 'presentations': [] 'tags': [], 'topics': [], 'has_photo': 0, 'open_give_talk': 1}
 
         for profile in profiles:
             user_id = profile.pop('user_id', None)
@@ -193,9 +230,15 @@ class ProfileRepository:
             if user_id in ids:
                 result[user_id]['papers'].append(paper)
 
-        for tag in tags:
+        for presentation in presentations:
+            user_id = presentation['user_id']
             if user_id in ids:
-                result[tag['user_id']]['tags'].append(tag['tag'])
+                result[user_id]['presentations'].append(presentation)
+
+        for tag in tags:
+            user_id = tag['user_id']
+            if user_id in ids:
+                result[user_id]['tags'].append(tag['tag'])
 
         return list(result.values())
 

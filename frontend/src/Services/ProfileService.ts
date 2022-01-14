@@ -57,8 +57,8 @@ const updateProfile = (
   );
 }
 
-const getPapers = (userId: number, callback: any) => {
-  get(`profiles/papers/id=${userId}`, callback);
+const getPresentations = (userId: number, callback: any) => {
+  get(`profiles/presentations/id=${userId}`, callback);
 }
 
 const updateDetails = (userId: number, dbKey: string, value: string, callback: any) => {
@@ -84,6 +84,17 @@ const updatePaper = (userId: number, paper: Paper, callback: any) => {
   );
 }
 
+const updatePresentation = (userId: number, presentation: Presentation, callback: any) => {
+  post(
+    "profiles/presentations/update",
+    {
+      user_id: userId,
+      presentation: presentation,
+    },
+    callback
+  );
+}
+
 const updateBio = (userId: number, bio: string, callback: any) => {
   post(
     "profiles/bio/update",
@@ -100,6 +111,16 @@ const deletePaper = (paper_id: number, callback: any) => {
     "profiles/papers/delete",
     {
       paper_id: paper_id,
+    },
+    callback
+  );
+}
+
+const deletePresentation = (presentation_id: number, callback: any) => {
+  post(
+    "profiles/presentations/delete",
+    {
+      presentation_id: presentation_id,
     },
     callback
   );
@@ -162,6 +183,7 @@ export type Profile = {
   topics: Topic[];
   tags: string[];
   papers: Paper[];
+  presentations: Presentation[];
   twitter_handle?: string;
   google_scholar_link?: string;
 };
@@ -175,6 +197,16 @@ export type Paper = {
   year: string;
 }
 
+export type Presentation = {
+  id: number;
+  user_id: number;
+  title: string;
+  description: string;
+  link: string;
+  duration: number;
+  open: boolean;
+}
+
 export const ProfileService = {
   getAllPublicProfiles,
   getPublicProfilesByTopicRecursive,
@@ -185,9 +217,11 @@ export const ProfileService = {
   uploadProfilePhoto,
   getProfilePhoto,
   removeProfilePhoto,
-  getPapers,
   updatePaper,
-  deletePaper, 
+  deletePaper,
+  getPresentations,
+  updatePresentation,
+  deletePresentation,
   getTags,
   updateTags,
 };
