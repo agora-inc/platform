@@ -285,7 +285,7 @@ def updatePaper():
 @app.route('/profiles/presentations/update', methods=["POST"])
 def updatePresentation():
     params = request.json     
-    return jsonify(profiles.updatePresentation(params['user_id'], params['presentation']))
+    return jsonify(profiles.updatePresentation(params['user_id'], params['presentation'], params['now']))
 
 @app.route('/profiles/photo', methods=["POST", "GET", "DELETE"])
 def profilePhoto():

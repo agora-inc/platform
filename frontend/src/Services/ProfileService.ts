@@ -84,12 +84,13 @@ const updatePaper = (userId: number, paper: Paper, callback: any) => {
   );
 }
 
-const updatePresentation = (userId: number, presentation: Presentation, callback: any) => {
+const updatePresentation = (userId: number, presentation: Presentation, now: string, callback: any) => {
   post(
     "profiles/presentations/update",
     {
       user_id: userId,
       presentation: presentation,
+      now: now,
     },
     callback
   );
@@ -204,7 +205,7 @@ export type Presentation = {
   description: string;
   link: string;
   duration: number;
-  open: boolean;
+  date_created: string;
 }
 
 export const ProfileService = {

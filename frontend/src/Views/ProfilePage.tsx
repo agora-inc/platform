@@ -88,7 +88,7 @@ const ProfilePage = (props: Props) => {
   }
 
   function createNewPresentation(): void {
-    setPresentations([...presentations, {id: -1, user_id: -1, title: "", description: "", link: "", duration: 0, open: false} ])
+    setPresentations([...presentations, {id: -1, user_id: -1, title: "", description: "", link: "", duration: 0, date_created: ""} ])
   }
 
   function updatePaper(index: number, new_paper: Paper): void {
@@ -212,42 +212,6 @@ const ProfilePage = (props: Props) => {
               )}
             </TabList>
 
-            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              {papers.length !== 0 && (
-                <Box direction="column" gap="12px">
-                  {papers.map((paper: Paper, index: number) => (
-                    <PaperEntry paper={paper} home={home} userId={profile.user.id} index={index} 
-                      updatePaper={updatePaper} deletePaper={deletePaper} 
-                    />
-                  ))}
-                </Box>
-              )}
-              {papers.length === 0 && (
-                <Text size="14px" style={{fontStyle: 'italic'}}>
-                  No paper available
-                </Text>
-              )}
-              {home && (
-                <Box
-                  focusIndicator={false}
-                  background="white"
-                  round="xsmall"
-                  pad={{ vertical: "2px", horizontal: "xsmall" }}
-                  onClick={createNewPaper}
-                  style={{
-                    width: "15%",
-                    border: "1px solid #C2C2C2",
-                  }}
-                  hoverIndicator={true}
-                  align="center"
-                  margin={{top: "20px" }}   
-                >
-                  <Text color="grey" size="small"> 
-                    + Add 
-                  </Text>
-                </Box>
-              )}
-            </TabPanel>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               {presentations.length !== 0 && (
@@ -271,6 +235,43 @@ const ProfilePage = (props: Props) => {
                   round="xsmall"
                   pad={{ vertical: "2px", horizontal: "xsmall" }}
                   onClick={createNewPresentation}
+                  style={{
+                    width: "15%",
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}
+                  align="center"
+                  margin={{top: "20px" }}   
+                >
+                  <Text color="grey" size="small"> 
+                    + Add 
+                  </Text>
+                </Box>
+              )}
+            </TabPanel>
+
+            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
+              {papers.length !== 0 && (
+                <Box direction="column" gap="12px">
+                  {papers.map((paper: Paper, index: number) => (
+                    <PaperEntry paper={paper} home={home} userId={profile.user.id} index={index} 
+                      updatePaper={updatePaper} deletePaper={deletePaper} 
+                    />
+                  ))}
+                </Box>
+              )}
+              {papers.length === 0 && (
+                <Text size="14px" style={{fontStyle: 'italic'}}>
+                  No paper available
+                </Text>
+              )}
+              {home && (
+                <Box
+                  focusIndicator={false}
+                  background="white"
+                  round="xsmall"
+                  pad={{ vertical: "2px", horizontal: "xsmall" }}
+                  onClick={createNewPaper}
                   style={{
                     width: "15%",
                     border: "1px solid #C2C2C2",

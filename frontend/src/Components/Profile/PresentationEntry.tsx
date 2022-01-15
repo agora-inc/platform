@@ -23,7 +23,7 @@ export const PresentationEntry = (props: Props) => {
   const [description, setDescription] = useState<string>(props.presentation.id > 0 ? props.presentation.description : "")
   const [link, setLink] = useState<string>(props.presentation.id > 0 ? props.presentation.link : "")
   const [duration, setDuration] = useState<number>(props.presentation.id > 0 ? props.presentation.duration : 0)
-  const [open, setOpen] = useState<boolean>(props.presentation.id > 0 ? props.presentation.open : false)
+  const [dateCreated, setDateCreated] = useState<string>(props.presentation.id > 0 ? props.presentation.date_created : "")
 
   function updatePaper(): void {
     if (props.home && props.updatePresentation && props.userId) {
@@ -34,10 +34,11 @@ export const PresentationEntry = (props: Props) => {
         description: description,
         link: link,
         duration: duration,
-        open: open
+        date_created: dateCreated,
       }
+      let now = new Date;
       ProfileService.updatePresentation(
-        props.userId, temp_presentation, 
+        props.userId, temp_presentation, now.toISOString(),
         (id: number) => {
           setId(id)
           temp_presentation.id = id
@@ -116,7 +117,7 @@ export const PresentationEntry = (props: Props) => {
           </Text>
           <Box direction="row"  gap="10px">
             <Text size="14px"> 
-              {open}, {duration}
+              {dateCreated}, {duration}
             </Text>
             <Link to={{pathname: link}} target="_blank">
             <Text size="14px" style={{fontStyle: "italic"}}> 

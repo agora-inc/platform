@@ -23,7 +23,7 @@ class ProfileRepository:
         query_papers = f"SELECT id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id = {user_id};"
         papers = self.db.run_query(query_papers)
         # presentations
-        query_presentations = f"SELECT id, user_id, title, description, link, duration, open FROM Presentations WHERE user_id = {user_id};"
+        query_presentations = f"SELECT id, user_id, title, description, link, duration, date_created FROM Presentations WHERE user_id = {user_id};"
         presentations = self.db.run_query(query_presentations)
         # tags
         query_tags = f"SELECT tag FROM ProfileTags WHERE user_id = {user_id};"
@@ -59,7 +59,7 @@ class ProfileRepository:
         query_papers = f"SELECT user_id, id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id in {tuple_ids};"
         papers = self.db.run_query(query_papers)
         # all presentations of public users
-        query_presentations = f"SELECT id, user_id, title, description, link, duration, open FROM Presentations WHERE user_id in {tuple_ids};"
+        query_presentations = f"SELECT id, user_id, title, description, link, duration, date_created FROM Presentations WHERE user_id in {tuple_ids};"
         presentations = self.db.run_query(query_presentations)
         # all tags of public users
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
@@ -91,7 +91,7 @@ class ProfileRepository:
         query_papers = f"SELECT user_id, id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id in {tuple_ids};"
         papers = self.db.run_query(query_papers)
         # all presentations of public users + selected topics
-        query_presentations = f"SELECT id, user_id, title, description, link, duration, open FROM Presentations WHERE user_id in {tuple_ids};"
+        query_presentations = f"SELECT id, user_id, title, description, link, duration, date_created FROM Presentations WHERE user_id in {tuple_ids};"
         presentations = self.db.run_query(query_presentations)
         # all tags of public users + selected topics
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
@@ -127,15 +127,14 @@ class ProfileRepository:
 
             return int(self.db.run_query(insert_query)[0])
     
-    def updatePresentation(self, user_id, presentation):
+    def updatePresentation(self, user_id, presentation, now):
         if int(presentation['id']) > 0:
             update_query = f'''UPDATE Presentations SET
                 user_id={user_id},
                 title="{presentation['title']}",
                 description="{presentation['description']}",
                 link="{presentation['link']}",
-                duration={presentation['duration']},
-                open={presentation['open']}
+                duration={presentation['duration']}
             WHERE id={presentation['id']}; '''
 
             self.db.run_query(update_query)
@@ -143,10 +142,10 @@ class ProfileRepository:
             
         else:
             insert_query = f'''INSERT INTO Presentations (
-                user_id, title, description, link, duration, open
+                user_id, title, description, link, duration, date_created
             ) VALUES (
                 {user_id}, "{presentation['title']}", "{presentation['description']}",
-                "{presentation['link']}", {presentation['duration']}, {presentation['open']}
+                "{presentation['link']}", {presentation['duration']}, "{now}"
             ); '''
 
             return int(self.db.run_query(insert_query)[0])
