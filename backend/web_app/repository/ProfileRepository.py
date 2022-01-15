@@ -211,7 +211,7 @@ class ProfileRepository:
     def _queries_to_dict(self, ids, users, profiles, topics, papers, presentations, tags):
         result = {}
         for user in users:
-            result[user['id']] = {'user': user, 'papers': [], 'presentations': [] 'tags': [], 'topics': [], 'has_photo': 0, 'open_give_talk': 1}
+            result[user['id']] = {'user': user, 'papers': [], 'presentations': [], 'tags': [], 'topics': [], 'has_photo': 0, 'open_give_talk': 1}
 
         for profile in profiles:
             user_id = profile.pop('user_id', None)
