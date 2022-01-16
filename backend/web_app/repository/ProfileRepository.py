@@ -20,10 +20,20 @@ class ProfileRepository:
         query_topics = f"SELECT topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id = {user_id};"
         topics = self.db.run_query(query_topics)[0]
         # papers
-        query_papers = f"SELECT id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id = {user_id};"
+        query_papers = f"""SELECT 
+            id, title, authors, publisher, year, link 
+            FROM ProfilePapers 
+            WHERE user_id = {user_id}
+            ORDER BY ProfilePapers.year DESC;
+        """
         papers = self.db.run_query(query_papers)
         # presentations
-        query_presentations = f"SELECT id, user_id, title, description, link, duration, date_created FROM Presentations WHERE user_id = {user_id};"
+        query_presentations = f"""SELECT 
+            id, user_id, title, description, link, duration, date_created 
+            FROM Presentations 
+            WHERE user_id = {user_id}
+            ORDER BY Presentations.date_created DESC;
+        """
         presentations = self.db.run_query(query_presentations)
         # tags
         query_tags = f"SELECT tag FROM ProfileTags WHERE user_id = {user_id};"
@@ -56,10 +66,20 @@ class ProfileRepository:
         query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
         topics = self.db.run_query(query_topics)
         # all papers of public users
-        query_papers = f"SELECT user_id, id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id in {tuple_ids};"
+        query_papers = f"""SELECT 
+            user_id, id, title, authors, publisher, year, link 
+            FROM ProfilePapers 
+            WHERE user_id in {tuple_ids}
+            ORDER BY ProfilePapers.year DESC;
+        """
         papers = self.db.run_query(query_papers)
         # all presentations of public users
-        query_presentations = f"SELECT id, user_id, title, description, link, duration, date_created FROM Presentations WHERE user_id in {tuple_ids};"
+        query_presentations = f"""SELECT 
+            id, user_id, title, description, link, duration, date_created 
+            FROM Presentations 
+            WHERE user_id in {tuple_ids} 
+            ORDER BY Presentations.date_created DESC;
+        """
         presentations = self.db.run_query(query_presentations)
         # all tags of public users
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
@@ -88,10 +108,20 @@ class ProfileRepository:
         query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
         topics = self.db.run_query(query_topics)
         # all papers of public users + selected topics
-        query_papers = f"SELECT user_id, id, title, authors, publisher, year, link FROM ProfilePapers WHERE user_id in {tuple_ids};"
+        query_papers = f"""SELECT 
+            user_id, id, title, authors, publisher, year, link 
+            FROM ProfilePapers 
+            WHERE user_id in {tuple_ids}
+            ORDER BY ProfilePapers.year DESC;
+        """
         papers = self.db.run_query(query_papers)
         # all presentations of public users + selected topics
-        query_presentations = f"SELECT id, user_id, title, description, link, duration, date_created FROM Presentations WHERE user_id in {tuple_ids};"
+        query_presentations = f"""SELECT 
+            id, user_id, title, description, link, duration, date_created 
+            FROM Presentations 
+            WHERE user_id in {tuple_ids}
+            ORDER BY Presentations.date_created DESC;
+        """
         presentations = self.db.run_query(query_presentations)
         # all tags of public users + selected topics
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
@@ -137,6 +167,9 @@ class ProfileRepository:
                 duration={presentation['duration']},
                 date_created="{presentation['date_created']}"
             WHERE id={presentation['id']}; '''
+
+            with open(f"/home/cloud-user/test/fed.txt", "w") as file:
+                file.write(str(update_query))
 
             self.db.run_query(update_query)
             return int(presentation['id'])

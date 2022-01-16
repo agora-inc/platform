@@ -88,7 +88,7 @@ const ProfilePage = (props: Props) => {
   }
 
   function createNewPresentation(): void {
-    setPresentations([...presentations, {id: -1, user_id: -1, title: "", description: "", link: "", duration: 0, date_created: ""} ])
+    setPresentations([...presentations, {id: -1, user_id: -1, title: "", description: "", link: "", duration: 0, date_created: ""}])
   }
 
   function updatePaper(index: number, new_paper: Paper): void {
@@ -212,7 +212,6 @@ const ProfilePage = (props: Props) => {
               )}
             </TabList>
 
-
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               {home && (
                 <Box
@@ -235,7 +234,7 @@ const ProfilePage = (props: Props) => {
                 </Box>
               )}
               {presentations.length !== 0 && (
-                <Box direction="column" gap="36px">
+                <Box direction="column" gap="48px">
                   {presentations.map((presentation: Presentation, index: number) => (
                     <PresentationEntry presentation={presentation} home={home} userId={profile.user.id} index={index}
                       updatePresentation={updatePresentation} deletePresentation={deletePresentation} 

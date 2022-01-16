@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Box, Text, TextInput } from "grommet";
+import { Box, Text, TextInput, TextArea } from "grommet";
 import { Presentation, ProfileService } from "../../Services/ProfileService";
 import { Edit, Save, Trash } from "grommet-icons";
 import { isExportAllDeclaration } from "@babel/types";
@@ -24,19 +24,18 @@ export const PresentationEntry = (props: Props) => {
   const [description, setDescription] = useState<string>(props.presentation.id > 0 ? props.presentation.description : "")
   const [link, setLink] = useState<string>(props.presentation.id > 0 ? props.presentation.link : "")
   const [duration, setDuration] = useState<number>(props.presentation.id > 0 ? props.presentation.duration : 0)
-  const [dateCreated, setDateCreated] = useState<string>(props.presentation.id > 0 ? props.presentation.date_created : "")
+  const [dateCreated, setDateCreated] = useState<Date>(props.presentation.id > 0 ? new Date(props.presentation.date_created) : new Date)
   const [nDaysLeft, setNDaysLeft] = useState<number>(-1)
   const NDAYSMAX: number = 30;
 
   useEffect(() => {
     let now = new Date;
-    let start = new Date(dateCreated);
-    setNDaysLeft(NDAYSMAX - Math.round((now.getTime() - start.getTime()) / (1000*60*60*24)))
+    setNDaysLeft(NDAYSMAX - Math.round((now.getTime() - dateCreated.getTime()) / (1000*60*60*24)))
   }, [dateCreated, nDaysLeft])
 
 
   function updatePresentation(renew: boolean = false): void {
-    let now = (new Date).toISOString()
+    let now = new Date;
     if (props.home && props.updatePresentation && props.userId) {
       let temp_presentation: Presentation = {
         id: id,
@@ -45,13 +44,13 @@ export const PresentationEntry = (props: Props) => {
         description: description,
         link: link,
         duration: duration,
-        date_created: renew ? now : dateCreated,
+        date_created: renew ? formatDate(now) : formatDate(dateCreated),
       }
 
-      console.log(temp_presentation)
-      
+      console.log("UPDATE: ", temp_presentation)
+
       ProfileService.updatePresentation(
-        props.userId, temp_presentation, now,
+        props.userId, temp_presentation, formatDate(now),
         (id: number) => {
           setId(id)
           temp_presentation.id = id
@@ -66,6 +65,10 @@ export const PresentationEntry = (props: Props) => {
     window.open(link, '_blank');
   }
 
+  function formatDate(d: Date): string {
+    return d.toISOString().slice(0, 19).replace("T", " ")
+  }
+
   function deletePaper(): void {
     if (props.home && props.deletePresentation) {
       props.deletePresentation(id)
@@ -73,35 +76,38 @@ export const PresentationEntry = (props: Props) => {
     }
   }
 
-  const width : string = props.width ? props.width : "50%"  
-
+  const width : string = props.width ? props.width : "50%"
   return (
     <Box direction="row" align="center">
       {props.home && isEdit && (
-        <Box direction="column" gap="6px" width={width}>
-          <Box direction="row" gap="5px" width="90%" align="center">
-            <Text size="14px" weight="bold"> 
-              {props.index+1}.
-            </Text>
-            <TextInput
-              placeholder="Title"
-              value={title}
-              onChange={(e: any) => setTitle(e.target.value)}
-            />
-          </Box>
-          <Box direction="row" gap="10px" width="90%">
-            <TextInput
-              placeholder="Description"
-              value={description}
-              onChange={(e: any) => setDescription(e.target.value)}
-            />
-          </Box>
+        <Box direction="column" gap="12px" width={width}>
           <TextInput
             style={{width: "90%"}}
-            placeholder="Link"
-            value={link}
-            onChange={(e: any) => setLink(e.target.value)}
+            placeholder="Title"
+            value={title}
+            onChange={(e: any) => setTitle(e.target.value)}
           />
+          <TextArea
+            style={{width: "90%", height: "120px"}}
+            placeholder="Description"
+            value={description}
+            onChange={(e: any) => setDescription(e.target.value)}
+          />
+          <Box direction="row" gap="10px" width="90%">
+            <TextInput
+              style={{width: "80%"}}
+              placeholder="Link to paper"
+              value={link}
+              onChange={(e: any) => setLink(e.target.value)}
+            />
+            <TextInput
+              style={{width: "50%"}}
+              placeholder="Duration in mins"
+              value={duration}
+              onChange={(e: any) => setDuration(e.target.value)}
+            />
+          </Box>
+
         </Box>
       )}
       {props.home && isEdit && (
@@ -133,9 +139,11 @@ export const PresentationEntry = (props: Props) => {
           <Text size="16px" weight="bold"> 
             {title}
           </Text>
-          <Text size="14px" style={{fontStyle: "italic", width: "90%"}} margin={{left: "18px"}} > 
-            {description}
-          </Text>
+          <Box style={{maxHeight: "150px"}} width="90%" overflow="auto" margin={{left: "18px"}}>
+            <Text size="14px" style={{fontStyle: "italic"}}> 
+              {description}
+            </Text>
+          </Box>
           <Box direction="row" gap="5%" align="center">
             <Box
               focusIndicator={false}
