@@ -13,7 +13,8 @@ interface Props {
   userId?: number;
   width?: string;
   updatePresentation?: any;
-  deletePresentation?: any
+  deletePresentation?: any;
+  isOverlay?: boolean;
 }
 
 export const PresentationEntry = (props: Props) => {
@@ -139,7 +140,7 @@ export const PresentationEntry = (props: Props) => {
           <Text size="16px" weight="bold"> 
             {title}
           </Text>
-          <Box style={{maxHeight: "150px"}} width="90%" overflow="auto" margin={{left: "18px"}}>
+          <Box style={{maxHeight: props.isOverlay ? "80px" : "150px"}} width="90%" overflow="auto" margin={{left: "18px"}}>
             <Text size="14px" style={{fontStyle: "italic"}}> 
               {description}
             </Text>
@@ -165,7 +166,7 @@ export const PresentationEntry = (props: Props) => {
             <Text size="14px"> 
               Duration: {duration} min.
             </Text>
-            {props.home && nDaysLeft > 0 && (
+            {!props.isOverlay && props.home && nDaysLeft > 0 && (
               <Box
                 focusIndicator={false}
                 background="color5"
@@ -181,7 +182,7 @@ export const PresentationEntry = (props: Props) => {
                 </Text>
               </Box>
             )}
-            {props.home && nDaysLeft < 1 && (
+            {!props.isOverlay && props.home && nDaysLeft < 1 && (
               <Box
                 focusIndicator={false}
                 background="color1"
@@ -197,7 +198,7 @@ export const PresentationEntry = (props: Props) => {
                 </Text>
               </Box>
             )}
-            {!props.home && nDaysLeft > 0 && (
+            {!props.isOverlay && !props.home && nDaysLeft > 0 && (
               <Box
                 focusIndicator={false}
                 background="color1"
@@ -213,7 +214,7 @@ export const PresentationEntry = (props: Props) => {
                 </Text>
               </Box>
             )}
-            {!props.home && nDaysLeft < 1 && (
+            {!props.isOverlay && !props.home && nDaysLeft < 1 && (
               <Box
                 focusIndicator={false}
                 background="#DDDDDD"

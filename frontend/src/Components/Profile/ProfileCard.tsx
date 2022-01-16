@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { Paper, Profile, ProfileService } from "../../Services/ProfileService";
 import { FooterOverlayProfileCard } from "./FooterOverlayProfileCard";
 import { PaperEntry } from "./PaperEntry";
-import { DocumentText } from "grommet-icons";
+import { PresentationEntry } from "./PresentationEntry";
+import { Workshop, DocumentText } from "grommet-icons";
 import { TagsEntry } from "./TagsEntry";
 
 interface Props {
@@ -153,17 +154,36 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
               />
             </Box>
 
-            <Box margin={{bottom: "20px", top: "0px"}} gap="5px">
-              <Box direction="row" gap="8px" align="center" margin={{bottom: "10px"}}>
-                <DocumentText size="15px" />
-                <Text size="12px" style={{fontStyle: "italic"}}> 
-                  Latest papers
-                </Text>
+            {props.profile.presentations.length === 0 && (
+              <Box margin={{bottom: "20px", top: "0px"}} gap="5px">
+                <Box direction="row" gap="8px" align="center" margin={{bottom: "10px"}}>
+                  <DocumentText size="15px" />
+                  <Text size="12px" style={{fontStyle: "italic"}}> 
+                    Latest papers
+                  </Text>
+                </Box>
+                {props.profile.papers.slice(0, 3).map((paper: Paper, index: number) => (
+                  <PaperEntry paper={paper} index={index} home={false} width="100%" />
+                ))}
               </Box>
-              {props.profile.papers.slice(0, 3).map((paper: Paper, index: number) => (
-                <PaperEntry paper={paper} index={index} home={false} width="100%" />
-              ))}
-            </Box>
+            )}
+            {props.profile.presentations.length > 0 && (
+              <Box margin={{bottom: "20px", top: "0px"}} gap="5px">
+                <Box direction="row" gap="8px" align="center" margin={{bottom: "10px"}}>
+                  <Workshop size="15px" />
+                  <Text size="12px" style={{fontStyle: "italic"}}> 
+                    Latest presentation
+                  </Text>
+                </Box>
+                <PresentationEntry 
+                  presentation={props.profile.presentations[0]} 
+                  index={0}
+                  home={false}
+                  width="100%"
+                  isOverlay={true} 
+                />
+              </Box>
+            )}
             <TagsEntry tags={props.profile.tags} home={false} hasTitle={false} marginBottom="10px" />
             
           </Box>
