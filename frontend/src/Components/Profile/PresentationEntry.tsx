@@ -137,7 +137,7 @@ export const PresentationEntry = (props: Props) => {
       )}
       {!isEdit && (
         <Box direction="column" gap="12px" width={width}>
-          <Text size="16px" weight="bold"> 
+          <Text size={props.isOverlay ? "15px" : "16px"} weight="bold"> 
             {title}
           </Text>
           <Box style={{maxHeight: props.isOverlay ? "80px" : "150px"}} width="90%" overflow="auto" margin={{left: "18px"}}>
