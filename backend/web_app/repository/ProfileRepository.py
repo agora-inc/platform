@@ -134,7 +134,8 @@ class ProfileRepository:
                 title="{presentation['title']}",
                 description="{presentation['description']}",
                 link="{presentation['link']}",
-                duration={presentation['duration']}
+                duration={presentation['duration']},
+                date_created="{presentation['date_created']}"
             WHERE id={presentation['id']}; '''
 
             self.db.run_query(update_query)

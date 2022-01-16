@@ -214,20 +214,6 @@ const ProfilePage = (props: Props) => {
 
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              {presentations.length !== 0 && (
-                <Box direction="column" gap="12px">
-                  {presentations.map((presentation: Presentation, index: number) => (
-                    <PresentationEntry presentation={presentation} home={home} userId={profile.user.id} index={index} 
-                      updatePresentation={updatePresentation} deletePresentation={deletePresentation} 
-                    />
-                  ))}
-                </Box>
-              )}
-              {presentations.length === 0 && (
-                <Text size="14px" style={{fontStyle: 'italic'}}>
-                  No presentation available
-                </Text>
-              )}
               {home && (
                 <Box
                   focusIndicator={false}
@@ -241,12 +227,26 @@ const ProfilePage = (props: Props) => {
                   }}
                   hoverIndicator={true}
                   align="center"
-                  margin={{top: "20px" }}   
+                  margin={{top: "20px", bottom: "30px" }}   
                 >
                   <Text color="grey" size="small"> 
-                    + Add 
+                    + Add
                   </Text>
                 </Box>
+              )}
+              {presentations.length !== 0 && (
+                <Box direction="column" gap="36px">
+                  {presentations.map((presentation: Presentation, index: number) => (
+                    <PresentationEntry presentation={presentation} home={home} userId={profile.user.id} index={index}
+                      updatePresentation={updatePresentation} deletePresentation={deletePresentation} 
+                    />
+                  ))}
+                </Box>
+              )}
+              {presentations.length === 0 && (
+                <Text size="14px" style={{fontStyle: 'italic'}}>
+                  No presentation available
+                </Text>
               )}
             </TabPanel>
 

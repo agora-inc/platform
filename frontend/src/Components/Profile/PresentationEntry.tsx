@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Box, Text, TextInput } from "grommet";
 import { Presentation, ProfileService } from "../../Services/ProfileService";
 import { Edit, Save, Trash } from "grommet-icons";
+import { isExportAllDeclaration } from "@babel/types";
 
 
 interface Props {
@@ -24,8 +25,18 @@ export const PresentationEntry = (props: Props) => {
   const [link, setLink] = useState<string>(props.presentation.id > 0 ? props.presentation.link : "")
   const [duration, setDuration] = useState<number>(props.presentation.id > 0 ? props.presentation.duration : 0)
   const [dateCreated, setDateCreated] = useState<string>(props.presentation.id > 0 ? props.presentation.date_created : "")
+  const [nDaysLeft, setNDaysLeft] = useState<number>(-1)
+  const NDAYSMAX: number = 30;
 
-  function updatePaper(): void {
+  useEffect(() => {
+    let now = new Date;
+    let start = new Date(dateCreated);
+    setNDaysLeft(NDAYSMAX - Math.round((now.getTime() - start.getTime()) / (1000*60*60*24)))
+  }, [dateCreated, nDaysLeft])
+
+
+  function updatePresentation(renew: boolean = false): void {
+    let now = (new Date).toISOString()
     if (props.home && props.updatePresentation && props.userId) {
       let temp_presentation: Presentation = {
         id: id,
@@ -34,18 +45,25 @@ export const PresentationEntry = (props: Props) => {
         description: description,
         link: link,
         duration: duration,
-        date_created: dateCreated,
+        date_created: renew ? now : dateCreated,
       }
-      let now = new Date;
+
+      console.log(temp_presentation)
+      
       ProfileService.updatePresentation(
-        props.userId, temp_presentation, now.toISOString(),
+        props.userId, temp_presentation, now,
         (id: number) => {
           setId(id)
           temp_presentation.id = id
+          if (renew) { setDateCreated(now) }
           props.updatePresentation(props.index, temp_presentation)
         }
       )
     }
+  }
+
+  function paperRedirect(): void {
+    window.open(link, '_blank');
   }
 
   function deletePaper(): void {
@@ -93,7 +111,7 @@ export const PresentationEntry = (props: Props) => {
           round="xsmall"
           onClick={() => {
             setIsEdit(!isEdit);
-            updatePaper();
+            updatePresentation();
           }}   
         >
           <Save size="20px"/>
@@ -111,19 +129,98 @@ export const PresentationEntry = (props: Props) => {
         </Box>
       )}
       {!isEdit && (
-        <Box direction="column" gap="3px" width={width}>
-          <Text size="14px" weight="bold"> 
-            {props.index+1}. {title}
+        <Box direction="column" gap="12px" width={width}>
+          <Text size="16px" weight="bold"> 
+            {title}
           </Text>
-          <Box direction="row"  gap="10px">
+          <Text size="14px" style={{fontStyle: "italic", width: "90%"}} margin={{left: "18px"}} > 
+            {description}
+          </Text>
+          <Box direction="row" gap="5%" align="center">
+            <Box
+              focusIndicator={false}
+              background="white"
+              round="xsmall"
+              pad={{ vertical: "2px", horizontal: "xsmall" }}
+              onClick={paperRedirect}
+              style={{
+                width: "20%",
+                border: "1px solid #C2C2C2",
+              }}
+              hoverIndicator={true}
+              align="center"
+            >
+              <Text color="grey" size="small"> 
+                Link to paper
+              </Text>
+            </Box>
             <Text size="14px"> 
-              {dateCreated}, {duration}
+              Duration: {duration} min.
             </Text>
-            <Link to={{pathname: link}} target="_blank">
-            <Text size="14px" style={{fontStyle: "italic"}}> 
-              {description}
-            </Text>
-            </Link>
+            {props.home && nDaysLeft > 0 && (
+              <Box
+                focusIndicator={false}
+                background="color5"
+                round="xsmall"
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
+                onClick={() => {}}
+                style={{ width: "35%" }}
+                hoverIndicator={false}
+                align="center"
+              >
+                <Text color="black" size="small"> 
+                  {nDaysLeft} days until expired
+                </Text>
+              </Box>
+            )}
+            {props.home && nDaysLeft < 1 && (
+              <Box
+                focusIndicator={false}
+                background="color1"
+                round="xsmall"
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
+                onClick={() => updatePresentation(true)}
+                style={{ width: "35%" }}
+                hoverIndicator={true}
+                align="center"
+              >
+                <Text size="small"> 
+                  Make it visible to organizers 
+                </Text>
+              </Box>
+            )}
+            {!props.home && nDaysLeft > 0 && (
+              <Box
+                focusIndicator={false}
+                background="color1"
+                round="xsmall"
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
+                onClick={() => {}}
+                style={{ width: "35%" }}
+                hoverIndicator={true}
+                align="center"
+              >
+                <Text size="small"> 
+                  Contact speaker
+                </Text>
+              </Box>
+            )}
+            {!props.home && nDaysLeft < 1 && (
+              <Box
+                focusIndicator={false}
+                background="#DDDDDD"
+                round="xsmall"
+                pad={{ vertical: "2px", horizontal: "xsmall" }}
+                onClick={() => {}}
+                style={{ width: "35%" }}
+                align="center"
+              >
+                <Text size="small"> 
+                  Presentation expired 
+                </Text>
+              </Box>
+            )}
+
           </Box>
         </Box>
       )}
