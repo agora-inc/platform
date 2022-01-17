@@ -68,7 +68,6 @@ const getCurrentUser = () => {
 };
 
 const emailChangePasswordLink = (usernameOrEmail: string, callback: any) => {
-  console.log("wesh sami, cest pilipe")
   axios
     .post(
       baseApiUrl + "/users/email_change_password_link",
