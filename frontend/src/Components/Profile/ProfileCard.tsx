@@ -190,6 +190,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
           
           <FooterOverlayProfileCard
             profile={props.profile}
+            presentationName={props.profile.presentations[0].title}
           />
         </Layer>
       )}

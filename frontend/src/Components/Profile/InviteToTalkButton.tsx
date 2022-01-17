@@ -17,6 +17,7 @@ import CreateChannelOverlay from "../Channel/CreateChannelButton/CreateChannelOv
 
 interface Props {
   profile: Profile;
+  presentationName: string;
   widthButton?: string;
   textButton?: string;
 }
@@ -81,9 +82,9 @@ export default class InviteToTalkButton extends Component<Props, State> {
         this.state.content.date,
         this.state.content.message,
         this.state.content.contactEmail,
-        //TODO: Error handling
+        this.props.presentationName,
         (answer: any) => {
-          console.log("Successful application!")
+          console.log("Successful application!" + answer)
         }
       );
     }
@@ -184,7 +185,7 @@ export default class InviteToTalkButton extends Component<Props, State> {
           {/* IF ADMIN HASN'T SELECTED AN AGORA + ADMIN DOES NOT HAVE AN AGORA */}
           {((!(this.state.content.hostingChannel)) && this.state.ownedChannels.length == 0) && (
             <OverlaySection>
-                You must first create a channel before inviting speakers.
+                You must first create your community page before inviting speakers.
                 <CreateChannelButton
                     // height="50px"
                   onClick={this.toggleCreateChannelOverlay}

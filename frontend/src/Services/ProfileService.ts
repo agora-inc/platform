@@ -142,7 +142,7 @@ const updateTags = (userId: number, tags: string[], callback: any) => {
   );
 }
 
-const sendTalkInvitation = (invitingUserid: number, invitedUserid: number, channelId: number, date: string, message: string, contactEmail: string, callback: any) => {
+const sendTalkInvitation = (invitingUserid: number, invitedUserid: number, channelId: number, date: string, message: string, contactEmail: string, talk_name: string, callback: any) => {
   post(
     "profiles/invitation/speaker",
     {
@@ -151,7 +151,8 @@ const sendTalkInvitation = (invitingUserid: number, invitedUserid: number, chann
       channel_id: channelId,
       date: date,
       message: message,
-      contact_email: contactEmail
+      contact_email: contactEmail,
+      talk_name: talk_name
     },
     callback
   );

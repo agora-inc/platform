@@ -1,9 +1,12 @@
 import os
 from app.databases import agora_db
+from backend.web_app.repository import ChannelRepository
 from mailing.sendgridApi import sendgridApi
 
 from repository.UserRepository import UserRepository
 from repository.TopicRepository import TopicRepository
+from repository.ChannelRepository import ChannelRepository
+
 
 mail_sys = sendgridApi()
 
@@ -13,6 +16,7 @@ class ProfileRepository:
         self.mail_sys = mail_sys
         self.users = UserRepository(db=self.db)
         self.topics = TopicRepository(db=self.db)
+        self.channels = ChannelRepository(db=self.dbs)
 
     def getProfile(self, user_id):
         query_user = f"SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage FROM Users WHERE id = {user_id};"
@@ -287,24 +291,29 @@ class ProfileRepository:
             return str(tuple(lst))
 
 
-    def inviteToTalk(self, inviting_user_id, invited_user_id, channel_id, date, message, contact_email):
-        # take note in DB of sending
-        add_db = f'''
-            INSERT INTO SpeakerInvitations (
-                inviting_user_id, 
-                invited_user_id,
-                channel_id,
-                message)
-            VALUES (
-                {inviting_user_id},
-                {invited_user_id},
-                {channel_id},
-                '{message}'
-            );
-        '''
-        res = self.db.run_query(add_db)
+    def inviteToTalk(self, inviting_user_id, invited_user_id, channel_id, date, message, contact_email, presentation_name=""):
+        try:
+            # take note in DB of sending
+            add_db = f'''
+                INSERT INTO SpeakerInvitations (
+                    inviting_user_id, 
+                    invited_user_id,
+                    channel_id,
+                    message)
+                VALUES (
+                    {inviting_user_id},
+                    {invited_user_id},
+                    {channel_id},
+                    '{message}'
+                );
+            '''
+            res = self.db.run_query(add_db)
+        except Exception as e:
+            pass
 
         # send email
-        recipient_name = self.getProfile(invited_user_id)["full_name"]
+        invited_user = self.getProfile(invited_user_id)
+        target_email = invited_user["email"]
+        recipient_name = invited_user["full_name"]
         channel_name = self.channels.getChannelById(channel_id)["name"]
-        self.mail_sys.invite_user_to_talk(recipient_name, message, date, contact_email, channel_name)
+        return self.mail_sys.invite_user_to_talk(target_email, recipient_name, presentation_name, message, date, contact_email, channel_name)

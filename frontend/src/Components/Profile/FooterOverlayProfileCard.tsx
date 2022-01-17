@@ -9,7 +9,7 @@ import InviteToTalkButton from "../../Components/Profile/InviteToTalkButton"
 
 interface Props {
   profile: Profile;
-  // invitingUser: User
+  presentationName: string
 }
 
 export const FooterOverlayProfileCard = (props: Props) => {
@@ -47,6 +47,7 @@ export const FooterOverlayProfileCard = (props: Props) => {
         </Box>  */}
         <InviteToTalkButton
           profile={props.profile}
+          presentationName={props.presentationName}
         />
       </Box>
     );
