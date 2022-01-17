@@ -79,13 +79,13 @@ class sendgridApi:
     # A. User account #
     ###################
     def send_confirmation_account_creation(self, target_email, recipient_name):
-        template_id_01 = "d-0b07e11a59f34e5c8d2429c6991b2287"
+        template_id = "d-0b07e11a59f34e5c8d2429c6991b2287"
         response = self._post_sendgrid_request(
             target_email=target_email,
             dynamic_template_data={
                     "recipient_name": recipient_name,
                 },
-            template_id=template_id_01
+            template_id=template_id
         )
         return response
 
@@ -96,10 +96,10 @@ class sendgridApi:
         raise NotImplementedError
         
     ##############################
-    # B. User talk notifications #
+    # B. User notifications #
     ##############################
     def send_confirmation_talk_registration_request(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None, user_hour_offset=None):
-        template_id_02 = "d-7778766bf8764d379f19bf2822aa38c2"
+        template_id = "d-7778766bf8764d379f19bf2822aa38c2"
         try:
             human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
             if user_hour_offset is not None:
@@ -121,14 +121,14 @@ class sendgridApi:
             response = self._post_sendgrid_request(
                 target_email=target_email,
                 dynamic_template_data=dynamic_template_data,
-                template_id=template_id_02
+                template_id=template_id
             )
             return response
         except Exception as e:
             raise Exception(e)
 
     def send_confirmation_talk_registration_acceptance(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url=None, user_hour_offset=None):
-        template_id_03 = "d-e2791dbf94084474b5dd50b15a8ea372"
+        template_id = "d-e2791dbf94084474b5dd50b15a8ea372"
 
         try:
             human_readable_date = self._convert_gmt_into_human_date_str(date_str, 0)
@@ -153,7 +153,7 @@ class sendgridApi:
             response = self._post_sendgrid_request(
                 target_email=target_email,
                 dynamic_template_data=dynamic_template_data,
-                template_id=template_id_03
+                template_id=template_id
             )
             return response
 
@@ -161,7 +161,7 @@ class sendgridApi:
             raise Exception(e)
 
     def send_talk_details_full(self, target_email, talk_name, recipient_name, talk_id, agora_name, date_str, conference_url):
-        template_id_04 = "d-d789a156a6f94442851b056ca5d7b620"
+        template_id = "d-d789a156a6f94442851b056ca5d7b620"
         response = self._post_sendgrid_request(
             target_email=target_email,
             dynamic_template_data={
@@ -171,7 +171,23 @@ class sendgridApi:
                     "agora_name": agora_name,
                     "conference_url": conference_url
                 },
-            template_id=template_id_04
+            template_id=template_id
+        )
+        return response
+
+    def invite_user_to_talk(self, target_email, recipient_name, presentation_name, message, dates, contact_email, channel_name):
+        template_id = "d-9b882e3b511d492ba572e19da5818b69"
+        response = self._post_sendgrid_request(
+            target_email=target_email,
+            dynamic_template_data={
+                    "recipient_name": recipient_name,
+                    "presentation_name": presentation_name,
+                    "message": message, 
+                    "dates": dates, 
+                    "contact_email": contact_email, 
+                    "channel_name": channel_name
+                },
+            template_id=template_id
         )
         return response
 

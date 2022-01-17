@@ -50,8 +50,15 @@ function App() {
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
           <Route path="/past" component={AllPastTalksPage} />
-          <Route exact path="/speakers" component={AllSpeakersPage} />
+
+          {/* CHANNELS PAGES */}
           <Route path={`/:name/manage`} component={ManageChannelPage} />
+          
+          
+          {/* PROFILE PAGES */}
+          {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
+          <Route exact path="/speakers" component={AllSpeakersPage} />
+
 
           {/* REFERAL ENDPOINT: not deployed yet */}
           {/* <Route path="/referral/channel" component={ChannelReferralPage} /> */}

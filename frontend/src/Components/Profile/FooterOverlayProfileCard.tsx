@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { Box, Heading, Text } from "grommet";
-import { User } from "../../Services/UserService";
+import { Profile } from "../../Services/ProfileService";
 import { Calendar } from "grommet-icons";
+import InviteToTalkButton from "../../Components/Profile/InviteToTalkButton"
+
+
 
 interface Props {
-  user: User;
+  profile: Profile;
+  presentationName: string
 }
 
 export const FooterOverlayProfileCard = (props: Props) => {
@@ -13,7 +17,7 @@ export const FooterOverlayProfileCard = (props: Props) => {
 
   if (viewProfile) {
     window.scrollTo(0, 0);
-    return <Redirect to={`/profile/${props.user.id}`} push={true} />
+    return <Redirect to={`/profile/${props.profile.user.id}`} push={true} />
   } else {
     return (
       <Box direction="row" background="#d5d5d5" width="100%" align="center" height="15%" justify="center" gap="150px">
@@ -29,7 +33,7 @@ export const FooterOverlayProfileCard = (props: Props) => {
         >
           <Text size="14px" weight="bold"> View more </Text>
         </Box>
-        <Box
+        {/* <Box
           width="150px"
           height="40px"
           background="white"
@@ -40,7 +44,11 @@ export const FooterOverlayProfileCard = (props: Props) => {
           hoverIndicator="color1"
         >
           <Text size="14px" weight="bold"> Invite speaker </Text>
-        </Box> 
+        </Box>  */}
+        <InviteToTalkButton
+          profile={props.profile}
+          presentationName={props.presentationName}
+        />
       </Box>
     );
   }

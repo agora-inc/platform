@@ -30,7 +30,7 @@ const AllSpeakersPage = () => {
         margin="none"
         style={{ height: "20px" }}
       >
-        All speakers
+        Find your speakers
       </Heading>
       <TopicClassification 
         topicCallback={setTopic}
