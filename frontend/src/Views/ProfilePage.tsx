@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Box, CheckBox, Text } from "grommet";
-import { Overview, DocumentText, Twitter, Configure } from "grommet-icons";
+import { Box, CheckBox, Image, Text } from "grommet";
+import { Workshop, DocumentText, Twitter, Configure } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
 import ReactTooltip from "react-tooltip";
-import ImageUploader from "../Components/Core/ImageUploader";
+
+import ImageCropUploader from "../Components/Channel/ImageCropUploader";
+import { BioEntry } from "../Components/Profile/BioEntry";
+import { PaperEntry } from "../Components/Profile/PaperEntry";
+import { PresentationEntry } from "../Components/Profile/PresentationEntry";
+import { TagsEntry } from "../Components/Profile/TagsEntry";
 import { User, UserService } from "../Services/UserService";
-import { Paper, Profile, ProfileService } from "../Services/ProfileService";
+import { Paper, Profile, ProfileService, Presentation } from "../Services/ProfileService";
+import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
+import { DetailsEntry } from "../Components/Profile/DetailsEntry";
 
 import InviteToTalkButton from "../Components/Profile/InviteToTalkButton";
 
@@ -17,23 +23,94 @@ interface Props {
 
 const ProfilePage = (props: Props) => {
   const [profile, setProfile] = useState<Profile>();
-  const [home, setHome] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<User>(UserService.getCurrentUser());
+  const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const [papers, setPapers] = useState<Paper[]>([]);
+  const [home, setHome] = useState<boolean>(true);
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     ProfileService.getProfile(getUserIdFromUrl(), setProfile);
-    if (profile && currentUser.id === profile.user.id) {
-      setHome(true)
+  }, []);
+  useEffect(() => {
+    setUser(UserService.getCurrentUser())
+  }, []);
+
+  useEffect(() => {
+    if (profile) {
+      if (user && user.id === profile.user.id) {
+        setHome(true)
+      }
+      setPapers(profile.papers)
+      setPresentations(profile.presentations)
     }
-  });
+  }, [profile, user]);
 
   function getUserIdFromUrl(): number {
-    let talkId = props.location.pathname.split("/")[2]
-    if (!talkId) {
+    let userId = props.location.pathname.split("/")[2]
+    if (!userId) {
       return -1;
     }
-    return Number(talkId);
+    return Number(userId);
   };
+
+  function getProfilePhotoUrl(): string {
+    if (profile) {
+      return ProfileService.getProfilePhoto(profile.user.id)
+    } else {
+      return ""
+    }
+  }
+
+  function onProfilePhotoUpload(file: File): void {
+    if (home && profile) {
+      ProfileService.uploadProfilePhoto(
+        profile.user.id,
+        file,
+        () => {
+          window.location.reload();
+        }
+      );
+    }
+  };
+
+  function removeProfilePhoto(): void {
+    if (home && profile) {
+      ProfileService.removeProfilePhoto(
+        profile.user.id,
+        () => {
+          window.location.reload();
+        }
+      );
+    }
+  };
+
+  function createNewPaper(): void {
+    setPapers([...papers, {id: -1, title: "", authors: "", publisher: "", year: "", link: ""} ])
+  }
+
+  function createNewPresentation(): void {
+    setPresentations([...presentations, {id: -1, user_id: -1, title: "", description: "", link: "", duration: 0, date_created: ""}])
+  }
+
+  function updatePaper(index: number, new_paper: Paper): void {
+    const temp = papers
+    temp[index] = new_paper
+    setPapers(temp)
+  }
+
+  function updatePresentation(index: number, new_presentation: Presentation): void {
+    const temp = presentations
+    temp[index] = new_presentation
+    setPresentations(temp)
+  }
+
+  function deletePaper(id: number): void {
+    setPapers(papers.filter(paper => paper.id !== id))
+  }
+
+  function deletePresentation(id: number): void {
+    setPresentations(presentations.filter(presentation => presentation.id !== id))
+  }
 
   if (profile) {
     return (
@@ -43,67 +120,44 @@ const ProfilePage = (props: Props) => {
           height="160px"
           align="center"
           justify="between"
-          margin={{bottom: "20px"}}
-
         >
-          <Box direction="row" align="center" gap="small" width="65%">
-            <Box
-              width="100px"
-              height="100px"
-              round="50px"
-              background="white"
-              justify="center"
-              align="center"
-              style={{ minWidth: 100, minHeight: 100 }}
-              overflow="hidden"
-            >
-              <img
-                src={""}
-                height={120}
-                width={120}
-              />
+          <Box direction="row" align="center" gap="small" width="55%">
+            <Box width="150px" height="100px" round="50px"                   
+              justify="center" align="center" overflow="hidden">
+              {/*<Image 
+                style={{aspectRatio: "3/2"}}
+                src={getProfilePhotoUrl()}
+                width="150px"
+              /> */}
+              <img width={150} height={100} src={getProfilePhotoUrl()} />
             </Box>
 
-            <Box direction="column" gap="10px" align="start">
+            <Box direction="column" gap="6px" align="start">
               <Text 
                 size="26px"
-                color="black"
+                color="color3"
                 weight="bold"
               >
                 {profile.full_name}
               </Text>
+              <Text
+                  size="16px"
+                  color="color1"
+                  weight="bold"
+                  style={{ height: "20px", overflow: "auto" }}
+                  margin={{ bottom: "20px"}}
+                >
+                  {profile.user.position}, {profile.user.institution}
+                </Text>
 
-              {currentUser && 
-                <InviteToTalkButton
-                  invitingUser={currentUser}
-                  profile={profile}
-                />
-              }
-
-              <Box 
-                direction="row"
-                align="end"
-                gap="5px"
-              >
-                <Box data-tip data-for="avatar_info">
-                  <ImageUploader
-                    text="Upload profile picture"
-                    width={"150px"}
-                    onUpload={() => {}}
-                  />
-                  <ReactTooltip id='avatar_info' place="right" effect="solid">
-                    <p>Recommended avatar dim: 400x400px</p>
-                  </ReactTooltip>
-                </Box>
-              </Box>
             </Box>
           </Box>
-          <Box direction="column" gap="10px" width="35%">
+          {/* <Box direction="column" gap="10px" width="45%">
             <Box direction="row">
               <CheckBox
                 name="feature"
                 label="Verified academic"
-                checked={profile.user.verified_academic}
+                checked={profile.user.verified_academic ? profile.user.verified_academic : false}
                 onChange={() => {}}
               />
             </Box>
@@ -115,18 +169,19 @@ const ProfilePage = (props: Props) => {
                 onChange={() => {}}
               />
             </Box>
-            
-          </Box>
+          </Box> */}
         </Box>
+
+        <BioEntry bio={profile.user.bio ? profile.user.bio : ""} home={home} userId={profile.user.id} /> 
 
         <Box>
           <Tabs>
             <TabList>
               <Tab>
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                  <Overview />
+                  <Workshop />
                   <Text size="14px"> 
-                    Short bio 
+                    Presentations
                   </Text>
                 </Box>
               </Tab>
@@ -142,55 +197,231 @@ const ProfilePage = (props: Props) => {
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                   <Twitter color="grey" />
                   <Text size="14px"> 
-                    Tweets
+                    Tags & Tweets
                   </Text>
                 </Box>
               </Tab>
-              <Tab>
-                <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                  <Configure />
-                  <Text size="14px"> 
-                    Settings 
-                  </Text>
-                </Box>
-              </Tab>
+              {home && (
+                <Tab>
+                  <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                    <Configure />
+                    <Text size="14px"> 
+                      Settings 
+                    </Text>
+                  </Box>
+                </Tab>
+              )}
             </TabList>
-            
-            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              <Box>
-                Bio
-              </Box>
-            </TabPanel>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              {profile.papers.length !== 0 && (
-                <Box>
-                  {profile.papers.map((paper: string) => (
-                    <Box>
-                      ---  
-                    </Box>
+              {home && (
+                <Box
+                  focusIndicator={false}
+                  background="white"
+                  round="xsmall"
+                  pad={{ vertical: "2px", horizontal: "xsmall" }}
+                  onClick={createNewPresentation}
+                  style={{
+                    width: "15%",
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}
+                  align="center"
+                  margin={{top: "20px", bottom: "30px" }}   
+                >
+                  <Text color="grey" size="small"> 
+                    + Add
+                  </Text>
+                </Box>
+              )}
+              {presentations.length !== 0 && (
+                <Box direction="column" gap="48px">
+                  {presentations.map((presentation: Presentation, index: number) => (
+                    <PresentationEntry presentation={presentation} home={home} userId={profile.user.id} index={index}
+                      updatePresentation={updatePresentation} deletePresentation={deletePresentation} 
+                    />
                   ))}
                 </Box>
               )}
-              {profile.papers.length === 0 && (
+              {presentations.length === 0 && (
                 <Text size="14px" style={{fontStyle: 'italic'}}>
-                  No paper available
+                  No presentation available
                 </Text>
               )}
             </TabPanel>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              <Box direction="column">
-                Twitter
-              </Box>
+              {papers.length !== 0 && (
+                <Box direction="column" gap="12px">
+                  {papers.map((paper: Paper, index: number) => (
+                    <PaperEntry paper={paper} home={home} userId={profile.user.id} index={index} 
+                      updatePaper={updatePaper} deletePaper={deletePaper} 
+                    />
+                  ))}
+                </Box>
+              )}
+              {papers.length === 0 && (
+                <Text size="14px" style={{fontStyle: 'italic'}}>
+                  No paper available
+                </Text>
+              )}
+              {home && (
+                <Box
+                  focusIndicator={false}
+                  background="white"
+                  round="xsmall"
+                  pad={{ vertical: "2px", horizontal: "xsmall" }}
+                  onClick={createNewPaper}
+                  style={{
+                    width: "15%",
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}
+                  align="center"
+                  margin={{top: "20px" }}   
+                >
+                  <Text color="grey" size="small"> 
+                    + Add 
+                  </Text>
+                </Box>
+              )}
             </TabPanel>
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              <Box direction="row" margin={{bottom: "60px"}}>
-                Settings
+              <Box direction="column" gap="30px">
+                <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} hasTitle={true} />
+
+                <Text size="14px" weight="bold">
+                  Twitter feed
+                </Text>
+
               </Box>
             </TabPanel>
 
+            {home && (
+              <TabPanel style={{width: "78vw", minHeight: "800px"}}>
+                <Box direction="column" gap="50px">
+                  <Box direction="column" gap="5px">
+                    <Text size="14px" weight="bold">
+                      Update your details
+                    </Text>
+                    <DetailsEntry
+                      title='Full name'
+                      dbKey='full_name'
+                      value={profile.full_name}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Academic position'
+                      dbKey='position'
+                      value={profile.user.position}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Institution'
+                      dbKey='institution'
+                      value={profile.user.institution}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Username'
+                      dbKey='username'
+                      value={profile.user.username}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Email address'
+                      dbKey='email'
+                      value={profile.user.email}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                  </Box>
+
+                  <Box direction="column" gap="15px">
+                    <Text size="14px" weight="bold">
+                      Profile picture
+                    </Text>
+                    <Box direction="row" gap="30px">
+                      <Box 
+                        direction="row"
+                        align="end"
+                      >
+                        <Box data-tip data-for="avatar_info">
+                        <ImageCropUploader
+                          text="Upload new picture"
+                          onUpload={onProfilePhotoUpload}
+                          width="150px"
+                          height="25px"
+                          widthModal={600}
+                          heightModal={600}
+                          textSize="12px"
+                          hideToolTip={true}
+                          aspect={3 / 2}
+                        />
+                          <ReactTooltip id='avatar_info' place="right" effect="solid">
+                            <p>Recommended avatar dim: 400x400px</p>
+                          </ReactTooltip>
+                        </Box>
+                      </Box>
+                      {profile.has_photo && (
+                        <Box 
+                          style={{ 
+                            border: "solid black 1px", cursor: "pointer" 
+                          }}
+                          round="xsmall"
+                          width="150px"
+                          height="25px"
+                          justify="center"
+                          align="center"
+                          background="#EAF1F1"
+                          focusIndicator={true}
+                          hoverIndicator="#DDDDDD"
+                          onClick={(e: any) => {
+                            e.stopPropagation()
+                            removeProfilePhoto()
+                          }}
+                        >
+                          <Text size="12px" weight="bold" color="black">
+                            Remove
+                          </Text>
+                        </Box>
+                      )}
+                    </Box>
+                  </Box>
+
+                  <Box direction="column" gap="15px">
+                    <Text size="14px" weight="bold">
+                      External profiles
+                    </Text>
+                    <DetailsEntry
+                      title='Twitter handle'
+                      dbKey='twitter_handle'
+                      value={profile.twitter_handle}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                    <DetailsEntry
+                      title='Google Scholar'
+                      dbKey='google_scholar_link'
+                      value={profile.google_scholar_link}
+                      userId={profile.user.id}
+                      home={home}
+                    />
+                  </Box>
+
+
+                  {/* <Text size="14px" weight="bold">
+                    Become a verified academic
+                      </Text> */}
+
+                </Box>
+              </TabPanel>
+            )}
           </Tabs>
         </Box>
           
@@ -198,9 +429,17 @@ const ProfilePage = (props: Props) => {
     );
   } else {
     return (
-      <Text size="16px" weight="bold" style={{ position: "relative", top: "15vh", left: "15vh" }}>
-        This profile does not exist.
-      </Text>
+      <Box 
+        direction="row" 
+        gap="8px"
+        align="center" 
+        style={{ position: "relative", top: "15vh", left: "15vh" }}
+      >
+        <Loading size={21} color="black" />
+        <Text size="16px" weight="bold" >
+          Loading profile... 
+        </Text>
+      </Box>
     );
   }
 };

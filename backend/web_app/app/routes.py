@@ -232,11 +232,11 @@ def changePassword():
 
 @app.route('/users/update_bio', methods=["POST"])
 def updateBio():
-   authToken = request.headers.get('Authorization').split(" ")[1]
-   userId = users.decodeAuthToken(authToken)
-   params = request.json
-   updatedUser = users.updateBio(userId, params["newBio"])
-   return jsonify(updatedUser)
+    authToken = request.headers.get('Authorization').split(" ")[1]
+    userId = users.decodeAuthToken(authToken)
+    params = request.json
+    updatedUser = users.updateBio(userId, params["newBio"])
+    return jsonify(updatedUser)
 
 @app.route('/users/update_public', methods=["POST"])
 def updatePublic():
@@ -252,7 +252,16 @@ def updatePublic():
 # --------------------------------------------
 @app.route('/profiles/public')
 def getPublicProfiles():
-    return jsonify(profiles.getAllPublicProfiles())
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(profiles.getAllPublicProfiles(limit, offset))
+
+@app.route('/profiles/public/topic')
+def getPublicProfilesByTopicRecursive():
+    topic_id = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(profiles.getAllPublicProfilesByTopicRecursive(topic_id, limit, offset))
 
 @app.route('/profiles/profile', methods=["GET"])
 def getProfile():    
@@ -263,29 +272,84 @@ def getProfile():
 def inviteToTalk():    
     if request.method == "OPTIONS":
         return jsonify("ok")
+@app.route('/profiles/details/update', methods=["POST"])
+def updateDetails():
+    params = request.json
+    return jsonify(profiles.updateDetails(params['user_id'], params['dbKey'], params['value']))
+
+@app.route('/profiles/bio/update', methods=["POST"])
+def updateProfileBio():
+    params = request.json     
+    return jsonify(profiles.updateBio(params['user_id'], params['bio']))
+
+@app.route('/profiles/papers/update', methods=["POST"])
+def updatePaper():
+    params = request.json     
+    return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
+
+@app.route('/profiles/presentations/update', methods=["POST"])
+def updatePresentation():
+    params = request.json     
+    return jsonify(profiles.updatePresentation(params['user_id'], params['presentation'], params['now']))
+
+@app.route('/profiles/photo', methods=["POST", "GET", "DELETE"])
+def profilePhoto():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if request.method == "POST":
+        logRequest(request)
+        userId = request.form["userId"]
+        file = request.files["image"]
+        fn = f"{userId}.jpg"
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/profiles/{fn}")
+        profiles.addProfilePhoto(userId)
+        
+        app.logger.debug(f"User with id {userId} updated profile photo")
+
+        return jsonify({"filename": fn})
+
+    if request.method == "GET":
+        if "userId" in request.args:
+            userId = int(request.args.get("userId"))
+            fn = profiles.getProfilePhotoLocation(userId)
+            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+
+    if request.method == "DELETE":
+        params = request.json 
+        userId = params["userId"]
+        profiles.removeProfilePhoto(userId)
+
+        app.logger.debug(f"User with id {userId} remove profile photo")
+
+        return jsonify("ok")
+
+@app.route('/profiles/papers/delete', methods=["OPTIONS", "POST"])
+def deletePaper():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
     if not checkAuth(request.headers.get('Authorization')):
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
+    return jsonify(profiles.deletePaper(params['paper_id']))
 
-    inviting_user_id = params["inviting_user_id"]
-    invited_user_id = params["invited_user_id"]
-    channel_id = params["channel_id"]
-    date = params["date"]
-    message = params["message"]
-    contact_email = params["contact_email"]
+@app.route('/profiles/presentations/delete', methods=["OPTIONS", "POST"])
+def deletePresentation():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
 
+    params = request.json
+    return jsonify(profiles.deletePresentation(params['presentation_id']))
 
-    return jsonify(profiles.inviteToTalk(
-        inviting_user_id, 
-        invited_user_id, 
-        channel_id,
-        date,
-        message,
-        contact_email
-    ))
-
-
+@app.route('/profiles/tags/update', methods=["POST"])
+def updateTags():
+    params = request.json     
+    return jsonify(profiles.updateTags(params['user_id'], params['tags']))
 
 # --------------------------------------------
 # CHANNEL ROUTES

@@ -394,6 +394,25 @@ export default class UserManager extends Component<Props, State> {
             <Text size="14px"> Bookmarks </Text>
           </Link>
         </Box> */}
+        {this.state.user && (
+          <Box
+            margin={{
+              top: "small",
+              left: "small",
+              right: "small",
+            }}
+            hoverIndicator={true}
+            gap="xsmall"
+          >
+            <Link
+              to={{ pathname: "/profile/" + this.state.user.id }}
+              style={{ textDecoration: "none" }}
+              onClick={this.toggleDropdown}
+            >
+              <Text color="black" size="14px"> View your profile </Text>
+            </Link>
+          </Box>
+        )}
         <Box
           onClick={() => {
             UserService.logout();

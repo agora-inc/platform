@@ -3,18 +3,19 @@ import {
   Box,
   TextInput,
   TextArea,
+  Text
 } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import ReactTooltip from "react-tooltip";
 import { Channel, ChannelService } from "../../Services/ChannelService"
 import { User } from "../../Services/UserService"
+import { UserService } from "../../Services/UserService"
 import { Profile, ProfileService } from "../../Services/ProfileService";
 import { Workshop } from "grommet-icons";
 import CreateChannelButton from "../Channel/CreateChannelButton";
 import CreateChannelOverlay from "../Channel/CreateChannelButton/CreateChannelOverlay";
 
 interface Props {
-  invitingUser: User;
   profile: Profile;
   widthButton?: string;
   textButton?: string;
@@ -29,7 +30,8 @@ interface State {
       },
     ownedChannels: Channel[]
     showForm: boolean;
-    showCreateChannelOverlay: boolean
+    showCreateChannelOverlay: boolean;
+    invitingUser: User | null;
 }
 
 export default class InviteToTalkButton extends Component<Props, State> {
@@ -44,13 +46,16 @@ export default class InviteToTalkButton extends Component<Props, State> {
         },
         showForm: false,
         ownedChannels: [],
-        showCreateChannelOverlay: false
+        showCreateChannelOverlay: false,
+        invitingUser: UserService.getCurrentUser()
     };
-    ChannelService.getChannelsForUser(props.invitingUser.id, ["owner"], 
-    (res: Channel[]) =>{
-      this.setState({ownedChannels: res})
-      }
-    )
+    if(this.state.invitingUser){
+      ChannelService.getChannelsForUser(this.state.invitingUser.id, ["owner"], 
+      (res: Channel[]) =>{
+        this.setState({ownedChannels: res})
+        }
+      )
+    }
   }
 
   handleInput = (e: any, key: string) => {
@@ -68,9 +73,9 @@ export default class InviteToTalkButton extends Component<Props, State> {
   };
 
   contactSpeaker = () => {
-    if (this.state.content.hostingChannel){
+    if (this.state.content.hostingChannel && this.state.invitingUser){
       ProfileService.sendTalkInvitation(
-        this.props.invitingUser.id,
+        this.state.invitingUser.id,
         this.props.profile.user.id,
         this.state.content.hostingChannel.id,
         this.state.content.date,
@@ -139,11 +144,11 @@ export default class InviteToTalkButton extends Component<Props, State> {
         <Box
           width={this.props.widthButton ? this.props.widthButton : "15vw"}
           data-tip data-for='invite_speaker'
-          margin={{ top: "20px", bottom: "40px", left: "10px" }}
+          margin={{ top: "20px", bottom: "20px" }}
           onClick={() => this.setState({ showForm: true })}
           background="#0C385B"
           round="xsmall"
-          pad={{bottom: "3px", top: "6px", left: "3px", right: "3px"}}
+          // pad={{bottom: "3px", top: "6px", left: "3px", right: "3px"}}
           height="40px"
           justify="center"
           align="center"
@@ -170,9 +175,9 @@ export default class InviteToTalkButton extends Component<Props, State> {
           isMissing={this.isMissing()}
           width={900}
           height={500}
-          contentHeight="400px"
+          contentHeight="350px"
           title={this.state.content.hostingChannel 
-            ? "Invite " + this.props.profile.full_name + " to talk within " + this.state.content.hostingChannel.name
+            ? "Invite " + this.props.profile.full_name + " to talk within " + "'" + this.state.content.hostingChannel.name + "'"
             : "Invite " + this.props.profile.full_name + " to give a talk"}
         >
 
@@ -194,7 +199,7 @@ export default class InviteToTalkButton extends Component<Props, State> {
                   this.toggleCreateChannelOverlay();
                 }}
                 visible={true}
-                user={this.props.invitingUser}
+                user={this.state.invitingUser}
                 />
               )}
 
@@ -205,13 +210,13 @@ export default class InviteToTalkButton extends Component<Props, State> {
                 {/* select an agora */}
                 Select your hosting channel.
 
-                <Box margin={{ bottom: "15px", left:"8px", top: "8px" }} overflow="scroll">
+                <Box height="80%" margin={{ bottom: "15px", left:"8px", top: "8px" }} overflow="scroll">
                         {this.state.ownedChannels.map((channel: Channel) => (
                             <Box
                               direction="row"
                               gap="xsmall"
                               // align="center"
-                              pad={{ vertical: "3.5px" }}
+                              pad="small"
                               justify="start"
                               onClick={()=>{this.setState(
                                 (prevState: any) => ({
@@ -238,9 +243,9 @@ export default class InviteToTalkButton extends Component<Props, State> {
                                   width={30}
                               />
                               </Box>
-                              <Box justify="center">
+                              <Text size="14px" style={{justifyContent:"center"}}> 
                                   {channel.name}
-                              </Box>
+                              </Text>
                             </Box>
                         ))}
                       </Box>
@@ -251,15 +256,8 @@ export default class InviteToTalkButton extends Component<Props, State> {
           {(this.state.content.hostingChannel) && (
             <OverlaySection>
               <Box width="100%" gap="2px">
-                <TextInput
-                  placeholder="Prefered dates (if any)"
-                  value={this.state.content.date}
-                  onChange={(e: any) => this.handleInput(e, "date")}
-                  />
-              </Box>
-              <Box width="100%" gap="2px">
                 <TextArea
-                  placeholder={"Your message"}
+                  placeholder={"Your message to " + this.props.profile.full_name}
                   value={this.state.content.message}
                   onChange={(e: any) => this.handleInput(e, "message")}
                   rows={8}
@@ -267,7 +265,14 @@ export default class InviteToTalkButton extends Component<Props, State> {
               </Box>
               <Box width="100%" gap="2px">
                 <TextInput
-                  placeholder="Contact email"
+                  placeholder="Talk dates (if any)"
+                  value={this.state.content.date}
+                  onChange={(e: any) => this.handleInput(e, "date")}
+                  />
+              </Box>
+              <Box width="100%" gap="2px">
+                <TextInput
+                  placeholder={"Contact email to which " + this.props.profile.full_name + " will answer"}
                   value={this.state.content.contactEmail}
                   onChange={(e: any) => this.handleInput(e, "contactEmail")}
                   />

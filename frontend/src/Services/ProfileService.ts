@@ -5,13 +5,27 @@ import { Topic } from "./TopicService";
 import { User } from "./UserService";
 
 
-const getAllPublicProfiles = (callback: any) => {
-  axios
-    .get(baseApiUrl + "/profiles/public")
-    .then((response) => {
-      callback(response.data);
-    })
-    .catch((error) => console.error(error));
+const getAllPublicProfiles = (
+  limit: number,
+  offset: number,
+  callback: any
+) => {
+  get(
+    `profiles/public?limit=${limit}&offset=${offset}`,
+    callback
+  );
+};
+
+const getPublicProfilesByTopicRecursive = (
+  topicId: number,
+  limit: number,
+  offset: number,
+  callback: any
+) => {
+  get(
+    `profiles/public/topic?topicId=${topicId}&limit=${limit}&offset=${offset}`,
+    callback
+  );
 };
 
 const getProfile = (userId: number, callback: any) => {
@@ -22,6 +36,7 @@ const updateProfile = (
   userId: number,
   open_give_talk: boolean,
   twitter_handle: string,
+  google_scholar_link: string,
   topic_id_1: number,
   topic_id_2: number,
   topic_id_3: number,
@@ -33,6 +48,7 @@ const updateProfile = (
       user_id: userId,
       open_give_talk: open_give_talk,
       twitter_handle: twitter_handle,
+      google_scholar_link: google_scholar_link,
       topic_id_1: topic_id_1,
       topic_id_2: topic_id_2,
       topic_id_3: topic_id_3,
@@ -41,16 +57,71 @@ const updateProfile = (
   );
 }
 
-const getPapers = (userId: number, callback: any) => {
-  get(`profiles/papers/id=${userId}`, callback);
+const getPresentations = (userId: number, callback: any) => {
+  get(`profiles/presentations/id=${userId}`, callback);
 }
 
-const updatePapers = (userId: number, papers: Paper[], callback: any) => {
+const updateDetails = (userId: number, dbKey: string, value: string, callback: any) => {
+  post(
+    "profiles/details/update",
+    {
+      user_id: userId,
+      dbKey: dbKey,
+      value: value,
+    },
+    callback
+  )
+}
+
+const updatePaper = (userId: number, paper: Paper, callback: any) => {
   post(
     "profiles/papers/update",
     {
       user_id: userId,
-      papers: papers,
+      paper: paper,
+    },
+    callback
+  );
+}
+
+const updatePresentation = (userId: number, presentation: Presentation, now: string, callback: any) => {
+  post(
+    "profiles/presentations/update",
+    {
+      user_id: userId,
+      presentation: presentation,
+      now: now,
+    },
+    callback
+  );
+}
+
+const updateBio = (userId: number, bio: string, callback: any) => {
+  post(
+    "profiles/bio/update",
+    {
+      user_id: userId,
+      bio: bio,
+    },
+    callback
+  );
+}
+
+const deletePaper = (paper_id: number, callback: any) => {
+  post(
+    "profiles/papers/delete",
+    {
+      paper_id: paper_id,
+    },
+    callback
+  );
+}
+
+const deletePresentation = (presentation_id: number, callback: any) => {
+  post(
+    "profiles/presentations/delete",
+    {
+      presentation_id: presentation_id,
     },
     callback
   );
@@ -86,6 +157,40 @@ const sendTalkInvitation = (invitingUserid: number, invitedUserid: number, chann
   );
 }
 
+const uploadProfilePhoto = (userId: number, image: File, callback: any) => {
+  const data = new FormData();
+  data.append("userId", userId.toString());
+  data.append("image", image);
+
+  axios.post(baseApiUrl + "/profiles/photo", data,       {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  }).then(function (response) {
+    callback(response.data);
+  });
+};
+
+const getProfilePhoto = (userId: number, cacheDelay?: number) => {
+  if (cacheDelay) {
+    return baseApiUrl + `/profiles/photo?userId=${userId}&ts=` + cacheDelay;
+  } else {
+    return baseApiUrl + `/profiles/photo?userId=${userId}`;
+  }
+};
+
+const removeProfilePhoto = (userId: number, callback: any) => {
+  axios
+    .delete(
+      baseApiUrl + "/profiles/photo", {
+        data: {userId: userId},
+        headers: {"Access-Control-Allow-Origin": "*"},
+    },)
+    .then(function (response) {
+      callback(response.data);
+    });
+}
+
 export type Profile = {
   user: User;
   full_name: string;
@@ -93,25 +198,47 @@ export type Profile = {
   open_give_talk: boolean; 
   topics: Topic[];
   tags: string[];
-  papers: string[];
-  twitter_handle?: string
+  papers: Paper[];
+  presentations: Presentation[];
+  twitter_handle?: string;
+  google_scholar_link?: string;
 };
 
 export type Paper = {
+  id: number;
   title: string;
   authors: string;
   publisher: string;
   link: string;
-  number: number;
+  year: string;
+}
+
+export type Presentation = {
+  id: number;
+  user_id: number;
+  title: string;
+  description: string;
+  link: string;
+  duration: number;
+  date_created: string;
 }
 
 export const ProfileService = {
   // PROFILE MANAGEMENT
   getAllPublicProfiles,
+  getPublicProfilesByTopicRecursive,
   getProfile,
   updateProfile,
-  getPapers,
-  updatePapers,
+  updateDetails,
+  updateBio,
+  uploadProfilePhoto,
+  getProfilePhoto,
+  removeProfilePhoto,
+  updatePaper,
+  deletePaper,
+  getPresentations,
+  updatePresentation,
+  deletePresentation,
   getTags,
   updateTags,
 
