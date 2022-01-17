@@ -195,22 +195,32 @@ def refreshAccessToken():
 
 @app.route('/users/email_change_password_link', methods=["POST"])
 def generateChangePasswordLink():
-    logRequest(request)
-    # generate link
-    params = request.json
-    username = params["username"]
-    user = users.getUser(params["username"])
-    code = users.encodeAuthToken(user["id"], "changePassword")
-    link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
-    
-    # email link
-    msg = Message('mora.stream: password reset', sender = 'team@agora.stream', recipients = [user["email"]])
-    msg.body = f'Password reset link: {link}'
-    msg.subject = "mora.stream: password reset"
-    mail.send(msg)
+    try:
+        logRequest(request)
+        params = request.json
+        usernameOrEmail = params["usernameOrEmail"]
 
-    app.logger.debug(f"User {username} requested link to change password")
-    return "ok"
+        # get username if email address
+        if "@" in usernameOrEmail:
+            user = users.getUserByEmail(usernameOrEmail)
+        else:
+            user = users.getUser(usernameOrEmail)
+
+        # generate link
+        code = users.encodeAuthToken(user["id"], "changePassword")
+        link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
+
+        # email link
+        msg = Message('mora.stream: password reset', sender = 'noreply@mora.stream', recipients = [user["email"]])
+        msg.body = f'Password reset link: {link}'
+        msg.subject = "mora.stream: password reset"
+        mail.send(msg)
+
+        app.logger.debug(f"User '{usernameOrEmail}' requested link to change password")
+        return "ok"
+
+    except Exception as e:
+        return 404, "Error" + str(e)
 
 @app.route('/users/change_password', methods=["POST"])
 def changePassword():
