@@ -19,6 +19,9 @@ interface State {
   showModal: boolean;
   error: string;
   username: string;
+  fullName: string;
+  position: string;
+  institution: string;
   password: string;
   confirmPassword: string;
   email: string;
@@ -35,6 +38,9 @@ export default class SignUpButton extends Component<Props, State> {
       showModal: false,
       error: "",
       username: "",
+      fullName: "",
+      position: "",
+      institution: "",
       password: "",
       confirmPassword: "",
       email: "",
@@ -45,21 +51,19 @@ export default class SignUpButton extends Component<Props, State> {
   }
 
   onSubmit = () => {
-      
-    console.log("channelID: " + this.props.channelId)
     UserService.register(
       this.state.username,
       this.state.password,
       this.state.email,
       this.props.channelId !== undefined ? this.props.channelId : NaN ,
-      (result: string) => {
-        // console.log(result);
-        console.log("channelID: " + this.props.channelId)
-        if (result === "ok") {
+      (result: {status: string, userId: number}) => {
+        if (result.status === "ok") {
+          console.log("SIDIDID", result.userId)
           this.toggleModal();
           this.props.callback();
         } else {
-          this.setState({ error: result });
+          console.log("errrrrr", result.status)
+          this.setState({ error: result.status });
         }
       }
     );
@@ -73,6 +77,9 @@ export default class SignUpButton extends Component<Props, State> {
   isComplete = () => {
     return (
       this.state.username !== "" &&
+      this.state.fullName !== "" &&
+      this.state.position !== "" &&
+      this.state.institution !== "" &&
       this.state.password !== "" &&
       this.state.confirmPassword === this.state.password &&
       this.isValidEmail(this.state.email)
@@ -102,8 +109,8 @@ export default class SignUpButton extends Component<Props, State> {
           <Text size={this.state.textSize} weight="bold"> {this.props.text ? this.props.text : "Sign up"} </Text>
         </Box>
         <Overlay
-          width={400}
-          height={this.state.error !== "" ? 600 : 500}
+          width={500}
+          height={this.state.error !== "" ? 680 : 600}
           visible={this.state.showModal}
           title="Sign up"
           onEsc={this.toggleModal}
@@ -112,19 +119,19 @@ export default class SignUpButton extends Component<Props, State> {
           submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
-          contentHeight={this.state.error !== "" ? "450px" : "350px"}
+          contentHeight={this.state.error !== "" ? "530px" : "450px"}
         >
           {this.state.error !== "" && (
             <Box
               style={{ width: "100%" }}
-              background="status-error"
+              background="#DDDDDD"
               round="small"
               pad="small"
               gap="small"
               direction="row"
             >
               <StatusCritical/>
-              <Heading level={5} margin="none" color="white">
+              <Heading level={5} margin="none" color="grey">
                 {/*Error: {this.state.error}*/}
                 Error: Username or email already taken.
               </Heading>
@@ -138,21 +145,33 @@ export default class SignUpButton extends Component<Props, State> {
             pad={{ bottom: "10px" }}
             gap="xsmall"
           >
-            <Box width="100%" gap="5px">
+            <Box width="90%" gap="5px">
               <Text size="14px" color="black" margin={{ bottom: "24px" }}>
-                This account will be associated with you as an individual - so
-                you can choose any username you like. After you've signed up
-                you'll be able to create one or more{" "}
+                This account will be associated with you as an individual. After you've signed up
+                you'll be able to fill your profile and advertise your research.
+                {/*create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
                   <Text color="color1" weight="bold" size="14px">
                     Agoras
                   </Text>
                 </Link>
-                . These are what you'll use to organise talks.
+                . These are what you'll use to organise talks.*/}
               </Text>
               <TextInput
                 placeholder="Username"
                 onChange={(e) => this.setState({ username: e.target.value })}
+              />
+              <TextInput
+                placeholder="Full name"
+                onChange={(e) => this.setState({ fullName: e.target.value })}
+              />
+              <TextInput
+                placeholder="Position"
+                onChange={(e) => this.setState({ position: e.target.value })}
+              />
+              <TextInput
+                placeholder="Institution"
+                onChange={(e) => this.setState({ institution: e.target.value })}
               />
               <TextInput
                 placeholder="Email"

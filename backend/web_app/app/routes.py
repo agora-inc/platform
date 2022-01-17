@@ -134,18 +134,24 @@ def addUser():
     if request.method == "OPTIONS":
         return jsonify("ok")
 
-    logRequest(request)
-
+    logRequest(request)    
     params = request.json
     username = params['username']
     password = params['password']
     email = params['email']
-    refChannel = params['channelId']
+    refChannel = params['refChannel']
+    with open(f"/home/cloud-user/test/stan1.txt", "w") as file:
+        file.write(str(params))
     user = users.addUser(username, password, email, refChannel)
+    with open(f"/home/cloud-user/test/stan2.txt", "w") as file:
+        file.write(str(user))
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
         return user
+
+    with open(f"/home/cloud-user/test/stan3.txt", "w") as file:
+        file.write("ok")
 
     try:
         invitations.transfertInvitedMembershipsToUser(user, email)
@@ -158,6 +164,9 @@ def addUser():
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
+
+    with open(f"/home/cloud-user/test/stan4.txt", "w") as file:
+        file.write("ok")
 
     return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
 
