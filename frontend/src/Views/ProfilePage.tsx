@@ -15,9 +15,10 @@ import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
 import { DetailsEntry } from "../Components/Profile/DetailsEntry";
 
+import InviteToTalkButton from "../Components/Profile/InviteToTalkButton";
 
 interface Props {
-  location: { pathname: string };
+  location: { pathname: string }
 }
 
 const ProfilePage = (props: Props) => {

@@ -5,8 +5,9 @@
 from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
+from mailing.sendgridApi import sendgridApi
 
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, TwitterBotRepository
 from repository import EmailRemindersRepository, ChannelSubscriptionRepository, ProfileRepository
 from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository
 from repository import CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
@@ -41,7 +42,8 @@ products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
-RSScraper = RSScraperRepository.RSScraperRepository()
+# RSScraper = RSScraperRepository.RSScraperRepository()
+tweets = TwitterBotRepository.TwitterBotRepository()
 
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://mora.stream/"
@@ -266,6 +268,29 @@ def getPublicProfilesByTopicRecursive():
 def getProfile():    
     id = int(request.args.get("id"))
     return jsonify(profiles.getProfile(id))
+
+@app.route('/profiles/invitation/speaker', methods=["POST", "OPTIONS"])
+def inviteToTalk():    
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    else:
+        try:
+            params = request.json
+            inviting_user_id = params["inviting_user_id"]
+            invited_user_id = params["invited_user_id"]
+            channel_id = params["channel_id"]
+            date = params["date"]
+            message = params["message"]
+            contact_email = params["contact_email"]
+            presentation_name = params["presentation_name"]
+
+            # SEND EMAIL SENDGRID
+            res = profiles.inviteToTalk(
+                inviting_user_id, invited_user_id, channel_id, date, message, contact_email, presentation_name
+            )
+            return res
+        except Exception as e:
+            return 404, "Error: " + str(e)
 
 @app.route('/profiles/details/update', methods=["POST"])
 def updateDetails():

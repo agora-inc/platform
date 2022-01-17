@@ -193,6 +193,7 @@ class TalkRepository:
             talk["topics"] = self.topics.getTopicsOnTalk(talk["id"])
         return (talks, len(talks))
 
+
     def getAvailablePastTalks(self, limit, offset, user_id):
         if user_id is None:
             query = f"SELECT * FROM Talks WHERE published = 1 AND card_visibility = 'Everybody' AND recording_link <> '' AND end_date < CURRENT_TIMESTAMP ORDER BY date DESC LIMIT {limit} OFFSET {offset}"
@@ -419,8 +420,15 @@ class TalkRepository:
         except:
             return
 
+    def get_similar_talks_for_channel(self, channelId, channelName, talkName, startDate, endDate, talkDescription,  main_talk_link = True):
+        # print(f'''SELECT COUNT(*) FROM Talks WHERE channel_id = {channelId} AND channel_name = "{channelName}" AND date = "{startDate}" AND end_date ="{endDate}" AND name = "{talkName}" AND description = "{talkDescription}";''')
+        query = f'''SELECT COUNT(*) FROM Talks WHERE channel_id = {channelId} AND channel_name = "{channelName}" AND date = "{startDate}" AND end_date ="{endDate}" AND name = "{talkName}" AND description = "{talkDescription}";'''
+        talks = self.db.run_query(query)
+        if not talks:
+            return 0
+        return talks[0]["COUNT(*)"]
 
-    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup, email_on_creation=True):
+    def scheduleTalk(self, channelId, channelName, talkName, startDate, endDate, talkDescription, talkLink, talkTags, showLinkOffset, visibility, cardVisibility, topic_1_id, topic_2_id, topic_3_id, talk_speaker, talk_speaker_url, published, audience_level, auto_accept_group, auto_accept_custom_institutions, customInstitutionsIds, reminder1, reminder2, reminderEmailGroup, email_on_creation=True, main_talk_link=None):
         query = f'''
             INSERT INTO Talks (
                 channel_id, 
@@ -441,7 +449,8 @@ class TalkRepository:
                 published,
                 audience_level,
                 auto_accept_group, 
-                auto_accept_custom_institutions
+                auto_accept_custom_institutions,
+                main_talk_link
                 ) 
             VALUES (
                 {channelId}, 
@@ -462,7 +471,8 @@ class TalkRepository:
                 {published},
                 "{audience_level}",
                 "{auto_accept_group}", 
-                {auto_accept_custom_institutions}
+                {auto_accept_custom_institutions},
+                "{main_talk_link}"
                 );
             '''
                 

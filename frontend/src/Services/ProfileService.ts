@@ -142,6 +142,22 @@ const updateTags = (userId: number, tags: string[], callback: any) => {
   );
 }
 
+const sendTalkInvitation = (invitingUserid: number, invitedUserid: number, channelId: number, date: string, message: string, contactEmail: string, talk_name: string, callback: any) => {
+  post(
+    "profiles/invitation/speaker",
+    {
+      inviting_user_id: invitingUserid,
+      invited_user_id: invitedUserid,
+      channel_id: channelId,
+      date: date,
+      message: message,
+      contact_email: contactEmail,
+      presentation_name: talk_name
+    },
+    callback
+  );
+}
+
 const uploadProfilePhoto = (userId: number, image: File, callback: any) => {
   const data = new FormData();
   data.append("userId", userId.toString());
@@ -209,6 +225,7 @@ export type Presentation = {
 }
 
 export const ProfileService = {
+  // PROFILE MANAGEMENT
   getAllPublicProfiles,
   getPublicProfilesByTopicRecursive,
   getProfile,
@@ -225,4 +242,7 @@ export const ProfileService = {
   deletePresentation,
   getTags,
   updateTags,
+
+  // COMMUNICATIONS
+  sendTalkInvitation,
 };
