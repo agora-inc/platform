@@ -1,6 +1,5 @@
 import os
 from app.databases import agora_db
-from backend.web_app.repository import ChannelRepository
 from mailing.sendgridApi import sendgridApi
 
 from repository.UserRepository import UserRepository
@@ -16,7 +15,7 @@ class ProfileRepository:
         self.mail_sys = mail_sys
         self.users = UserRepository(db=self.db)
         self.topics = TopicRepository(db=self.db)
-        self.channels = ChannelRepository(db=self.dbs)
+        self.channels = ChannelRepository(db=self.db)
 
     def getProfile(self, user_id):
         query_user = f"SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage FROM Users WHERE id = {user_id};"
@@ -317,3 +316,4 @@ class ProfileRepository:
         recipient_name = invited_user["full_name"]
         channel_name = self.channels.getChannelById(channel_id)["name"]
         return self.mail_sys.invite_user_to_talk(target_email, recipient_name, presentation_name, message, date, contact_email, channel_name)
+    

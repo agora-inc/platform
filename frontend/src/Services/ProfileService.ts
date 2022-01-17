@@ -152,7 +152,7 @@ const sendTalkInvitation = (invitingUserid: number, invitedUserid: number, chann
       date: date,
       message: message,
       contact_email: contactEmail,
-      talk_name: talk_name
+      presentation_name: talk_name
     },
     callback
   );

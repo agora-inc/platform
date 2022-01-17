@@ -5,7 +5,7 @@
 from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
-from backend.web_app.mailing.sendgridApi import sendgridApi
+from mailing.sendgridApi import sendgridApi
 
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, TwitterBotRepository
 from repository import EmailRemindersRepository, ChannelSubscriptionRepository, ProfileRepository
@@ -276,29 +276,21 @@ def inviteToTalk():
     else:
         try:
             params = request.json
-            inviting_user_id = params["invitingUserid"]
-            invited_user_id = params["invitedUserid"]
-            channel_id = params["channelId"]
+            inviting_user_id = params["inviting_user_id"]
+            invited_user_id = params["invited_user_id"]
+            channel_id = params["channel_id"]
             date = params["date"]
             message = params["message"]
-            contact_email = params["contactEmail"]
-            talk_name = params["talk_name"]
+            contact_email = params["contact_email"]
+            presentation_name = params["presentation_name"]
 
             # SEND EMAIL SENDGRID
             res = profiles.inviteToTalk(
-                inviting_user_id, invited_user_id, channel_id, date, message, contact_email, talk_name
+                inviting_user_id, invited_user_id, channel_id, date, message, contact_email, presentation_name
             )
             return res
         except Exception as e:
             return 404, "Error: " + str(e)
-
-
-
-
-
-
-
-
 
 @app.route('/profiles/details/update', methods=["POST"])
 def updateDetails():
