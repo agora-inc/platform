@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Box, Heading, Button, TextInput, Text } from "grommet";
-import { Link } from "react-router-dom";
+import { Link, Route } from "react-router-dom";
 import { StatusCritical } from "grommet-icons";
 import { UserService } from "../../Services/UserService";
 import { Overlay } from "../Core/Overlay";
@@ -61,7 +61,6 @@ export default class SignUpButton extends Component<Props, State> {
       this.props.channelId !== undefined ? this.props.channelId : 0,
       (result: {status: string, userId: number}) => {
         if (result.status === "ok") {
-          console.log("userid", result.userId)
           ProfileService.createProfile(
             result.userId, 
             this.state.fullName, 
