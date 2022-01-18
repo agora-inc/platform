@@ -35,7 +35,7 @@ const register = (
     )
     .then(function (response) {
       localStorage.setItem("user", JSON.stringify(response.data));
-      callback({status: "ok", userId: response.data.userId});
+      callback({status: "ok", userId: response.data.id});
       // getting weird error about expecting no arguments
       window.location.reload(false);
     })

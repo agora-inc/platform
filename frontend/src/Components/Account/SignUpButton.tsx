@@ -61,7 +61,7 @@ export default class SignUpButton extends Component<Props, State> {
       this.props.channelId !== undefined ? this.props.channelId : 0,
       (result: {status: string, userId: number}) => {
         if (result.status === "ok") {
-          console.log("SUERER", result.userId)
+          console.log("userid", result.userId)
           ProfileService.createProfile(
             result.userId, 
             this.state.fullName, 
@@ -127,7 +127,7 @@ export default class SignUpButton extends Component<Props, State> {
           submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
-          contentHeight={this.state.error !== "" ? "510px" : "450px"}
+          contentHeight={this.state.error !== "" ? "530px" : "450px"}
         >
           {this.state.error !== "" && (
             <Box
