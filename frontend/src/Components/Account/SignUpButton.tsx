@@ -5,6 +5,7 @@ import { StatusCritical } from "grommet-icons";
 import { UserService } from "../../Services/UserService";
 import { Overlay } from "../Core/Overlay";
 import { Channel, ChannelService } from "../../Services/ChannelService";
+import { ProfileService } from "../../Services/ProfileService";
 
 interface Props {
   channelId?: number;
@@ -55,14 +56,21 @@ export default class SignUpButton extends Component<Props, State> {
       this.state.username,
       this.state.password,
       this.state.email,
-      this.props.channelId !== undefined ? this.props.channelId : NaN ,
+      this.state.position,
+      this.state.institution,
+      this.props.channelId !== undefined ? this.props.channelId : 0,
       (result: {status: string, userId: number}) => {
         if (result.status === "ok") {
-          console.log("SIDIDID", result.userId)
-          this.toggleModal();
-          this.props.callback();
+          console.log("SUERER", result.userId)
+          ProfileService.createProfile(
+            result.userId, 
+            this.state.fullName, 
+            () => {
+              this.toggleModal();
+              this.props.callback();
+            }
+          )
         } else {
-          console.log("errrrrr", result.status)
           this.setState({ error: result.status });
         }
       }
@@ -110,7 +118,7 @@ export default class SignUpButton extends Component<Props, State> {
         </Box>
         <Overlay
           width={500}
-          height={this.state.error !== "" ? 680 : 600}
+          height={this.state.error !== "" ? 660 : 600}
           visible={this.state.showModal}
           title="Sign up"
           onEsc={this.toggleModal}
@@ -119,7 +127,7 @@ export default class SignUpButton extends Component<Props, State> {
           submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
-          contentHeight={this.state.error !== "" ? "530px" : "450px"}
+          contentHeight={this.state.error !== "" ? "510px" : "450px"}
         >
           {this.state.error !== "" && (
             <Box

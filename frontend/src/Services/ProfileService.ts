@@ -32,33 +32,19 @@ const getProfile = (userId: number, callback: any) => {
   get(`profiles/profile?id=${userId}`, callback);
 }
 
-const updateProfile = (
-  userId: number,
-  open_give_talk: boolean,
-  twitter_handle: string,
-  google_scholar_link: string,
-  topic_id_1: number,
-  topic_id_2: number,
-  topic_id_3: number,
-  callback: any,
-) => {
-  post(
-    "profiles/update",
-    {
-      user_id: userId,
-      open_give_talk: open_give_talk,
-      twitter_handle: twitter_handle,
-      google_scholar_link: google_scholar_link,
-      topic_id_1: topic_id_1,
-      topic_id_2: topic_id_2,
-      topic_id_3: topic_id_3,
-    },
-    callback
-  );
-}
-
 const getPresentations = (userId: number, callback: any) => {
   get(`profiles/presentations/id=${userId}`, callback);
+}
+
+const createProfile = (userId: number, fullName: string, callback: any) => {
+  post(
+    "profiles/create",
+    {
+      user_id: userId,
+      full_name: fullName,
+    },
+    callback
+  )
 }
 
 const updateDetails = (userId: number, dbKey: string, value: string, callback: any) => {
@@ -229,7 +215,7 @@ export const ProfileService = {
   getAllPublicProfiles,
   getPublicProfilesByTopicRecursive,
   getProfile,
-  updateProfile,
+  createProfile,
   updateDetails,
   updateBio,
   uploadProfilePhoto,

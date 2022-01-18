@@ -141,22 +141,17 @@ def addUser():
     username = params['username']
     password = params['password']
     email = params['email']
+    position = params['position']
+    institution = params['institution']
     refChannel = params['refChannel']
-    with open(f"/home/cloud-user/test/stan1.txt", "w") as file:
-        file.write(str(params))
-    user = users.addUser(username, password, email, refChannel)
-    with open(f"/home/cloud-user/test/stan2.txt", "w") as file:
-        file.write(str(user))
+    user = users.addUser(username, password, email, position, institution, refChannel)
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
         return user
 
-    with open(f"/home/cloud-user/test/stan3.txt", "w") as file:
-        file.write("ok")
-
     try:
-        invitations.transfertInvitedMembershipsToUser(user, email)
+        invitations.transfertInvitedMembershipsToUser(user["id"], email)
     except:
         # We need to keep trace if an error happens.
         # TODO: add this into logs in a file called "issue to fix manually"
@@ -166,9 +161,6 @@ def addUser():
 
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
-
-    with open(f"/home/cloud-user/test/stan4.txt", "w") as file:
-        file.write("ok")
 
     return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
 
@@ -300,6 +292,11 @@ def inviteToTalk():
             return res
         except Exception as e:
             return 404, "Error: " + str(e)
+
+@app.route('/profiles/create', methods=["POST"])
+def createProfile():
+    params = request.json
+    return jsonify(profiles.createProfile(params['user_id'], params['full_name']))
 
 @app.route('/profiles/details/update', methods=["POST"])
 def updateDetails():

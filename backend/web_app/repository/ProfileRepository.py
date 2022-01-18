@@ -17,6 +17,15 @@ class ProfileRepository:
         self.topics = TopicRepository(db=self.db)
         self.channels = ChannelRepository(db=self.db)
 
+    def createProfile(self, user_id, full_name):
+        query_profile = f"SELECT * FROM Profiles WHERE user_id = {user_id};"
+        profile = self.db.run_query(query_profile)[0]     
+        with open(f"""/home/cloud-user/test/fed.txt""", "w") as file:
+            file.write(str(user_id))   
+        if not profile:
+            query_create = f'''INSERT INTO Profiles (user_id, full_name) VALUES ({user_id}, "{full_name}");'''
+            self.db.run_query(query_create)
+
     def getProfile(self, user_id):
         query_user = f"SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage FROM Users WHERE id = {user_id};"
         user = self.db.run_query(query_user)[0]
