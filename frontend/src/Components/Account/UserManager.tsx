@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Button, Text, TextArea, Layer } from "grommet";
 import {UserSettings} from "grommet-icons";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, Route, Redirect, useHistory } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
 import { ProfileService } from "../../Services/ProfileService";
@@ -51,6 +51,8 @@ export default class UserManager extends Component<Props, State> {
       editingBio: false,
     };
   }
+
+
 
   componentWillMount() {
     this.fetchAdminChannels();
@@ -143,7 +145,7 @@ export default class UserManager extends Component<Props, State> {
     }
   };
 
-  onRedirectProfile = () => {
+  onRedirectProfile = (history: any) => {
     if (this.state.user) {
       let id: number = this.state.user.id
       // createProfile checks if there is a profile associated to the user
@@ -152,7 +154,7 @@ export default class UserManager extends Component<Props, State> {
         this.state.user.id,
         "[your full name]",
         () => {
-          return <Redirect to={'/profile/' + id} />
+          return history.push('/profile/' + id)
         }
       )
     }
@@ -424,20 +426,21 @@ export default class UserManager extends Component<Props, State> {
             justify="center"
             direction="row"
           >
-            <Text textAlign="end" color="red" weight="bold" size="14px" margin={{right: "3px"}}> New! </Text> 
-            <Box
-              background="color5"
-              width="150px"
-              pad="9px" 
-              round="xsmall"
-              onClick={this.onRedirectProfile}
-              align="center"
-              justify="center"
-              hoverIndicator="color1"
-            >
-              
-              <Text size="12px" weight="bold"> View your profile </Text>
-            </Box>
+            <Text textAlign="end" color="red" weight="bold" size="14px" margin={{right: "3px"}}> New! </Text>
+            <Route render={({history}) => ( 
+              <Box
+                background="color5"
+                width="150px"
+                pad="9px" 
+                round="xsmall"
+                onClick={() => this.onRedirectProfile(history)}
+                align="center"
+                justify="center"
+                hoverIndicator="color1"
+              >
+                <Text size="12px" weight="bold"> View your profile </Text>
+              </Box>
+            )} />
           </Box>
         )}
         <hr  
