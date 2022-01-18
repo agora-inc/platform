@@ -68,7 +68,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
           </Box>
         )}
       </Box>
-      <Box height="45%" direction="row" gap="8px" wrap={true} overflow="scroll" margin={{top: "20px"}}>
+      <Box height="45%" direction="row" gap="8px" wrap={true} overflow="auto" margin={{top: "20px"}}>
         {props.profile.tags.slice(0, 5).map((tag: string) => (
           <Box height="18px" background="#EEEEEE" round="xsmall" pad="small" 
             justify="center" margin={{top: "2px", bottom: "2px"}}
@@ -190,7 +190,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
           
           <FooterOverlayProfileCard
             profile={props.profile}
-            presentationName={props.profile.presentations[0].title}
+            presentationName={props.profile.presentations.length > 0 ? props.profile.presentations[0].title : ""}
           />
         </Layer>
       )}
