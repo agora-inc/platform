@@ -368,7 +368,7 @@ const ProfilePage = (props: Props) => {
                           </ReactTooltip>
                         </Box>
                       </Box>
-                      {profile.has_photo && (
+                      {profile.has_photo === 1 && (
                         <Box 
                           style={{ 
                             border: "solid black 1px", cursor: "pointer" 

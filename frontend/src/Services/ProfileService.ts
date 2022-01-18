@@ -181,7 +181,7 @@ const removeProfilePhoto = (userId: number, callback: any) => {
 export type Profile = {
   user: User;
   full_name: string;
-  has_photo: boolean;
+  has_photo: number;
   open_give_talk: boolean; 
   topics: Topic[];
   tags: string[];

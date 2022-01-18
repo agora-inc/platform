@@ -39,7 +39,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
       }}
     >
       <Box height="55%" direction="row" pad="5px">
-        <Box direction="column" width={props.profile.has_photo ? "65%" : "80%"}> 
+        <Box direction="column" width={props.profile.has_photo === 1 ? "65%" : "80%"}> 
           <Text 
             weight="bold" 
             size="14px" 
@@ -58,7 +58,7 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
             {props.profile.user.position}, {props.profile.user.institution}
           </Text>
         </Box> 
-        {props.profile.has_photo && (
+        {props.profile.has_photo === 1 && (
           <Box width="35%">
             <Image 
               style={{position: 'absolute', top: 15, right: 15, aspectRatio: "3/2"}}
