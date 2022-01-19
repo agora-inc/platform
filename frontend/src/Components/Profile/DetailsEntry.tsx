@@ -10,6 +10,7 @@ interface Props {
   value: string | undefined,
   userId: number,
   home: boolean,
+  callback?: any,
 }
 
 export const DetailsEntry = (props: Props) => {
@@ -22,11 +23,11 @@ export const DetailsEntry = (props: Props) => {
       ProfileService.updateDetails(
         props.userId, props.dbKey, value,
         (response: [string, number]) => {
-          console.log("DETAILS: ", response[0], response[1])
           if (response[1] === 400) {
             setValue(props.value ? props.value : "")
             setErrorMsg(response[0])
           } else if (response[1] == 200) {
+            if (props.callback) { props.callback(value) }
             setErrorMsg("")
           }
         }

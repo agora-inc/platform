@@ -62,7 +62,12 @@ export const PresentationEntry = (props: Props) => {
     }
   }
 
+  function isValid(url: string) : boolean {
+    return (url.includes('https://') || url.includes('http://'))
+  }
+
   function paperRedirect(): void {
+    if (isValid(link))
     window.open(link, '_blank');
   }
 
@@ -94,20 +99,30 @@ export const PresentationEntry = (props: Props) => {
             value={description}
             onChange={(e: any) => setDescription(e.target.value)}
           />
-          <Box direction="row" gap="10px" width="90%">
+          <Box direction="row" gap="10px" width="80%" align="center">
             <TextInput
-              style={{width: "80%"}}
+              style={{width: "200px"}}
               placeholder="Link to paper"
               value={link}
               onChange={(e: any) => setLink(e.target.value)}
             />
-            <TextInput
-              style={{width: "50%"}}
-              placeholder="Duration in mins"
-              value={duration}
-              onChange={(e: any) => setDuration(e.target.value)}
-            />
+            <Box direction="row" gap="10px" align="center">
+              <TextInput
+                style={{width: "90px"}}
+                placeholder="Duration"
+                value={duration}
+                onChange={(e: any) => setDuration(e.target.value)}
+              />
+              <Text size="14px">
+                minutes
+              </Text>
+            </Box>
           </Box>
+          {!isValid(link) && link !== "" && (
+            <Text size="11px" color="color3" weight="bold" margin={{top: "-8px"}}>
+              url should start with https://
+            </Text>
+          )}
 
         </Box>
       )}
@@ -156,7 +171,7 @@ export const PresentationEntry = (props: Props) => {
                 width: "20%",
                 border: "1px solid #C2C2C2",
               }}
-              hoverIndicator={true}
+              hoverIndicator={isValid(link) ? true : false}
               align="center"
             >
               <Text color="grey" size="small"> 

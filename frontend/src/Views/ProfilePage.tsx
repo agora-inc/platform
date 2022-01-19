@@ -3,6 +3,7 @@ import { Box, CheckBox, Image, Text } from "grommet";
 import { Workshop, DocumentText, Twitter, Configure } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTooltip from "react-tooltip";
+import Identicon from "react-identicons";
 
 import ImageCropUploader from "../Components/Channel/ImageCropUploader";
 import { BioEntry } from "../Components/Profile/BioEntry";
@@ -121,15 +122,16 @@ const ProfilePage = (props: Props) => {
           align="center"
           justify="between"
         >
-          <Box direction="row" align="center" gap="small" width="55%">
+          <Box direction="row" align="center" gap="30px" width="55%">
             <Box width="150px" height="100px" round="50px"                   
               justify="center" align="center" overflow="hidden">
-              {/*<Image 
-                style={{aspectRatio: "3/2"}}
-                src={getProfilePhotoUrl()}
-                width="150px"
-              /> */}
-              <img width={150} height={100} src={getProfilePhotoUrl()} />
+              {profile.has_photo && (
+                <img width={150} height={100} src={getProfilePhotoUrl()} />
+              )}
+              {!profile.has_photo && (
+                <Identicon string={profile.user.username} size={150} />
+              )}
+              
             </Box>
 
             <Box direction="column" gap="6px" align="start">
@@ -311,6 +313,7 @@ const ProfilePage = (props: Props) => {
                       value={profile.full_name}
                       userId={profile.user.id}
                       home={home}
+
                     />
                     <DetailsEntry
                       title='Academic position'
