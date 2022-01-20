@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, CheckBox, Image, Text } from "grommet";
-import { Workshop, DocumentText, Twitter, Configure } from "grommet-icons";
+import { Workshop, DocumentText, Twitter, Configure, Save } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTooltip from "react-tooltip";
 import Identicon from "react-identicons";
@@ -10,6 +10,7 @@ import { BioEntry } from "../Components/Profile/BioEntry";
 import { PaperEntry } from "../Components/Profile/PaperEntry";
 import { PresentationEntry } from "../Components/Profile/PresentationEntry";
 import { TagsEntry } from "../Components/Profile/TagsEntry";
+import { Topic } from "../Services/TopicService";
 import { User, UserService } from "../Services/UserService";
 import { Paper, Profile, ProfileService, Presentation } from "../Services/ProfileService";
 import Loading from "../Components/Core/Loading";
@@ -17,6 +18,7 @@ import "../Styles/all-profiles-page.css";
 import { DetailsEntry } from "../Components/Profile/DetailsEntry";
 
 import InviteToTalkButton from "../Components/Profile/InviteToTalkButton";
+import TopicSelector from "../Components/Talks/TopicSelector";
 
 interface Props {
   location: { pathname: string }
@@ -26,11 +28,18 @@ const ProfilePage = (props: Props) => {
   const [profile, setProfile] = useState<Profile>();
   const [presentations, setPresentations] = useState<Presentation[]>([]);
   const [papers, setPapers] = useState<Paper[]>([]);
+  const [topics, setTopics] = useState<Topic[]>([])
+  const [isPrevTopics, setIsPrevTopics] = useState<boolean[]>([])
   const [home, setHome] = useState<boolean>(true);
   const [user, setUser] = useState<User>();
 
   useEffect(() => {
     ProfileService.getProfile(getUserIdFromUrl(), setProfile);
+    if (profile) { 
+      setTopics(profile.topics)
+      let c = profile.topics.map((topic: Topic) => topic ? true : false)
+      setIsPrevTopics(c) 
+    }
   }, []);
   useEffect(() => {
     setUser(UserService.getCurrentUser())
@@ -111,6 +120,35 @@ const ProfilePage = (props: Props) => {
 
   function deletePresentation(id: number): void {
     setPresentations(presentations.filter(presentation => presentation.id !== id))
+  }
+
+  function selectTopic(topic: Topic, num: number) : void {
+    let temp = topics;
+    temp[num] = topic;
+    setTopics(temp);
+  }
+
+  function cancelTopic(num: number) : void {
+    let temp = topics;
+    temp[num] = {
+      field: "",
+      id: 0,
+      is_primitive_node: false,
+      parent_1_id: -1,
+      parent_2_id: -1, 
+      parent_3_id: -1,
+    }
+    setTopics(temp)
+  }
+
+  function postTopics(topics: Topic[]) : void {
+    if (profile) {
+      ProfileService.updateTopics(
+        profile.user.id,
+        topics.map((topic: Topic) => topic ? topic.id : null),
+        () => {}
+      )  
+    }
   }
 
   if (profile) {
@@ -239,8 +277,14 @@ const ProfilePage = (props: Props) => {
               {presentations.length !== 0 && (
                 <Box direction="column" gap="48px">
                   {presentations.map((presentation: Presentation, index: number) => (
-                    <PresentationEntry presentation={presentation} home={home} userId={profile.user.id} index={index}
-                      updatePresentation={updatePresentation} deletePresentation={deletePresentation} 
+                    <PresentationEntry 
+                      presentation={presentation} 
+                      home={home} 
+                      profile={profile}
+                      userId={profile.user.id} 
+                      index={index}
+                      updatePresentation={updatePresentation} 
+                      deletePresentation={deletePresentation} 
                     />
                   ))}
                 </Box>
@@ -342,6 +386,35 @@ const ProfilePage = (props: Props) => {
                       value={profile.user.email}
                       userId={profile.user.id}
                       home={home}
+                    />
+                  </Box>
+                  <Box gap="20px">
+                    <Box direction="row" align="center" gap="10px">
+                      <Text size="14px" weight="bold">
+                        Choose your areas of expertise
+                      </Text>
+                      {home && (
+                        <Box
+                          height="30px" pad="5px"
+                          style={{border: "1px solid grey"}} 
+                          round="xsmall"
+                          onClick={() => {
+                            postTopics(topics);
+                            setIsPrevTopics(profile.topics.map((topic: Topic) => topic ? true : false));
+                          }}   
+                        >
+                          <Save size="20px"/>
+                        </Box>
+                      )}
+                    </Box>
+                    <TopicSelector
+                      onSelectedCallback={selectTopic}
+                      onCanceledCallback={cancelTopic}
+                      prevTopics={topics}
+                      isPrevTopics={isPrevTopics} 
+                      size="small"
+                      marginTop="0px"
+                      marginBottom="15px"
                     />
                   </Box>
 

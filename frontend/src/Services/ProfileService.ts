@@ -59,6 +59,17 @@ const updateDetails = (userId: number, dbKey: string, value: string, callback: a
   )
 }
 
+const updateTopics = (userId: number, topicsId: (number | null)[], callback: any) => {
+  post(
+    "profiles/topics/update",
+    {
+      user_id: userId,
+      topicsId: topicsId,
+    },
+    callback
+  )
+}
+
 const updatePaper = (userId: number, paper: Paper, callback: any) => {
   post(
     "profiles/papers/update",
@@ -217,6 +228,7 @@ export const ProfileService = {
   getProfile,
   createProfile,
   updateDetails,
+  updateTopics,
   updateBio,
   uploadProfilePhoto,
   getProfilePhoto,

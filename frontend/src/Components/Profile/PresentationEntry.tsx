@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text, TextInput, TextArea } from "grommet";
-import { Presentation, ProfileService } from "../../Services/ProfileService";
+import { Presentation, Profile, ProfileService } from "../../Services/ProfileService";
 import { Edit, Save, Trash } from "grommet-icons";
+import InviteToTalkButton from "./InviteToTalkButton"
 import { isExportAllDeclaration } from "@babel/types";
 
 
 interface Props {
   presentation: Presentation;
+  profile: Profile;
   index: number;
   home: boolean;
   userId?: number;
@@ -47,8 +49,6 @@ export const PresentationEntry = (props: Props) => {
         duration: duration,
         date_created: renew ? formatDate(now) : formatDate(dateCreated),
       }
-
-      console.log("UPDATE: ", temp_presentation)
 
       ProfileService.updatePresentation(
         props.userId, temp_presentation, formatDate(now),
@@ -168,7 +168,8 @@ export const PresentationEntry = (props: Props) => {
               pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={paperRedirect}
               style={{
-                width: "20%",
+                width: "25%",
+                height: "28px",
                 border: "1px solid #C2C2C2",
               }}
               hoverIndicator={isValid(link) ? true : false}
@@ -188,7 +189,7 @@ export const PresentationEntry = (props: Props) => {
                 round="xsmall"
                 pad={{ vertical: "2px", horizontal: "xsmall" }}
                 onClick={() => {}}
-                style={{ width: "35%" }}
+                style={{ width: "35%", height: "28px" }}
                 hoverIndicator={false}
                 align="center"
               >
@@ -204,7 +205,7 @@ export const PresentationEntry = (props: Props) => {
                 round="xsmall"
                 pad={{ vertical: "2px", horizontal: "xsmall" }}
                 onClick={() => updatePresentation(true)}
-                style={{ width: "35%" }}
+                style={{ width: "35%", height: "28px" }}
                 hoverIndicator={true}
                 align="center"
               >
@@ -214,20 +215,7 @@ export const PresentationEntry = (props: Props) => {
               </Box>
             )}
             {!props.isOverlay && !props.home && nDaysLeft > 0 && (
-              <Box
-                focusIndicator={false}
-                background="color1"
-                round="xsmall"
-                pad={{ vertical: "2px", horizontal: "xsmall" }}
-                onClick={() => {}}
-                style={{ width: "35%" }}
-                hoverIndicator={true}
-                align="center"
-              >
-                <Text size="small"> 
-                  Contact speaker
-                </Text>
-              </Box>
+              <InviteToTalkButton profile={props.profile} presentationName={title} widthButton="200px" heightButton="28px" />
             )}
             {!props.isOverlay && !props.home && nDaysLeft < 1 && (
               <Box
@@ -236,7 +224,7 @@ export const PresentationEntry = (props: Props) => {
                 round="xsmall"
                 pad={{ vertical: "2px", horizontal: "xsmall" }}
                 onClick={() => {}}
-                style={{ width: "35%" }}
+                style={{ width: "35%", height: "28px" }}
                 align="center"
               >
                 <Text size="small"> 

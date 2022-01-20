@@ -149,6 +149,15 @@ class ProfileRepository:
         update_query = f'''UPDATE Users SET bio="{bio}" WHERE id={user_id};'''
         self.db.run_query(update_query)
 
+    def updateTopics(self, user_id, topics_id):
+        update_query = f'''UPDATE Profiles SET 
+            topic_1_id={topics_id[0]},
+            topic_2_id={topics_id[1]}, 
+            topic_3_id={topics_id[2]}
+            WHERE user_id={user_id}; 
+        '''
+        self.db.run_query(update_query)
+
     def updatePaper(self, user_id, paper):
         if int(paper['id']) > 0:
             update_query = f'''UPDATE ProfilePapers SET

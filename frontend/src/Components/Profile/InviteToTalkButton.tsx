@@ -19,6 +19,7 @@ interface Props {
   profile: Profile;
   presentationName: string;
   widthButton?: string;
+  heightButton?: string;
   textButton?: string;
 }
 
@@ -141,16 +142,16 @@ export default class InviteToTalkButton extends Component<Props, State> {
 
   render() {
     return (
-      <Box>
+      <>
         <Box
           width={this.props.widthButton ? this.props.widthButton : "15vw"}
           data-tip data-for='invite_speaker'
-          margin={{ top: "20px", bottom: "20px" }}
+          // margin={{ top: "20px", bottom: "20px" }}
           onClick={() => this.setState({ showForm: true })}
           background="#0C385B"
           round="xsmall"
           // pad={{bottom: "3px", top: "6px", left: "3px", right: "3px"}}
-          height="40px"
+          height={this.props.heightButton ? this.props.heightButton : "40px"}
           justify="center"
           align="center"
           focusIndicator={false}
@@ -158,7 +159,7 @@ export default class InviteToTalkButton extends Component<Props, State> {
           hoverIndicator="#BAD6DB"
           direction="row"
         >
-          <Workshop style={{marginRight:"5px"}} />
+          <Workshop size="15px" style={{marginRight:"10px"}} />
             {this.props.textButton ? this.props.textButton : "Invite to speak"}
             <ReactTooltip id="invite_speaker" effect="solid">
               {this.props.profile.full_name} is looking to give talks: invite him!
@@ -282,7 +283,7 @@ export default class InviteToTalkButton extends Component<Props, State> {
             )}
 
         </Overlay>
-      </Box>
+      </>
     );
   }
 }

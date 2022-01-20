@@ -176,7 +176,8 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
                   </Text>
                 </Box>
                 <PresentationEntry 
-                  presentation={props.profile.presentations[0]} 
+                  presentation={props.profile.presentations[0]}
+                  profile={props.profile} 
                   index={0}
                   home={false}
                   width="100%"

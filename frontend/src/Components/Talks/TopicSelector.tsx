@@ -20,6 +20,8 @@ interface Props {
   prevTopics: Topic[];
   isPrevTopics: boolean[];
   size?: string;
+  marginTop?: string;
+  marginBottom?: string;
 }
 
 export default class TopicSelector extends Component<Props, State> {
@@ -74,7 +76,6 @@ export default class TopicSelector extends Component<Props, State> {
   };
 
   onFieldChoose = (choice: number, topic: Topic, fieldDepth: number) => {
-    console.log("ON FIELD CHOOSE ", fieldDepth)
     let tempShown = this.state.topicsShown;
     if (topic.id >= 0) {
       tempShown[choice] = fieldDepth + 1;
@@ -170,7 +171,7 @@ export default class TopicSelector extends Component<Props, State> {
           direction="row"
           gap="xsmall"
           align="center"
-          margin={{ bottom: "15px" }}
+          margin={{ bottom: "15px"  }}
         >
           {this.state.topicsShown[choice] > 0 && (
             <Select
@@ -225,7 +226,7 @@ export default class TopicSelector extends Component<Props, State> {
           }}
           hoverIndicator={true}
           align="center"
-          margin={{bottom: "24px"}}   
+          margin={{bottom: this.props.marginBottom ? this.props.marginBottom : "24px"}}   
         >
           <Text color="grey" size="small"> 
             + Add 
@@ -237,7 +238,9 @@ export default class TopicSelector extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="100%" direction="column" margin={{top: "12px"}}>
+      <Box width="100%" direction="column" 
+        margin={{top: this.props.marginTop ? this.props.marginTop : "12px"}}
+      >
         {this.renderTopicChoice(0)}
         {this.renderTopicChoice(1)}
         {this.renderTopicChoice(2)}
