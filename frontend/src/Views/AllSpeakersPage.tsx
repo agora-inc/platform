@@ -44,7 +44,7 @@ const AllSpeakersPage = () => {
         margin={{ top: "10px" }}
       >
         {profiles.map((profile: Profile) => (
-          <ProfileCard profile={profile} width="24%" />
+          <ProfileCard profile={profile} width="26%" />
         ))}
       </Box>
     </Box>

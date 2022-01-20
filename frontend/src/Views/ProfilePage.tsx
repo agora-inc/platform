@@ -168,10 +168,10 @@ const ProfilePage = (props: Props) => {
           <Box direction="row" align="center" gap="30px" width="55%">
             <Box width="150px" height="100px" round="50px"                   
               justify="center" align="center" overflow="hidden">
-              {profile.has_photo && (
+              {profile.has_photo === 1 && (
                 <img width={150} height={100} src={getProfilePhotoUrl()} />
               )}
-              {!profile.has_photo && (
+              {profile.has_photo === 0 && (
                 <Identicon string={profile.user.username} size={150} />
               )}
               

@@ -141,7 +141,7 @@ class ProfileRepository:
         query_presentations = f"""SELECT 
             id, user_id, title, description, link, duration, date_created 
             FROM Presentations 
-            WHERE user_id in {tuple_ids}
+            WHERE user_id in {tuple_ids} 
             ORDER BY Presentations.date_created DESC;
         """
         presentations = self.db.run_query(query_presentations)

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, FunctionComponent } from "react";
 import { Box, Heading, Text, Image, Layer } from "grommet";
 import { Link } from "react-router-dom";
+import Identicon from "react-identicons";
+
+import { Topic } from "../../Services/TopicService";
 import { Paper, Profile, ProfileService } from "../../Services/ProfileService";
 import { FooterOverlayProfileCard } from "./FooterOverlayProfileCard";
 import { PaperEntry } from "./PaperEntry";
@@ -58,18 +61,25 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
             {props.profile.user.position}, {props.profile.user.institution}
           </Text>
         </Box> 
-        {props.profile.has_photo === 1 && (
-          <Box width="35%">
+        <Box width="35%">
+          {props.profile.has_photo === 1 && (
             <Image 
               style={{position: 'absolute', top: 15, right: 15, aspectRatio: "3/2"}}
               src={getProfilePhotoUrl()}
               width="28%"
             />
-          </Box>
-        )}
+          )}
+          {props.profile.has_photo === 0 && (
+            <Box width="28%" style={{position: 'absolute', top: 15, right: 15 }}
+              align="center" justify="center"
+            >
+              <Identicon string={props.profile.user.username} size={75} />
+            </Box>
+          )}
+        </Box>
       </Box>
       <Box height="45%" direction="row" gap="8px" wrap={true} overflow="auto" margin={{top: "20px"}}>
-        {props.profile.tags.slice(0, 5).map((tag: string) => (
+        {props.profile.tags.length > 0 && props.profile.tags.slice(0, 5).map((tag: string) => (
           <Box height="18px" background="#EEEEEE" round="xsmall" pad="small" 
             justify="center" margin={{top: "2px", bottom: "2px"}}
           >
@@ -78,6 +88,17 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
             </Text>
           </Box> 
         ))}
+        {props.profile.tags.length === 0 && props.profile.topics.length > 0 
+          && props.profile.topics.map((topic: Topic) => (
+            <Box height="18px" background="#EEEEEE" round="xsmall" pad="small" 
+            justify="center" margin={{top: "2px", bottom: "2px"}}
+          >
+            <Text size="10px" weight="bold"> 
+              {topic.field}
+            </Text>
+          </Box> 
+          )) 
+        }
       </Box>
 
       {showModal && (
@@ -147,11 +168,21 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
                   </Text>
                 </Box>
               </Box>
-              <Image 
-                style={{position: 'absolute', top: 25, right: 25, aspectRatio: "3/2"}}
-                src={getProfilePhotoUrl()}
-                width="30%"
-              />
+              {props.profile.has_photo === 1 && (
+                <Image 
+                  style={{position: 'absolute', top: 30, right: 30, aspectRatio: "3/2"}}
+                  src={getProfilePhotoUrl()}
+                  width="30%"
+                />
+              )}
+              {props.profile.has_photo === 0 && (
+                <Box width="28%" style={{position: 'absolute', top: 30, right: 30}} 
+                  align="center" justify="center"
+                >
+                  <Identicon string={props.profile.user.username} size={100} />
+                </Box>
+              )}
+
             </Box>
 
             {props.profile.presentations.length === 0 && (
@@ -185,8 +216,22 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
                 />
               </Box>
             )}
-            <TagsEntry tags={props.profile.tags} home={false} hasTitle={false} marginBottom="10px" />
-            
+            {props.profile.tags.length > 0 && (
+              <TagsEntry tags={props.profile.tags} home={false} hasTitle={false} marginBottom="10px" />
+            )}
+            {props.profile.tags.length === 0 && props.profile.topics.length > 0 && (
+              <Box direction="row" gap="8px" wrap={true} overflow="auto" margin={{bottom: "10px"}}>
+                {props.profile.topics.map((topic: Topic) => (
+                  <Box height="18px" background="#EEEEEE" round="xsmall" pad="small" 
+                    justify="center" margin={{top: "2px", bottom: "2px"}}
+                  >
+                    <Text size="10px" weight="bold"> 
+                      {topic.field}
+                    </Text>
+                </Box> 
+                ))}
+              </Box>
+            )}
           </Box>
           
           <FooterOverlayProfileCard
