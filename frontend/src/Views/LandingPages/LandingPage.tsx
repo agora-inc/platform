@@ -13,6 +13,7 @@ import MediaQuery from "react-responsive";
 import ScrollIntoView from 'react-scroll-into-view'
 import ReactTooltip from "react-tooltip";
 import TrendingTalksList from "../../Components/Homepage/TrendingTalksList";
+import { CreatePresentationButton } from "../../Components/Homepage/CreatePresentationButton";
 
 import CreateChannelButton from "../../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../../Components/Channel/CreateChannelButton/CreateChannelOverlay";
@@ -232,7 +233,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
       </Link>
 
-      <Link
+      <CreatePresentationButton />
+
+      {/*<Link
         to={{ pathname: "/organisers" }}
         style={{ textDecoration: "none" }}
         >
@@ -253,7 +256,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Group size="30px" />
           <Text size="18px" margin={{left: "10px"}}> <b>Publish</b>  your seminars</Text>
         </Box>
-      </Link>
+      </Link> */}
     </Box>
     )
   }
