@@ -30,7 +30,7 @@ const ProfilePage = (props: Props) => {
   const [papers, setPapers] = useState<Paper[]>([]);
   const [topics, setTopics] = useState<Topic[]>([])
   const [isPrevTopics, setIsPrevTopics] = useState<boolean[]>([])
-  const [home, setHome] = useState<boolean>(true);
+  const [home, setHome] = useState<boolean>(false);
   const [user, setUser] = useState<User>();
 
   useEffect(() => {

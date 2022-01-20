@@ -165,7 +165,7 @@ export const PresentationEntry = (props: Props) => {
               focusIndicator={false}
               background="white"
               round="xsmall"
-              pad={{ vertical: "2px", horizontal: "xsmall" }}
+              // pad={{ vertical: "2px", horizontal: "xsmall" }}
               onClick={paperRedirect}
               style={{
                 width: "25%",
@@ -174,6 +174,7 @@ export const PresentationEntry = (props: Props) => {
               }}
               hoverIndicator={isValid(link) ? true : false}
               align="center"
+              justify="center"
             >
               <Text color="grey" size="small"> 
                 Link to paper
@@ -192,6 +193,7 @@ export const PresentationEntry = (props: Props) => {
                 style={{ width: "35%", height: "28px" }}
                 hoverIndicator={false}
                 align="center"
+                justify="center"
               >
                 <Text color="black" size="small"> 
                   {nDaysLeft} days until expired
@@ -208,6 +210,7 @@ export const PresentationEntry = (props: Props) => {
                 style={{ width: "35%", height: "28px" }}
                 hoverIndicator={true}
                 align="center"
+                justify="center"
               >
                 <Text size="small"> 
                   Make it visible to organizers 
@@ -226,6 +229,7 @@ export const PresentationEntry = (props: Props) => {
                 onClick={() => {}}
                 style={{ width: "35%", height: "28px" }}
                 align="center"
+                justify="center"
               >
                 <Text size="small"> 
                   Presentation expired 
