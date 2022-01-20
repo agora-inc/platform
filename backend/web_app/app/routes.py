@@ -303,8 +303,10 @@ def updateDetails():
     params = request.json
     return jsonify(profiles.updateDetails(params['user_id'], params['dbKey'], params['value']))
 
-@app.route('/profiles/topics/update', methods=["POST"])
+@app.route('/profiles/topics/update', methods=["POST", "OPTIONS"])
 def updateProfileTopics():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
     params = request.json
     return jsonify(profiles.updateTopics(params['user_id'], params['topicsId']))
 

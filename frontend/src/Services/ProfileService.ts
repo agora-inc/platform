@@ -60,14 +60,21 @@ const updateDetails = (userId: number, dbKey: string, value: string, callback: a
 }
 
 const updateTopics = (userId: number, topicsId: (number | null)[], callback: any) => {
-  post(
-    "profiles/topics/update",
-    {
-      user_id: userId,
-      topicsId: topicsId,
-    },
-    callback
-  )
+  axios
+    .post(
+      baseApiUrl + `/profiles/topics/update`,
+      {
+        user_id: userId,
+        topicsId: topicsId,
+      },
+      { headers: { "Access-Control-Allow-Origin": "*" } }
+    )
+    .then(function (response) {
+      callback("ok");
+    })
+    .catch(function (error) {
+      callback(error.response.data);
+    });
 }
 
 const updatePaper = (userId: number, paper: Paper, callback: any) => {

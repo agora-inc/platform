@@ -150,12 +150,9 @@ class ProfileRepository:
         self.db.run_query(update_query)
 
     def updateTopics(self, user_id, topics_id):
-        update_query = f'''UPDATE Profiles SET 
-            topic_1_id={topics_id[0]},
-            topic_2_id={topics_id[1]}, 
-            topic_3_id={topics_id[2]}
-            WHERE user_id={user_id}; 
-        '''
+        update_query = 'UPDATE Profiles SET ' + \
+            ', '.join([ f'topic_{i+1}_id={topic_id}' for i, topic_id in enumerate(topics_id)]) + \
+            f' WHERE user_id={user_id};' 
         self.db.run_query(update_query)
 
     def updatePaper(self, user_id, paper):

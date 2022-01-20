@@ -35,12 +35,15 @@ const ProfilePage = (props: Props) => {
 
   useEffect(() => {
     ProfileService.getProfile(getUserIdFromUrl(), setProfile);
-    if (profile) { 
-      setTopics(profile.topics)
-      let c = profile.topics.map((topic: Topic) => topic ? true : false)
-      setIsPrevTopics(c) 
-    }
   }, []);
+
+  useEffect(() => {
+    if (profile) {
+      setTopics(profile.topics)
+      setIsPrevTopics(profile.topics.map((topic: Topic) => topic ? true : false)) 
+    }
+  }, [profile])
+  
   useEffect(() => {
     setUser(UserService.getCurrentUser())
   }, []);
@@ -146,7 +149,9 @@ const ProfilePage = (props: Props) => {
       ProfileService.updateTopics(
         profile.user.id,
         topics.map((topic: Topic) => topic ? topic.id : null),
-        () => {}
+        (res: string) => {
+          window.location.reload();
+        }
       )  
     }
   }
@@ -256,6 +261,7 @@ const ProfilePage = (props: Props) => {
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               {home && (
                 <Box
+                  data-tip data-for='add_presentation'
                   focusIndicator={false}
                   background="white"
                   round="xsmall"
@@ -272,6 +278,9 @@ const ProfilePage = (props: Props) => {
                   <Text color="grey" size="small"> 
                     + Add
                   </Text>
+                  <ReactTooltip id="add_presentation" effect="solid">
+                    Adding a presentation to your profile is the best way to get seminar organizers' attention!
+                  </ReactTooltip>
                 </Box>
               )}
               {presentations.length !== 0 && (
@@ -395,16 +404,18 @@ const ProfilePage = (props: Props) => {
                       </Text>
                       {home && (
                         <Box
-                          height="30px" pad="5px"
+                          data-tip data-for="save_topic"
+                          height="24px" pad="4px"
                           style={{border: "1px solid grey"}} 
                           round="xsmall"
-                          onClick={() => {
-                            postTopics(topics);
-                            setIsPrevTopics(profile.topics.map((topic: Topic) => topic ? true : false));
-                          }}   
+                          onClick={() => { postTopics(topics); }}   
                         >
-                          <Save size="20px"/>
+                          <Save size="16px"/>
+                          <ReactTooltip id="save_topic" effect="solid">
+                            Click to save your topics! 
+                          </ReactTooltip>
                         </Box>
+
                       )}
                     </Box>
                     <TopicSelector
@@ -415,6 +426,7 @@ const ProfilePage = (props: Props) => {
                       size="small"
                       marginTop="0px"
                       marginBottom="15px"
+                      isHeader={true}
                     />
                   </Box>
 
