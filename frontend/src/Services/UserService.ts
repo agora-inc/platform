@@ -76,11 +76,11 @@ const getCurrentUser = () => {
   return user ? JSON.parse(user) : null;
 };
 
-const emailChangePasswordLink = (username: string, callback: any) => {
+const emailChangePasswordLink = (usernameOrEmail: string, callback: any) => {
   axios
     .post(
       baseApiUrl + "/users/email_change_password_link",
-      { username },
+      { usernameOrEmail },
       {
         headers: {
           "Access-Control-Allow-Origin": "*",

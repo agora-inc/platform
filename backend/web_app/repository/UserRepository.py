@@ -4,12 +4,10 @@ import os
 import jwt
 from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
-
+from app.databases import agora_db
 # for emails
 from flask_mail import Message
 from flask import render_template
-from app.databases import agora_db
-
 
 mail_sys = sendgridApi()
 

@@ -4,14 +4,9 @@
 """ 
 from flask.globals import session
 from app import app, mail
-from app.databases import agora_db
-from mailing.sendgridApi import sendgridApi
-
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, TwitterBotRepository
-from repository import EmailRemindersRepository, ChannelSubscriptionRepository, ProfileRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository
-from repository import CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
-
+# from app.databases import agora_db
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -41,9 +36,13 @@ credits = CreditRepository.CreditRepository()
 products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
+tweets = TwitterBotRepository.TwitterBotRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
+<<<<<<< HEAD
 # RSScraper = RSScraperRepository.RSScraperRepository()
 tweets = TwitterBotRepository.TwitterBotRepository()
+=======
+>>>>>>> c75d6e2f27a27a0ff13119f3c332d3ba94654e97
 
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://mora.stream/"
@@ -203,22 +202,32 @@ def refreshAccessToken():
 
 @app.route('/users/email_change_password_link', methods=["POST"])
 def generateChangePasswordLink():
-    logRequest(request)
-    # generate link
-    params = request.json
-    username = params["username"]
-    user = users.getUser(params["username"])
-    code = users.encodeAuthToken(user["id"], "changePassword")
-    link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
-    
-    # email link
-    msg = Message('mora.stream: password reset', sender = 'team@agora.stream', recipients = [user["email"]])
-    msg.body = f'Password reset link: {link}'
-    msg.subject = "mora.stream: password reset"
-    mail.send(msg)
+    try:
+        logRequest(request)
+        params = request.json
+        usernameOrEmail = params["usernameOrEmail"]
 
-    app.logger.debug(f"User {username} requested link to change password")
-    return "ok"
+        # get username if email address
+        if "@" in usernameOrEmail:
+            user = users.getUserByEmail(usernameOrEmail)
+        else:
+            user = users.getUser(usernameOrEmail)
+
+        # generate link
+        code = users.encodeAuthToken(user["id"], "changePassword")
+        link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
+
+        # email link
+        msg = Message('mora.stream: password reset', sender = 'noreply@mora.stream', recipients = [user["email"]])
+        msg.body = f'Password reset link: {link}'
+        msg.subject = "mora.stream: password reset"
+        mail.send(msg)
+
+        app.logger.debug(f"User '{usernameOrEmail}' requested link to change password")
+        return "ok"
+
+    except Exception as e:
+        return 404, "Error" + str(e)
 
 @app.route('/users/change_password', methods=["POST"])
 def changePassword():
@@ -978,16 +987,9 @@ def getTalkById():
 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
-    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
-    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-
-    try:
-        user_id = int(request.args.get("offset"))
-        return jsonify(talks.getAllFutureTalks(limit, offset, user_id))
-    except:
-        return jsonify(talks.getAllFutureTalks(limit, offset))
+    return jsonify(talks.getAllFutureTalks(limit, offset))
 
 @app.route('/talks/all/current', methods=["GET"])
 def getAllCurrentTalks():
@@ -1042,7 +1044,14 @@ def getAllFutureTalksForTopicWithChildren():
     topicId = int(request.args.get("topicId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllFutureTalksForTopicWithChildren(topicId, limit, offset))
+    return jsonify(talks.getAllTalksForTopicWithChildren(topicId, limit, offset, "future"))
+
+@app.route('/talks/topic/children/past', methods=["GET"])
+def getAllPastTalksForTopicWithChildren():
+    topicId = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(talks.getAllTalksForTopicWithChildren(topicId, limit, offset, "past"))
 
 @app.route('/talks/topic/past', methods=["GET"])
 def getAllPastTalksForTopic():
@@ -1074,8 +1083,7 @@ def getAvailablePastTalks():
     offset = int(request.args.get("offset"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    data = talks.getAvailablePastTalks(limit, offset, user_id)
-    return jsonify({"talks": data[0],"count": data[1]})
+    return jsonify(talks.getAvailablePastTalks(limit, offset, user_id))
 
 @app.route('/talks/channel/available/future', methods=["GET"])
 def getAvailableFutureTalksForChannel():

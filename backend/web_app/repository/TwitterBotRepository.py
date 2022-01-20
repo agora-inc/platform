@@ -1,9 +1,8 @@
 import random
 import logging
 from mailing.sendgridApi import sendgridApi
-from app.databases import agora_db
 import json
-
+from app.databases import agora_db
 
 # DELETE BELOW LINE IN PRODUCTION
 # from TalkRepository import TalkRepository

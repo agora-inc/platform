@@ -1,7 +1,6 @@
 import logging
 from app.databases import agora_db
 
-
 class InstitutionRepository:
     def __init__(self, db=agora_db):
         self.db = db
