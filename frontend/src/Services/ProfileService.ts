@@ -5,13 +5,13 @@ import { Topic } from "./TopicService";
 import { User } from "./UserService";
 
 
-const getAllPublicProfiles = (
+const getAllNonEmptyProfiles = (
   limit: number,
   offset: number,
   callback: any
 ) => {
   get(
-    `profiles/public?limit=${limit}&offset=${offset}`,
+    `profiles/nonempty?limit=${limit}&offset=${offset}`,
     callback
   );
 };
@@ -230,7 +230,7 @@ export type Presentation = {
 
 export const ProfileService = {
   // PROFILE MANAGEMENT
-  getAllPublicProfiles,
+  getAllNonEmptyProfiles,
   getPublicProfilesByTopicRecursive,
   getProfile,
   createProfile,

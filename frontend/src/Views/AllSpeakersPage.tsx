@@ -14,7 +14,7 @@ const AllSpeakersPage = () => {
     if (topic && topic.id > 0) {
       ProfileService.getPublicProfilesByTopicRecursive(topic.id, 50, 0, setProfiles)
     } else {
-      ProfileService.getAllPublicProfiles(50, 0, setProfiles);
+      ProfileService.getAllNonEmptyProfiles(50, 0, setProfiles);
     }
   }, [topic]);
 

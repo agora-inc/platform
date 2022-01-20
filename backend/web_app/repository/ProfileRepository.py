@@ -68,62 +68,68 @@ class ProfileRepository:
 
         return res
 
-    def getAllPublicProfiles(self, limit, offset):
-        query_public_user = "SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage " + \
-            f"FROM Users WHERE public = 1 LIMIT {limit} OFFSET {offset};"
-        users = self.db.run_query(query_public_user)
-        # all ids of public users
-        ids = [user['id'] for user in users]
-        tuple_ids = ProfileRepository.list_to_tuple(ids)
-        # all profiles of public users
-        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle, google_scholar_link FROM Profiles WHERE user_id in {tuple_ids};"
-        profiles = self.db.run_query(query_profiles)
-        # all topics of public users
-        query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
-        topics = self.db.run_query(query_topics)
-        # all papers of public users
+    def getAllNonEmptyProfiles(self, limit, offset):
+        # all papers 
         query_papers = f"""SELECT 
             user_id, id, title, authors, publisher, year, link 
-            FROM ProfilePapers 
-            WHERE user_id in {tuple_ids}
-            ORDER BY ProfilePapers.year DESC;
+            FROM ProfilePapers ORDER BY ProfilePapers.year DESC 
+            LIMIT {limit} OFFSET {offset}; 
         """
         papers = self.db.run_query(query_papers)
-        # all presentations of public users
+        # all presentations
         query_presentations = f"""SELECT 
             id, user_id, title, description, link, duration, date_created 
-            FROM Presentations 
-            WHERE user_id in {tuple_ids} 
-            ORDER BY Presentations.date_created DESC;
+            FROM Presentations ORDER BY Presentations.date_created DESC 
+            LIMIT {limit} OFFSET {offset};
         """
         presentations = self.db.run_query(query_presentations)
-        # all tags of public users
+        
+        # all ids of non empty users 
+        ids = set([paper['user_id'] for paper in papers] + [presentation['user_id'] for presentation in presentations])
+        tuple_ids = ProfileRepository.list_to_tuple(ids)
+
+        # users
+        query_public_user = "SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage " + \
+            f"FROM Users WHERE id in {tuple_ids};"
+        users = self.db.run_query(query_public_user)
+        # profiles
+        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle, google_scholar_link " + \
+            f"FROM Profiles WHERE user_id in {tuple_ids};"
+        profiles = self.db.run_query(query_profiles)
+        # topics
+        query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
+        topics = self.db.run_query(query_topics)
+        # tags
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
         tags = self.db.run_query(query_tags)
 
         return self._queries_to_dict(ids, users, profiles, topics, papers, presentations, tags)
 
-    def getAllPublicProfilesByTopicRecursive(self, topic_id, limit, offset):
+    def getAllProfilesByTopicRecursive(self, topic_id, limit, offset):
         children_topic_ids = str(tuple(self.topics.getAllChildrenIdRecursive(topic_id)))
         # get userId from topics 
         query_user_ids = f"SELECT user_id FROM Profiles WHERE " + \
-            f"(topic_1_id in {children_topic_ids} OR topic_2_id in {children_topic_ids} OR topic_3_id in {children_topic_ids}) LIMIT {limit} OFFSET {offset};"
+            f"(topic_1_id in {children_topic_ids} OR topic_2_id in {children_topic_ids} OR topic_3_id in {children_topic_ids}) " + \
+            f"LIMIT {limit} OFFSET {offset};"
         user_topics_ids = self.db.run_query(query_user_ids)
         user_topics_ids = tuple([e['user_id'] for e in user_topics_ids])
-        # get public users
+        # get users
         query_public_user = "SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage " + \
-            f"FROM Users WHERE id in {user_topics_ids} AND public = 1 LIMIT {limit} OFFSET {offset};"
+            f"FROM Users WHERE id in {user_topics_ids};"
         users = self.db.run_query(query_public_user)
-        # all ids of public users + selected topics
+
+        # all ids of users + selected topics
         ids = [user['id'] for user in users]
         tuple_ids = ProfileRepository.list_to_tuple(ids)
-        # all profiles of public users + selected topics
-        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle, google_scholar_link FROM Profiles WHERE user_id in {tuple_ids};"
+        
+        # all profiles of users + selected topics
+        query_profiles = f"SELECT user_id, full_name, has_photo, open_give_talk, twitter_handle, google_scholar_link " + \
+            f"FROM Profiles WHERE user_id in {tuple_ids};"
         profiles = self.db.run_query(query_profiles)
-        # all topics of public users + selected topics
+        # all topics of users + selected topics
         query_topics = f"SELECT user_id, topic_1_id, topic_2_id, topic_3_id FROM Profiles WHERE user_id in {tuple_ids};"
         topics = self.db.run_query(query_topics)
-        # all papers of public users + selected topics
+        # all papers of users + selected topics
         query_papers = f"""SELECT 
             user_id, id, title, authors, publisher, year, link 
             FROM ProfilePapers 
@@ -131,7 +137,7 @@ class ProfileRepository:
             ORDER BY ProfilePapers.year DESC;
         """
         papers = self.db.run_query(query_papers)
-        # all presentations of public users + selected topics
+        # all presentations of users + selected topics
         query_presentations = f"""SELECT 
             id, user_id, title, description, link, duration, date_created 
             FROM Presentations 
@@ -139,7 +145,7 @@ class ProfileRepository:
             ORDER BY Presentations.date_created DESC;
         """
         presentations = self.db.run_query(query_presentations)
-        # all tags of public users + selected topics
+        # all tags of users + selected topics
         query_tags = f"SELECT user_id, tag FROM ProfileTags WHERE user_id in {tuple_ids};"
         tags = self.db.run_query(query_tags)
 
