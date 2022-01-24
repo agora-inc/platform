@@ -1,9 +1,11 @@
+from statistics import mode
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
 import jwt
 from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
+from repository.AgoraClaimRepository import AgoraClaimRepository, mode
 
 # for emails
 from flask_mail import Message
@@ -23,6 +25,7 @@ class UserRepository:
         self.secret = b'\xccu\x9e2\xda\xe8\x16\x8a\x137\xde@G\xc7T\xf1\x16\xca\x05\xee\xa7\xa4\x98\x05'
         self.mail_sys = mail_sys
         self.institutions = InstitutionRepository(db=self.db)
+        self.claims = AgoraClaimRepository(db = self.db)
         
 
     def getAllUsers(self):
@@ -56,7 +59,7 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username: str, password: str, email: str, channelId: int = 0, mode: str = 'referral'):
+    def addUser(self, username: str, password: str, email: str, channelId: int = 0, mode: mode = mode("", "")):                                                                                                     
         email = str(email).lower()
 
         if self.getUserByEmail(email):
@@ -72,8 +75,8 @@ class UserRepository:
 
         # check if user has been referred by a channel
         # let me know if you also want to add the user as a follower to an agora automatically
-        if(mode == 'referral'):
-            query_channel_id = f"SELECT * FROM Channels WHERE id = {id}"
+        if(mode.getMode() == 'referral'):
+            query_channel_id = f"SELECT * FROM Channels WHERE id = {mode.getCode()}"
             result = self.db.run_query(query_channel_id)
             if result:
                 try:
@@ -99,20 +102,18 @@ class UserRepository:
                 self.channel.increaseChannelReferralCount(channelId)
                 # channel.acceptMembershipApplication(channelId, self.getUserById(username) )
 
-        if(mode == 'claim'):
+        if(mode.getMode() == 'claim'):
             # Update channel owner to userId
-            query_channel_id = f"SELECT * FROM Channels WHERE id = {id}"
-            result = self.db.run_query(query_channel_id)
-            if result:
-                try:
-                    change_owner_query = f'''
-                    UPDATE ChannelUsers
-                        SET user_id = {userId}
-                        WHERE channel_id = {channelId};'''
-                    res = self.db.run_query(change_owner_query)
+            try:
+                change_owner_query = f'''
+                UPDATE ChannelUsers
+                    SET user_id = {userId}
+                    WHERE channel_id = {channelId} and role = "owner";'''
+                res = self.db.run_query(change_owner_query)
+                AgoraClaimRepository.updateAndAssignClaim(mode.getCode())
                 
-                except Exception as e:
-                    print(e)
+            except Exception as e:
+                print(e)
 
 
         # check if user has been invited to some agoras

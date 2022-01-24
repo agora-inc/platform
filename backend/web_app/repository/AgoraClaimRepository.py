@@ -165,3 +165,15 @@ class AgoraClaimRepository():
         else:
             return [i["id"] for i in res]
 
+
+class mode:
+
+    def __init__(self, mode, code) -> None:
+        self.mode = mode
+        self.code = code
+
+    def getMode(self):
+        return self.mode
+
+    def getCode(self):
+        return self.code

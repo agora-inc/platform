@@ -17,6 +17,7 @@ const register = (
   email: string,
   channel_id: number,
   mode: string | undefined,
+  mailToken: string | undefined,
   callback: any
 ) => {
   if(mode !== null)
@@ -24,7 +25,7 @@ const register = (
     axios
     .post(
       baseApiUrl + "/users/add",
-      { username: username, password: password, email: email, channel_id: channel_id, mode: mode },
+      { username: username, password: password, email: email, channel_id: channel_id, mode: mode, mailToken: mailToken },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
