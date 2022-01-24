@@ -6,7 +6,8 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository, AgoraClaimRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository, AgoraClaimRepository,
+from repository.AgoraClaimRepository import mode
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -352,7 +353,7 @@ def addUserToChannel():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+    channels.addUserToChannel(params["userId"], params["channelId"], params["role"], mode(params['mode'], params['code']))
     return jsonify("ok")
 
 
