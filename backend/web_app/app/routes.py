@@ -38,11 +38,6 @@ paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 tweets = TwitterBotRepository.TwitterBotRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
-<<<<<<< HEAD
-# RSScraper = RSScraperRepository.RSScraperRepository()
-tweets = TwitterBotRepository.TwitterBotRepository()
-=======
->>>>>>> c75d6e2f27a27a0ff13119f3c332d3ba94654e97
 
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://mora.stream/"

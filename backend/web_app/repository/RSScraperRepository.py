@@ -107,34 +107,6 @@ class RSScraperRepository():
 		else:
 			# Create channel
 			name = self.driver.find_element_by_xpath("//h1").text
-<<<<<<< HEAD
-			description = self.driver.find_elements_by_xpath("//p")[2:]
-			description = [e.text for e in description if e.text != '']
-			description = '\n'.join(description)
-
-			organisers = self.driver.find_element_by_xpath("//tr[.//*[text()='Organizer:']] | //tr[.//*[text()='Organizers:']] | //tr[.//*[text()='Curator:']] | //tr[.//*[text()='Curators:']]")
-			ids = organisers.find_elements_by_xpath(".//td[2]//a[@href]")
-			contactable_organisers = []
-			for id in ids:
-				organiser_details = {}
-				organiser_details['name'] = id.get_attribute('text')
-				organiser_href = id.get_attribute('href')
-				if('mailto:' in organiser_href):
-					organiser_details['email_address'] = organiser_href[6:]
-				elif('https://' in organiser_href or 'http://' in organiser_href):
-					organiser_details['homepage'] = organiser_href
-				contactable_organisers.append(organiser_details)
-
-			emails = [contact for contact in contactable_organisers if 'email_address' in contact]
-			homepages = [contact for contact in contactable_organisers if 'homepage' in contact]
-
-			contact = None
-			if(len(emails)):
-				contact = emails[0]
-			elif (len(homepages)):
-				contact = homepages[0]
-
-=======
 			# description = self.driver.find_elements_by_xpath("//p")[2:]
 			# description = [e.text for e in description if e.text != '']
 			# description = '\n'.join(description)
@@ -168,7 +140,6 @@ class RSScraperRepository():
 			elif (len(homepages)):
 				contact = homepages[0]
 
->>>>>>> c75d6e2f27a27a0ff13119f3c332d3ba94654e97
 			print(contactable_organisers)
 			print(contact)
 			
@@ -188,7 +159,6 @@ class RSScraperRepository():
 					link = RSScraperRepository._get_href(lst_link, "available")
 				else:
 					link = ""
-<<<<<<< HEAD
 
 				self._logout()
 				return 1, idx, channel['id'], name, link
@@ -196,15 +166,6 @@ class RSScraperRepository():
 				print('Non latin characters detected, not supported by DB')
 				return 0, [], -1, ""
 
-=======
-
-				self._logout()
-				return 1, idx, channel['id'], name, link
-			else:
-				print('Non latin characters detected, not supported by DB')
-				return 0, [], -1, ""
-
->>>>>>> c75d6e2f27a27a0ff13119f3c332d3ba94654e97
 	def get_topic_mapping(topic_str):
 		file = open("repository/topics.txt")
 		contents = file.read()
@@ -339,13 +300,8 @@ class RSScraperRepository():
 		try:
 			print(seminar_url)
 			is_valid, talk_ids, channel_id, channel_name, link = self.create_agora_and_get_talk_ids(seminar_url[0], 360, seminar_url[2])    
-<<<<<<< HEAD
-			# if(len(talk_ids) and is_valid):
-			# 	talks = self.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
-=======
 			if(len(talk_ids) and is_valid):
 				talks = self.parse_create_talks(seminar_url[0],talk_ids,channel_id,channel_name,link,seminar_url[2],'PhD+','Everybody','Everybody')
->>>>>>> c75d6e2f27a27a0ff13119f3c332d3ba94654e97
 		except (AttributeError, TypeError, IndexError, ValueError) as e:
 			print(e)
 
