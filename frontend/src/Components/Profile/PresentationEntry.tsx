@@ -102,7 +102,7 @@ export const PresentationEntry = (props: Props) => {
           <Box direction="row" gap="10px" width="80%" align="center">
             <TextInput
               style={{width: "200px"}}
-              placeholder="Link to paper"
+              placeholder="Link to paper/slides"
               value={link}
               onChange={(e: any) => setLink(e.target.value)}
             />
@@ -177,7 +177,7 @@ export const PresentationEntry = (props: Props) => {
               justify="center"
             >
               <Text color="grey" size="small"> 
-                Link to paper
+                Link
               </Text>
             </Box>
             <Text size="14px"> 
