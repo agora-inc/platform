@@ -75,10 +75,10 @@ export const PresentationEntry = (props: Props) => {
     return d.toISOString().slice(0, 19).replace("T", " ")
   }
 
-  function deletePaper(): void {
+  function deletePresentation(): void {
     if (props.home && props.deletePresentation) {
       props.deletePresentation(id)
-      ProfileService.deletePaper(id, () => {})
+      ProfileService.deletePresentation(id, () => {})
     }
   }
 
@@ -145,7 +145,7 @@ export const PresentationEntry = (props: Props) => {
           margin={{left: "30px"}}
           style={{border: "1px solid grey"}} 
           round="xsmall"
-          onClick={deletePaper}   
+          onClick={deletePresentation}   
         >
           <Trash size="20px"/>
         </Box>

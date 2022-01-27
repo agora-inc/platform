@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Route } from "react-router-dom";
-import { Box, TextInput, TextArea, Text, Layer } from "grommet";
+import { Box, TextInput, TextArea, Text, Layer, Heading } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import ReactTooltip from "react-tooltip";
 import { User,  UserService } from "../../Services/UserService"
 import { Presentation, Profile, ProfileService } from "../../Services/ProfileService";
-import { Workshop } from "grommet-icons";
+import { Workshop, StatusCritical } from "grommet-icons";
 import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 
@@ -26,6 +26,7 @@ export const CreatePresentationButton = () =>  {
   const [password, setPassword] = useState<string>("")
   const [confirmPassword, setConfirmPassword] = useState<string>("")
   const [email, setEmail] = useState<string>("")
+  const [error, setError] = useState<string>("")
 
   useEffect(() => {
     setUser(UserService.getCurrentUser())
@@ -65,6 +66,50 @@ export const CreatePresentationButton = () =>  {
       setShowSignUpOverlay(true)
     }
   };
+
+  function onLogin(history: any): void  {
+    setUser(UserService.getCurrentUser())
+  }
+
+  function onSignup(history: any): void {
+    UserService.register(
+      username,
+      password,
+      email,
+      position,
+      institution,
+      0,
+      (result: {status: string, userId: number}) => {
+        if (result.status === "ok") {
+          let now = new Date;
+          let temp_presentation: Presentation = {
+            id: -1,
+            user_id: result.userId,
+            title: title,
+            description: description,
+            link: link,
+            duration: duration,
+            date_created: formatDate(now),
+          }
+          ProfileService.createProfile(
+            result.userId, 
+            fullName, 
+            () => {
+              ProfileService.updatePresentation(
+                result.userId, temp_presentation, formatDate(now),
+                (id: number) => {
+                  setShowSignUpOverlay(false)
+                  history.push('/profile/' + result.userId)
+                }
+              )
+            }
+          )
+        } else {
+          setError(result.status);
+        }
+      }
+    );
+  }
 
   function isComplete() : boolean {
     return (
@@ -195,6 +240,23 @@ export const CreatePresentationButton = () =>  {
                     </Text>
                   </Box>
                 </Box>
+
+                {error !== "" && (
+                  <Box
+                    style={{ width: "100%" }}
+                    background="#DDDDDD"
+                    round="small"
+                    pad="small"
+                    gap="small"
+                    direction="row"
+                  >
+                    <StatusCritical/>
+                    <Heading level={5} margin="none" color="grey">
+                      {/*Error: {this.state.error}*/}
+                      Error: Username or email already taken.
+                    </Heading>
+                  </Box>
+                )}
                  
                 <Box width="90%" overflow="auto" align="center" gap="5px" margin={{top: "20px"}}  >
                   <Text size="12px" color="black" margin={{ bottom: "12px" }}>
@@ -234,7 +296,19 @@ export const CreatePresentationButton = () =>  {
                 </Box>
                 
                 <Box style={{minHeight: "30px"}} direction="row" alignSelf="end" margin={{top: "15px", bottom: "18px", right: "5%"}}>
-                  <SignUpButton callback={() => {}} />
+                  <Box
+                    onClick={() => onSignup(history)}
+                    background="#0C385B"
+                    hoverIndicator="#BAD6DB"
+                    focusIndicator={false}
+                    align="center"
+                    justify="center"
+                    width="100px"
+                    height="35px"                    
+                    round="xsmall"
+                  >
+                    <Text size="14px" weight="bold"> Sign up </Text>
+                  </Box>
                 </Box>
 
                 <hr  
@@ -258,7 +332,7 @@ export const CreatePresentationButton = () =>  {
                   <Text size="12px" color="black" style={{width: "50%"}} >
                     If you already have an account, log in to save your presentation
                   </Text>
-                  <LoginModal callback={() => {}}/>
+                  <LoginModal callback={() => onLogin(history)}/>
                 </Box>
               </Box>
             </Layer>
