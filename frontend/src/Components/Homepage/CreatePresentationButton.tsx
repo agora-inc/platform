@@ -6,6 +6,8 @@ import ReactTooltip from "react-tooltip";
 import { User,  UserService } from "../../Services/UserService"
 import { Presentation, Profile, ProfileService } from "../../Services/ProfileService";
 import { Workshop } from "grommet-icons";
+import LoginModal from "../Account/LoginModal";
+import SignUpButton from "../Account/SignUpButton";
 
 
 export const CreatePresentationButton = () =>  {
@@ -16,6 +18,14 @@ export const CreatePresentationButton = () =>  {
   const [link, setLink] = useState<string>("")
   const [duration, setDuration] = useState<number>(0)
   const [user, setUser] = useState<User>();
+  // sign up fields
+  const [username, setUsername] = useState<string>("")
+  const [fullName, setFullName] = useState<string>("")
+  const [position, setPosition] = useState<string>("")
+  const [institution, setInstitution] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [confirmPassword, setConfirmPassword] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
 
   useEffect(() => {
     setUser(UserService.getCurrentUser())
@@ -51,6 +61,7 @@ export const CreatePresentationButton = () =>  {
       // If already have an account, log in instead
       // on submit, create an account with all the info, create a profile, create the presentation under that profile
       // redirect to profile page
+      setshowFormOverlay(false)
       setShowSignUpOverlay(true)
     }
   };
@@ -145,26 +156,111 @@ export const CreatePresentationButton = () =>  {
           
           {showSignUpOverlay && (
             <Layer
-                onEsc={() => {
-                  setshowFormOverlay(true)
-                  setShowSignUpOverlay(false)
-                }}
-                onClickOutside={() => {
-                  setshowFormOverlay(true)
-                  setShowSignUpOverlay(false)
-                }}
-                modal
-                responsive
-                animation="fadeIn"
-                style={{
-                  width: 640,
-                  height: 540,
-                  borderRadius: 15,
-                  overflow: "hidden",
-                  alignSelf: "center",
-                }}
-              >
-            
+              onEsc={() => {
+                setshowFormOverlay(true)
+                setShowSignUpOverlay(false)
+              }}
+              onClickOutside={() => {
+                setshowFormOverlay(true)
+                setShowSignUpOverlay(false)
+              }}
+              modal
+              responsive
+              animation="fadeIn"
+              style={{
+                width: 500,
+                height: 640,
+                borderRadius: 15,
+              }}
+            >
+              <Box align="center" width="100%">
+                <Box
+                  justify="start"
+                  width="99.7%"
+                  background="#eaf1f1"
+                  align="center"
+                  direction="row"
+                  style={{
+                    borderTopLeftRadius: "15px",
+                    borderTopRightRadius: "15px",
+                    position: "sticky",
+                    top: 0,
+                    minHeight: "55px",
+                    zIndex: 10,
+                  }}
+                >
+                  <Box pad="30px" alignSelf="center" fill={true}>
+                    <Text size="16px" color="black" weight="bold">
+                      Sign up to save your presentation
+                    </Text>
+                  </Box>
+                </Box>
+                 
+                <Box width="90%" overflow="auto" align="center" gap="5px" margin={{top: "20px"}}  >
+                  <Text size="12px" color="black" margin={{ bottom: "12px" }}>
+                    This account will be associated with you as an individual. After you've signed up
+                    you'll be able to fill your profile and advertise your research.
+                  </Text>
+                  <TextInput
+                    placeholder="Username"
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  <TextInput
+                    placeholder="Full name"
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                  <TextInput
+                    placeholder="Position"
+                    onChange={(e) => setPosition(e.target.value)}
+                  />
+                  <TextInput
+                    placeholder="Institution"
+                    onChange={(e) => setInstitution(e.target.value)}
+                  />
+                  <TextInput
+                    placeholder="Email"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <TextInput
+                    type="password"
+                    placeholder="Password"
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <TextInput
+                    type="password"
+                    placeholder="Confirm password"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </Box>
+                
+                <Box style={{minHeight: "30px"}} direction="row" alignSelf="end" margin={{top: "15px", bottom: "18px", right: "5%"}}>
+                  <SignUpButton callback={() => {}} />
+                </Box>
+
+                <hr  
+                  style={{
+                    width: "90%", 
+                    color: "#EEEEEE", 
+                    borderColor: "#EEEEEE",
+                    backgroundColor: "#EEEEEE"
+                  }} 
+                />
+
+                <Box 
+                  width="90%"
+                  align="center" 
+                  justify="start" 
+                  direction="row" 
+                  margin={{top: "24px", bottom: "20px"}}
+                  gap="27.5%"
+                >
+
+                  <Text size="12px" color="black" style={{width: "50%"}} >
+                    If you already have an account, log in to save your presentation
+                  </Text>
+                  <LoginModal callback={() => {}}/>
+                </Box>
+              </Box>
             </Layer>
           )}
         </>
