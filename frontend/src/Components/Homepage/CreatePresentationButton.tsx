@@ -162,7 +162,7 @@ export const CreatePresentationButton = () =>  {
             width={550}
             height={450}
             contentHeight="300px"
-            title={"Create your first presentation on mora!"}
+            title={"Post your seminar announcement and let organisers invite you!"}
           >
             <Box width="100%" gap="10px" margin={{top: "5px"}}>
               <TextInput

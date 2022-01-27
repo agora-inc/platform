@@ -5,7 +5,7 @@ import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
 import moraStreamFullLettersLogo from "../../assets/general/mora.stream_logo_v2.1.png";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../../Services/UserService";
-import { Search, Java, Play, Add, Chat, Close, ShareOption, SearchAdvanced, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
+import { Search, Java, Play, Add, Chat, Close, Connect, Announce, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
 import UserManager from "../../Components/Account/UserManager";
 import FooterComponent from "../../Components/Homepage/FooterComponent";
 import "../../Styles/landing-page.css";
@@ -169,10 +169,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Watch academic seminars and meet your next teammates! 
+            Boost your academic career, paper citations, and more.
           </Text>
           <Text size="20px">
-            <b>Attend, give, and create virtual or hybrid seminars</b> with academics from all over the world before networking with speakers and audience in a 2D world!
+            <b></b>
+            <b>Attend, give, and organise virtual or hybrid seminars</b> with academics from all over the world before networking with speakers and audience in a 2D world!
           </Text>
           <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
@@ -272,16 +273,16 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Box height="230px" pad="medium" gap="10px">
               <Box direction="row" height="60px" width="100%">
                 <Box width="70px">
-                  <SearchAdvanced size="large"/>
+                  <Announce size="large"/>
                 </Box>
                 <Box height="170px">
                   <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                    Find a talk,
+                    Describe your talk,
                   </Text>
                 </Box>
               </Box>
               <Text size="18px" style={{alignContent: "start"}}> 
-                Browse for seminars as an attendee or apply as a speaker within a community!
+                Briefly describe your incoming talk. Seminar organisers from all around the world will read it!
               </Text>
             </Box>
             <Box height="200px" alignSelf="center" direction="row">
@@ -303,17 +304,18 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Box height="230px" pad="medium" gap="10px">
               <Box direction="row" height="60px" width="100%">
                 <Box width="70px">
-                  <Workshop size="large"/>
+                  <Connect size="large"/>
                 </Box>
                 <Box height="170px">
                   <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                    Attend,
+                    Get invited,
                   </Text>
                 </Box>
               </Box>
               <Box height="170px">
                 <Text size="18px" style={{alignContent: "start"}}>
-                  Seminars can be run online or hybrid with <img src={ZoomLogo} height="14px"/>, <img src={YoutubeLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech sculpted for academics!
+                  {/* Seminars can be run online or hybrid with <img src={ZoomLogo} height="14px"/>, <img src={YoutubeLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech sculpted for academics! */}
+                  Once interested, seminar organisers will not hesitate to contact you to fix a date!
                 </Text>
               </Box>
             </Box>
@@ -339,12 +341,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   <Group size="large"/>
                 </Box>
                 <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Mingle!
+                  Speak and mingle!
                 </Text>
               </Box>
               <Box height="170px">
                 <Text size="18px" style={{alignContent: "start"}}>
-                  Grab an e-coffee in a 2D world and meet with speakers and audience. Many collaborations started around a coffee (mora.stream included)! 
+                  Speak and meet new teammates! Several collaborations started during the post-seminar coffees (mora.stream included)!
                 </Text>
               </Box>
             </Box>
@@ -366,7 +368,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7" weight="bold">empower</Text> attendees, speakers, and organisers with tech</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7" weight="bold">empower</Text> speakers, attendees, and organisers with tech</Text>
 
 
         {!this.state.renderMobileView && 
@@ -427,7 +429,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Join your peers and keep up with the hottest research of the moment!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Grow your network and join a community of influential academics from all around the world!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}
