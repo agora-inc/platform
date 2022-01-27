@@ -169,12 +169,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Boost your academic career, paper citations, and more.
+            Boost your academic career, paper citations, and more. Build a name for yourself.
           </Text>
           <Text size="20px">
             <b></b>
-            <b>Attend, give, and organise virtual or hybrid seminars</b> with academics from all over the world before networking with speakers and audience in a 2D world!
+            <b>Attend, give, and organise academic seminars all around the world</b>.
           </Text>
+          <Text size="20px">Grow your network and meet your future teammates!</Text>
           <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>
@@ -277,12 +278,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 </Box>
                 <Box height="170px">
                   <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                    Describe your talk,
+                    Post,
                   </Text>
                 </Box>
               </Box>
               <Text size="18px" style={{alignContent: "start"}}> 
-                Briefly describe your incoming talk. Seminar organisers from all around the world will read it!
+                Post a brief description of your future talk. Seminar organisers from all around the world will read it!
               </Text>
             </Box>
             <Box height="200px" alignSelf="center" direction="row">
@@ -315,7 +316,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               <Box height="170px">
                 <Text size="18px" style={{alignContent: "start"}}>
                   {/* Seminars can be run online or hybrid with <img src={ZoomLogo} height="14px"/>, <img src={YoutubeLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech sculpted for academics! */}
-                  Once interested, seminar organisers will not hesitate to contact you to fix a date!
+                  Once interested, academic community organisers will contact you to fix a date!
                 </Text>
               </Box>
             </Box>
@@ -429,7 +430,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Grow your network and join a community of influential academics from all around the world!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Join your peers and keep up with the hottest conversations of the moment!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}
@@ -462,6 +463,51 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       
     )
   }
+
+
+callToActionSocial() {
+  return (
+    <>
+      {!this.state.renderMobileView && (
+        <>
+          <Box>
+            <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Built by academics, for academics</Text>
+            <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">mora.stream is built around <b>what our community wants</b>. Sign up, and join the conversation!</Text>
+            
+            <Box align="center" margin={{bottom: "90px"}}>
+                <SignUpButton 
+                  callback={()=>{}}
+                  height="100px"
+                  width="200px"
+                  textSize="18px"
+                />
+            </Box>
+            <Box alignSelf="center" margin={this.state.renderMobileView ? {top: "30px"} : {}}>
+              <InstitutionalUsers/>
+            </Box>
+          </Box>
+        </>
+      )}
+      {this.state.renderMobileView && (
+          <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Come back to this page using a Desktop browser to get started! 🚀</Text>
+      )}
+
+      {this.state.showCreateChannelOverlay && (
+            <CreateChannelOverlay
+              onBackClicked={this.toggleCreateChannelOverlay}
+              onComplete={() => {
+                this.toggleCreateChannelOverlay();
+              }}
+              visible={true}
+              user={this.state.user}
+            />
+          )}
+    </>
+    
+  )
+}
+
+
 
   render() {
     return (
@@ -517,6 +563,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Box>
         </Box>
 
+
+        <Box height="100%" width="100%" background="color5">
+          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+            {this.callToActionSocial()}
+          </Box>
+        </Box>
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />
