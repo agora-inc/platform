@@ -313,16 +313,16 @@ export default class ManageChannelPage extends Component<Props, State> {
 
               <TableRow>
                 <TableCell scope="row">
-                  <Text weight="bold" size="14px"> <img src={moraStreamFullLettersLogo} style={{ height: "14px", marginTop: "1px"}}/> streaming tech </Text>
+                  <Text weight="bold" size="14px"> Streaming tech </Text>
                 </TableCell>
                 <TableCell scope="row">
-                  <Close size="25px" color="red" style={{ alignSelf: "center" }} />
+                  Your own
                 </TableCell>
                 <TableCell scope="row">
-                  <Close size="25px" color="red" style={{ alignSelf: "center" }} />
+                  Your own or <img src={moraStreamFullLettersLogo} style={{ height: "14px", marginTop: "1px"}}/>
                 </TableCell>
                 <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
+                  Your own or <img src={moraStreamFullLettersLogo} style={{ height: "14px", marginTop: "1px"}}/>
                 </TableCell>
                 {this.props.showDemo && (
                   <TableCell scope="row">

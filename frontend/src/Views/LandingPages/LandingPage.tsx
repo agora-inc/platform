@@ -169,13 +169,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Boost your academic career, paper citations, and more. Build a name for yourself.
+            Boost your academic career, paper citations, and more. Make a name for yourself.
           </Text>
           <Text size="20px">
             <b></b>
             <b>Attend, give, and organise academic seminars all around the world</b>.
           </Text>
-          <Text size="20px">Grow your network and meet your future teammates!</Text>
+          <Text size="20px">Let your research be known and grow your network of teammates!</Text>
           <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>
@@ -237,7 +237,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
       <CreatePresentationButton />
 
-      {/*<Link
+      {/* <Link
         to={{ pathname: "/organisers" }}
         style={{ textDecoration: "none" }}
         >
@@ -256,7 +256,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           direction="row"
         >
           <Group size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Publish</b>  your seminars</Text>
+          <Text size="18px" margin={{left: "10px"}}> <b>Organise</b>  your seminars</Text>
         </Box>
       </Link> */}
     </Box>
@@ -283,7 +283,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 </Box>
               </Box>
               <Text size="18px" style={{alignContent: "start"}}> 
-                Post a brief description of your future talk. Seminar organisers from all around the world will read it!
+                Post a brief description of your future talk. Seminar organisers from all around the world will read it for 30 days!
               </Text>
             </Box>
             <Box height="200px" alignSelf="center" direction="row">
@@ -316,7 +316,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               <Box height="170px">
                 <Text size="18px" style={{alignContent: "start"}}>
                   {/* Seminars can be run online or hybrid with <img src={ZoomLogo} height="14px"/>, <img src={YoutubeLogo} height="14px"/> or the <img src={moraStreamFullLettersLogo} height="14px"/> streaming tech sculpted for academics! */}
-                  Once interested, academic community organisers will contact you to fix a date!
+                  During these 30 days, interested seminar organisers will get in touch with you to fix a date!
                 </Text>
               </Box>
             </Box>
@@ -347,7 +347,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Box>
               <Box height="170px">
                 <Text size="18px" style={{alignContent: "start"}}>
-                  Speak and meet new teammates! Several collaborations started during the post-seminar coffees (mora.stream included)!
+                  Present your work and meet new teammates! Several collaborations started right after a seminar (e.g. mora.stream)!
                 </Text>
               </Box>
             </Box>
@@ -388,7 +388,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Text>
             </Box>
             <Text size="18px"> 
-              The whole speaker-community has been matching easy! Speakers can now directly connect with communities by clicking a "Give a talk" button.
+              The whole speaker-community matching has been made easy! Future speakers provide all necessary information when they post their announcement and organisers can easily connect with them.
             </Text>
           </Box>
 
@@ -430,7 +430,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Join your peers and keep up with the hottest conversations of the moment!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Start giving!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}
@@ -508,6 +508,46 @@ callToActionSocial() {
 }
 
 
+calltoActionOrganisers() {
+  return (
+    <>
+      {!this.state.renderMobileView && (
+        <>
+          <Box>
+            <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Are you a seminar organiser?</Text>
+            <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">Organising seminars has now been made easy, from start to finish!</Text>
+            
+            <Box align="center" margin={{bottom: "90px"}}>
+              <Link
+                to={{ pathname: "/organisers" }}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  onClick={this.toggleModal}
+                  background={this.state.colorButton}
+                  round="xsmall"
+                  pad="xsmall"
+                  height="80px"
+                  width="420px"
+                  justify="center"
+                  align="center"
+                  focusIndicator={false}
+                  hoverIndicator={this.state.colorHover}
+                  margin={{ left: "0px" }}
+                  direction="row"
+                >
+                  <Group size="30px" />
+                  <Text size="18px" margin={{left: "10px"}}> <b>Tell me more</b></Text>
+                </Box>
+              </Link>
+            </Box>
+          </Box>
+        </>
+      )}
+    </>
+    
+  )
+}
 
   render() {
     return (
@@ -555,18 +595,22 @@ callToActionSocial() {
             {this.content2()}
           </Box>
         </Box>
-        
 
         <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
-            {this.callToActionEndpage()}
+            {this.callToActionSocial()}
           </Box>
         </Box>
 
+        {/* <Box height="100%" width="100%" background="color5">
+          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+            {this.callToActionEndpage()}
+          </Box>
+        </Box> */}
 
         <Box height="100%" width="100%" background="color5">
-          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
-            {this.callToActionSocial()}
+          <Box width="80%" height={this.state.renderMobileView ? "450px": "400px"} direction="column" alignSelf="center">
+            {this.calltoActionOrganisers()}
           </Box>
         </Box>
 
