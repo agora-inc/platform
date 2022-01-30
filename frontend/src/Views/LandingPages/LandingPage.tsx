@@ -325,7 +325,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", maxWidth:"100%"}}
                   >
-                  <source src="/videos/morastreaming_tech_example.mp4" type="video/mp4"/> 
+                  <source src="/videos/email_received_animation.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
@@ -357,7 +357,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", maxWidth:"100%"}}
                   >
-                  <source src="/videos/cafeteria-agora-minidemo.mp4" type="video/mp4"/> 
+                  <source src="/videos/morastreaming_tech_example.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
