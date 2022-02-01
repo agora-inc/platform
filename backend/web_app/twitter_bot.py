@@ -180,7 +180,6 @@ class TwitterBot:
         got_a_admissible_message = False
         trial = 0
         MAX_NUMBER_TRIAL = 20
-
         while not got_a_admissible_message:
             try:
                 if trial > MAX_NUMBER_TRIAL:

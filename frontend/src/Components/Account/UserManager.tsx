@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Box, Button, Text, TextArea, Layer } from "grommet";
 import {UserSettings} from "grommet-icons";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, Route, Redirect, useHistory } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
+import { ProfileService } from "../../Services/ProfileService";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import DropdownChannelButton from "../Channel/DropdownChannelButton";
 import CreateChannelButton from "../Channel/CreateChannelButton";
@@ -17,8 +18,9 @@ import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import MediaQuery from "react-responsive";
 
 
-const makeProfilePublicInfo =
-  "Making your profile public means that it will be shown in the 'speaker marketplace' feature of the platform, and administrators of relevant agoras may reach out to you about speaking opportunities if you have contact details in your bio. This action can be undone at any time.";
+const makeProfilePublicInfo = "Making your profile public means that it will be shown in the 'speaker marketplace' feature of the platform," + 
+  "and administrators of relevant agoras may reach out to you about speaking opportunities if you have contact details in your bio." + 
+  "This action can be undone at any time.";
 
 interface Props {
   showLogin: boolean;
@@ -49,6 +51,8 @@ export default class UserManager extends Component<Props, State> {
       editingBio: false,
     };
   }
+
+
 
   componentWillMount() {
     this.fetchAdminChannels();
@@ -140,6 +144,21 @@ export default class UserManager extends Component<Props, State> {
       );
     }
   };
+
+  onRedirectProfile = (history: any) => {
+    if (this.state.user) {
+      let id: number = this.state.user.id
+      // createProfile checks if there is a profile associated to the user
+      // if yes, redirect. If no, create and redirect
+      ProfileService.createProfile(
+        this.state.user.id,
+        "[your full name]",
+        () => {
+          return history.push('/profile/' + id)
+        }
+      )
+    }
+  }
 
   menu = () => {
     return this.state.showCreateChannelOverlay ? (
@@ -394,6 +413,44 @@ export default class UserManager extends Component<Props, State> {
             <Text size="14px"> Bookmarks </Text>
           </Link>
         </Box> */}
+        {this.state.user && (
+          <Box
+            margin={{
+              top: "12px",
+              bottom: "12px",
+              left: "small",
+              right: "small",
+            }}
+            gap="small"
+            align="center"
+            justify="center"
+            direction="row"
+          >
+            <Text textAlign="end" color="red" weight="bold" size="14px" margin={{right: "3px"}}> New! </Text>
+            <Route render={({history}) => ( 
+              <Box
+                background="color5"
+                width="150px"
+                pad="9px" 
+                round="xsmall"
+                onClick={() => this.onRedirectProfile(history)}
+                align="center"
+                justify="center"
+                hoverIndicator="color1"
+              >
+                <Text size="12px" weight="bold"> View your profile </Text>
+              </Box>
+            )} />
+          </Box>
+        )}
+        <hr  
+          style={{
+            width: "95%", 
+            color: "#EEEEEE", 
+            borderColor: "#EEEEEE",
+            backgroundColor: "#EEEEEE"
+          }} 
+        />
         <Box
           onClick={() => {
             UserService.logout();

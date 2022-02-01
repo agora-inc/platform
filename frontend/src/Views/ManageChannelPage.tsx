@@ -23,7 +23,7 @@ import ImageUploader from "../Components/Core/ImageUploader";
 import PricingPlans from "../Views/PricingPlans";
 import { baseApiUrl, basePoint } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, Checkmark, 
+import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, Checkmark, DocumentTime,
   MailOption, SettingsOption, Group, DocumentText, Resources, Configure } from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
@@ -36,7 +36,6 @@ import ShareButtons from "../Components/Core/ShareButtons";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
-
 
 interface Props {
   location: any;
@@ -856,7 +855,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 <TabList>
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <Workshop />
+                      <DocumentTime />
                       <Text size="14px"> 
                         Talks 
                       </Text>
@@ -923,12 +922,39 @@ export default class ManageChannelPage extends Component<Props, State> {
                 
 
                 <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-                  <ScheduleTalkButton
-                    margin={{ top: "20px", bottom: "40px" }}
-                    channel={this.state.channel}
-                    user={this.state.user}
-                    onCreatedCallback={this.fetchAllTalks}
-                  />
+                  <Box direction="row">
+                    <ScheduleTalkButton
+                      margin={{ top: "20px", bottom: "40px" }}
+                      channel={this.state.channel}
+                      user={this.state.user}
+                      onCreatedCallback={this.fetchAllTalks}
+                    />
+                    <Link to="/speakers">
+                      <Box
+                        margin={{ top: "20px", bottom: "40px", left: "10px" }}
+                        onClick={() => {
+                        }
+                        }
+                        background="#0C385B"
+                        round="xsmall"
+                        pad={{bottom: "small", top: "small", left: "small", right: "small"}}
+                        height="40px"
+                        width="15vw"
+                        justify="center"
+                        align="center"
+                        focusIndicator={false}
+                        // hoverIndicator="#2433b5"
+                        hoverIndicator="#BAD6DB"
+                        direction="row"
+                      >
+                        <Workshop style={{marginRight:"5px"}} />
+                         Find a speaker
+                      </Box>
+                    </Link>
+                  </Box>
+
+
+
                   <Box
                     width="100%"
                     direction="row"

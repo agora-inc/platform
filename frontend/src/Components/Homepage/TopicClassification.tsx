@@ -85,11 +85,16 @@ export default class TopicClassification extends Component<Props, State> {
   };
 
   render() {
+    let direction : 'row' | 'column' = this.props.searchType === "Speakers" ? "row" : "column"
+    let width : string = this.props.searchType === "Speakers" ? "50%" : "300px"
+    let gap : string = this.props.searchType === "Speakers" ? "20px" : "0px"
     return (
-      <Box width="300px" direction="column">
-        <div 
-          className="classification_box"
-        >
+      <Box 
+        width={width}
+        direction={direction}
+        gap={gap}
+        className="classification_box"
+      > 
         {this.state.topicBeingShown >= 0 && (
           <Select
             options={this.getPrimitiveNodes().concat("All")}
@@ -100,7 +105,7 @@ export default class TopicClassification extends Component<Props, State> {
             }
           />
         )}
-        {this.props.searchType == "Talks"  &&
+        {(this.props.searchType === "Talks" || this.props.searchType === "Speakers") &&
         this.state.topicBeingShown >= 1 && (
           <Select
             options={this.getChildren(
@@ -125,7 +130,6 @@ export default class TopicClassification extends Component<Props, State> {
             }
           />
         )} */}
-        </div>  
       </Box>
     );
   };

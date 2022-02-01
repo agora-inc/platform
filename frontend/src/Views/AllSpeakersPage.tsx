@@ -1,42 +1,53 @@
 import React, { useState, useEffect } from "react";
-import Identicon from "react-identicons";
-
-import { User, UserService } from "../Services/UserService";
-import "../Styles/all-speakers-page.css";
+import { Box, Heading, Text } from "grommet";
+import { ProfileCard } from "../Components/Profile/ProfileCard";
+import TopicClassification from "../Components/Homepage/TopicClassification";
+import { Topic } from "../Services/TopicService";
+import { Profile, ProfileService } from "../Services/ProfileService";
+import "../Styles/all-profiles-page.css";
 
 const AllSpeakersPage = () => {
-  const [speakers, setSpeakers] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [topic, setTopic] = useState<Topic>();
 
   useEffect(() => {
-    UserService.getAllPublicUsers(setSpeakers);
-  });
+    if (topic && topic.id > 0) {
+      ProfileService.getPublicProfilesByTopicRecursive(topic.id, 50, 0, setProfiles)
+    } else {
+      ProfileService.getAllNonEmptyProfiles(50, 0, setProfiles);
+    }
+  }, [topic]);
 
   return (
-    <div className="all-speakers-page">
-      <span className="all-speakers-title">Speakers</span>
-      <div className="all-speakers-grid">
-        {speakers.map((speaker) => (
-          <div className="speaker-card">
-            <div className="speaker-card-header">
-              <div className="speaker-avatar-and-name">
-                <div className="speaker-avatar">
-                  <Identicon string={speaker.username} size={30} />
-                </div>
-                <span className="speaker-name">{speaker.username}</span>
-              </div>
-              {speaker.email && (
-                <a href={`mailto:${speaker.email}`} className="speaker-email">
-                  email
-                </a>
-              )}
-            </div>
-            <div className="speaker-content">
-              <span className="speaker-bio">{speaker.bio}</span>
-            </div>
-          </div>
+    <Box 
+      width="90%" 
+      margin={{ left: "2.5%", top: "6vw" }}
+      gap="30px"
+    >
+      <Heading
+        color="color1"
+        size="24px"
+        margin="none"
+        style={{ height: "20px" }}
+      >
+        Find your speakers
+      </Heading>
+      <TopicClassification 
+        topicCallback={setTopic}
+        searchType="Speakers"
+      />
+      <Box
+        direction="row"
+        gap="1%"
+        wrap
+        // justify="center"
+        margin={{ top: "10px" }}
+      >
+        {profiles.map((profile: Profile) => (
+          <ProfileCard profile={profile} width="26%" />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

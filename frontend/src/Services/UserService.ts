@@ -15,23 +15,32 @@ const register = (
   username: string,
   password: string,
   email: string,
+  position: string,
+  institution: string,
   refChannel: number,
   callback: any
 ) => {
   axios
     .post(
       baseApiUrl + "/users/add",
-      { username: username, password: password, email: email, refChannel: refChannel },
+      { 
+        username: username, 
+        password: password, 
+        email: email, 
+        position: position,
+        institution: institution,
+        refChannel: refChannel,
+      },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
     .then(function (response) {
       localStorage.setItem("user", JSON.stringify(response.data));
-      callback("ok");
+      callback({status: "ok", userId: response.data.id});
       // getting weird error about expecting no arguments
       window.location.reload(false);
     })
     .catch(function (error) {
-      callback(error.response.data);
+      callback({status: error.response.data, userId: -1});
     });
 };
 
@@ -134,6 +143,7 @@ export type User = {
   id: number;
   username: string;
   verified_academic?: boolean;
+  public?: boolean;
   email?: string;
   bio?: string | undefined;
   institution?: string | undefined;

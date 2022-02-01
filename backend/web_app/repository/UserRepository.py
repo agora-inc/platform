@@ -23,7 +23,6 @@ class UserRepository:
         self.mail_sys = mail_sys
         self.institutions = InstitutionRepository(db=self.db)
         
-
     def getAllUsers(self):
         query = "SELECT * FROM Users"
         result = self.db.run_query(query)
@@ -55,7 +54,7 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password, email, channelId = 0):
+    def addUser(self, username, password, email, position, institution, channelId = 0):
         email = str(email).lower()
 
         if self.getUserByEmail(email):
@@ -66,12 +65,15 @@ class UserRepository:
             return "Username already in use", 400
 
         passwordHash = generate_password_hash(password)
-        query = f'INSERT INTO Users(username, password_hash, email) VALUES ("{username}", "{passwordHash}", "{email}")'
+        query = f'''INSERT INTO Users 
+            (username, password_hash, email, position, institution) 
+            VALUES ("{username}", "{passwordHash}", "{email}", "{position}", "{institution}");
+        '''
         userId = self.db.run_query(query)[0]
 
         # check if user has been referred by a channel
         # let me know if you also want to add the user as a follower to an agora automatically
-        query_channel_id = f"SELECT * FROM Channels WHERE id = {id}"
+        query_channel_id = f"SELECT * FROM Channels WHERE id = {channelId}"
         result = self.db.run_query(query_channel_id)
         if result:
             try:
@@ -88,14 +90,15 @@ class UserRepository:
                                 VALUES ({channelId}, 1);
                     '''
                         res = self.db.run_query(initialise_counter_query)
-                        print("this works?")
             
             except Exception as e:
                 print(e)
-            
-        if(self.channels.getChannelById(channelId)):
-            self.channel.increaseChannelReferralCount(channelId)
+                
+        """ (ALAIN:) circular imports, we can't use this.
+        if self.channels.getChannelById(channelId):
+            self.channels.increaseChannelReferralCount(channelId)
             # channel.acceptMembershipApplication(channelId, self.getUserById(username) )
+        """
 
         # check if user has been invited to some agoras
         query_existing_invitations = f'''

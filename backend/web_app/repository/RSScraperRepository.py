@@ -17,6 +17,9 @@ from app.databases import agora_db
 from alphabet_detector import AlphabetDetector
 ad = AlphabetDetector()
 
+from alphabet_detector import AlphabetDetector
+ad = AlphabetDetector()
+
 
 class RSScraperRepository():
 	def __init__(self, db=agora_db):

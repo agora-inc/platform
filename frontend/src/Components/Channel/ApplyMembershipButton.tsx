@@ -197,7 +197,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
           isMissing={this.isMissing()}
           width={900}
           height={400}
-          contentHeight="250px"
+          contentHeight="350px"
           title={"Membership application"}
         >
   

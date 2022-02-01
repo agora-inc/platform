@@ -5,7 +5,7 @@
 from flask.globals import session
 from app import app, mail
 # from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository, ProfileRepository
 from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
@@ -20,6 +20,7 @@ import time
 import stripe
 
 users = UserRepository.UserRepository()
+profiles = ProfileRepository.ProfileRepository()
 tags = TagRepository.TagRepository()
 topics = TopicRepository.TopicRepository()
 questions = QandARepository.QandARepository()
@@ -41,8 +42,8 @@ tweets = TwitterBotRepository.TwitterBotRepository()
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://mora.stream/"
 
-BASE_API_URL = "https://mora.stream/api"
-# BASE_API_URL = "http://localhost:8000/api"
+# BASE_API_URL = "https://mora.stream/api"
+BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
@@ -129,21 +130,22 @@ def addUser():
     if request.method == "OPTIONS":
         return jsonify("ok")
 
-    logRequest(request)
-
+    logRequest(request)    
     params = request.json
     username = params['username']
     password = params['password']
     email = params['email']
-    refChannel = params['channelId']
-    user = users.addUser(username, password, email, refChannel)
+    position = params['position']
+    institution = params['institution']
+    refChannel = params['refChannel']
+    user = users.addUser(username, password, email, position, institution, refChannel)
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
         return user
 
     try:
-        invitations.transfertInvitedMembershipsToUser(user, email)
+        invitations.transfertInvitedMembershipsToUser(user["id"], email)
     except:
         # We need to keep trace if an error happens.
         # TODO: add this into logs in a file called "issue to fix manually"
@@ -236,11 +238,11 @@ def changePassword():
 
 @app.route('/users/update_bio', methods=["POST"])
 def updateBio():
-   authToken = request.headers.get('Authorization').split(" ")[1]
-   userId = users.decodeAuthToken(authToken)
-   params = request.json
-   updatedUser = users.updateBio(userId, params["newBio"])
-   return jsonify(updatedUser)
+    authToken = request.headers.get('Authorization').split(" ")[1]
+    userId = users.decodeAuthToken(authToken)
+    params = request.json
+    updatedUser = users.updateBio(userId, params["newBio"])
+    return jsonify(updatedUser)
 
 @app.route('/users/update_public', methods=["POST"])
 def updatePublic():
@@ -250,6 +252,141 @@ def updatePublic():
     updatedUser = users.updatePublic(userId, params["public"])
     return jsonify(updatedUser)
 
+
+# --------------------------------------------
+# PROFILE ROUTES
+# --------------------------------------------
+@app.route('/profiles/nonempty')
+def getNonEmptyProfiles():
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(profiles.getAllNonEmptyProfiles(limit, offset))
+
+@app.route('/profiles/public/topic')
+def getAllProfilesByTopicRecursive():
+    topic_id = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(profiles.getAllProfilesByTopicRecursive(topic_id, limit, offset))
+
+@app.route('/profiles/profile', methods=["GET"])
+def getProfile():    
+    id = int(request.args.get("id"))
+    return jsonify(profiles.getProfile(id))
+
+@app.route('/profiles/invitation/speaker', methods=["POST", "OPTIONS"])
+def inviteToTalk():    
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    else:
+        try:
+            params = request.json
+            inviting_user_id = params["inviting_user_id"]
+            invited_user_id = params["invited_user_id"]
+            channel_id = params["channel_id"]
+            date = params["date"]
+            message = params["message"]
+            contact_email = params["contact_email"]
+            presentation_name = params["presentation_name"]
+
+            # SEND EMAIL SENDGRID
+            res = profiles.inviteToTalk(
+                inviting_user_id, invited_user_id, channel_id, date, message, contact_email, presentation_name
+            )
+            return res
+        except Exception as e:
+            return 404, "Error: " + str(e)
+
+@app.route('/profiles/create', methods=["POST"])
+def createProfile():
+    params = request.json
+    return jsonify(profiles.createProfile(params['user_id'], params['full_name']))
+
+@app.route('/profiles/details/update', methods=["POST"])
+def updateDetails():
+    params = request.json
+    return jsonify(profiles.updateDetails(params['user_id'], params['dbKey'], params['value']))
+
+@app.route('/profiles/topics/update', methods=["POST", "OPTIONS"])
+def updateProfileTopics():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    params = request.json
+    return jsonify(profiles.updateTopics(params['user_id'], params['topicsId']))
+
+@app.route('/profiles/bio/update', methods=["POST"])
+def updateProfileBio():
+    params = request.json     
+    return jsonify(profiles.updateBio(params['user_id'], params['bio']))
+
+@app.route('/profiles/papers/update', methods=["POST"])
+def updatePaper():
+    params = request.json     
+    return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
+
+@app.route('/profiles/presentations/update', methods=["POST"])
+def updatePresentation():
+    params = request.json     
+    return jsonify(profiles.updatePresentation(params['user_id'], params['presentation'], params['now']))
+
+@app.route('/profiles/photo', methods=["POST", "GET", "DELETE"])
+def profilePhoto():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    if request.method == "POST":
+        logRequest(request)
+        userId = request.form["userId"]
+        file = request.files["image"]
+        fn = f"{userId}.jpg"
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/profiles/{fn}")
+        profiles.addProfilePhoto(userId)
+        
+        app.logger.debug(f"User with id {userId} updated profile photo")
+
+        return jsonify({"filename": fn})
+
+    if request.method == "GET":
+        if "userId" in request.args:
+            userId = int(request.args.get("userId"))
+            fn = profiles.getProfilePhotoLocation(userId)
+            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+
+    if request.method == "DELETE":
+        params = request.json 
+        userId = params["userId"]
+        profiles.removeProfilePhoto(userId)
+
+        app.logger.debug(f"User with id {userId} remove profile photo")
+
+        return jsonify("ok")
+
+@app.route('/profiles/papers/delete', methods=["OPTIONS", "POST"])
+def deletePaper():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    return jsonify(profiles.deletePaper(params['paper_id']))
+
+@app.route('/profiles/presentations/delete', methods=["OPTIONS", "POST"])
+def deletePresentation():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+        
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    return jsonify(profiles.deletePresentation(params['presentation_id']))
+
+@app.route('/profiles/tags/update', methods=["POST"])
+def updateTags():
+    params = request.json     
+    return jsonify(profiles.updateTags(params['user_id'], params['tags']))
 
 # --------------------------------------------
 # CHANNEL ROUTES
