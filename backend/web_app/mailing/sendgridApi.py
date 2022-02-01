@@ -1,5 +1,6 @@
 import requests
 from sendgrid import SendGridAPIClient
+from sendgrid.helpers import mail
 from sendgrid.helpers.mail import Mail
 import datetime
 import math
@@ -319,6 +320,49 @@ class sendgridApi:
             template_id=template_id_12
         )
         return response
+
+    #################################
+    # G. Send claim request #
+    #################################
+    def send_confirmation_agora_claim_request(self, target_email, recipient_name, agora_name, mailToken):
+        template_id_13 = "d-6a860a7691dd4d1783561e60ed96160a"
+        response = self._post_sendgrid_request(
+            target_email = target_email,
+            dynamic_template_data = {
+                    "agora_name": agora_name,
+                    "recipient_name": recipient_name,
+                    "mailToken": mailToken
+                },
+            template_id = template_id_13
+        )
+        return response
+
+    def send_confirmation_agora_claim_request_final(self, target_email, recipient_name, agora_name, mailToken):
+        template_id_14 = "d-f956e41dba094162bbfeed67e3ae4d1c"
+        response = self._post_sendgrid_request(
+            target_email = target_email,
+            dynamic_template_data = {
+                    "agora_name": agora_name,
+                    "recipient_name": recipient_name,
+                    "mailToken": mailToken
+                },
+            template_id = template_id_14
+        )
+        return response
+
+    def send_confirmation_agora_claim_acceptance(self, target_email, recipient_name, agora_name, mailToken):
+        template_id_15 = " d-526162ffe2d946829886ab5f7648ad90"
+        response = self._post_sendgrid_request(
+            target_email = target_email,
+            dynamic_template_data = {
+                    "agora_name": agora_name,
+                    "recipient_name": recipient_name,
+                    "mailToken": mailToken
+                },
+            template_id = template_id_15
+        )
+        return response
+
 #################
 # TESTING CELL: #
 #################

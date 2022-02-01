@@ -5,6 +5,7 @@ import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPages/LandingPage";
 import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
 import ChannelReferralPage from "./Views/ChannelReferralPage";
+import ChannelClaimPage from "./Views/ChannelClaimPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
 import AllSpeakersPage from "./Views/AllSpeakersPage";
@@ -62,6 +63,11 @@ function App() {
           {/* REFERAL ENDPOINT: not deployed yet */}
           {/* <Route path="/referral/channel" component={ChannelReferralPage} /> */}
           {/* <Route path="/referral/user/:userId/" component={UserReferralPage} /> */}
+
+
+          {/* CLAIM ENDPOINT: not deployed yet */}
+          <Route path="/claim/" component={ChannelClaimPage} />
+          
 
           {/* EVENT ENDPOINTS: */}
           <Route path="/:event_id/virtual_meeting" component={AvatarPage} />

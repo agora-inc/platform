@@ -17,10 +17,14 @@ const register = (
   email: string,
   position: string,
   institution: string,
-  refChannel: number,
+  channel_id: number,
+  mode: string | undefined,
+  mailToken: string | undefined,
   callback: any
 ) => {
-  axios
+  if(mode !== null)
+  {
+    axios
     .post(
       baseApiUrl + "/users/add",
       { 
@@ -29,7 +33,9 @@ const register = (
         email: email, 
         position: position,
         institution: institution,
-        refChannel: refChannel,
+        channel_id: channel_id,
+        mode: mode,
+        mailToken: mailToken
       },
       { headers: { "Access-Control-Allow-Origin": "*" } }
     )
@@ -37,11 +43,13 @@ const register = (
       localStorage.setItem("user", JSON.stringify(response.data));
       callback({status: "ok", userId: response.data.id});
       // getting weird error about expecting no arguments
-      window.location.reload(false);
+      window.location.reload();
     })
     .catch(function (error) {
       callback({status: error.response.data, userId: -1});
     });
+  }
+  
 };
 
 const login = (credential: string, password: string, callback: any) => {

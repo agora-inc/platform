@@ -4,9 +4,10 @@
 """ 
 from flask.globals import session
 from app import app, mail
-# from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository, ProfileRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
+from app.databases import agora_db
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository, AgoraClaimRepository,
+from repository.AgoraClaimRepository import mode
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -38,6 +39,9 @@ paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 tweets = TwitterBotRepository.TwitterBotRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
+RSScraper = RSScraperRepository.RSScraperRepository(db=agora_db)
+tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
+claimRepo = AgoraClaimRepository.AgoraClaimRepository(db = agora_db)
 
 # BASE_URL = "http://localhost:3000"
 BASE_URL = "https://mora.stream/"
@@ -137,8 +141,9 @@ def addUser():
     email = params['email']
     position = params['position']
     institution = params['institution']
-    refChannel = params['refChannel']
-    user = users.addUser(username, password, email, position, institution, refChannel)
+    channel_id = params['channelId']
+    mode = params['mode']
+    user = users.addUser(username, password, email, position, institution, channel_id, mode)
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
@@ -496,7 +501,7 @@ def addUserToChannel():
         return exceptions.Unauthorized("Authorization header invalid or not present")
 
     params = request.json
-    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+    channels.addUserToChannel(params["userId"], params["channelId"], params["role"], mode(params['mode'], params['code']))
     return jsonify("ok")
 
 
@@ -547,6 +552,21 @@ def increaseViewCountForChannel():
 def getReferralsForChannel():
     channelId = int(request.args.get("channelId"))
     return jsonify(channels.getChannelReferralCount(channelId))
+
+@app.route('/channels/claimstatus/get', methods=["GET"])
+def getClaimStatusForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelClaimStatus(channelId))
+
+@app.route('/channels/organiseremail/get', methods=["GET"])
+def getOrganiserEmailForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelOrganiserEmail(channelId))
+
+@app.route('/channel/fetchedchannel/get', methods=["GET"])
+def getChannelIDFromMailToken():
+    mailToken = str(request.args.get("mailToken"))
+    return jsonify(channels.getChannelFromMailToken(mailToken))
 
 # don't really think this is needed , but adding this in a comment anyways
 # @app.route('/channels/referrals/add', methods=["POST"])
@@ -2230,3 +2250,25 @@ def publishAllTalks():
     response = jsonify(talks)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
+
+# --------------------------------------------
+# Claim routes
+# --------------------------------------------
+
+@app.route('/claim/')
+
+
+@app.route('channel/claim', methods=["GET","OPTIONS"])
+def claimAgora():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    mailToken = request.args.get("mailToken") if "mailToken" in request.args else None
+    try:
+        if mailToken != None:
+            res = claimRepo.getChannelFromMailToken(mailToken)
+            return jsonify(res)
+
+    except Exception as e:
+        return jsonify(400, str(e))
+    
+    pass

@@ -14,6 +14,9 @@ interface Props {
   height?: string;
   textSize?: string;
   text?: string;
+  // fields for referral and claimTech
+  mode?: string;
+  mailToken?: string;
 }
 
 interface State {
@@ -59,6 +62,8 @@ export default class SignUpButton extends Component<Props, State> {
       this.state.position,
       this.state.institution,
       this.props.channelId !== undefined ? this.props.channelId : 0,
+      this.props.mode !== undefined ? this.props.mode : "",
+      this.props.mailToken !== undefined ? this.props.mailToken : "",
       (result: {status: string, userId: number}) => {
         if (result.status === "ok") {
           ProfileService.createProfile(
