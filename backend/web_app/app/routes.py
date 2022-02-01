@@ -39,11 +39,11 @@ channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionReposito
 tweets = TwitterBotRepository.TwitterBotRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 
-BASE_URL = "http://localhost:3000"
-# BASE_URL = "https://mora.stream/"
+# BASE_URL = "http://localhost:3000"
+BASE_URL = "https://mora.stream/"
 
-# BASE_API_URL = "https://mora.stream/api"
-BASE_API_URL = "http://localhost:8000/api"
+BASE_API_URL = "https://mora.stream/api"
+# BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
