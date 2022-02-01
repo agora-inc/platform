@@ -59,7 +59,8 @@ export default class TalkSharingPage extends Component<Props, State> {
         talk_speaker: "",
         talk_speaker_url: "",
         published: 0,
-        audience_level: "All"
+        audience_level: "All",
+        has_speaker_photo: 0,
       },
       user: UserService.getCurrentUser(),
       available: false,
@@ -72,7 +73,8 @@ export default class TalkSharingPage extends Component<Props, State> {
   }
 
   componentDidMount() {
-    window.scrollTo(0, 0)
+    let scroll_element = window.document.querySelector('.StyledGrommet-sc-19lkkz7-0');
+    (scroll_element as HTMLInputElement).scrollTo(0,0);
   }
 
   componentWillMount() {
@@ -112,13 +114,21 @@ export default class TalkSharingPage extends Component<Props, State> {
     return tiers
   }
 
+  getSpeakerPhotoUrl = (): string | undefined => {
+    return TalkService.getSpeakerPhoto(this.state.talk.id)
+  }
+
   fetchAll = () => {
     let talkId = this.getTalkIdFromUrl();  
     TalkService.getTalkById(talkId, (talk: Talk) => {
+        console.log("sa mere")
+        var polishedTalk = TalkService.polishTalkData(talk, true, true)
+        console.log(polishedTalk)
         this.setState({talk: talk}, 
           () => {
             this.fetchUserInfo();
             this.getChannelSubscriptions();
+            this.setState({talk: TalkService.polishTalkData(this.state.talk, true, true)})
           }
         );
     });
@@ -168,6 +178,8 @@ export default class TalkSharingPage extends Component<Props, State> {
   render() { 
     const talk = this.state.talk;
     var renderMobileView = (window.innerWidth < 800);
+
+    console.log(this.state.talk)
     
       return(
         <>
@@ -189,7 +201,7 @@ export default class TalkSharingPage extends Component<Props, State> {
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
         
-        <Box
+        <Box /* this element is responsible for scrolling */
           margin={{
             top: "10vh", 
             left: "20px", 
@@ -201,110 +213,124 @@ export default class TalkSharingPage extends Component<Props, State> {
             width={renderMobileView ? "100vw" : "60vw"}
             margin={{left: "20px", right: "20px", bottom: "30px"}}
           >
-            <Box 
-              direction="row" 
-              gap="xsmall" 
-              style={{ minHeight: "40px" }}
-            >
-              <Link
-                className="channel"
-                to={`/${this.state.talk.channel_name}`}
-                style={{ textDecoration: "none" }}
-              >
-                <Box
-                  direction="row"
-                  gap="xsmall"
-                  align="center"
-                  round="xsmall"
-                  pad={{ vertical: "6px", horizontal: "6px" }}
+            <Box direction="row" width="100%">
+              <Box direction="column" width={this.state.talk.has_speaker_photo === 1 ? "75%" : "100%"}>
+                <Box 
+                  direction="row" 
+                  gap="xsmall" 
+                  style={{ minHeight: "40px" }}
                 >
-                  <Box
-                    justify="center"
-                    align="center"
-                    background="#efeff1"
-                    overflow="hidden"
-                    style={{
-                        minHeight: 30,
-                        minWidth: 30,
-                        borderRadius: 15,
-                    }}
+                  <Link
+                    className="channel"
+                    to={`/${this.state.talk.channel_name}`}
+                    style={{ textDecoration: "none" }}
                   >
-                    <img
-                      src={ChannelService.getAvatar(
-                          this.state.talk.channel_id
-                      )}
-                      height={30}
-                      width={30}
-                    />
-                  </Box>
-                  <Box justify="between">
-                    <Text weight="bold" size="18px" color="grey">
-                      {this.state.talk.channel_name}
-                    </Text>
-                  </Box>
+                    <Box
+                      direction="row"
+                      gap="xsmall"
+                      align="center"
+                      round="xsmall"
+                      pad={{ vertical: "6px", horizontal: "6px" }}
+                    >
+                      <Box
+                        justify="center"
+                        align="center"
+                        background="#efeff1"
+                        overflow="hidden"
+                        style={{
+                            minHeight: 30,
+                            minWidth: 30,
+                            borderRadius: 15,
+                        }}
+                      >
+                        <img
+                          src={ChannelService.getAvatar(
+                              this.state.talk.channel_id
+                          )}
+                          height={30}
+                          width={30}
+                        />
+                      </Box>
+                      <Box justify="between">
+                        <Text weight="bold" size="18px" color="grey">
+                          {this.state.talk.channel_name}
+                        </Text>
+                      </Box>
+                    </Box>
+                  </Link>
                 </Box>
-              </Link>
-            </Box>
-            <Text
-              weight="bold"
-              size="21px"
-              color="black"
-              style={{
-                minHeight: "50px",
-                maxHeight: "120px",
-                overflowY: "auto",
-              }}
-              margin={{ bottom: "5px", top: "10px" }}
-            >
-              {this.state.talk.name}
-            </Text> 
-
-            {this.state.talk.talk_speaker_url && (
-              <a href={this.state.talk.talk_speaker_url} target="_blank">
-                <Box
-                  direction="row"
-                  gap="small"
-                  onClick={() => {}}
-                  hoverIndicator={true}
-                  pad={{ left: "6px", top: "4px" }}
-                >
-                  <UserExpert size="18px" />
-                  <Text
-                    size="18px"
-                    color="black"
-                    style={{
-                      height: "24px",
-                      overflow: "auto",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    {this.state.talk.talk_speaker
-                      ? this.state.talk.talk_speaker
-                      : "TBA"}
-                  </Text>
-                </Box>
-              </a>
-            )}
-
-            {!this.state.talk.talk_speaker_url && (
-              <Box direction="row" gap="small">
-                <UserExpert size="18px" />
                 <Text
-                  size="18px"
+                  weight="bold"
+                  size="21px"
                   color="black"
                   style={{
-                    height: "30px",
-                    overflow: "auto",
-                    fontStyle: "italic",
+                    minHeight: "50px",
+                    maxHeight: "120px",
+                    overflowY: "auto",
                   }}
-                  margin={{ bottom: "10px" }}
+                  margin={{ bottom: "5px", top: "10px" }}
                 >
-                  {this.state.talk.talk_speaker
-                    ? this.state.talk.talk_speaker
-                    : "TBA"}
-                </Text>
+                  {this.state.talk.name}
+                </Text> 
+
+                {this.state.talk.talk_speaker_url && (
+                  <a href={this.state.talk.talk_speaker_url} target="_blank">
+                    <Box
+                      direction="row"
+                      gap="small"
+                      onClick={() => {}}
+                      hoverIndicator={true}
+                      pad={{ left: "6px", top: "4px" }}
+                    >
+                      <UserExpert size="18px" />
+                      <Text
+                        size="18px"
+                        color="black"
+                        style={{
+                          height: "24px",
+                          overflow: "auto",
+                          fontStyle: "italic",
+                        }}
+                      >
+                        {this.state.talk.talk_speaker
+                          ? this.state.talk.talk_speaker
+                          : "TBA"}
+                      </Text>
+                    </Box>
+                  </a>
+                )}
+
+                {!this.state.talk.talk_speaker_url && (
+                  <Box direction="row" gap="small">
+                    <UserExpert size="18px" />
+                    <Text
+                      size="18px"
+                      color="black"
+                      style={{
+                        height: "30px",
+                        overflow: "auto",
+                        fontStyle: "italic",
+                      }}
+                      margin={{ bottom: "10px" }}
+                    >
+                      {this.state.talk.talk_speaker
+                        ? this.state.talk.talk_speaker
+                        : "TBA"}
+                    </Text>
+                  </Box>
+                )}
               </Box>
-            )}
+              
+              {this.state.talk.has_speaker_photo === 1 && (
+                <Box width="25%" align="end">
+                  <Image 
+                    style={{position: 'relative', top: 10, right: 0, aspectRatio: "3/2"}}
+                    src={this.getSpeakerPhotoUrl()}
+                    width="200px"
+                  />
+                </Box>
+              )}
+            </Box>
 
             <Text
               size="16px"

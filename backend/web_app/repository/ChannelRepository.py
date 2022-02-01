@@ -3,6 +3,9 @@ import logging
 from mailing.sendgridApi import sendgridApi
 from repository import UserRepository
 from app.databases import agora_db
+import hashlib
+from datetime import datetime
+from app.databases import agora_db
 
 mail_sys = sendgridApi()
 
@@ -11,6 +14,7 @@ class ChannelRepository:
         self.db = db
         self.mail_sys = mail_sys
         self.users = UserRepository.UserRepository(db=self.db)
+        
 
     def getChannelById(self, id):
         query = f"SELECT * FROM Channels WHERE id = {id}"
@@ -52,7 +56,7 @@ class ChannelRepository:
         result = self.db.run_query(query)
         return result
 
-    def createChannel(self, channelName, channelDescription, userId, topic_1_id):
+    def createChannel(self, channelName, channelDescription, userId, topic_1_id, claimed=1, organiser_contact = None):
         # colours = [
         #     "orange",
         #     "goldenrod",
@@ -66,11 +70,29 @@ class ChannelRepository:
         # ]
         colour = "#5454A0"
 
-        query = f'INSERT INTO Channels(name, long_description, colour, topic_1_id) VALUES ("{channelName}", "{channelDescription}", "{colour}", "{topic_1_id}")'
+        #  TODO : Add query to store email addresses of organisers
+
+        query = f'INSERT INTO Channels(name, long_description, colour, topic_1_id, claimed) VALUES ("{channelName}", "{channelDescription}", "{colour}", "{topic_1_id}", "{claimed}")'
         insertId = self.db.run_query(query)[0]
     
         query = f'INSERT INTO ChannelUsers(user_id, channel_id, role) VALUES ({userId}, {insertId}, "owner")'
         self.db.run_query(query)
+
+        if(organiser_contact is not None):
+            h = hashlib.new('ripemd160')
+            h.update(f"2{insertId} {datetime.now()}".encode('utf-8'))
+            if 'email_address' in organiser_contact:
+                query = f'''INSERT INTO FetchedChannels 
+                (channel_id, user_id, claimed, organiser_name, organiser_email, mailToken) 
+                VALUES 
+                ({insertId}, {userId}, {claimed}, "{organiser_contact['name']}", "{organiser_contact['email_address']}", "{h.hexdigest()}")'''
+                self.db.run_query(query)
+            elif 'homepage' in organiser_contact:
+                query = f'''INSERT INTO FetchedChannels 
+                (channel_id, user_id, claimed, organiser_name, organiser_homepage_url, mailToken) 
+                VALUES 
+                ({insertId}, {userId}, {claimed}, "{organiser_contact['name']}" , "{organiser_contact['homepage']}" , "{h.hexdigest()}")'''
+                self.db.run_query(query)
 
         return self.getChannelById(insertId)
 
@@ -147,7 +169,7 @@ class ChannelRepository:
         if res[0]["has_avatar"] == 1:
             return f"/home/cloud-user/plateform/agora/storage/images/avatars/{channelId}.jpg"
         else:
-            return f"/home/cloud-user/plateform/agora/frontend/public/agora_default_avatar_channel_v2.png"
+            return f"/home/cloud-user/plateform/agora/storage/images/avatars/default.jpg"
 
     def addAvatar(self, channelId):
         query = f'UPDATE Channels SET has_avatar=1 WHERE id = {channelId}'
@@ -412,6 +434,36 @@ class ChannelRepository:
             return str(e)
 
     def getChannelViewCount(self, channelId):
+        get_counter_query = f'''
+            SELECT * FROM ChannelViewCounts 
+                WHERE channel_id = {channelId};
+            '''
+        try:
+            return self.db.run_query(get_counter_query)[0]["total_views"]
+        except Exception as e:
+            return str(e)
+
+    def increaseChannelReferralCount(self, channelId):
+        try:
+            increase_counter_query = f'''
+                UPDATE ChannelReferrals
+                    SET num_referrals = num_referrals + 1
+                    WHERE channel_id = {channelId};'''
+            res = self.db.run_query(increase_counter_query)
+
+            if type(res) == list:
+                if res[0] == 0 and res[1] == 0:
+                    initialise_counter_query = f'''
+                        INSERT INTO ChannelReferrals (channel_id, num_referrals) 
+                            VALUES ({channelId}, 1);
+                    '''
+                    res = self.db.run_query(initialise_counter_query)
+                    return "ok" 
+
+        except Exception as e:
+            return str(e)
+
+    def getChannelReferralCount(self, channelId):
         get_counter_query = f'''
             SELECT * FROM ChannelViewCounts 
                 WHERE channel_id = {channelId};

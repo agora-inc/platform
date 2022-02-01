@@ -1,7 +1,6 @@
 import logging
 from app.databases import agora_db
 
-
 class TopicRepository:
     """Manages graph classification of topics in the following MYSQL table:
         -ClassificationGraphNodes: complete list of nodes
@@ -500,12 +499,6 @@ if __name__ == "__main__":
     print(obj.getAllChildrenIdRecursive(topic_id=20))
     # print(obj.getChildren(parent_id=15))
 
-
-    # with open('/home/cloud-user/plateform/agora/frontend/src/assets/tree.json', 'w') as outfile:
-    #    json.dump(obj.getDataTreeStructure(), outfile)
-
-    # with open('/home/cloud-user/plateform/agora/frontend/src/assets/allTopics.json', 'w') as outfile:
-    #    json.dump(obj.getAllTopics(), outfile)
 
     # obj._addChildNode(name_child="TESTEST", parent_name_1="Biology", parent_name_2="Chemistry")
     # obj._renameNode(old_field_name="BIOLOGY", new_field_name="Biology")

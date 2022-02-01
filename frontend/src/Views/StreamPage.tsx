@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Box, Grid, Text } from "grommet";
-import DescriptionAndQuestions from "../Components/Streaming/DescriptionAndQuestions";
-import ChatBox from "../Components/Streaming/ChatBox";
+import DescriptionAndQuestions from "../Components/Streaming/OldStuff/DescriptionAndQuestions";
+import ChatBox from "../Components/Streaming/OldStuff/ChatBox";
 import Loading from "../Components/Core/Loading";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
-import VideoPlayer from "../Components/Streaming/VideoPlayer";
+import VideoPlayer from "../Components/Streaming/OldStuff/VideoPlayer";
 import { View } from "grommet-icons";
 import { Stream, StreamService } from "../Services/StreamService";
-import Clapping from "../Components/Streaming/Clapping";
+import Clapping from "../Components/Streaming/Clapping/Clapping";
 
 interface Props {
   location: { pathname: string; state: { stream: Stream } };
@@ -19,8 +19,8 @@ interface State {
 }
 
 const claps = {
-  clapBase: require("../assets/auditorium.mp3"),
-  clapUser: require("../assets/applause-7.mp3"),
+  clapBase: require("../../assets/auditorium.mp3"),
+  clapUser: require("../../assets/applause-7.mp3"),
 };
 
 export default class VideoPage extends Component<Props, State> {
@@ -100,7 +100,7 @@ export default class VideoPage extends Component<Props, State> {
                 </Text>
               </Box>
               <Box direction="row" gap="xsmall" justify="end">
-                <Clapping {...claps} />
+                {/* <Clapping {...claps} /> */}
                 <ChannelIdCard channelName={this.state.stream!.channel_name} />
                 <Box direction="row" align="center" gap="xxsmall">
                   <View color="black" size="40px" />

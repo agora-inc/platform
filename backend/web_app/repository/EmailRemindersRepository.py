@@ -2,7 +2,6 @@ from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from app.databases import agora_db
 
-
 # NOTE: times are in the format: "2020-12-31 23:59"
 """
     TODO: All methods involving the "state" field must be tested.
@@ -245,8 +244,6 @@ class EmailRemindersRepository:
                 #     SELECT email from 
                 # '''
                 # res = self.db.run_query(get_followers_emails_query)
-                # with open("/home/cloud-user/getEmailsForReminders_followers.txt", "w") as file:
-                #     file.write(str(res))
                 # emails = emails + [i["email"] for i in res]
 
         return set(emails)

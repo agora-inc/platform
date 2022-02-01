@@ -496,12 +496,17 @@ export default class EditTalkModal extends Component<Props, State> {
     });
   };
 
-  selectTopic = (topic: Topic, num: number) => {
-    let tempTopics = this.state.topics;
-    tempTopics[num] = topic;
-    this.setState({
-      topics: tempTopics
-    });
+  selectTopic = (topic: Topic, num: number, depth: number) => {
+    if (topic.id > 0) {
+      let tempTopics = this.state.topics;
+      tempTopics[num] = topic;
+      this.setState({ topics: tempTopics });
+    }
+    let tempIsPrevTopics = this.state.isPrevTopics
+    if (depth > 2) {
+      tempIsPrevTopics[num] = true
+      this.setState({ isPrevTopics: tempIsPrevTopics })
+    }
   }
 
   cancelTopic = (num: number) => {
@@ -748,6 +753,8 @@ export default class EditTalkModal extends Component<Props, State> {
     "Example: ox.ac.uk, cam.ac.uk"
     const numbers = [1, 2, 3, 4, 5];
 
+    console.log("topics", this.state.topics)
+
     return (
       <>
       {this.props.visible && (
@@ -918,7 +925,7 @@ export default class EditTalkModal extends Component<Props, State> {
                   callback={(checked: boolean) => {
                     this.setState({ latex: checked });
                   }}
-                  width="30px"
+                  width={30}
                 />
                 Preview <InlineMath math={"{\\small \\LaTeX}"} />
               </Box>
@@ -1110,7 +1117,7 @@ export default class EditTalkModal extends Component<Props, State> {
             <Box direction="row" gap="10px"  align="center" margin={{top: "30px", bottom: "10px"}}>
               <Text size="13px" weight="bold"> Registration required? </Text>
               <Switch
-                width="60px"
+                width={60}
                 height={24}
                 checked={this.state.onRegistration}
                 textOn="Yes" 
@@ -1135,7 +1142,7 @@ export default class EditTalkModal extends Component<Props, State> {
                     Automatically accept some users?
                   </Text>
                   <Switch
-                      width="60px"
+                      width={60}
                       height={24}
                       checked={this.state.autoAcceptEnabled}
                       textOn="Yes" 
@@ -1217,7 +1224,7 @@ export default class EditTalkModal extends Component<Props, State> {
               onSelectedCallback={this.selectTopic}
               onCanceledCallback={this.cancelTopic}
               isPrevTopics={this.state.isPrevTopics}
-              prevTopics={this.props.talk ? this.props.talk.topics : []} 
+              prevTopics={this.state.topics}  // {this.props.talk ? this.props.talk.topics : []} 
               size="small" 
             />
 

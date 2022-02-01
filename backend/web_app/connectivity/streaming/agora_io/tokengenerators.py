@@ -33,25 +33,6 @@ def generate_rtc_token(channel_name, role_attendee, expire_time_in_sec, user_acc
     if isinstance(role_attendee, str):
         role_attendee = int(role_attendee)
 
-    # with open("/home/cloud-user/test/debug_token.txt", "w") as file:
-    #     file.write(
-    #         str(appID) + " " 
-    #         + str(type(appID)) + "\n " 
-    #         + str(appCertificate) + " " 
-    #         + str(type(appCertificate)) + "\n" 
-    #         + str(channel_name) + " "
-    #         + str(type(channel_name)) + "\n"
-    #         + str(user_account) + " "
-    #         + str(type(user_account)) + " "
-    #         + str((user_account is None)) + "\n"
-    #         + str(uid) + " "
-    #         + str(type(uid)) + " "
-    #         + str((uid is None)) + "\n"
-    #         + str(role_attendee) + " "
-    #         + str(type(role_attendee)) + "\n"
-    #         + str(privilege_expired_ts) + " "
-    #         + str(type(privilege_expired_ts)))
-
     try:
         if user_account is None and uid is None:
             return Exception("'channel_name' and 'uid' cannot be None at the same time.")
@@ -71,9 +52,6 @@ def generate_rtc_token(channel_name, role_attendee, expire_time_in_sec, user_acc
                 uid, 
                 role_attendee, 
                 expire_time_in_sec)
-
-        # with open("/home/cloud-user/test/token_test.txt", "w") as file:
-        #     file.write(str(token))
 
         return token
 

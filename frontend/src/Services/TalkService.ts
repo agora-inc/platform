@@ -4,6 +4,7 @@ import { get, post } from "../Middleware/httpMiddleware";
 import { baseApiUrl } from "../config";
 import axios from "axios";
 import { Reminder } from "../Components/Talks/EditTalkModal";
+import { callbackify } from "util";
 
 const getTalkById = (talkId: number, callback: any) => {
   get(`talk/info?id=${talkId}`, callback);
@@ -41,6 +42,18 @@ const getAllFutureTalksForTopicWithChildren = (
 ) => {
   get(
     `talks/topic/children/future?topicId=${topicId}&limit=${limit}&offset=${offset}`,
+    callback
+  );
+};
+
+const getAllPastTalksForTopicWithChildren = (
+  limit: number,
+  offset: number,
+  topicId: number,
+  callback: any
+) => {
+  get(
+    `talks/topic/children/past?topicId=${topicId}&limit=${limit}&offset=${offset}`,
     callback
   );
 };
@@ -456,6 +469,40 @@ const hasSlides = async (talkId: number, callback: any) => {
   );
 };
 
+const uploadSpeakerPhoto = (talkId: number, image: File, callback: any) => {
+  const data = new FormData();
+  data.append("talkId", talkId.toString());
+  data.append("image", image);
+
+  axios.post(baseApiUrl + "/talks/speakerphoto", data,       {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  }).then(function (response) {
+    callback(response.data);
+  });
+};
+
+const getSpeakerPhoto = (talkId: number, cacheDelay?: number) => {
+  if (cacheDelay) {
+    return baseApiUrl + `/talks/speakerphoto?talkId=${talkId}&ts=` + cacheDelay;
+  } else {
+    return baseApiUrl + `/talks/speakerphoto?talkId=${talkId}`;
+  }
+};
+
+const removeSpeakerPhoto = (talkId: number, callback: any) => {
+  axios
+    .delete(
+      baseApiUrl + "/talks/speakerphoto", {
+        data: {talkId: talkId},
+        headers: {"Access-Control-Allow-Origin": "*"},
+    },)
+    .then(function (response) {
+      callback(response.data);
+    });
+}
+
 const getViewCountForTalk = (
   talkId: number,
   callback: any
@@ -508,6 +555,59 @@ const editAutoAcceptanceCustomInstitutions = (talkId: number, institutionIds: nu
   );
 }
 
+const polishTalkData = (rawTalk: Talk, substituteTbd: boolean, addPicture: boolean) => {
+  var polishedTalk = rawTalk
+  
+  const getSubstitutedTbaTbd = (talk: Talk) => {
+    // TopicService
+    var subtopic = "";
+    if(talk.topics){
+      for(let topic of talk.topics){
+        if(subtopic == ""){
+          console.log("tsting", topic)
+          if(!topic.is_primitive_node && topic){
+            subtopic = topic.field
+          }
+        }
+      }
+    }
+
+    var substituedTbaTbds = [
+      "Seminar with " + talk.talk_speaker,
+      "Talk by " + talk.talk_speaker,
+      "'" + talk.channel_name + "' talk with " + talk.talk_speaker,
+      "Latest advancements with " + talk.talk_speaker,
+      "Recent advancements with " + talk.talk_speaker,
+    ]
+
+    if(subtopic !== ""){
+      substituedTbaTbds.push(
+        talk.talk_speaker + " on " + subtopic,
+        "Topics on " + subtopic + " with " + talk.talk_speaker,
+        "Advancements in " +  subtopic,
+        "Seminar on " + subtopic,
+        "Talk on " + subtopic,
+        subtopic + " seminar"
+      )
+    }
+
+    // HACK: return value depending on talk id (reason: if using random, the title keep changing after mouseover)
+    var index = talk.id  % substituedTbaTbds.length
+    return substituedTbaTbds[index]
+  }
+
+
+  // 1. Polish title if TBD
+  if(polishedTalk.name == "" || polishedTalk.name == "TBA" || polishedTalk.name == "TBD"){
+    polishedTalk.name = getSubstitutedTbaTbd(rawTalk)
+  }
+
+  // 2. Polish picture if none
+  // TO BE IMPLEMENTED (Remy)
+
+  return polishedTalk
+}
+
 
 export const TalkService = {
   getTalkById,
@@ -520,6 +620,7 @@ export const TalkService = {
   getDraftedTalksForChannel,
   getFutureTalksForTopic,
   getAllFutureTalksForTopicWithChildren,
+  getAllPastTalksForTopicWithChildren,
   getPastTalksForTopic,
   getPastTalksForTag,
   getAvailableFutureTalks,
@@ -539,6 +640,10 @@ export const TalkService = {
   isSaved,
   getYoutubeThumbnail,
   isAvailableToUser,
+  // Speaker photo
+  uploadSpeakerPhoto,
+  getSpeakerPhoto,
+  removeSpeakerPhoto,
   // Talk registration management
   sendEmailonTalkScheduling,
   sendEmailonTalkModification,
@@ -561,7 +666,9 @@ export const TalkService = {
   increaseViewCountForTalk,
   getViewCountForTalk,
   // trending
-  getTrendingTalks
+  getTrendingTalks,
+  // post-processing
+  polishTalkData
 };
 
 export type Talk = {
@@ -585,5 +692,6 @@ export type Talk = {
   talk_speaker: string;
   talk_speaker_url: string;
   published: number;
-  audience_level: string
+  audience_level: string;
+  has_speaker_photo: number;
 };

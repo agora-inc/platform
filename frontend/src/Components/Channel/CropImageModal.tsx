@@ -5,6 +5,9 @@ import ReactCrop, { Crop } from "react-image-crop";
 import 'react-image-crop/dist/ReactCrop.css'
 
 interface Props {
+  height?: number
+  width?: number
+  aspect?: number | null
   visible: boolean,
   src: any,
   onCanceledCallback?: any,
@@ -23,7 +26,7 @@ export default class CropImageModal extends Component<Props, State> {
       crop: {
         unit: "%",
         width: 50,
-        aspect: 3 / 1
+        aspect: props.aspect ? props.aspect : 3 / 1
       },
       croppedImageUrl: '',
     }
@@ -102,13 +105,13 @@ export default class CropImageModal extends Component<Props, State> {
 
     return (
       <Overlay
-        width={900}
-        height={450}
+        width={this.props.width ? this.props.width : 1100}
+        height={this.props.height ? this.props.height : 650}
         visible={this.props.visible}
         title={"Image Upload"}
         submitButtonText="Save"
         onSubmitClick={this.onFinish}
-        contentHeight="450px"
+        contentHeight="550px"
         canProceed={true}
         isMissing={[]}
         onCancelClick={this.props.onCanceledCallback}

@@ -21,7 +21,7 @@ import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
 import ImageUploader from "../Components/Core/ImageUploader";
 import PricingPlans from "../Views/PricingPlans";
-import { baseApiUrl } from "../config";
+import { baseApiUrl, basePoint } from "../config";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, Checkmark, 
   MailOption, SettingsOption, Group, DocumentText, Resources, Configure } from "grommet-icons";
@@ -758,29 +758,50 @@ export default class ManageChannelPage extends Component<Props, State> {
               )}
               {this.banner()}
 
-              <Box direction="row" align="start"  margin={{ top: "10px", bottom: "10px" }}>
-                <Text
-                  size="24px"
-                  weight="bold"
-                  color="black"
-                  style={{width: "69vw"}}
-                >
-                  {<UserAdmin />} {`Administrator panel`}{" "}
-                </Text>
-
-                <Box
-                  onClick={this.toggleModalPricing}
-                  background="#0C385B"
-                  round="xsmall"
-                  pad="xsmall"
-                  width="160px"
-                  height="40px"
-                  justify="center"
-                  align="center"
-                  focusIndicator={false}
-                  hoverIndicator="#BAD6DB"
-                >
-                  <Text size="14px" weight="bold"> Pricing options </Text>
+              <Box direction="row" justify="center"  margin={{ top: "10px", bottom: "10px" }} width="100%">
+                <Box justify="start" width="50%">
+                  <Text
+                    size="24px"
+                    weight="bold"
+                    color="color1"
+                  >
+                    {<UserAdmin />} {`Administrator panel`}{" "}
+                  </Text>
+                </Box>
+                <Box justify="end" width="50%" direction="row">
+                  <Box
+                    onClick={this.toggleModalPricing}
+                    background="color1"
+                    round="xsmall"
+                    pad="xsmall"
+                    width="200px"
+                    height="40px"
+                    justify="center"
+                    align="center"
+                    focusIndicator={false}
+                    hoverIndicator="color3"
+                  >
+                    <Text size="14px" weight="bold"> Your subscription </Text>
+                  </Box>
+                  {/* 
+                  REFERAL BUTTON: TO UNCOMMENT SOON
+                  
+                  <a href={basePoint + "/referral/channel/" + this.state.channelId + "?referee=true"} style={{textDecoration: 0}}>
+                    <Box
+                      onClick={() => {this.setState({loading: false})}}
+                      background="color7"
+                      round="xsmall"
+                      pad="xsmall"
+                      width="200px"
+                      height="40px"
+                      justify="center"
+                      align="center"
+                      focusIndicator={false}
+                      hoverIndicator="#BAD6DB"
+                    >
+                      <Text size="14px" weight="bold"> Upgrade for free </Text>
+                    </Box>
+                  </a> */}
                 </Box>
               </Box>
 
@@ -830,17 +851,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </Layer>
               )}
               
-
-
-              <Text size="14" margin={{ bottom: "20px" }}>
-                For more detailed information about what you can do, visit our <Link to={"/info/getting-started"} color="color1">
-                  <Text color="color1" weight="bold" size="14px">
-                  getting-started page.
-                  </Text>
-                </Link>
-              </Text>
-              
-
 
               <Tabs>
                 <TabList>
@@ -912,7 +922,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </TabList>
                 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <ScheduleTalkButton
                     margin={{ top: "20px", bottom: "40px" }}
                     channel={this.state.channel}
@@ -925,7 +935,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     gap="small"
                     margin={{ bottom: "24px" }}
                   >
-                    <Text size="20px" weight="bold" color="black">
+                    <Text size="20px" weight="bold" color="color1">
                       {`Drafts`}
                     </Text>
                     <StatusInfo
@@ -972,7 +982,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Text
                         size="26px"
                         weight="bold"
-                        color="black"
+                        color="color1"
                         margin={{ top: "40px", bottom: "24px" }}
                       >
                         {`Happening now`}
@@ -997,7 +1007,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <Text
                       size="20px"
                       weight="bold"
-                      color="black"
+                      color="color1"
                     >
                       {`Upcoming talks`}
                     </Text>
@@ -1037,7 +1047,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Text
                         size="20px"
                         weight="bold"
-                        color="black"
+                        color="color1"
                         margin={{ top: "40px" }}
                       >
                         {`Past talks`}
@@ -1066,11 +1076,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Box>
                 </TabPanel>
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <EmailsTab channelId={channel!.id} />
                 </TabPanel>
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="column">
                     <Box 
                       direction="row" 
@@ -1258,14 +1268,14 @@ export default class ManageChannelPage extends Component<Props, State> {
 
 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RegistrationsTab channelId={channel!.id} />
                   </Box>
                 </TabPanel>
 
 
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{top: "40px", bottom: "60px"}}>
                     <DeleteAgoraButton
                       name={this.state.channel!.name}
@@ -1277,14 +1287,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                 {/* 
                   TAB FOR MEMBERSHIP APPLICATION:
                   
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                   <Box direction="row" margin={{bottom: "60px"}}>
                     <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel> */}
                 
               {/*   DETAIL SECTION: COMMENTED OUT
-                <TabPanel style={{width: "74.35vw", minHeight: "800px"}}>             
+                <TabPanel style={{width: "78vw", minHeight: "800px"}}>             
                   <Grid
                     rows={['xxsmall', 'xxsmall']}
                     columns={['medium', 'xxsmall']}

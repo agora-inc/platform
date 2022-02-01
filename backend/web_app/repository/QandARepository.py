@@ -3,7 +3,6 @@ from datetime import datetime
 import re
 from app.databases import agora_db
 
-
 class Question:
     def __init__(self, id, content, username, postedAt, streamId, score, answers):
         self.id = id

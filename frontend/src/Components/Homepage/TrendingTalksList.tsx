@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import Loading from "../Core/Loading";
-import { TalkService } from "../../Services/TalkService";
+import { TalkService, Talk } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import Identicon from "react-identicons";
 import "../../Styles/trending-channels-box.css";
@@ -14,19 +14,17 @@ import ReactTooltip from "react-tooltip";
 
 
 
-type TrendingTalk = {
-    id: number;
-    Channels: {
-        id: number}; // NOT WORKING
-    channel_name: string;
-    has_avatar: boolean;
-    name: string;
-  };
+// type TrendingTalk = {
+//     id: number;
+//     channel_name: string;
+//     has_avatar: boolean;
+//     name: string;
+//   };
 
 
 
 interface State {
-  trendingTalks: TrendingTalk[];
+  trendingTalks: Talk[];
   loading: boolean;
 }
 
@@ -41,7 +39,13 @@ export default class TrendingTalksList extends Component<{}, State> {
   }
 
   componentWillMount() {
-    TalkService.getTrendingTalks((trendingTalks: any[]) => {
+    TalkService.getTrendingTalks((rawTrendingTalks: any[]) => {
+      var trendingTalks = []
+      for(let i=0; i<rawTrendingTalks.length; i++){
+        trendingTalks.push(TalkService.polishTalkData(
+          rawTrendingTalks[i], true, true
+        ))
+      }
       this.setState({
         trendingTalks: trendingTalks,
         loading: false,
@@ -51,17 +55,18 @@ export default class TrendingTalksList extends Component<{}, State> {
   }
   render() {
     return (
-      <Box height="250px">
-        <Box direction="row" justify="center" style={{minWidth: "50%"}} margin={{bottom: "10px"}}>
+      <Box height="100%" width="100%">
+        <Box direction="row" justify="start" style={{minWidth: "50%"}} margin={{bottom: "10px"}}>
           <ReactTooltip id="what-is-an-agora" effect="solid">
           An agora is a hub for a community -- reading group, seminar group, institution, ...
           </ReactTooltip>
           <Text
             size="26px"
-            alignSelf="center"
+            alignSelf="start"
             weight="bold"
+            color="color1"
           >
-            Trending <Text size="22px">🔥</Text> 
+            Most popular
           </Text>
 
         </Box>
@@ -82,7 +87,7 @@ export default class TrendingTalksList extends Component<{}, State> {
                 gap="xsmall"
                 // align="center"
                 pad={{ vertical: "3.5px" }}
-                justify="center"
+                justify="start"
               >
                 <Box
                   background="white"

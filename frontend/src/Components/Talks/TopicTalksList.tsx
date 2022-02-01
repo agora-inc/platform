@@ -4,16 +4,13 @@ import { Box, Button, Text } from "grommet";
 import TalkCard from "./TalkCard";
 import PastTalkCard from "./PastTalkCard";
 import { Talk, TalkService } from "../../Services/TalkService";
-import { FormNextLink } from "grommet-icons";
 import "../../Styles/home.css";
 import "../../Styles/see-more-button.css";
 import "../../Styles/topic-talks-list.css";
 import { User } from "../../Services/UserService";
 import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
-// import GlobalClassification from "../../Components/Homepage/GlobalClassification";
 import MediaQuery from "react-responsive";
-import TopicSelector from "./TopicSelector";
 
 interface Props {
   gridArea?: string;
@@ -33,7 +30,10 @@ interface State {
   chosenSubtopics: Topic[];
   audienceLevel: string[];
   allAudienceLevels: string[];
-  renderMobile: boolean
+  renderMobile: boolean,
+  hadFirstTalkFetch: boolean,
+  isFetchingNewTalks: boolean,
+  displayedTalks: Talk[],
 }
 
 var emptyTopic = {
@@ -55,25 +55,149 @@ export default class TopicTalkList extends Component<Props, State> {
       chosenSubtopics: [],
       audienceLevel: [],
       allAudienceLevels: ["General audience", "Bachelor/Master", "PhD+"],
-      renderMobile: window.innerWidth < 800
+      renderMobile: window.innerWidth < 800,
+      hadFirstTalkFetch: false,
+      isFetchingNewTalks: false,
+      displayedTalks: [],
     };
   }
-
-  componentWillMount() {
+  
+  componentDidMount() {
+    document.addEventListener("scroll", this.handleScroll, true);
     TopicService.getAll((allTopics: Topic[]) => {
       this.setState({ allTopics });
     });
-
+    
     TalkService.getAvailableFutureTalks(
-      100, 
+      50, 
       0, 
       this.props.user ? this.props.user.id : null,  
       (allTalks: Talk[]) => {
-      this.setState({
+        this.setState({
         allTalks: allTalks,
+        hadFirstTalkFetch: true,
+        displayedTalks: allTalks,
       });
     });
   }
+
+  componentWillUnmount() {
+    document.removeEventListener("scroll", this.handleScroll, true);
+  }
+
+  handleScroll = (e: any) => {
+    var totalHeight = e.target.scrollHeight
+    var scrolledFromTop = e.target.scrollTop
+    var screenClientHeight = e.target.clientHeight
+
+    var scrollingRemaining = totalHeight - scrolledFromTop
+
+    // Trigger when 1.2 times the size of screenClient is remaining
+    var almostReachedBottom = ( scrollingRemaining / screenClientHeight < 1.5)
+    
+    if (almostReachedBottom == true && this.state.hadFirstTalkFetch == true) {
+      var n_talks = 0
+      // check if fetch talks by topics, subtopics, or general
+      var fetchTalkByTopic = (this.state.chosenSubtopics.length == 0 && this.state.chosenTopic.id !== -1)
+      var fetchTalkBySubtopic = (this.state.chosenSubtopics.length !== 0)
+
+      // check if it's currently fetching
+      if (!this.state.isFetchingNewTalks){
+        this.setState({isFetchingNewTalks: true})
+        // All fetches are maxed to 40
+        if (fetchTalkByTopic){
+          // if(this.props.past){
+          //   TalkService.getAllPastTalksForTopicWithChildren(
+          //     40, 
+          //     this.state.displayedTalks.length, 
+          //     this.state.chosenTopic.id, 
+          //     (talks: Talk[]) => {
+          //       this.setState({
+          //         allTalks: this.state.allTalks.concat(talks),
+          //         displayedTalks: this.state.displayedTalks.concat(talks)
+          //         }, () => {
+          //           this.setState({isFetchingNewTalks: false})
+          //         })
+          //     }
+          //   )
+          // } else {
+            TalkService.getAllFutureTalksForTopicWithChildren(
+              40, 
+              this.state.displayedTalks.length, 
+              this.state.chosenTopic.id, 
+              (talks: Talk[]) => {
+                this.setState({
+                  allTalks: this.state.allTalks.concat(talks),
+                  displayedTalks: this.state.displayedTalks.concat(talks)
+                  }, () => {
+                    this.setState({isFetchingNewTalks: false})
+                  })
+                }
+              )
+          } else if (fetchTalkBySubtopic){
+            // NB: we only have methods to fetch for 1 subtopic at a time.
+              // if(this.props.past){
+              //   for(let topic of this.state.chosenSubtopics){
+              //     TalkService.getAllPastTalksForTopicWithChildren(
+              //       40, 
+              //       this.state.displayedTalks.length, 
+              //       topic.id,  
+              //       (talks: Talk[]) => {
+              //       this.setState({
+              //         allTalks: this.state.allTalks.concat(talks),
+              //         displayedTalks: this.state.displayedTalks.concat(talks)
+              //       }, () => {
+              //         this.setState({isFetchingNewTalks: false})
+              //       })
+              //     })
+              //   };
+              // } else {
+                for(let topic of this.state.chosenSubtopics){
+                  TalkService.getAllFutureTalksForTopicWithChildren(
+                    40, 
+                    this.state.displayedTalks.length, 
+                    topic.id,  
+                    (talks: Talk[]) => {
+                    this.setState({
+                      allTalks: this.state.allTalks.concat(talks),
+                      displayedTalks: this.state.displayedTalks.concat(talks)
+                    }, () => {
+                      this.setState({isFetchingNewTalks: false})
+                    })
+                  })
+            }
+        } else {
+          // if(this.props.past){
+          //   TalkService.getAvailablePastTalks(
+          //     40,
+          //     this.state.displayedTalks.length, 
+          //     this.props.user ? this.props.user.id : null,  
+          //     (talks: Talk[]) => {
+          //       this.setState({
+          //         allTalks: this.state.allTalks.concat(talks),
+          //         displayedTalks: this.state.displayedTalks.concat(talks)
+          //       }, () => {
+          //         this.setState({isFetchingNewTalks: false})
+          //       })
+          //     })
+          // } else {
+            TalkService.getAvailableFutureTalks(
+              40,
+              this.state.displayedTalks.length, 
+              this.props.user ? this.props.user.id : null,  
+              (talks: Talk[]) => {
+                this.setState({
+                  allTalks: this.state.allTalks.concat(talks),
+                  displayedTalks: this.state.displayedTalks.concat(talks)
+                }, () => {
+                  this.setState({isFetchingNewTalks: false})
+                })
+              })
+        }
+       }
+      }
+  };
+
 
   /*
   filterChosenTalksByAudience = () => {
@@ -92,12 +216,39 @@ export default class TopicTalkList extends Component<Props, State> {
     }
   }; */
 
+  getTalksByTopicOnly = (talks: Talk[], topicsId: number[]): Talk[] => {
+    let res: Talk[] = [];
+    let talkCount: number = 0;
+    for (let talk of talks) {
+      let isIn: boolean = false;
+      if(talk !== undefined){
+        if(!(talk.topics === undefined)){
+          for (let topic of talk.topics) {
+            
+            if (!isIn && (topicsId.includes(topic.id) 
+            || topicsId.includes(topic.parent_1_id!)
+            || topicsId.includes(topic.parent_2_id!)
+            || topicsId.includes(topic.parent_3_id!))) {
+              isIn = true;
+              res.push(talk);
+              ++talkCount;
+            }
+          }
+        }
+      }
+    }
+    // console.log(res.length , talkCount)
+    return res;
+  };
+  
   getTalksByTopicsAndAudience = (talks: Talk[], topicsId: number[], audienceLevel: string[]): Talk[] => {
     let res: Talk[] = [];
     for (let talk of talks) {
       let isIn: boolean = false;
       for (let topic of talk.topics) {
-        if (!isIn && topicsId.includes(topic.id) && audienceLevel.includes(talk.audience_level)) {
+        if (!isIn && (topicsId.includes(topic.id)|| topicsId.includes(topic.parent_1_id!)
+        || topicsId.includes(topic.parent_2_id!)
+        || topicsId.includes(topic.parent_3_id!)) && audienceLevel.includes(talk.audience_level)) {
           isIn = true;
           res.push(talk);
         }
@@ -140,13 +291,20 @@ export default class TopicTalkList extends Component<Props, State> {
     if (this.state.audienceLevel.includes(txt)) {
       this.setState(prevState => ({
         audienceLevel: prevState.audienceLevel.filter(e => e != txt)
-      }))
+      }),
+      () => {
+        this.setState({displayedTalks: this.fetchFilteredTalks()})
+        }
+      )
     } else {
       this.setState(prevState => ({
         audienceLevel: prevState.audienceLevel.concat(txt)
-      }))
+      }),
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+          }
+      )
     }
-    this.fetchFilteredTalks()
   }
 
   updateTopic = (topic: Topic) => {
@@ -161,26 +319,41 @@ export default class TopicTalkList extends Component<Props, State> {
       }
       this.setState({
         chosenTopic: empty, 
-        chosenSubtopics: []
-      })
-    } else {
-      this.setState({chosenTopic: topic, chosenSubtopics: []})
+        chosenSubtopics: []},
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+          }
+        )
+      } else {
+      this.setState({chosenTopic: topic, chosenSubtopics: []}, 
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+        }
+      )
     }
-    this.fetchFilteredTalks()
   }
 
   updateSubtopics = (topic: Topic) => {
     if (this.state.chosenSubtopics.length === 0) {
-      this.setState({ chosenSubtopics: [topic] })
+      this.setState({ chosenSubtopics: [topic] },
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+        })
     }
     if (this.state.chosenSubtopics.includes(topic)) {
       let subtopics = this.state.chosenSubtopics.filter(e => e.id !== topic.id)
-      this.setState({ chosenSubtopics: subtopics })
+      this.setState({ chosenSubtopics: subtopics },
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+        })
     } else {
       let subtopics = this.state.chosenSubtopics.concat(topic)
-      this.setState({ chosenSubtopics: subtopics })
+      this.setState({ chosenSubtopics: subtopics },
+        () => {
+          this.setState({displayedTalks: this.fetchFilteredTalks()})
+        }
+      )
     }
-    
   }
 
   getIdTopicsToFetch = () => {
@@ -211,7 +384,7 @@ export default class TopicTalkList extends Component<Props, State> {
   };
 
   ifTalks = () => {
-
+    // this.setState({displayedTalks: this.fetchFilteredTalks()})
     return (
         <div className="talk_cards_outer_box">
           {/* <Box 
@@ -223,7 +396,7 @@ export default class TopicTalkList extends Component<Props, State> {
           margin={{ top: "24px" }}
           > */}
         {this.props.past &&
-          this.fetchFilteredTalks().map((talk: Talk) => (
+          this.state.displayedTalks.map((talk: Talk) => (
             <PastTalkCard
               talk={talk}
               user={this.props.user}
@@ -232,7 +405,7 @@ export default class TopicTalkList extends Component<Props, State> {
             />
           ))}
         {!this.props.past &&
-          this.fetchFilteredTalks().map((talk: Talk) => (
+          this.state.displayedTalks.map((talk: Talk) => (
             <TalkCard talk={talk} user={this.props.user} />
           ))}
       {/* </Box> */}
@@ -276,7 +449,7 @@ export default class TopicTalkList extends Component<Props, State> {
           align="end"
           margin={{ 
             bottom: "15px", 
-            top: (window.innerWidth < 800 ? "30px" : "0px"), 
+            top: (window.innerWidth < 800 ? "30px" : "50px"), 
             
           }}
         >
@@ -292,34 +465,34 @@ export default class TopicTalkList extends Component<Props, State> {
                 background="color2"
                 round="xsmall"
                 pad="xsmall"
-                height="60px"
-                width={this.state.renderMobile ? "150px" : "220px"}
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "170px"}
                 justify="center"
-                align="center"
+                alignContent="center"
                 focusIndicator={false}
                 hoverIndicator="color2"
                 margin={{ left: "0px" }}
                 direction="row"
               >
                 {this.state.renderMobile 
-                  ? <Text size="18px" weight="bold"> Upcoming</Text> 
-                  : <Text size="18px" weight="bold"> Upcoming seminars</Text>
+                  ? <Text size="14px" weight="bold"> Upcoming</Text> 
+                  : <Text size="14px" weight="bold"> Upcoming seminars</Text>
                 }
                 {/* <Text size="22px">🔥</Text> */}
               </Box>
               </Link>
 
               <Link
-              to={{ pathname: "/past" }}
-              style={{ textDecoration: "none" }}
+                to={{ pathname: "/past" }}
+                style={{ textDecoration: "none" }}
               >
               <Box
                 onClick={()=>{}}
                 background="color5"
                 round="xsmall"
                 pad="xsmall"
-                height="60px"
-                width={this.state.renderMobile ? "150px" : "220px"}
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "170px"}
                 justify="center"
                 align="center"
                 focusIndicator={false}
@@ -328,8 +501,8 @@ export default class TopicTalkList extends Component<Props, State> {
                 direction="row"
               >
                 {this.state.renderMobile 
-                  ? <Text size="18px" weight="bold"> Past</Text> 
-                  : <Text size="18px" weight="bold"> Past seminars</Text>
+                  ? <Text size="14px" weight="bold"> Past</Text> 
+                  : <Text size="14px" weight="bold"> Past seminars</Text>
                 }
                 {/* <Text size="22px">🔥</Text> */}
               </Box>
@@ -347,8 +520,8 @@ export default class TopicTalkList extends Component<Props, State> {
                 background="color7"
                 round="xsmall"
                 pad="xsmall"
-                height="60px"
-                width={this.state.renderMobile ? "150px" : "220px"}
+                height="30px"
+                width={this.state.renderMobile ? "150px" : "150px"}
                 justify="center"
                 align="center"
                 focusIndicator={false}
@@ -356,15 +529,12 @@ export default class TopicTalkList extends Component<Props, State> {
                 margin={{ left: "0px" }}
                 direction="row"
               >
-                <Text size="18px" weight="bold"> Give a talk</Text>
+                <Text size="14px" weight="bold"> Give a talk</Text>
               </Box>
               </Link>
               )
             }
             </Box>
-
-
-
             </>
           )}
 
@@ -384,10 +554,17 @@ export default class TopicTalkList extends Component<Props, State> {
               <Text size="12px" weight="bold" margin={{bottom: "10px"}}> 
                 Topic
               </Text>
-              {this.getPrimitiveNodes().map((topic: Topic) =>
+              {this.getPrimitiveNodes().filter((topic: Topic) =>{
+                return this.state.audienceLevel.length != 0 ? 
+                this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 })
+                .map((topic: Topic)=>
+                
                 <Box
-                  onClick={() => {this.updateTopic(topic)}}
-                  background={"white"} 
+                  onClick={() => {
+                    this.updateTopic(topic)
+                  }}
+                  background={this.state.chosenTopic === topic? "#0C385B" : "white"}
                   round="xsmall"
                   pad="5px"
                   width="80%"
@@ -399,6 +576,11 @@ export default class TopicTalkList extends Component<Props, State> {
                 >
                   <Text size="12px" margin={{left: "5px"}}>
                     {topic.field}
+                    {/* {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`} */}
                   </Text>
                 </Box>
               )}
@@ -414,7 +596,9 @@ export default class TopicTalkList extends Component<Props, State> {
                 </Text>
               )}
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(0, 7).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(0, 7).filter((topic: Topic) =>{return this.state.audienceLevel.length != 0 ? 
+                  this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                  this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
@@ -428,7 +612,12 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px" margin={{left: "5px"}}>
-                      {topic.field}
+                    {topic.field}
+                    {/* {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`} */}
                     </Text>
                   </Box>
                 )
@@ -438,7 +627,9 @@ export default class TopicTalkList extends Component<Props, State> {
 
             <Box direction="column" width="25%" margin={{top: "24px", right: "60px"}}>
               {this.state.chosenTopic.field !== "-" && (
-                this.getChildren(this.state.chosenTopic).slice(7).map((topic: Topic) =>
+                this.getChildren(this.state.chosenTopic).slice(7).filter((topic: Topic) =>{return this.state.audienceLevel.length != 0 ? 
+                  this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length > 0:
+                  this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length > 0 }).map((topic: Topic) =>
                   <Box
                     onClick={() => {this.updateSubtopics(topic)}}
                     background={this.state.chosenSubtopics.includes(topic) ? "#0C385B" : "white"} 
@@ -452,7 +643,12 @@ export default class TopicTalkList extends Component<Props, State> {
                     hoverIndicator="#DDDDDD"
                   >
                     <Text size="12px">
-                      {topic.field}
+                    {topic.field}
+                    {/* {`${topic.field} (${
+                      this.state.audienceLevel.length != 0 ? 
+                      String(this.getTalksByTopicsAndAudience(this.state.allTalks, [topic.id] , this.state.audienceLevel).length) :
+                      String(this.getTalksByTopicOnly(this.state.allTalks, [topic.id]).length)
+                      })`} */}
                     </Text>
                   </Box>
                 )
@@ -496,27 +692,9 @@ export default class TopicTalkList extends Component<Props, State> {
           />
         </MediaQuery>
 
-        {this.fetchFilteredTalks().length === 0
+        {this.state.displayedTalks.length === 0
           ? this.ifNoTalks()
           : this.ifTalks()}
-
-        {/*this.props.seeMore && (
-          <Link to="/upcoming" style={{ textDecoration: "none" }}>
-            <Box
-              className="see-more-button"
-              pad={{ vertical: "2px", horizontal: "xsmall" }}
-              round="xsmall"
-              style={{
-                border: "2px solid #C2C2C2",
-              }}
-              direction="row"
-              align="end"
-            >
-              <Text color="grey">See all </Text>
-              <FormNextLink color="grey" />
-            </Box>
-          </Link>
-          )*/}
       </Box>
     );
   }

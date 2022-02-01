@@ -4,9 +4,9 @@
 """ 
 from flask.globals import session
 from app import app, mail
-from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository
+# from app.databases import agora_db
+from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -15,6 +15,7 @@ from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
 from werkzeug import exceptions
 import os
+import time
 
 import stripe
 
@@ -34,10 +35,11 @@ credits = CreditRepository.CreditRepository()
 products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
+tweets = TwitterBotRepository.TwitterBotRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 
-# BASE_URL = "http://localhost:3000"
-BASE_URL = "https://mora.stream/"
+BASE_URL = "http://localhost:3000"
+# BASE_URL = "https://mora.stream/"
 
 BASE_API_URL = "https://mora.stream/api"
 # BASE_API_URL = "http://localhost:8000/api"
@@ -133,7 +135,8 @@ def addUser():
     username = params['username']
     password = params['password']
     email = params['email']
-    user = users.addUser(username, password, email)
+    refChannel = params['channelId']
+    user = users.addUser(username, password, email, refChannel)
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
@@ -192,22 +195,32 @@ def refreshAccessToken():
 
 @app.route('/users/email_change_password_link', methods=["POST"])
 def generateChangePasswordLink():
-    logRequest(request)
-    # generate link
-    params = request.json
-    username = params["username"]
-    user = users.getUser(params["username"])
-    code = users.encodeAuthToken(user["id"], "changePassword")
-    link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
-    
-    # email link
-    msg = Message('mora.stream: password reset', sender = 'team@agora.stream', recipients = [user["email"]])
-    msg.body = f'Password reset link: {link}'
-    msg.subject = "mora.stream: password reset"
-    mail.send(msg)
+    try:
+        logRequest(request)
+        params = request.json
+        usernameOrEmail = params["usernameOrEmail"]
 
-    app.logger.debug(f"User {username} requested link to change password")
-    return "ok"
+        # get username if email address
+        if "@" in usernameOrEmail:
+            user = users.getUserByEmail(usernameOrEmail)
+        else:
+            user = users.getUser(usernameOrEmail)
+
+        # generate link
+        code = users.encodeAuthToken(user["id"], "changePassword")
+        link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
+
+        # email link
+        msg = Message('mora.stream: password reset', sender = 'noreply@mora.stream', recipients = [user["email"]])
+        msg.body = f'Password reset link: {link}'
+        msg.subject = "mora.stream: password reset"
+        mail.send(msg)
+
+        app.logger.debug(f"User '{usernameOrEmail}' requested link to change password")
+        return "ok"
+
+    except Exception as e:
+        return 404, "Error" + str(e)
 
 @app.route('/users/change_password', methods=["POST"])
 def changePassword():
@@ -267,7 +280,6 @@ def getChannelsForUser():
 
     userId = int(request.args.get("userId"))
     roles = request.args.getlist("role")
-    print(roles)
     return jsonify(channels.getChannelsForUser(userId, roles))
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
@@ -393,6 +405,18 @@ def increaseViewCountForChannel():
     params = request.json 
     channelId = params["channelId"]
     return jsonify(channels.increaseChannelViewCount(channelId))
+
+@app.route('/channels/referralscount/get', methods=["GET"])
+def getReferralsForChannel():
+    channelId = int(request.args.get("channelId"))
+    return jsonify(channels.getChannelReferralCount(channelId))
+
+# don't really think this is needed , but adding this in a comment anyways
+# @app.route('/channels/referrals/add', methods=["POST"])
+# def increaseReferralsForChannel():
+#     params = request.json 
+#     channelId = params["channelId"]
+#     return jsonify(channels.increaseChannelReferralCount(channelId))
 
 @app.route('/channels/updatecolour', methods=["POST", "OPTIONS"])
 def updateChannelColour():
@@ -697,6 +721,12 @@ def getMailingList():
     return jsonify(mailinglist.getMailingList(channelId))
 
 # --------------------------------------------
+# x Referral ROUTES ( empower page)
+# --------------------------------------------
+# @app.route('/empower', methods=["GET", "OPTIONS"])
+
+
+# --------------------------------------------
 # x Membership ROUTES
 # --------------------------------------------
 @app.route('/channel/membership/apply', methods=["POST"])
@@ -815,16 +845,9 @@ def getTalkById():
 
 @app.route('/talks/all/future', methods=["GET"])
 def getAllFutureTalks():
-    # TODO: Fix bug with "getAllFutureTalks" that does not exist for in TalkRepository.
-    # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-
-    try:
-        user_id = int(request.args.get("offset"))
-        return jsonify(talks.getAllFutureTalks(limit, offset, user_id))
-    except:
-        return jsonify(talks.getAllFutureTalks(limit, offset))
+    return jsonify(talks.getAllFutureTalks(limit, offset))
 
 @app.route('/talks/all/current', methods=["GET"])
 def getAllCurrentTalks():
@@ -879,7 +902,14 @@ def getAllFutureTalksForTopicWithChildren():
     topicId = int(request.args.get("topicId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllFutureTalksForTopicWithChildren(topicId, limit, offset))
+    return jsonify(talks.getAllTalksForTopicWithChildren(topicId, limit, offset, "future"))
+
+@app.route('/talks/topic/children/past', methods=["GET"])
+def getAllPastTalksForTopicWithChildren():
+    topicId = int(request.args.get("topicId"))
+    limit = int(request.args.get("limit"))
+    offset = int(request.args.get("offset"))
+    return jsonify(talks.getAllTalksForTopicWithChildren(topicId, limit, offset, "past"))
 
 @app.route('/talks/topic/past', methods=["GET"])
 def getAllPastTalksForTopic():
@@ -911,8 +941,7 @@ def getAvailablePastTalks():
     offset = int(request.args.get("offset"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    data = talks.getAvailablePastTalks(limit, offset, user_id)
-    return jsonify({"talks": data[0],"count": data[1]})
+    return jsonify(talks.getAvailablePastTalks(limit, offset, user_id))
 
 @app.route('/talks/channel/available/future', methods=["GET"])
 def getAvailableFutureTalksForChannel():
@@ -1001,7 +1030,41 @@ def editTalk():
     except Exception as e:
         return str(e)
 
+@app.route('/talks/speakerphoto', methods=["POST", "GET", "DELETE"])
+def speakerPhoto():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
 
+    if request.method == "POST":
+        logRequest(request)
+        # if not checkAuth(request.headers.get('Authorization')):
+        #     return exceptions.Unauthorized("Authorization header invalid or not present")
+
+        talkId = request.form["talkId"]
+        file = request.files["image"]
+        fn = f"{talkId}.jpg"
+        file.save(f"/home/cloud-user/plateform/agora/storage/images/speakers/{fn}")
+        talks.addSpeakerPhoto(talkId)
+        
+        app.logger.debug(f"Talk with id {talkId} updated speaker photo")
+
+        return jsonify({"filename": fn})
+
+    if request.method == "GET":
+        if "talkId" in request.args:
+            talkId = int(request.args.get("talkId"))
+            fn = talks.getSpeakerPhotoLocation(talkId)
+            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+
+    if request.method == "DELETE":
+        params = request.json 
+        print(params)
+        talkId = params["talkId"]
+        talks.removeSpeakerPhoto(talkId)
+
+        app.logger.debug(f"Talk with id {talkId} remove speaker speaker photo")
+
+        return jsonify("ok")
 
 @app.route('/talks/editCustomInstitutions', methods=['POST', 'OPTIONS'])
 def editAutoAcceptanceCustomInstitutions():
@@ -1986,3 +2049,47 @@ def stripe_webhook():
 
     except Exception as e:
         return {}, 400
+
+
+# --------------------------------------------
+# Research seminars scraping
+# --------------------------------------------
+@app.route('/rsscraping/createAgora', methods=["POST", "OPTIONS"])
+def createAgoraGetTalkIds():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    is_valid, talk_ids, channel_id, channel_name, link = RSScraper.create_agora_and_get_talk_ids(
+        params['url'], params['user_id'], params['topic_1_id']
+    )
+    response =  jsonify({
+        "isValidSeries": is_valid, 
+        "allTalkIds": talk_ids, 
+        "channelId": channel_id, 
+        "channelName": channel_name,
+        "talkLink": link,
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route('/rsscraping/talks', methods=["POST", "OPTIONS"])
+def publishAllTalks():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    if not checkAuth(request.headers.get('Authorization')):
+        return exceptions.Unauthorized("Authorization header invalid or not present")
+
+    params = request.json
+    talk_ids = params['idx']
+
+    talks = RSScraper.parse_create_talks(
+                params['url'], talk_ids, params['channel_id'], params['channel_name'], params['talk_link'],
+                params['topic_1_id'], params['audience_level'], params['visibility'], params['auto_accept_group']
+    )
+
+    response = jsonify(talks)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response

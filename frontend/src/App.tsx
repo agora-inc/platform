@@ -4,6 +4,7 @@ import { Grommet } from "grommet";
 import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPages/LandingPage";
 import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
+import ChannelReferralPage from "./Views/ChannelReferralPage";
 import ChannelPage from "./Views/ChannelPage";
 import VideoPage from "./Views/VideoPage";
 // import StreamPage from "./Views/StreamPage";
@@ -14,7 +15,6 @@ import { Theme } from "./theme";
 import ManageChannelPage from "./Views/ManageChannelPage";
 import Preferences from "./Views/Preferences";
 import Schedule from "./Views/Schedule";
-import AllUpcomingTalksPage from "./Views/AllUpcomingTalksPage";
 import AllPastTalksPage from "./Views/AllPastTalksPage";
 import SavedTalksPage from "./Views/SavedTalksPage";
 import InformationPage from "./Views/InformationPage";
@@ -39,31 +39,32 @@ function App() {
       <Grommet theme={Theme} full>
       <HeaderBar />
         <Switch>
+          {/* LANDING PAGES */}
           <Route exact path="/" component={LandingPage} />
           <Route exact path="/organisers" component={OrganiserLandingPage} />
 
-
+          {/* KEY CTA ENDPOINTS */}
           <Route exact path="/browse" component={Home} />
           <Route exact path="/videos" component={AllVideosPage} />
           <Route exact path="/agoras" component={AllAgorasPage} />
-          {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
-          <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
-
-          <Route path="/thankyou/:status" component={AfterTransaction} />
-
-          <Route path="/livestream/:encoded_endpoint" component={LivestreamPage} />
-
-          <Route path="/video" component={VideoPage} />
-          {/* <Route path="/stream" component={StreamPage} /> */}
-          <Route path={`/:name/manage`} component={ManageChannelPage} />
-          <Route path="/tag" component={TagPage} />
-          <Route path="/event/:name" component={TalkSharingPage}/>
-          {/* <Route path="/streaming" component={Streaming} /> */}
-          <Route path="/preferences" component={Preferences} />
-          <Route path="/schedule" component={Schedule} />
-          <Route path="/saved" component={SavedTalksPage} />
-          <Route path="/upcoming" component={AllUpcomingTalksPage} />
           <Route path="/past" component={AllPastTalksPage} />
+          {/* <Route exact path="/speakers" component={AllSpeakersPage} /> */}
+          <Route path={`/:name/manage`} component={ManageChannelPage} />
+
+          {/* REFERAL ENDPOINT: not deployed yet */}
+          {/* <Route path="/referral/channel" component={ChannelReferralPage} /> */}
+          {/* <Route path="/referral/user/:userId/" component={UserReferralPage} /> */}
+
+          {/* EVENT ENDPOINTS: */}
+          <Route path="/:event_id/virtual_meeting" component={AvatarPage} />
+          <Route path="/livestream/:encoded_endpoint" component={LivestreamPage} />
+          <Route path="/event/:name" component={TalkSharingPage}/>
+
+          {/* USER ENDPOINT: */}
+          <Route path="/preferences" component={Preferences} />
+          <Route path="/saved" component={SavedTalksPage} />
+
+          {/* INFO ENDPOINT: */}
           <Route path="/info/welcome" component={InformationPage} />
           <Route path="/info/agora_creation" component={AgoraCreationPage} />
           <Route path="/info/getting-started" component={GettingStartedPage} />
@@ -71,6 +72,17 @@ function App() {
           <Route path="/info/privacy" component={PrivacyPage} />
           <Route path="/changepassword" component={ChangePasswordPage} />
           <Route path="*" component={ChannelPage} />
+
+          {/* PAYMENT ENDPOINTS: */}
+          <Route path="/thankyou/:status" component={AfterTransaction} />
+
+          {/* OLD ENDPOINTS: UNUSED */}
+          {/* <Route path="/video" component={VideoPage} /> */}
+          {/* <Route path="/stream" component={StreamPage} /> */}
+          {/* <Route path="/tag" component={TagPage} /> */}
+          {/* <Route path="/streaming" component={Streaming} /> */}
+          {/* <Route path="/schedule" component={Schedule} /> */}
+
         </Switch>
       </Grommet>
   );

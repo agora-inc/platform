@@ -5,11 +5,13 @@ import { RadialSelected } from "grommet-icons";
 
 interface Props {
   checked: boolean;
-  width: string;
-  height?: number;
+  width: number;
+  height: number;
   callback?: any;
   textOn?: string;
   textOff?: string;
+  color?: string;
+  disabled?: boolean;
 }
 
 interface State {
@@ -24,6 +26,12 @@ export default class Switch extends Component<Props, State> {
     }
   }
 
+  componentDidUpdate(nextProps: Props) {
+    if (nextProps.checked !== this.props.checked) {
+      this.setState({checked: this.props.checked})
+    }
+  }
+
   toggleChecked = () => {
     this.setState({ checked: !this.state.checked})
     if (this.props.callback) {
@@ -32,14 +40,14 @@ export default class Switch extends Component<Props, State> {
   }
 
   render() {
-    let height: string = this.props.height ? this.props.height + "px" : "24px";
     let round: string = this.props.height ? (this.props.height / 2) + "px" : "12px";
+    let disabled: boolean = this.props.disabled ? this.props.disabled : false;
 
     if (this.state.checked) {
       return (
         <Box
-          width={this.props.width}
-          height={height}
+          width={this.props.width + "px"}
+          height={this.props.height + "px"}
           round={round}
           onClick={this.toggleChecked} 
           direction="row"
@@ -47,21 +55,26 @@ export default class Switch extends Component<Props, State> {
             border: "1px solid gray"
           }}
           align="center"
-          background="#025377"
+          justify="center"
+          background={this.props.color ? this.props.color : "#025377"}
           focusIndicator={false}
         >
-          <RadialSelected size={height} color="#EEEEEE" />
-          <Box width={this.props.width}> </Box>
-          <Text size="12px" margin={{right: "10px"}} weight="bold" color="#EEEEEE"> 
-            {this.props.textOn ? this.props.textOn : ""} 
-          </Text>
+          <RadialSelected size={this.props.height + "px"} color={disabled ? "grey" : "white"} />
+          <Box alignContent="center" alignSelf="center" align="center">
+            <Text size="12px" margin={{right: "5px"}} weight="bold" textAlign="center"
+              style={{width: (this.props.width - this.props.height) + "px"}}
+              color={disabled ? "grey" : "white"}
+            > 
+              {this.props.textOn ? this.props.textOn : ""} 
+            </Text>
+          </Box>
         </Box>
       );
     } else {
       return (
         <Box
-          width={this.props.width}
-          height={height}
+          width={this.props.width + "px"}
+          height={this.props.height + "px"}
           round={round}
           onClick={this.toggleChecked}  
           direction="row"
@@ -70,13 +83,15 @@ export default class Switch extends Component<Props, State> {
             border: "1px solid gray"
           }}
           align="center"
+          justify="center"
           background="white"
         >
-          <Text size="12px" margin={{left: "10px"}} weight="bold"> 
+          <Text size="12px" margin={{left: "5px"}} weight="bold" textAlign="center"
+            style={{width: (this.props.width - this.props.height) + "px"}}
+          > 
             {this.props.textOff ? this.props.textOff : ""} 
           </Text>
-          <Box width={this.props.width}> </Box>
-          <RadialSelected size={height} />
+          <RadialSelected size={this.props.height + "px"}  />
         </Box>
       );
     }

@@ -46,7 +46,7 @@ export default class Home extends Component<{}, State> {
 
   // componentWillMount() {
   //   // Limit to 1000 talks
-  //   TalkService.getAllFutureTalks(1000, 0, (allTalks: Talk[]) => {
+  //   TalkService.getAllFutureTalks(100, 0, (allTalks: Talk[]) => {
   //     this.setState({
   //       allTalks: allTalks,
   //       chosenTalks: allTalks
@@ -56,7 +56,7 @@ export default class Home extends Component<{}, State> {
   //     this.setState({ allTopics: allTopics });
   //   });
 
-  //   // this.fetchTalks();
+  //   this.fetchTalks();
   // }
 
   // componentWillUpdate() {
