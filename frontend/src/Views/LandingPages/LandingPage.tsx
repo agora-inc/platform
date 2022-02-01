@@ -291,7 +291,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   autoPlay loop muted
                   style={{ height: "100%", width: "auto", alignSelf: "center", maxWidth:"100%"}}
                   >
-                  <source src="/videos/browse_talk.mp4" type="video/mp4"/> 
+                  <source src="/videos/create_pres.mp4" type="video/mp4"/> 
               </video>
             </Box>
           </Box>
@@ -369,7 +369,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">We <Text size="38px" color="color7" weight="bold">empower</Text> speakers, attendees, and organisers with tech</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">An evergrowing <Text size="38px" color="color7" weight="bold">virtuous circle</Text> for researchers</Text>
 
 
         {!this.state.renderMobileView && 
@@ -472,7 +472,7 @@ callToActionSocial() {
         <>
           <Box>
             <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Built by academics, for academics</Text>
-            <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">mora.stream is built around <b>what our community wants</b>. Sign up, and join the conversation!</Text>
+            <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">mora.stream is built around what our community wants. Sign up and join the conversation!</Text>
             
             <Box align="center" margin={{bottom: "90px"}}>
                 <SignUpButton 
@@ -515,7 +515,7 @@ calltoActionOrganisers() {
         <>
           <Box>
             <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Are you a seminar organiser?</Text>
-            <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">Organising seminars has now been made easy, from start to finish!</Text>
+            <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">Finding speakers and organising seminars has now been made easy, from start to finish!</Text>
             
             <Box align="center" margin={{bottom: "90px"}}>
               <Link
