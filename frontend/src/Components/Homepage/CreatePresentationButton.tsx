@@ -162,7 +162,7 @@ export const CreatePresentationButton = () =>  {
             width={550}
             height={450}
             contentHeight="300px"
-            title={"Create your first presentation on mora!"}
+            title={"Describe your future talk and get invited!"}
           >
             <Box width="100%" gap="10px" margin={{top: "5px"}}>
               <TextInput
@@ -236,7 +236,7 @@ export const CreatePresentationButton = () =>  {
                 >
                   <Box pad="30px" alignSelf="center" fill={true}>
                     <Text size="16px" color="black" weight="bold">
-                      Sign up to save your presentation
+                      Sign up to get invited!
                     </Text>
                   </Box>
                 </Box>
@@ -260,13 +260,12 @@ export const CreatePresentationButton = () =>  {
                  
                 <Box width="90%" overflow="auto" align="center" gap="5px" margin={{top: "20px"}}  >
                   <Text size="12px" color="black" margin={{ bottom: "12px" }}>
-                    This account will be associated with you as an individual. After you've signed up
-                    you'll be able to fill your profile and advertise your research.
+                    You need a personal account to edit your presentation and profile. This account will be associated with you as an individual.
                   </Text>
-                  <TextInput
+                  {/* <TextInput
                     placeholder="Username"
                     onChange={(e) => setUsername(e.target.value)}
-                  />
+                  /> */}
                   <TextInput
                     placeholder="Full name"
                     onChange={(e) => setFullName(e.target.value)}
@@ -280,7 +279,7 @@ export const CreatePresentationButton = () =>  {
                     onChange={(e) => setInstitution(e.target.value)}
                   />
                   <TextInput
-                    placeholder="Email"
+                    placeholder="Academic email"
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <TextInput
@@ -330,7 +329,7 @@ export const CreatePresentationButton = () =>  {
                 >
 
                   <Text size="12px" color="black" style={{width: "50%"}} >
-                    If you already have an account, log in to save your presentation
+                    If you already have an account, log in to add your new presentation
                   </Text>
                   <LoginModal callback={() => onLogin(history)}/>
                 </Box>
