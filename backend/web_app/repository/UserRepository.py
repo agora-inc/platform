@@ -1,4 +1,4 @@
-from statistics import mode
+# from statistics import mode
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
@@ -6,7 +6,6 @@ import jwt
 from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
 from app.databases import agora_db
-from repository.AgoraClaimRepository import AgoraClaimRepository, mode
 
 # for emails
 from flask_mail import Message
@@ -25,7 +24,6 @@ class UserRepository:
         self.secret = b'\xccu\x9e2\xda\xe8\x16\x8a\x137\xde@G\xc7T\xf1\x16\xca\x05\xee\xa7\xa4\x98\x05'
         self.mail_sys = mail_sys
         self.institutions = InstitutionRepository(db=self.db)
-        self.claims = AgoraClaimRepository(db = self.db)
         
     def getAllUsers(self):
         query = "SELECT * FROM Users"
@@ -112,7 +110,7 @@ class UserRepository:
                     SET user_id = {userId}
                     WHERE channel_id = {channelId} and role = "owner";'''
                 res = self.db.run_query(change_owner_query)
-                AgoraClaimRepository.updateAndAssignClaim(mode.getCode())
+                self.updateAndAssignClaim(mode.getCode())
                 
             except Exception as e:
                 print(e)
@@ -242,6 +240,14 @@ class UserRepository:
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
 
+    def updateAndAssignClaim(self, mailToken : str):
+        token_query = f'''UPDATE FetchedChannels SET claimed = 1 WHERE mailToken = {mailToken}'''
+        self.db.run_query(token_query)
+        # assign_claim_query = f'''SELECT channel_id, organiser_name, organiser_email FROM FetchedChannels WHERE mailToken = {mailToken}'''
+        # channel = self.db.run_query(assign_claim_query)
+        # userId = self.userRepo.addUser(channel['organiser_name'], self.safePassword(), channel['organiser_email'],channel['channel_id'], mode= 'claim' )
+        # return userId
+
     def changePassword(self, userId, newPassword):
         passwordHash = generate_password_hash(newPassword)
         query = f'UPDATE Users SET password_hash = "{passwordHash}" WHERE id = {userId}'
@@ -256,3 +262,15 @@ class UserRepository:
         query = f'UPDATE Users SET public = "{int(public)}" WHERE id = {userId}'
         self.db.run_query(query)
         return self.getUserById(userId)
+
+
+class mode:
+    def __init__(self, mode, code) -> None:
+        self.mode = mode
+        self.code = code
+
+    def getMode(self):
+        return self.mode
+
+    def getCode(self):
+        return self.code

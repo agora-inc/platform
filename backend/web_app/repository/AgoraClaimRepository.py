@@ -1,10 +1,10 @@
-from __future__ import annotations
+# from __future__ import annotations
 import secrets
 import string
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from repository.ChannelRepository import ChannelRepository
-from repository.UserRepository import UserRepository
+from repository.UserRepository import UserRepository, mode
 from typing import Final
 
 mail_sys = sendgridApi()
@@ -134,15 +134,6 @@ class AgoraClaimRepository():
 
     def safePassword(self: AgoraClaimRepository, password_len : int = 12):
         return ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(password_len))
-
-    def updateAndAssignClaim(self : AgoraClaimRepository, mailToken : str):
-        token_query = f'''UPDATE FetchedChannels SET claimed = 1 WHERE mailToken = {mailToken}'''
-        self.db.run_query(token_query)
-        # assign_claim_query = f'''SELECT channel_id, organiser_name, organiser_email FROM FetchedChannels WHERE mailToken = {mailToken}'''
-        # channel = self.db.run_query(assign_claim_query)
-        # userId = self.userRepo.addUser(channel['organiser_name'], self.safePassword(), channel['organiser_email'],channel['channel_id'], mode= 'claim' )
-        # return userId
-
     
     def getReminderIdsToBeSent(self, delta_time_window):
         # get reminders whose time_sending are within [time_sending-delta_time_window; time_sending + delta_time_window]
@@ -164,16 +155,3 @@ class AgoraClaimRepository():
             return []
         else:
             return [i["id"] for i in res]
-
-
-class mode:
-
-    def __init__(self, mode, code) -> None:
-        self.mode = mode
-        self.code = code
-
-    def getMode(self):
-        return self.mode
-
-    def getCode(self):
-        return self.code

@@ -6,8 +6,8 @@ from flask.globals import session
 from app import app, mail
 from app.databases import agora_db
 from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository, AgoraClaimRepository,
-from repository.AgoraClaimRepository import mode
+from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository, AgoraClaimRepository
+from repository.UserRepository import mode
 from flask import jsonify, request, send_file
 from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
@@ -43,11 +43,11 @@ RSScraper = RSScraperRepository.RSScraperRepository(db=agora_db)
 tweets = TwitterBotRepository.TwitterBotRepository(db=agora_db)
 claimRepo = AgoraClaimRepository.AgoraClaimRepository(db = agora_db)
 
-# BASE_URL = "http://localhost:3000"
-BASE_URL = "https://mora.stream/"
+BASE_URL = "http://localhost:3000"
+# BASE_URL = "https://mora.stream/"
 
-BASE_API_URL = "https://mora.stream/api"
-# BASE_API_URL = "http://localhost:8000/api"
+# BASE_API_URL = "https://mora.stream/api"
+BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
