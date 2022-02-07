@@ -4,7 +4,7 @@ import string
 from mailing.sendgridApi import sendgridApi
 from datetime import datetime, timedelta
 from repository.ChannelRepository import ChannelRepository
-from repository.UserRepository import UserRepository, mode
+from repository.UserRepository import UserRepository
 from typing import Final
 
 mail_sys = sendgridApi()
@@ -49,7 +49,7 @@ class AgoraClaimRepository():
             self.db.run_query(claimReminderQuery)
 
     # Get channel(name,org_name,org_email, claimEmail count, mailToken)
-    def getUnclaimedChannelDetails(self: AgoraClaimRepository, reminderID: int):
+    def getUnclaimedChannelDetails(self, reminderID: int):
 
         if(self.VIEW_THRESHOLD == None):
             channel_query = '''SELECT Channels.id, Channels.name, FetchedChannels.organiser_name , 
@@ -132,7 +132,7 @@ class AgoraClaimRepository():
         # It should update it by one everytime until a certain limit
         # After the limit has been reached and the user doesn't claim within x days we delete the agora
 
-    def safePassword(self: AgoraClaimRepository, password_len : int = 12):
+    def safePassword(self, password_len : int = 12):
         return ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(password_len))
     
     def getReminderIdsToBeSent(self, delta_time_window):

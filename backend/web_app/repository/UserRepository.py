@@ -13,6 +13,18 @@ from flask import render_template
 
 mail_sys = sendgridApi()
 
+
+class mode:
+    def __init__(self, mode, code) -> None:
+        self.mode = mode
+        self.code = code
+
+    def getMode(self):
+        return self.mode
+
+    def getCode(self):
+        return self.code
+
 class User:
     def __init__(self, username, password):
         self.username = username
@@ -263,14 +275,3 @@ class UserRepository:
         self.db.run_query(query)
         return self.getUserById(userId)
 
-
-class mode:
-    def __init__(self, mode, code) -> None:
-        self.mode = mode
-        self.code = code
-
-    def getMode(self):
-        return self.mode
-
-    def getCode(self):
-        return self.code

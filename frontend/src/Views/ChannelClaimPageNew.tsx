@@ -5,32 +5,32 @@ import { Box, Text, Heading, Layer } from "grommet";
 import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
 import moraStreamFullLettersLogo from "../../assets/general/mora.stream_logo_v2.1.png";
 
-import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
-import { User, UserService } from "../../Services/UserService";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
+import { User, UserService } from "../Services/UserService";
 import { Search, Java, Play, Share, Add, Video, Close, ShareOption, Rewind, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
-import FooterComponent from "../../Components/Homepage/FooterComponent";
+import FooterComponent from "../Components/Homepage/FooterComponent";
 import "../../Styles/landing-page.css";
 import MediaQuery from "react-responsive";
 import ScrollIntoView from 'react-scroll-into-view'
 import ReactTooltip from "react-tooltip";
 
-import CreateChannelButton from "../../Components/Channel/CreateChannelButton";
-import CreateChannelOverlay from "../../Components/Channel/CreateChannelButton/CreateChannelOverlay";
+import CreateChannelButton from "../Components/Channel/CreateChannelButton";
+import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
 
-import ZoomLogo from "../../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
-import YoutubeLogo from "../../assets/competitors_logo/YouTube_Logo_2017.svg.png";
-import MicrosoftTeams from "../../assets/competitors_logo/youtube_logo.jpeg";
-import BackgroundImage from "../../assets/general/mora_social_media_cover_#bad6db.jpg"
-import WavyArrow from "../../assets/landing_page/wavy_arrow_left_right.png"
+import ZoomLogo from "../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
+import YoutubeLogo from "../assets/competitors_logo/YouTube_Logo_2017.svg.png";
+import MicrosoftTeams from "../assets/competitors_logo/youtube_logo.jpeg";
+import BackgroundImage from "../assets/general/mora_social_media_cover_#bad6db.jpg"
+import WavyArrow from "../assets/landing_page/wavy_arrow_left_right.png"
 
-import InstitutionalUsers from "./InstitutionalUsers";
-import SeminarImage from "../../assets/general/academic_seminars_photo.jpeg"
+import InstitutionalUsers from "LandingPages/InstitutionalUsers";
+import SeminarImage from "../assets/general/academic_seminars_photo.jpeg"
 
-import PricingPlans from "../../Views/PricingPlans";
+import PricingPlans from "../Views/PricingPlans";
 
 import DashedLine from "../../assets/landing_page/dashed-line.png"
-import TransportSeminars from "../../Components/Homepage/TransportSeminars";
+import TransportSeminars from "../Components/Homepage/TransportSeminars";
 import { Channel } from "../Services/ChannelService";
 
 interface State {

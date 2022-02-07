@@ -18,7 +18,7 @@ export const useTracking = (
   const { listen } = useHistory()
 
   useEffect(() => {
-    const unlisten = listen((location) => {
+    const unlisten = listen((location: any) => {
       if (!window.gtag) return
       if (!trackingId) {
         console.log(
