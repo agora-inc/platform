@@ -146,7 +146,7 @@ export const CreatePresentationButton = () =>  {
         direction="row"
       >
         <Workshop size="30px" />
-        <Text size="18px" margin={{left: "10px"}}> <b>Create</b> your next presentation </Text>
+        <Text size="18px" margin={{left: "10px"}}> <b>Present your</b> latest work</Text>
       </Box>
       <Route render={({history}) => (
         <>
