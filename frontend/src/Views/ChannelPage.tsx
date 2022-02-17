@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { Box, Text, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
+import { Profile, ProfileService } from "../Services/ProfileService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Stream, StreamService } from "../Services/StreamService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -474,12 +475,17 @@ export default class ChannelPage extends Component<Props, State> {
           
           <Box direction="row" gap="50px" align="center">
             <MediaQuery minWidth={900}>
-              <ApplyToTalkButton />
-
-              {/* <ApplyToTalkForm
-                channelId={this.state.channel!.id}
-                channelName={this.state.channel!.name}
-              /> */}
+              {this.state.user && (
+                <ApplyToTalkButton 
+                  user={this.state.user}
+                />
+              )}
+              {!this.state.user && (
+                <ApplyToTalkForm
+                  channelId={this.state.channel!.id}
+                  channelName={this.state.channel!.name}
+                /> 
+              )}
 
               {/* {!(this.state.role == "member" || this.state.role == "owner") && (
               <RequestMembershipButton
