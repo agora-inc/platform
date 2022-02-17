@@ -422,18 +422,51 @@ export default class ChannelPage extends Component<Props, State> {
               <div className="banner_title">
                   {this.state.channel ?.name}
               </div>
-                <Box 
-                  margin={{top: "10px"}}
-                  style={{width: "300px"}}
-                  direction="column"> 
-                    <ShareButtons
-                      channel={this.state.channel}
-                      height={(window.innerWidth < 800) ? "25px" : "35px"}
-                    />
+              <Box 
+                margin={{top: "10px"}}
+                style={{width: "300px"}}
+                direction="row"
+                gap="25px"
+              >
+                <Box
+                  className="follow-button"
+                  background={this.state.following ? "#e5e5e5" : "white"}
+                  height={(window.innerWidth < 800) ? "25px" : "35px"}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  width="100px"
+                  round="xsmall"
+                  align="center"
+                  justify="center"
+                  onClick={this.state.user ? this.onFollowClicked : ()=>{}}
+                  focusIndicator={false}
+                  hoverIndicator={this.state.user ? true : false}
+                  data-tip data-for='not_registered_follow_button_info'
+                >
+                  <Text 
+                    size="15px" 
+                    color="grey"
+                    alignSelf="center"
+                  >
+                    {this.state.following ? "Following" : "Follow"}
+                  </Text>
+                  {!this.state.user && (
+                    <ReactTooltip id='not_registered_follow_button_info' place="top" effect="solid">
+                      <p>You need to be registered for that.</p>
+                    </ReactTooltip>
+                  )}
+
                 </Box>
-                {/*<Text size="24px" color="#999999" weight="bold">
-                  {this.state.followerCount} followers
-                  </Text>*/}
+                <ShareButtons
+                  channel={this.state.channel}
+                  height={(window.innerWidth < 800) ? "25px" : "35px"}
+                  onlyShare={true}
+                />
+              </Box>
+              {/*<Text size="24px" color="#999999" weight="bold">
+                {this.state.followerCount} followers
+                </Text>*/}
             </Box>
           </Box>
 
@@ -452,40 +485,6 @@ export default class ChannelPage extends Component<Props, State> {
               />
               )} */}
             </MediaQuery>
-
-
-            
-              <Box
-                className="follow-button"
-                pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
-                background={this.state.following ? "#e5e5e5" : "white"}
-                height="30px"
-                style={{
-                  border: "1px solid #C2C2C2",
-                }}
-                width="10vw"
-                round="xsmall"
-                align="center"
-                justify="center"
-                onClick={this.state.user ? this.onFollowClicked : ()=>{}}
-                focusIndicator={false}
-                hoverIndicator={this.state.user ? true : false}
-                data-tip data-for='not_registered_follow_button_info'
-              >
-                <Text 
-                  size="14px" 
-                  color="grey"
-                  alignSelf="center"
-                >
-                  {this.state.following ? "Following" : "Follow"}
-                </Text>
-                {!this.state.user && (
-                  <ReactTooltip id='not_registered_follow_button_info' place="top" effect="solid">
-                    <p>You need to be registered for that.</p>
-                  </ReactTooltip>
-                )}
-
-              </Box>
 
             {this.state.bannerExtended ? (
               <FormUp

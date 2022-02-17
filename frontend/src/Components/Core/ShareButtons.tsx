@@ -17,6 +17,7 @@ interface Props {
     width?: string;
     widthPixel?: number;
     useReducedHorizontalVersion?: boolean
+    onlyShare?: boolean;
   }
   
   interface State {
@@ -26,6 +27,7 @@ interface Props {
     emailMessage: string;
     imageUrl: string;
     showShareButtons: boolean;
+    onlyShare: boolean;
   }
   
   export default class ShareButtons extends Component<Props, State> {
@@ -37,7 +39,8 @@ interface Props {
         emailTitle: "",
         emailMessage: "",
         imageUrl: "",
-        showShareButtons: true
+        showShareButtons: true,
+        onlyShare: this.props.onlyShare ? this.props.onlyShare : false,
       };
     }
 
@@ -144,15 +147,17 @@ interface Props {
           <Box 
             direction="row"
             style = {{ zIndex: 0 }}
-            width="275px"
+            width={this.state.onlyShare ? "135" : "275px"}
             // alignSelf="end"
             gap="10px"
           >
-            <CopyUrlButton 
-              url={this.urlLink()} 
-              height={this.props.height ? this.props.height : "35px"}
-              width={this.props.width ? this.props.width : "100px"}
-            />
+            {!this.state.onlyShare && (
+              <CopyUrlButton 
+                url={this.urlLink()} 
+                height={this.props.height ? this.props.height : "35px"}
+                width={this.props.width ? this.props.width : "100px"}
+              />
+            )}
 
             {/*<Button
               data-tip data-for='share_social'
@@ -182,7 +187,11 @@ interface Props {
               focusIndicator={true}
               hoverIndicator="#BAD6DB"
             >
-              <Text weight="bold" size="15px">
+              <Text 
+                weight={this.state.onlyShare ? "normal" : "bold"}
+                color={this.state.onlyShare ? "grey" : "black"}
+                size="15px"
+              >
                 Share 
               </Text>
             </Box> 
