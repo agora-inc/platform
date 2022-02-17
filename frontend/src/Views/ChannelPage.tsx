@@ -13,6 +13,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
+import { ApplyToTalkButton } from "../Components/Talks/ApplyToTalkButton";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
 import { Topic, TopicService } from "../Services/TopicService";
 import ShareButtons from ".././Components/Core/ShareButtons";
@@ -471,12 +472,15 @@ export default class ChannelPage extends Component<Props, State> {
           </Box>
 
           
-          <Box direction="row" gap="xsmall" align="center">
+          <Box direction="row" gap="50px" align="center">
             <MediaQuery minWidth={900}>
-              <ApplyToTalkForm
-                          channelId={this.state.channel!.id}
-                          channelName={this.state.channel!.name}
-              />
+              <ApplyToTalkButton />
+
+              {/* <ApplyToTalkForm
+                channelId={this.state.channel!.id}
+                channelName={this.state.channel!.name}
+              /> */}
+
               {/* {!(this.state.role == "member" || this.state.role == "owner") && (
               <RequestMembershipButton
                 channelId={this.state.channel!.id}

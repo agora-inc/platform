@@ -1,27 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text, TextInput, TextArea } from "grommet";
 import { Presentation, Profile, ProfileService } from "../../Services/ProfileService";
-import {  } from "grommet-icons";
+import { Workshop } from "grommet-icons";
 
 
 interface Props {
-  presentation: Presentation;
-  profile: Profile;
-  index: number;
-  home: boolean;
-  userId?: number;
-  width?: string;
-  updatePresentation?: any;
-  deletePresentation?: any;
-  isOverlay?: boolean;
+
 }
 
-export const PresentationEntry = (props: Props) => {
-  const [user, setUser] = useState<boolean>(props.presentation.id > 0 ? false : true);
+export const ApplyToTalkButton = (props: Props) => {
+  const [isOverlay, setIsOverlay] = useState<boolean>(false);
 
   return (
-    <Box direction="row" align="center">
-      123
+    <Box
+      onClick={() => setIsOverlay(true)}
+      background="color1"
+      round="xsmall"
+      pad="xsmall"
+      height="45px"
+      width="155px"
+      justify="center"
+      align="center"
+      focusIndicator={false}
+      hoverIndicator="color5"
+      margin={{ left: "0px" }}
+      direction="row"
+    >
+      <Workshop size="20px" />
+      <Text size="14px" margin={{left: "10px"}}> Give a talk</Text>
     </Box>
   );
 }
