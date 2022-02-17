@@ -18,7 +18,7 @@ export const ApplyToTalkButton = (props: Props) => {
     props.user.email ? props.user.email : ""
   )
   const [position, setPosition] = useState<string>(
-    props.user.position ? props.user.position : "else"
+    props.user.position ? props.user.position : ""
   )
   const [institution, setInstitution] = useState<string>(
     props.user.institution ? props.user.institution : ""
@@ -46,6 +46,8 @@ export const ApplyToTalkButton = (props: Props) => {
   function handleSubmit(): void {
 
   }
+
+  console.log("user", props.user)
 
   return (
     <>
@@ -75,9 +77,9 @@ export const ApplyToTalkButton = (props: Props) => {
       submitButtonText="Apply"
       canProceed={isComplete()}
       isMissing={isMissing()}
-      width={900}
-      height={500}
-      contentHeight="800px"
+      width={600}
+      height={700}
+      contentHeight="550px"
       title="Talk application"
     >
 
@@ -90,11 +92,10 @@ export const ApplyToTalkButton = (props: Props) => {
           />
         </Box>
       <Box width="100%" gap="2px">
-        <Select
+        <TextInput
           placeholder="Education level"
-          options={['Bachelor', 'Master', 'PhD Candidate', 'Postdoc+', 'Prof', 'Else']}
           value={position}
-          onChange={({option}) => setPosition(option)}
+          onChange={(e: any) => setPosition(e.target.value)}
         />
       </Box>
       <Box width="100%" gap="2px">
