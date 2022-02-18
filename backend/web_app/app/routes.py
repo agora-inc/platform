@@ -156,7 +156,12 @@ def addUser():
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
 
-    return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
+    return jsonify({
+        "id": user["id"], 
+        "username": user["username"],
+        "accessToken": accessToken.decode(), 
+        "refreshToken": refreshToken.decode()
+    })
 
 @app.route('/users/authenticate', methods=["POST", "OPTIONS"])
 def authenticate():
@@ -180,7 +185,12 @@ def authenticate():
     accessToken = users.encodeAuthToken(user["id"], "access")
     refreshToken = users.encodeAuthToken(user["id"], "refresh")
 
-    return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
+    return jsonify({
+        "id": user["id"], 
+        "username": user["username"],
+        "accessToken": accessToken.decode(), 
+        "refreshToken": refreshToken.decode()
+    })
 
 
 @app.route('/refreshtoken', methods=["POST"])

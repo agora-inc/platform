@@ -3,37 +3,63 @@ import { Box, Text, TextInput, TextArea, Select } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import { User, UserService } from "../../Services/UserService";
 import { Presentation, Profile, ProfileService } from "../../Services/ProfileService";
-import { Workshop } from "grommet-icons";
+import { Workshop, LinkPrevious, LinkNext } from "grommet-icons";
+import { PresentationEntry } from "../Profile/PresentationEntry";
 
 
 interface Props {
-  user: User
+  userId: number
 }
 
 export const ApplyToTalkButton = (props: Props) => {
   const [isOverlay, setIsOverlay] = useState<boolean>(false);
   const [profile, setProfile] = useState<Profile>();
-  const [fullName, setFullName] = useState<string>("")
-  const [email, setEmail] = useState<string>(
-    props.user.email ? props.user.email : ""
-  )
-  const [position, setPosition] = useState<string>(
-    props.user.position ? props.user.position : ""
-  )
-  const [institution, setInstitution] = useState<string>(
-    props.user.institution ? props.user.institution : ""
-  )
-  const [message, setMessage] = useState<string>("")
+  // presentations
+  const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const [idxPresDisplay, setIdxPresDisplay] = useState<number>(0);
+  const [newPresentation, setNewPresentation] = useState<Presentation>();
+  // profile infô
+  const [fullName, setFullName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [position, setPosition] = useState<string>(""); 
+  const [institution, setInstitution] = useState<string>(""); 
+  const [personalWebsite, setPersonalWebsite] = useState<string>("");
+  const [message, setMessage] = useState<string>(""); 
 
   useEffect(() => {
     ProfileService.getProfile(
-      props.user.id, 
+      props.userId, 
       (profile: Profile) => {
         setProfile(profile)
+        setPresentations(profile.presentations)
         setFullName(profile.full_name)
+        setEmail(profile.user.email ? profile.user.email  : "")
+        setPosition(profile.user.position ? profile.user.position  : "")
+        setInstitution(profile.user.institution ? profile.user.institution : "")
+        setPersonalWebsite(profile.user.personal_homepage ? profile.user.personal_homepage : "")
       }
     )
-  }, [profile])
+  }, [])
+
+  function renderArrowButton(prev: boolean) {
+    let incr = prev ? -1 : 1;
+    return (
+      <Box
+        round="xsmall"
+        pad={{ vertical: "4px", horizontal: "4px" }}
+        style={{
+          width: "24px",
+          border: "1px solid #BBBBBB",
+        }}
+        margin={{left: prev ? "24px" : "0px", right: prev ? "0px" : "24px"}}
+        onClick={() => setIdxPresDisplay(idxPresDisplay+incr)}
+        hoverIndicator="#DDDDDD" 
+      >
+      {prev && <LinkPrevious color="#BBBBBB" size="18px" />}
+      {!prev && <LinkNext color="#BBBBBB" size="18px" />}
+    </Box>
+    );
+  }
 
 
   function isComplete(): boolean {
@@ -45,9 +71,7 @@ export const ApplyToTalkButton = (props: Props) => {
 
   function handleSubmit(): void {
 
-  }
-
-  console.log("user", props.user)
+  }  
 
   return (
     <>
@@ -77,51 +101,56 @@ export const ApplyToTalkButton = (props: Props) => {
       submitButtonText="Apply"
       canProceed={isComplete()}
       isMissing={isMissing()}
-      width={600}
+      width={550}
       height={700}
-      contentHeight="550px"
+      contentHeight="700px"
       title="Talk application"
     >
-
-    <OverlaySection>
-      <Box width="100%" gap="2px">
+      {profile && presentations.length > 0 && (
+        <Box direction="row" width="100%" align="center"> 
+          {idxPresDisplay > 0 && renderArrowButton(true)}
+          <Box width="80%" style={{border: "1px solid grey"}} pad="5px">
+            <PresentationEntry 
+              presentation={presentations[idxPresDisplay]}
+              profile={profile}
+              index={idxPresDisplay}
+              home={false}
+              isOverlay={true}
+            />
+          </Box>
+          {idxPresDisplay < presentations.length-1 && renderArrowButton(false)}
+        </Box>
+      )}
+      {(!profile || presentations.length === 0) && (
+        123
+      )}
+      
+      <Box width="100%" direction="column" gap="8px">
         <TextInput
           placeholder="Full name"
           value={fullName}
           onChange={(e: any) => setFullName(e.target.value)}
           />
-        </Box>
-      <Box width="100%" gap="2px">
         <TextInput
           placeholder="Education level"
           value={position}
           onChange={(e: any) => setPosition(e.target.value)}
         />
-      </Box>
-      <Box width="100%" gap="2px">
         <TextInput
           placeholder="Current institution"
           value={institution}
           onChange={(e: any) => setInstitution(e.target.value)}
           />
-      </Box>
-      <Box width="100%" gap="2px">
         <TextInput
           placeholder="Email address"
           value={email}
           onChange={(e: any) => setEmail(e.target.value)}
           />
-      </Box>
-      {/*
-      <Box width="100%" gap="2px">
         <TextInput
           placeholder="(Personal website)"
-          value={this.state.user.personal_website}
-          onChange={(e: any) => this.handleInput(e.target.value, "personal_website")}
+          value={personalWebsite}
+          onChange={(e: any) => setPersonalWebsite(e.target.value)}
         />
-      </Box> */}
-  
-      <Box width="100%" gap="2px" margin={{bottom: "20px"}}>
         <TextArea
           placeholder="(Message)"
           value={message}
@@ -129,7 +158,6 @@ export const ApplyToTalkButton = (props: Props) => {
           rows={8}
         />
       </Box>
-      </OverlaySection>
     </Overlay>
     </>
 

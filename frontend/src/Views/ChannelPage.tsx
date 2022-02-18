@@ -477,7 +477,7 @@ export default class ChannelPage extends Component<Props, State> {
             <MediaQuery minWidth={900}>
               {this.state.user && (
                 <ApplyToTalkButton 
-                  user={this.state.user}
+                  userId={this.state.user.id}
                 />
               )}
               {!this.state.user && (
@@ -554,7 +554,6 @@ export default class ChannelPage extends Component<Props, State> {
   };
 
   render() {
-    console.log("USRE", this.state.user)
     if (this.state.loading) {
       return (
         <Box width="100%" height="100%" justify="center" align="center">
