@@ -41,24 +41,30 @@ export const ApplyToTalkButton = (props: Props) => {
     )
   }, [])
 
-  function renderArrowButton(prev: boolean) {
+  function renderArrowButton(prev: boolean, idx: number, len: number) {
     let incr = prev ? -1 : 1;
-    return (
-      <Box
-        round="xsmall"
-        pad={{ vertical: "4px", horizontal: "4px" }}
-        style={{
-          width: "24px",
-          border: "1px solid #BBBBBB",
-        }}
-        margin={{left: prev ? "24px" : "0px", right: prev ? "0px" : "24px"}}
-        onClick={() => setIdxPresDisplay(idxPresDisplay+incr)}
-        hoverIndicator="#DDDDDD" 
-      >
-      {prev && <LinkPrevious color="#BBBBBB" size="18px" />}
-      {!prev && <LinkNext color="#BBBBBB" size="18px" />}
-    </Box>
-    );
+    if ((prev && idx > 0) || (!prev && idx < len-1)) {
+      return (
+        <Box
+          round="xsmall"
+          pad={{ vertical: "4px", horizontal: "4px" }}
+          style={{
+            width: "28px",
+            border: "1px solid #BBBBBB",
+          }}
+          onClick={() => setIdxPresDisplay(idxPresDisplay+incr)}
+          hoverIndicator="#DDDDDD" 
+        >
+        {prev && <LinkPrevious color="#BBBBBB" size="18px" />}
+        {!prev && <LinkNext color="#BBBBBB" size="18px" />}
+      </Box>
+      );
+    } else {
+      return (
+        <Box width="28px" />
+      );
+    }
+
   }
 
 
@@ -101,24 +107,31 @@ export const ApplyToTalkButton = (props: Props) => {
       submitButtonText="Apply"
       canProceed={isComplete()}
       isMissing={isMissing()}
-      width={550}
-      height={700}
-      contentHeight="700px"
+      width={600}
+      height={750}
+      contentHeight="750px"
       title="Talk application"
     >
       {profile && presentations.length > 0 && (
-        <Box direction="row" width="100%" align="center"> 
-          {idxPresDisplay > 0 && renderArrowButton(true)}
-          <Box width="80%" style={{border: "1px solid grey"}} pad="5px">
-            <PresentationEntry 
-              presentation={presentations[idxPresDisplay]}
-              profile={profile}
-              index={idxPresDisplay}
-              home={false}
-              isOverlay={true}
-            />
+        <Box direction="row" width="100%" align="center" gap="15px"> 
+          {renderArrowButton(true, idxPresDisplay, presentations.length)}
+          <Box width="85%" style={{border: "1px solid grey"}} pad="10px" round="xsmall">
+            {presentations.map((presentation, i) => {
+              if (i === idxPresDisplay) {
+                return ( 
+                  <PresentationEntry 
+                    presentation={presentation}
+                    profile={profile}
+                    index={idxPresDisplay}
+                    home={false}
+                    isOverlay={true}
+                    width="100%"
+                  />
+                );
+              }
+            })}
           </Box>
-          {idxPresDisplay < presentations.length-1 && renderArrowButton(false)}
+          {renderArrowButton(false, idxPresDisplay, presentations.length)}
         </Box>
       )}
       {(!profile || presentations.length === 0) && (
