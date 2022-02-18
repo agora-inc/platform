@@ -5,6 +5,7 @@ import { User, UserService } from "../../Services/UserService";
 import { Presentation, Profile, ProfileService } from "../../Services/ProfileService";
 import { Workshop, LinkPrevious, LinkNext } from "grommet-icons";
 import { PresentationEntry } from "../Profile/PresentationEntry";
+import InstitutionalUsers from "../../Views/LandingPages/InstitutionalUsers";
 
 
 interface Props {
@@ -17,7 +18,11 @@ export const ApplyToTalkButton = (props: Props) => {
   // presentations
   const [presentations, setPresentations] = useState<Presentation[]>([]);
   const [idxPresDisplay, setIdxPresDisplay] = useState<number>(0);
-  const [newPresentation, setNewPresentation] = useState<Presentation>();
+  // new presentation
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [duration, setDuration] = useState<string>("");
+  const [link, setLink] = useState<string>("");
   // profile infô
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -43,7 +48,7 @@ export const ApplyToTalkButton = (props: Props) => {
 
   function renderArrowButton(prev: boolean, idx: number, len: number) {
     let incr = prev ? -1 : 1;
-    if ((prev && idx > 0) || (!prev && idx < len-1)) {
+    if ((prev && idx > 0) || (!prev && idx < len)) {
       return (
         <Box
           round="xsmall"
@@ -67,12 +72,75 @@ export const ApplyToTalkButton = (props: Props) => {
 
   }
 
+  function isValid(url: string) : boolean {
+    return (url.includes('https://') || url.includes('http://'))
+  }
+
+  function renderNewPresentation(): any {
+    return (
+      <Box direction="column" gap="12px" width="85%">
+        <TextInput
+          style={{width: "100%"}}
+          placeholder="Title"
+          value={title}
+          onChange={(e: any) => setTitle(e.target.value)}
+        />
+        <TextArea
+          style={{width: "100%", height: "120px"}}
+          placeholder="Description"
+          value={description}
+          onChange={(e: any) => setDescription(e.target.value)}
+        />
+        <Box direction="row" gap="10px" width="80%" align="center">
+          <TextInput
+            style={{width: "200px"}}
+            placeholder="Link to paper/slides"
+            value={link}
+            onChange={(e: any) => setLink(e.target.value)}
+          />
+          <Box direction="row" gap="10px" align="center">
+            <TextInput
+              style={{width: "90px"}}
+              placeholder="Duration"
+              value={duration}
+              onChange={(e: any) => setDuration(e.target.value)}
+            />
+            <Text size="14px">
+              minutes
+            </Text>
+          </Box>
+        </Box>
+        {!isValid(link) && link !== "" && (
+          <Text size="11px" color="color3" weight="bold" margin={{top: "-8px"}}>
+            url should start with https://
+          </Text>
+        )}
+      </Box>
+    );
+  }
+
 
   function isComplete(): boolean {
-    return false
+    let speakerInfo: boolean = fullName !== "" && position !== "" && institution !== "" && email !== "";
+    if (idxPresDisplay === presentations.length) {
+      return speakerInfo && title !== "" && description !== "" && duration !== "";
+    } else {
+      return speakerInfo
+    }
   }
+
   function isMissing(): string[] {
-    return []
+    let res: string[] = []
+    if (fullName === "") {res.push("Speaker full name")}
+    if (position === "") {res.push("Speaker position")}
+    if (institution === "") {res.push("Speaker institution")}
+    if (email === "") {res.push("Speaker email")}
+    if (idxPresDisplay === presentations.length) {
+      if (title === "") {res.push("Presentation title")}
+      if (description === "") {res.push("Presentation description")}
+      if (duration === "") {res.push("Presentation duration")}
+    }
+    return res;
   }
 
   function handleSubmit(): void {
@@ -115,27 +183,32 @@ export const ApplyToTalkButton = (props: Props) => {
       {profile && presentations.length > 0 && (
         <Box direction="row" width="100%" align="center" gap="15px"> 
           {renderArrowButton(true, idxPresDisplay, presentations.length)}
-          <Box width="85%" style={{border: "1px solid grey"}} pad="10px" round="xsmall">
-            {presentations.map((presentation, i) => {
-              if (i === idxPresDisplay) {
-                return ( 
-                  <PresentationEntry 
-                    presentation={presentation}
-                    profile={profile}
-                    index={idxPresDisplay}
-                    home={false}
-                    isOverlay={true}
-                    width="100%"
-                  />
-                );
-              }
-            })}
-          </Box>
+          {idxPresDisplay < presentations.length && (
+            <Box width="85%" style={{border: "1px solid grey"}} pad="10px" round="xsmall">
+              {presentations.map((presentation, i) => {
+                if (i === idxPresDisplay) {
+                  return ( 
+                    <PresentationEntry 
+                      presentation={presentation}
+                      profile={profile}
+                      index={idxPresDisplay}
+                      home={false}
+                      isOverlay={true}
+                      width="100%"
+                    />
+                  );
+                }
+              })}
+            </Box>
+          )}  
+          {idxPresDisplay === presentations.length && (
+            renderNewPresentation()
+          )}
           {renderArrowButton(false, idxPresDisplay, presentations.length)}
         </Box>
       )}
       {(!profile || presentations.length === 0) && (
-        123
+        renderNewPresentation()
       )}
       
       <Box width="100%" direction="column" gap="8px">
