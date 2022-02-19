@@ -420,11 +420,10 @@ export default class TopicTalkList extends Component<Props, State> {
         width="280px"
         margin="none"
         pad="small"
-        justify="between"
+        justify="center"
         round="xsmall"
-        align="center"
         alignSelf="center"
-        background="#color5"
+        background="#EEEEEE"
       >
         <Text size="12px" weight="bold" color="grey">
           Currently no public talks in that category
@@ -468,7 +467,6 @@ export default class TopicTalkList extends Component<Props, State> {
                 height="30px"
                 width={this.state.renderMobile ? "150px" : "170px"}
                 justify="center"
-                alignContent="center"
                 focusIndicator={false}
                 hoverIndicator="color2"
                 margin={{ left: "0px" }}

@@ -14,7 +14,7 @@ export default class FooterComponent extends Component {
         style={{
           position: "relative",
           bottom: 0,
-          width: "98%",
+          width: "99.9%",
         }}
       >
         <hr

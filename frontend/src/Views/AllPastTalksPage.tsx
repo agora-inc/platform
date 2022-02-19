@@ -12,6 +12,7 @@ import "../Styles/landing-page.css";
 import "../Styles/home.css";
 import { Link } from "react-router-dom";
 import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
+import FooterComponent from "../Components/Homepage/FooterComponent";
 
 
 interface State {
@@ -413,16 +414,18 @@ export default class AllPastTalksPage extends Component<{}, State> {
   render() {
     var breakpoint_width = 992
     return (
-      <>
+      <Box justify="center">
       <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
       src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
       />
       <Box
-        pad={{ top: "10vh", bottom: "100px" }}
-        align="start"
+        pad={{ top: "9vh" }}
+        // align="start"
         style={{ overflowY: "auto" }}
         onScroll={this.handleScroll}
-        margin={{left: "8%", right: "8%"}}
+        height="100%"
+        width="80%"
+        margin={{left: "10%", right: "10%"}}
       >
         {/* <video
           autoPlay loop muted id="background-landing"
@@ -433,7 +436,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
         <Box align="start" margin={{bottom: "20px"}}>
           <TrendingTalksList />
         </Box>
-        <Box width="90%">
+        <Box width="100%">
 
 
           <Box
@@ -441,7 +444,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
             width="100%"
             justify="between"
             align="start"
-            margin={{ bottom: "medium", top: "50px" }}
+            margin={{ bottom: "15px", top: "50px" }}
           >
             <Box width="70%" alignContent="start" direction="row">
               <Link
@@ -456,7 +459,6 @@ export default class AllPastTalksPage extends Component<{}, State> {
                 height="30px"
                 width={this.state.renderMobile ? "150px" : "170px"}
                 justify="center"
-                align="center"
                 focusIndicator={false}
                 hoverIndicator="color2"
                 margin={{ left: "0px" }}
@@ -528,7 +530,7 @@ export default class AllPastTalksPage extends Component<{}, State> {
           <MediaQuery minDeviceWidth={992}>
           <Box 
             width="100%" 
-            margin={{"bottom": "50px"}}
+            margin={{"bottom": "30px"}}
             background="color6"
             direction="row"
             pad="12px"
@@ -714,9 +716,8 @@ export default class AllPastTalksPage extends Component<{}, State> {
             width="280px"
             margin="none"
             pad="small"
-            justify="between"
+            justify="center"
             round="xsmall"
-            align="center"
             alignSelf="center"
             background="#EEEEEE"
           >
@@ -740,8 +741,10 @@ export default class AllPastTalksPage extends Component<{}, State> {
             </Text>
           </Box>
         )} */}
+        <FooterComponent />
       </Box>
-      </>
+      
+      </Box>
     );
   }
 }
