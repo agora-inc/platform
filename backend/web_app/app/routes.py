@@ -145,81 +145,6 @@ def addUser():
 
     return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
 
-@app.route('/users/authenticate', methods=["POST", "OPTIONS"])
-def authenticate():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    logRequest(request)
-    params = request.json
-
-    password = params['password']
-    credential = params['credential']
-
-    user = users.authenticate(credential, password)
-
-    if user:
-        app.logger.debug(f"Successful login for username: {credential}")
-    else:
-        app.logger.debug(f"Unsuccessful login for username {credential} (incorrect username or password)")
-        return exceptions.Unauthorized("Incorrect username or password")
-
-
-    accessToken = users.encodeAuthToken(user["id"], "access")
-    refreshToken = users.encodeAuthToken(user["id"], "refresh")
-
-    return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
-
-
-@app.route('/refreshtoken', methods=["POST"])
-def refreshAccessToken():
-    params = request.json
-    if "userId" not in params:
-        return exceptions.BadRequest("userId must be present in request")
-
-    accessToken = users.encodeAuthToken(request.json["userId"], "access")
-    return jsonify({"accessToken": accessToken.decode()})
-
-@app.route('/users/email_change_password_link', methods=["POST"])
-def generateChangePasswordLink():
-    try:
-        logRequest(request)
-        params = request.json
-        usernameOrEmail = params["usernameOrEmail"]
-
-        # get username if email address
-        if "@" in usernameOrEmail:
-            user = users.getUserByEmail(usernameOrEmail)
-        else:
-            user = users.getUser(usernameOrEmail)
-
-        # generate link
-        code = users.encodeAuthToken(user["id"], "changePassword")
-        link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
-
-        # email link
-        msg = Message('mora.stream: password reset', sender = 'noreply@mora.stream', recipients = [user["email"]])
-        msg.body = f'Password reset link: {link}'
-        msg.subject = "mora.stream: password reset"
-        mail.send(msg)
-
-        app.logger.debug(f"User '{usernameOrEmail}' requested link to change password")
-        return "ok"
-
-    except Exception as e:
-        return 404, "Error" + str(e)
-
-@app.route('/users/change_password', methods=["POST"])
-def changePassword():
-    logRequest(request)
-
-    authToken = request.headers.get('Authorization').split(" ")[1]
-    userId = users.decodeAuthToken(authToken)
-    params = request.json
-    users.changePassword(userId, params["password"])
-
-    app.logger.debug(f"User {userId} changed password to {params['password']}")
-    return "ok"
-
 @app.route('/users/update_bio', methods=["POST"])
 def updateBio():
     authToken = request.headers.get('Authorization').split(" ")[1]
@@ -320,8 +245,16 @@ def updatePresentation():
     params = request.json     
     return jsonify(profiles.updatePresentation(params['user_id'], params['presentation'], params['now']))
 
-@app.route('/profiles/photo', methods=["POST", "GET", "DELETE"])
-def profilePhoto():
+@app.route("/profiles/photo", methods=["GET"])
+def getProfilePhoto():
+    if "userId" in request.args:
+            userId = int(request.args.get("userId"))
+            fn = profiles.getProfilePhotoLocation(userId)
+            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+
+@app.route('/profiles/photo', methods=["POST", "DELETE"])
+@requires_auth
+def updateProfilePhoto():
     if request.method == "OPTIONS":
         return jsonify("ok")
 
@@ -336,12 +269,7 @@ def profilePhoto():
         app.logger.debug(f"User with id {userId} updated profile photo")
 
         return jsonify({"filename": fn})
-
-    if request.method == "GET":
-        if "userId" in request.args:
-            userId = int(request.args.get("userId"))
-            fn = profiles.getProfilePhotoLocation(userId)
-            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+        
 
     if request.method == "DELETE":
         params = request.json 
@@ -567,31 +495,40 @@ def updateLongChannelDescription():
     newDescription = params["newDescription"]
     return jsonify(channels.updateLongChannelDescription(channelId, newDescription))
 
-@app.route('/channels/avatar', methods=["POST", "GET"])
-def avatar():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-
-    if request.method == "POST":
-        logRequest(request)
-        channelId = request.form["channelId"]
-        file = request.files["image"]
-        fn = f"{channelId}.jpg"
-        file.save(f"/home/cloud-user/plateform/agora/storage/images/avatars/{fn}")
-        channels.addAvatar(channelId)
-
-        app.logger.debug(f"Agora with id {request.form['channelId']} updated avatar")
-
-        return jsonify({"filename": fn})
-
-    if request.method == "GET":
-        if "channelId" in request.args:
+@app.route("/channels/avatar", methods=["GET"])
+def getAvatar():
+    if "channelId" in request.args:
             channelId = int(request.args.get("channelId"))
             fn = channels.getAvatarLocation(channelId)
             return send_file(fn, mimetype="image/jpg")
 
-@app.route('/channels/cover', methods=["POST", "GET", "DELETE"])
-def cover():
+@app.route('/channels/avatar', methods=["POST", "OPTIONS"])
+@requires_auth
+def updateAvatar():
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+
+    logRequest(request)
+    channelId = request.form["channelId"]
+    file = request.files["image"]
+    fn = f"{channelId}.jpg"
+    file.save(f"/home/cloud-user/plateform/agora/storage/images/avatars/{fn}")
+    channels.addAvatar(channelId)
+
+    app.logger.debug(f"Agora with id {request.form['channelId']} updated avatar")
+
+    return jsonify({"filename": fn})
+
+@app.route('/channels/cover', methods=["GET"])
+def getCover():
+    if "channelId" in request.args:
+            channelId = int(request.args.get("channelId"))
+            fn = channels.getCoverLocation(channelId)
+            return send_file(fn, mimetype="image/jpg")
+
+@app.route('/channels/cover', methods=["POST", "DELETE", "OPTIONS"])
+@requires_auth
+def updateCover():
     if request.method == "OPTIONS":
         return jsonify("ok")
 
@@ -607,12 +544,6 @@ def cover():
         app.logger.debug(f"Agora with id {request.form['channelId']} updated banner")
 
         return jsonify({"filename": fn})
-
-    if request.method == "GET":
-        if "channelId" in request.args:
-            channelId = int(request.args.get("channelId"))
-            fn = channels.getCoverLocation(channelId)
-            return send_file(fn, mimetype="image/jpg")
 
     if request.method == "DELETE":
         params = request.json 
@@ -1111,7 +1042,15 @@ def editTalk():
     except Exception as e:
         return str(e)
 
-@app.route('/talks/speakerphoto', methods=["POST", "GET", "DELETE"])
+@app.route('/talks/speakerphoto', methods=["GET"])
+def getSpeakerPhoto():
+    if "talkId" in request.args:
+            talkId = int(request.args.get("talkId"))
+            fn = talks.getSpeakerPhotoLocation(talkId)
+            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+
+@app.route('/talks/speakerphoto', methods=["POST", "DELETE"])
+@requires_auth
 def speakerPhoto():
     if request.method == "OPTIONS":
         return jsonify("ok")
@@ -1128,12 +1067,6 @@ def speakerPhoto():
         app.logger.debug(f"Talk with id {talkId} updated speaker photo")
 
         return jsonify({"filename": fn})
-
-    if request.method == "GET":
-        if "talkId" in request.args:
-            talkId = int(request.args.get("talkId"))
-            fn = talks.getSpeakerPhotoLocation(talkId)
-            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
 
     if request.method == "DELETE":
         params = request.json 
