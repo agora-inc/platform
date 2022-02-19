@@ -432,7 +432,7 @@ export default class ChannelPage extends Component<Props, State> {
               >
                 <Box
                   className="follow-button"
-                  background={this.state.following ? "#e5e5e5" : "white"}
+                  background={this.state.following ? "#BAD6DB" : "white"}
                   height={(window.innerWidth < 800) ? "25px" : "35px"}
                   style={{
                     border: "1px solid #C2C2C2",

@@ -17,8 +17,8 @@ import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
 import { DetailsEntry } from "../Components/Profile/DetailsEntry";
 
-import InviteToTalkButton from "../Components/Profile/InviteToTalkButton";
 import TopicSelector from "../Components/Talks/TopicSelector";
+import { LinkSecondaryButton } from "../Components/Core/LinkSecondaryButton";
 
 interface Props {
   location: { pathname: string }
@@ -281,6 +281,14 @@ const ProfilePage = (props: Props) => {
                   <ReactTooltip id="add_presentation" effect="solid">
                     Adding a presentation to your profile is the best way to get seminar organizers' attention!
                   </ReactTooltip>
+                  <LinkSecondaryButton 
+                    text="Give a talk"
+                    link="agoras"
+                    iconSize="18px"
+                    mobile={false}
+                    width="150px"
+                    height="30px" 
+                  />
                 </Box>
               )}
               {presentations.length !== 0 && (

@@ -11,6 +11,7 @@ import { User } from "../../Services/UserService";
 import { Topic, TopicService } from "../../Services/TopicService";
 import TopicClassification from "../../Components/Homepage/TopicClassification";
 import MediaQuery from "react-responsive";
+import { LinkSecondaryButton } from "../Core/LinkSecondaryButton";
 
 interface Props {
   gridArea?: string;
@@ -509,29 +510,15 @@ export default class TopicTalkList extends Component<Props, State> {
 
             <Box width="30%" justify="end" align="end">
             {!this.state.renderMobile && (
-              <Link
-              to={{ pathname: "/agoras" }}
-              style={{ textDecoration: "none" }}
-              >
-              <Box
-                onClick={()=>{}}
-                background="color7"
-                round="xsmall"
-                pad="xsmall"
-                height="30px"
-                width={this.state.renderMobile ? "150px" : "150px"}
-                justify="center"
-                align="center"
-                focusIndicator={false}
-                hoverIndicator="color6"
-                margin={{ left: "0px" }}
-                direction="row"
-              >
-                <Text size="14px" weight="bold"> Give a talk</Text>
-              </Box>
-              </Link>
-              )
-            }
+              <LinkSecondaryButton 
+                text="Give a talk"
+                link="agoras"
+                iconSize="18px"
+                mobile={false}
+                width="150px"
+                height="30px" 
+              />
+            )}
             </Box>
             </>
           )}

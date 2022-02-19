@@ -220,7 +220,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
         <Box
           focusIndicator={false}
           data-tip data-for='apply_give_talk'
-          width={this.props.widthButton ? this.props.widthButton : "12vw"}
+          width={this.props.widthButton ? this.props.widthButton : "185px"}
           height="30px"
           background="white"
           round="xsmall"
@@ -237,7 +237,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
             color="grey"
             alignSelf="center"
           >
-            Give a talk
+            Apply to give a talk
           </Text>
             <ReactTooltip id="apply_give_talk" effect="solid">
               Want to give a seminar within '{this.props.channelName}'? Apply!

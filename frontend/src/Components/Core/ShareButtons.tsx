@@ -185,7 +185,7 @@ interface Props {
               justify="center"
               align="center"
               focusIndicator={true}
-              hoverIndicator="#BAD6DB"
+              hoverIndicator="#E5E5E5"
             >
               <Text 
                 weight={this.state.onlyShare ? "normal" : "bold"}
