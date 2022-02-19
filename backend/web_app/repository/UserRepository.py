@@ -69,6 +69,7 @@ class UserRepository:
             (username, password_hash, email, position, institution) 
             VALUES ("{username}", "{passwordHash}", "{email}", "{position}", "{institution}");
         '''
+        
         userId = self.db.run_query(query)[0]
 
         # check if user has been referred by a channel

@@ -297,10 +297,17 @@ def inviteToTalk():
         except Exception as e:
             return 404, "Error: " + str(e)
 
-@app.route('/profiles/create', methods=["POST"])
+@app.route('/profiles/create', methods=["POST", "OPTIONS"])
 def createProfile():
-    params = request.json
-    return jsonify(profiles.createProfile(params['user_id'], params['full_name']))
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    else:
+        params = request.json
+        try:
+            profiles.createProfile(params['user_id'], params['full_name'])
+            return "ok"
+        except Exception as e:
+            return 404
 
 @app.route('/profiles/details/update', methods=["POST"])
 def updateDetails():
@@ -324,10 +331,13 @@ def updatePaper():
     params = request.json     
     return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
 
-@app.route('/profiles/presentations/update', methods=["POST"])
+@app.route('/profiles/presentations/update', methods=["POST", "OPTIONS"])
 def updatePresentation():
-    params = request.json     
-    return jsonify(profiles.updatePresentation(params['user_id'], params['presentation'], params['now']))
+    if request.method == "OPTIONS":
+        return jsonify("ok")
+    else:
+        params = request.json     
+        return jsonify(profiles.updatePresentation(params['user_id'], params['presentation'], params['now']))
 
 @app.route('/profiles/photo', methods=["POST", "GET", "DELETE"])
 def profilePhoto():
