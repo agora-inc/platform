@@ -110,6 +110,8 @@ export const CreatePresentationButton = () =>  {
       position,
       institution,
       0,
+      undefined,
+      undefined,
       (result: {status: string, userId: number}) => {
         if (result.status === "ok") {
           let now = new Date;

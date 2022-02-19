@@ -2,9 +2,8 @@ import random
 import logging
 from mailing.sendgridApi import sendgridApi
 from repository import UserRepository
-from app.databases import agora_db
 import hashlib
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.databases import agora_db
 
 mail_sys = sendgridApi()
@@ -495,3 +494,52 @@ class ChannelRepository:
         query = f'SELECT * FROM Channels WHERE topic_1_id = {topicId} LIMIT {limit} OFFSET {offset};'
         result = self.db.run_query(query)
         return result
+
+    def getFetchedChannelClaimStatus(self, channelId):
+        try: 
+            query = f'''SELECT FetchedChannels.claimed FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
+            WHERE Channels.id = {channelId};'''
+            result = self.db.run_query(query)
+            return result
+        except Exception as e:
+            print(e)
+
+    def getFetchedChannelOrganiserEmail(self, channelId):
+        try:
+            query = f'''SELECT FetchedChannels.organiser_email FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
+            WHERE Channels.id = {channelId};'''
+            result = self.db.run_query(query)
+            return result
+        except Exception as e:
+            print(e)
+
+    def getFetchedChannelMailToken(self, channelId):
+        try:
+            query = f'''SELECT FetchedChannels.mailToken FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
+            WHERE Channels.id = {channelId};'''
+            result = self.db.run_query(query)
+            return result
+        except Exception as e:
+            print(e)    
+
+    def changeFetchedChannelClaimStatus(self, channelId):
+        try: 
+            query = f'''UPDATE FetchedChannels SET FetchedChannels.claimed = 1 WHERE FetchedChannel.channel_id = {channelId};'''
+            result = self.db.run_query(query)
+            return result
+        except Exception as e:
+            print(e)
+
+    def getChannelFromMailToken(self, mailToken):
+        # Small update, checks time before retrieving channel from DB
+        # If within a 30 
+        try:
+            query = f'''SELECT FetchedChannels.channel_id, FetchedChannels.added_date FROM Channels INNER JOIN FetchedChannels ON Channels.id = FetchedChannels.channel_id
+            WHERE FetchedChannels.mailToken = {mailToken};'''
+            result = self.db.run_query(query)
+            added_date = datetime.strptime(result['added_date'], "%Y-%m-%d %H:%M")
+            if(added_date + timedelta(days=30) < datetime.now()):
+                return result['channel_id']
+            else: return None
+        except Exception as e:
+            print(e)

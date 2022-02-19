@@ -1,3 +1,4 @@
+# from statistics import mode
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
@@ -5,11 +6,24 @@ import jwt
 from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
 from app.databases import agora_db
+
 # for emails
 from flask_mail import Message
 from flask import render_template
 
 mail_sys = sendgridApi()
+
+
+class mode:
+    def __init__(self, mode, code) -> None:
+        self.mode = mode
+        self.code = code
+
+    def getMode(self):
+        return self.mode
+
+    def getCode(self):
+        return self.code
 
 class User:
     def __init__(self, username, password):
@@ -54,7 +68,7 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password, email, position, institution, channelId = 0):
+    def addUser(self, username: str, password: str, email: str, position: str, institution: str, channelId: int = 0, mode: mode = mode("", "")):                                                                                                     
         email = str(email).lower()
 
         if self.getUserByEmail(email):
@@ -74,32 +88,46 @@ class UserRepository:
 
         # check if user has been referred by a channel
         # let me know if you also want to add the user as a follower to an agora automatically
-        query_channel_id = f"SELECT * FROM Channels WHERE id = {channelId}"
-        result = self.db.run_query(query_channel_id)
-        if result:
-            try:
-                increase_counter_query = f'''
-                UPDATE ChannelReferrals
-                    SET num_referrals = num_referrals + 1
-                    WHERE channel_id = {channelId};'''
-                res = self.db.run_query(increase_counter_query)
+        if(mode.getMode() == 'referral'):
+            query_channel_id = f"SELECT * FROM Channels WHERE id = {mode.getCode()}"
+            result = self.db.run_query(query_channel_id)
+            if result:
+                try:
+                    increase_counter_query = f'''
+                    UPDATE ChannelReferrals
+                        SET num_referrals = num_referrals + 1
+                        WHERE channel_id = {channelId};'''
+                    res = self.db.run_query(increase_counter_query)
 
-                if type(res) == list:
-                    if res[0] == 0 and res[1] == 0:
-                        initialise_counter_query = f'''
-                            INSERT INTO ChannelReferrals (channel_id, num_referrals) 
-                                VALUES ({channelId}, 1);
-                    '''
-                        res = self.db.run_query(initialise_counter_query)
-            
+                    if type(res) == list:
+                        if res[0] == 0 and res[1] == 0:
+                            initialise_counter_query = f'''
+                                INSERT INTO ChannelReferrals (channel_id, num_referrals) 
+                                    VALUES ({channelId}, 1);
+                        '''
+                            res = self.db.run_query(initialise_counter_query)
+                            print("this works?")
+                
+                except Exception as e:
+                    print(e)
+                
+            if(self.channels.getChannelById(channelId)):
+                self.channel.increaseChannelReferralCount(channelId)
+                # channel.acceptMembershipApplication(channelId, self.getUserById(username) )
+
+        if(mode.getMode() == 'claim'):
+            # Update channel owner to userId
+            try:
+                change_owner_query = f'''
+                UPDATE ChannelUsers
+                    SET user_id = {userId}
+                    WHERE channel_id = {channelId} and role = "owner";'''
+                res = self.db.run_query(change_owner_query)
+                self.updateAndAssignClaim(mode.getCode())
+                
             except Exception as e:
                 print(e)
-                
-        """ (ALAIN:) circular imports, we can't use this.
-        if self.channels.getChannelById(channelId):
-            self.channels.increaseChannelReferralCount(channelId)
-            # channel.acceptMembershipApplication(channelId, self.getUserById(username) )
-        """
+
 
         # check if user has been invited to some agoras
         query_existing_invitations = f'''
@@ -225,6 +253,14 @@ class UserRepository:
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
 
+    def updateAndAssignClaim(self, mailToken : str):
+        token_query = f'''UPDATE FetchedChannels SET claimed = 1 WHERE mailToken = {mailToken}'''
+        self.db.run_query(token_query)
+        # assign_claim_query = f'''SELECT channel_id, organiser_name, organiser_email FROM FetchedChannels WHERE mailToken = {mailToken}'''
+        # channel = self.db.run_query(assign_claim_query)
+        # userId = self.userRepo.addUser(channel['organiser_name'], self.safePassword(), channel['organiser_email'],channel['channel_id'], mode= 'claim' )
+        # return userId
+
     def changePassword(self, userId, newPassword):
         passwordHash = generate_password_hash(newPassword)
         query = f'UPDATE Users SET password_hash = "{passwordHash}" WHERE id = {userId}'
@@ -239,3 +275,4 @@ class UserRepository:
         query = f'UPDATE Users SET public = "{int(public)}" WHERE id = {userId}'
         self.db.run_query(query)
         return self.getUserById(userId)
+

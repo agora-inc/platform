@@ -492,6 +492,10 @@ const getReferralsForChannel = (
   );
 };
 
+const getFetchedChannelForMailToken = (mailToken: string, callback: any) =>{
+  get(`/channel/fetchedchannel/get?mailToken=${mailToken}`,callback);
+};
+
 export type Channel = {
   id: number;
   name: string;
@@ -555,5 +559,6 @@ export const ChannelService = {
   getMembershipApplications,
   getViewCountForChannel,
   increaseViewCountForChannel,
-  getReferralsForChannel
+  getReferralsForChannel,
+  getFetchedChannelForMailToken
 };
