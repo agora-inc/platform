@@ -18,16 +18,8 @@ class ProfileRepository:
         self.channels = ChannelRepository(db=self.db)
 
     def createProfile(self, user_id, full_name):
-        with open("/home/cloud-user/test/insideCreate.txt", "w") as file:
-            file.write("inside")
-
-
         query_profile = f"SELECT * FROM Profiles WHERE user_id = {user_id};"
         profile = self.db.run_query(query_profile)
-
-        with open("/home/cloud-user/test/insideCreateAnswer.txt", "w") as file:
-            file.write("answer is " + str(profile))
-
 
         if not profile:
             query_create = f'''INSERT INTO Profiles (user_id, has_photo, full_name) 
@@ -199,8 +191,6 @@ class ProfileRepository:
     
     def updatePresentation(self, user_id, presentation, now):
         try:
-
-
             if int(presentation['id']) > 0:
                 update_query = f'''UPDATE Presentations SET
                     user_id={user_id},
@@ -222,15 +212,10 @@ class ProfileRepository:
                     "{presentation['link']}", {presentation['duration']}, "{now}"
                 ); '''
 
-                with open("/home/cloud-user/test/pres_new.txt", "w") as file:
-                    file.write(str(insert_query))
-
                 return int(self.db.run_query(insert_query)[0])
 
-
         except Exception as e:
-            with open("/home/cloud-user/test/pres_error.txt", "w") as file:
-                file.write(str(e))
+            return str(e)
 
 
     def deletePaper(self, paper_id):

@@ -24,7 +24,7 @@ export const CreatePresentationButton = () =>  {
   const [position, setPosition] = useState<string>("")
   const [institution, setInstitution] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const [confirmPassword, setConfirmPassword] = useState<string>("")
+  // const [confirmPassword, setConfirmPassword] = useState<string>("")
   const [email, setEmail] = useState<string>("")
   const [error, setError] = useState<string>("")
 
@@ -68,7 +68,38 @@ export const CreatePresentationButton = () =>  {
   };
 
   function onLogin(history: any): void  {
-    setUser(UserService.getCurrentUser())
+    let currentUser = UserService.getCurrentUser()
+    
+    // 1. check if user has a profile; if not, create
+    // let profile = ProfileService.getProfile(currentUser.id, ()=>{})
+    // if(profile){
+    //   ProfileService.createProfile(
+    //     currentUser.id, 
+    //     fullName, 
+    //     () => {}
+    //   )
+    // }
+    
+    // 2. create presentation
+    let now = new Date;
+    let temp_presentation: Presentation = {
+      id: -1,
+      user_id: currentUser.id,
+      title: title,
+      description: description,
+      link: link,
+      duration: duration,
+      date_created: formatDate(now),
+    }
+    ProfileService.updatePresentation(
+      currentUser.id, temp_presentation, formatDate(now),
+      (id: number) => {
+      }
+    )
+      
+    // 3. move history
+    history.push('/profile/' + String(currentUser.id))
+    setUser(currentUser)
   }
 
   function onSignup(history: any): void {
@@ -80,7 +111,6 @@ export const CreatePresentationButton = () =>  {
       institution,
       0,
       (result: {status: string, userId: number}) => {
-        console.log("michaelJordan1: result from sign up", result)
         if (result.status === "ok") {
           let now = new Date;
           let temp_presentation: Presentation = {
@@ -92,36 +122,18 @@ export const CreatePresentationButton = () =>  {
             duration: duration,
             date_created: formatDate(now),
           }
-          console.log("michaelJordan3: temp pres: ", temp_presentation)
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
-          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
           ProfileService.createProfile(
-            result.userId, 
-            fullName, 
-            () => {
-              console.log("michaelJordan4: fullname: ", fullName)
-              // HACK: for some reason, the user Id is not the right one (always)
-              var fixed_user_id = Number(result.userId) + 1
-            }
-          )
-          console.log("michaelJordan5: creaeting pres: ")
+              result.userId, 
+              fullName, 
+              () => {}
+            )
           ProfileService.updatePresentation(
             result.userId, temp_presentation, formatDate(now),
             (id: number) => {
-              setShowSignUpOverlay(false)
-              history.push('/profile/' + result.userId)
             }
           )
+          setShowSignUpOverlay(false)
+          history.push('/profile/' + String(result.userId))
           } else {
           setError(result.status);
         }
@@ -305,11 +317,11 @@ export const CreatePresentationButton = () =>  {
                     placeholder="Password"
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  <TextInput
+                  {/* <TextInput
                     type="password"
                     placeholder="Confirm password"
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
+                  /> */}
                 </Box>
                 
                 <Box style={{minHeight: "30px"}} direction="row" alignSelf="end" margin={{top: "15px", bottom: "18px", right: "5%"}}>
@@ -349,7 +361,8 @@ export const CreatePresentationButton = () =>  {
                   <Text size="12px" color="black" style={{width: "50%"}} >
                     If you already have an account, log in to add your new presentation
                   </Text>
-                  <LoginModal callback={() => onLogin(history)}/>
+                  <LoginModal callback={() => 
+                    onLogin(history)}/>
                 </Box>
               </Box>
             </Layer>

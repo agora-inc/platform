@@ -302,30 +302,12 @@ def createProfile():
     if request.method == "OPTIONS":
         return jsonify("ok")
     else:
-        #
-        #
-        # TEST
-        #
-        #
-        #
-        with open("/home/cloud-user/test/prof_createtest.txt", "w") as file:
-            file.write(str("hi"))
-
-
         params = request.json
-
-        with open("/home/cloud-user/test/prof_createtest1.txt", "w") as file:
-            file.write(str("hi"))
-
-
-        action = profiles.createProfile(params['user_id'], params['full_name'])
-
-
-        with open("/home/cloud-user/test/prof_createtest2.txt", "w") as file:
-            file.write(str("hi"))
-
-
-        return "ok"
+        try:
+            profiles.createProfile(params['user_id'], params['full_name'])
+            return "ok"
+        except Exception as e:
+            return 404
 
 @app.route('/profiles/details/update', methods=["POST"])
 def updateDetails():
@@ -349,35 +331,11 @@ def updatePaper():
     params = request.json     
     return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
 
-@app.route('/profiles/presentations/createWithAccount', methods=["POST", "OPTIONS"])
-def createAll():
-    if request.method == "OPTIONS":
-        return jsonify("ok")
-    else:
-
-        params = request.json
-        userId = params["userId"]
-        
-        # 1. create account
-
-
-        # 2. create profile 
-
-
-        # 3. create presentation
-
-        return "ok"
-
 @app.route('/profiles/presentations/update', methods=["POST", "OPTIONS"])
 def updatePresentation():
     if request.method == "OPTIONS":
-        with open("/home/cloud-user/test/pres_init_options.txt", "w") as file:
-            file.write(str("ok"))
         return jsonify("ok")
     else:
-        with open("/home/cloud-user/test/pres_init_post.txt", "w") as file:
-            file.write(str(request.json))
-
         params = request.json     
         return jsonify(profiles.updatePresentation(params['user_id'], params['presentation'], params['now']))
 
