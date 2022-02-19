@@ -437,7 +437,7 @@ export default class ChannelPage extends Component<Props, State> {
                   style={{
                     border: "1px solid #C2C2C2",
                   }}
-                  width="100px"
+                  width="120px"
                   round="xsmall"
                   align="center"
                   justify="center"
@@ -449,6 +449,7 @@ export default class ChannelPage extends Component<Props, State> {
                   <Text 
                     size="15px" 
                     color="grey"
+                    weight={this.state.following ? "bold" : "normal"}
                     alignSelf="center"
                   >
                     {this.state.following ? "Following" : "Follow"}
@@ -462,6 +463,7 @@ export default class ChannelPage extends Component<Props, State> {
                 </Box>
                 <ShareButtons
                   channel={this.state.channel}
+                  width="120px"
                   height={(window.innerWidth < 800) ? "25px" : "35px"}
                   onlyShare={true}
                 />
