@@ -19,7 +19,7 @@ export const CreatePresentationButton = () =>  {
   const [duration, setDuration] = useState<number>(0)
   const [user, setUser] = useState<User>();
   // sign up fields
-  const [username, setUsername] = useState<string>("")
+  // const [username, setUsername] = useState<string>("")
   const [fullName, setFullName] = useState<string>("")
   const [position, setPosition] = useState<string>("")
   const [institution, setInstitution] = useState<string>("")
@@ -73,13 +73,14 @@ export const CreatePresentationButton = () =>  {
 
   function onSignup(history: any): void {
     UserService.register(
-      username,
+      fullName,
       password,
       email,
       position,
       institution,
       0,
       (result: {status: string, userId: number}) => {
+        console.log("michaelJordan1: result from sign up", result)
         if (result.status === "ok") {
           let now = new Date;
           let temp_presentation: Presentation = {
@@ -91,20 +92,37 @@ export const CreatePresentationButton = () =>  {
             duration: duration,
             date_created: formatDate(now),
           }
+          console.log("michaelJordan3: temp pres: ", temp_presentation)
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
+          // PROBLEM: THE CREATE PROFILE IS NOT TRIGGERED
           ProfileService.createProfile(
             result.userId, 
             fullName, 
             () => {
-              ProfileService.updatePresentation(
-                result.userId, temp_presentation, formatDate(now),
-                (id: number) => {
-                  setShowSignUpOverlay(false)
-                  history.push('/profile/' + result.userId)
-                }
-              )
+              console.log("michaelJordan4: fullname: ", fullName)
+              // HACK: for some reason, the user Id is not the right one (always)
+              var fixed_user_id = Number(result.userId) + 1
             }
           )
-        } else {
+          console.log("michaelJordan5: creaeting pres: ")
+          ProfileService.updatePresentation(
+            result.userId, temp_presentation, formatDate(now),
+            (id: number) => {
+              setShowSignUpOverlay(false)
+              history.push('/profile/' + result.userId)
+            }
+          )
+          } else {
           setError(result.status);
         }
       }
