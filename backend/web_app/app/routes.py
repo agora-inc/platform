@@ -2,43 +2,17 @@
     TODO: 
         - Make "removeContactAddress" into a delete endpoint instead of a GET
 """ 
-from flask.globals import session
-from app import app, mail
-from .auth import requires_auth
-# from app.databases import agora_db
-from repository import UserRepository, QandARepository, TagRepository, StreamRepository, VideoRepository, TalkRepository, EmailRemindersRepository, ChannelSubscriptionRepository, TwitterBotRepository, ProfileRepository
-from repository import ChannelRepository, SearchRepository, TopicRepository, InvitedUsersRepository, MailingListRepository, CreditRepository, ProductRepository, PaymentHistoryRepository, RSScraperRepository
-from flask import jsonify, request, send_file
-from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
+import os
 
-from payment.apis.StripeApi import StripeApi
 from flask import jsonify, request, send_file, render_template
 from flask_mail import Message
-from werkzeug import exceptions
-import os
-import time
 
-import stripe
+from app import app, mail
+from .auth import requires_auth
+from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
+from payment.apis.StripeApi import StripeApi
 
-users = UserRepository.UserRepository()
-profiles = ProfileRepository.ProfileRepository()
-tags = TagRepository.TagRepository()
-topics = TopicRepository.TopicRepository()
-questions = QandARepository.QandARepository()
-streams = StreamRepository.StreamRepository()
-talks = TalkRepository.TalkRepository()
-emailReminders = EmailRemindersRepository.EmailRemindersRepository()
-videos = VideoRepository.VideoRepository()
-channels = ChannelRepository.ChannelRepository()
-search = SearchRepository.SearchRepository()
-invitations = InvitedUsersRepository.InvitedUsersRepository()
-mailinglist = MailingListRepository.MailingListRepository()
-credits = CreditRepository.CreditRepository()
-products = ProductRepository.ProductRepository()
 paymentsApi = StripeApi()
-channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
-tweets = TwitterBotRepository.TwitterBotRepository()
-# paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
 
 # BASE_URL = "http://localhost:3000"
 BASE_URL = "https://mora.stream/"
@@ -46,14 +20,13 @@ BASE_URL = "https://mora.stream/"
 BASE_API_URL = "https://mora.stream/api"
 # BASE_API_URL = "http://localhost:8000/api"
 
-
 # --------------------------------------------
 # HELPER FUNCTIONS
 # --------------------------------------------
 def logRequest(request):
     try:
         authToken = request.headers.get('Authorization').split(" ")[1]
-        userId = users.decodeAuthToken(authToken)
+        userId = app.user_repo.decodeAuthToken(authToken)
     except:
         userId = None
     if request.method == "GET":
@@ -100,17 +73,17 @@ def generateStreamingToken():
 @app.route('/users/all')
 @requires_auth
 def getAllUsers():
-    return jsonify(users.getAllUsers())
+    return jsonify(app.user_repo.getAllUsers())
 
 @app.route('/users/public')
 def getPublicUsers():
-    return jsonify(users.getAllPublicUsers())
+    return jsonify(app.user_repo.getAllPublicUsers())
 
 @app.route('/users/user')
 @requires_auth
 def getUser():
     username = request.args.get('username')
-    return jsonify(users.getUser(username))
+    return jsonify(app.user_repo.getUser(username))
 
 @app.route('/users/add', methods=["POST"])
 def addUser():
@@ -125,14 +98,14 @@ def addUser():
     position = params['position']
     institution = params['institution']
     refChannel = params['refChannel']
-    user = users.addUser(username, password, email, position, institution, refChannel)
+    user = app.user_repo.addUser(username, password, email, position, institution, refChannel)
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
         app.logger.error(f"Attempted registration of new user with existing email {email}")
         return user
 
     try:
-        invitations.transfertInvitedMembershipsToUser(user["id"], email)
+        app.invited_users_repo.transfertInvitedMembershipsToUser(user["id"], email)
     except:
         # We need to keep trace if an error happens.
         # TODO: add this into logs in a file called "issue to fix manually"
@@ -140,25 +113,25 @@ def addUser():
 
     app.logger.error(f"Successful registration of new user with username {username} and email {email}")
 
-    accessToken = users.encodeAuthToken(user["id"], "access")
-    refreshToken = users.encodeAuthToken(user["id"], "refresh")
+    accessToken = app.user_repo.encodeAuthToken(user["id"], "access")
+    refreshToken = app.user_repo.encodeAuthToken(user["id"], "refresh")
 
     return jsonify({"id": user["id"], "username": user["username"], "accessToken": accessToken.decode(), "refreshToken": refreshToken.decode()})
 
 @app.route('/users/update_bio', methods=["POST"])
 def updateBio():
     authToken = request.headers.get('Authorization').split(" ")[1]
-    userId = users.decodeAuthToken(authToken)
+    userId = app.user_repo.decodeAuthToken(authToken)
     params = request.json
-    updatedUser = users.updateBio(userId, params["newBio"])
+    updatedUser = app.user_repo.updateBio(userId, params["newBio"])
     return jsonify(updatedUser)
 
 @app.route('/users/update_public', methods=["POST"])
 def updatePublic():
     authToken = request.headers.get('Authorization').split(" ")[1]
-    userId = users.decodeAuthToken(authToken)
+    userId = app.user_repo.decodeAuthToken(authToken)
     params = request.json
-    updatedUser = users.updatePublic(userId, params["public"])
+    updatedUser = app.user_repo.updatePublic(userId, params["public"])
     return jsonify(updatedUser)
 
 
@@ -169,19 +142,19 @@ def updatePublic():
 def getNonEmptyProfiles():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(profiles.getAllNonEmptyProfiles(limit, offset))
+    return jsonify(app.profile_repo.getAllNonEmptyProfiles(limit, offset))
 
 @app.route('/profiles/public/topic')
 def getAllProfilesByTopicRecursive():
     topic_id = int(request.args.get("topicId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(profiles.getAllProfilesByTopicRecursive(topic_id, limit, offset))
+    return jsonify(app.profile_repo.getAllProfilesByTopicRecursive(topic_id, limit, offset))
 
 @app.route('/profiles/profile', methods=["GET"])
 def getProfile():    
     id = int(request.args.get("id"))
-    return jsonify(profiles.getProfile(id))
+    return jsonify(app.profile_repo.getProfile(id))
 
 @app.route('/profiles/invitation/speaker', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -200,7 +173,7 @@ def inviteToTalk():
             presentation_name = params["presentation_name"]
 
             # SEND EMAIL SENDGRID
-            res = profiles.inviteToTalk(
+            res = app.profile_repo.inviteToTalk(
                 inviting_user_id, invited_user_id, channel_id, date, message, contact_email, presentation_name
             )
             return res
@@ -211,13 +184,13 @@ def inviteToTalk():
 @requires_auth
 def createProfile():
     params = request.json
-    return jsonify(profiles.createProfile(params['user_id'], params['full_name']))
+    return jsonify(app.profile_repo.createProfile(params['user_id'], params['full_name']))
 
 @app.route('/profiles/details/update', methods=["POST"])
 @requires_auth
 def updateDetails():
     params = request.json
-    return jsonify(profiles.updateDetails(params['user_id'], params['dbKey'], params['value']))
+    return jsonify(app.profile_repo.updateDetails(params['user_id'], params['dbKey'], params['value']))
 
 @app.route('/profiles/topics/update', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -225,31 +198,31 @@ def updateProfileTopics():
     if request.method == "OPTIONS":
         return jsonify("ok")
     params = request.json
-    return jsonify(profiles.updateTopics(params['user_id'], params['topicsId']))
+    return jsonify(app.profile_repo.updateTopics(params['user_id'], params['topicsId']))
 
 @app.route('/profiles/bio/update', methods=["POST"])
 @requires_auth
 def updateProfileBio():
     params = request.json     
-    return jsonify(profiles.updateBio(params['user_id'], params['bio']))
+    return jsonify(app.profile_repo.updateBio(params['user_id'], params['bio']))
 
 @app.route('/profiles/papers/update', methods=["POST"])
 @requires_auth
 def updatePaper():
     params = request.json     
-    return jsonify(profiles.updatePaper(params['user_id'], params['paper']))
+    return jsonify(app.profile_repo.updatePaper(params['user_id'], params['paper']))
 
 @app.route('/profiles/presentations/update', methods=["POST"])
 @requires_auth
 def updatePresentation():
     params = request.json     
-    return jsonify(profiles.updatePresentation(params['user_id'], params['presentation'], params['now']))
+    return jsonify(app.profile_repo.updatePresentation(params['user_id'], params['presentation'], params['now']))
 
 @app.route("/profiles/photo", methods=["GET"])
 def getProfilePhoto():
     if "userId" in request.args:
             userId = int(request.args.get("userId"))
-            fn = profiles.getProfilePhotoLocation(userId)
+            fn = app.profile_repo.getProfilePhotoLocation(userId)
             return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
 
 @app.route('/profiles/photo', methods=["POST", "DELETE"])
@@ -264,7 +237,7 @@ def updateProfilePhoto():
         file = request.files["image"]
         fn = f"{userId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/storage/images/profiles/{fn}")
-        profiles.addProfilePhoto(userId)
+        app.profile_repo.addProfilePhoto(userId)
         
         app.logger.debug(f"User with id {userId} updated profile photo")
 
@@ -274,7 +247,7 @@ def updateProfilePhoto():
     if request.method == "DELETE":
         params = request.json 
         userId = params["userId"]
-        profiles.removeProfilePhoto(userId)
+        app.profile_repo.removeProfilePhoto(userId)
 
         app.logger.debug(f"User with id {userId} remove profile photo")
 
@@ -287,7 +260,7 @@ def deletePaper():
         return jsonify("ok")
 
     params = request.json
-    return jsonify(profiles.deletePaper(params['paper_id']))
+    return jsonify(app.profile_repo.deletePaper(params['paper_id']))
 
 @app.route('/profiles/presentations/delete', methods=["OPTIONS", "POST"])
 @requires_auth
@@ -296,13 +269,13 @@ def deletePresentation():
         return jsonify("ok")
 
     params = request.json
-    return jsonify(profiles.deletePresentation(params['presentation_id']))
+    return jsonify(app.profile_repo.deletePresentation(params['presentation_id']))
 
 @app.route('/profiles/tags/update', methods=["POST"])
 @requires_auth
 def updateTags():
     params = request.json     
-    return jsonify(profiles.updateTags(params['user_id'], params['tags']))
+    return jsonify(app.profile_repo.updateTags(params['user_id'], params['tags']))
 
 # --------------------------------------------
 # CHANNEL ROUTES
@@ -311,27 +284,27 @@ def updateTags():
 def getChannelByName():
     if "name" in request.args:
         name = request.args.get("name")
-        return jsonify(channels.getChannelByName(name))
+        return jsonify(app.channel_repo.getChannelByName(name))
     elif "id" in request.args:
         id = request.args.get("id")
-        return jsonify(channels.getChannelById(id))
+        return jsonify(app.channel_repo.getChannelById(id))
 
 @app.route('/channels/all', methods=["GET"])
 def getAllChannels():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(channels.getAllChannels(limit, offset))
+    return jsonify(app.channel_repo.getAllChannels(limit, offset))
 
 @app.route('/channels/trending', methods=["GET"])
 def getTrendingChannels():
-    return jsonify(channels.getTrendingChannels())
+    return jsonify(app.channel_repo.getTrendingChannels())
 
 @app.route('/channels/foruser', methods=["GET"])
 @requires_auth
 def getChannelsForUser():
     userId = int(request.args.get("userId"))
     roles = request.args.getlist("role")
-    return jsonify(channels.getChannelsForUser(userId, roles))
+    return jsonify(app.channel_repo.getChannelsForUser(userId, roles))
 
 @app.route('/channels/create', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -348,13 +321,13 @@ def createChannel():
 
     #app.logger.debug(f"New agora '{name}' created by user with id {userId}")
 
-    return jsonify(channels.createChannel(name, description, userId, topic1Id))
+    return jsonify(app.channel_repo.createChannel(name, description, userId, topic1Id))
 
 @app.route('/channels/delete', methods=["POST"])
 @requires_auth
 def deleteChannel():
     params = request.json
-    channels.deleteChannel(params["id"])
+    app.channel_repo.deleteChannel(params["id"])
     return jsonify("ok")
 
 # TODO: merge "addInvitedMembersToChannel" and "addInvitedFollowerToChannel" into the same method.
@@ -368,7 +341,7 @@ def addInvitedMembersToChannel():
     params = request.json
     
     # NOTE: Method addInvitedUserToChannel has not been implemented for "member".
-    invitations.addInvitedUserToChannel(params['emails'], params['channelId'], 'member')
+    app.invited_users_repo.addInvitedUserToChannel(params['emails'], params['channelId'], 'member')
     
     for email in params['emails']:
         app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
@@ -383,7 +356,7 @@ def addInvitedFollowerToChannel():
         return jsonify("ok")
 
     params = request.json
-    invitations.addInvitedUserToChannel(params['emails'], params['channelId'], 'follower')
+    app.invited_users_repo.addInvitedUserToChannel(params['emails'], params['channelId'], 'follower')
     for email in params['emails']:
         app.logger.debug(f"User with email {email} invited to agora with id {params['channelId']}")
 
@@ -393,7 +366,7 @@ def addInvitedFollowerToChannel():
 @requires_auth
 def getInvitedMembersForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(invitations.getInvitedMembersEmails(channelId))
+    return jsonify(app.invited_users_repo.getInvitedMembersEmails(channelId))
 
 @app.route('/channels/users/add', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -402,7 +375,7 @@ def addUserToChannel():
         return jsonify("ok")
 
     params = request.json
-    channels.addUserToChannel(params["userId"], params["channelId"], params["role"])
+    app.channel_repo.addUserToChannel(params["userId"], params["channelId"], params["role"])
     return jsonify("ok")
 
 
@@ -413,7 +386,7 @@ def removeUserForChannel():
         return jsonify("ok")
 
     params = request.json
-    channels.removeUserFromChannel(params["userId"], params["channelId"])
+    app.channel_repo.removeUserFromChannel(params["userId"], params["channelId"])
     return jsonify("ok")
 
 @app.route('/channels/users', methods=["GET"])
@@ -421,35 +394,35 @@ def removeUserForChannel():
 def getUsersForChannel():
     channelId = int(request.args.get("channelId"))
     roles = request.args.getlist("role")
-    return jsonify(channels.getUsersForChannel(channelId, roles))
+    return jsonify(app.channel_repo.getUsersForChannel(channelId, roles))
 
 @app.route('/channels/user/role', methods=["GET"])
 @requires_auth
 def getRoleInChannel():
     channelId = int(request.args.get("channelId"))
     userId = int(request.args.get("userId"))
-    return jsonify(channels.getRoleInChannel(channelId, userId))
+    return jsonify(app.channel_repo.getRoleInChannel(channelId, userId))
 
 @app.route('/channels/followercount', methods=["GET"])
 def getFollowerCountForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(len(channels.getUsersForChannel(channelId, ["follower"])))
+    return jsonify(len(app.channel_repo.getUsersForChannel(channelId, ["follower"])))
 
 @app.route('/channels/viewcount/get', methods=["GET"])
 def getViewCountForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(channels.getChannelViewCount(channelId))
+    return jsonify(app.channel_repo.getChannelViewCount(channelId))
 
 @app.route('/channels/viewcount/add', methods=["POST"])
 def increaseViewCountForChannel():
     params = request.json 
     channelId = params["channelId"]
-    return jsonify(channels.increaseChannelViewCount(channelId))
+    return jsonify(app.channel_repo.increaseChannelViewCount(channelId))
 
 @app.route('/channels/referralscount/get', methods=["GET"])
 def getReferralsForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(channels.getChannelReferralCount(channelId))
+    return jsonify(app.channel_repo.getChannelReferralCount(channelId))
 
 # don't really think this is needed , but adding this in a comment anyways
 # @app.route('/channels/referrals/add', methods=["POST"])
@@ -467,7 +440,7 @@ def updateChannelColour():
     params = request.json 
     channelId = params["channelId"]
     newColour = params["newColour"]
-    return jsonify(channels.updateChannelColour(channelId, newColour))
+    return jsonify(app.channel_repo.updateChannelColour(channelId, newColour))
 
 @app.route('/channels/updatedescription', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -482,7 +455,7 @@ def updateChannelDescription():
     channelId = params["channelId"]
     newDescription = params["newDescription"]
 
-    return jsonify(channels.updateChannelDescription(channelId, newDescription))
+    return jsonify(app.channel_repo.updateChannelDescription(channelId, newDescription))
 
 @app.route('/channels/updatelongdescription', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -493,13 +466,13 @@ def updateLongChannelDescription():
     params = request.json 
     channelId = params["channelId"]
     newDescription = params["newDescription"]
-    return jsonify(channels.updateLongChannelDescription(channelId, newDescription))
+    return jsonify(app.channel_repo.updateLongChannelDescription(channelId, newDescription))
 
 @app.route("/channels/avatar", methods=["GET"])
 def getAvatar():
     if "channelId" in request.args:
             channelId = int(request.args.get("channelId"))
-            fn = channels.getAvatarLocation(channelId)
+            fn = app.channel_repo.getAvatarLocation(channelId)
             return send_file(fn, mimetype="image/jpg")
 
 @app.route('/channels/avatar', methods=["POST", "OPTIONS"])
@@ -513,7 +486,7 @@ def updateAvatar():
     file = request.files["image"]
     fn = f"{channelId}.jpg"
     file.save(f"/home/cloud-user/plateform/agora/storage/images/avatars/{fn}")
-    channels.addAvatar(channelId)
+    app.channel_repo.addAvatar(channelId)
 
     app.logger.debug(f"Agora with id {request.form['channelId']} updated avatar")
 
@@ -523,7 +496,7 @@ def updateAvatar():
 def getCover():
     if "channelId" in request.args:
             channelId = int(request.args.get("channelId"))
-            fn = channels.getCoverLocation(channelId)
+            fn = app.channel_repo.getCoverLocation(channelId)
             return send_file(fn, mimetype="image/jpg")
 
 @app.route('/channels/cover', methods=["POST", "DELETE", "OPTIONS"])
@@ -539,7 +512,7 @@ def updateCover():
         print(file)
         fn = f"{channelId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/storage/images/covers/{fn}")
-        channels.addCover(channelId)
+        app.channel_repo.addCover(channelId)
         
         app.logger.debug(f"Agora with id {request.form['channelId']} updated banner")
 
@@ -549,7 +522,7 @@ def updateCover():
         params = request.json 
         print(params)
         channelId = params["channelId"]
-        channels.removeCover(channelId)
+        app.channel_repo.removeCover(channelId)
 
         app.logger.debug(f"Agora with id {channelId} removed banner")
 
@@ -559,7 +532,7 @@ def updateCover():
 def getContactAddresses():
     if "channelId" in request.args: 
         channel_id = request.args.get("channelId")
-        res = channels.getEmailAddressesMembersAndAdmins(
+        res = app.channel_repo.getEmailAddressesMembersAndAdmins(
             channel_id, 
             getMembersAddress=False, 
             getAdminsAddress=True)
@@ -586,7 +559,7 @@ def addContactAddress():
     else:
         raise Exception("addContactAddress: missing userId in URL")
     
-    channels.addContactAddress(contactAddress, channelId, userId)
+    app.channel_repo.addContactAddress(contactAddress, channelId, userId)
     return jsonify("ok")
 
 @app.route('/channels/contact/delete', methods=["GET", "OPTIONS"])
@@ -616,7 +589,7 @@ def removeContactAddress():
     # NOTE: For now, we only add 1 email address per agora. 
     # Later, expand frontend to display more.
     # channels.removeContactAddress(contactAddress, channelId, userId)
-    channels.removeAllContactAddresses(contactAddress, channelId, userId)
+    app.channel_repo.removeAllContactAddresses(contactAddress, channelId, userId)
     return jsonify("ok")
 
 @app.route('/channel/apply/talk', methods=["POST"])
@@ -626,7 +599,7 @@ def sendTalkApplicationEmail():
     try:
         # query email address from administrators 
         channel_id = params['channel_id']
-        administrator_emails = channels.getEmailAddressesMembersAndAdmins(
+        administrator_emails = app.channel_repo.getEmailAddressesMembersAndAdmins(
             channel_id,
             getMembersAddress=False, 
             getAdminsAddress=True
@@ -705,7 +678,7 @@ def editChannelTopic():
     params = request.json
 
     #app.logger.debug(f"channel with id {params['channelId']} edited")
-    return jsonify(channels.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
+    return jsonify(app.channel_repo.editChannelTopic(params["channelId"], params["topic1Id"], params["topic2Id"], params["topic3Id"]))
 
 @app.route('/channels/topics/fetch', methods=["GET", "OPTIONS"])
 def getChannelTopic():
@@ -713,14 +686,14 @@ def getChannelTopic():
         return jsonify("ok")
 
     channelId = int(request.args.get("channelId"))
-    return jsonify(channels.getChannelTopic(channelId))
+    return jsonify(app.channel_repo.getChannelTopic(channelId))
 
 @app.route('/channels/topics/all', methods=["GET"])
 def getChannelsWithTopic():
     limit = int(request.args.get("limit"))
     topicId = int(request.args.get("topicId"))
     offset = int(request.args.get("offset"))
-    return jsonify(channels.getChannelsWithTopic(limit, topicId, offset))
+    return jsonify(app.channel_repo.getChannelsWithTopic(limit, topicId, offset))
 
 # --------------------------------------------
 # x mailing list methods
@@ -731,7 +704,7 @@ def addToMailingList():
         return jsonify("ok")
 
     params = request.json
-    return jsonify(mailinglist.addToMailingList(params['channelId'], params['emails']))
+    return jsonify(app.mailing_repo.addToMailingList(params['channelId'], params['emails']))
 
 @app.route('/channels/mailinglist', methods=["GET", "OPTIONS"])
 @requires_auth
@@ -740,7 +713,7 @@ def getMailingList():
         return jsonify("ok")
 
     channelId = int(request.args.get("channelId"))
-    return jsonify(mailinglist.getMailingList(channelId))
+    return jsonify(app.mailing_repo.getMailingList(channelId))
 
 # --------------------------------------------
 # x Referral ROUTES ( empower page)
@@ -759,7 +732,7 @@ def applyMembership():
     # Compulsory details
     personal_homepage = params["personalHomepage"] if "personalHomepage" in params else None
 
-    res = channels.applyMembership(
+    res = app.channel_repo.applyMembership(
         params["id"], 
         params["userId"], 
         params["fullName"],  # this will be removed later when user will have a good profile
@@ -775,7 +748,7 @@ def applyMembership():
 def cancelMembershipApplication():
     params = request.json
 
-    res = channels.cancelMembershipApplication(
+    res = app.channel_repo.cancelMembershipApplication(
         params["id"], 
         params["userId"])
 
@@ -786,7 +759,7 @@ def cancelMembershipApplication():
 def acceptMembershipApplication():
     params = request.json
 
-    res = channels.acceptMembershipApplication(
+    res = app.channel_repo.acceptMembershipApplication(
         params["id"], 
         params["userId"],
         )
@@ -798,7 +771,7 @@ def getMembershipApplications():
     channelId = int(request.args.get("channelId"))
     userId = int(request.args.get("userId")) if "userId" in request.args else None
 
-    res = channels.getMembershipApplications(
+    res = app.channel_repo.getMembershipApplications(
         channelId, 
         userId,
         )
@@ -811,17 +784,17 @@ def getMembershipApplications():
 def getAllStreams():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(streams.getAllStreams(limit, offset))
+    return jsonify(app.stream_repo.getAllStreams(limit, offset))
 
 @app.route('/streams/channel', methods=["GET"])
 def getStreamsForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(streams.getStreamsForChannel(channelId))
+    return jsonify(app.stream_repo.getStreamsForChannel(channelId))
 
 @app.route('/streams/stream', methods=["GET"])
 def getStreamById():
     id = int(request.args.get("id"))
-    return jsonify(streams.getStreamById(id))
+    return jsonify(app.stream_repo.getStreamById(id))
 
 @app.route('/streams/create', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -830,7 +803,7 @@ def createStream():
         return jsonify("ok")
 
     params = request.json
-    stream = streams.createStream(params["channelId"], params["channelName"], params["streamName"], params["streamDescription"], params["streamTags"], params["imageUrl"])
+    stream = app.stream_repo.createStream(params["channelId"], params["channelName"], params["streamName"], params["streamDescription"], params["streamTags"], params["imageUrl"])
     return jsonify(stream)
 
 @app.route('/streams/archive', methods=["POST", "OPTIONS"])
@@ -840,7 +813,7 @@ def archiveStream():
         return jsonify("ok")
 
     params = request.json
-    videoId = streams.archiveStream(params["streamId"], params["delete"])
+    videoId = app.stream_repo.archiveStream(params["streamId"], params["delete"])
     return jsonify({"videoId": videoId})
 
 @app.route('/streams/stream/thumbnail', methods=["GET"])
@@ -858,7 +831,7 @@ def getTalkById():
     # Q from Remy: when do we use this actually? I think it has been replaced by getAllFutureTalksForTopicWithChildren
     talkId = int(request.args.get("id"))
     try:
-        return jsonify(talks.getTalkById(talkId))
+        return jsonify(app.talk_repo.getTalkById(talkId))
     except Exception as e:
         return jsonify(str(e))
 
@@ -866,47 +839,47 @@ def getTalkById():
 def getAllFutureTalks():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllFutureTalks(limit, offset))
+    return jsonify(app.talk_repo.getAllFutureTalks(limit, offset))
 
 @app.route('/talks/all/current', methods=["GET"])
 def getAllCurrentTalks():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    data = talks.getAllCurrentTalks(limit, offset)
+    data = app.talk_repo.getAllCurrentTalks(limit, offset)
     return jsonify({"talks": data[0],"count": data[1]})
 
 @app.route('/talks/all/past', methods=["GET"])
 def getAllPastTalks():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    data = talks.getAllPastTalks(limit, offset)
+    data = app.talk_repo.getAllPastTalks(limit, offset)
     return jsonify({"talks": data[0],"count": data[1]})
 
 @app.route('/talks/channel/future', methods=["GET"])
 def getAllFutureTalksForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(talks.getAllFutureTalksForChannel(channelId))
+    return jsonify(app.talk_repo.getAllFutureTalksForChannel(channelId))
 
 @app.route('/talks/channel/current', methods=["GET"])
 def getAllCurrentTalksForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(talks.getAllCurrentTalksForChannel(channelId))
+    return jsonify(app.talk_repo.getAllCurrentTalksForChannel(channelId))
 
 @app.route('/talks/channel/drafted', methods=["GET"])
 def getAllDraftedTalksForChannel():
     channelId = int(request.args.get("channelId"))
-    return jsonify(talks.getAllDraftedTalksForChannel(channelId))
+    return jsonify(app.talk_repo.getAllDraftedTalksForChannel(channelId))
 
 @app.route('/talks/channel/past', methods=["GET"])
 def getAllPastTalksForChannel():
     channelId = int(request.args.get("channelId"))
-    data = talks.getAllPastTalksForChannel(channelId)
+    data = app.talk_repo.getAllPastTalksForChannel(channelId)
     return jsonify({"talks": data[0], "count": data[1]})
 
 @app.route('/talks/tag/past', methods=["GET"])
 def getAllPastTalksForTag():
     tagName = request.args.get("tagName")
-    data = talks.getPastTalksForTag(tagName)
+    data = app.talk_repo.getPastTalksForTag(tagName)
     return jsonify({"talks": data[0], "count": data[1]})
 
 @app.route('/talks/topic/future', methods=["GET"])
@@ -914,28 +887,28 @@ def getAllFutureTalksForTopic():
     topicId = int(request.args.get("topicId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllFutureTalksForTopic(topicId, limit, offset))
+    return jsonify(app.talk_repo.getAllFutureTalksForTopic(topicId, limit, offset))
 
 @app.route('/talks/topic/children/future', methods=["GET"])
 def getAllFutureTalksForTopicWithChildren():
     topicId = int(request.args.get("topicId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllTalksForTopicWithChildren(topicId, limit, offset, "future"))
+    return jsonify(app.talk_repo.getAllTalksForTopicWithChildren(topicId, limit, offset, "future"))
 
 @app.route('/talks/topic/children/past', methods=["GET"])
 def getAllPastTalksForTopicWithChildren():
     topicId = int(request.args.get("topicId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllTalksForTopicWithChildren(topicId, limit, offset, "past"))
+    return jsonify(app.talk_repo.getAllTalksForTopicWithChildren(topicId, limit, offset, "past"))
 
 @app.route('/talks/topic/past', methods=["GET"])
 def getAllPastTalksForTopic():
     topicId = int(request.args.get("topicId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    return jsonify(talks.getAllPastTalksForTopic(topicId, limit, offset))
+    return jsonify(app.talk_repo.getAllPastTalksForTopic(topicId, limit, offset))
 
 @app.route('/talks/available/future', methods=["GET"])
 def getAvailableFutureTalks():
@@ -943,7 +916,7 @@ def getAvailableFutureTalks():
     offset = int(request.args.get("offset"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    return jsonify(talks.getAvailableFutureTalks(limit, offset, user_id))
+    return jsonify(app.talk_repo.getAvailableFutureTalks(limit, offset, user_id))
 
 @app.route('/talks/available/current', methods=["GET"])
 def getAvailableCurrentTalks():
@@ -951,7 +924,7 @@ def getAvailableCurrentTalks():
     offset = int(request.args.get("offset"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    data = talks.getAvailableCurrentTalks(limit, offset, user_id)
+    data = app.talk_repo.getAvailableCurrentTalks(limit, offset, user_id)
     return jsonify({"talks": data[0],"count": data[1]})
 
 @app.route('/talks/available/past', methods=["GET"])
@@ -960,21 +933,21 @@ def getAvailablePastTalks():
     offset = int(request.args.get("offset"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    return jsonify(talks.getAvailablePastTalks(limit, offset, user_id))
+    return jsonify(app.talk_repo.getAvailablePastTalks(limit, offset, user_id))
 
 @app.route('/talks/channel/available/future', methods=["GET"])
 def getAvailableFutureTalksForChannel():
     channel_id = int(request.args.get("channelId"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    return jsonify(talks.getAvailableFutureTalksForChannel(channel_id, user_id))
+    return jsonify(app.talk_repo.getAvailableFutureTalksForChannel(channel_id, user_id))
 
 @app.route('/talks/channel/available/current', methods=["GET"])
 def getAvailableCurrentTalksForChannel():
     channel_id = int(request.args.get("channelId"))
     user_id = request.args.get("userId")
     user_id = int(user_id) if user_id != 'null' else None
-    return jsonify(talks.getAvailableCurrentTalksForChannel(channel_id, user_id))
+    return jsonify(app.talk_repo.getAvailableCurrentTalksForChannel(channel_id, user_id))
 
 @app.route('/talks/channel/available/past', methods=["GET"])
 def getAvailablePastTalksForChannel():
@@ -986,7 +959,7 @@ def getAvailablePastTalksForChannel():
     except:
         user_id = None
 
-    return jsonify(talks.getAvailablePastTalksForChannel(channel_id, user_id))
+    return jsonify(app.talk_repo.getAvailablePastTalksForChannel(channel_id, user_id))
 
 @app.route('/talks/create', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1002,7 +975,7 @@ def scheduleTalk():
             params[topic_key] = 0
 
     app.logger.debug(f"New talk with title {params['talkName']} created by agora {params['channelName']}")
-    return jsonify(talks.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["customInstitutionsIds"],  params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
+    return jsonify(app.talk_repo.scheduleTalk(params["channelId"], params["channelName"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["customInstitutionsIds"],  params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
 
 @app.route('/talks/sendemailedit', methods=["GET", "OPTIONS"])
 @requires_auth
@@ -1011,7 +984,7 @@ def sendEmailonTalkModification():
         return jsonify("ok")
         
     talk_id = int(request.args.get("talkId"))
-    return jsonify(talks.sendEmailonTalkModification(talk_id))
+    return jsonify(app.talk_repo.sendEmailonTalkModification(talk_id))
 
 @app.route('/talks/sendemailschedule', methods=["GET", "OPTIONS"])
 @requires_auth
@@ -1020,7 +993,7 @@ def sendEmailonTalkScheduling():
         return jsonify("ok")
         
     talk_id = int(request.args.get("talkId"))
-    return jsonify(talks.sendEmailonTalkScheduling(talk_id))
+    return jsonify(app.talk_repo.sendEmailonTalkScheduling(talk_id))
 
 @app.route('/talks/edit', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1037,7 +1010,7 @@ def editTalk():
                 params[topic_key] = 0
 
         app.logger.debug(f"Talk with id {params['talkId']} edited")
-        return jsonify(talks.editTalk(params["channelId"], params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
+        return jsonify(app.talk_repo.editTalk(params["channelId"], params["talkId"], params["talkName"], params["startDate"], params["endDate"], params["talkDescription"], params["talkLink"], params["talkTags"], params["showLinkOffset"], params["visibility"], params["cardVisibility"], params["topic1Id"], params["topic2Id"], params["topic3Id"], params["talkSpeaker"], params["talkSpeakerURL"], params["published"], params["audienceLevel"], params["autoAcceptGroup"], params["autoAcceptCustomInstitutions"], params["reminder1"], params["reminder2"], params["reminderEmailGroup"]))
 
     except Exception as e:
         return str(e)
@@ -1046,7 +1019,7 @@ def editTalk():
 def getSpeakerPhoto():
     if "talkId" in request.args:
             talkId = int(request.args.get("talkId"))
-            fn = talks.getSpeakerPhotoLocation(talkId)
+            fn = app.talk_repo.getSpeakerPhotoLocation(talkId)
             return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
 
 @app.route('/talks/speakerphoto', methods=["POST", "DELETE"])
@@ -1062,7 +1035,7 @@ def speakerPhoto():
         file = request.files["image"]
         fn = f"{talkId}.jpg"
         file.save(f"/home/cloud-user/plateform/agora/storage/images/speakers/{fn}")
-        talks.addSpeakerPhoto(talkId)
+        app.talk_repo.addSpeakerPhoto(talkId)
         
         app.logger.debug(f"Talk with id {talkId} updated speaker photo")
 
@@ -1072,7 +1045,7 @@ def speakerPhoto():
         params = request.json 
         print(params)
         talkId = params["talkId"]
-        talks.removeSpeakerPhoto(talkId)
+        app.talk_repo.removeSpeakerPhoto(talkId)
 
         app.logger.debug(f"Talk with id {talkId} remove speaker speaker photo")
 
@@ -1086,7 +1059,7 @@ def editAutoAcceptanceCustomInstitutions():
 
     params = request.json
 
-    return jsonify(talks.editAutoAcceptanceCustomInstitutions(params["talkId"], params["institutionIds"]))
+    return jsonify(app.talk_repo.editAutoAcceptanceCustomInstitutions(params["talkId"], params["institutionIds"]))
 
 
 @app.route('/talks/delete', methods=["OPTIONS", "POST"])
@@ -1097,7 +1070,7 @@ def deleteTalk():
 
     params = request.json
     app.logger.debug(f"Talk with id {params['id']} deleted")
-    return jsonify(talks.deleteTalk(params['id']))
+    return jsonify(app.talk_repo.deleteTalk(params['id']))
 
 @app.route('/talks/add-recording', methods=["OPTIONS", "POST"])
 @requires_auth
@@ -1106,13 +1079,13 @@ def addRecordingLink():
         return jsonify("ok")
 
     params = request.json
-    return jsonify(talks.addRecordingLink(params["talkId"], params["link"]))
+    return jsonify(app.talk_repo.addRecordingLink(params["talkId"], params["link"]))
 
 @app.route('/talks/saved', methods=["GET"])
 @requires_auth
 def getSavedTalks():
     userId = int(request.args.get("userId"))
-    return jsonify(talks.getSavedTalksForUser(userId))
+    return jsonify(app.talk_repo.getSavedTalksForUser(userId))
 
 @app.route('/talks/save', methods=["POST", "OPTIONS"])
 def saveTalk():
@@ -1121,7 +1094,7 @@ def saveTalk():
         return jsonify("ok")
 
     params = request.json
-    talks.saveTalk(params["talkId"], params["userId"])
+    app.talk_repo.saveTalk(params["talkId"], params["userId"])
     app.logger.debug(f"User with id {params['userId']} saved talk with id {params['talkId']}")
     return jsonify("ok")
 
@@ -1133,7 +1106,7 @@ def unsaveTalk():
         return jsonify("ok")
 
     params = request.json
-    talks.unsaveTalk(params["talkId"], params["userId"])
+    app.talk_repo.unsaveTalk(params["talkId"], params["userId"])
     app.logger.debug(f"User with id {params['userId']} unsaved talk with id {params['talkId']}")
     return jsonify("ok")
 
@@ -1142,30 +1115,30 @@ def unsaveTalk():
 def isSaved():
     userId = int(request.args.get("userId"))
     talkId = int(request.args.get("talkId"))
-    return jsonify({"is_saved": talks.hasUserSavedTalk(talkId, userId)})
+    return jsonify({"is_saved": app.talk_repo.hasUserSavedTalk(talkId, userId)})
 
 @app.route('/talks/isavailable', methods=["GET"])
 @requires_auth
 def isAvailable():
     userId = int(request.args.get("userId"))
     talkId = int(request.args.get("talkId"))
-    return jsonify(talks.isTalkAvailableToUser(talkId, userId))
+    return jsonify(app.talk_repo.isTalkAvailableToUser(talkId, userId))
 
 @app.route('/talks/trending', methods=["GET"])
 def getTrendingTalks():
-    return jsonify(talks.getTrendingTalks())
+    return jsonify(app.talk_repo.getTrendingTalks())
 
 @app.route('/talks/reminders/time', methods=["GET"])
 @requires_auth
 def getReminderTime():
     talkId = int(request.args.get("talkId"))
-    return jsonify(emailReminders.getReminderTime(talkId))
+    return jsonify(app.email_reminders_repo.getReminderTime(talkId))
 
 @app.route('/talks/reminders/group', methods=["GET"])
 @requires_auth
 def getReminderGroup():
     talkId = int(request.args.get("talkId"))
-    return jsonify(emailReminders.getReminderGroup(talkId))
+    return jsonify(app.email_reminders_repo.getReminderGroup(talkId))
 
 
 # --------------------------------------------
@@ -1174,13 +1147,13 @@ def getReminderGroup():
 @app.route('/talks/viewcount/get', methods=["GET"])
 def getViewCountForTalk():
     channelId = int(request.args.get("channelId"))
-    return jsonify(talks.getTalkViewCount(channelId))
+    return jsonify(app.talk_repo.getTalkViewCount(channelId))
 
 @app.route('/talks/viewcount/add', methods=["POST"])
 def increaseViewCountForTalk():
     params = request.json 
     channelId = params["channelId"]
-    return jsonify(talks.increaseTalkViewCount(channelId))
+    return jsonify(app.talk_repo.increaseTalkViewCount(channelId))
 
 
 # --------------------------------------------
@@ -1199,7 +1172,7 @@ def registerTalk():
         institution = params["institution"] if "institution" in params else ""
         user_hour_offset = params["userHourOffset"]
 
-        res = talks.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
+        res = app.talk_repo.registerTalk(talkId, userId, name, email, website, institution, user_hour_offset)
         return jsonify(str(res))
 
     except Exception as e:
@@ -1216,7 +1189,7 @@ def unregisterTalk():
     try:
         requestRegistrationId = params["requestRegistrationId"]
         userId = params["userId"] if "userId" in params else None 
-        talks.unregisterTalk(requestRegistrationId, userId)
+        app.talk_repo.unregisterTalk(requestRegistrationId, userId)
         return jsonify("ok")
 
     except Exception as e:
@@ -1233,7 +1206,7 @@ def refuseTalkRegistration():
     params = request.json
     try:
         requestRegistrationId = params["requestRegistrationId"]
-        res = talks.refuseTalkRegistration(requestRegistrationId)
+        res = app.talk_repo.refuseTalkRegistration(requestRegistrationId)
         if res == "ok":
             return jsonify("ok")
         else:
@@ -1253,7 +1226,7 @@ def acceptTalkRegistration():
     params = request.json
     try:
         requestRegistrationId = params["requestRegistrationId"]
-        res = talks.acceptTalkRegistration(requestRegistrationId)
+        res = app.talk_repo.acceptTalkRegistration(requestRegistrationId)
         return jsonify(str(res))
 
     except Exception as e:
@@ -1270,13 +1243,13 @@ def getTalkRegistrations():
     userId = request.args.get("userId") if "userId" in request.args else None
     try:
         if channelId != None:
-            res = talks.getTalkRegistrationsForChannel(channelId)
+            res = app.talk_repo.getTalkRegistrationsForChannel(channelId)
             return jsonify(res)
         elif talkId != None:
-            res = talks.getTalkRegistrationsForTalk(talkId)
+            res = app.talk_repo.getTalkRegistrationsForTalk(talkId)
             return jsonify(res)
         elif userId != None:
-            res = talks.getTalkRegistrationsForUser(userId)
+            res = app.talk_repo.getTalkRegistrationsForUser(userId)
             return jsonify(res)
 
     except Exception as e:
@@ -1288,7 +1261,7 @@ def registrationStatusForTalk():
     talkId = int(request.args.get("talkId"))
     userId = int(request.args.get("userId"))
         
-    return jsonify(talks.registrationStatusForTalk(talkId, userId))
+    return jsonify(app.talk_repo.registrationStatusForTalk(talkId, userId))
 
 # --------------------------------------------
 # Talks: presentation slides routes
@@ -1307,14 +1280,14 @@ def presentationSlides():
             print(file)
             fn = f"{talkId}.pdf"
             file.save(f"/home/cloud-user/plateform/agora/storage/slides/{fn}")
-            talks.addSlides(talkId)
+            app.talk_repo.addSlides(talkId)
             
             return jsonify({"filename": fn})
             
         if request.method == "GET":
             if "talkId" in request.args:
                 talkId = int(request.args.get("talkId"))
-                fn = talks.getSlidesLocation(talkId)
+                fn = app.talk_repo.getSlidesLocation(talkId)
                 if fn is not None:
                     return send_file(fn, mimetype="application/pdf")
                 else:
@@ -1324,7 +1297,7 @@ def presentationSlides():
         if request.method == "DELETE":
             params = request.json 
             talkId = params["talkId"]
-            talks.deleteSlides(talkId)
+            app.talk_repo.deleteSlides(talkId)
 
             app.logger.debug(f"talk with id {talkId} removed slides")
 
@@ -1340,7 +1313,7 @@ def hasSlides():
         try:
             if "talkId" in request.args:
                 talkId = int(request.args.get("talkId"))
-                fn = talks.getSlidesLocation(talkId)
+                fn = app.talk_repo.getSlidesLocation(talkId)
                 if fn is not None:
                     return jsonify({"hasSlides": True})
                 else:
@@ -1354,33 +1327,33 @@ def hasSlides():
 def getAllVideos():
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    data = videos.getAllVideos(limit, offset)
+    data = app.video_repo.getAllVideos(limit, offset)
     return jsonify({"videos": data[0],"count": data[1]})
     # return jsonify({ videos.getAllVideos(limit, offset)})
 
 @app.route('/videos/recent', methods=["GET"])
 def getRecentVideos():
-    return jsonify(videos.getRecentVideos())
+    return jsonify(app.video_repo.getRecentVideos())
 
 @app.route('/videos/channel', methods=["GET"])
 def getAllVideosForChannel():
     channelId = int(request.args.get("channelId"))
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    data = videos.getAllVideosForChannel(channelId, limit, offset)
+    data = app.video_repo.getAllVideosForChannel(channelId, limit, offset)
     return jsonify({"videos": data[0],"count": data[1]})
 
 @app.route('/videos/video', methods=["GET"])
 def getVideoById():
     id = int(request.args.get("id"))
-    return jsonify(videos.getVideoById(id))
+    return jsonify(app.video_repo.getVideoById(id))
 
 @app.route('/videos/tag', methods=["GET"])
 def getVideosWithTag():
     tagName = request.args.get("tagName")
     limit = int(request.args.get("limit"))
     offset = int(request.args.get("offset"))
-    data = videos.getAllVideosWithTag(tagName, limit, offset)
+    data = app.video_repo.getAllVideosWithTag(tagName, limit, offset)
     return jsonify({"videos": data[0],"count": data[1]})
 
 @app.route('/videos/topic', methods=["GET"])
@@ -1395,9 +1368,9 @@ def getAllQuestionsForStream():
     streamId = request.args.get("streamId")
     videoId = request.args.get("videoId")
     if streamId != None:
-        res = questions.getAllQuestionsForStream(streamId=int(streamId))
+        res = app.questions_repo.getAllQuestionsForStream(streamId=int(streamId))
     else:
-        res = questions.getAllQuestionsForStream(videoId=int(videoId))
+        res = app.questions_repo.getAllQuestionsForStream(videoId=int(videoId))
     return jsonify(res)
 
 @app.route('/questions/ask', methods=["POST", "OPTIONS"])
@@ -1411,8 +1384,8 @@ def askQuestion():
     content = params["content"]
 
     if "streamId" in params:
-        return jsonify(questions.createQuestion(userId, content, streamId=params["streamId"]))
-    return jsonify(questions.createQuestion(userId, content, videoId=params["videoId"]))
+        return jsonify(app.questions_repo.createQuestion(userId, content, streamId=params["streamId"]))
+    return jsonify(app.questions_repo.createQuestion(userId, content, videoId=params["videoId"]))
 
 @app.route('/questions/answer', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1424,7 +1397,7 @@ def answerQuestion():
     userId = params["userId"]
     questionId = params["questionId"]
     content = params["content"]
-    return jsonify(questions.answerQuestion(userId, questionId, content))
+    return jsonify(app.questions_repo.answerQuestion(userId, questionId, content))
 
 @app.route('/questions/upvote', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1435,7 +1408,7 @@ def upvoteQuestion():
     params = request.json
     questionId = params["questionId"]
     userId = params["userId"]
-    return jsonify(questions.upvoteQuestion(questionId, userId))
+    return jsonify(app.questions_repo.upvoteQuestion(questionId, userId))
 
 @app.route('/questions/downvote', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1446,7 +1419,7 @@ def downvoteQuestion():
     params = request.json
     questionId = params["questionId"]
     userId = params["userId"]
-    return jsonify(questions.downvoteQuestion(questionId, userId))
+    return jsonify(app.questions_repo.downvoteQuestion(questionId, userId))
 
 @app.route('/questions/answer/upvote', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1457,7 +1430,7 @@ def upvoteAnswer():
     params = request.json
     answerId = params["answerId"]
     userId = params["userId"]
-    return jsonify(questions.upvoteAnswer(answerId, userId))
+    return jsonify(app.questions_repo.upvoteAnswer(answerId, userId))
 
 @app.route('/questions/answer/downvote', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1468,7 +1441,7 @@ def downvoteAnswer():
     params = request.json
     answerId = params["answerId"]
     userId = params["userId"]
-    return jsonify(questions.downvoteAnswer(answerId, userId))
+    return jsonify(app.questions_repo.downvoteAnswer(answerId, userId))
 
 @app.route('/questions/upvote/remove', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1479,7 +1452,7 @@ def removeQuestionUpvote():
     params = request.json
     questionId = params["questionId"]
     userId = params["userId"]
-    return jsonify(questions.removeQuestionUpvote(questionId, userId))
+    return jsonify(app.questions_repo.removeQuestionUpvote(questionId, userId))
 
 @app.route('/questions/downvote/remove', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1490,7 +1463,7 @@ def removeQuestionDownvote():
     params = request.json
     questionId = params["questionId"]
     userId = params["userId"]
-    return jsonify(questions.removeQuestionDownvote(questionId, userId))
+    return jsonify(app.questions_repo.removeQuestionDownvote(questionId, userId))
 
 @app.route('/questions/answer/upvote/remove', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1501,7 +1474,7 @@ def removeAnswerUpvote():
     params = request.json
     answerId = params["answerId"]
     userId = params["userId"]
-    return jsonify(questions.removeAnswerUpvote(answerId, userId))
+    return jsonify(app.questions_repo.removeAnswerUpvote(answerId, userId))
 
 @app.route('/questions/answer/downvote/remove', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1512,19 +1485,19 @@ def removeAnswerDownvote():
     params = request.json
     answerId = params["answerId"]
     userId = params["userId"]
-    return jsonify(questions.removeAnswerDownvote(answerId, userId))
+    return jsonify(app.questions_repo.removeAnswerDownvote(answerId, userId))
 
 # --------------------------------------------
 # TAG ROUTES
 # --------------------------------------------
 @app.route('/tags/all', methods=["GET", "OPTIONS"])
 def getAllTags():
-    return jsonify(tags.getAllTags())
+    return jsonify(app.tag_repo.getAllTags())
 
 @app.route('/tags/popular', methods=["GET"])
 def getPopularTags():
     n = int(request.args.get("n"))
-    return jsonify(tags.getPopularTags(n))
+    return jsonify(app.tag_repo.getPopularTags(n))
 
 @app.route('/tags/add', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1534,7 +1507,7 @@ def addTag():
 
     params = request.json
     name = params["name"]
-    return jsonify(tags.addTag(name))
+    return jsonify(app.tag_repo.addTag(name))
 
 @app.route('/tags/tagstream', methods=["POST", "OPTIONS"])
 @requires_auth
@@ -1543,12 +1516,12 @@ def tagStream():
         return jsonify("ok")
 
     params = request.json
-    return jsonify(tags.tagStream(params["streamId"], params["tagIds"]))
+    return jsonify(app.tag_repo.tagStream(params["streamId"], params["tagIds"]))
 
 @app.route('/tags/stream', methods=["GET"])
 def getTagsOnStream():
     streamId = int(request.args.get("streamId"))
-    return jsonify(tags.getTagsOnStream(streamId))
+    return jsonify(app.tag_repo.getTagsOnStream(streamId))
 
 # --------------------------------------------
 # TOPICS ROUTES
@@ -1557,13 +1530,13 @@ def getTagsOnStream():
 def getAllTopics():
     if request.method == "OPTIONS":
         return jsonify("ok")
-    return jsonify(topics.getAllTopics())
+    return jsonify(app.topic_repo.getAllTopics())
 
 @app.route('/topics/treestructure', methods=["GET", "OPTIONS"])
 def getDataTreeStructure():
     if request.method == "OPTIONS":
         return jsonify("ok")
-    return jsonify(tags.getAllTags())
+    return jsonify(app.topic_repo.getAllTags())
     # return jsonify(topics.getDataTreeStructure())
 
 @app.route('/topics/popular', methods=["GET"])
@@ -1593,7 +1566,7 @@ def getFieldFromId():
         return jsonify("ok")
 
     topicId = request.args.get("topicId")
-    return jsonify(topics.getFieldFromId(topicId)) 
+    return jsonify(app.topic_repo.getFieldFromId(topicId)) 
 
 # --------------------------------------------
 # SEARCH ROUTES
@@ -1605,7 +1578,7 @@ def fullTextSearch():
     params = request.json
     objectTypes = params["objectTypes"]
     searchString = params["searchString"]
-    results = {objectType: search.searchTable(objectType, searchString) for objectType in objectTypes}
+    results = {objectType: app.search_repo.searchTable(objectType, searchString) for objectType in objectTypes}
     return jsonify(results)
 
 # --------------------------------------------
@@ -1615,11 +1588,11 @@ def fullTextSearch():
 def eventLinkRedirect():
     try:
         eventId = request.args.get("eventId")
-        talk_info = talks.getTalkById(eventId)
+        talk_info = app.talk_repo.getTalkById(eventId)
         title = talk_info["name"]
         description = talk_info["description"]
         channel_name = talk_info["channel_name"]
-        channel_id = channels.getChannelByName(channel_name)["id"]
+        channel_id = app.channel_repo.getChannelByName(channel_name)["id"]
 
         real_url = f"https://mora.stream/event/{eventId}"
         hack_url = f"{BASE_API_URL}/event-link?eventId={eventId}"
@@ -1648,7 +1621,7 @@ def eventLinkRedirect():
 def channelLinkRedirect():
     try:
         channel_id = request.args.get("channelId")
-        channel_info = channels.getChannelById(channel_id)
+        channel_info = app.channel_repo.getChannelById(channel_id)
         name = channel_info["name"]
         long_description = channel_info["long_description"]
         real_url = f"https://mora.stream/{name}"
@@ -1683,7 +1656,7 @@ def getStreamingProductById():
     try:
         product_id = request.args.get("id")
         return jsonify(
-            products.getStreamingProductById(product_id)
+            app.product_repo.getStreamingProductById(product_id)
             )
     except Exception as e:
         err = str(e) + "; "
@@ -1694,7 +1667,7 @@ def getStreamingProductById():
         aud_size = request.args.get("audienceSize") # = 'small' or 'big'
         
         return jsonify(
-            products.getStreamingProductByFeatures(tier, product_type, aud_size)
+            app.product_repo.getStreamingProductByFeatures(tier, product_type, aud_size)
             )
     except Exception as e:
         err += str(e)
@@ -1704,7 +1677,7 @@ def getStreamingProductById():
 @app.route('/products/streaming/all', methods=["GET"])
 def getAllStreamingProducts():
     try:
-        return jsonify(products.getAllStreamingProducts())
+        return jsonify(app.product_repo.getAllStreamingProducts())
     except Exception as e:
         return jsonify(str(e))
 
@@ -1715,7 +1688,7 @@ def getAllStreamingProducts():
 def getUsedStreamCreditForTalk():
     try:
         talk_id = request.args.get("talkId")
-        return jsonify(credits.getUsedStreamCreditForTalk(talk_id))
+        return jsonify(app.credit_repo.getUsedStreamCreditForTalk(talk_id))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1723,7 +1696,7 @@ def getUsedStreamCreditForTalk():
 def getAvailableStreamCreditForChannel():
     try:
         channel_id = request.args.get("channelId")
-        return jsonify(credits.getAvailableStreamCreditForChannel(channel_id))
+        return jsonify(app.credit_repo.getAvailableStreamCreditForChannel(channel_id))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1731,7 +1704,7 @@ def getAvailableStreamCreditForChannel():
 def getAvailableStreamCreditForTalk():
     try:
         talk_id = request.args.get("talkId")
-        return jsonify(credits.getAvailableStreamCreditForTalk(talk_id))
+        return jsonify(app.credit_repo.getAvailableStreamCreditForTalk(talk_id))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1741,7 +1714,7 @@ def addStreamCreditToTalk():
         talk_id = request.args.get("talkId")
         increment = request.args.get("increment")
 
-        return jsonify(credits.addStreamCreditToTalk(talk_id, increment))
+        return jsonify(app.credit_repo.addStreamCreditToTalk(talk_id, increment))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1751,7 +1724,7 @@ def addStreamingCreditToChannel():
         channel_id = request.args.get("channelId")
         increment = request.args.get("increment")
 
-        return jsonify(credits.addStreamingCreditToChannel(channel_id, increment))
+        return jsonify(app.credit_repo.addStreamingCreditToChannel(channel_id, increment))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1759,7 +1732,7 @@ def addStreamingCreditToChannel():
 def upgradeStreamTalkByOne():
     try:
         talk_id = request.args.get("talkId")
-        return jsonify(credits.upgradeStreamTalkByOne(talk_id))
+        return jsonify(app.credit_repo.upgradeStreamTalkByOne(talk_id))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1767,7 +1740,7 @@ def upgradeStreamTalkByOne():
 def getMaxAudienceForCreditForTalk():
     try:
         talk_id = request.args.get("talkId")
-        return jsonify(credits.getMaxAudienceForCreditForTalk(talk_id))
+        return jsonify(app.credit_repo.getMaxAudienceForCreditForTalk(talk_id))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1780,7 +1753,7 @@ def getActiveSubscriptionForChannel():
         channel_id = request.args.get("channelId")
         product_id = request.args.get("productId")
 
-        return jsonify(channelSubscriptions.getActiveSubscriptionId(channel_id, product_id))
+        return jsonify(app.channel_sub_repo.getActiveSubscriptionId(channel_id, product_id))
     except Exception as e:
         return jsonify(str(e))
 
@@ -1788,7 +1761,7 @@ def getActiveSubscriptionForChannel():
 def getAllActiveSubscriptionsForChannel():
     try:
         channel_id = request.args.get("channelId")
-        active_subs = channelSubscriptions.getActiveSubscriptions(channel_id)
+        active_subs = app.channel_sub_repo.getActiveSubscriptions(channel_id)
         return jsonify([sub['product_id'] for sub in active_subs])
         
     except Exception as e:
@@ -1801,13 +1774,13 @@ def cancelSubscriptionForChannel():
         product_id = request.args.get("productId")
 
         # get subscription_id
-        subscription_id = channelSubscriptions.getActiveSubscriptionId(channel_id, product_id)
+        subscription_id = app.channel_sub_repo.getActiveSubscriptionId(channel_id, product_id)
 
         # set stop subscription date in stripe
         paymentsApi.stopSubscriptionRenewal(subscription_id)
 
         # status to "interrupted" in DB 
-        channelSubscriptions.interruptSubscription(subscription_id)
+        app.channel_sub_repo.interruptSubscription(subscription_id)
         
         return "ok"
     except Exception as e:
@@ -1820,7 +1793,7 @@ def cancelAllSubscriptionsForChannel():
 
         # A. get all active channel subscriptions and cancel all of them
         # get subscription_id
-        subscriptions = channelSubscriptions.getActiveSubscriptions(channel_id)
+        subscriptions = app.channel_sub_repo.getActiveSubscriptions(channel_id)
         for subscription in subscriptions:
             sub_id = subscription["stripe_subscription_id"]
 
@@ -1828,7 +1801,7 @@ def cancelAllSubscriptionsForChannel():
             paymentsApi.stopSubscriptionRenewal(sub_id)
 
             # status to "interrupted" in DB 
-            channelSubscriptions.interruptSubscription(sub_id)
+            app.channel_sub_repo.interruptSubscription(sub_id)
         
         return "ok"
     except Exception as e:
@@ -1863,7 +1836,7 @@ def getStripeSessionForProduct():
             )
 
             # Store checkoutId in DB
-            channelSubscriptions._addCheckoutSubscription(
+            app.channel_sub_repo._addCheckoutSubscription(
                 product_id,
                 res["checkout_session_id"],
                 channel_id,
@@ -1943,7 +1916,7 @@ def stripe_webhook():
             # 1. If StreamingSubscription: add a line in DB and add customer in PaymentHistory
             if product_class == "channel_subscription":
                 stripe_subscription_id = event["data"]["object"]["subscription"]
-                channelSubscriptions._addStripeSubscriptionId(
+                app.channel_sub_repo._addStripeSubscriptionId(
                     checkout_id,
                     stripe_subscription_id
                 )
@@ -1962,7 +1935,7 @@ def stripe_webhook():
             if product_class == "channel_subscription":
                 stripe_subscription_id = event["data"]["object"]["subscription"]
 
-                channelSubscriptions.updateSubscriptionStatus(
+                app.channel_sub_repo.updateSubscriptionStatus(
                     stripe_subscription_id=stripe_subscription_id, status="active"
                 )
 
@@ -1973,7 +1946,7 @@ def stripe_webhook():
             subscription_status = event["data"]["object"]["status"]
 
             if subscription_status == "active":
-                channelSubscriptions.updateSubscriptionStatus(
+                app.channel_sub_repo.updateSubscriptionStatus(
                     stripe_subscription_id=stripe_subscription_id, status="active"
                 )
 
@@ -1982,7 +1955,7 @@ def stripe_webhook():
                 pass
 
             elif subscription_status == "cancelled":
-                channelSubscriptions.updateSubscriptionStatus(
+                app.channel_sub_repo.updateSubscriptionStatus(
                     stripe_subscription_id=stripe_subscription_id, 
                     status="cancelled"
                     )
@@ -1992,7 +1965,7 @@ def stripe_webhook():
         elif event['type'] == "customer.subscription.deleted":
             stripe_subscription_id = event["data"]["object"]["id"]
 
-            channelSubscriptions.updateSubscriptionStatus(
+            app.channel_sub_repo.updateSubscriptionStatus(
                 stripe_subscription_id=stripe_subscription_id, status="cancelled"
             )
 
@@ -2012,7 +1985,7 @@ def createAgoraGetTalkIds():
         return jsonify("ok")
 
     params = request.json
-    is_valid, talk_ids, channel_id, channel_name, link = RSScraper.create_agora_and_get_talk_ids(
+    is_valid, talk_ids, channel_id, channel_name, link = app.scraper_repo.create_agora_and_get_talk_ids(
         params['url'], params['user_id'], params['topic_1_id']
     )
     response =  jsonify({
@@ -2034,7 +2007,7 @@ def publishAllTalks():
     params = request.json
     talk_ids = params['idx']
 
-    talks = RSScraper.parse_create_talks(
+    talks = app.scraper_repo.parse_create_talks(
                 params['url'], talk_ids, params['channel_id'], params['channel_name'], params['talk_link'],
                 params['topic_1_id'], params['audience_level'], params['visibility'], params['auto_accept_group']
     )

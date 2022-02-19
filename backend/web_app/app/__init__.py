@@ -1,10 +1,52 @@
-import datetime
+import logging
+
 from flask import Flask
 from flask_mail import Mail
 from flask_cors import CORS
-import logging
+
+from repository import (
+    ChannelRepository,
+    ChannelSubscriptionRepository,
+    CreditRepository,
+    EmailRemindersRepository,
+    InvitedUsersRepository,
+    MailingListRepository,
+    PaymentHistoryRepository,
+    ProductRepository,
+    ProfileRepository,
+    QandARepository,
+    UserRepository,
+    RSScraperRepository,
+    SearchRepository,
+    StreamRepository,
+    TagRepository,
+    TalkRepository,
+    TwitterBotRepository,
+    TopicRepository,
+    VideoRepository,
+)
 
 app = Flask(__name__)
+
+app.channel_repo = ChannelRepository.ChannelRepository()
+app.channel_sub_repo = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
+app.credit_repo = CreditRepository.CreditRepository()
+app.email_reminders_repo = EmailRemindersRepository.EmailRemindersRepository()
+app.invited_users_repo = InvitedUsersRepository.InvitedUsersRepository()
+app.mailing_repo = MailingListRepository.MailingListRepository()
+app.payments_repo = PaymentHistoryRepository.PaymentHistoryRepository()
+app.products_repo = ProductRepository.ProductRepository()
+app.profile_repo = ProfileRepository.ProfileRepository()
+app.questions_repo = QandARepository.QandARepository()
+app.user_repo = UserRepository.UserRepository()
+app.scraper_repo = RSScraperRepository.RSScraperRepository()
+app.search_repo = SearchRepository.SearchRepository()
+app.stream_repo = StreamRepository.StreamRepository()
+app.tag_repo = TagRepository.TagRepository()
+app.talk_repo = TalkRepository.TalkRepository()
+app.twitter_bot_repo = TwitterBotRepository.TwitterBotRepository()
+app.topic_repo = TopicRepository.TopicRepository()
+app.video_repo = VideoRepository.VideoRepository()
 
 logging.basicConfig(
     filename=f"/home/cloud-user/logs/{datetime.datetime.utcnow().isoformat()[:10]}.log",
