@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Text, TextInput, TextArea, Select } from "grommet";
 import { Overlay, OverlaySection } from "../Core/Overlay";
 import { User, UserService } from "../../Services/UserService";
+import { Channel, ChannelService } from "../../Services/ChannelService";
 import { Presentation, Profile, ProfileService } from "../../Services/ProfileService";
 import { Workshop, LinkPrevious, LinkNext } from "grommet-icons";
 import { PresentationEntry } from "../Profile/PresentationEntry";
@@ -10,6 +11,8 @@ import InstitutionalUsers from "../../Views/LandingPages/InstitutionalUsers";
 
 interface Props {
   userId: number
+  channelId: number;
+  channelName: string;
 }
 
 export const ApplyToTalkButton = (props: Props) => {
@@ -143,8 +146,45 @@ export const ApplyToTalkButton = (props: Props) => {
     return res;
   }
 
-  function handleSubmit(): void {
+  function sendApplication(): void {
+    let email_topics_string = ""
+    let raw_topics = profile ? profile.topics : []
+    let topic_str = ""
 
+    for (let i = 0; i < raw_topics.length; i++) {
+      if (raw_topics[i] != null){
+        topic_str = raw_topics[i]["field"].toString();
+        if (email_topics_string != ""){
+          email_topics_string = email_topics_string.concat(", ", topic_str)}
+        else {
+          email_topics_string = email_topics_string.concat(topic_str)
+        }
+      };
+    }
+    ChannelService.sendTalkApplicationEmail(
+      props.channelId,
+      props.channelName,
+      fullName,
+      position,
+      institution,
+      personalWebsite,
+      email,
+      idxPresDisplay < presentations.length ? presentations[idxPresDisplay].title : title,
+      idxPresDisplay < presentations.length ? presentations[idxPresDisplay].description : description,
+      email_topics_string,
+      message,
+      // TODO: Error handling
+      (answer: any) => {
+        console.log("Status: ", answer)
+      }
+     );
+  }
+
+  function handleSubmit(e: any): void {
+    // prevents the page from bein
+    e.preventDefault();
+    sendApplication();
+    setIsOverlay(false)
   }  
 
   return (
@@ -238,7 +278,7 @@ export const ApplyToTalkButton = (props: Props) => {
           onChange={(e: any) => setPersonalWebsite(e.target.value)}
         />
         <TextArea
-          placeholder="(Message)"
+          placeholder="(Message to the organizer)"
           value={message}
           onChange={(e: any) => setMessage(e.target.value)}
           rows={8}

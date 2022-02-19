@@ -11,6 +11,7 @@ import { Topic } from "../../Services/TopicService";
 import TopicSelector from "../Talks/TopicSelector";
 import { ChannelService } from "../../Services/ChannelService";
 import ReactTooltip from "react-tooltip";
+import { Info } from "grommet-icons";
 
 
 
@@ -111,12 +112,12 @@ export default class ApplyToTalkForm extends Component<Props, State> {
       this.state.user.personal_message,
       //TODO: Error handling
       (answer: any) => {
-        console.log("Successful application!")
+        console.log("Status: ", answer)
       }
      );
     // TODO: add error handling if email is not succesffully sent.
     this.handleClearForm();
-    };
+  };
 
   handleClearForm = () => {
     // prevents the page from being refreshed on form submission
@@ -224,13 +225,13 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           height="30px"
           background="white"
           round="xsmall"
-          pad={{bottom: "3px", top: "6px", left: "3px", right: "3px"}}
           onClick={() => this.setState({ showForm: true })}
           style={{
             border: "1px solid #C2C2C2",
           }}
           hoverIndicator={true}
-          justify="center"   
+          justify="center"  
+          align="center" 
         >
           <Text 
             size="14px" 
@@ -252,19 +253,19 @@ export default class ApplyToTalkForm extends Component<Props, State> {
           submitButtonText="Apply"
           canProceed={this.isComplete()}
           isMissing={this.isMissing()}
-          width={900}
-          height={500}
-          contentHeight="800px"
+          width={600}
+          height={750}
+          contentHeight="1000px"
           title="Talk application"
         >
 
         <OverlaySection>
           <Box width="100%" gap="2px">
-            {/* <TextInput
-              placeholder="Academic title"
-              value={this.state.user.speaker_title}
-              onChange={(e: any) => this.handleInput(e, "speaker_title")}
-              /> */}
+            <Box direction="row" gap="10px" justify="center" margin={{bottom: "20px"}}>
+              <Info size="20px" />
+              <Text size="12px"> To speed up the application, create an account and upload your presentation on your profile. That way, you can apply to any agora in 2 clicks!</Text>
+            </Box>
+            
             <TextInput
               placeholder="Full name"
               value={this.state.user.speaker_name}
@@ -346,7 +347,7 @@ export default class ApplyToTalkForm extends Component<Props, State> {
 
           <Box width="100%" gap="2px" margin={{bottom: "20px"}}>
             <TextArea
-              placeholder="(Message to us)"
+              placeholder="(Message to the organizer)"
               value={this.state.user.personal_message}
               onChange={(e: any) => this.handleInput(e, "personal_message")}
               rows={8}

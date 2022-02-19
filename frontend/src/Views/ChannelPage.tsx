@@ -480,6 +480,8 @@ export default class ChannelPage extends Component<Props, State> {
               {this.state.user && (
                 <ApplyToTalkButton 
                   userId={this.state.user.id}
+                  channelId={this.state.channel!.id}
+                  channelName={this.state.channel!.name}
                 />
               )}
               {!this.state.user && (
