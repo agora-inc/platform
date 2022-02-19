@@ -155,7 +155,7 @@ export const ApplyToTalkButton = (props: Props) => {
       round="xsmall"
       pad="xsmall"
       height="45px"
-      width="155px"
+      width="185px"
       justify="center"
       align="center"
       focusIndicator={false}
@@ -164,7 +164,7 @@ export const ApplyToTalkButton = (props: Props) => {
       direction="row"
     >
       <Workshop size="20px" />
-      <Text size="14px" margin={{left: "10px"}}> Give a talk</Text>
+      <Text size="14px" margin={{left: "10px"}}> Apply to give a talk</Text>
     </Box>
     <Overlay
       visible={isOverlay}
