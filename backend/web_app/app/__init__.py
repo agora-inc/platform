@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from flask import Flask
@@ -26,8 +27,12 @@ from repository import (
     VideoRepository,
 )
 
-app = Flask(__name__)
 
+# initialise app object
+app = Flask(__name__)
+CORS(app)
+
+# initialise repository objects and add to app
 app.channel_repo = ChannelRepository.ChannelRepository()
 app.channel_sub_repo = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 app.credit_repo = CreditRepository.CreditRepository()
@@ -48,15 +53,7 @@ app.twitter_bot_repo = TwitterBotRepository.TwitterBotRepository()
 app.topic_repo = TopicRepository.TopicRepository()
 app.video_repo = VideoRepository.VideoRepository()
 
-logging.basicConfig(
-    filename=f"/home/cloud-user/logs/{datetime.datetime.utcnow().isoformat()[:10]}.log",
-    level=logging.DEBUG,
-    format="%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s",
-)
-# logging.basicConfig(filename="agora.log", level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-
-CORS(app)
-
+# initialise mail
 app.config["MAIL_SERVER"] = "smtp.office365.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USERNAME"] = "team@agora.stream"
@@ -65,6 +62,15 @@ app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USE_SSL"] = False
 mail = Mail(app)
 
-from app import routes
+# logging.basicConfig(
+#     filename="agora.log",
+#     level=logging.DEBUG,
+#     format="%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s",
+# )
+logging.basicConfig(
+    filename=f"/home/cloud-user/logs/{datetime.datetime.utcnow().isoformat()[:10]}.log",
+    level=logging.DEBUG,
+    format="%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s",
+)
 
-# from . import routes
+from routes import *
