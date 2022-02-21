@@ -74,7 +74,8 @@
     "styled-components": "^5.1.0",
     "video.js": "^7.7.6",
     "webpack": "^4.46.0",
-    "webrtc-adapter": "^7.6.0"
+    "webrtc-adapter": "^7.6.0",
+    "zustand": "^3.5.5"
   },
   "scripts": {
     "start": "react-app-rewired start",
