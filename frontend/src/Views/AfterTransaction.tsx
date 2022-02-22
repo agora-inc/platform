@@ -76,7 +76,7 @@ interface Props extends RouteComponentProps {
                         </ul>
                     </Box>
                     <Text size="14px">
-                        If you have any questions, please email <a href="mailto:team@agora.stream">team@agora.stream</a>.
+                        If you have any questions, please email <a href="mailto:team@mora.stream">team@mora.stream</a>.
                     </Text>
                 </Box>
             </Box>
@@ -100,7 +100,7 @@ interface Props extends RouteComponentProps {
                     
                     {/* Restate value of original offer */}
                     <Text size="14px">
-                    If clearing your cache and trying again did not work, please send a short description of your problem to <a href="mailto:team@agora.stream">team@agora.stream</a> and we will get this sorted out as soon as possible!</Text>
+                    If clearing your cache and trying again did not work, please send a short description of your problem to <a href="mailto:team@mora.stream">team@mora.stream</a> and we will get this sorted out as soon as possible!</Text>
                 </Box>
             </Box>
         )

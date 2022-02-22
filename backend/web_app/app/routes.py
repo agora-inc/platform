@@ -12,7 +12,9 @@ from connectivity.streaming.agora_io.tokengenerators import generate_rtc_token
 
 from payment.apis.StripeApi import StripeApi
 from flask import jsonify, request, send_file, render_template
-from flask_mail import Message
+# from flask_mail import Message
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from werkzeug import exceptions
 import os
 import time
@@ -38,6 +40,9 @@ paymentsApi = StripeApi()
 channelSubscriptions = ChannelSubscriptionRepository.ChannelSubscriptionRepository()
 tweets = TwitterBotRepository.TwitterBotRepository()
 # paymentHistory = PaymentHistoryRepository.PaymentHistoryRepository()
+
+SENDGRID_API_KEY = "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"
+sg = SendGridAPIClient(SENDGRID_API_KEY)
 
 BASE_URL = "http://localhost:3000"
 # BASE_URL = "https://mora.stream/"
@@ -223,12 +228,25 @@ def generateChangePasswordLink():
         link = f'https://mora.stream:3000/changepassword?code={code.decode()}'
 
         # email link
+        message = Mail(
+            from_email="team@mora.stream",
+            to_emails=[user["email"]],
+            subject="mora.stream: password reset",
+            html_content=f"""
+                <p>Dear {user['username']},</p>
+                <p>Here is your password reset link: {link}</p>
+                <p>The mora.stream Team</p>
+            """
+        )
+        sg.send(message)     
+
+        """
         msg = Message('mora.stream: password reset', sender = 'noreply@mora.stream', recipients = [user["email"]])
         msg.body = f'Password reset link: {link}'
         msg.subject = "mora.stream: password reset"
         mail.send(msg)
+        """
 
-        app.logger.debug(f"User '{usernameOrEmail}' requested link to change password")
         return "ok"
 
     except Exception as e:
@@ -814,11 +832,22 @@ def sendTalkApplicationEmail():
                         <p>Best wishes,</p>
                         <p>The mora.stream Team</p>
                     """
-        for email in administrator_emails:
-            msg = Message(body_msg, sender = 'team@agora.stream', recipients = [email])
+        
+        message = Mail(
+            from_email="team@mora.stream",
+            to_emails=administrator_emails,
+            subject=email_subject,
+            html_content=body_msg
+        )
+        sg.send(message)         
+        
+        """
+        for email in administrator_emails:            
+            msg = Message(body_msg, sender = 'team@mora.stream', recipients = [email])
             msg.html = body_msg
             msg.subject = email_subject
             mail.send(msg)
+        """
         return "ok"
     
     except Exception as e:
