@@ -31,6 +31,8 @@ export const CreatePresentationButton = (props: any) => {
   const [email, setEmail] = useState<string>("");
   const [error, setError] = useState<string>("");
 
+  let windowWidth = props.windowWidth || 769;
+
   useEffect(() => {
     setUser(UserService.getCurrentUser());
   }, []);
@@ -164,10 +166,11 @@ export const CreatePresentationButton = (props: any) => {
               submitButtonText="Publish"
               canProceed={isComplete()}
               isMissing={isMissing()}
-              width={550}
-              height={450}
-              contentHeight="300px"
+              width={windowWidth < 768 ? 320 : 550}
+              height={550}
+              contentHeight="400px"
               title={"Describe your future talk and get invited!"}
+              windowWidth={props.windowWidth}
             >
               <Box width="100%" gap="10px" margin={{ top: "5px" }}>
                 <TextInput
@@ -181,7 +184,12 @@ export const CreatePresentationButton = (props: any) => {
                   onChange={(e: any) => setDescription(e.target.value)}
                   rows={8}
                 />
-                <Box direction="row" gap="10px" width="80%" align="center">
+                <Box
+                  direction={props.isMobile ? "column" : "row"}
+                  gap="10px"
+                  width="80%"
+                  align={props.isMobile ? "start" : "center"}
+                >
                   <TextInput
                     style={{ width: "200px" }}
                     placeholder="Link to paper/slides"

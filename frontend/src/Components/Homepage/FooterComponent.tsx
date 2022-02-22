@@ -10,7 +10,7 @@ export default class FooterComponent extends Component {
     return (
       <Box
         pad="none"
-        margin={{ top: "xlarge", bottom: "small" }}
+        margin={{ bottom: "small" }}
         style={{
           position: "relative",
           bottom: 0,
@@ -29,7 +29,15 @@ export default class FooterComponent extends Component {
         />
         <Box direction="row" justify="between">
           <Box gap="xsmall" width="50%">
-            <p> <a href="https://www.linkedin.com/company/morastream"><Linkedin/></a> <a href="https://twitter.com/morastream"><Twitter/></a></p>
+            <p>
+              {" "}
+              <a href="https://www.linkedin.com/company/morastream">
+                <Linkedin />
+              </a>{" "}
+              <a href="https://twitter.com/morastream">
+                <Twitter />
+              </a>
+            </p>
 
             {/* <a>
               <FormContainer />
@@ -42,8 +50,18 @@ export default class FooterComponent extends Component {
             </a>
           </Box>
           <Box gap="medium" width="50%">
-            <Text size="14px" style={{textAlign: "right", marginRight: "5px"}}> where minds meet</Text>
-            <Text style={{ fontSize: 14, marginRight: "5px", textAlign: "right"}}>mora.stream © 2021</Text>
+            <Text
+              size="14px"
+              style={{ textAlign: "right", marginRight: "5px" }}
+            >
+              {" "}
+              where minds meet
+            </Text>
+            <Text
+              style={{ fontSize: 14, marginRight: "5px", textAlign: "right" }}
+            >
+              mora.stream © 2021
+            </Text>
           </Box>
         </Box>
       </Box>

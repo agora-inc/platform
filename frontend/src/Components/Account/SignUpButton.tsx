@@ -14,6 +14,7 @@ interface Props {
   height?: string;
   textSize?: string;
   text?: string;
+  windowWidth?: number;
 }
 
 interface State {
@@ -29,11 +30,10 @@ interface State {
   width: string;
   height: string;
   textSize: string;
-
 }
 
 export default class SignUpButton extends Component<Props, State> {
-  constructor(props: Props ) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showModal: false,
@@ -47,7 +47,7 @@ export default class SignUpButton extends Component<Props, State> {
       email: "",
       width: this.props.width ? this.props.width : "100px",
       height: this.props.height ? this.props.height : "35px",
-      textSize: this.props.textSize ? this.props.textSize : "14px"
+      textSize: this.props.textSize ? this.props.textSize : "14px",
     };
   }
 
@@ -59,23 +59,22 @@ export default class SignUpButton extends Component<Props, State> {
       this.state.position,
       this.state.institution,
       this.props.channelId !== undefined ? this.props.channelId : 0,
-      (result: {status: string, userId: number}) => {
+      (result: { status: string; userId: number }) => {
         if (result.status === "ok") {
           ProfileService.createProfile(
-            result.userId, 
-            this.state.fullName, 
+            result.userId,
+            this.state.fullName,
             () => {
               this.toggleModal();
               this.props.callback();
             }
-          )
+          );
         } else {
           this.setState({ error: result.status });
         }
       }
     );
   };
-
 
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, error: "" });
@@ -98,10 +97,10 @@ export default class SignUpButton extends Component<Props, State> {
     return re.test(email);
   };
 
-  
   render() {
+    let windowWidth = this.props.windowWidth || 769;
     return (
-      <Box style={this.props.height ? {} : {maxHeight: "30px"}}>
+      <Box style={this.props.height ? {} : { maxHeight: "30px" }}>
         <Box
           onClick={this.toggleModal}
           background="#0C385B"
@@ -113,10 +112,13 @@ export default class SignUpButton extends Component<Props, State> {
           height={this.state.height}
           round="xsmall"
         >
-          <Text size={this.state.textSize} weight="bold"> {this.props.text ? this.props.text : "Sign up"} </Text>
+          <Text size={this.state.textSize} weight="bold">
+            {" "}
+            {this.props.text ? this.props.text : "Sign up"}{" "}
+          </Text>
         </Box>
         <Overlay
-          width={500}
+          width={windowWidth < 768 ? 320 : 500}
           height={this.state.error !== "" ? 660 : 600}
           visible={this.state.showModal}
           title="Sign up"
@@ -127,6 +129,7 @@ export default class SignUpButton extends Component<Props, State> {
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
           contentHeight={this.state.error !== "" ? "530px" : "450px"}
+          windowWidth={this.props.windowWidth}
         >
           {this.state.error !== "" && (
             <Box
@@ -137,7 +140,7 @@ export default class SignUpButton extends Component<Props, State> {
               gap="small"
               direction="row"
             >
-              <StatusCritical/>
+              <StatusCritical />
               <Heading level={5} margin="none" color="grey">
                 {/*Error: {this.state.error}*/}
                 Error: Username or email already taken.
@@ -154,8 +157,9 @@ export default class SignUpButton extends Component<Props, State> {
           >
             <Box width="90%" gap="5px">
               <Text size="14px" color="black" margin={{ bottom: "24px" }}>
-                This account will be associated with you as an individual. After you've signed up
-                you'll be able to fill your profile and advertise your research.
+                This account will be associated with you as an individual. After
+                you've signed up you'll be able to fill your profile and
+                advertise your research.
                 {/*create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
                   <Text color="color1" weight="bold" size="14px">

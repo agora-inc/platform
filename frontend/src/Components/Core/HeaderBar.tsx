@@ -234,7 +234,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           padding: "12px 12px",
           color: "black",
           backgroundColor: "#0c385b",
-          position: "absolute",
+          position: "static",
           zIndex: 1000,
         }}
         {...this.props}

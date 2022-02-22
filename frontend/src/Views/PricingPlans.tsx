@@ -1,23 +1,34 @@
 import React, { Component } from "react";
-import { Box, Text, Table, TableHeader, TableRow, TableCell, TableBody } from "grommet";
+import {
+  Box,
+  Text,
+  Table,
+  TableHeader,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "grommet";
 import { Close, Checkmark, FormNextLink } from "grommet-icons";
 import Switch from "../Components/Core/Switch";
 import moraStreamFullLettersLogo from "../assets/general/mora.stream_logo_v2.1.png";
 import { User, UserService } from "../Services/UserService";
-import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
+import {
+  StreamingProductService,
+  StreamingProduct,
+} from "../Services/StreamingProductService";
 import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
 import { CancelSubscriptionsButton } from "../Components/Channel/ChannelSubscriptionsButtons/CancelSubscriptionsButton";
 import { CheckoutPaymentButton } from "../Components/Channel/ChannelSubscriptionsButtons/CheckoutPaymentButton";
 
-
 interface Props {
-  headerTitle: boolean
-  channelId: number | null
-  userId: number | null
-  disabled: boolean
-  showDemo: boolean
-  callback: any
-  title?: string
+  headerTitle: boolean;
+  channelId: number | null;
+  userId: number | null;
+  disabled: boolean;
+  showDemo: boolean;
+  callback: any;
+  title?: string;
+  isMobile?: boolean;
 }
 interface State {
   pricingOptionBig: boolean;
@@ -25,7 +36,6 @@ interface State {
   allStreamingProducts: StreamingProduct[];
   allPlansId: number[];
 }
-
 
 export default class ManageChannelPage extends Component<Props, State> {
   constructor(props: Props) {
@@ -35,98 +45,111 @@ export default class ManageChannelPage extends Component<Props, State> {
       pricingOptionMonthly: true,
       allStreamingProducts: [],
       allPlansId: [],
-    }
+    };
   }
 
   componentDidMount() {
-    this.getAllStreamingProducts()
-    this.getChannelSubscriptions()
+    this.getAllStreamingProducts();
+    this.getChannelSubscriptions();
   }
-  
+
   getAllStreamingProducts = () => {
     StreamingProductService.getAllStreamingProducts(
       (allStreamingProducts: StreamingProduct[]) => {
-        this.setState({ allStreamingProducts })
+        this.setState({ allStreamingProducts });
       }
-    )
-  }
+    );
+  };
 
   getChannelSubscriptions = () => {
     if (this.props.channelId) {
       ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
-        this.props.channelId, 
+        this.props.channelId,
         (allPlansId: number[]) => {
-          this.setState({ allPlansId })
+          this.setState({ allPlansId });
         }
       );
     } else {
-      this.setState({ allPlansId: [] })
+      this.setState({ allPlansId: [] });
     }
-  }
+  };
 
   getPrice = (tier: "tier1" | "tier2", audienceSize: "small" | "big") => {
-    let p = this.state.allStreamingProducts.filter(
-      function (product: StreamingProduct) {
-        return product.tier == tier && product.audience_size === audienceSize
-      }
-    )
+    let p = this.state.allStreamingProducts.filter(function (
+      product: StreamingProduct
+    ) {
+      return product.tier == tier && product.audience_size === audienceSize;
+    });
     if (p.length > 0) {
-      return p[0].price_in_dollars
+      return p[0].price_in_dollars;
     } else {
       return "x";
     }
-  }
+  };
 
   getProductId = (tier: "tier1" | "tier2", audienceSize: "small" | "big") => {
-    let p = this.state.allStreamingProducts.filter(
-      function (product: StreamingProduct) {
-        return product.tier == tier && product.audience_size === audienceSize
-      }
-    )
+    let p = this.state.allStreamingProducts.filter(function (
+      product: StreamingProduct
+    ) {
+      return product.tier == tier && product.audience_size === audienceSize;
+    });
     if (p.length > 0) {
-      return p[0].id
+      return p[0].id;
     } else {
       return -1;
     }
-  }
+  };
 
   isSubscribedTo = (tier: "tier1" | "tier2", audienceSize: "small" | "big") => {
-    let p = this.state.allStreamingProducts.filter(
-      function (product: StreamingProduct) {
-        return product.tier == tier && product.audience_size === audienceSize
-      }
-    )
+    let p = this.state.allStreamingProducts.filter(function (
+      product: StreamingProduct
+    ) {
+      return product.tier == tier && product.audience_size === audienceSize;
+    });
     if (p.length > 0) {
-      return this.state.allPlansId.includes(p[0].id)
+      return this.state.allPlansId.includes(p[0].id);
     } else {
       return false;
     }
-  }
+  };
 
   showProduct = (id: number) => {
-    let list = this.state.allStreamingProducts.filter( 
-      function (p: StreamingProduct) {
-        return p.id === id 
-      })
-    
+    let list = this.state.allStreamingProducts.filter(function (
+      p: StreamingProduct
+    ) {
+      return p.id === id;
+    });
+
     if (list.length > 0) {
-      let planName = list[0].tier === "tier1" 
-        ? "Full automation" 
-        : (list[0].tier === "tier2" ? "Excellence" : list[0].tier)
-      return planName + " plan with " + list[0].audience_size + " audience ($" + list[0].price_in_dollars + " / month)";  
+      let planName =
+        list[0].tier === "tier1"
+          ? "Full automation"
+          : list[0].tier === "tier2"
+          ? "Excellence"
+          : list[0].tier;
+      return (
+        planName +
+        " plan with " +
+        list[0].audience_size +
+        " audience ($" +
+        list[0].price_in_dollars +
+        " / month)"
+      );
     } else {
       return "";
     }
-      
-  }
+  };
 
   render() {
-    let audienceSize: "small" | "big" = this.state.pricingOptionBig ? "big" : "small";
-    let title = this.props.title ? this.props.title : "Empower your community now!"
+    let audienceSize: "small" | "big" = this.state.pricingOptionBig
+      ? "big"
+      : "small";
+    let title = this.props.title
+      ? this.props.title
+      : "Empower your community now!";
 
     return (
       <Box align="start" width="100%" style={{ overflowY: "auto" }}>
-
         {!this.props.headerTitle && (
           <Box
             justify="start"
@@ -143,10 +166,15 @@ export default class ManageChannelPage extends Component<Props, State> {
               zIndex: 10,
             }}
           >
-            <Box alignSelf="center" fill={true} pad="20px" >
-              <Text size="16px" color="black" weight="bold" margin={{ left: "10px" }} >
+            <Box alignSelf="center" fill={true} pad="20px">
+              <Text
+                size="16px"
+                color="black"
+                weight="bold"
+                margin={{ left: "10px" }}
+              >
                 {title}
-            </Text>
+              </Text>
             </Box>
             <Box pad="32px" alignSelf="center">
               <Close onClick={this.props.callback} />
@@ -154,24 +182,28 @@ export default class ManageChannelPage extends Component<Props, State> {
           </Box>
         )}
         {this.props.headerTitle && (
-          <Box align="start" margin={{ bottom: "40px" }} >
+          <Box align="start" margin={{ bottom: "40px" }}>
             <Text size="32px" weight="bold" color="color1">
               {title}
-          </Text>
+            </Text>
           </Box>
         )}
 
-        <Box width="95%" margin={{ left: "2%" }} >
-
+        <Box width="95%" margin={{ left: "2%" }}>
           {!this.props.disabled && this.state.allPlansId.length > 0 && (
             <Box margin={{ bottom: "20px", left: "10px" }} direction="row">
-              <Text size="14px" weight="bold" >
+              <Text size="14px" weight="bold">
                 Your current subscription:
-              </Text> 
-              
-              {this.state.allPlansId.map( (productId: number) => {
+              </Text>
+
+              {this.state.allPlansId.map((productId: number) => {
                 return (
-                  <Text size="14px" weight="bold" color="#6DA3C7" margin={{ left: "10px" }} > 
+                  <Text
+                    size="14px"
+                    weight="bold"
+                    color="#6DA3C7"
+                    margin={{ left: "10px" }}
+                  >
                     {this.showProduct(productId)}
                   </Text>
                 );
@@ -180,27 +212,36 @@ export default class ManageChannelPage extends Component<Props, State> {
           )}
           {!this.props.disabled && this.state.allPlansId.length === 0 && (
             <Box margin={{ bottom: "20px", left: "10px" }}>
-              <Text size="18px" weight="bold" >
+              <Text size="18px" weight="bold">
                 You are currently on our free plan.
               </Text>
-              <Text size="18px" margin={{top:"20px"}} >
-                To democratise access to knowledge, we offer most of the above features <b>for free</b>! For the premium ones, check out the pricing below!
+              <Text size="18px" margin={{ top: "20px" }}>
+                To democratise access to knowledge, we offer most of the above
+                features <b>for free</b>! For the premium ones, check out the
+                pricing below!
               </Text>
             </Box>
-          )}  
+          )}
 
-          <Box direction="row" gap="10px" align="center" margin={{ top:"20px", bottom: "20px", left: "10px" }}>
-            <Text size="14px" style={{ fontStyle: "italic" }} >
+          <Box
+            direction="row"
+            gap="10px"
+            align="center"
+            margin={{ top: "20px", bottom: "20px", left: "10px" }}
+          >
+            <Text size="14px" style={{ fontStyle: "italic" }}>
               Do you have more than 30 people attending your seminars?
-          </Text>
-          <Switch
-            height={25}
-            width={(window.innerWidth > 800) ? 60 : 100}
-            checked={false}
-            callback={(pricingOptionBig: boolean) => {this.setState({ pricingOptionBig })}}
-            textOn="Yes"
-            textOff="No" 
-          />
+            </Text>
+            <Switch
+              height={25}
+              width={window.innerWidth > 800 ? 60 : 100}
+              checked={false}
+              callback={(pricingOptionBig: boolean) => {
+                this.setState({ pricingOptionBig });
+              }}
+              textOn="Yes"
+              textOff="No"
+            />
             {/* checked={this.state.pricingOptionBig}
             checkedChildren="Big" 
             unCheckedChildren="Small"
@@ -208,7 +249,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               this.setState({ pricingOptionBig: checked });
             }}
           size="default" */}
-        </Box>
+          </Box>
 
           {/*<Box direction="row" gap="10px" align="center" margin={{bottom: "30px"}}> 
           <Text size="14px" style={{fontStyle: "italic"}}> 
@@ -225,104 +266,259 @@ export default class ManageChannelPage extends Component<Props, State> {
           /> 
           </Box> */}
 
-          <Table margin={{bottom: "20px"}}>
+          <Table margin={{ bottom: "20px" }} style={{ tableLayout: "fixed" }}>
             <TableHeader>
               <TableRow>
-                <TableCell scope="col" border="bottom">
-                </TableCell>
+                {!this.props.isMobile && (
+                  <TableCell scope="col" border="bottom"></TableCell>
+                )}
 
                 <TableCell scope="col" border="bottom" width="120px">
-                  <Text size="14px" weight="bold"> Free </Text>
+                  <Text size="14px" weight="bold">
+                    {" "}
+                    Free{" "}
+                  </Text>
                 </TableCell>
 
                 <TableCell scope="col" border="bottom" width="170px">
-                  <Text size="14px" weight="bold"> Automation </Text>
+                  <Text size="14px" weight="bold">
+                    {" "}
+                    Automation{" "}
+                  </Text>
                 </TableCell>
 
                 <TableCell scope="col" border="bottom" width="150px">
-                  <Text size="14px" weight="bold"> Hybrid </Text>
+                  <Text size="14px" weight="bold">
+                    {" "}
+                    Hybrid{" "}
+                  </Text>
                 </TableCell>
 
-                {this.props.showDemo && <TableCell scope="col" border={{ size: "0px" }} width="60px" />}
-
+                {this.props.showDemo && (
+                  <TableCell
+                    scope="col"
+                    border={{ size: "0px" }}
+                    width="60px"
+                  />
+                )}
               </TableRow>
             </TableHeader>
 
-            <TableBody style={{ marginTop: "50px" }} >
-
+            <TableBody style={{ marginTop: "50px" }}>
+              {this.props.isMobile && (
+                <TableRow>
+                  <TableCell
+                    direction="column"
+                    scope="row"
+                    colSpan={3}
+                    style={{ textAlign: "center", textTransform: "uppercase" }}
+                  >
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Automatized registration{" "}
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              )}
               <TableRow style={{ alignSelf: "center" }}>
+                {!this.props.isMobile && (
+                  <TableCell scope="row">
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Automatized registration{" "}
+                    </Text>
+                  </TableCell>
+                )}
                 <TableCell scope="row">
-                  <Text weight="bold" size="14px"> Automatized registration </Text>
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
                 </TableCell>
                 <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
                 </TableCell>
                 <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
-                </TableCell>
-                <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell scope="row">
-                  <Text weight="bold" size="14px"> Posting on social media </Text>
-                </TableCell>
-                <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
-                </TableCell>
-                <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
-                </TableCell>
-                <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell scope="row">
-                  <Text weight="bold" size="14px"> Email reminders </Text>
-                </TableCell>
-                <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
-                </TableCell>
-                <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
-                </TableCell>
-                <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
                 </TableCell>
               </TableRow>
 
+              {this.props.isMobile && (
+                <TableRow>
+                  <TableCell
+                    direction="column"
+                    scope="row"
+                    colSpan={3}
+                    style={{ textAlign: "center", textTransform: "uppercase" }}
+                  >
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Posting on social media{" "}
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              )}
               <TableRow>
+                {!this.props.isMobile && (
+                  <TableCell scope="row">
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Posting on social media{" "}
+                    </Text>
+                  </TableCell>
+                )}
                 <TableCell scope="row">
-                  <Text weight="bold" size="14px"> Virtual cafeteria </Text>
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
                 </TableCell>
                 <TableCell scope="row">
-                <Text size="14px"> Public</Text>
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
+                </TableCell>
+                <TableCell scope="row">
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
+                </TableCell>
+              </TableRow>
+
+              {this.props.isMobile && (
+                <TableRow>
+                  <TableCell
+                    direction="column"
+                    scope="row"
+                    colSpan={3}
+                    style={{ textAlign: "center", textTransform: "uppercase" }}
+                  >
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Email reminders{" "}
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              )}
+              <TableRow>
+                {!this.props.isMobile && (
+                  <TableCell scope="row">
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Email reminders{" "}
+                    </Text>
+                  </TableCell>
+                )}
+                <TableCell scope="row">
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
+                </TableCell>
+                <TableCell scope="row">
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
+                </TableCell>
+                <TableCell scope="row">
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
+                </TableCell>
+              </TableRow>
+
+              {this.props.isMobile && (
+                <TableRow>
+                  <TableCell
+                    direction="column"
+                    scope="row"
+                    colSpan={3}
+                    style={{ textAlign: "center", textTransform: "uppercase" }}
+                  >
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Virtual cafeteria{" "}
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              )}
+              <TableRow>
+                {!this.props.isMobile && (
+                  <TableCell scope="row">
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Virtual cafeteria{" "}
+                    </Text>
+                  </TableCell>
+                )}
+                <TableCell scope="row">
+                  <Text size="14px"> Public</Text>
                 </TableCell>
                 <TableCell scope="row">
                   <Text size="14px"> Public or Private</Text>
                 </TableCell>
                 <TableCell scope="row">
-                <Text size="14px"> Public or Private</Text>
+                  <Text size="14px"> Public or Private</Text>
                 </TableCell>
-            </TableRow>
+              </TableRow>
 
-
+              {this.props.isMobile && (
+                <TableRow>
+                  <TableCell
+                    direction="column"
+                    scope="row"
+                    colSpan={3}
+                    style={{ textAlign: "center", textTransform: "uppercase" }}
+                  >
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Streaming tech{" "}
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              )}
               <TableRow>
+                {!this.props.isMobile && (
+                  <TableCell scope="row">
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Streaming tech{" "}
+                    </Text>
+                  </TableCell>
+                )}
+                <TableCell scope="row">Your own</TableCell>
                 <TableCell scope="row">
-                  <Text weight="bold" size="14px"> Streaming tech </Text>
+                  Your own or{" "}
+                  <img
+                    src={moraStreamFullLettersLogo}
+                    style={{ height: "14px", marginTop: "1px" }}
+                  />
                 </TableCell>
                 <TableCell scope="row">
-                  Your own
-                </TableCell>
-                <TableCell scope="row">
-                  Your own or <img src={moraStreamFullLettersLogo} style={{ height: "14px", marginTop: "1px"}}/>
-                </TableCell>
-                <TableCell scope="row">
-                  Your own or <img src={moraStreamFullLettersLogo} style={{ height: "14px", marginTop: "1px"}}/>
+                  Your own or{" "}
+                  <img
+                    src={moraStreamFullLettersLogo}
+                    style={{ height: "14px", marginTop: "1px" }}
+                  />
                 </TableCell>
                 {this.props.showDemo && (
                   <TableCell scope="row">
@@ -336,35 +532,68 @@ export default class ManageChannelPage extends Component<Props, State> {
                       background="#EAF1F1"
                       hoverIndicator="#BAD6DB"
                       round="small"
-                      onClick={() => { }}
+                      onClick={() => {}}
                     >
                       <FormNextLink size="25px" color="black" />
                       <Text weight="bold" color="black" size="14px">
                         Watch demo
-                    </Text>
+                      </Text>
                     </Box>
                   </TableCell>
                 )}
               </TableRow>
-
+              {this.props.isMobile && (
+                <TableRow>
+                  <TableCell
+                    direction="column"
+                    scope="row"
+                    colSpan={3}
+                    style={{ textAlign: "center", textTransform: "uppercase" }}
+                  >
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Automatic upload slides + recording{" "}
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              )}
               <TableRow>
-                <TableCell direction="column" scope="row">
-                  <Text weight="bold" size="14px"> Automatic upload </Text>
-                  <Text weight="bold" size="14px"> slides + recording </Text>
+                {!this.props.isMobile && (
+                  <TableCell direction="column" scope="row">
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      Automatic upload{" "}
+                    </Text>
+                    <Text weight="bold" size="14px">
+                      {" "}
+                      slides + recording{" "}
+                    </Text>
+                  </TableCell>
+                )}
+                <TableCell scope="row">
+                  <Close
+                    size="25px"
+                    color="red"
+                    style={{ alignSelf: "center" }}
+                  />
                 </TableCell>
                 <TableCell scope="row">
-                  <Close size="25px" color="red" style={{ alignSelf: "center" }} />
+                  <Close
+                    size="25px"
+                    color="red"
+                    style={{ alignSelf: "center" }}
+                  />
                 </TableCell>
                 <TableCell scope="row">
-                  <Close size="25px" color="red" style={{ alignSelf: "center" }} />
-                </TableCell>
-                <TableCell scope="row">
-                  <Checkmark size="25px" color="green" style={{ alignSelf: "center" }} />
+                  <Checkmark
+                    size="25px"
+                    color="green"
+                    style={{ alignSelf: "center" }}
+                  />
                 </TableCell>
               </TableRow>
 
-
-            {/* <TableRow>
+              {/* <TableRow>
               <TableCell scope="row">
                 <Text weight="bold" size="14px"> Mobile app (coming soon!) </Text>
               </TableCell>
@@ -400,85 +629,103 @@ export default class ManageChannelPage extends Component<Props, State> {
               )}
             </TableRow> */}
 
-                <TableRow>
-                  <TableCell />
-                  <TableCell />
-                  <TableCell margin={{ top: "20px" }}>
-                    {this.props.disabled && (
-                      <Box
-                        onClick={() => {}}
-                        background="#CCCCCC"
-                        round="xsmall"
-                        pad="xsmall"
-                        width="160px"
-                        height="40px"
-                        justify="center"
-                        align="center"
-                        focusIndicator={false}
-                        hoverIndicator={false}
-                      >
-                        <Text size="14px" weight="bold">
-                          $ {this.getPrice("tier1", audienceSize)} / month
-                        </Text>
-                      </Box>
+              <TableRow>
+                {!this.props.isMobile && <TableCell />}
+                <TableCell />
+                <TableCell margin={{ top: "20px" }}>
+                  {this.props.disabled && (
+                    <Box
+                      onClick={() => {}}
+                      background="#CCCCCC"
+                      round="xsmall"
+                      pad="xsmall"
+                      width="160px"
+                      height="40px"
+                      justify="center"
+                      align="center"
+                      focusIndicator={false}
+                      hoverIndicator={false}
+                    >
+                      <Text size="14px" weight="bold">
+                        $ {this.getPrice("tier1", audienceSize)} / month
+                      </Text>
+                    </Box>
+                  )}
+                  {!this.props.disabled &&
+                    this.props.channelId &&
+                    this.props.userId &&
+                    this.isSubscribedTo("tier1", audienceSize) && (
+                      <CancelSubscriptionsButton
+                        channelId={this.props.channelId}
+                      />
                     )}
-                    {!this.props.disabled && this.props.channelId && this.props.userId && 
-                      this.isSubscribedTo("tier1", audienceSize) && (
-                        <CancelSubscriptionsButton channelId={this.props.channelId} />
+                  {!this.props.disabled &&
+                    this.props.channelId &&
+                    this.props.userId &&
+                    !this.isSubscribedTo("tier1", audienceSize) && (
+                      <CheckoutPaymentButton
+                        userId={this.props.userId}
+                        productId={this.getProductId("tier1", audienceSize)}
+                        quantity={1}
+                        channelId={this.props.channelId}
+                        text={
+                          "$ " +
+                          this.getPrice("tier1", audienceSize) +
+                          " / month"
+                        }
+                      />
                     )}
-                    {!this.props.disabled && this.props.channelId && this.props.userId && 
-                      !this.isSubscribedTo("tier1", audienceSize) && (
-                        <CheckoutPaymentButton
-                          userId={this.props.userId}
-                          productId={this.getProductId("tier1", audienceSize)}
-                          quantity={1}
-                          channelId={this.props.channelId}
-                          text={"$ " + this.getPrice("tier1", audienceSize) + " / month"}
-                        />
+                </TableCell>
+
+                <TableCell margin={{ top: "20px" }}>
+                  {this.props.disabled && (
+                    <Box
+                      onClick={() => {}}
+                      background="#CCCCCC"
+                      round="xsmall"
+                      pad="xsmall"
+                      width="160px"
+                      height="40px"
+                      justify="center"
+                      align="center"
+                      focusIndicator={false}
+                      hoverIndicator={false}
+                    >
+                      <Text size="14px" weight="bold">
+                        $ {this.getPrice("tier2", audienceSize)} / month
+                      </Text>
+                    </Box>
+                  )}
+                  {!this.props.disabled &&
+                    this.props.channelId &&
+                    this.props.userId &&
+                    this.isSubscribedTo("tier2", audienceSize) && (
+                      <CancelSubscriptionsButton
+                        channelId={this.props.channelId}
+                      />
                     )}
-
-                  </TableCell>
-
-                  <TableCell margin={{ top: "20px" }}>
-                    {this.props.disabled && (
-                        <Box
-                          onClick={() => {}}
-                          background="#CCCCCC"
-                          round="xsmall"
-                          pad="xsmall"
-                          width="160px"
-                          height="40px"
-                          justify="center"
-                          align="center"
-                          focusIndicator={false}
-                          hoverIndicator={false}
-                        >
-                          <Text size="14px" weight="bold">
-                            $ {this.getPrice("tier2", audienceSize)} / month
-                          </Text>
-                        </Box>
-                      )}
-                      {!this.props.disabled && this.props.channelId && this.props.userId && 
-                        this.isSubscribedTo("tier2", audienceSize) && (
-                          <CancelSubscriptionsButton channelId={this.props.channelId} />
-                      )}
-                      {!this.props.disabled && this.props.channelId && this.props.userId && 
-                        !this.isSubscribedTo("tier2", audienceSize) && (
-                          <CheckoutPaymentButton
-                            userId={this.props.userId}
-                            productId={this.getProductId("tier2", audienceSize)}
-                            quantity={1}
-                            channelId={this.props.channelId}
-                            text={"$ " + this.getPrice("tier2", audienceSize) + " / month"}
-                          />
-                      )}
-                  </TableCell>
-                </TableRow>
-
+                  {!this.props.disabled &&
+                    this.props.channelId &&
+                    this.props.userId &&
+                    !this.isSubscribedTo("tier2", audienceSize) && (
+                      <CheckoutPaymentButton
+                        userId={this.props.userId}
+                        productId={this.getProductId("tier2", audienceSize)}
+                        quantity={1}
+                        channelId={this.props.channelId}
+                        text={
+                          "$ " +
+                          this.getPrice("tier2", audienceSize) +
+                          " / month"
+                        }
+                      />
+                    )}
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </Box>
       </Box>
-    )
+    );
   }
 }

@@ -32,7 +32,9 @@ import MediaQuery from "react-responsive";
 import ScrollIntoView from "react-scroll-into-view";
 import ReactTooltip from "react-tooltip";
 import TrendingTalksList from "../../Components/Homepage/TrendingTalksList";
-import HowItWorksVideoBox from "../../Components/Homepage/HowItWorksVideoBox";
+import MoraGridBox from "../../Components/LandingPage/MoraGridBox";
+import LandingPageBanner from "../../Components/LandingPage/LandingPageBanner";
+import LandingPageGridBoxRow from "../../Components/LandingPage/LandingPageGridBoxRow";
 import { CreatePresentationButton } from "../../Components/Homepage/CreatePresentationButton";
 
 import CreateChannelButton from "../../Components/Channel/CreateChannelButton";
@@ -108,7 +110,6 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         showLogin:
           new URL(window.location.href).searchParams.get("showLogin") ===
           "true",
-        isMobile: window.innerWidth < 992,
       });
     }
   }
@@ -228,9 +229,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             weight="bold"
             color="color1"
             margin={
-              this.state.isMobile
-                ? { top: "80px", bottom: "40px" }
-                : { top: "120px", bottom: "50px" }
+              this.state.isMobile ? { bottom: "40px" } : { bottom: "50px" }
             }
           >
             Boost your academic career, paper citations, and more. Make a name
@@ -335,6 +334,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <CreatePresentationButton
           isMobile={this.state.isMobile}
           isSmallScreen={this.state.isSmallScreen}
+          windowWidth={this.state.windowWidth}
         />
 
         {/* <Link
@@ -369,14 +369,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         <Text size="34px" margin={{ top: "0px", bottom: "30px" }} color="black">
           How does this work?
         </Text>
-        <Box
-          width="100%"
-          direction={this.state.windowWidth > 1080 ? "row" : "column"}
-          style={{
-            alignItems: this.state.windowWidth > 1080 ? "inherit" : "center",
-          }}
+        <LandingPageGridBoxRow
+          windowWidth={this.state.windowWidth}
+          breakpoint={1080}
+          rowImage={WavyArrowLeftRight}
+          columnImage={WavyArrowTopBot}
         >
-          <HowItWorksVideoBox
+          <MoraGridBox
             headericon={<Announce size="large" />}
             headertext={"Post"}
             content={
@@ -384,28 +383,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             }
             videolink={"/videos/create_pres.mp4"}
           />
-          <Box
-            style={{
-              flexGrow: 1,
-              margin: this.state.windowWidth > 1080 ? "0px 5px" : "5px 0px",
-            }}
-            direction="column"
-            alignSelf="center"
-          >
-            <img
-              src={
-                this.state.windowWidth > 1080
-                  ? WavyArrowLeftRight
-                  : WavyArrowTopBot
-              }
-              style={
-                this.state.windowWidth < 1080
-                  ? { alignSelf: "center", height: "70px" }
-                  : { alignSelf: "center", width: "100%" }
-              }
-            />
-          </Box>
-          <HowItWorksVideoBox
+          <MoraGridBox
             headericon={<Connect size="large" />}
             headertext={"Get invited"}
             content={
@@ -413,28 +391,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             }
             videolink={"/videos/email_received_animation.mp4"}
           />
-          <Box
-            style={{
-              flexGrow: 1,
-              margin: this.state.windowWidth > 1080 ? "0px 5px" : "5px 0px",
-            }}
-            direction="column"
-            alignSelf="center"
-          >
-            <img
-              src={
-                this.state.windowWidth > 1080
-                  ? WavyArrowLeftRight
-                  : WavyArrowTopBot
-              }
-              style={
-                this.state.windowWidth < 1080
-                  ? { alignSelf: "center", height: "70px" }
-                  : { alignSelf: "center", width: "100%" }
-              }
-            />
-          </Box>
-          <HowItWorksVideoBox
+          <MoraGridBox
             headericon={<Group size="large" />}
             headertext={"Speak and mingle!"}
             content={
@@ -442,7 +399,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             }
             videolink={"/videos/morastreaming_tech_example.mp4"}
           />
-        </Box>
+        </LandingPageGridBoxRow>
       </>
     );
   }
@@ -670,6 +627,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               height="100px"
               width="200px"
               textSize="18px"
+              windowWidth={this.state.windowWidth}
             />
           </Box>
           <Box
@@ -774,45 +732,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           // src={BackgroundImage}
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
-
-        <Box
-          height="100%"
-          width="100%"
-          // style={{
-          //   backgroundImage:
-          //     "url(https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg)",
-          //   backgroundAttachment: "fixed",
-          //   backgroundSize: "cover",
-          //   backgroundRepeat: "no-repeat",
-          // }}
-        >
-          <Box
-            width="100%"
-            style={{
-              maxWidth: "800px",
-            }}
-            // height={this.state.isMobile ? "1480px" : "750px"}
-            direction={this.state.isMobile ? "column" : "row"}
-            alignSelf="center"
-          >
-            <Box
-              // width={this.state.isMobile ? "100%" : "60%"}
-              // height={this.state.isMobile ? "1250px" : "100%"}
-              // style={this.state.isMobile ? {} : { minWidth: "780px" }}
-              margin={
-                this.state.isMobile ? { left: "20px", right: "20px" } : {}
-              }
-            >
-              {this.aboveTheFoldMain()}
-            </Box>
-            <Box
-              width={this.state.isMobile ? "0px" : "40%"}
-              height={this.state.isMobile ? "0px" : "100%"}
-            >
-              {this.aboveTheFoldImage()}
-            </Box>
-          </Box>
-        </Box>
+        {
+          <LandingPageBanner
+            isMobile={this.state.isMobile}
+            mainContent={this.aboveTheFoldMain()}
+            image={this.aboveTheFoldImage()}
+          />
+        }
 
         <Box
           height="100%"
