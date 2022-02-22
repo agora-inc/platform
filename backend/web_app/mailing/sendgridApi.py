@@ -23,7 +23,7 @@ class sendgridApi:
 
     def _post_sendgrid_request(self, target_email: str, dynamic_template_data: dict, template_id: str):
         message = Mail(
-            from_email="team@agora.stream",
+            from_email="team@mora.stream",
             to_emails=f'{target_email}')
             # html_content='<strong>and easy to do anywhere, even with Python</strong>')
         message.dynamic_template_data = dynamic_template_data

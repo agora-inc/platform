@@ -92,6 +92,7 @@ const emailChangePasswordLink = (usernameOrEmail: string, callback: any) => {
       callback(true);
     })
     .catch(function (error) {
+      console.log("ERROR ON PASSWORD RESET: ", error)
       callback(false);
     });
 };

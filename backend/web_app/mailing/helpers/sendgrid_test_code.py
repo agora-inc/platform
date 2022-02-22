@@ -3,8 +3,8 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 message = Mail(
-    from_email="team@agora.stream",
-    to_emails=['revolutionising.research@gmail.com','remy.messadene@gmail.com'],
+    from_email="team@mora.stream",
+    to_emails=['revolutionising.research@gmail.com', 'alain6rossier@gmail.com'],
     subject="Champions' club: party event",
     html_content="<strong>Welcome to the Champions' club! Free biscuits</strong>"
 )

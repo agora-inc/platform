@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { Box, Text, Image } from "grommet";
 import { User, UserService } from "../Services/UserService";
+import { Profile, ProfileService } from "../Services/ProfileService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Stream, StreamService } from "../Services/StreamService";
 import { Talk, TalkService } from "../Services/TalkService";
@@ -13,6 +14,7 @@ import PastTalkCard from "../Components/Talks/PastTalkCard";
 import { CSSProperties } from "styled-components";
 import { FormDown, FormUp } from "grommet-icons";
 import ApplyToTalkForm from "../Components/Talks/ApplyToTalkForm";
+import { ApplyToTalkButton } from "../Components/Talks/ApplyToTalkButton";
 import RequestMembershipButton from "../Components/Channel/ApplyMembershipButton";
 import { Topic, TopicService } from "../Services/TopicService";
 import ShareButtons from ".././Components/Core/ShareButtons";
@@ -422,28 +424,73 @@ export default class ChannelPage extends Component<Props, State> {
               <div className="banner_title">
                   {this.state.channel ?.name}
               </div>
-                <Box 
-                  margin={{top: "10px"}}
-                  style={{width: "300px"}}
-                  direction="column"> 
-                    <ShareButtons
-                      channel={this.state.channel}
-                      height={(window.innerWidth < 800) ? "25px" : "35px"}
-                    />
+              <Box 
+                margin={{top: "10px"}}
+                style={{width: "300px"}}
+                direction="row"
+                gap="25px"
+              >
+                <Box
+                  className="follow-button"
+                  background={this.state.following ? "#BAD6DB" : "white"}
+                  height={(window.innerWidth < 800) ? "25px" : "35px"}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                  }}
+                  width="120px"
+                  round="xsmall"
+                  align="center"
+                  justify="center"
+                  onClick={this.state.user ? this.onFollowClicked : ()=>{}}
+                  focusIndicator={false}
+                  hoverIndicator={this.state.user ? true : false}
+                  data-tip data-for='not_registered_follow_button_info'
+                >
+                  <Text 
+                    size="15px" 
+                    color="grey"
+                    weight={this.state.following ? "bold" : "normal"}
+                    alignSelf="center"
+                  >
+                    {this.state.following ? "Following" : "Follow"}
+                  </Text>
+                  {!this.state.user && (
+                    <ReactTooltip id='not_registered_follow_button_info' place="top" effect="solid">
+                      <p>You need to be registered for that.</p>
+                    </ReactTooltip>
+                  )}
+
                 </Box>
-                {/*<Text size="24px" color="#999999" weight="bold">
-                  {this.state.followerCount} followers
-                  </Text>*/}
+                <ShareButtons
+                  channel={this.state.channel}
+                  width="120px"
+                  height={(window.innerWidth < 800) ? "25px" : "35px"}
+                  onlyShare={true}
+                />
+              </Box>
+              {/*<Text size="24px" color="#999999" weight="bold">
+                {this.state.followerCount} followers
+                </Text>*/}
             </Box>
           </Box>
 
           
-          <Box direction="row" gap="xsmall" align="center">
+          <Box direction="row" gap="50px" align="center">
             <MediaQuery minWidth={900}>
-              <ApplyToTalkForm
-                          channelId={this.state.channel!.id}
-                          channelName={this.state.channel!.name}
-              />
+              {this.state.user && (
+                <ApplyToTalkButton 
+                  userId={this.state.user.id}
+                  channelId={this.state.channel!.id}
+                  channelName={this.state.channel!.name}
+                />
+              )}
+              {!this.state.user && (
+                <ApplyToTalkForm
+                  channelId={this.state.channel!.id}
+                  channelName={this.state.channel!.name}
+                /> 
+              )}
+
               {/* {!(this.state.role == "member" || this.state.role == "owner") && (
               <RequestMembershipButton
                 channelId={this.state.channel!.id}
@@ -452,40 +499,6 @@ export default class ChannelPage extends Component<Props, State> {
               />
               )} */}
             </MediaQuery>
-
-
-            
-              <Box
-                className="follow-button"
-                pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
-                background={this.state.following ? "#e5e5e5" : "white"}
-                height="30px"
-                style={{
-                  border: "1px solid #C2C2C2",
-                }}
-                width="10vw"
-                round="xsmall"
-                align="center"
-                justify="center"
-                onClick={this.state.user ? this.onFollowClicked : ()=>{}}
-                focusIndicator={false}
-                hoverIndicator={this.state.user ? true : false}
-                data-tip data-for='not_registered_follow_button_info'
-              >
-                <Text 
-                  size="14px" 
-                  color="grey"
-                  alignSelf="center"
-                >
-                  {this.state.following ? "Following" : "Follow"}
-                </Text>
-                {!this.state.user && (
-                  <ReactTooltip id='not_registered_follow_button_info' place="top" effect="solid">
-                    <p>You need to be registered for that.</p>
-                  </ReactTooltip>
-                )}
-
-              </Box>
 
             {this.state.bannerExtended ? (
               <FormUp

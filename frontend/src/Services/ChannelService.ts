@@ -196,10 +196,11 @@ const sendTalkApplicationEmail = (
       }
     )
     .then(function (response) {
-      // localStorage.setItem("user", JSON.stringify(response.data));
+      console.log("Response: ", response)
       callback(true);
     })
     .catch(function (error) {
+      console.log("Error: ", error)
       callback(false);
     });
 };

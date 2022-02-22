@@ -17,8 +17,8 @@ import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
 import { DetailsEntry } from "../Components/Profile/DetailsEntry";
 
-import InviteToTalkButton from "../Components/Profile/InviteToTalkButton";
 import TopicSelector from "../Components/Talks/TopicSelector";
+import { LinkSecondaryButton } from "../Components/Core/LinkSecondaryButton";
 
 interface Props {
   location: { pathname: string }
@@ -260,27 +260,39 @@ const ProfilePage = (props: Props) => {
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               {home && (
-                <Box
-                  data-tip data-for='add_presentation'
-                  focusIndicator={false}
-                  background="white"
-                  round="xsmall"
-                  pad={{ vertical: "2px", horizontal: "xsmall" }}
-                  onClick={createNewPresentation}
-                  style={{
-                    width: "15%",
-                    border: "1px solid #C2C2C2",
-                  }}
-                  hoverIndicator={true}
-                  align="center"
-                  margin={{top: "20px", bottom: "30px" }}   
-                >
-                  <Text color="grey" size="small"> 
-                    + Add
-                  </Text>
-                  <ReactTooltip id="add_presentation" effect="solid">
-                    Adding a presentation to your profile is the best way to get seminar organizers' attention!
-                  </ReactTooltip>
+                <Box direction="row" gap="30%" margin={{top: "20px", bottom: "30px" }}>
+                  <Box
+                    data-tip data-for='add_presentation'
+                    focusIndicator={false}
+                    background="white"
+                    round="xsmall"
+                    pad={{ vertical: "2px", horizontal: "xsmall" }}
+                    onClick={createNewPresentation}
+                    style={{
+                      width: "150px",
+                      height: "30px",
+                      border: "1px solid #C2C2C2",
+                    }}
+                    hoverIndicator={true}
+                    justify="center"
+                    align="center"
+                      
+                  >
+                    <Text color="grey" size="small"> 
+                      + Add
+                    </Text>
+                    <ReactTooltip id="add_presentation" effect="solid">
+                      Adding a presentation to your profile is the best way to get seminar organizers' attention!
+                    </ReactTooltip>
+                  </Box>
+                  <LinkSecondaryButton 
+                    text="Give a talk"
+                    link="agoras"
+                    iconSize="18px"
+                    mobile={false}
+                    width="150px"
+                    height="30px" 
+                  />
                 </Box>
               )}
               {presentations.length !== 0 && (

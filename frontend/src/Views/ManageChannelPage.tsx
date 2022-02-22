@@ -33,6 +33,7 @@ import "../Styles/react-tabs.css";
 import RegistrationsTab from "./ManageChannelPage/RegistrationsTab";
 import EmailsTab from "./ManageChannelPage/EmailsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
+import { LinkSecondaryButton } from "../Components/Core/LinkSecondaryButton";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
@@ -663,12 +664,20 @@ export default class ManageChannelPage extends Component<Props, State> {
             </Box>
           </Box>
 
-          
-
-          <Box direction="row" gap="xsmall" align="end" width="30%">
-              <ShareButtons
-                channel={this.state.channel}
-              />
+          <Box direction="row" gap="30px" align="end" width="40%">
+            <ShareButtons
+              channel={this.state.channel}
+              width="120px"
+              onlyShare={true}
+            />
+            <LinkSecondaryButton 
+              text="Look for speakers"
+              link="speakers"
+              iconSize="24px"
+              mobile={false}
+              width="190px"
+              height="35px" 
+            />
           </Box>
 
 

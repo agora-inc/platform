@@ -142,7 +142,7 @@ class UserRepository:
                         '''
 
                 # send confirmation email
-                msg = Message(sender = 'team@agora.stream', recipients = [email])
+                msg = Message(sender = 'team@mora.stream', recipients = [email])
                 msg.html = f'''<p><span style="font-family: Arial, Helvetica, sans-serif;">Dear <strong>{username}</strong>,</span></p>
                         <p><span style="font-family: Arial, Helvetica, sans-serif;">We are very happy to welcome you on </span><a href="https://mora.stream"><span style="font-family: Arial, Helvetica, sans-serif;">mora.stream</span></a><span style="font-family: Arial, Helvetica, sans-serif;">! Your expertise, curiosity and passion will be driving forces for many research communities.</span></p>
                         

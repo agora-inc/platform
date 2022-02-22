@@ -169,13 +169,17 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Boost your academic career, paper citations, and more. Make a name for yourself.
+            Boost your academic career. <br /> Make a name for yourself.
           </Text>
+          {/*  paper citations, and more. */}
           <Text size="20px">
             <b></b>
-            <b>Attend, give, and organise academic seminars all around the world</b>.
+            <b>Attend, give, and organise academic seminars all around the globe</b>.
           </Text>
-          <Text size="20px">Let your research be known and grow your network of teammates!</Text>
+          <Text size="20px">
+            Communicate your research and grow your network in the research world!
+          </Text>
+          {/* Let your research be known and grow your network of teammates! */}
           <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>
@@ -278,7 +282,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 </Box>
                 <Box height="170px">
                   <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                    Post,
+                    Post
                   </Text>
                 </Box>
               </Box>
@@ -309,7 +313,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 </Box>
                 <Box height="170px">
                   <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                    Get invited,
+                    Get invited
                   </Text>
                 </Box>
               </Box>
@@ -342,7 +346,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   <Group size="large"/>
                 </Box>
                 <Text size="24px" weight="bold" margin={{left: "5px"}} color="color7">
-                  Speak and mingle!
+                  Speak and mingle
                 </Text>
               </Box>
               <Box height="170px">
@@ -369,7 +373,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   content2() {
     return (
       <>
-        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">An evergrowing <Text size="38px" color="color7" weight="bold">virtuous circle</Text> for researchers</Text>
+        <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">An ever-growing <Text size="38px" color="color7" weight="bold">virtuous circle</Text> for researchers</Text>
 
 
         {!this.state.renderMobileView && 
@@ -388,7 +392,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Text>
             </Box>
             <Text size="18px"> 
-              The whole speaker-community matching has been made easy! Future speakers provide all necessary information when they post their announcement and organisers can easily connect with them.
+              The speaker-community matching is now super easy! Future speakers provide all necessary information when they post their announcement and organisers can easily connect with them.
             </Text>
           </Box>
 
