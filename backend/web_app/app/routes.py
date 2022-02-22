@@ -44,11 +44,11 @@ tweets = TwitterBotRepository.TwitterBotRepository()
 SENDGRID_API_KEY = "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"
 sg = SendGridAPIClient(SENDGRID_API_KEY)
 
-BASE_URL = "http://localhost:3000"
-# BASE_URL = "https://mora.stream/"
+# BASE_URL = "http://localhost:3000"
+BASE_URL = "https://mora.stream/"
 
-# BASE_API_URL = "https://mora.stream/api"
-BASE_API_URL = "http://localhost:8000/api"
+BASE_API_URL = "https://mora.stream/api"
+# BASE_API_URL = "http://localhost:8000/api"
 
 
 # --------------------------------------------
