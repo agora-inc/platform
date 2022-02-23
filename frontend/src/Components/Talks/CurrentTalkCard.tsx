@@ -7,7 +7,7 @@ import { Calendar, Workshop, UserExpert } from "grommet-icons";
 import { Link } from "react-router-dom";
 import Identicon from "react-identicons";
 import Countdown from "./Countdown";
-import LoginModal from "../Account/LoginModal";
+import { LoginButton } from "../Account/LoginButton";
 import SignUpButton from "../Account/SignUpButton";
 import { textToLatex } from "../Core/LatexRendering";
 import "../Styles/all-agoras-page.css";
@@ -45,20 +45,20 @@ export default class CurrentTalkCard extends Component<Props, State> {
   getTimeRemaining = (): string => {
     const end = new Date(this.props.talk.end_date);
     const now = new Date();
-    let deltaMin = Math.floor((end.valueOf() - now.valueOf()) / (60*1000));
+    let deltaMin = Math.floor((end.valueOf() - now.valueOf()) / (60 * 1000));
     let message = deltaMin < 0 ? "Finished " : "Finishing in ";
     const suffix = deltaMin < 0 ? " ago" : "";
-    deltaMin = Math.abs(deltaMin)
-    
-    let hours =  Math.floor(deltaMin / 60);
-    let minutes =  Math.floor(deltaMin % 60);
+    deltaMin = Math.abs(deltaMin);
+
+    let hours = Math.floor(deltaMin / 60);
+    let minutes = Math.floor(deltaMin % 60);
     if (hours > 0) {
-      message += `${hours}h `
-    }  
+      message += `${hours}h `;
+    }
     if (minutes > 0) {
-      message += `${minutes}m `
-    }  
-    return message + suffix
+      message += `${minutes}m `;
+    }
+    return message + suffix;
   };
 
   toggleModal = () => {
@@ -93,10 +93,10 @@ export default class CurrentTalkCard extends Component<Props, State> {
         this.props.talk.id,
         this.props.user.id,
         (status: string) => {
-          this.setState({ 
-            registered: (status === "accepted"), 
-            registrationStatus: status 
-        });
+          this.setState({
+            registered: status === "accepted",
+            registrationStatus: status,
+          });
         }
       );
   };
@@ -132,8 +132,8 @@ export default class CurrentTalkCard extends Component<Props, State> {
   };
 
   getSpeakerPhotoUrl = (): string | undefined => {
-    return TalkService.getSpeakerPhoto(this.props.talk.id)
-  }
+    return TalkService.getSpeakerPhoto(this.props.talk.id);
+  };
 
   onClick = () => {
     if (this.state.registered) {
@@ -171,10 +171,11 @@ export default class CurrentTalkCard extends Component<Props, State> {
           overflow="hidden"
         >
           <Box height="100%" pad="10px">
-
-
-
-            <Box direction="column" width={this.props.talk.has_speaker_photo === 1 ? "65%" : "80%"} margin={{bottom: "10px"}}> 
+            <Box
+              direction="column"
+              width={this.props.talk.has_speaker_photo === 1 ? "65%" : "80%"}
+              margin={{ bottom: "10px" }}
+            >
               <Box
                 direction="row"
                 gap="xsmall"
@@ -192,7 +193,10 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   overflow="hidden"
                 >
                   {!this.props.talk.has_avatar && (
-                    <Identicon string={this.props.talk.channel_name} size={15} />
+                    <Identicon
+                      string={this.props.talk.channel_name}
+                      size={15}
+                    />
                   )}
                   {!!this.props.talk.has_avatar && (
                     <img
@@ -205,7 +209,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
                 <Text weight="bold" size="14px" color="grey">
                   {this.props.talk.channel_name}
                 </Text>
-              </Box> 
+              </Box>
 
               <Text
                 size="14px"
@@ -215,12 +219,17 @@ export default class CurrentTalkCard extends Component<Props, State> {
               >
                 {this.props.talk.name}
               </Text>
-            </Box> 
+            </Box>
 
             {this.props.talk.has_speaker_photo && (
               <Box width="40%">
-                <Image 
-                  style={{position: 'absolute', top: 10, right: 10, aspectRatio: "3/2"}}
+                <Image
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    aspectRatio: "3/2",
+                  }}
                   src={this.getSpeakerPhotoUrl()}
                   width="30%"
                 />
@@ -255,7 +264,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   {this.getTimeRemaining()}
                 </Text>
               </Box>
-              {this.props.talk.card_visibility === "Members only" &&
+              {this.props.talk.card_visibility === "Members only" && (
                 <Box
                   round="xsmall"
                   background="#EAF1F1"
@@ -264,11 +273,9 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   align="center"
                   width="160px"
                 >
-                  <Text size="12px">
-                    member-only
-                  </Text>
+                  <Text size="12px">member-only</Text>
                 </Box>
-              }
+              )}
             </Box>
           </Box>
         </Box>
@@ -435,9 +442,9 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   }}
                   margin={{ top: "10px", bottom: "10px" }}
                 >
-                  {this.props.talk.description.split('\n').map(
-                    (item, i) => textToLatex(item)
-                  )}
+                  {this.props.talk.description
+                    .split("\n")
+                    .map((item, i) => textToLatex(item))}
                 </Box>
               </Box>
               <Box direction="column" gap="small">
@@ -494,7 +501,7 @@ export default class CurrentTalkCard extends Component<Props, State> {
                   )}
                 {this.state.available && this.props.user === null && (
                   <Box direction="row" align="center" gap="10px">
-                    <LoginModal callback={() => {}} />
+                    <LoginButton callback={() => {}} />
                     <Text size="18px"> or </Text>
                     <SignUpButton callback={() => {}} />
                     <Text size="18px"> to register </Text>

@@ -5,12 +5,11 @@ import { Search } from "grommet-icons";
 
 import moraStreamFullLogo from "../../assets/general/mora_simple_m_cropped_logo_v3.png";
 import { Link } from "react-router-dom";
-import UserManager from "../Account/UserManager";
+import { UserManager } from "../Account/UserManager";
 import FormContainer from "../Homepage/FormContainer";
 import SiteWideSearch from "./SiteWideSearch";
 import TimeZoneInfo from "./TimeZoneInfo";
 import MediaQuery from "react-responsive";
-
 
 type State = {
   showLogin: boolean;
@@ -22,7 +21,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
     this.state = {
       showLogin:
         new URL(window.location.href).searchParams.get("showLogin") === "true",
-      };
+    };
   }
 
   componentDidUpdate(prevProps: RouteComponentProps) {
@@ -36,38 +35,44 @@ class HeaderBar extends Component<RouteComponentProps, State> {
   }
 
   render() {
-      return (
-        <Box
-          tag="header"
-          direction="row"
-          align="center"
-          justify="between"
-          pad={{ left: "xsmall", right: "small", vertical: "small" }}
-          elevation="none"
-          style={{
-            height: "8vh",
-            minHeight: "8vh",
-            width: "100vw",
-            color: "black",
-            position: "absolute",
-            zIndex: 1000,
-          }}
-          {...this.props}
-        >
-          <Box style={{ minWidth: "15%" }}>
-            <Link to="/" style={{ textDecoration: "none", width: 140 }}>
-              <Box direction="row" align="center">
-                <MediaQuery minDeviceWidth={992}>
-                <img src={moraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
-                </MediaQuery>
-                  <MediaQuery maxDeviceWidth={992}>
-                <img src={moraStreamFullLogo} style={{ height: "3vh", marginLeft: 5 }}/>
-                    {/* <Text size="xsmall" color="black">mobile</Text> */}
-                    </MediaQuery>
-              </Box>
-            </Link>
-          </Box>
-          {/* <MediaQuery minDeviceWidth={992}>
+    return (
+      <Box
+        tag="header"
+        direction="row"
+        align="center"
+        justify="between"
+        pad={{ left: "xsmall", right: "small", vertical: "small" }}
+        elevation="none"
+        style={{
+          height: "8vh",
+          minHeight: "8vh",
+          width: "100vw",
+          color: "black",
+          position: "absolute",
+          zIndex: 1000,
+        }}
+        {...this.props}
+      >
+        <Box style={{ minWidth: "15%" }}>
+          <Link to="/" style={{ textDecoration: "none", width: 140 }}>
+            <Box direction="row" align="center">
+              <MediaQuery minDeviceWidth={992}>
+                <img
+                  src={moraStreamFullLogo}
+                  style={{ height: "5vh", margin: 0 }}
+                />
+              </MediaQuery>
+              <MediaQuery maxDeviceWidth={992}>
+                <img
+                  src={moraStreamFullLogo}
+                  style={{ height: "3vh", marginLeft: 5 }}
+                />
+                {/* <Text size="xsmall" color="black">mobile</Text> */}
+              </MediaQuery>
+            </Box>
+          </Link>
+        </Box>
+        {/* <MediaQuery minDeviceWidth={992}>
             <Link
               to={{ pathname: "/info/getting-started" }}
               style={{ textDecoration: "none" }}
@@ -93,10 +98,10 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             </Link>
           </MediaQuery> */}
 
-          {/* <MediaQuery minDeviceWidth={992}>
+        {/* <MediaQuery minDeviceWidth={992}>
             <SiteWideSearch />
           </MediaQuery> */}
-          {/* <Box>
+        {/* <Box>
             <TextInput
               icon={<Search />}
               reverse
@@ -104,21 +109,20 @@ class HeaderBar extends Component<RouteComponentProps, State> {
               style={{ width: "27vw", height: "4.5vh", justifySelf: "center" }}
             />
           </Box> */}
-          <Box
-            direction="row"
-            gap="small"
-            align="center"
-            style={{ minWidth: "30%", maxHeight: "20px" }}
-            justify="end"
-          >
-            {((this.props.location.pathname !== "/") && (this.props.location.pathname !== "/organisers")) && (
-              <TimeZoneInfo />
-            )}
+        <Box
+          direction="row"
+          gap="small"
+          align="center"
+          style={{ minWidth: "30%", maxHeight: "20px" }}
+          justify="end"
+        >
+          {this.props.location.pathname !== "/" &&
+            this.props.location.pathname !== "/organisers" && <TimeZoneInfo />}
 
           <Box>
             <Link
               to={{ pathname: "/info/welcome" }}
-              style={{ textDecoration: "none"}}
+              style={{ textDecoration: "none" }}
             >
               <Box
                 onClick={() => ({})}
@@ -131,20 +135,21 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 focusIndicator={false}
                 hoverIndicator="#6DA3C7"
               >
-                <Text size="14px" weight="bold"> About us </Text>
+                <Text size="14px" weight="bold">
+                  {" "}
+                  About us{" "}
+                </Text>
               </Box>
             </Link>
           </Box>
 
-
-            <MediaQuery minDeviceWidth={992}>
-              <UserManager showLogin={this.state.showLogin} />
-            </MediaQuery> 
-          </Box>
-
+          <MediaQuery minDeviceWidth={992}>
+            <UserManager showLogin={this.state.showLogin} />
+          </MediaQuery>
         </Box>
-      );
-  } 
+      </Box>
+    );
+  }
 }
 
 export default withRouter(HeaderBar);

@@ -1,38 +1,39 @@
 import React, { Component } from "react";
-import {
-  Box,
-  Select,
-  Text,
-  TextInput,
-} from "grommet";
-import { Overlay, OverlaySection } from "../Core/Overlay";
-import { ChannelService } from "../../Services/ChannelService";
-import LoginModal from "../Account/LoginModal";
-import SignUpButton from "../Account/SignUpButton";
-import { UserService, User } from "../../Services/UserService";
+import { Box, Select, Text, TextInput } from "grommet";
 import ReactTooltip from "react-tooltip";
 
-const titleOptions = ["Undergraduate", "Postgraduate", "PhD Candidate", "Dr", "Prof"];
+import { Overlay, OverlaySection } from "../Core/Overlay";
+import { ChannelService } from "../../Services/ChannelService";
+import { LoginButton } from "../Account/LoginButton";
+import SignUpButton from "../Account/SignUpButton";
+
+const titleOptions = [
+  "Undergraduate",
+  "Postgraduate",
+  "PhD Candidate",
+  "Dr",
+  "Prof",
+];
 
 interface Props {
-  channelId: number,
-  channelName: string,
-  user: any,
-  height?: string,
-  widthButton?: string,
+  channelId: number;
+  channelName: string;
+  user: any;
+  height?: string;
+  widthButton?: string;
 }
 
 interface State {
-    form: {
-      fullName : string;
-      email: string;
-      title: string;
-      personalWebsite: string;
-      personalMessage: string;
-      affiliation: string;
-    },
-    showForm: boolean;
-    contactAddresses: string
+  form: {
+    fullName: string;
+    email: string;
+    title: string;
+    personalWebsite: string;
+    personalMessage: string;
+    affiliation: string;
+  };
+  showForm: boolean;
+  contactAddresses: string;
 }
 
 export default class RequestMembershipButton extends Component<Props, State> {
@@ -45,7 +46,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
         title: "",
         personalMessage: "",
         personalWebsite: "",
-        affiliation: ""
+        affiliation: "",
       },
       showForm: false,
       contactAddresses: "",
@@ -54,7 +55,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
   }
 
   fetchUserDetails = () => {
-    // TODO: rework UserService.getCurrentUser() to give us all the data of the user 
+    // TODO: rework UserService.getCurrentUser() to give us all the data of the user
     //(GOAL: prevent the user to write multiple times the same details for appilcation)
     // var userData = UserService.getCurrentUser();
     // console.log("hihi");
@@ -71,7 +72,7 @@ export default class RequestMembershipButton extends Component<Props, State> {
 
   setValueAcademicTitle = (e: any) => {
     this.setState((prevState: any) => ({
-      form: {...prevState.form, title: e}
+      form: { ...prevState.form, title: e },
     }));
   };
 
@@ -94,10 +95,10 @@ export default class RequestMembershipButton extends Component<Props, State> {
       this.state.form.personalWebsite,
       //TODO: Error handling
       () => {}
-     );
+    );
     // TODO: add error handling if email is not succesffully sent.
     this.handleClearForm();
-    };
+  };
 
   handleClearForm = () => {
     // prevents the page from being refreshed on form submission
@@ -138,53 +139,50 @@ export default class RequestMembershipButton extends Component<Props, State> {
   };
 
   isMissing = () => {
-    let res: string[] = []
+    let res: string[] = [];
     if (this.state.form.fullName === "") {
-      res.push("Full name")
+      res.push("Full name");
     }
     if (this.state.form.title === "") {
-      res.push("Title/position")
+      res.push("Title/position");
     }
     if (this.state.form.email === "") {
-      res.push("Email address")
+      res.push("Email address");
     }
     if (this.state.form.affiliation === "") {
-      res.push("Affiliation")
+      res.push("Affiliation");
     }
     return res;
-  }
+  };
 
   render() {
     return (
       <Box>
         <Box
-          data-tip data-for='membership_application_button'
+          data-tip
+          data-for="membership_application_button"
           focusIndicator={false}
           width={this.props.widthButton ? this.props.widthButton : "12vw"}
           background="white"
           round="xsmall"
           height={this.props.height ? this.props.height : "30px"}
-          pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
+          pad={{ bottom: "6px", top: "6px", left: "3px", right: "3px" }}
           onClick={() => this.setState({ showForm: true })}
           style={{
             border: "1px solid #C2C2C2",
-            minWidth: "25px"
+            minWidth: "25px",
           }}
           hoverIndicator={true}
-          justify="center"   
+          justify="center"
         >
-          <Text 
-            size="14px" 
-            color="grey"
-            alignSelf="center"
-          >
+          <Text size="14px" color="grey" alignSelf="center">
             Become a member
           </Text>
           <ReactTooltip id="membership_application_button" effect="solid">
-              Get the instant access to all future seminars and past event recordings
-            </ReactTooltip>
+            Get the instant access to all future seminars and past event
+            recordings
+          </ReactTooltip>
         </Box>
-  
 
         <Overlay
           visible={this.state.showForm}
@@ -200,62 +198,58 @@ export default class RequestMembershipButton extends Component<Props, State> {
           contentHeight="350px"
           title={"Membership application"}
         >
-  
+          {this.props.user === null && (
+            <>
+              <Box style={{ minHeight: "40%" }} />
+              <Box direction="row" align="center" gap="10px">
+                <LoginButton callback={() => {}} />
+                <Text size="14px"> or </Text>
+                <SignUpButton callback={() => {}} />
+                <Text size="14px"> to apply </Text>
+              </Box>
+            </>
+          )}
 
-      {this.props.user === null && (
-        <>
-          <Box style={{minHeight: "40%"}} />
-          <Box direction="row" align="center" gap="10px">
-            <LoginModal callback={() => {}} />
-            <Text size="14px"> or </Text>
-            <SignUpButton callback={() => {}} />
-            <Text size="14px"> to apply </Text>
-          </Box>
-        </>
-        )}  
-
-
-
-      {!(this.props.user === null) && (
-        <OverlaySection>
-          <Box width="100%" gap="1px">
-            <TextInput
-              placeholder="Full name"
-              value={this.state.form.fullName}
-              onChange={(e: any) => this.handleInput(e, "fullName")}
-              />
-            </Box>
-          <Box width="100%" gap="1px">
-            <Select
-              placeholder="Education"
-              options={titleOptions}
-              value={this.state.form.title}
-              onChange={({option}) => this.setValueAcademicTitle(option)}
-            />
-          </Box>
-          <Box width="100%" gap="1px">
-            <TextInput
-              placeholder="Current affiliation"
-              value={this.state.form.affiliation}
-              onChange={(e: any) => this.handleInput(e, "affiliation")}
-              />
-          </Box>
-          <Box width="100%" gap="1px">
-            <TextInput
-              placeholder="Email address"
-              value={this.state.form.email}
-              onChange={(e: any) => this.handleInput(e, "email")}
-              />
-          </Box>
-          <Box width="100%" gap="1px">
-            <TextInput
-              placeholder="(Personal website)"
-              value={this.state.form.personalWebsite}
-              onChange={(e: any) => this.handleInput(e, "personalWebsite")}
-              />
-          </Box>
-              </OverlaySection>
-        )}
+          {!(this.props.user === null) && (
+            <OverlaySection>
+              <Box width="100%" gap="1px">
+                <TextInput
+                  placeholder="Full name"
+                  value={this.state.form.fullName}
+                  onChange={(e: any) => this.handleInput(e, "fullName")}
+                />
+              </Box>
+              <Box width="100%" gap="1px">
+                <Select
+                  placeholder="Education"
+                  options={titleOptions}
+                  value={this.state.form.title}
+                  onChange={({ option }) => this.setValueAcademicTitle(option)}
+                />
+              </Box>
+              <Box width="100%" gap="1px">
+                <TextInput
+                  placeholder="Current affiliation"
+                  value={this.state.form.affiliation}
+                  onChange={(e: any) => this.handleInput(e, "affiliation")}
+                />
+              </Box>
+              <Box width="100%" gap="1px">
+                <TextInput
+                  placeholder="Email address"
+                  value={this.state.form.email}
+                  onChange={(e: any) => this.handleInput(e, "email")}
+                />
+              </Box>
+              <Box width="100%" gap="1px">
+                <TextInput
+                  placeholder="(Personal website)"
+                  value={this.state.form.personalWebsite}
+                  onChange={(e: any) => this.handleInput(e, "personalWebsite")}
+                />
+              </Box>
+            </OverlaySection>
+          )}
         </Overlay>
       </Box>
     );
