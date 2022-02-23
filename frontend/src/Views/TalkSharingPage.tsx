@@ -121,14 +121,11 @@ export default class TalkSharingPage extends Component<Props, State> {
   fetchAll = () => {
     let talkId = this.getTalkIdFromUrl();  
     TalkService.getTalkById(talkId, (talk: Talk) => {
-        console.log("sa mere")
-        var polishedTalk = TalkService.polishTalkData(talk, true, true)
-        console.log(polishedTalk)
         this.setState({talk: talk}, 
           () => {
             this.fetchUserInfo();
             this.getChannelSubscriptions();
-            this.setState({talk: TalkService.polishTalkData(this.state.talk, true, true)})
+            this.setState({talk: talk})
           }
         );
     });

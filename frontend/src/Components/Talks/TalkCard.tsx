@@ -28,7 +28,6 @@ interface State {
   registrationStatus: string;
   available: boolean;
   role: string;
-  processedTalk: Talk
 }
 
 export default class TalkCard extends Component<Props, State> {
@@ -41,11 +40,6 @@ export default class TalkCard extends Component<Props, State> {
       registrationStatus: "",
       available: true,
       role: "none",
-      processedTalk: TalkService.polishTalkData(
-        this.props.talk, 
-        this.props.substituteTbdTba ? this.props.substituteTbdTba : true, 
-        this.props.addPicture ? this.props.addPicture : true,
-        )
     };
   }
 
@@ -58,7 +52,7 @@ export default class TalkCard extends Component<Props, State> {
     if (this.props.user !== null) {
       ChannelService.getRoleInChannel(
         this.props.user.id, 
-        this.state.processedTalk.channel_id, 
+        this.props.talk.channel_id, 
         (role: "none" | "owner" | "member" | "follower") => {
           this.setState(
             {role: role})
@@ -84,7 +78,7 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   getTimeRemaining = (): string => {
-    const end = new Date(this.state.processedTalk.end_date);
+    const end = new Date(this.props.talk.end_date);
     const now = new Date();
     let deltaMin = Math.floor((end.valueOf() - now.valueOf()) / (60*1000));
     let message = deltaMin < 0 ? "Finished " : "Finishing in ";
@@ -105,7 +99,7 @@ export default class TalkCard extends Component<Props, State> {
   toggleModal = () => {
     // track click of the event
     if (!(this.state.showModal)){
-      TalkService.increaseViewCountForTalk(this.state.processedTalk.id, () => {})
+      TalkService.increaseViewCountForTalk(this.props.talk.id, () => {})
     }
     // toggle Modal
     this.setState({ showModal: !this.state.showModal });
@@ -116,7 +110,7 @@ export default class TalkCard extends Component<Props, State> {
     if (this.props.user) {
       TalkService.isAvailableToUser(
         this.props.user.id,
-        this.state.processedTalk.id,
+        this.props.talk.id,
         (available: boolean) => {
           this.setState({ available }, () => {
             if (available) {
@@ -128,8 +122,8 @@ export default class TalkCard extends Component<Props, State> {
     } else {
       this.setState({
         available:
-          this.state.processedTalk.visibility === "Everybody" ||
-          this.state.processedTalk.visibility === null,
+          this.props.talk.visibility === "Everybody" ||
+          this.props.talk.visibility === null,
       });
     }
   };
@@ -138,7 +132,7 @@ export default class TalkCard extends Component<Props, State> {
   checkIfRegistered = () => {
     this.props.user &&
       TalkService.registrationStatusForTalk(
-        this.state.processedTalk.id,
+        this.props.talk.id,
         this.props.user.id,
         (status: string) => {
           this.setState({ 
@@ -153,7 +147,7 @@ export default class TalkCard extends Component<Props, State> {
   register = () => {
     // this.props.user &&
     //   TalkService.registerForTalk(
-    //     this.state.processedTalk.id,
+    //     this.props.talk.id,
     //     this.props.user.id,
     //     () => {
     //       // this.toggleModal();
@@ -169,7 +163,7 @@ export default class TalkCard extends Component<Props, State> {
   unregister = () => {
     // this.props.user &&
     //   TalkService.unRegisterForTalk(
-    //     this.state.processedTalk.id,
+    //     this.props.talk.id,
     //     this.props.user.id,
     //     () => {
     //       // this.toggleModal();
@@ -182,7 +176,7 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   getSpeakerPhotoUrl = (): string | undefined => {
-    return TalkService.getSpeakerPhoto(this.state.processedTalk.id)
+    return TalkService.getSpeakerPhoto(this.props.talk.id)
   }
 
   // method here for mobile
@@ -225,7 +219,7 @@ export default class TalkCard extends Component<Props, State> {
           overflow="hidden"
         >
           <Box height="100%" pad="10px">
-          <Box direction="column" width={this.state.processedTalk.has_speaker_photo === 1 ? "65%" : "80%"} margin={{bottom: "10px"}}> 
+          <Box direction="column" width={this.props.talk.has_speaker_photo === 1 ? "65%" : "80%"} margin={{bottom: "10px"}}> 
               <Box
                 direction="row"
                 gap="xsmall"
@@ -242,23 +236,23 @@ export default class TalkCard extends Component<Props, State> {
                   background="#efeff1"
                   overflow="hidden"
                 >
-                  {!this.state.processedTalk.has_avatar && (
+                  {!this.props.talk.has_avatar && (
                     <img
                       src={MoraStreamLogo}
                       height={36}
                       width={36}
                     />
                   )}
-                  {!!this.state.processedTalk.has_avatar && (
+                  {!!this.props.talk.has_avatar && (
                     <img
-                      src={ChannelService.getAvatar(this.state.processedTalk.channel_id)}
+                      src={ChannelService.getAvatar(this.props.talk.channel_id)}
                       height={30}
                       width={30}
                     />
                   )}
                 </Box>
                 <Text weight="bold" size="14px" color="color3">
-                  {this.state.processedTalk.channel_name}
+                  {this.props.talk.channel_name}
                 </Text>
               </Box> 
 
@@ -268,10 +262,10 @@ export default class TalkCard extends Component<Props, State> {
                 weight="bold"
                 style={{ minHeight: "60px", overflow: "auto" }}
               >
-                {textToLatex(this.state.processedTalk.name)}
+                {textToLatex(this.props.talk.name)}
               </Text>
             </Box> 
-            {this.state.processedTalk.has_speaker_photo === 1 && (
+            {this.props.talk.has_speaker_photo === 1 && (
               <Box width="40%">
                 <Image 
                   style={{position: 'absolute', top: 10, right: 10, aspectRatio: "3/2"}}
@@ -292,8 +286,8 @@ export default class TalkCard extends Component<Props, State> {
                 }}
                 margin={{ bottom: "10px" }}
               >
-                {this.state.processedTalk.talk_speaker
-                  ? this.state.processedTalk.talk_speaker
+                {this.props.talk.talk_speaker
+                  ? this.props.talk.talk_speaker
                   : "TBA"}
               </Text>
             </Box>
@@ -316,11 +310,11 @@ export default class TalkCard extends Component<Props, State> {
                     color="black"
                     style={{ height: "20px", fontStyle: "normal" }}
                   >
-                    {this.formatDate(this.state.processedTalk.date)}
+                    {this.formatDate(this.props.talk.date)}
                   </Text>
                 )}
               </Box>
-              {this.state.processedTalk.card_visibility === "Members only" &&
+              {this.props.talk.card_visibility === "Members only" &&
                 <Box
                   round="xsmall"
                   background="#EAF1F1"
@@ -334,7 +328,7 @@ export default class TalkCard extends Component<Props, State> {
                   </Text>
                 </Box>
               }
-              {/*this.state.processedTalk.card_visibility !== "Members only" && this.state.processedTalk.visibility === "Members only" && 
+              {/*this.props.talk.card_visibility !== "Members only" && this.props.talk.visibility === "Members only" && 
                 <Box
                   round="xsmall"
                   background="#D3F930"
@@ -407,7 +401,7 @@ export default class TalkCard extends Component<Props, State> {
                   <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
                     <Link
                       className="channel"
-                      to={`/${this.state.processedTalk.channel_name}`}
+                      to={`/${this.props.talk.channel_name}`}
                       style={{ textDecoration: "none" }}
                     >
                       <Box
@@ -430,7 +424,7 @@ export default class TalkCard extends Component<Props, State> {
                         >
                             <img
                               src={ChannelService.getAvatar(
-                                this.state.processedTalk.channel_id
+                                this.props.talk.channel_id
                               )}
                               height={30}
                               width={30}
@@ -438,7 +432,7 @@ export default class TalkCard extends Component<Props, State> {
                         </Box>
                         <Box justify="between">
                           <Text weight="bold" size="16px" color="color3">
-                            {this.state.processedTalk.channel_name}
+                            {this.props.talk.channel_name}
                           </Text>
                         </Box>
                       </Box>
@@ -455,11 +449,11 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ bottom: "20px", top: "10px" }}
                   >
-                    {textToLatex(this.state.processedTalk.name)}
+                    {textToLatex(this.props.talk.name)}
                   </Text>
 
-                  {this.state.processedTalk.talk_speaker_url && (
-                    <a href={this.state.processedTalk.talk_speaker_url} target="_blank">
+                  {this.props.talk.talk_speaker_url && (
+                    <a href={this.props.talk.talk_speaker_url} target="_blank">
                       <Box
                         direction="row"
                         pad={{ left: "6px", top: "4px" }}
@@ -474,15 +468,15 @@ export default class TalkCard extends Component<Props, State> {
                             fontStyle: "italic",
                           }}
                         >
-                          {this.state.processedTalk.talk_speaker
-                            ? this.state.processedTalk.talk_speaker
+                          {this.props.talk.talk_speaker
+                            ? this.props.talk.talk_speaker
                             : "TBA"}
                         </Text>
                       </Box>
                     </a>
                   )}
 
-                  {!this.state.processedTalk.talk_speaker_url && (
+                  {!this.props.talk.talk_speaker_url && (
                     <Box direction="row" gap="small">
                       <UserExpert size="16px" />
                       <Text
@@ -495,8 +489,8 @@ export default class TalkCard extends Component<Props, State> {
                         }}
                         margin={{ bottom: "10px" }}
                       >
-                        {this.state.processedTalk.talk_speaker
-                          ? this.state.processedTalk.talk_speaker
+                        {this.props.talk.talk_speaker
+                          ? this.props.talk.talk_speaker
                           : "TBA"}
                       </Text>
                     </Box>
@@ -509,7 +503,7 @@ export default class TalkCard extends Component<Props, State> {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {this.state.processedTalk.description.split('\n').map(
+                    {this.props.talk.description.split('\n').map(
                       (item, i) => textToLatex(item)
                     )}
                   </Box>
@@ -517,7 +511,7 @@ export default class TalkCard extends Component<Props, State> {
 
                 </Box> 
                 <FooterOverlay
-                  talk={this.state.processedTalk}
+                  talk={this.props.talk}
                   user={this.props.user}
                   role={this.state.role}
                   available={this.state.available}
@@ -534,7 +528,7 @@ export default class TalkCard extends Component<Props, State> {
           // */}
           <MediaQuery maxDeviceWidth={800}>
             <MobileTalkCardOverlay
-              talk={this.state.processedTalk}
+              talk={this.props.talk}
               pastOrFutureTalk="future"
               user={this.props.user}
               registered={this.state.registered}

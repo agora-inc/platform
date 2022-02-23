@@ -234,6 +234,43 @@ const scheduleTalk = (
   callback: any
 ) => {
 
+  // DATA POLISHING
+  // NB: we do not accept talks with empty titles, or "TBA", or "TBA". (Remy)
+  if(talkName == "" || talkName.toLowerCase() == "tba" || talkName.toLowerCase() == "tbd"){
+      // Build new title without topic
+      var subtopic = "";
+      if(topics){
+        for(let topic of topics){
+          if(subtopic == ""){
+            if(!topic.is_primitive_node && topic){
+              subtopic = topic.field
+            }
+          }
+        }
+      }
+  
+      var substituedTbaTbds = [
+        "Seminar with " + talkSpeaker,
+        "Talk by " + talkSpeaker,
+        "'" + channelName + "' talk with " + talkSpeaker,
+        "Latest advancements with " + talkSpeaker,
+        "Recent advancements with " + talkSpeaker,
+      ]
+  
+      // Build new title with topic
+      if(subtopic !== ""){
+        substituedTbaTbds.push(
+          talkSpeaker + " on " + subtopic,
+          "Topics on " + subtopic + " with " + talkSpeaker,
+          "Advancements in " +  subtopic,
+          "Seminar on " + subtopic,
+          "Talk on " + subtopic,
+          subtopic + " seminar"
+        )
+      }
+      talkName = substituedTbaTbds[Math.floor(Math.random() * substituedTbaTbds.length)]
+    }
+
   post(
     "talks/create",
     {
@@ -555,60 +592,6 @@ const editAutoAcceptanceCustomInstitutions = (talkId: number, institutionIds: nu
   );
 }
 
-const polishTalkData = (rawTalk: Talk, substituteTbd: boolean, addPicture: boolean) => {
-  var polishedTalk = rawTalk
-  
-  const getSubstitutedTbaTbd = (talk: Talk) => {
-    // TopicService
-    var subtopic = "";
-    if(talk.topics){
-      for(let topic of talk.topics){
-        if(subtopic == ""){
-          console.log("tsting", topic)
-          if(!topic.is_primitive_node && topic){
-            subtopic = topic.field
-          }
-        }
-      }
-    }
-
-    var substituedTbaTbds = [
-      "Seminar with " + talk.talk_speaker,
-      "Talk by " + talk.talk_speaker,
-      "'" + talk.channel_name + "' talk with " + talk.talk_speaker,
-      "Latest advancements with " + talk.talk_speaker,
-      "Recent advancements with " + talk.talk_speaker,
-    ]
-
-    if(subtopic !== ""){
-      substituedTbaTbds.push(
-        talk.talk_speaker + " on " + subtopic,
-        "Topics on " + subtopic + " with " + talk.talk_speaker,
-        "Advancements in " +  subtopic,
-        "Seminar on " + subtopic,
-        "Talk on " + subtopic,
-        subtopic + " seminar"
-      )
-    }
-
-    // HACK: return value depending on talk id (reason: if using random, the title keep changing after mouseover)
-    var index = talk.id  % substituedTbaTbds.length
-    return substituedTbaTbds[index]
-  }
-
-
-  // 1. Polish title if TBD
-  if(polishedTalk.name == "" || polishedTalk.name == "TBA" || polishedTalk.name == "TBD"){
-    polishedTalk.name = getSubstitutedTbaTbd(rawTalk)
-  }
-
-  // 2. Polish picture if none
-  // TO BE IMPLEMENTED (Remy)
-
-  return polishedTalk
-}
-
-
 export const TalkService = {
   getTalkById,
   getAllFutureTalks,
@@ -668,7 +651,6 @@ export const TalkService = {
   // trending
   getTrendingTalks,
   // post-processing
-  polishTalkData
 };
 
 export type Talk = {
