@@ -82,8 +82,8 @@ class TwitterBot:
     def run(self):
         try:
             # self._rebalance_remaining_api_calls()
-            self.post_tweets()
-            self.follow_in_mass()
+            # self.post_tweets()
+            # self.follow_in_mass()
             self.mass_unfollow()
 
         except Exception as e:
@@ -335,13 +335,30 @@ class TwitterBot:
         return users
 
     def mass_unfollow(self):
-        # Unfollow everybody following us
+        # Unfollow everybody who is not following us
         try:
             print("Retrieving and unfollowing followers")
             n_unfollow = 0
 
             # get list inversed (oldest following to new)
-            followers = list(tweepy.Cursor(self.twitter_api.get_followers).items())
+            followings = list(tweepy.Cursor(self.twitter_api.get_friend_ids, count=2).items())
+            followers = tweepy.Cursor(self.twitter_api.get_follower_ids, count=2).items()
+
+            print(followings)
+            print(followers)
+            import sys
+            sys.exit()
+
+
+            for following in followings:
+                if following not in followers:
+                    self.twitter_api.destroy_friendship(screen_name=following.screen_name, id=following.id)
+                print("Unfollowed ", following.name)
+
+
+
+
+
             followers.reverse()
             for follower in followers:
                 self.twitter_api.destroy_friendship(screen_name=follower.screen_name, id=follower.id)
