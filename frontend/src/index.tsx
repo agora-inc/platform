@@ -8,7 +8,7 @@ import * as serviceWorker from "./serviceWorker";
 ReactDOM.render(
   <Auth0Provider
     domain="mora-stream.eu.auth0.com"
-    clientId="bjCm1jlXaTpPuf7WefkzJy88qrDQrNg9"
+    clientId="Yne7tUF2vVbPQr7ohUUM0MT12MJTrF5l"
     redirectUri={window.location.origin}
     audience="https://mora.stream/api"
   >

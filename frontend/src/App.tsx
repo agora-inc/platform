@@ -7,17 +7,13 @@ import { useStore } from "./store";
 import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPages/LandingPage";
 import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
-import ChannelReferralPage from "./Views/ChannelReferralPage";
 import ChannelPage from "./Views/ChannelPage";
-import VideoPage from "./Views/VideoPage";
 import AllSpeakersPage from "./Views/AllSpeakersPage";
-import TagPage from "./Views/TagPage";
 import AllVideosPage from "./Views/AllVideosPage";
 import HeaderBar from "./Components/Core/HeaderBar";
 import { Theme } from "./theme";
 import ManageChannelPage from "./Views/ManageChannelPage";
 import Preferences from "./Views/Preferences";
-import Schedule from "./Views/Schedule";
 import AllPastTalksPage from "./Views/AllPastTalksPage";
 import SavedTalksPage from "./Views/SavedTalksPage";
 import InformationPage from "./Views/InformationPage";
@@ -39,11 +35,12 @@ function App() {
   useTracking("G-J8FEQBCS4H");
 
   // Auth0
-  const { user, isLoading, getAccessTokenSilently } = useAuth0();
+  const { user, isLoading } = useAuth0();
 
   console.log(`Auth0 user: ${user}`);
 
   // global state
+  const loggedInUser = useStore((state) => state.loggedInUser);
   const setUser = useStore((state) => state.setUser);
 
   // when the "user" object from Auth0 changes, we copy it to our global store
@@ -55,6 +52,8 @@ function App() {
   if (isLoading) {
     return <></>;
   }
+
+  console.log(loggedInUser);
 
   return (
     <Grommet theme={Theme} full>
