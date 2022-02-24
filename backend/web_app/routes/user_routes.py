@@ -19,8 +19,13 @@ def getPublicUsers():
 @app.route("/users/user")
 @requires_auth
 def getUser():
-    username = request.args.get("username")
-    return jsonify(app.user_repo.getUser(username))
+    if request.args.get("id"):
+        return jsonify(app.user_repo.getUserById(int(request.args.get(id))))
+    if request.args.get("username"):
+        return jsonify(app.user_repo.getUser(request.args.get("username")))
+    if request.args.get("email"):
+        return jsonify(app.user_repo.getUserByEmail(request.args.get("email")))
+    return 400, "Request args must contain one of id, username or email"
 
 
 @app.route("/users/add", methods=["POST"])
