@@ -1,11 +1,12 @@
 import create from "zustand";
 
 import { Channel } from "./Services/ChannelService";
+import { User } from "./Services/UserService";
 
 type State = {
   // auth state
-  loggedInUser: any;
-  setUser: (user: any) => void;
+  loggedInUser: User | null;
+  setUser: (user: User | null) => void;
 
   // ui state
   showUserDropdown: boolean;

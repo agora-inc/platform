@@ -4,6 +4,7 @@ import { Grommet } from "grommet";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { useStore } from "./store";
+import { User, Auth0UserPayload, UserService } from "./Services/UserService";
 import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPages/LandingPage";
 import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
@@ -37,15 +38,21 @@ function App() {
   // Auth0
   const { user, isLoading } = useAuth0();
 
-  console.log(`Auth0 user: ${user}`);
-
   // global state
   const loggedInUser = useStore((state) => state.loggedInUser);
   const setUser = useStore((state) => state.setUser);
 
-  // when the "user" object from Auth0 changes, we copy it to our global store
+  // when we get a "user" JSON payload from Auth0, we create a corresponding
+  // User object (that combines auth0 data and data from our db) and persist
+  // it to the global store
   useEffect(() => {
-    setUser(user);
+    if (user) {
+      let payload: Auth0UserPayload = {
+        ...user,
+        database_data: user["https://mora.stream/claims/db_data"],
+      };
+      setUser(UserService.createUserObjectFromAuth0Payload(payload));
+    }
   }, [user]);
 
   // don't want to return anything when Auth0 is still loading

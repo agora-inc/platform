@@ -78,11 +78,15 @@ export const UserManager = ({ showLogin: boolean }: Props) => {
   };
 
   const onBioChange = (bio: string) => {
-    setUser({ ...user, bio });
+    let u = user;
+    if (u) {
+      u.bio = bio;
+      setUser(u);
+    }
   };
 
   const onBioSave = () => {
-    if (user) {
+    if (user && user.bio) {
       UserService.updateBio(user.id, user.bio, (updatedUser: any) => {
         setUser(updatedUser);
       });
