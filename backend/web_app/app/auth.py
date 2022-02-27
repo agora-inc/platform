@@ -78,6 +78,7 @@ def requires_auth(f):
         jwks = r.json()
 
         unverified_header = jwt.get_unverified_header(token)
+
         rsa_key = {}
         for key in jwks["keys"]:
             if key["kid"] == unverified_header["kid"]:
@@ -97,6 +98,7 @@ def requires_auth(f):
                     algorithms=ALGORITHMS,
                     audience=API_AUDIENCE,
                     issuer="https://" + AUTH0_DOMAIN + "/",
+                    verify=False,
                 )
             except jwt.ExpiredSignatureError:
                 raise AuthError(
