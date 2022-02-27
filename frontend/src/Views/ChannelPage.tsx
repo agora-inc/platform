@@ -481,7 +481,7 @@ export default class ChannelPage extends Component<Props, State> {
                 </Text>
                 {!this.state.user && (
                   <ReactTooltip id='not_registered_follow_button_info' place="top" effect="solid">
-                    <p>You need to be registered for that.</p>
+                    <p>You need to be logged in for that.</p>
                   </ReactTooltip>
                 )}
 

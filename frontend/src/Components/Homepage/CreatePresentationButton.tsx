@@ -146,7 +146,7 @@ export const CreatePresentationButton = () =>  {
         direction="row"
       >
         <Workshop size="30px" />
-        <Text size="18px" margin={{left: "10px"}}> <b>Get invited</b> to give a talk</Text>
+        <Text size="18px" margin={{left: "10px"}}> <b>Get invited</b> to speak</Text>
       </Box>
       <Route render={({history}) => (
         <>
@@ -159,10 +159,10 @@ export const CreatePresentationButton = () =>  {
             submitButtonText="Next"
             canProceed={isComplete()}
             isMissing={isMissing()}
-            width={550}
+            width={600}
             height={450}
             contentHeight="300px"
-            title={"Describe what you want to talk about"}
+            title={"Describe your talk to get invited as a speaker!"}
           >
             <Box width="100%" gap="10px" margin={{top: "5px"}}>
               <TextInput

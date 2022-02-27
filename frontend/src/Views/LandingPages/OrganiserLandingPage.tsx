@@ -167,16 +167,20 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Box direction="column">
-          <Text size="48px" weight="bold" color="color4" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Organising seminars made easy, from start to finish
+          <Text size="48px" weight="bold" color="color2" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
+            Organise your seminars in less than a minute, all in one place.
           </Text>
+          <Text size="20px">
+            <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more! </b> Empower your community by attracting like-minded researchers from all around the world!
+          </Text>
+          {/* <Text size="20px">Empower your community by attracting like-minded researchers from all around the world!</Text> */}
           {!this.state.renderMobileView && (
-            <Box margin={{bottom: "50px"}}>
+            <Box margin={{bottom: "50px", top: "30px"}}>
               <CreateChannelButton 
                       onClick={this.toggleCreateChannelOverlay} 
-                      width="400px"
+                      width="500px"
                       height="90px"
-                      text={"Publish your seminars"}
+                      text={"Launch your seminar homepage"}
                       textSize="18px"
                     />
             </Box>
@@ -277,7 +281,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-          Everything seminar organisers need, all in one place
+          Everything seminar organisers need, from start to finish
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "50px"}}>
@@ -287,12 +291,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 <Attraction size="large"/>
               </Box>
               {this.state.renderMobileView && (
-                <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">1. Create your agora</Text>
+                <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">1. Launch your seminar homepage</Text>
               )}
               {!this.state.renderMobileView && (
                 <CreateChannelButton 
                   textColor="color7"
-                  text="1. Create your agora"
+                  text="1. Launch your seminar homepage"
                   textSize="20px"
                   onClick={this.toggleCreateChannelOverlay}
                 />

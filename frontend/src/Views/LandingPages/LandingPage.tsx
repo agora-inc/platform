@@ -172,7 +172,6 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             Boost your academic career, paper citations, and more. Make a name for yourself.
           </Text>
           <Text size="20px">
-            <b></b>
             <b>Attend, give, and organise academic seminars all around the world</b>.
           </Text>
           <Text size="20px">Let your research be known and grow your network of teammates!</Text>
@@ -211,54 +210,53 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         justify="start"
         alignContent="center"
         gap="medium"
-      >
-      <Link
-        to={{ pathname: "/browse" }}
-        style={{ textDecoration: "none" }}
-      >
-        <Box
-          onClick={this.toggleModal}
-          background={this.state.colorButton}
-          round="xsmall"
-          pad="xsmall"
-          height="80px"
-          width="310px"
-          justify="center"
-          align="center"
-          focusIndicator={false}
-          hoverIndicator={this.state.colorHover}
-          margin={{ left: "0px" }}
-          direction="row"
         >
-          <Play size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Watch</b>  trending seminars</Text>
-        </Box>
-      </Link>
+        <CreatePresentationButton />
+        <Link
+          to={{ pathname: "/organisers" }}
+          style={{ textDecoration: "none" }}
+        >
+          <Box
+            onClick={this.toggleModal}
+            background={this.state.colorButton}
+            round="xsmall"
+            pad="xsmall"
+            height="80px"
+            width="310px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator={this.state.colorHover}
+            margin={{ left: "0px" }}
+            direction="row"
+          >
+            <Group size="30px" />
+            <Text size="18px" margin={{left: "10px"}}> <b>Find</b> your next speakers</Text>
+          </Box>
+        </Link>
+        {/* <Link
+          to={{ pathname: "/browse" }}
+          style={{ textDecoration: "none" }}
+        >
+          <Box
+            onClick={this.toggleModal}
+            background={this.state.colorButton}
+            round="xsmall"
+            pad="xsmall"
+            height="80px"
+            width="310px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator={this.state.colorHover}
+            margin={{ left: "0px" }}
+            direction="row"
+          >
+            <Play size="30px" />
+            <Text size="18px" margin={{left: "10px"}}> <b>Watch</b> trending seminars</Text>
+          </Box>
+        </Link> */}
 
-      <CreatePresentationButton />
-
-      {/* <Link
-        to={{ pathname: "/organisers" }}
-        style={{ textDecoration: "none" }}
-        >
-        <Box
-          onClick={this.toggleModal}
-          background={this.state.colorButton}
-          round="xsmall"
-          pad="xsmall"
-          height="80px"
-          width="310px"
-          justify="center"
-          align="center"
-          focusIndicator={false}
-          hoverIndicator={this.state.colorHover}
-          margin={{ left: "0px" }}
-          direction="row"
-        >
-          <Group size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Organise</b>  your seminars</Text>
-        </Box>
-      </Link> */}
     </Box>
     )
   }
