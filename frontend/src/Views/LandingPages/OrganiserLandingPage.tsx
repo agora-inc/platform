@@ -171,7 +171,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             Organise seminars in less than a minute.
           </Text>
           <Text size="20px">
-            <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more! </b> Empower your community by attracting like-minded researchers from all around the world!
+            <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more! </b>
           </Text>
           {/* <Text size="20px">Empower your community by attracting like-minded researchers from all around the world!</Text> */}
           {!this.state.renderMobileView && (
@@ -180,7 +180,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                       onClick={this.toggleCreateChannelOverlay} 
                       width="500px"
                       height="90px"
-                      text={"Launch your seminar homepage"}
+                      text={"Get started as an organiser"}
                       textSize="18px"
                     />
             </Box>
@@ -591,14 +591,14 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Invite world-leading speakers and attract academics from all around the world!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Access a complete tech stack sculpted for seminar organisers!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "100px"}}>
                 <CreateChannelButton 
                   onClick={this.toggleCreateChannelOverlay} 
                   width="400px"
                   height="90px"
-                  text={"Launch your seminar homepage"}
+                  text={"Get started as an organiser"}
                   textSize="18px"
                 />
             </Box>

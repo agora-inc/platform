@@ -68,61 +68,6 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             </Link>
           </Box>
 
-
-          {/* <Link
-            to="/browse"
-            style={{ textDecoration: 'none' }}
-          >
-            <Box
-              width="200px"
-              height="30px"
-              round="7px"
-              justify="start"
-            >
-                Watch trending seminars
-            </Box>
-          </Link> */}
-
-
-
-
-          {/* <MediaQuery minDeviceWidth={992}>
-            <Link
-              to={{ pathname: "/info/getting-started" }}
-              style={{ textDecoration: "none" }}
-            >
-            <Box
-                onClick={() => {}}
-                background="white"
-                round="xsmall"
-                pad={{ bottom: "6px", top: "6px", left: "18px", right: "18px" }}
-                justify="start"
-                align="start"
-                focusIndicator={false}
-                style={{
-                  border: "1px solid #C2C2C2",
-                }}
-                hoverIndicator={true}
-              >
-                <Text size="14px" color="grey">
-                  {" "}
-                  How to use me?{" "}
-                </Text>
-              </Box>
-            </Link>
-          </MediaQuery> */}
-
-          {/* <MediaQuery minDeviceWidth={992}>
-            <SiteWideSearch />
-          </MediaQuery> */}
-          {/* <Box>
-            <TextInput
-              icon={<Search />}
-              reverse
-              placeholder="search ..."
-              style={{ width: "27vw", height: "4.5vh", justifySelf: "center" }}
-            />
-          </Box> */}
           <Box
             direction="row"
             gap="small"

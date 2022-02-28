@@ -5,7 +5,7 @@ import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
 import moraStreamFullLettersLogo from "../../assets/general/mora.stream_logo_v2.1.png";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import { User, UserService } from "../../Services/UserService";
-import { Search, Java, Play, Add, Chat, Close, Connect, Announce, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
+import { Twitter, Slack, Play, Add, Chat, Close, Connect, Announce, Multiple, Group, Workshop, Trigger, MailOption, DocumentPerformance, Deploy, Attraction, CirclePlay, Like} from "grommet-icons";
 import UserManager from "../../Components/Account/UserManager";
 import FooterComponent from "../../Components/Homepage/FooterComponent";
 import "../../Styles/landing-page.css";
@@ -174,7 +174,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Text size="20px">
             <b>Attend, give, and organise academic seminars all around the world</b>.
           </Text>
-          <Text size="20px">Let your research be known and grow your network of teammates and citations!</Text>
+          <Text size="20px">Let your research be known and grow your network of teammates!</Text>
           <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>
@@ -606,11 +606,11 @@ calltoActionOrganisers() {
           </Box>
         </Box> */}
 
-        <Box height="100%" width="100%" background="color5">
+        {/* <Box height="100%" width="100%" background="color5">
           <Box width="80%" height={this.state.renderMobileView ? "450px": "400px"} direction="column" alignSelf="center">
             {this.calltoActionOrganisers()}
           </Box>
-        </Box>
+        </Box> */}
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />
