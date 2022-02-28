@@ -169,12 +169,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Boost your academic career, paper citations, and more. Make a name for yourself.
+            Boost your academic career. Make a name for yourself.
           </Text>
           <Text size="20px">
             <b>Attend, give, and organise academic seminars all around the world</b>.
           </Text>
-          <Text size="20px">Let your research be known and grow your network of teammates!</Text>
+          <Text size="20px">Let your research be known and grow your network of teammates and citations!</Text>
           <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>

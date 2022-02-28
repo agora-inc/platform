@@ -168,7 +168,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         <Box direction="column">
           <Text size="48px" weight="bold" color="color2" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Organise your seminars in less than a minute, all in one place.
+            Organise seminars in less than a minute.
           </Text>
           <Text size="20px">
             <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more! </b> Empower your community by attracting like-minded researchers from all around the world!
@@ -559,20 +559,46 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
   }
 
 
+  content4() {
+    return (
+      <>
+        {/* <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">The future of seminars is <b>online and hybrid</b></Text> */}
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Seminars have always been time-consuming to organise, until now.</Text>
+        <Text>
+          <b>We, academics</b>, built a unique streaming technology <b>sculpted for academics</b>. The latter allows you to run online seminars where you can write LateX in chat, go back in the slides as an attendee, clap for the speaker and much more!
+        </Text>
+
+        {/* <PricingPlans 
+            callback={() => {}}
+            channelId={null}
+            userId={null}
+            disabled={true}
+            showDemo={false}
+            headerTitle={true}
+            title={" "}
+        /> */}
+        
+      </>
+    )
+  }
+
+
+
+
 
   callToActionEndpage() {
     return (
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Make your life easier + attract world-leading experts to your events now!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Invite world-leading speakers and attract academics from all around the world!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "100px"}}>
                 <CreateChannelButton 
                   onClick={this.toggleCreateChannelOverlay} 
                   width="400px"
                   height="90px"
-                  text={"Publish your seminars"}
+                  text={"Launch your seminar homepage"}
                   textSize="18px"
                 />
             </Box>
@@ -633,6 +659,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             </Box>
           </Box>
         </Box>
+
+        {/* <Box height="100%" width="100%" background="color3" style={{}}>
+          <Box width="80%" height={this.state.renderMobileView ? "350px": "290px"} direction="column" alignSelf="center">
+            {this.content4()}
+          </Box>
+        </Box> */}
 
         <Box height="100%" width="100%" background="color5" id="content">
           <Box width="80%" height={this.state.renderMobileView ? "2650px": "940px"}  direction="column" alignSelf="center">

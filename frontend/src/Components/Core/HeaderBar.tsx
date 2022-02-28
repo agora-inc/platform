@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Box, Text, Layer, Button, Heading, Grommet, TextInput } from "grommet";
-import { Search } from "grommet-icons";
-
+import { Search, Twitter, Slack, Play } from "grommet-icons";
 import moraStreamFullLogo from "../../assets/general/mora_simple_m_cropped_logo_v3.png";
 import { Link } from "react-router-dom";
 import UserManager from "../Account/UserManager";
@@ -42,7 +41,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           direction="row"
           align="center"
           justify="between"
-          pad={{ left: "xsmall", right: "small", vertical: "small" }}
+          pad={{ left: "xsmall", right: "small", vertical: "30px" }}
           elevation="none"
           style={{
             height: "8vh",
@@ -54,19 +53,39 @@ class HeaderBar extends Component<RouteComponentProps, State> {
           }}
           {...this.props}
         >
-          <Box style={{ minWidth: "15%" }}>
-            <Link to="/" style={{ textDecoration: "none", width: 140 }}>
+          <Box style={{ minWidth: "7vh" }} direction="row">
+
+            <Link to="/" style={{ textDecoration: "none" }}>
               <Box direction="row" align="center">
                 <MediaQuery minDeviceWidth={992}>
-                <img src={moraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
+                  <img src={moraStreamFullLogo} style={{ height: "5vh", margin: 0 }}/>
                 </MediaQuery>
                   <MediaQuery maxDeviceWidth={992}>
-                <img src={moraStreamFullLogo} style={{ height: "3vh", marginLeft: 5 }}/>
+                    <img src={moraStreamFullLogo} style={{ height: "3vh", marginLeft: 5 }}/>
                     {/* <Text size="xsmall" color="black">mobile</Text> */}
-                    </MediaQuery>
+                  </MediaQuery>
               </Box>
             </Link>
           </Box>
+
+
+          {/* <Link
+            to="/browse"
+            style={{ textDecoration: 'none' }}
+          >
+            <Box
+              width="200px"
+              height="30px"
+              round="7px"
+              justify="start"
+            >
+                Watch trending seminars
+            </Box>
+          </Link> */}
+
+
+
+
           {/* <MediaQuery minDeviceWidth={992}>
             <Link
               to={{ pathname: "/info/getting-started" }}
@@ -110,12 +129,17 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             align="center"
             style={{ minWidth: "30%", maxHeight: "20px" }}
             justify="end"
+            margin={{left: "10px"}}
           >
             {((this.props.location.pathname !== "/") && (this.props.location.pathname !== "/organisers")) && (
               <TimeZoneInfo />
             )}
 
-          <Box>
+
+
+
+
+          {/* <Box>
             <Link
               to={{ pathname: "/info/welcome" }}
               style={{ textDecoration: "none"}}
@@ -134,6 +158,62 @@ class HeaderBar extends Component<RouteComponentProps, State> {
                 <Text size="14px" weight="bold"> About us </Text>
               </Box>
             </Link>
+          </Box> */}
+
+
+
+        <Link
+          to={{ pathname: "/browse" }}
+          style={{ textDecoration: "none" }}
+        >
+          <Box
+            onClick={() => {}}
+            background="#F2F2F2"
+            hoverIndicator="#BAD6DB"
+            round="xsmall"
+            pad="xsmall"
+            width="300px"
+            height="35px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            margin={{ left: "0px" }}
+            direction="row"
+          >
+            {/* <Play size="30px" /> */}
+            <Text size="14px" margin={{left: "10px"}}> <b>Browse trending seminars</b></Text>
+          </Box>
+        </Link>
+
+
+
+
+
+
+          <Box
+            width="40px"
+            height="30px"
+            round="7px"
+            justify="center"
+          >
+            <a
+              href="https://twitter.com/morastream"
+            >
+                <Twitter color='plain'/>
+            </a>
+          </Box>
+
+          <Box
+            width="40px"
+            height="30px"
+            round="7px"
+            justify="center"
+          >
+            <a
+              href="https://join.slack.com/t/morastream/shared_invite/zt-13ug7lh9j-4ijI41o0iiGF5cmmZ8osYw"
+            >
+                <Slack color='plain'/>
+            </a>
           </Box>
 
 
