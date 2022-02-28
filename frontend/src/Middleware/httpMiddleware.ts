@@ -10,27 +10,61 @@ const getRequestHeaders = (token: string) => {
   };
 };
 
-export const get = (url: string, token: string): AxiosPromise => {
-  return axios.get(`${baseApiUrl}/api/${url}`, {
-    headers: getRequestHeaders(token),
-  });
+export const get = (
+  url: string,
+  token: string,
+  callback: (data: any) => void,
+  onError?: (err: any) => void
+) => {
+  axios
+    .get(`${baseApiUrl}/api/${url}`, {
+      headers: getRequestHeaders(token),
+    })
+    .then((response) => {
+      callback(response.data);
+    })
+    .catch((error) => {
+      onError && onError(error);
+    });
 };
 
 export const post = (
   url: string,
-  data: object,
-  token: string
-): AxiosPromise => {
-  return axios.post(`${baseApiUrl}/api/${url}`, data, {
-    headers: getRequestHeaders(token),
-  });
+  data: object | FormData,
+  token: string,
+  callback: (data: any) => void,
+  onError?: (err: any) => void
+) => {
+  axios
+    .post(`${baseApiUrl}/api/${url}`, data, {
+      headers: getRequestHeaders(token),
+    })
+    .then((response) => {
+      callback(response.data);
+    })
+    .catch((error) => {
+      onError && onError(error);
+    });
 };
 
-export const del = (url: string, data: object, token: string): AxiosPromise => {
-  return axios.delete(`${baseApiUrl}/api/${url}`, {
-    data,
-    headers: getRequestHeaders(token),
-  });
+export const del = (
+  url: string,
+  data: object,
+  token: string,
+  callback: (data: any) => void,
+  onError?: (err: any) => void
+) => {
+  axios
+    .delete(`${baseApiUrl}/api/${url}`, {
+      data,
+      headers: getRequestHeaders(token),
+    })
+    .then((response) => {
+      callback(response.data);
+    })
+    .catch((error) => {
+      onError && onError(error);
+    });
 };
 
 // export const get = async (
