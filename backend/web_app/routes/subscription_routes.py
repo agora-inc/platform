@@ -78,6 +78,7 @@ def getAvailableStreamCreditForTalk():
 
 
 @app.route("/credits/talk/add", methods=["GET"])
+@requires_auth
 def addStreamCreditToTalk():
     try:
         talk_id = request.args.get("talkId")
@@ -89,6 +90,7 @@ def addStreamCreditToTalk():
 
 
 @app.route("/credits/channel/add", methods=["GET"])
+@requires_auth
 def addStreamingCreditToChannel():
     try:
         channel_id = request.args.get("channelId")
@@ -102,6 +104,7 @@ def addStreamingCreditToChannel():
 
 
 @app.route("/credits/talk/increment", methods=["GET"])
+@requires_auth
 def upgradeStreamTalkByOne():
     try:
         talk_id = request.args.get("talkId")
@@ -147,6 +150,7 @@ def getAllActiveSubscriptionsForChannel():
 
 
 @app.route("/subscriptions/channel/cancel", methods=["GET"])
+@requires_auth
 def cancelSubscriptionForChannel():
     try:
         channel_id = request.args.get("channelId")
@@ -169,6 +173,7 @@ def cancelSubscriptionForChannel():
 
 
 @app.route("/subscriptions/channel/cancelall", methods=["GET"])
+@requires_auth
 def cancelAllSubscriptionsForChannel():
     try:
         channel_id = request.args.get("channelId")
