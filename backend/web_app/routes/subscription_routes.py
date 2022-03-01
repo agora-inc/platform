@@ -199,6 +199,7 @@ def cancelAllSubscriptionsForChannel():
 # PAYMENTS
 # --------------------------------------------
 @app.route("/payment/create-checkout-session", methods=["GET"])
+@requires_auth
 def getStripeSessionForProduct():
     product_id = request.args.get("productId")
     user_id = request.args.get("userId")
