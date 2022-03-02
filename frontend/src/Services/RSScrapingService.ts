@@ -1,56 +1,54 @@
 import { get, post } from "../Middleware/httpMiddleware";
-import { baseApiUrl } from "../config";
-import axios from "axios";
-
-
 
 const createAgoraGetTalkIds = (
-	url: string,
-	userId: number,
-	topic_1_id: number,
-	callback: any
+  url: string,
+  userId: number,
+  topic_1_id: number,
+  callback: any,
+  token: string
 ) => {
-	post(
-		`rsscraping/createAgora`,
-		{
-			url: url,
-			user_id: userId, 
-			topic_1_id: topic_1_id, 
-		},
-		callback,
-	)
-} 
+  post(
+    `rsscraping/createAgora`,
+    {
+      url: url,
+      user_id: userId,
+      topic_1_id: topic_1_id,
+    },
+    token,
+    callback
+  );
+};
 
 const scheduleTalks = async (
-	url: string,
-	channelId: number, 
-	channelName: string, 
-	idx: number[],
-	talkLink: string,
-	topic_1_id: number,
-	audienceLevel: string, 
-	visibility: string,
-	autoAcceptGroup: string,
-	callback: any
+  url: string,
+  channelId: number,
+  channelName: string,
+  idx: number[],
+  talkLink: string,
+  topic_1_id: number,
+  audienceLevel: string,
+  visibility: string,
+  autoAcceptGroup: string,
+  callback: any,
+  token: string
 ) => {
-	post(
-		`rsscraping/talks`,
-		{
-			url: url,
-			channel_id: channelId, 
-			channel_name: channelName, 
-			idx: idx,
-			talk_link: talkLink,
-			topic_1_id: topic_1_id, 
-			audience_level: audienceLevel, 
-			visibility: visibility,
-			auto_accept_group: autoAcceptGroup,
-		},
-		callback,
-	)
-} 
-
-
+  post(
+    `rsscraping/talks`,
+    {
+      url: url,
+      channel_id: channelId,
+      channel_name: channelName,
+      idx: idx,
+      talk_link: talkLink,
+      topic_1_id: topic_1_id,
+      audience_level: audienceLevel,
+      visibility: visibility,
+      auto_accept_group: autoAcceptGroup,
+    },
+    token,
+    callback
+  );
+};
 
 /*
 const scrapeScheduleTalk = (
@@ -80,7 +78,6 @@ const scrapeScheduleTalk = (
 	)
 }
 */
-
 
 /*
 const getValidSeriesAndNtalks = (url: string, callback: any) => {
@@ -137,11 +134,10 @@ const getChannelAllTalks = (
 		});
 */
 
-
 export const RSScraping = {
-	createAgoraGetTalkIds,
-	scheduleTalks,
-	// scrapeScheduleTalk,
-	// getValidSeriesAndNtalks,
-	// getChannelAllTalks
+  createAgoraGetTalkIds,
+  scheduleTalks,
+  // scrapeScheduleTalk,
+  // getValidSeriesAndNtalks,
+  // getChannelAllTalks
 };
