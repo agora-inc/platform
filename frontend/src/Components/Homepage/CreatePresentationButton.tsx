@@ -162,7 +162,7 @@ export const CreatePresentationButton = () =>  {
             width={600}
             height={450}
             contentHeight="300px"
-            title={"Describe your talk to get invited as a speaker!"}
+            title={"Get invited as a speaker by academic communities from all around the world!"}
           >
             <Box width="100%" gap="10px" margin={{top: "5px"}}>
               <TextInput

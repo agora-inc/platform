@@ -168,7 +168,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         <Box direction="column">
           <Text size="48px" weight="bold" color="color2" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Organise seminars in less than a minute.
+            Get the hottest researchers to speak to your community.
           </Text>
           <Text size="20px">
             <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more! </b>
@@ -281,7 +281,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-          Everything seminar organisers need, from start to finish
+          Everything seminar organisers need, from start to finish, in less than a minute.
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "50px"}}>
@@ -339,7 +339,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               <Box width="70px">
                 <Share size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">3. Publish in a minute
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">3. Publish
               </Text>
             </Box>
             <Text size="18px">
@@ -591,7 +591,8 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Access a complete tech stack sculpted for seminar organisers!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">What are you waiting for?</Text>
+            <Text size="24px" margin={{top: "15px", bottom: "60px"}} color="black" alignSelf="center">Get started by accessing a complete tech stack sculpted for seminar organisers!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "100px"}}>
                 <CreateChannelButton 
