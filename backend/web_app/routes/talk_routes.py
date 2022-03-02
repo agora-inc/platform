@@ -361,6 +361,7 @@ def getSavedTalks():
 
 
 @app.route("/talks/save", methods=["POST", "OPTIONS"])
+@requires_auth
 def saveTalk():
     log_request(request)
     if request.method == "OPTIONS":

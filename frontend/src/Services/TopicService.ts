@@ -1,11 +1,11 @@
 import { get } from "../Middleware/httpMiddleware";
 
 const getAll = (callback: any) => {
-  get("topics/all", callback);
+  get("topics/all", "", callback);
 };
 
 const getDataTreeStructure = (callback: any) => {
-  get("topics/treestructure", callback);
+  get("topics/treestructure", "", callback);
 };
 
 const getDescendenceId = (node: Topic, topics: Topic[]): number[] => {
@@ -24,9 +24,9 @@ const getDescendenceId = (node: Topic, topics: Topic[]): number[] => {
 };
 
 const getFieldFromId = (topicId: number, callback: any) => {
-  get(`topics/getField?topicId=${topicId}`, callback);
-}
- 
+  get(`topics/getField?topicId=${topicId}`, "", callback);
+};
+
 // const getPopular = (callback: any) => {
 //   axios
 //     .get(baseApiUrl + "/topics/popular?n=5", {
@@ -50,16 +50,16 @@ const getFieldFromId = (topicId: number, callback: any) => {
 // };
 
 const getPrimitiveNodesId = () => {
-  console.log("(Info): Primitive nodes id: hardcoded")
-  return [15, 16, 17, 18, 19, 89, 142, 151, 166, 172]
-}
+  console.log("(Info): Primitive nodes id: hardcoded");
+  return [15, 16, 17, 18, 19, 89, 142, 151, 166, 172];
+};
 
 export const TopicService = {
   getAll,
   getDataTreeStructure,
   getDescendenceId,
   getFieldFromId,
-  getPrimitiveNodesId
+  getPrimitiveNodesId,
 };
 
 export type Topic = {
