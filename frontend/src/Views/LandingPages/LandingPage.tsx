@@ -169,12 +169,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Box>
           <Text size="48px" weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Give academic seminars to boost citations and meet new teammates.
+            Boost your academic career. Make a name for yourself.
           </Text>
           <Text size="20px">
-            <b>Attend, give, and organise academic seminars all around the world</b>.
+            <b>Get invited to speak to academic communities from all around the world!</b>
           </Text>
-          <Text size="20px">Let your research be known and grow your network of teammates!</Text>
+          <Text size="20px">Boost your paper citations and start new collaborations by meeting new teammates!</Text>
           <Box margin={this.state.renderMobileView ? {top: "30px", bottom: "30px"} : {top: "0px"}} height="40%">
             {this.callToActions()}
           </Box>
@@ -212,7 +212,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         gap="medium"
         >
         <CreatePresentationButton />
-        <Link
+        {/* <Link
           to={{ pathname: "/organisers" }}
           style={{ textDecoration: "none" }}
         >
@@ -233,7 +233,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             <Group size="30px" />
             <Text size="18px" margin={{left: "10px"}}> <b>Find</b> your next speakers</Text>
           </Box>
-        </Link>
+        </Link> */}
         {/* <Link
           to={{ pathname: "/browse" }}
           style={{ textDecoration: "none" }}
@@ -261,11 +261,130 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     )
   }
 
-  content1() {
+
+  contentTrigger() {
+    return (
+      <>
+        <Text size="34px" color="black" margin={{top: "140px", bottom: "140px"}}>
+          
+          Seminars have been citation and network boosters since Newton, but today <u>everyone</u> can attend them.
+
+          {/* The more people understand your work in a seminar, the more likely you will get cited and find collaborators.  */}
+          {/* One's academic reputation is built around papers and seminars since Newton, but today, most of it happens online. */}
+          {/* A good article without advertisement is a forgotten article. */}
+          {/* Getting to give a talk has been a rare priviledge since Newton, but today, it's easier. */}
+          {/* 20 years ago, good papers would easily get good citations, but today, it is <u>not enough</u>. */}
+          {/* Giving a seminar has been a rare career booster since Newton, but the tools to organise them has not changed for decades. */}
+          {/* You organise and give seminars to boost but the tools  */}
+          {/* Seminars have been the bonfire of academics since Newton, but organising them is still overly time consuming. */}
+          {/* The tools to organise and give seminars have barely changed since the 1200s. */}
+          {/* Your academic reputation */}
+          {/* Getting invited to give a seminar hasn't changed since Newton, but today it's <u>their turn</u> to be empowered with tech. */}
+          {/* Seminars have been the bonfire of academics since Newton but finding opportunities have been hard, until now. */}
+          {/* Seminars have been the bonfire of academics since Newton. */}
+        </Text>
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
+          <Box>
+            Martin Hairer, Field Medalist, Imperial College London
+            </Box>
+          <Box background="white" height="150px">
+            <Text size="24px">"Seminars are key to the growth of researchers."</Text>
+            </Box>
+
+
+        </Box>
+      </>
+    )
+  }
+
+
+  contentHeroHow() {
+    return (
+      <>
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">
+           The <Text color="gray" size="34px"><del>old</del></Text> <Text color="color7" size="34px">new</Text> way of giving seminars
+        </Text>
+
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "35px"}} justify="center">
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
+            <Text size="18px" style={{alignContent: "start"}} color="white">
+            Wait for months / years to <i>maybe</i> get invited. 
+              </Text>
+          </Box>
+
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
+            <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
+              Apply and get invited within 30 days
+            </Text>
+          </Box>
+        </Box>
+
+
+        <Box height="60px" direction="column" alignSelf="center"> 
+          <img src={this.state.renderMobileView ? WavyArrowLeftRight : WavyArrowTopBot}
+            style={this.state.renderMobileView ? {alignSelf: "center", width: "120px"} : {alignSelf: "center", height:"70px"}} />
+        </Box>
+
+
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{top: "35px", bottom: "35px"}} justify="center">
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
+            <Text size="18px" style={{alignContent: "start"}} color="white">
+                Speak once to 50 people from a community you already know
+              </Text>
+          </Box>
+
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
+            <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
+                Speak multiple times to 500 people you might not know yet
+            </Text>
+          </Box>
+        </Box>
+
+
+        <Box height="60px" direction="column" alignSelf="center"> 
+          <img src={this.state.renderMobileView ? WavyArrowLeftRight : WavyArrowTopBot}
+            style={this.state.renderMobileView ? {alignSelf: "center", width: "120px"} : {alignSelf: "center", height:"70px"}} />
+        </Box>
+
+
+
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{top: "35px", bottom: "35px"}} justify="center">
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
+            <Text size="18px" style={{alignContent: "start"}} color="white">
+                <ul>
+                  <li> +1 citation</li>
+                  <li> +5 Twitter followers</li>
+                  <li> +2 new friends</li>
+                </ul>
+              </Text>
+          </Box>
+
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
+            <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
+            <ul>
+                  <li> +15 citation</li>
+                  <li> +100 Twitter followers</li>
+                  <li> +30 new friends</li>
+                </ul>
+            </Text>
+          </Box>
+        </Box>
+
+
+
+      </>
+    )
+  }
+
+
+
+
+
+  contentHowDoesItWork() {
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-          How does this work?
+          How does it work?
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
           <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
@@ -364,7 +483,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     )
   }
   
-  content2() {
+  contentAcceleratingMatching() {
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">An evergrowing <Text size="38px" color="color7" weight="bold">virtuous circle</Text> for researchers</Text>
@@ -421,6 +540,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       </>
     )
   }
+  
 
   callToActionEndpage() {
     return (
@@ -428,7 +548,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Start giving!</Text>
+              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">What are you waiting for? Let yourself and your work be known!</Text>
               <Box align="center" margin={{bottom: "90px"}}>
                   <SignUpButton 
                     callback={()=>{}}
@@ -463,7 +583,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   }
 
 
-callToActionSocial() {
+contentTestimonial() {
   return (
     <>
       {!this.state.renderMobileView && (
@@ -513,7 +633,7 @@ calltoActionOrganisers() {
         <>
           <Box>
             <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Are you a seminar organiser?</Text>
-            <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">Finding speakers and organising seminars has now been made easy, from start to finish!</Text>
+            <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">Finding speakers and organising seminars has now been made easy!</Text>
             
             <Box align="center" margin={{bottom: "90px"}}>
               <Link
@@ -566,10 +686,6 @@ calltoActionOrganisers() {
         />
 
 
-
-
-
-
         <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "1480px": "750px"} direction={this.state.renderMobileView ? "column" : "row"} alignSelf="center">
             <Box width={this.state.renderMobileView ? "100%" : "60%"} height={this.state.renderMobileView ? "1250px" : "100%"}
@@ -582,35 +698,49 @@ calltoActionOrganisers() {
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color5" id="content">
+        <Box height="100%" width="100%" background="color5">
+          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+            {this.contentTrigger()}
+          </Box>
+        </Box>
+
+        <Box height="100%" width="100%" background="color3" id="content">
           <Box width="80%" height={this.state.renderMobileView ? "1750px": "760px"}  direction="column" alignSelf="center">
-            {this.content1()}
+            {this.contentHowDoesItWork()}
           </Box>
         </Box>
 
         <Box height="100%" width="100%" background="color1">
-          <Box width="80%" height={this.state.renderMobileView ? "1290px": "1100px"} direction="column" alignSelf="center">
-            {this.content2()}
+          <Box width="80%" height={this.state.renderMobileView ? "1150px": "1200px"} direction="column" alignSelf="center">
+            {this.contentHeroHow()}
           </Box>
         </Box>
+
+
+        {/* <Box height="100%" width="100%" background="color4">
+          <Box width="80%" height={this.state.renderMobileView ? "1290px": "1100px"} direction="column" alignSelf="center">
+            {this.contentAcceleratingMatching()}
+          </Box>
+        </Box> */}
+
+
+        {/* <Box height="100%" width="100%">
+          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+            {this.contentTestimonial()}
+          </Box>
+        </Box> */}
 
         <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
-            {this.callToActionSocial()}
+            {this.callToActionEndpage()}
           </Box>
         </Box>
 
-        {/* <Box height="100%" width="100%" background="color5">
-          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
-            {this.callToActionEndpage()}
-          </Box>
-        </Box> */}
-
-        {/* <Box height="100%" width="100%" background="color5">
+        <Box height="100%" width="100%" background="color5">
           <Box width="80%" height={this.state.renderMobileView ? "450px": "400px"} direction="column" alignSelf="center">
             {this.calltoActionOrganisers()}
           </Box>
-        </Box> */}
+        </Box>
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />

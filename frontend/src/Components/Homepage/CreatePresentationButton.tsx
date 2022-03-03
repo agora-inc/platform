@@ -156,13 +156,13 @@ export const CreatePresentationButton = () =>  {
             onCancelClick={() => setshowFormOverlay(false)}
             onClickOutside={() => setshowFormOverlay(false)}
             onSubmitClick={() => submitPresentation(history)}
-            submitButtonText="Next"
+            submitButtonText="Continue"
             canProceed={isComplete()}
             isMissing={isMissing()}
             width={600}
             height={450}
             contentHeight="300px"
-            title={"Get invited as a speaker by academic communities from all around the world!"}
+            title={"Describe your talk to receive invitations!"}
           >
             <Box width="100%" gap="10px" margin={{top: "5px"}}>
               <TextInput
