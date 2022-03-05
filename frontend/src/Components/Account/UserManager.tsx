@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text, Layer } from "grommet";
 import { UserSettings } from "grommet-icons";
+import MediaQuery from "react-responsive";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import { useStore } from "../../store";
 import { UserService } from "../../Services/UserService";
@@ -8,7 +10,6 @@ import { ProfileService } from "../../Services/ProfileService";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import { LoginButton } from "./LoginButton";
 import { Menu } from "./Menu";
-import MediaQuery from "react-responsive";
 import "../../Styles/header.css";
 import "../../Styles/tooltip.css";
 
@@ -34,43 +35,57 @@ export const UserManager = ({ showLogin: boolean }: Props) => {
     useState(false);
   const [editingBio, setEditingBio] = useState(false);
 
+  const { getAccessTokenSilently } = useAuth0();
+
   useEffect(() => {
     fetchAdminChannels();
     fetchFollowingChannels();
     fetchMemberChannels();
   }, []);
 
-  const fetchAdminChannels = () => {
-    user &&
-      ChannelService.getChannelsForUser(
-        user.id,
-        ["owner"],
-        (adminChannels: Channel[]) => {
-          setAdminChannels(adminChannels);
-        }
-      );
+  const fetchAdminChannels = async () => {
+    if (!user) {
+      return;
+    }
+    const token = await getAccessTokenSilently();
+    ChannelService.getChannelsForUser(
+      user.id,
+      ["owner"],
+      (adminChannels: Channel[]) => {
+        setAdminChannels(adminChannels);
+      },
+      token
+    );
   };
 
-  const fetchFollowingChannels = () => {
-    user &&
-      ChannelService.getChannelsForUser(
-        user.id,
-        ["follower"],
-        (followingChannels: Channel[]) => {
-          setFollowingChannels(followingChannels);
-        }
-      );
+  const fetchFollowingChannels = async () => {
+    if (!user) {
+      return;
+    }
+    const token = await getAccessTokenSilently();
+    ChannelService.getChannelsForUser(
+      user.id,
+      ["follower"],
+      (followingChannels: Channel[]) => {
+        setFollowingChannels(followingChannels);
+      },
+      token
+    );
   };
 
-  const fetchMemberChannels = () => {
-    user &&
-      ChannelService.getChannelsForUser(
-        user.id,
-        ["member"],
-        (memberChannels: Channel[]) => {
-          setMemberChannels(memberChannels);
-        }
-      );
+  const fetchMemberChannels = async () => {
+    if (!user) {
+      return;
+    }
+    const token = await getAccessTokenSilently();
+    ChannelService.getChannelsForUser(
+      user.id,
+      ["member"],
+      (memberChannels: Channel[]) => {
+        setMemberChannels(memberChannels);
+      },
+      token
+    );
   };
 
   const toggleCreateChannelOverlay = () => {
@@ -85,30 +100,48 @@ export const UserManager = ({ showLogin: boolean }: Props) => {
     }
   };
 
-  const onBioSave = () => {
+  const onBioSave = async () => {
     if (user && user.bio) {
-      UserService.updateBio(user.id, user.bio, (updatedUser: any) => {
-        setUser(updatedUser);
-      });
+      const token = await getAccessTokenSilently();
+      UserService.updateBio(
+        user.id,
+        user.bio,
+        (updatedUser: any) => {
+          setUser(updatedUser);
+        },
+        token
+      );
     }
   };
 
-  const onMakePublicClicked = () => {
+  const onMakePublicClicked = async () => {
     if (user) {
-      UserService.updatePublic(user.id, !user.public, (updatedUser: any) => {
-        setUser(updatedUser);
-      });
+      const token = await getAccessTokenSilently();
+      UserService.updatePublic(
+        user.id,
+        !user.public,
+        (updatedUser: any) => {
+          setUser(updatedUser);
+        },
+        token
+      );
     }
   };
 
-  const onRedirectProfile = (history: any) => {
+  const onRedirectProfile = async (history: any) => {
     if (user) {
+      const token = await getAccessTokenSilently();
       let id: number = user.id;
       // createProfile checks if there is a profile associated to the user
       // if yes, redirect. If no, create and redirect
-      ProfileService.createProfile(user.id, "[your full name]", () => {
-        return history.push("/profile/" + id);
-      });
+      ProfileService.createProfile(
+        user.id,
+        "[your full name]",
+        () => {
+          return history.push("/profile/" + id);
+        },
+        token
+      );
     }
   };
 

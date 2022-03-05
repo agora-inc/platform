@@ -1,24 +1,29 @@
 import React, { Component } from "react";
-import { Box, Text, Button, Layer, Image} from "grommet";
+import { Box, Text, Button, Layer, Image } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { ChannelService } from "../../Services/ChannelService";
 import { User } from "../../Services/UserService";
 import { Link } from "react-router-dom";
-import { Calendar, Workshop, UserExpert, LinkNext, FormNextLink } from "grommet-icons";
-import "../../Styles/talk-card.css"; 
+import {
+  Calendar,
+  Workshop,
+  UserExpert,
+  LinkNext,
+  FormNextLink,
+} from "grommet-icons";
+import "../../Styles/talk-card.css";
 import MediaQuery from "react-responsive";
 import { textToLatex } from "../Core/LatexRendering";
 import MobileTalkCardOverlay from "../Talks/Talkcard/MobileTalkCardOverlay";
 import FooterOverlay from "./Talkcard/FooterOverlay";
-import MoraStreamLogo from "../../assets/general/mora_simplified_logo.jpeg"
+import MoraStreamLogo from "../../assets/general/mora_simplified_logo.jpeg";
 
 interface Props {
   talk: Talk;
-  user: User | null;
   width?: string;
   isCurrent?: boolean;
-  substituteTbdTba?: boolean,
-  addPicture?: boolean,
+  substituteTbdTba?: boolean;
+  addPicture?: boolean;
 }
 
 interface State {
@@ -28,7 +33,7 @@ interface State {
   registrationStatus: string;
   available: boolean;
   role: string;
-  processedTalk: Talk
+  processedTalk: Talk;
 }
 
 export default class TalkCard extends Component<Props, State> {
@@ -42,10 +47,10 @@ export default class TalkCard extends Component<Props, State> {
       available: true,
       role: "none",
       processedTalk: TalkService.polishTalkData(
-        this.props.talk, 
-        this.props.substituteTbdTba ? this.props.substituteTbdTba : true, 
-        this.props.addPicture ? this.props.addPicture : true,
-        )
+        this.props.talk,
+        this.props.substituteTbdTba ? this.props.substituteTbdTba : true,
+        this.props.addPicture ? this.props.addPicture : true
+      ),
     };
   }
 
@@ -53,18 +58,18 @@ export default class TalkCard extends Component<Props, State> {
     this.fetchRoleInChannel();
     this.checkIfAvailableAndRegistered();
   }
-  
+
   fetchRoleInChannel = () => {
     if (this.props.user !== null) {
       ChannelService.getRoleInChannel(
-        this.props.user.id, 
-        this.state.processedTalk.channel_id, 
+        this.props.user.id,
+        this.state.processedTalk.channel_id,
         (role: "none" | "owner" | "member" | "follower") => {
-          this.setState(
-            {role: role})
-        })
-      }
+          this.setState({ role: role });
+        }
+      );
     }
+  };
 
   formatDate = (d: string) => {
     const date = new Date(d);
@@ -86,26 +91,29 @@ export default class TalkCard extends Component<Props, State> {
   getTimeRemaining = (): string => {
     const end = new Date(this.state.processedTalk.end_date);
     const now = new Date();
-    let deltaMin = Math.floor((end.valueOf() - now.valueOf()) / (60*1000));
+    let deltaMin = Math.floor((end.valueOf() - now.valueOf()) / (60 * 1000));
     let message = deltaMin < 0 ? "Finished " : "Finishing in ";
     const suffix = deltaMin < 0 ? " ago" : "";
-    deltaMin = Math.abs(deltaMin)
-    
-    let hours =  Math.floor(deltaMin / 60);
-    let minutes =  Math.floor(deltaMin % 60);
+    deltaMin = Math.abs(deltaMin);
+
+    let hours = Math.floor(deltaMin / 60);
+    let minutes = Math.floor(deltaMin % 60);
     if (hours > 0) {
-      message += `${hours}h `
-    }  
+      message += `${hours}h `;
+    }
     if (minutes > 0) {
-      message += `${minutes}m `
-    }  
-    return message + suffix
+      message += `${minutes}m `;
+    }
+    return message + suffix;
   };
 
   toggleModal = () => {
     // track click of the event
-    if (!(this.state.showModal)){
-      TalkService.increaseViewCountForTalk(this.state.processedTalk.id, () => {})
+    if (!this.state.showModal) {
+      TalkService.increaseViewCountForTalk(
+        this.state.processedTalk.id,
+        () => {}
+      );
     }
     // toggle Modal
     this.setState({ showModal: !this.state.showModal });
@@ -141,9 +149,9 @@ export default class TalkCard extends Component<Props, State> {
         this.state.processedTalk.id,
         this.props.user.id,
         (status: string) => {
-          this.setState({ 
-            registered: (status === "accepted"),
-            registrationStatus: status 
+          this.setState({
+            registered: status === "accepted",
+            registrationStatus: status,
           });
         }
       );
@@ -182,8 +190,8 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   getSpeakerPhotoUrl = (): string | undefined => {
-    return TalkService.getSpeakerPhoto(this.state.processedTalk.id)
-  }
+    return TalkService.getSpeakerPhoto(this.state.processedTalk.id);
+  };
 
   // method here for mobile
   onClick = () => {
@@ -195,19 +203,19 @@ export default class TalkCard extends Component<Props, State> {
   };
 
   render() {
-    var renderMobileView = (window.innerWidth < 800);
+    var renderMobileView = window.innerWidth < 800;
     return (
-      <Box 
+      <Box
         className="talk_card_box_1"
         focusIndicator={false}
         height="100%"
         style={{
-          maxHeight: renderMobileView && this.state.showModal ? "600px" : "180px",
+          maxHeight:
+            renderMobileView && this.state.showModal ? "600px" : "180px",
           position: "relative",
           width: this.props.width ? this.props.width : "32%",
         }}
       >
-
         <Box
           onMouseEnter={() => this.setState({ showShadow: true })}
           onMouseLeave={() => {
@@ -225,7 +233,13 @@ export default class TalkCard extends Component<Props, State> {
           overflow="hidden"
         >
           <Box height="100%" pad="10px">
-          <Box direction="column" width={this.state.processedTalk.has_speaker_photo === 1 ? "65%" : "80%"} margin={{bottom: "10px"}}> 
+            <Box
+              direction="column"
+              width={
+                this.state.processedTalk.has_speaker_photo === 1 ? "65%" : "80%"
+              }
+              margin={{ bottom: "10px" }}
+            >
               <Box
                 direction="row"
                 gap="xsmall"
@@ -243,15 +257,13 @@ export default class TalkCard extends Component<Props, State> {
                   overflow="hidden"
                 >
                   {!this.state.processedTalk.has_avatar && (
-                    <img
-                      src={MoraStreamLogo}
-                      height={36}
-                      width={36}
-                    />
+                    <img src={MoraStreamLogo} height={36} width={36} />
                   )}
                   {!!this.state.processedTalk.has_avatar && (
                     <img
-                      src={ChannelService.getAvatar(this.state.processedTalk.channel_id)}
+                      src={ChannelService.getAvatar(
+                        this.state.processedTalk.channel_id
+                      )}
                       height={30}
                       width={30}
                     />
@@ -260,7 +272,7 @@ export default class TalkCard extends Component<Props, State> {
                 <Text weight="bold" size="14px" color="color3">
                   {this.state.processedTalk.channel_name}
                 </Text>
-              </Box> 
+              </Box>
 
               <Text
                 size="14px"
@@ -270,11 +282,16 @@ export default class TalkCard extends Component<Props, State> {
               >
                 {textToLatex(this.state.processedTalk.name)}
               </Text>
-            </Box> 
+            </Box>
             {this.state.processedTalk.has_speaker_photo === 1 && (
               <Box width="40%">
-                <Image 
-                  style={{position: 'absolute', top: 10, right: 10, aspectRatio: "3/2"}}
+                <Image
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    aspectRatio: "3/2",
+                  }}
                   src={this.getSpeakerPhotoUrl()}
                   width="30%"
                 />
@@ -320,7 +337,7 @@ export default class TalkCard extends Component<Props, State> {
                   </Text>
                 )}
               </Box>
-              {this.state.processedTalk.card_visibility === "Members only" &&
+              {this.state.processedTalk.card_visibility === "Members only" && (
                 <Box
                   round="xsmall"
                   background="#EAF1F1"
@@ -329,11 +346,9 @@ export default class TalkCard extends Component<Props, State> {
                   align="center"
                   width="160px"
                 >
-                  <Text size="12px">
-                    member-only
-                  </Text>
+                  <Text size="12px">member-only</Text>
                 </Box>
-              }
+              )}
               {/*this.state.processedTalk.card_visibility !== "Members only" && this.state.processedTalk.visibility === "Members only" && 
                 <Box
                   round="xsmall"
@@ -367,67 +382,71 @@ export default class TalkCard extends Component<Props, State> {
             background="color1"
           ></Box>
         )}
-        {this.state.showModal && 
+        {this.state.showModal && (
           <>
-          {/* //
+            {/* //
           // A. DESKTOP OVERLAY (HACK)
           // */}
-          <MediaQuery minDeviceWidth={800}>
-            <Layer
-              onEsc={() => {
-                this.toggleModal();
-                this.setState({ showShadow: false });
-              }}
-              onClickOutside={() => {
-                this.toggleModal();
-                this.setState({ showShadow: false });
-              }}
-              modal
-              responsive
-              animation="fadeIn"
-              style={{
-                width: 640,
-                height: this.state.registered ? 640 : 540,
-                borderRadius: 15,
-                overflow: "hidden",
-              }}
-            >
-              <Box
-                //align="center"
-                pad="25px"
-                // width="100%"
-                height="80%"
-                justify="between"
-                gap="xsmall"
+            <MediaQuery minDeviceWidth={800}>
+              <Layer
+                onEsc={() => {
+                  this.toggleModal();
+                  this.setState({ showShadow: false });
+                }}
+                onClickOutside={() => {
+                  this.toggleModal();
+                  this.setState({ showShadow: false });
+                }}
+                modal
+                responsive
+                animation="fadeIn"
+                style={{
+                  width: 640,
+                  height: this.state.registered ? 640 : 540,
+                  borderRadius: 15,
+                  overflow: "hidden",
+                }}
               >
                 <Box
-                  style={{ minHeight: "200px", maxHeight: "540px" }}
-                  direction="column"
+                  //align="center"
+                  pad="25px"
+                  // width="100%"
+                  height="80%"
+                  justify="between"
+                  gap="xsmall"
                 >
-                  <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
-                    <Link
-                      className="channel"
-                      to={`/${this.state.processedTalk.channel_name}`}
-                      style={{ textDecoration: "none" }}
+                  <Box
+                    style={{ minHeight: "200px", maxHeight: "540px" }}
+                    direction="column"
+                  >
+                    <Box
+                      direction="row"
+                      gap="xsmall"
+                      style={{ minHeight: "40px" }}
                     >
-                      <Box
-                        direction="row"
-                        gap="xsmall"
-                        align="center"
-                        round="xsmall"
-                        pad={{ vertical: "6px", horizontal: "6px" }}
+                      <Link
+                        className="channel"
+                        to={`/${this.state.processedTalk.channel_name}`}
+                        style={{ textDecoration: "none" }}
                       >
                         <Box
-                          justify="center"
+                          direction="row"
+                          gap="xsmall"
                           align="center"
-                          background="#efeff1"
-                          overflow="hidden"
-                          style={{
-                            minHeight: 30,
-                            minWidth: 30,
-                            borderRadius: 15,
-                          }}
+                          round="xsmall"
+                          pad={{ vertical: "6px", horizontal: "6px" }}
                         >
+                          <Box
+                            justify="center"
+                            align="center"
+                            background="#efeff1"
+                            overflow="hidden"
+                            style={{
+                              minHeight: 30,
+                              minWidth: 30,
+                              borderRadius: 15,
+                            }}
+                          >
                             <img
                               src={ChannelService.getAvatar(
                                 this.state.processedTalk.channel_id
@@ -435,87 +454,86 @@ export default class TalkCard extends Component<Props, State> {
                               height={30}
                               width={30}
                             />
+                          </Box>
+                          <Box justify="between">
+                            <Text weight="bold" size="16px" color="color3">
+                              {this.state.processedTalk.channel_name}
+                            </Text>
+                          </Box>
                         </Box>
-                        <Box justify="between">
-                          <Text weight="bold" size="16px" color="color3">
-                            {this.state.processedTalk.channel_name}
+                      </Link>
+                    </Box>
+                    <Text
+                      weight="bold"
+                      size="18px"
+                      color="color1"
+                      style={{
+                        minHeight: "50px",
+                        maxHeight: "120px",
+                        overflowY: "auto",
+                      }}
+                      margin={{ bottom: "20px", top: "10px" }}
+                    >
+                      {textToLatex(this.state.processedTalk.name)}
+                    </Text>
+
+                    {this.state.processedTalk.talk_speaker_url && (
+                      <a
+                        href={this.state.processedTalk.talk_speaker_url}
+                        target="_blank"
+                      >
+                        <Box direction="row" pad={{ left: "6px", top: "4px" }}>
+                          <UserExpert size="16px" />
+                          <Text
+                            size="16px"
+                            color="black"
+                            style={{
+                              height: "24px",
+                              overflow: "auto",
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {this.state.processedTalk.talk_speaker
+                              ? this.state.processedTalk.talk_speaker
+                              : "TBA"}
                           </Text>
                         </Box>
-                      </Box>
-                    </Link>
-                  </Box>
-                  <Text
-                    weight="bold"
-                    size="18px"
-                    color="color1"
-                    style={{
-                      minHeight: "50px",
-                      maxHeight: "120px",
-                      overflowY: "auto",
-                    }}
-                    margin={{ bottom: "20px", top: "10px" }}
-                  >
-                    {textToLatex(this.state.processedTalk.name)}
-                  </Text>
+                      </a>
+                    )}
 
-                  {this.state.processedTalk.talk_speaker_url && (
-                    <a href={this.state.processedTalk.talk_speaker_url} target="_blank">
-                      <Box
-                        direction="row"
-                        pad={{ left: "6px", top: "4px" }}
-                      >
+                    {!this.state.processedTalk.talk_speaker_url && (
+                      <Box direction="row" gap="small">
                         <UserExpert size="16px" />
                         <Text
                           size="16px"
                           color="black"
                           style={{
-                            height: "24px",
+                            height: "30px",
                             overflow: "auto",
                             fontStyle: "italic",
                           }}
+                          margin={{ bottom: "10px" }}
                         >
                           {this.state.processedTalk.talk_speaker
                             ? this.state.processedTalk.talk_speaker
                             : "TBA"}
                         </Text>
                       </Box>
-                    </a>
-                  )}
-
-                  {!this.state.processedTalk.talk_speaker_url && (
-                    <Box direction="row" gap="small">
-                      <UserExpert size="16px" />
-                      <Text
-                        size="16px"
-                        color="black"
-                        style={{
-                          height: "30px",
-                          overflow: "auto",
-                          fontStyle: "italic",
-                        }}
-                        margin={{ bottom: "10px" }}
-                      >
-                        {this.state.processedTalk.talk_speaker
-                          ? this.state.processedTalk.talk_speaker
-                          : "TBA"}
-                      </Text>
-                    </Box>
-                  )}
-                  <Box
-                    style={{
-                      minHeight: "50px",
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                    }}
-                    margin={{ top: "10px", bottom: "10px" }}
-                  >
-                    {this.state.processedTalk.description.split('\n').map(
-                      (item, i) => textToLatex(item)
                     )}
+                    <Box
+                      style={{
+                        minHeight: "50px",
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                      }}
+                      margin={{ top: "10px", bottom: "10px" }}
+                    >
+                      {this.state.processedTalk.description
+                        .split("\n")
+                        .map((item, i) => textToLatex(item))}
+                    </Box>
                   </Box>
                 </Box>
-
-                </Box> 
                 <FooterOverlay
                   talk={this.state.processedTalk}
                   user={this.props.user}
@@ -525,25 +543,23 @@ export default class TalkCard extends Component<Props, State> {
                   registrationStatus={this.state.registrationStatus}
                   isSharingPage={false}
                 />
-            </Layer>
-          </MediaQuery>
+              </Layer>
+            </MediaQuery>
 
-          
-          {/* //
+            {/* //
           // B. MOBILE OVERLAY (HACK; copy-pasting code is ugly (R))
           // */}
-          <MediaQuery maxDeviceWidth={800}>
-            <MobileTalkCardOverlay
-              talk={this.state.processedTalk}
-              pastOrFutureTalk="future"
-              user={this.props.user}
-              registered={this.state.registered}
-              registrationStatus={this.state.registrationStatus}
-            />
-          </MediaQuery>
-
+            <MediaQuery maxDeviceWidth={800}>
+              <MobileTalkCardOverlay
+                talk={this.state.processedTalk}
+                pastOrFutureTalk="future"
+                user={this.props.user}
+                registered={this.state.registered}
+                registrationStatus={this.state.registrationStatus}
+              />
+            </MediaQuery>
           </>
-        }
+        )}
       </Box>
     );
   }

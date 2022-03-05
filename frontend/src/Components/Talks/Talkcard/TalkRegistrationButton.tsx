@@ -14,7 +14,6 @@ import ReactTooltip from "react-tooltip";
 
 interface Props {
   talk: Talk;
-  user: User | null;
   role: string | undefined;
   registered: boolean;
   registrationStatus: string;
@@ -243,7 +242,6 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                         <TalkRegistrationFormButton
                           text="Fill in this form"
                           talk={this.props.talk}
-                          user={this.props.user}
                           callback={this.toggleModal}
                         />
                       </Box>

@@ -18,7 +18,6 @@ import SlidesUploader from "../Core/SlidesUploader";
 import FileDownloader from "../Core/FileDownloader";
 import ImageCropUploader from "../Channel/ImageCropUploader";
 
-
 interface Props {
   talk: Talk;
   admin?: boolean;
@@ -28,7 +27,6 @@ interface Props {
   onDelete?: any;
   onSave?: any;
   onUnsave?: any;
-  user: User | null;
   show?: boolean;
   onEditCallback?: any;
 }
@@ -43,7 +41,7 @@ interface State {
   isRecordingLinkHidden: boolean;
   hasYoutubeRecording: boolean;
   slideUrl?: string;
-  hasSlides: boolean
+  hasSlides: boolean;
 }
 
 export default class PastTalkCard extends Component<Props, State> {
@@ -60,24 +58,25 @@ export default class PastTalkCard extends Component<Props, State> {
         : "",
       isRecordingLinkHidden: true,
       hasYoutubeRecording: false,
-      hasSlides: false
+      hasSlides: false,
     };
   }
 
   onSlideUpload = async (e: any) => {
-    await TalkService.uploadSlides(this.props.talk.id, e.target.files[0], ()=>{})
-    await this.fetchSlide()
+    await TalkService.uploadSlides(
+      this.props.talk.id,
+      e.target.files[0],
+      () => {}
+    );
+    await this.fetchSlide();
   };
 
   fetchSlide = async () => {
-    let {url} = await TalkService.getSlides(this.props.talk.id)
-    this.setState({slideUrl: url})
-    await TalkService.hasSlides(
-      this.props.talk.id,
-      (hasSlides: any) => {
-        this.setState({hasSlides: hasSlides})
-      }
-    )
+    let { url } = await TalkService.getSlides(this.props.talk.id);
+    this.setState({ slideUrl: url });
+    await TalkService.hasSlides(this.props.talk.id, (hasSlides: any) => {
+      this.setState({ hasSlides: hasSlides });
+    });
   };
 
   formatDateFull = (s: string, e: string) => {
@@ -97,9 +96,9 @@ export default class PastTalkCard extends Component<Props, State> {
     let thumbnail = TalkService.getYoutubeThumbnail(
       this.props.talk.recording_link,
       this.props.talk.id
-    )
-    this.setState({ hasYoutubeRecording: thumbnail !== "" })
-    this.fetchSlide()
+    );
+    this.setState({ hasYoutubeRecording: thumbnail !== "" });
+    this.fetchSlide();
   }
 
   checkIfSaved = () => {
@@ -122,8 +121,8 @@ export default class PastTalkCard extends Component<Props, State> {
 
   toggleModal = () => {
     // track click of the event
-    if (!(this.state.showModal)){
-      TalkService.increaseViewCountForTalk(this.props.talk.id, () => {})
+    if (!this.state.showModal) {
+      TalkService.increaseViewCountForTalk(this.props.talk.id, () => {});
     }
 
     // toggle stuff
@@ -136,7 +135,6 @@ export default class PastTalkCard extends Component<Props, State> {
   toggleEdit = () => {
     this.setState({ showEdit: !this.state.showEdit });
   };
-
 
   onDeleteClicked = () => {
     TalkService.deleteTalk(this.props.talk.id, () => {
@@ -173,29 +171,22 @@ export default class PastTalkCard extends Component<Props, State> {
 
   getSpeakerPhotoUrl = (): string | undefined => {
     let current_time = Math.floor(new Date().getTime() / 5000);
-    // HACK: we add the new time at the end of the URL to avoid caching; 
-    // we divide time by value such that all block of requested image have 
+    // HACK: we add the new time at the end of the URL to avoid caching;
+    // we divide time by value such that all block of requested image have
     // the same name (important for the name to be the same for the styling).
-    return TalkService.getSpeakerPhoto(this.props.talk.id, current_time)
-  }
+    return TalkService.getSpeakerPhoto(this.props.talk.id, current_time);
+  };
 
   onSpeakerPhotoUpload = (file: File) => {
-    TalkService.uploadSpeakerPhoto(
-      this.props.talk.id,
-      file,
-      () => {
-        window.location.reload();
-      }
-    );
+    TalkService.uploadSpeakerPhoto(this.props.talk.id, file, () => {
+      window.location.reload();
+    });
   };
 
   removeSpeakerPhoto = () => {
-    TalkService.removeSpeakerPhoto(
-      this.props.talk.id,
-      () => {
-        window.location.reload();
-      }
-    );
+    TalkService.removeSpeakerPhoto(this.props.talk.id, () => {
+      window.location.reload();
+    });
   };
 
   onClick = () => {
@@ -211,78 +202,79 @@ export default class PastTalkCard extends Component<Props, State> {
   isRecordingHidden = () => {
     if (this.props.talk.recording_link) {
       if (this.props.admin) {
-        this.setState({ isRecordingLinkHidden: false })
+        this.setState({ isRecordingLinkHidden: false });
       } else if (this.props.user) {
         TalkService.isAvailableToUser(
           this.props.user.id,
           this.props.talk.id,
           (available: boolean) => {
-            this.setState({ isRecordingLinkHidden: !available })
+            this.setState({ isRecordingLinkHidden: !available });
           }
-        )
+        );
       } else if (this.props.talk.visibility === "Everybody") {
-        this.setState({ isRecordingLinkHidden: false })
+        this.setState({ isRecordingLinkHidden: false });
       } else {
-        this.setState({ isRecordingLinkHidden: true })
+        this.setState({ isRecordingLinkHidden: true });
       }
     } else {
-      this.setState({ isRecordingLinkHidden: true })
+      this.setState({ isRecordingLinkHidden: true });
     }
   };
 
   getHeight = () => {
     const mobileScreenThreshold = 900;
-    var renderMobileView = (window.innerWidth < mobileScreenThreshold);
+    var renderMobileView = window.innerWidth < mobileScreenThreshold;
 
     if (this.props.height) {
-      return this.props.height
+      return this.props.height;
     } else if (renderMobileView) {
-      return "100%"
+      return "100%";
     } else if (this.props.admin) {
-      return "400px"
+      return "400px";
     } else {
-      return "350px"
+      return "350px";
     }
-  }
+  };
 
   deleteSlidesButton = () => {
     return (
       <Box
-      background="#DDDDDD"
-      hoverIndicator="#CCCCCC"
-      round="xsmall"
-      justify="center"
-      align="center"
-      height="40px"
-      width="35%"
-      onClick={() => {
-        TalkService.deleteSlides(this.props.talk.id, 
-          (res: any) => {
-            if (res == "ok"){
-              this.setState({hasSlides: false})
+        background="#DDDDDD"
+        hoverIndicator="#CCCCCC"
+        round="xsmall"
+        justify="center"
+        align="center"
+        height="40px"
+        width="35%"
+        onClick={() => {
+          TalkService.deleteSlides(this.props.talk.id, (res: any) => {
+            if (res == "ok") {
+              this.setState({ hasSlides: false });
             }
-          })
-        }
-      }
-      focusIndicator={false}
-    >
-      {/* <Text alignSelf="center" color="grey" size="14px">
+          });
+        }}
+        focusIndicator={false}
+      >
+        {/* <Text alignSelf="center" color="grey" size="14px">
         {this.state.saved ? "Save talk": "Remove from saved"}
       </Text> */}
-      <Text alignSelf="center" weight="bold" color="grey" size="14px"> 
-        Delete slides
-      </Text>
-    </Box>
-    )
-  }
-
+        <Text alignSelf="center" weight="bold" color="grey" size="14px">
+          Delete slides
+        </Text>
+      </Box>
+    );
+  };
 
   getButtons = () => {
     if (this.props.admin) {
       // console.log(document.getElementById("upload"))
       return (
-        <Box direction="column">  
-          <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
+        <Box direction="column">
+          <Box
+            gap="small"
+            direction="row"
+            margin={{ top: "20px", bottom: "20px" }}
+          >
             {this.state.recordingLink !== "" && (
               <a
                 href={this.state.recordingLink}
@@ -309,14 +301,15 @@ export default class PastTalkCard extends Component<Props, State> {
             {this.state.hasSlides && (
               <>
                 <Box width="35%" height="40px">
-                    <FileDownloader name={this.props.talk.name+'_slides.pdf'} url={this.state.slideUrl}/>
+                  <FileDownloader
+                    name={this.props.talk.name + "_slides.pdf"}
+                    url={this.state.slideUrl}
+                  />
                 </Box>
                 <Box width="30%" />
                 {this.deleteSlidesButton()}
               </>
-              )
-            }
-
+            )}
           </Box>
           <Box gap="small" direction="row" margin={{ bottom: "10px" }}>
             <Box
@@ -342,17 +335,23 @@ export default class PastTalkCard extends Component<Props, State> {
             <Box width="27%" />
             <Box width="36.5%" height="30px">
               <SlidesUploader
-                text={this.state.hasSlides ? "Re-upload slides": "Upload slides"}
+                text={
+                  this.state.hasSlides ? "Re-upload slides" : "Upload slides"
+                }
                 onUpload={this.onSlideUpload}
                 width="100%"
               />
-            </Box>  
+            </Box>
           </Box>
         </Box>
       );
     } else {
       return (
-        <Box gap="small" direction="row" margin={{ top: "20px", bottom: "20px" }}>
+        <Box
+          gap="small"
+          direction="row"
+          margin={{ top: "20px", bottom: "20px" }}
+        >
           {this.props.talk.recording_link && !this.state.isRecordingLinkHidden && (
             <a
               href={this.props.talk.recording_link}
@@ -375,17 +374,23 @@ export default class PastTalkCard extends Component<Props, State> {
               </Box>
             </a>
           )}
-          <Box width={this.props.talk.recording_link && !this.state.isRecordingLinkHidden ? "30%" : "65%"} />
-            {this.state.hasSlides && (
-              <Box width="35%" height="40px">
-                  <FileDownloader 
-                    name={this.props.talk.name+'_slides.pdf'} 
-                    url={this.state.slideUrl}
-                    width="100%"
-                    />
-              </Box>
-              )
+          <Box
+            width={
+              this.props.talk.recording_link &&
+              !this.state.isRecordingLinkHidden
+                ? "30%"
+                : "65%"
             }
+          />
+          {this.state.hasSlides && (
+            <Box width="35%" height="40px">
+              <FileDownloader
+                name={this.props.talk.name + "_slides.pdf"}
+                url={this.state.slideUrl}
+                width="100%"
+              />
+            </Box>
+          )}
         </Box>
       );
     }
@@ -394,21 +399,30 @@ export default class PastTalkCard extends Component<Props, State> {
   render() {
     let [dateStr, timeStr] = this.formatDate(this.props.talk.date);
     const mobileScreenThreshold = 900;
-    var renderMobileView = (window.innerWidth < mobileScreenThreshold);
+    var renderMobileView = window.innerWidth < mobileScreenThreshold;
 
     return (
       <Box
         width={this.props.width ? this.props.width : "32%"}
         height={this.getHeight()}
         focusIndicator={false}
-        style={{ 
+        style={{
           position: "relative",
-          maxHeight: this.props.admin 
-            ? ((renderMobileView && this.state.showModal) ? "380px" : "380px")
-            : ((renderMobileView && this.state.showModal) ? "800px" : "800px"),
-          minHeight: this.props.admin 
-            ? ((renderMobileView && this.state.showModal) ? "240px" : "240px")
-            : ((renderMobileView && this.state.showModal) ? "180px" : "180px"), }}
+          maxHeight: this.props.admin
+            ? renderMobileView && this.state.showModal
+              ? "380px"
+              : "380px"
+            : renderMobileView && this.state.showModal
+            ? "800px"
+            : "800px",
+          minHeight: this.props.admin
+            ? renderMobileView && this.state.showModal
+              ? "240px"
+              : "240px"
+            : renderMobileView && this.state.showModal
+            ? "180px"
+            : "180px",
+        }}
         margin={this.props.margin ? this.props.margin : { bottom: "small" }}
       >
         <Box
@@ -429,38 +443,44 @@ export default class PastTalkCard extends Component<Props, State> {
           justify="between"
           style={{ position: "relative" }}
         >
-
           {this.props.talk.has_speaker_photo === 1 && (
-            <Image 
-              style={{ aspectRatio: "3/2", alignSelf: 'center' }}
+            <Image
+              style={{ aspectRatio: "3/2", alignSelf: "center" }}
               src={this.getSpeakerPhotoUrl()}
               height="62%"
-              margin={{top: "20px"}}
+              margin={{ top: "20px" }}
             />
           )}
-          {this.props.talk.has_speaker_photo === 0 && this.state.hasYoutubeRecording && (
-            <img
-              src={TalkService.getYoutubeThumbnail(
-                this.props.talk.recording_link,
-                this.props.talk.id
-              )}
-              style={{ height: "62%",
-              marginTop: "15px", 
-              maxWidth: '640px',
-              alignSelf: 'center'}}
-            />
-          )}
-          {this.props.talk.has_speaker_photo === 0 && !this.state.hasYoutubeRecording && (
-            <img
-              src={ChannelService.getAvatar(this.props.talk.channel_id)}
-              height={renderMobileView ? "125px" : "48%"}
-              style={{
-              marginTop: "35px", 
-              alignSelf: 'center'}}
-            />
-          )}
+          {this.props.talk.has_speaker_photo === 0 &&
+            this.state.hasYoutubeRecording && (
+              <img
+                src={TalkService.getYoutubeThumbnail(
+                  this.props.talk.recording_link,
+                  this.props.talk.id
+                )}
+                style={{
+                  height: "62%",
+                  marginTop: "15px",
+                  maxWidth: "640px",
+                  alignSelf: "center",
+                }}
+              />
+            )}
+          {this.props.talk.has_speaker_photo === 0 &&
+            !this.state.hasYoutubeRecording && (
+              <img
+                src={ChannelService.getAvatar(this.props.talk.channel_id)}
+                height={renderMobileView ? "125px" : "48%"}
+                style={{
+                  marginTop: "35px",
+                  alignSelf: "center",
+                }}
+              />
+            )}
           {this.props.admin && this.props.talk.has_speaker_photo === 0 && (
-            <div style={{position: 'absolute', top: 10, right: 10, zIndex: 5}}>
+            <div
+              style={{ position: "absolute", top: 10, right: 10, zIndex: 5 }}
+            >
               <ImageCropUploader
                 text="Upload thumbnail"
                 onUpload={this.onSpeakerPhotoUpload}
@@ -475,10 +495,14 @@ export default class PastTalkCard extends Component<Props, State> {
             </div>
           )}
           {this.props.admin && this.props.talk.has_speaker_photo === 1 && (
-            <Box 
-              style={{ 
-                position: 'absolute', top: 10, right: 10, zIndex: 5,
-                border: "solid black 1px", cursor: "pointer" 
+            <Box
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                zIndex: 5,
+                border: "solid black 1px",
+                cursor: "pointer",
               }}
               round="xsmall"
               width="100px"
@@ -489,8 +513,8 @@ export default class PastTalkCard extends Component<Props, State> {
               focusIndicator={true}
               hoverIndicator="#DDDDDD"
               onClick={(e: any) => {
-                e.stopPropagation()
-                this.removeSpeakerPhoto()
+                e.stopPropagation();
+                this.removeSpeakerPhoto();
               }}
             >
               <Text size="10px" weight="bold" color="black">
@@ -525,11 +549,7 @@ export default class PastTalkCard extends Component<Props, State> {
                   />
                 )}
               </Box>
-              <Text
-                weight="bold"
-                size="14px"
-                color="#025377"
-              >
+              <Text weight="bold" size="14px" color="#025377">
                 {this.props.talk.channel_name}
               </Text>
             </Box>
@@ -549,9 +569,7 @@ export default class PastTalkCard extends Component<Props, State> {
             >
               {this.props.talk.name}
             </Text>
-
           </Box>
-
         </Box>
         {this.state.showShadow && (
           <Box
@@ -571,7 +589,7 @@ export default class PastTalkCard extends Component<Props, State> {
 
         {this.state.showModal && (
           <>
-          <MediaQuery maxDeviceWidth={mobileScreenThreshold}>
+            <MediaQuery maxDeviceWidth={mobileScreenThreshold}>
               <MobileTalkCardOverlay
                 talk={this.props.talk}
                 pastOrFutureTalk="past"
@@ -581,164 +599,175 @@ export default class PastTalkCard extends Component<Props, State> {
               />
             </MediaQuery>
 
-          <MediaQuery minDeviceWidth={mobileScreenThreshold}>
-            <Layer
-              onEsc={() => {
-                this.toggleModal();
-                this.setState({ showShadow: false });
-              }}
-              onClickOutside={() => {
-                this.toggleModal();
-                this.setState({ showShadow: false });
-              }}
-              modal
-              responsive
-              animation="fadeIn"
-              style={{
-                width: 640,
-                height:
-                  this.props.admin
-                    ? (this.state.showLinkInput ? 600 : 560)
+            <MediaQuery minDeviceWidth={mobileScreenThreshold}>
+              <Layer
+                onEsc={() => {
+                  this.toggleModal();
+                  this.setState({ showShadow: false });
+                }}
+                onClickOutside={() => {
+                  this.toggleModal();
+                  this.setState({ showShadow: false });
+                }}
+                modal
+                responsive
+                animation="fadeIn"
+                style={{
+                  width: 640,
+                  height: this.props.admin
+                    ? this.state.showLinkInput
+                      ? 600
+                      : 560
                     : 500,
-                borderRadius: 15,
-                overflow: "hidden",
-              }}
-            >
-              <Box
-                //align="center"
-                pad="25px"
-                // width="100%"
-                height="100%"
-                justify="between"
-                gap="xsmall"
+                  borderRadius: 15,
+                  overflow: "hidden",
+                }}
               >
                 <Box
-                  style={{ minHeight: "200px", maxHeight: "400px" }}
-                  direction="column"
+                  //align="center"
+                  pad="25px"
+                  // width="100%"
+                  height="100%"
+                  justify="between"
+                  gap="xsmall"
                 >
-                  <Box direction="row" gap="xsmall" style={{ minHeight: "30px" }}>
-                    <Link
-                      className="channel"
-                      to={`/${this.props.talk.channel_name}`}
-                      style={{ textDecoration: "none" }}
+                  <Box
+                    style={{ minHeight: "200px", maxHeight: "400px" }}
+                    direction="column"
+                  >
+                    <Box
+                      direction="row"
+                      gap="xsmall"
+                      style={{ minHeight: "30px" }}
                     >
-                      <Box
-                        direction="row"
-                        gap="xsmall"
-                        align="center"
-                        round="xsmall"
-                        pad={{ vertical: "6px", horizontal: "6px" }}
+                      <Link
+                        className="channel"
+                        to={`/${this.props.talk.channel_name}`}
+                        style={{ textDecoration: "none" }}
                       >
                         <Box
-                          justify="center"
+                          direction="row"
+                          gap="xsmall"
                           align="center"
-                          background="#efeff1"
-                          overflow="hidden"
-                          style={{
-                            minHeight: 30,
-                            minWidth: 30,
-                            borderRadius: 15,
-                          }}
+                          round="xsmall"
+                          pad={{ vertical: "6px", horizontal: "6px" }}
                         >
-                          {!this.props.talk.has_avatar && (
-                            <Identicon
-                              string={this.props.talk.channel_name}
-                              size={30}
-                            />
-                          )}
-                          {!!this.props.talk.has_avatar && (
-                            <img
-                              src={ChannelService.getAvatar(
-                                this.props.talk.channel_id
-                              )}
-                              height={30}
-                              width={30}
-                            />
-                          )}
+                          <Box
+                            justify="center"
+                            align="center"
+                            background="#efeff1"
+                            overflow="hidden"
+                            style={{
+                              minHeight: 30,
+                              minWidth: 30,
+                              borderRadius: 15,
+                            }}
+                          >
+                            {!this.props.talk.has_avatar && (
+                              <Identicon
+                                string={this.props.talk.channel_name}
+                                size={30}
+                              />
+                            )}
+                            {!!this.props.talk.has_avatar && (
+                              <img
+                                src={ChannelService.getAvatar(
+                                  this.props.talk.channel_id
+                                )}
+                                height={30}
+                                width={30}
+                              />
+                            )}
+                          </Box>
+                          <Box justify="between">
+                            <Text weight="bold" size="14px" color="grey">
+                              {this.props.talk.channel_name}
+                            </Text>
+                          </Box>
                         </Box>
-                        <Box justify="between">
-                          <Text weight="bold" size="14px" color="grey">
-                            {this.props.talk.channel_name}
-                          </Text>
-                        </Box>
-                      </Box>
-                    </Link>
-                  </Box>
-                  <Text
-                    weight="bold"
-                    size="18px"
-                    color="black"
-                    style={{
-                      minHeight: "50px",
-                      maxHeight: "120px",
-                      overflowY: "auto",
-                    }}
-                    margin={{ bottom: "20px", top: "10px" }}
-                  >
-                    {this.props.talk.name}
-                  </Text>
-                  <Box direction="row" gap="small">
-                    <UserExpert size="14px" />
+                      </Link>
+                    </Box>
                     <Text
-                      size="14px"
+                      weight="bold"
+                      size="18px"
                       color="black"
                       style={{
-                        height: "30px",
-                        overflow: "auto",
-                        fontStyle: "italic",
+                        minHeight: "50px",
+                        maxHeight: "120px",
+                        overflowY: "auto",
                       }}
-                      margin={{ bottom: "10px" }}
+                      margin={{ bottom: "20px", top: "10px" }}
                     >
-                      {this.props.talk.talk_speaker
-                        ? this.props.talk.talk_speaker
-                        : "TBA"}
+                      {this.props.talk.name}
                     </Text>
+                    <Box direction="row" gap="small">
+                      <UserExpert size="14px" />
+                      <Text
+                        size="14px"
+                        color="black"
+                        style={{
+                          height: "30px",
+                          overflow: "auto",
+                          fontStyle: "italic",
+                        }}
+                        margin={{ bottom: "10px" }}
+                      >
+                        {this.props.talk.talk_speaker
+                          ? this.props.talk.talk_speaker
+                          : "TBA"}
+                      </Text>
+                    </Box>
+                    <Box
+                      style={{
+                        minHeight: "50px",
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                      }}
+                      margin={{ top: "10px", bottom: "10px" }}
+                    >
+                      {this.props.talk.description
+                        .split("\n")
+                        .map((item, i) => textToLatex(item))}
+                    </Box>
                   </Box>
                   <Box
-                    style={{
-                      minHeight: "50px",
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                    }}
-                    margin={{ top: "10px", bottom: "10px" }}
+                    direction="column"
+                    gap="small"
+                    height={
+                      this.props.admin
+                        ? this.state.showLinkInput
+                          ? "190px"
+                          : "130px"
+                        : "90px"
+                    }
+                    // height={this.state.showLinkInput ? "190px" : (this.props.talk.recording_link || this.props.admin ? "160px" : "90px")}
+                    //style={{ minHeight: "90px", maxHeight: "150px" }}
                   >
-                    {this.props.talk.description.split('\n').map(
-                      (item, i) => textToLatex(item)
-                    )}
-                  </Box>
-                </Box>
-                <Box
-                  direction="column"
-                  gap="small"
-                  height={this.props.admin ? (this.state.showLinkInput ? "190px" : "130px") : "90px" }
-                  // height={this.state.showLinkInput ? "190px" : (this.props.talk.recording_link || this.props.admin ? "160px" : "90px")}
-                //style={{ minHeight: "90px", maxHeight: "150px" }}
-                >
-                  <Box direction="row" gap="small">
-                    <Calendar size="14px" />
-                    <Text
-                      size="14px"
-                      color="black"
-                      style={{ height: "20px", fontStyle: "normal" }}
-                    >
-                      Held on{" "}
-                      {this.formatDateFull(
-                        this.props.talk.date,
-                        this.props.talk.end_date
-                      )}
-                    </Text>
-                  </Box>
-                  {this.getButtons()}
-                  {this.state.showLinkInput && (
-                    <TextInput
-                      style={{ height: 32 }}
-                      value={this.state.recordingLink}
-                      placeholder={"Enter url here"}
-                      onChange={(e) => {
-                        this.setState({ recordingLink: e.target.value });
-                      }}
-                    />
-                    /*
+                    <Box direction="row" gap="small">
+                      <Calendar size="14px" />
+                      <Text
+                        size="14px"
+                        color="black"
+                        style={{ height: "20px", fontStyle: "normal" }}
+                      >
+                        Held on{" "}
+                        {this.formatDateFull(
+                          this.props.talk.date,
+                          this.props.talk.end_date
+                        )}
+                      </Text>
+                    </Box>
+                    {this.getButtons()}
+                    {this.state.showLinkInput && (
+                      <TextInput
+                        style={{ height: 32 }}
+                        value={this.state.recordingLink}
+                        placeholder={"Enter url here"}
+                        onChange={(e) => {
+                          this.setState({ recordingLink: e.target.value });
+                        }}
+                      />
+                      /*
                     <Box
                       direction="row"
                       width="100%"
@@ -766,54 +795,59 @@ export default class PastTalkCard extends Component<Props, State> {
                       />
                     </Box>
                     */
-                  )}
+                    )}
+                  </Box>
                 </Box>
-              </Box>
-              {this.state.recordingLink === "" && (
-                <Box
-                  background="#d5d5d5"
-                  pad="small"
-                  align="center"
-                  justify="center"
-                >
-                  <Text textAlign="center" weight="bold">
-                    There is currently no recording available for this talk
-                  </Text>
-                </Box>
-              )}
-              {this.props.talk.recording_link && this.state.isRecordingLinkHidden && !this.props.admin && (
-                <Box
-                  background="#d5d5d5"
-                  pad="small"
-                  align="center"
-                  justify="center"
-                >
-                  <Text textAlign="center" weight="bold">
-                    {`The recording and slides are only available to ${
-                      this.props.talk.visibility === "Followers and members"
-                        ? "followers and members"
-                        : "members"
-                      }
+                {this.state.recordingLink === "" && (
+                  <Box
+                    background="#d5d5d5"
+                    pad="small"
+                    align="center"
+                    justify="center"
+                  >
+                    <Text textAlign="center" weight="bold">
+                      There is currently no recording available for this talk
+                    </Text>
+                  </Box>
+                )}
+                {this.props.talk.recording_link &&
+                  this.state.isRecordingLinkHidden &&
+                  !this.props.admin && (
+                    <Box
+                      background="#d5d5d5"
+                      pad="small"
+                      align="center"
+                      justify="center"
+                    >
+                      <Text textAlign="center" weight="bold">
+                        {`The recording and slides are only available to ${
+                          this.props.talk.visibility === "Followers and members"
+                            ? "followers and members"
+                            : "members"
+                        }
                     of ${this.props.talk.channel_name}`}
-                  </Text>
-                  <Link to={`/${this.props.talk.channel_name}`} style={{ textDecoration: "none" }}>
-                <Box
-                  className="see-more-button"
-                  pad={{ vertical: "2px", horizontal: "xsmall" }}
-                  round="xsmall"
-                  style={{
-                    border: "2px solid #C2C2C2",
-                  }}
-                  direction="row"
-                  align="end"
-                >      
-                  <FormNextLink color="grey" />
-                </Box>
-              </Link>
-                </Box>
-              )}
-            </Layer>
-          </MediaQuery>
+                      </Text>
+                      <Link
+                        to={`/${this.props.talk.channel_name}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Box
+                          className="see-more-button"
+                          pad={{ vertical: "2px", horizontal: "xsmall" }}
+                          round="xsmall"
+                          style={{
+                            border: "2px solid #C2C2C2",
+                          }}
+                          direction="row"
+                          align="end"
+                        >
+                          <FormNextLink color="grey" />
+                        </Box>
+                      </Link>
+                    </Box>
+                  )}
+              </Layer>
+            </MediaQuery>
           </>
           // <Layer
           //   onEsc={() => {

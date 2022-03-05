@@ -1,61 +1,66 @@
-import React, { Component } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { Redirect } from "react-router-dom";
-import { Text, Box, TextInput, TextArea, Button } from "grommet";
-import AsyncButton from "../../Core/AsyncButton";
-import { User } from "../../../Services/UserService";
-import { Previous } from "grommet-icons";
+import { Text, Box, TextInput } from "grommet";
+import { useAuth0 } from "@auth0/auth0-react";
+
+import { useStore } from "../../../store";
 import { Channel, ChannelService } from "../../../Services/ChannelService";
-import ChannelTopicSelector from "../ChannelTopicSelector";
 import { Topic } from "../../../Services/TopicService";
+import ChannelTopicSelector from "../ChannelTopicSelector";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { LoginButton } from "../../Account/LoginButton";
 import SignUpButton from "../../Account/SignUpButton";
 
+const topicExists = (topics: Topic[]) => {
+  let res = [];
+  for (let topic in topics) {
+    if (topic) {
+      res.push(true);
+    } else {
+      res.push(false);
+    }
+  }
+  return res;
+};
+
 interface Props {
-  user: User | null;
   onBackClicked: any;
   onComplete: any;
   channel?: Channel;
   visible: boolean;
 }
 
-interface State {
-  newChannelName: string;
-  newChannelDescription: string;
-  newChannelContactEmail: string;
-  redirect: boolean;
-  topics: Topic[];
-  isPrevTopics: boolean[];
-}
+export const CreateChannelOverlay: FunctionComponent<Props> = (props) => {
+  const [newChannelName, setNewChannelName] = useState("");
+  const [newChannelDescription, setNewChannelDescription] = useState("");
+  const [newChannelEmail, setNewChannelEmail] = useState("");
+  const [redirect, setRedirect] = useState(false);
+  const [topics, setTopics] = useState<Topic[]>(
+    props.channel ? props.channel.topics : []
+  );
+  const [isPrevTopics, setIsPrevTopics] = useState<boolean[]>(
+    props.channel ? topicExists(props.channel?.topics) : [false, false, false]
+  );
 
-export default class CreateChannelOverlay extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      newChannelName: "",
-      newChannelDescription: "",
-      newChannelContactEmail: "",
-      redirect: false,
-      topics: this.props.channel ? this.props.channel.topics : [],
-      isPrevTopics: this.props.channel
-        ? this.topicExists(this.props.channel.topics)
-        : [false, false, false],
-    };
-  }
+  const user = useStore((state) => state.loggedInUser);
 
-  onCreateClicked = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const onCreateClicked = async () => {
+    const token = await getAccessTokenSilently();
     ChannelService.createChannel(
-      this.state.newChannelName,
-      this.state.newChannelDescription,
-      this.props.user!.id,
+      newChannelName,
+      newChannelDescription,
+      user?.id || -1,
       (r: string) => {
-        this.setState({ redirect: true }, () => {});
+        setRedirect(true);
       },
-      this.state.topics
+      topics,
+      token
     );
   };
 
-  containsSpecialCharacter = (name: string) => {
+  const containsSpecialCharacter = (name: string) => {
     let check = /[`~@£$%^&*=+{}\[\]'"\\\|\/?<>]/;
     let test = name.toLowerCase().replace(/[0-9]/g, " ");
     if (test.match(check)) {
@@ -65,28 +70,14 @@ export default class CreateChannelOverlay extends Component<Props, State> {
     }
   };
 
-  topicExists = (topics: Topic[]) => {
-    let res = [];
-    for (let topic in topics) {
-      if (topic) {
-        res.push(true);
-      } else {
-        res.push(false);
-      }
-    }
-    return res;
-  };
-
-  selectTopic = (topic: Topic, num: number) => {
-    let tempTopics = this.state.topics;
+  const selectTopic = (topic: Topic, num: number) => {
+    let tempTopics = topics;
     tempTopics[num] = topic;
-    this.setState({
-      topics: tempTopics,
-    });
+    setTopics(tempTopics);
   };
 
-  cancelTopic = (num: number) => {
-    let tempTopics = this.state.topics;
+  const cancelTopic = (num: number) => {
+    let tempTopics = topics;
     tempTopics[num] = {
       field: "",
       id: 0,
@@ -95,82 +86,76 @@ export default class CreateChannelOverlay extends Component<Props, State> {
       parent_2_id: -1,
       parent_3_id: -1,
     };
-    this.setState({
-      topics: tempTopics,
-    });
+    setTopics(tempTopics);
   };
 
-  isComplete = () => {
+  const isComplete = () => {
     return (
-      this.state.newChannelName !== "" &&
-      this.state.newChannelName.length >= 5 &&
-      !this.containsSpecialCharacter(this.state.newChannelName) &&
-      this.state.topics.length > 0
+      newChannelName !== "" &&
+      newChannelName.length >= 5 &&
+      containsSpecialCharacter(newChannelName) &&
+      topics.length > 0
     );
   };
 
-  render() {
-    return this.state.redirect ? (
-      <Redirect to={`/${this.state.newChannelName}`} />
-    ) : (
-      <Overlay
-        width={500}
-        height={380}
-        visible={this.props.visible}
-        title={this.props.user === null ? "Get started!" : `Create an Agora`}
-        submitButtonText="Create"
-        disableSubmitButton={this.props.user === null ? true : false}
-        onSubmitClick={this.onCreateClicked}
-        contentHeight="230px"
-        canProceed={this.isComplete()}
-        onCancelClick={this.props.onBackClicked}
-        onClickOutside={this.props.onBackClicked}
-        onEsc={this.props.onBackClicked}
-      >
-        {this.props.user === null && (
-          <>
-            <Box style={{ minHeight: "40%" }} />
-            <Box direction="row" align="center" gap="10px">
-              <LoginButton callback={() => {}} />
-              <Text size="14px"> or </Text>
-              <SignUpButton callback={() => {}} />
-              <Text size="14px"> to proceed </Text>
-            </Box>
-          </>
-        )}
+  return redirect ? (
+    <Redirect to={`/${newChannelName}`} />
+  ) : (
+    <Overlay
+      width={500}
+      height={380}
+      visible={props.visible}
+      title={user === null ? "Get started!" : `Create an Agora`}
+      submitButtonText="Create"
+      disableSubmitButton={user === null ? true : false}
+      onSubmitClick={onCreateClicked}
+      contentHeight="230px"
+      canProceed={isComplete()}
+      onCancelClick={props.onBackClicked}
+      onClickOutside={props.onBackClicked}
+      onEsc={props.onBackClicked}
+    >
+      {user === null && (
+        <>
+          <Box style={{ minHeight: "40%" }} />
+          <Box direction="row" align="center" gap="10px">
+            <LoginButton callback={() => {}} />
+            <Text size="14px"> or </Text>
+            <SignUpButton callback={() => {}} />
+            <Text size="14px"> to proceed </Text>
+          </Box>
+        </>
+      )}
 
-        {!(this.props.user === null) && (
-          <>
-            <OverlaySection>
-              An agora is a hub for your community. It is the place where you
-              organise and list all your events, past or future. Give your
-              community a name and classification before getting started!
-              <TextInput
-                style={{ width: "100%", marginTop: "5px" }}
-                placeholder="Your agora name"
-                onChange={(e) =>
-                  this.setState({ newChannelName: e.target.value })
-                }
-              />
-            </OverlaySection>
-            <OverlaySection>
-              <ChannelTopicSelector
-                onSelectedCallback={this.selectTopic}
-                onCanceledCallback={this.cancelTopic}
-                isPrevTopics={this.state.isPrevTopics}
-                prevTopics={this.props.channel ? this.props.channel.topics : []}
-                textSize="medium"
-              />
-            </OverlaySection>
-          </>
-        )}
+      {user && (
+        <>
+          <OverlaySection>
+            An agora is a hub for your community. It is the place where you
+            organise and list all your events, past or future. Give your
+            community a name and classification before getting started!
+            <TextInput
+              style={{ width: "100%", marginTop: "5px" }}
+              placeholder="Your agora name"
+              onChange={(e) => setNewChannelName(e.target.value)}
+            />
+          </OverlaySection>
+          <OverlaySection>
+            <ChannelTopicSelector
+              onSelectedCallback={selectTopic}
+              onCanceledCallback={cancelTopic}
+              isPrevTopics={isPrevTopics}
+              prevTopics={props.channel ? props.channel.topics : []}
+              textSize="medium"
+            />
+          </OverlaySection>
+        </>
+      )}
 
-        {this.containsSpecialCharacter(this.state.newChannelName) ? (
-          <Text color="red" size="12px" style={{ marginBottom: "12px" }}>
-            Agora name cannot contain special characters
-          </Text>
-        ) : null}
-      </Overlay>
-    );
-  }
-}
+      {containsSpecialCharacter(newChannelName) ? (
+        <Text color="red" size="12px" style={{ marginBottom: "12px" }}>
+          Agora name cannot contain special characters
+        </Text>
+      ) : null}
+    </Overlay>
+  );
+};

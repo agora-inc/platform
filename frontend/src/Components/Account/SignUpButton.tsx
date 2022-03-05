@@ -29,11 +29,10 @@ interface State {
   width: string;
   height: string;
   textSize: string;
-
 }
 
 export default class SignUpButton extends Component<Props, State> {
-  constructor(props: Props ) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showModal: false,
@@ -47,35 +46,34 @@ export default class SignUpButton extends Component<Props, State> {
       email: "",
       width: this.props.width ? this.props.width : "100px",
       height: this.props.height ? this.props.height : "35px",
-      textSize: this.props.textSize ? this.props.textSize : "14px"
+      textSize: this.props.textSize ? this.props.textSize : "14px",
     };
   }
 
   onSubmit = () => {
-    UserService.register(
-      this.state.username,
-      this.state.password,
-      this.state.email,
-      this.state.position,
-      this.state.institution,
-      this.props.channelId !== undefined ? this.props.channelId : 0,
-      (result: {status: string, userId: number}) => {
-        if (result.status === "ok") {
-          ProfileService.createProfile(
-            result.userId, 
-            this.state.fullName, 
-            () => {
-              this.toggleModal();
-              this.props.callback();
-            }
-          )
-        } else {
-          this.setState({ error: result.status });
-        }
-      }
-    );
+    // UserService.register(
+    //   this.state.username,
+    //   this.state.password,
+    //   this.state.email,
+    //   this.state.position,
+    //   this.state.institution,
+    //   this.props.channelId !== undefined ? this.props.channelId : 0,
+    //   (result: {status: string, userId: number}) => {
+    //     if (result.status === "ok") {
+    //       ProfileService.createProfile(
+    //         result.userId,
+    //         this.state.fullName,
+    //         () => {
+    //           this.toggleModal();
+    //           this.props.callback();
+    //         }
+    //       )
+    //     } else {
+    //       this.setState({ error: result.status });
+    //     }
+    //   }
+    // );
   };
-
 
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, error: "" });
@@ -98,10 +96,9 @@ export default class SignUpButton extends Component<Props, State> {
     return re.test(email);
   };
 
-  
   render() {
     return (
-      <Box style={this.props.height ? {} : {maxHeight: "30px"}}>
+      <Box style={this.props.height ? {} : { maxHeight: "30px" }}>
         <Box
           onClick={this.toggleModal}
           background="#0C385B"
@@ -113,7 +110,10 @@ export default class SignUpButton extends Component<Props, State> {
           height={this.state.height}
           round="xsmall"
         >
-          <Text size={this.state.textSize} weight="bold"> {this.props.text ? this.props.text : "Sign up"} </Text>
+          <Text size={this.state.textSize} weight="bold">
+            {" "}
+            {this.props.text ? this.props.text : "Sign up"}{" "}
+          </Text>
         </Box>
         <Overlay
           width={500}
@@ -137,7 +137,7 @@ export default class SignUpButton extends Component<Props, State> {
               gap="small"
               direction="row"
             >
-              <StatusCritical/>
+              <StatusCritical />
               <Heading level={5} margin="none" color="grey">
                 {/*Error: {this.state.error}*/}
                 Error: Username or email already taken.
@@ -154,8 +154,9 @@ export default class SignUpButton extends Component<Props, State> {
           >
             <Box width="90%" gap="5px">
               <Text size="14px" color="black" margin={{ bottom: "24px" }}>
-                This account will be associated with you as an individual. After you've signed up
-                you'll be able to fill your profile and advertise your research.
+                This account will be associated with you as an individual. After
+                you've signed up you'll be able to fill your profile and
+                advertise your research.
                 {/*create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
                   <Text color="color1" weight="bold" size="14px">

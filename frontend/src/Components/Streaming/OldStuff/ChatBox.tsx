@@ -38,7 +38,7 @@ export default class ChatBox extends Component<Props, State> {
     this.state = {
       messages: [],
       newMessageContent: "",
-      loggedInUser: UserService.getCurrentUser(),
+      loggedInUser: null,
       showEmojiPicker: false,
       pingIntervalId: null,
       loading: true,

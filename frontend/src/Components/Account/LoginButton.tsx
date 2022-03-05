@@ -1,8 +1,5 @@
 import React from "react";
 import { Box, Text } from "grommet";
-import { StatusCritical, StatusGood } from "grommet-icons";
-
-import { UserService } from "../../Services/UserService";
 import { useAuth0 } from "@auth0/auth0-react";
 
 interface Props {

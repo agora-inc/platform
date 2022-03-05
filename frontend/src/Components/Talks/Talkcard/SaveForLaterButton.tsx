@@ -8,7 +8,6 @@ import SignUpButton from "../../Account/SignUpButton";
 
 interface Props {
   talk: Talk;
-  user: User | null;
 }
 
 interface State {

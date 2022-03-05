@@ -1,20 +1,10 @@
-import React, { Component } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Box } from "grommet";
-import { Tag, TagService } from "../../Services/TagService";
-// Find another library to make this component work
-// import { Input } from
-import Loading from "./Loading";
 import { Add } from "grommet-icons";
+import { useAuth0 } from "@auth0/auth0-react";
 
-// const { Search } = Input;
-
-interface State {
-  all: Tag[];
-  filtered: Tag[];
-  selected: Tag[];
-  searchTerm: string;
-  tagBeingCreated: boolean;
-}
+import { Tag, TagService } from "../../Services/TagService";
+import Loading from "./Loading";
 
 interface Props {
   onSelectedCallback: any;
@@ -24,68 +14,57 @@ interface Props {
   height: string;
 }
 
-export default class TagSelector extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      all: [],
-      filtered: [],
-      selected: this.props.selected ? this.props.selected : [],
-      searchTerm: "",
-      tagBeingCreated: false,
-    };
-  }
+export const TagSelector: FunctionComponent<Props> = (props) => {
+  const [all, setAll] = useState<Tag[]>([]);
+  const [filtered, setFiltered] = useState<Tag[]>([]);
+  const [selected, setSelected] = useState<Tag[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [tagBeingCreated, setTagBeingCreated] = useState(false);
 
-  componentWillMount() {
+  const { getAccessTokenSilently } = useAuth0();
+
+  useEffect(() => {
     TagService.getAll((tags: Tag[]) => {
-      this.setState({ all: tags });
+      setAll(tags);
     });
-  }
+  });
 
-  filterTags = (text: string) => {
-    this.setState({
-      searchTerm: text,
-      filtered: this.state.all.filter((t) =>
-        t.name.toLowerCase().includes(text)
-      ),
-    });
+  const filterTags = (text: string) => {
+    setSearchTerm(text);
+    setFiltered(all.filter((t: Tag) => t.name.toLowerCase().includes(text)));
   };
 
-  onTagClicked = (tag: Tag) => {
-    this.state.selected.includes(tag)
-      ? this.deselectTag(tag)
-      : this.selectTag(tag);
+  const onTagClicked = (tag: Tag) => {
+    selected.includes(tag) ? deselectTag(tag) : selectTag(tag);
     // console.log(this.state);
   };
 
-  selectTag = (tag: Tag) => {
-    this.setState({ selected: [...this.state.selected, tag] });
-    this.props.onSelectedCallback(tag);
+  const selectTag = (tag: Tag) => {
+    setSelected([...selected, tag]);
+    props.onSelectedCallback(tag);
   };
 
-  deselectTag = (tag: Tag) => {
-    this.setState({
-      selected: this.state.selected.filter(function (t) {
-        return t !== tag;
-      }),
-    });
-    this.props.onDeselectedCallback(tag);
+  const deselectTag = (tag: Tag) => {
+    setSelected(selected.filter((t: Tag) => t !== tag));
+    props.onDeselectedCallback(tag);
   };
 
-  createNewTag = (tag: string) => {
-    this.setState({ tagBeingCreated: true }, () => {
-      TagService.createTag(tag, (allTags: Tag[]) => {
-        this.setState(
-          { tagBeingCreated: false, all: allTags, searchTerm: "" },
-          () => {
-            this.selectTag(this.state.all[0]);
-          }
-        );
-      });
-    });
+  const createNewTag = async (tag: string) => {
+    setTagBeingCreated(true);
+    const token = await getAccessTokenSilently();
+    TagService.createTag(
+      tag,
+      (allTags: Tag[]) => {
+        setAll(allTags);
+        setSearchTerm("");
+        selectTag(allTags[0]);
+        setTagBeingCreated(false);
+      },
+      token
+    );
   };
 
-  showCreateOption = (tag: string) => {
+  const showCreateOption = (tag: string) => {
     return (
       <Box
         border={{ color: "#61EC9F", size: "small" }}
@@ -96,9 +75,9 @@ export default class TagSelector extends Component<Props, State> {
         round="medium"
         focusIndicator={false}
         style={{ height: 44 }}
-        onClick={() => this.createNewTag(tag)}
+        onClick={() => createNewTag(tag)}
       >
-        {this.state.tagBeingCreated ? (
+        {tagBeingCreated ? (
           <Loading size={24} color="#61EC9F" />
         ) : (
           <Box direction="row" justify="between" align="center" gap="xsmall">
@@ -109,19 +88,16 @@ export default class TagSelector extends Component<Props, State> {
     );
   };
 
-  render() {
-    // console.log("selected:", this.state.selected);
-    const tagsToShow =
-      this.state.searchTerm === "" ? this.state.all : this.state.filtered;
-    return (
-      <Box width="100%">
-        <Box
-          direction="row"
-          align="center"
-          gap="small"
-          margin={{ bottom: "small" }}
-        >
-          {/* <Heading level={4}>Add some tags</Heading> 
+  const tagsToShow = searchTerm === "" ? all : filtered;
+  return (
+    <Box width="100%">
+      <Box
+        direction="row"
+        align="center"
+        gap="small"
+        margin={{ bottom: "small" }}
+      >
+        {/* <Heading level={4}>Add some tags</Heading> 
           <Search
             placeholder="search..."
             onSearch={(value) => this.filterTags(value)}
@@ -130,46 +106,44 @@ export default class TagSelector extends Component<Props, State> {
             value={this.state.searchTerm}
           />
           */}
-        </Box>
-        <Box
-          direction="row"
-          wrap
-          overflow="scroll"
-          margin="none"
-          pad="xsmall"
-          round="xsmall"
-          justify="start"
-          width="100%"
-          background="rgba(206,254,233,0.3)"
-          style={{
-            justifySelf: "end",
-            height: this.props.height,
-            width: this.props.width,
-          }}
-        >
-          {this.state.searchTerm !== "" &&
-            this.showCreateOption(this.state.searchTerm)}
-          {tagsToShow.map((tag) => (
-            <Box
-              onClick={() => this.onTagClicked(tag)}
-              background={
-                this.state.selected.some((t) => t["name"] === tag["name"])
-                  ? "#606EEB"
-                  : "#f3f3f3"
-              }
-              align="center"
-              justify="center"
-              pad={{ horizontal: "medium", vertical: "small" }}
-              margin={{ vertical: "xsmall", right: "xsmall", left: "none" }}
-              round="medium"
-              focusIndicator={false}
-              style={{ height: 44 }}
-            >
-              {tag.name}
-            </Box>
-          ))}
-        </Box>
       </Box>
-    );
-  }
-}
+      <Box
+        direction="row"
+        wrap
+        overflow="scroll"
+        margin="none"
+        pad="xsmall"
+        round="xsmall"
+        justify="start"
+        width="100%"
+        background="rgba(206,254,233,0.3)"
+        style={{
+          justifySelf: "end",
+          height: props.height,
+          width: props.width,
+        }}
+      >
+        {searchTerm !== "" && showCreateOption(searchTerm)}
+        {tagsToShow.map((tag) => (
+          <Box
+            onClick={() => onTagClicked(tag)}
+            background={
+              selected.some((t) => t["name"] === tag["name"])
+                ? "#606EEB"
+                : "#f3f3f3"
+            }
+            align="center"
+            justify="center"
+            pad={{ horizontal: "medium", vertical: "small" }}
+            margin={{ vertical: "xsmall", right: "xsmall", left: "none" }}
+            round="medium"
+            focusIndicator={false}
+            style={{ height: 44 }}
+          >
+            {tag.name}
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+};

@@ -1,39 +1,32 @@
-import React, { Component } from "react";
-import { Box, Text, Sidebar } from "grommet";
+import React, { FunctionComponent } from "react";
+import { Box, Sidebar } from "grommet";
+
 import TrendingChannelsList from "./TrendingChannelsList";
-import SubscribedChannelsList from "../Account/SubscribedChannelsList";
-import PopularTagsBox from "./PopularTagsBox";
-import { User } from "../../Services/UserService";
+import { SubscribedChannelsList } from "../Account/SubscribedChannelsList";
 
-interface Props {
-  user: User | null;
-}
-
-export default class CustomSideBar extends Component<Props> {
-  render() {
-    return (
-      <Sidebar
-        background="#EFEFF1"
-        width="20%"
-        pad="none"
-        style={{ minHeight: "100%" }}
-        margin="none"
+export const CustomSideBar: FunctionComponent = () => {
+  return (
+    <Sidebar
+      background="#EFEFF1"
+      width="20%"
+      pad="none"
+      style={{ minHeight: "100%" }}
+      margin="none"
+    >
+      <Box
+        margin={{ top: "9vh" }}
+        pad={{ top: "3px" }}
+        style={{ position: "sticky" }}
+        gap="small"
       >
-        <Box
-          margin={{ top: "9vh" }}
-          pad={{ top: "3px" }}
-          style={{ position: "sticky"}}
-          gap="small"
-        >
-          <Box>
-            <TrendingChannelsList />
-          </Box>
-          <Box height="50%">
-            <SubscribedChannelsList user={this.props.user}/>
-          </Box>
-          {/* <PopularTagsBox /> */}
+        <Box>
+          <TrendingChannelsList />
         </Box>
-      </Sidebar>
-    );
-  }
-}
+        <Box height="50%">
+          <SubscribedChannelsList />
+        </Box>
+        {/* <PopularTagsBox /> */}
+      </Box>
+    </Sidebar>
+  );
+};

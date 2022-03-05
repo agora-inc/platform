@@ -6,34 +6,36 @@ import { User, UserService } from "../../Services/UserService";
 import { Presentation, ProfileService } from "../../Services/ProfileService";
 import { Workshop, StatusCritical } from "grommet-icons";
 import { LoginButton } from "../Account/LoginButton";
+import { useStore } from "../../store";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const CreatePresentationButton = () => {
-  const [showFormOverlay, setshowFormOverlay] = useState<boolean>(false);
-  const [showSignUpOverlay, setShowSignUpOverlay] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [link, setLink] = useState<string>("");
-  const [duration, setDuration] = useState<number>(0);
-  const [user, setUser] = useState<User>();
+  const [showFormOverlay, setshowFormOverlay] = useState(false);
+  const [showSignUpOverlay, setShowSignUpOverlay] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [link, setLink] = useState("");
+  const [duration, setDuration] = useState(0);
+
   // sign up fields
-  const [username, setUsername] = useState<string>("");
-  const [fullName, setFullName] = useState<string>("");
-  const [position, setPosition] = useState<string>("");
-  const [institution, setInstitution] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [username, setUsername] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [position, setPosition] = useState("");
+  const [institution, setInstitution] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    setUser(UserService.getCurrentUser());
-  }, []);
+  const user = useStore((state) => state.loggedInUser);
 
-  function formatDate(d: Date): string {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const formatDate = (d: Date): string => {
     return d.toISOString().slice(0, 19).replace("T", " ");
-  }
+  };
 
-  function submitPresentation(history: any): void {
+  const submitPresentation = async (history: any) => {
     let now = new Date();
     if (user) {
       // If logged in, presentation is saved and user is redirect to profile page (make sure it exists)
@@ -47,13 +49,16 @@ export const CreatePresentationButton = () => {
         date_created: formatDate(now),
       };
 
+      const token = await getAccessTokenSilently();
+
       ProfileService.updatePresentation(
         user.id,
         temp_presentation,
         formatDate(now),
         (id: number) => {
           return history.push("/profile/" + user.id);
-        }
+        },
+        token
       );
     } else {
       // If not logged in, Open another overlay "Sign up to save and advertise your presentation" or log in instead
@@ -63,55 +68,51 @@ export const CreatePresentationButton = () => {
       setshowFormOverlay(false);
       setShowSignUpOverlay(true);
     }
-  }
+  };
 
-  function onLogin(history: any): void {
-    setUser(UserService.getCurrentUser());
-  }
+  // function onSignup(history: any): void {
+  //   UserService.register(
+  //     username,
+  //     password,
+  //     email,
+  //     position,
+  //     institution,
+  //     0,
+  //     (result: { status: string; userId: number }) => {
+  //       if (result.status === "ok") {
+  //         let now = new Date();
+  //         let temp_presentation: Presentation = {
+  //           id: -1,
+  //           user_id: result.userId,
+  //           title: title,
+  //           description: description,
+  //           link: link,
+  //           duration: duration,
+  //           date_created: formatDate(now),
+  //         };
+  //         ProfileService.createProfile(result.userId, fullName, () => {
+  //           ProfileService.updatePresentation(
+  //             result.userId,
+  //             temp_presentation,
+  //             formatDate(now),
+  //             (id: number) => {
+  //               setShowSignUpOverlay(false);
+  //               history.push("/profile/" + result.userId);
+  //             }
+  //           );
+  //         });
+  //       } else {
+  //         setError(result.status);
+  //       }
+  //     }
+  //   );
+  // }
 
-  function onSignup(history: any): void {
-    UserService.register(
-      username,
-      password,
-      email,
-      position,
-      institution,
-      0,
-      (result: { status: string; userId: number }) => {
-        if (result.status === "ok") {
-          let now = new Date();
-          let temp_presentation: Presentation = {
-            id: -1,
-            user_id: result.userId,
-            title: title,
-            description: description,
-            link: link,
-            duration: duration,
-            date_created: formatDate(now),
-          };
-          ProfileService.createProfile(result.userId, fullName, () => {
-            ProfileService.updatePresentation(
-              result.userId,
-              temp_presentation,
-              formatDate(now),
-              (id: number) => {
-                setShowSignUpOverlay(false);
-                history.push("/profile/" + result.userId);
-              }
-            );
-          });
-        } else {
-          setError(result.status);
-        }
-      }
-    );
-  }
-
-  function isComplete(): boolean {
+  const isComplete = (): boolean => {
     return title !== "" && description !== "" && duration > 0;
-  }
+  };
 
-  function isMissing(): string[] {
+  const isMissing = (): string[] => {
     let res: string[] = [];
     if (title === "") {
       res.push("Title");
@@ -123,7 +124,7 @@ export const CreatePresentationButton = () => {
       res.push("Duration");
     }
     return res;
-  }
+  };
 
   return (
     <>
@@ -342,7 +343,7 @@ export const CreatePresentationButton = () => {
                       If you already have an account, log in to add your new
                       presentation
                     </Text>
-                    <LoginButton callback={() => onLogin(history)} />
+                    <LoginButton callback={() => {}} />
                   </Box>
                 </Box>
               </Layer>

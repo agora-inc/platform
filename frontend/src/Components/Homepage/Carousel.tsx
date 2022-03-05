@@ -1,40 +1,36 @@
-import React, { Component } from "react";
+import React, { Component, FunctionComponent, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
 import TalkCard from "../Talks/TalkCard";
 import { User, UserService } from "../../Services/UserService";
 import TrendingTalksList from "../../Components/Homepage/TrendingTalksList";
+import { useStore } from "../../store";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface Props {
   gridArea: string;
 }
 
-interface State {
-  talks: Talk[];
-  user: User;
-}
+export const _Carousel: FunctionComponent<Props> = (props) => {
+  const [talks, setTalks] = useState<Talk[]>([]);
 
-export default class Carousel extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      talks: [],
-      user: UserService.getCurrentUser(),
-    };
-  }
+  const user = useStore((state) => state.loggedInUser);
 
-  componentWillMount() {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const getTalks = async () => {
+    const token = await getAccessTokenSilently();
     TalkService.getAllCurrentTalks(
       3,
       0,
       (data: { talks: Talk[]; count: number }) => {
-        this.setState({ talks: data.talks });
+        setTalks(data.talks);
       }
     );
-  }
+  };
 
-  ifNoStreams = () => {
+  const ifNoStreams = () => {
     return (
       <Box
         direction="row"
@@ -77,9 +73,9 @@ export default class Carousel extends Component<Props, State> {
     );
   };
 
-  ifStreams = () => {
+  const ifStreams = () => {
     return (
-      <Box width="100%" margin={{bottom: "20px"}}>
+      <Box width="100%" margin={{ bottom: "20px" }}>
         <Text size="26px" weight="bold" color="color1" margin="none">
           Happening now
         </Text>
@@ -90,32 +86,27 @@ export default class Carousel extends Component<Props, State> {
           height="100%"
           margin={{ top: "10px" }}
         >
-          {this.state.talks.map((talk: Talk) => (
-            <TalkCard talk={talk} user={this.state.user} width="31.5%" isCurrent={true} />
+          {talks.map((talk: Talk) => (
+            <TalkCard talk={talk} width="31.5%" isCurrent={true} />
           ))}
         </Box>
       </Box>
     );
   };
 
-  render() {
-    return (
-      <>
-        <Box align="start" margin={{bottom: "20px"}}>
-          <TrendingTalksList />
-        </Box>
-        <Box
-        // width="100%"
-        // height="100%"
-        // gridArea={this.props.gridArea}
-        // margin={{ top: "60px" }}
-        >
-          {this.state.talks.length != 0 && this.ifStreams()}
-          
-        </Box>
+  return (
+    <>
+      <Box align="start" margin={{ bottom: "20px" }}>
+        <TrendingTalksList />
+      </Box>
+      <Box
+      // width="100%"
+      // height="100%"
+      // gridArea={this.props.gridArea}
+      // margin={{ top: "60px" }}
+      >
+        {talks.length != 0 && ifStreams()}
+      </Box>
     </>
-    );
-  }
-}
-
-// {this.state.talks.length === 0 ? this.ifNoStreams() : this.ifStreams()}
+  );
+};
