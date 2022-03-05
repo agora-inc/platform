@@ -175,16 +175,44 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           </Text>
           {/* <Text size="20px">Empower your community by attracting like-minded researchers from all around the world!</Text> */}
           {!this.state.renderMobileView && (
-            <Box margin={{bottom: "50px", top: "30px"}}>
-              <CreateChannelButton 
-                      onClick={this.toggleCreateChannelOverlay} 
-                      width="500px"
-                      height="90px"
-                      text={"Get started as an organiser"}
-                      textSize="18px"
-                    />
-            </Box>
+            <Box direction={this.state.renderMobileView ? "column" : "row"} margin={{bottom: "50px", top: "30px"}}>
+              <Box>
+                <CreateChannelButton 
+                        onClick={this.toggleCreateChannelOverlay} 
+                        width="300px"
+                        height="90px"
+                        text={"Get started for free"}
+                        textSize="18px"
+                      />
+              </Box>
+              <Text margin={{bottom: "50px", top: "30px", left: "25px", right: "25px"}}>  or  </Text> 
+              <Box
+                onClick={this.toggleModal}
+                background={this.state.colorButton}
+                round="xsmall"
+                pad="xsmall"
+                height="90px"
+                width="300px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator={this.state.colorHover}
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                <a href="https://calendly.com/remymess/morastream" style={{textDecoration: "none"}}>
+                <Text size="18px" margin={{left: "10px"}} color="white"> <b>Book</b> a quick demo with us!</Text>
+                {/* <Text size="22px">🔥</Text> */}
+                </a>
+              </Box>
+          </Box>
           )}
+
+
+
+
+
+
           <InstitutionalUsers/>
         </Box>
       </>
@@ -265,6 +293,26 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         </Box>
       </Link>
     </Box>
+    )
+  }
+
+  contentTrigger() {
+    return (
+      <>
+        <Text size="34px" weight="bold" color="white" margin={{top: "140px", bottom: "140px"}}>
+          The tech stack to organise seminars has been archaic for too long.
+        </Text>
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
+          <Box>
+            Martin Hairer, Field Medalist, Imperial College London
+            </Box>
+          <Box background="white" height="150px">
+            <Text size="24px">"Seminars are key to the growth of researchers."</Text>
+            </Box>
+
+
+        </Box>
+      </>
     )
   }
 
@@ -599,7 +647,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                   onClick={this.toggleCreateChannelOverlay} 
                   width="400px"
                   height="90px"
-                  text={"Get started as an organiser"}
+                  text={"Continue"}
                   textSize="18px"
                 />
             </Box>
@@ -666,6 +714,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             {this.content4()}
           </Box>
         </Box> */}
+
+        <Box height="100%" width="100%" background="color1">
+          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+            {this.contentTrigger()}
+          </Box>
+        </Box>
+
 
         <Box height="100%" width="100%" background="color5" id="content">
           <Box width="80%" height={this.state.renderMobileView ? "2650px": "940px"}  direction="column" alignSelf="center">

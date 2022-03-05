@@ -33,6 +33,21 @@ import InstitutionalUsers from "./InstitutionalUsers";
 import LoginModal from "../../Components/Account/LoginModal";
 import SignUpButton from "../../Components/Account/SignUpButton";
 
+
+
+
+
+import noInviteImage from "../../assets/landing_page/old_vs_new_way/no_invites.png";
+import worldPins from "../../assets/landing_page/old_vs_new_way/world_gif_raw.gif";
+
+
+
+
+
+
+
+
+
 interface State {
   user: User | null
   showLogin: boolean
@@ -265,7 +280,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
   contentTrigger() {
     return (
       <>
-        <Text size="34px" color="black" margin={{top: "140px", bottom: "140px"}}>
+        <Text size="34px" weight="bold" color="black" margin={{top: "140px", bottom: "140px"}}>
           
           Seminars have been citation and network boosters since Newton, but today <u>everyone</u> can attend them.
 
@@ -302,20 +317,32 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">
-           The <Text color="gray" size="34px"><del>old</del></Text> <Text color="color7" size="34px">new</Text> way of giving seminars
+           The <Text color="#C0C0C0" size="34px"><del>old</del></Text> <Text color="color7" size="34px">new</Text> way of giving seminars
         </Text>
 
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "35px"}} justify="center">
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
-            <Text size="18px" style={{alignContent: "start"}} color="white">
-            Wait for months / years to <i>maybe</i> get invited. 
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "35px"}} justify="center">
+          <Box width="150px" height="150px" background="color6">
+            <img src={noInviteImage}/>
+          </Box>
+          
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+            <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
+              Do nothing and wait for months / years to <i>maybe</i> get invited. 
               </Text>
           </Box>
 
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
-              Apply and get invited within 30 days
+              Apply and receive multiple invitations within 30 days
             </Text>
+          </Box>
+          <Box width="150px" height="150px" background="color6">
+            <video 
+                  autoPlay loop muted 
+                  style={{ height: "100%", width: "auto"}}
+                  >
+                  <source src="/videos/phone_ringing.mp4" type="video/mp4"/> 
+            </video>
           </Box>
         </Box>
 
@@ -326,17 +353,24 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
 
 
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{top: "35px", bottom: "35px"}} justify="center">
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
-            <Text size="18px" style={{alignContent: "start"}} color="white">
-                Speak once to 50 people from a community you already know
-              </Text>
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="center">
+          <Box width="150px" height="150px" background="color6">
+            image placeholder: local home, house, simple.
+          </Box>
+          
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+            <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
+              Speak once to your local community.  
+            </Text>
           </Box>
 
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
-                Speak multiple times to 500 people you might not know yet
+              Speak several times to audiences from several different communities from all around the world.
             </Text>
+          </Box>
+          <Box width="150px" height="150px" background="color6">
+            <img src={worldPins}/>
           </Box>
         </Box>
 
@@ -348,30 +382,36 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
 
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{top: "35px", bottom: "35px"}} justify="center">
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
-            <Text size="18px" style={{alignContent: "start"}} color="white">
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="center">
+          <Box width="150px" height="150px" background="color6">
+            image placeholder: simple clapping image
+          </Box>
+          
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+            <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
+              7 hours of slides preparation for a single talk to get
                 <ul>
                   <li> +1 citation</li>
                   <li> +5 Twitter followers</li>
                   <li> +2 new friends</li>
                 </ul>
-              </Text>
-          </Box>
-
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium">
-            <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
-            <ul>
-                  <li> +15 citation</li>
-                  <li> +100 Twitter followers</li>
-                  <li> +30 new friends</li>
-                </ul>
             </Text>
           </Box>
+
+          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+            <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
+            7 hours of slides preparation for multiple talks to get
+              <ul>
+                <li> +15 citation</li>
+                <li> +100 Twitter followers</li>
+                <li> +30 new friends</li>
+              </ul>
+            </Text>
+          </Box>
+          <Box width="150px" height="150px" background="color6">
+            image palceholder: nobel price, reward, trophy, follower base increasing, new friendships
+          </Box>
         </Box>
-
-
-
       </>
     )
   }
@@ -548,13 +588,15 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         {!this.state.renderMobileView && (
           <>
             <Box>
-              <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">What are you waiting for? Let yourself and your work be known!</Text>
-              <Box align="center" margin={{bottom: "90px"}}>
+              <Text size="34px" margin={{top: "80px", bottom: "40px"}} color="color1" weight="bold" alignSelf="center">What are you waiting for? Let the world know about your work!</Text>
+              <Text size="24px" color="color1" alignSelf="center">Join a worldwide community of researchers and leading seminar organisers from all around the world!</Text>
+              <Box align="center" margin={{bottom: "90px", top: "40px"}}>
                   <SignUpButton 
                     callback={()=>{}}
                     height="100px"
                     width="200px"
                     textSize="18px"
+                    text="Continue"
                   />
               </Box>
               <Box alignSelf="center" margin={this.state.renderMobileView ? {top: "30px"} : {}}>
@@ -730,13 +772,13 @@ calltoActionOrganisers() {
           </Box>
         </Box> */}
 
-        <Box height="100%" width="100%">
+        <Box height="100%" width="100%" background="color5">
           <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color5">
+        <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "450px": "400px"} direction="column" alignSelf="center">
             {this.calltoActionOrganisers()}
           </Box>
