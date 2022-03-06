@@ -200,8 +200,8 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 margin={{ left: "0px" }}
                 direction="row"
               >
-                <a href="https://calendly.com/remymess/morastream" style={{textDecoration: "none"}}>
-                <Text size="18px" margin={{left: "10px"}} color="white"> <b>Book</b> a quick demo with us!</Text>
+                <a href="https://calendly.com/remymess/morastream" target="_blank" rel="noopener noreferrer" style={{textDecoration: "none"}}>
+                <Text size="18px" margin={{left: "10px"}} color="white"> <b>Book</b> a demo with us!</Text>
                 {/* <Text size="22px">🔥</Text> */}
                 </a>
               </Box>

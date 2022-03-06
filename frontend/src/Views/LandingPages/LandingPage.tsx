@@ -38,8 +38,15 @@ import SignUpButton from "../../Components/Account/SignUpButton";
 
 
 import noInviteImage from "../../assets/landing_page/old_vs_new_way/no_invites.png";
-import worldPins from "../../assets/landing_page/old_vs_new_way/world_gif_raw.gif";
-
+// import worldPins from "../../assets/landing_page/old_vs_new_way/world_gif_raw.gif";
+// import hourglassImg from "../../assets/landing_page/old_vs_new_way/hourglass.png";
+import boredImg from "../../assets/landing_page/old_vs_new_way/bored_on_bench.jpg";
+import applauseImg from "../../assets/landing_page/old_vs_new_way/applause_img.png";
+import seminarResultGif from "../../assets/landing_page/old_vs_new_way/seminar_result.gif";
+import localCommunityImg from "../../assets/landing_page/old_vs_new_way/house_local.png";
+import worldspinningGif from "../../assets/landing_page/old_vs_new_way/world_spinning.gif";
+import heroResultGif from "../../assets/landing_page/old_vs_new_way/g_scholar_hero_lance.gif";
+import invitationReceivedGif from "../../assets/landing_page/old_vs_new_way/email_received_animation.gif";
 
 
 
@@ -321,28 +328,24 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Text>
 
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "35px"}} justify="center">
-          <Box width="150px" height="150px" background="color6">
-            <img src={noInviteImage}/>
+          <Box width="175px" height="175px" background="white" alignContent="center" direction="column" pad="small">
+            {/* <img src={noInviteImage}/> */}
+            <img src={boredImg}/>
           </Box>
           
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
               Do nothing and wait for months / years to <i>maybe</i> get invited. 
               </Text>
           </Box>
 
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
               Apply and receive multiple invitations within 30 days
             </Text>
           </Box>
-          <Box width="150px" height="150px" background="color6">
-            <video 
-                  autoPlay loop muted 
-                  style={{ height: "100%", width: "auto"}}
-                  >
-                  <source src="/videos/phone_ringing.mp4" type="video/mp4"/> 
-            </video>
+          <Box width="175px" height="175px" background="color6">
+            <img src={invitationReceivedGif}/>
           </Box>
         </Box>
 
@@ -354,23 +357,24 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="center">
-          <Box width="150px" height="150px" background="color6">
-            image placeholder: local home, house, simple.
+          <Box width="175px" height="175px" background="color6" pad="small">
+          <img src={localCommunityImg}/>
+
           </Box>
           
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
               Speak once to your local community.  
             </Text>
           </Box>
 
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
               Speak several times to audiences from several different communities from all around the world.
             </Text>
           </Box>
-          <Box width="150px" height="150px" background="color6">
-            <img src={worldPins}/>
+          <Box width="175px" height="175px" background="color6">
+            <img src={worldspinningGif} style={{maxHeight: "175px", maxWidth: "175px"}}/>
           </Box>
         </Box>
 
@@ -383,33 +387,33 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="center">
-          <Box width="150px" height="150px" background="color6">
-            image placeholder: simple clapping image
+          <Box width="175px" height="175px" background="color6">
+            <img src={applauseImg} style={{maxHeight: "175px", maxWidth: "175px"}}/>
           </Box>
           
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
-              7 hours of slides preparation for a single talk to get
+              4 hours of slides preparation for a single talk to get
                 <ul>
                   <li> +1 citation</li>
                   <li> +5 Twitter followers</li>
-                  <li> +2 new friends</li>
+                  <li> +2 potential collaborators</li>
                 </ul>
             </Text>
           </Box>
 
-          <Box width="350px" height="150px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
-            7 hours of slides preparation for multiple talks to get
+              4 hours of slides preparation for multiple talks to get
               <ul>
                 <li> +15 citation</li>
                 <li> +100 Twitter followers</li>
-                <li> +30 new friends</li>
+                <li> +30 potential collaborators</li>
               </ul>
             </Text>
           </Box>
-          <Box width="150px" height="150px" background="color6">
-            image palceholder: nobel price, reward, trophy, follower base increasing, new friendships
+          <Box width="175px" height="175px" background="color6">
+            <img src={heroResultGif}/>
           </Box>
         </Box>
       </>
