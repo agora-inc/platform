@@ -328,23 +328,23 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Text>
 
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "35px"}} justify="center">
-          <Box width="175px" height="175px" background="white" alignContent="center" direction="column" pad="small">
+          <Box width="200px" height="200px" background="white" alignContent="center" direction="column" pad="small">
             {/* <img src={noInviteImage}/> */}
             <img src={boredImg}/>
           </Box>
           
-          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
               Do nothing and wait for months / years to <i>maybe</i> get invited. 
               </Text>
           </Box>
 
-          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+          <Box width="300px" height="200" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
               Apply and receive multiple invitations within 30 days
             </Text>
           </Box>
-          <Box width="175px" height="175px" background="color6">
+          <Box width="200px" height="200px" background="color6">
             <img src={invitationReceivedGif}/>
           </Box>
         </Box>
@@ -357,24 +357,24 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="center">
-          <Box width="175px" height="175px" background="color6" pad="small">
+          <Box width="200px" height="200px" background="color6" pad="small">
           <img src={localCommunityImg}/>
 
           </Box>
           
-          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
               Speak once to your local community.  
             </Text>
           </Box>
 
-          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
               Speak several times to audiences from several different communities from all around the world.
             </Text>
           </Box>
-          <Box width="175px" height="175px" background="color6">
-            <img src={worldspinningGif} style={{maxHeight: "175px", maxWidth: "175px"}}/>
+          <Box width="200px" height="200px" background="color6">
+            <img src={worldspinningGif} style={{maxHeight: "200px", maxWidth: "200px"}}/>
           </Box>
         </Box>
 
@@ -387,11 +387,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
 
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="center">
-          <Box width="175px" height="175px" background="color6">
-            <img src={applauseImg} style={{maxHeight: "175px", maxWidth: "175px"}}/>
+          <Box width="200px" height="200px" background="color6">
+            <img src={applauseImg} style={{maxHeight: "200px", maxWidth: "200px"}}/>
           </Box>
           
-          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
               4 hours of slides preparation for a single talk to get
                 <ul>
@@ -402,7 +402,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Text>
           </Box>
 
-          <Box width="350px" height="175px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
             <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
               4 hours of slides preparation for multiple talks to get
               <ul>
@@ -412,7 +412,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </ul>
             </Text>
           </Box>
-          <Box width="175px" height="175px" background="color6">
+          <Box width="200px" height="200px" background="color6">
             <img src={heroResultGif}/>
           </Box>
         </Box>

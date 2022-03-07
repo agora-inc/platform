@@ -186,6 +186,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                       />
               </Box>
               <Text margin={{bottom: "50px", top: "30px", left: "25px", right: "25px"}}>  or  </Text> 
+              <a href="https://calendly.com/remymess/morastream" target="_blank" style={{textDecoration: "none"}}>
               <Box
                 onClick={this.toggleModal}
                 background={this.state.colorButton}
@@ -200,11 +201,10 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 margin={{ left: "0px" }}
                 direction="row"
               >
-                <a href="https://calendly.com/remymess/morastream" target="_blank" rel="noopener noreferrer" style={{textDecoration: "none"}}>
                 <Text size="18px" margin={{left: "10px"}} color="white"> <b>Book</b> a demo with us!</Text>
                 {/* <Text size="22px">🔥</Text> */}
-                </a>
               </Box>
+                </a>
           </Box>
           )}
 
