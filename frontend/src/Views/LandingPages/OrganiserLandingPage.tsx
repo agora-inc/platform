@@ -171,7 +171,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
             Get the hottest researchers to speak to your community.
           </Text>
           <Text size="20px">
-            <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more! </b>
+            <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more, all in one place! </b>
           </Text>
           {/* <Text size="20px">Empower your community by attracting like-minded researchers from all around the world!</Text> */}
           {!this.state.renderMobileView && (
@@ -204,7 +204,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 <Text size="18px" margin={{left: "10px"}} color="white"> <b>Book</b> a demo with us!</Text>
                 {/* <Text size="22px">🔥</Text> */}
               </Box>
-                </a>
+              </a>
           </Box>
           )}
 
@@ -300,7 +300,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" weight="bold" color="white" margin={{top: "140px", bottom: "140px"}}>
-          The tech stack to organise seminars has been archaic for too long.
+          Your tech stack to organise seminars has been archaic for too long.
         </Text>
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
           <Box>
@@ -329,7 +329,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-          Everything seminar organisers need, from start to finish, in less than a minute.
+          Empowering seminar organisers with tech, from start to finish, in less than a minute.
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "50px"}}>

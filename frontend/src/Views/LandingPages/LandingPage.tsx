@@ -289,7 +289,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Text size="34px" weight="bold" color="black" margin={{top: "140px", bottom: "140px"}}>
           
-          Seminars have been citation and network boosters since Newton, but today <u>everyone</u> can attend them.
+          Seminars have been citation and network boosters since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>.
 
           {/* The more people understand your work in a seminar, the more likely you will get cited and find collaborators.  */}
           {/* One's academic reputation is built around papers and seminars since Newton, but today, most of it happens online. */}
@@ -322,101 +322,103 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
   contentHeroHow() {
     return (
-      <>
+      <Box width="100%" style={{maxWidth: "2000px"}}>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="white">
            The <Text color="#C0C0C0" size="34px"><del>old</del></Text> <Text color="color7" size="34px">new</Text> way of giving seminars
         </Text>
 
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "35px"}} justify="center">
-          <Box width="200px" height="200px" background="white" alignContent="center" direction="column" pad="small">
-            {/* <img src={noInviteImage}/> */}
-            <img src={boredImg}/>
-          </Box>
-          
-          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
-            <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
-              Do nothing and wait for months / years to <i>maybe</i> get invited. 
+        <Box alignContent="center" alignSelf="center">
+          <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{bottom: "35px"}} justify="start">
+            <Box width="200px" height="200px" background="white" alignContent="center" direction="column" pad="small">
+              {/* <img src={noInviteImage}/> */}
+              <img src={boredImg}/>
+            </Box>
+            
+            <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+              <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
+                Do nothing and wait for months / years to <i>maybe</i> get invited. 
+                </Text>
+            </Box>
+
+            <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+              <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
+                Apply and receive multiple invitations within 30 days
               </Text>
+            </Box>
+            <Box width="200px" height="200px" background="color6">
+              <img src={invitationReceivedGif}/>
+            </Box>
           </Box>
 
-          <Box width="300px" height="200" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
-            <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
-              Apply and receive multiple invitations within 30 days
-            </Text>
-          </Box>
-          <Box width="200px" height="200px" background="color6">
-            <img src={invitationReceivedGif}/>
-          </Box>
-        </Box>
 
-
-        <Box height="60px" direction="column" alignSelf="center"> 
-          <img src={this.state.renderMobileView ? WavyArrowLeftRight : WavyArrowTopBot}
-            style={this.state.renderMobileView ? {alignSelf: "center", width: "120px"} : {alignSelf: "center", height:"70px"}} />
-        </Box>
-
-
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="center">
-          <Box width="200px" height="200px" background="color6" pad="small">
-          <img src={localCommunityImg}/>
-
-          </Box>
-          
-          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
-            <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
-              Speak once to your local community.  
-            </Text>
+          <Box height="60px" direction="column" align="center" width="1030px"> 
+            <img src={this.state.renderMobileView ? WavyArrowLeftRight : WavyArrowTopBot}
+              style={this.state.renderMobileView ? {alignSelf: "center", width: "120px"} : {alignSelf: "center", height:"70px"}} />
           </Box>
 
-          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
-            <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
-              Speak several times to audiences from several different communities from all around the world.
-            </Text>
+
+          <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="start">
+            <Box width="200px" height="200px" background="color6" pad="small">
+            <img src={localCommunityImg}/>
+
+            </Box>
+            
+            <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+              <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
+                Speak once to your local community.  
+              </Text>
+            </Box>
+
+            <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+              <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
+                Speak several times to audiences from several different communities from all around the world.
+              </Text>
+            </Box>
+            <Box width="200px" height="200px" background="color6">
+              <img src={worldspinningGif} style={{maxHeight: "200px", maxWidth: "200px"}}/>
+            </Box>
           </Box>
-          <Box width="200px" height="200px" background="color6">
-            <img src={worldspinningGif} style={{maxHeight: "200px", maxWidth: "200px"}}/>
+
+
+          <Box height="60px" direction="column" align="center" width="1030px"> 
+            <img src={this.state.renderMobileView ? WavyArrowLeftRight : WavyArrowTopBot}
+              style={this.state.renderMobileView ? {alignSelf: "center", width: "120px"} : {alignSelf: "center", height:"70px"}} />
           </Box>
-        </Box>
-
-
-        <Box height="60px" direction="column" alignSelf="center"> 
-          <img src={this.state.renderMobileView ? WavyArrowLeftRight : WavyArrowTopBot}
-            style={this.state.renderMobileView ? {alignSelf: "center", width: "120px"} : {alignSelf: "center", height:"70px"}} />
-        </Box>
 
 
 
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="center">
-          <Box width="200px" height="200px" background="color6">
-            <img src={applauseImg} style={{maxHeight: "200px", maxWidth: "200px"}}/>
-          </Box>
-          
-          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
-            <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
-              4 hours of slides preparation for a single talk to get
+          <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } margin={{top: "35px", bottom: "35px"}} justify="start">
+            <Box width="200px" height="200px" background="color6">
+              <img src={applauseImg} style={{maxHeight: "200px", maxWidth: "200px"}}/>
+            </Box>
+            
+            <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{right: "15px"}}>
+              <Text size="18px" style={{alignContent: "start"}} color="#C0C0C0">
+                4 hours of slides preparation for a single talk to get
+                  <ul>
+                    <li> +1 citation</li>
+                    <li> +5 Twitter followers</li>
+                    <li> +2 potential collaborators</li>
+                  </ul>
+              </Text>
+            </Box>
+
+            <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
+              <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
+                4 hours of slides preparation for multiple talks to get
                 <ul>
-                  <li> +1 citation</li>
-                  <li> +5 Twitter followers</li>
-                  <li> +2 potential collaborators</li>
+                  <li> +15 citation</li>
+                  <li> +100 Twitter followers</li>
+                  <li> +30 potential collaborators</li>
                 </ul>
-            </Text>
-          </Box>
-
-          <Box width="300px" height="200px" background="color2" direction="column" justify="center" pad="medium" margin={{left: "15px"}}>
-            <Text size="18px" style={{alignContent: "start"}} color="color7" weight="bold"> 
-              4 hours of slides preparation for multiple talks to get
-              <ul>
-                <li> +15 citation</li>
-                <li> +100 Twitter followers</li>
-                <li> +30 potential collaborators</li>
-              </ul>
-            </Text>
-          </Box>
-          <Box width="200px" height="200px" background="color6">
-            <img src={heroResultGif}/>
+              </Text>
+            </Box>
+            <Box width="200px" height="200px" background="color6">
+              <img src={heroResultGif}/>
+            </Box>
           </Box>
         </Box>
-      </>
+      </Box>
     )
   }
 
@@ -426,11 +428,11 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
   contentHowDoesItWork() {
     return (
-      <>
+      <Box width="100%" style={{maxWidth: "2000px"}}>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
           How does it work?
         </Text>
-        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
+        <Box direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" alignSelf="center">
           <Box width="350px" height={this.state.renderMobileView ? "370px" : "430px"} background="color2" direction="column" justify="between">
             <Box height="230px" pad="medium" gap="10px">
               <Box direction="row" height="60px" width="100%">
@@ -523,13 +525,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Box>
           </Box>
         </Box>
-      </>
+      </Box>
     )
   }
   
   contentAcceleratingMatching() {
     return (
-      <>
+      <Box width="100%" style={{maxWidth: "2000px"}}>
         <Text size="34px" margin={{top: "120px", bottom: "20px"}} color="white">An evergrowing <Text size="38px" color="color7" weight="bold">virtuous circle</Text> for researchers</Text>
 
 
@@ -581,7 +583,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             </Text>
           </Box>
         </Box>
-      </>
+      </Box>
     )
   }
   
@@ -591,7 +593,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         {!this.state.renderMobileView && (
           <>
-            <Box>
+            <Box width="100%" style={{maxWidth: "2000px"}}>
               <Text size="34px" margin={{top: "80px", bottom: "40px"}} color="color1" weight="bold" alignSelf="center">What are you waiting for? Let the world know about your work!</Text>
               <Text size="24px" color="color1" alignSelf="center">Join a worldwide community of researchers and leading seminar organisers from all around the world!</Text>
               <Box align="center" margin={{bottom: "90px", top: "40px"}}>
@@ -634,7 +636,7 @@ contentTestimonial() {
     <>
       {!this.state.renderMobileView && (
         <>
-          <Box>
+          <Box width="100%" style={{maxWidth: "2000px"}}>
             <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Built by academics, for academics</Text>
             <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">mora.stream is built around what our community wants. Sign up and join the conversation!</Text>
             
@@ -677,7 +679,7 @@ calltoActionOrganisers() {
     <>
       {!this.state.renderMobileView && (
         <>
-          <Box>
+          <Box width="100%" style={{maxWidth: "2000px"}}>
             <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Are you a seminar organiser?</Text>
             <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">Finding speakers and organising seminars has now been made easy!</Text>
             
