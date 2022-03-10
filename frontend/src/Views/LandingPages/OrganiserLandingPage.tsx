@@ -72,6 +72,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     });
   };
 
+  // HACK: scroll up when page loads. (Remy)
+  // Origin of hack: see https://github.com/agora-inc/agora/commit/b6a0a0cafbaae0d9ff8a7266705fe22c3ed4bcf6
+  componentDidMount() {
+    let scroll_element = window.document.querySelector('.StyledGrommet-sc-19lkkz7-0');
+    (scroll_element as HTMLInputElement).scrollTo(0,0);
+  }
+
   toggleModal = () => {
     this.setState({ showModalGiveATalk: !this.state.showModalGiveATalk });
   };

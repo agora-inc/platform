@@ -83,10 +83,10 @@ export default class SignUpButton extends Component<Props, State> {
 
   isComplete = () => {
     return (
-      this.state.username !== "" &&
+      // this.state.username !== "" &&
       this.state.fullName !== "" &&
-      this.state.position !== "" &&
-      this.state.institution !== "" &&
+      // this.state.position !== "" &&
+      // this.state.institution !== "" &&
       this.state.password !== "" &&
       this.state.confirmPassword === this.state.password &&
       this.isValidEmail(this.state.email)
@@ -155,7 +155,7 @@ export default class SignUpButton extends Component<Props, State> {
             <Box width="90%" gap="5px">
               <Text size="14px" color="black" margin={{ bottom: "24px" }}>
                 This account will be associated with you as an individual. After you've signed up
-                you'll be able to fill your profile and advertise your research.
+                you'll be able to fill your profile and advertise your research. You may also have free access to premium features via your institution.
                 {/*create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
                   <Text color="color1" weight="bold" size="14px">
@@ -164,12 +164,12 @@ export default class SignUpButton extends Component<Props, State> {
                 </Link>
                 . These are what you'll use to organise talks.*/}
               </Text>
-              <TextInput
+              {/* <TextInput
                 placeholder="Username"
                 onChange={(e) => this.setState({ username: e.target.value })}
-              />
+              /> */}
               <TextInput
-                placeholder="Full name"
+                placeholder="Full name*"
                 onChange={(e) => this.setState({ fullName: e.target.value })}
               />
               <TextInput
@@ -181,12 +181,12 @@ export default class SignUpButton extends Component<Props, State> {
                 onChange={(e) => this.setState({ institution: e.target.value })}
               />
               <TextInput
-                placeholder="Email"
+                placeholder="Email*"
                 onChange={(e) => this.setState({ email: e.target.value })}
               />
               <TextInput
                 type="password"
-                placeholder="Password"
+                placeholder="Password*"
                 onChange={(e) => this.setState({ password: e.target.value })}
               />
               <TextInput
