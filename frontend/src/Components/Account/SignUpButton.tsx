@@ -53,7 +53,7 @@ export default class SignUpButton extends Component<Props, State> {
 
   onSubmit = () => {
     UserService.register(
-      this.state.username,
+      this.state.email,
       this.state.password,
       this.state.email,
       this.state.position,
@@ -85,8 +85,9 @@ export default class SignUpButton extends Component<Props, State> {
     return (
       // this.state.username !== "" &&
       this.state.fullName !== "" &&
+      this.state.email !== "" &&
       // this.state.position !== "" &&
-      // this.state.institution !== "" &&
+      this.state.institution !== "" &&
       this.state.password !== "" &&
       this.state.confirmPassword === this.state.password &&
       this.isValidEmail(this.state.email)

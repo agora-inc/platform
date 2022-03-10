@@ -152,7 +152,7 @@ export default class UserManager extends Component<Props, State> {
       // if yes, redirect. If no, create and redirect
       ProfileService.createProfile(
         this.state.user.id,
-        "[your full name]",
+        "CREATION FROM CLICK",
         () => {
           return history.push('/profile/' + id)
         }

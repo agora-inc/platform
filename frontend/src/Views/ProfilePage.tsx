@@ -16,6 +16,8 @@ import { Paper, Profile, ProfileService, Presentation } from "../Services/Profil
 import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
 import { DetailsEntry } from "../Components/Profile/DetailsEntry";
+import CreateChannelButton from "../Components/Channel/CreateChannelButton";
+import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
 import TopicSelector from "../Components/Talks/TopicSelector";
 import { LinkSecondaryButton } from "../Components/Core/LinkSecondaryButton";
@@ -27,6 +29,7 @@ interface Props {
 const ProfilePage = (props: Props) => {
   const [profile, setProfile] = useState<Profile>();
   const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const [showCreateChannelOverlay, setShowCreateChannelOverlay] = useState<boolean>(false);
   const [papers, setPapers] = useState<Paper[]>([]);
   const [topics, setTopics] = useState<Topic[]>([])
   const [isPrevTopics, setIsPrevTopics] = useState<boolean[]>([])
@@ -66,9 +69,9 @@ const ProfilePage = (props: Props) => {
     return Number(userId);
   };
 
-  function getProfilePhotoUrl(): string {
+  function getProfilePhotoUrl(defaultPic: boolean): string {
     if (profile) {
-      return ProfileService.getProfilePhoto(profile.user.id)
+      return ProfileService.getProfilePhoto(profile.user.id, 0, defaultPic)
     } else {
       return ""
     }
@@ -156,35 +159,50 @@ const ProfilePage = (props: Props) => {
     }
   }
 
+  function defaultBio(): string {
+    if(profile){
+      return (
+        profile.full_name + " is a young professor who has recently been getting a lot of traction and visibility within the community, thanks to their lattest work. Many researchers in the field have been speculating his nomination as a recipient of the next Nobel price." 
+      )
+    }
+    else{
+      return(
+        "Insert your bio"
+      )
+    }
+  }
+
+
+
   if (profile) {
     return (
-      <Box width="80%" margin={{ left: "7.5%" }} style={{ position: "relative", top: "12vh" }}>
+      <>
+      <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+      // src={BackgroundImage}
+      src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+    />
+      <Box width="80%" margin={{ left: "7.5%" }} style={{ position: "relative", top: "12vh" }} background="color6" pad="small">
         <Box
           direction="row"
           height="160px"
           align="center"
           justify="between"
         >
-          <Box direction="row" align="center" gap="30px" width="55%">
-            <Box width="150px" height="100px" round="50px"                   
+          <Box direction="row" align="center" gap="30px" width="60%" >
+            <Box width="150px" height="150px" round="100px"                   
               justify="center" align="center" overflow="hidden">
-              {profile.has_photo === 1 && (
-                <img width={150} height={100} src={getProfilePhotoUrl()} />
-              )}
-              {profile.has_photo === 0 && (
-                <Identicon string={profile.user.username} size={150} />
-              )}
-              
+                <img width={150} height={150} src={getProfilePhotoUrl(!profile.has_photo)} />
             </Box>
 
             <Box direction="column" gap="6px" align="start">
               <Text 
-                size="26px"
-                color="color3"
-                weight="bold"
-              >
-                {profile.full_name}
-              </Text>
+                  size="26px"
+                  color="color3"
+                  weight="bold"
+                >
+                  {profile.full_name}
+              </Text> 
+
               <Text
                   size="16px"
                   color="color1"
@@ -192,11 +210,105 @@ const ProfilePage = (props: Props) => {
                   style={{ height: "20px", overflow: "auto" }}
                   margin={{ bottom: "20px"}}
                 >
-                  {profile.user.position}, {profile.user.institution}
-                </Text>
+                  {profile.user.position}
+                  {profile.user.position !== "" && profile.user.institution !== "" 
+                    ? ", " : ""} 
+                  {profile.user.institution}
+              </Text>
+
+              <Box direction="row" gap="30px">
+                <Box 
+                  direction="row"
+                  align="end"
+                >
+                  <Box data-tip data-for="avatar_info">
+                  <ImageCropUploader
+                    text="Upload new picture"
+                    onUpload={onProfilePhotoUpload}
+                    width="150px"
+                    height="25px"
+                    widthModal={600}
+                    heightModal={600}
+                    textSize="12px"
+                    hideToolTip={true}
+                    aspect={3 / 2}
+                  />
+                    <ReactTooltip id='avatar_info' place="right" effect="solid">
+                      <p>Recommended avatar dim: 400x400px</p>
+                    </ReactTooltip>
+                  </Box>
+                </Box>
+                {profile.has_photo === 1 && (
+                  <Box 
+                    style={{ 
+                      border: "solid black 1px", cursor: "pointer" 
+                    }}
+                    round="xsmall"
+                    width="150px"
+                    height="25px"
+                    justify="center"
+                    align="center"
+                    background="#EAF1F1"
+                    focusIndicator={true}
+                    hoverIndicator="#DDDDDD"
+                    onClick={(e: any) => {
+                      e.stopPropagation()
+                      removeProfilePhoto()
+                    }}
+                  >
+                    <Text size="12px" weight="bold" color="black">
+                      Remove
+                    </Text>
+                  </Box>
+                )}
+              </Box>
 
             </Box>
           </Box>
+          <Box width="25%" align="end" direction="column">
+            {/* <LinkSecondaryButton 
+                    text="Give a talk"
+                    link="agoras"
+                    iconSize="18px"
+                    mobile={false}
+                    width="150px"
+                    height="30px" 
+              /> */}
+
+              <CreateChannelButton
+                 onClick={() => {
+                   setShowCreateChannelOverlay(!showCreateChannelOverlay)
+                    console.log(!showCreateChannelOverlay)
+                  }}
+              />
+
+              {(showCreateChannelOverlay && user) && (
+                <CreateChannelOverlay
+                  onBackClicked={setShowCreateChannelOverlay(!showCreateChannelOverlay)}
+                  onComplete={() => {
+                    setShowCreateChannelOverlay(!showCreateChannelOverlay);
+                  }}
+                  visible={true}
+                  user={user}
+                />
+            )}
+
+
+            <LinkSecondaryButton 
+              text="Look for speakers"
+              link="speakers"
+              iconSize="24px"
+              mobile={false}
+              width="190px"
+              height="35px" 
+            />
+            
+            
+          </Box>  
+
+
+
+
           {/* <Box direction="column" gap="10px" width="45%">
             <Box direction="row">
               <CheckBox
@@ -217,7 +329,7 @@ const ProfilePage = (props: Props) => {
           </Box> */}
         </Box>
 
-        <BioEntry bio={profile.user.bio ? profile.user.bio : ""} home={home} userId={profile.user.id} /> 
+        <BioEntry bio={profile.user.bio ? profile.user.bio : defaultBio()} home={home} userId={profile.user.id} /> 
 
         <Box>
           <Tabs>
@@ -264,35 +376,34 @@ const ProfilePage = (props: Props) => {
                   <Box
                     data-tip data-for='add_presentation'
                     focusIndicator={false}
-                    background="white"
+                    background="color1"
                     round="xsmall"
                     pad={{ vertical: "2px", horizontal: "xsmall" }}
                     onClick={createNewPresentation}
                     style={{
                       width: "150px",
                       height: "30px",
-                      border: "1px solid #C2C2C2",
                     }}
                     hoverIndicator={true}
                     justify="center"
                     align="center"
                       
                   >
-                    <Text color="grey" size="small"> 
-                      + Add
+                    <Text color="white" size="small"> 
+                      Give a talk
                     </Text>
                     <ReactTooltip id="add_presentation" effect="solid">
-                      Adding a presentation to your profile is the best way to get seminar organizers' attention!
+                      Fill below to allow seminar organisers to find you!
                     </ReactTooltip>
                   </Box>
-                  <LinkSecondaryButton 
+                  {/* <LinkSecondaryButton 
                     text="Give a talk"
                     link="agoras"
                     iconSize="18px"
                     mobile={false}
                     width="150px"
                     height="30px" 
-                  />
+                  /> */}
                 </Box>
               )}
               {presentations.length !== 0 && (
@@ -524,8 +635,8 @@ const ProfilePage = (props: Props) => {
             )}
           </Tabs>
         </Box>
-          
       </Box>
+      </>
     );
   } else {
     return (

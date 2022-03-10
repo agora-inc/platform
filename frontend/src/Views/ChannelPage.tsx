@@ -307,8 +307,6 @@ export default class ChannelPage extends Component<Props, State> {
     };
     }
 
-
-
   onApplyMembershipClicked = () => {
   };
 
@@ -452,7 +450,7 @@ export default class ChannelPage extends Component<Props, State> {
                     weight={this.state.following ? "bold" : "normal"}
                     alignSelf="center"
                   >
-                    {this.state.following ? "Following" : "Follow"}
+                    {this.state.following ? "Subscribed" : "Subscribe"}
                   </Text>
                   {!this.state.user && (
                     <ReactTooltip id='not_registered_follow_button_info' place="top" effect="solid">
@@ -502,7 +500,7 @@ export default class ChannelPage extends Component<Props, State> {
 
 
             
-              <Box
+              {/* <Box
                 className="follow-button"
                 pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
                 background={this.state.following ? "#e5e5e5" : "white"}
@@ -532,7 +530,7 @@ export default class ChannelPage extends Component<Props, State> {
                   </ReactTooltip>
                 )}
 
-              </Box>
+              </Box> */}
 
             {this.state.bannerExtended ? (
               <FormUp

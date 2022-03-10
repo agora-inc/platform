@@ -176,12 +176,16 @@ const uploadProfilePhoto = (userId: number, image: File, callback: any) => {
   });
 };
 
-const getProfilePhoto = (userId: number, cacheDelay?: number) => {
+const getProfilePhoto = (userId: number, cacheDelay?: number, defaultPic?: boolean) => {
+  var fullEndpoint = baseApiUrl + `/profiles/photo?userId=${userId}`
   if (cacheDelay) {
-    return baseApiUrl + `/profiles/photo?userId=${userId}&ts=` + cacheDelay;
-  } else {
-    return baseApiUrl + `/profiles/photo?userId=${userId}`;
+    fullEndpoint = fullEndpoint  + "&ts=" + cacheDelay;
   }
+  if (defaultPic){
+    fullEndpoint = fullEndpoint  + "&defaultPic=true";
+  }
+
+  return fullEndpoint
 };
 
 const removeProfilePhoto = (userId: number, callback: any) => {

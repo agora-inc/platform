@@ -19,10 +19,16 @@ const AllSpeakersPage = () => {
   }, [topic]);
 
   return (
+    <>
+    <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+    // src={BackgroundImage}
+    src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+  />
     <Box 
-      width="90%" 
+      width="80%" 
       margin={{ left: "2.5%", top: "6vw" }}
       gap="30px"
+      alignSelf="center"
     >
       <Heading
         color="color1"
@@ -30,7 +36,7 @@ const AllSpeakersPage = () => {
         margin="none"
         style={{ height: "20px" }}
       >
-        Find your speakers
+        Find your future speakers
       </Heading>
       <TopicClassification 
         topicCallback={setTopic}
@@ -48,6 +54,7 @@ const AllSpeakersPage = () => {
         ))}
       </Box>
     </Box>
+    </>
   );
 };
 

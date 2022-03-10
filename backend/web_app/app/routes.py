@@ -385,10 +385,22 @@ def profilePhoto():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        if "userId" in request.args:
-            userId = int(request.args.get("userId"))
-            fn = profiles.getProfilePhotoLocation(userId)
-            return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
+        with open("/home/cloud-user/test/wesh1.txt", "w") as file:
+            file.write(str(request.args))
+
+        if "defaultPic" in request.args:
+            defaultPicLocation = "/home/cloud-user/plateform/agora/storage/images/profiles/default.jpg"
+            return send_file(defaultPicLocation, mimetype="image/jpg") if defaultPicLocation != "" else jsonify("None")
+        else:
+            if "userId" in request.args:
+                userId = int(request.args.get("userId"))
+
+                fn = profiles.getProfilePhotoLocation(userId)
+                with open("/home/cloud-user/test/wesh2.txt", "w") as file:
+                    file.write(str(fn))
+
+
+                return send_file(fn, mimetype="image/jpg") if fn != "" else jsonify("None")
 
     if request.method == "DELETE":
         params = request.json 

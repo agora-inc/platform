@@ -41,7 +41,7 @@ export const BioEntry = (props: Props) => {
       )}
       {!isEdit && bio === "" && (
         <Text size="14px" style={{width: "7%", fontStyle: "italic"}}>
-          Short bio
+          {props.bio}
         </Text>
       )}
       {props.home && isEdit && (
