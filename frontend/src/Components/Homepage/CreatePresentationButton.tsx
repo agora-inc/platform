@@ -176,7 +176,7 @@ export const CreatePresentationButton = () =>  {
         direction="row"
       >
         <Workshop size="30px" />
-        <Text size="18px" margin={{left: "10px"}}> <b>Present your</b> latest work</Text>
+        <Text size="18px" margin={{left: "10px"}}> <b>Get invited</b> to speak</Text>
       </Box>
       <Route render={({history}) => (
         <>
@@ -186,13 +186,13 @@ export const CreatePresentationButton = () =>  {
             onCancelClick={() => setshowFormOverlay(false)}
             onClickOutside={() => setshowFormOverlay(false)}
             onSubmitClick={() => submitPresentation(history)}
-            submitButtonText="Publish"
+            submitButtonText="Continue"
             canProceed={isComplete()}
             isMissing={isMissing()}
-            width={550}
+            width={600}
             height={450}
             contentHeight="300px"
-            title={"Describe your future talk and get invited!"}
+            title={"Describe your talk to receive invitations!"}
           >
             <Box width="100%" gap="10px" margin={{top: "5px"}}>
               <TextInput
