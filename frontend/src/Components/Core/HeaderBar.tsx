@@ -35,6 +35,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
   }
 
   render() {
+    var renderMobileView = (window.innerWidth < 900);
       return (
         <Box
           tag="header"
@@ -117,7 +118,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             hoverIndicator="#BAD6DB"
             round="xsmall"
             pad="xsmall"
-            width="300px"
+            width={renderMobileView ? "150px" : "300px"}
             height="35px"
             justify="center"
             align="center"
@@ -126,7 +127,9 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             direction="row"
           >
             {/* <Play size="30px" /> */}
-            <Text size="14px" margin={{left: "10px"}}> <b>Browse trending seminars</b></Text>
+            <Text size="14px" margin={{left: "10px"}}> 
+              <b> {renderMobileView ? "Browse seminars" : "Browse trending seminars"} </b>
+            </Text>
           </Box>
         </Link>
 
