@@ -86,7 +86,7 @@ export default class SignUpButton extends Component<Props, State> {
       // this.state.username !== "" &&
       this.state.fullName !== "" &&
       this.state.email !== "" &&
-      // this.state.position !== "" &&
+      this.state.position !== "" &&
       this.state.institution !== "" &&
       this.state.password !== "" &&
       this.state.confirmPassword === this.state.password &&
@@ -117,8 +117,8 @@ export default class SignUpButton extends Component<Props, State> {
           <Text size={this.state.textSize} weight="bold"> {this.props.text ? this.props.text : "Sign up"} </Text>
         </Box>
         <Overlay
-          width={500}
-          height={this.state.error !== "" ? 660 : 600}
+          width={400}
+          height={this.state.error !== "" ? 560 : 580}
           visible={this.state.showModal}
           title="Sign up"
           onEsc={this.toggleModal}
@@ -127,7 +127,7 @@ export default class SignUpButton extends Component<Props, State> {
           submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
-          contentHeight={this.state.error !== "" ? "530px" : "450px"}
+          contentHeight={this.state.error !== "" ? "450px" : "380px"}
         >
           {this.state.error !== "" && (
             <Box
@@ -155,8 +155,7 @@ export default class SignUpButton extends Component<Props, State> {
           >
             <Box width="90%" gap="5px">
               <Text size="14px" color="black" margin={{ bottom: "24px" }}>
-                This account will be associated with you as an individual. After you've signed up
-                you'll be able to fill your profile and advertise your research. You may also have free access to premium features via your institution.
+                This account will be associated with you as an individual. You may also have free access to premium features via your institution.
                 {/*create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
                   <Text color="color1" weight="bold" size="14px">
@@ -170,7 +169,7 @@ export default class SignUpButton extends Component<Props, State> {
                 onChange={(e) => this.setState({ username: e.target.value })}
               /> */}
               <TextInput
-                placeholder="Full name*"
+                placeholder="Full name"
                 onChange={(e) => this.setState({ fullName: e.target.value })}
               />
               <TextInput
@@ -182,12 +181,12 @@ export default class SignUpButton extends Component<Props, State> {
                 onChange={(e) => this.setState({ institution: e.target.value })}
               />
               <TextInput
-                placeholder="Email*"
+                placeholder="Email"
                 onChange={(e) => this.setState({ email: e.target.value })}
               />
               <TextInput
                 type="password"
-                placeholder="Password*"
+                placeholder="Password"
                 onChange={(e) => this.setState({ password: e.target.value })}
               />
               <TextInput

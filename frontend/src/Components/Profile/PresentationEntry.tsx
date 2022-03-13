@@ -63,7 +63,14 @@ export const PresentationEntry = (props: Props) => {
   }
 
   function isValid(url: string) : boolean {
-    return (url.includes('https://') || url.includes('http://'))
+    var isValid = false;
+    if(url.includes('https://')){
+      isValid = true
+    }
+    if(url.includes('http://')){
+      isValid = true
+    }
+    return isValid
   }
 
   function paperRedirect(): void {
@@ -161,25 +168,27 @@ export const PresentationEntry = (props: Props) => {
             </Text>
           </Box>
           <Box direction="row" gap="5%" align="center">
-            <Box
-              focusIndicator={false}
-              background="white"
-              round="xsmall"
-              // pad={{ vertical: "2px", horizontal: "xsmall" }}
-              onClick={paperRedirect}
-              style={{
-                width: "25%",
-                height: "28px",
-                border: "1px solid #C2C2C2",
-              }}
-              hoverIndicator={isValid(link) ? true : false}
-              align="center"
-              justify="center"
-            >
-              <Text color="grey" size="small"> 
-                Link
-              </Text>
-            </Box>
+            {isValid(link) && (
+              <Box
+                focusIndicator={false}
+                background="white"
+                round="xsmall"
+                // pad={{ vertical: "2px", horizontal: "xsmall" }}
+                onClick={paperRedirect}
+                style={{
+                  width: "25%",
+                  height: "28px",
+                  border: "1px solid #C2C2C2",
+                }}
+                hoverIndicator={isValid(link) ? true : false}
+                align="center"
+                justify="center"
+              >
+                  <Text color="grey" size="small"> 
+                    Link
+                  </Text>
+              </Box>
+            )}
             <Text size="14px"> 
               Duration: {duration} min.
             </Text>

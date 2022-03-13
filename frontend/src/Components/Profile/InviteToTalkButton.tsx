@@ -160,9 +160,9 @@ export default class InviteToTalkButton extends Component<Props, State> {
           direction="row"
         >
           <Workshop size="15px" style={{marginRight:"10px"}} />
-            {this.props.textButton ? this.props.textButton : "Invite to speak"}
+            {this.props.textButton ? this.props.textButton : "Invite them!"}
             <ReactTooltip id="invite_speaker" effect="solid">
-              {this.props.profile.full_name} is looking to give talks: invite him!
+              Get {this.props.profile.full_name} to speak and meet with your community!
             </ReactTooltip>
         </Box>
 

@@ -18,13 +18,18 @@ interface Props {
 
 export const ProfileCard:FunctionComponent<Props> = (props) => { 
   const [showModal, setShowModal] = useState<boolean>(false);
-
-  function getProfilePhotoUrl(): string {
-    return ProfileService.getProfilePhoto(props.profile.user.id)
-  }
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
 
   var renderMobileView = (window.innerWidth < 800);
   var name = props.profile.full_name ? props.profile.full_name : props.profile.user.username
+
+  useEffect(() => {
+    ProfileService.getProfilePhotoUrl(props.profile.user.id, 0, 
+      (profilePicUrl: string) => {
+        setProfilePhotoUrl(profilePicUrl)
+      })
+  }, []);
+
   return (
     <Box 
       className="profile-card"
@@ -61,21 +66,12 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
             {props.profile.user.position}, {props.profile.user.institution}
           </Text>
         </Box> 
-        <Box width="35%">
-          {props.profile.has_photo === 1 && (
-            <Image 
-              style={{position: 'absolute', top: 15, right: 15, aspectRatio: "3/2"}}
-              src={getProfilePhotoUrl()}
+        <Box width="35%" round="10px">
+            <img 
+              style={{position: 'absolute', top: 15, right: 15, aspectRatio: "3/2", borderRadius: "10px"}}
+              src={profilePhotoUrl}
               width="28%"
             />
-          )}
-          {props.profile.has_photo === 0 && (
-            <Box width="28%" style={{position: 'absolute', top: 15, right: 15 }}
-              align="center" justify="center"
-            >
-              <Identicon string={props.profile.user.username} size={75} />
-            </Box>
-          )}
         </Box>
       </Box>
       <Box height="45%" direction="row" gap="8px" wrap={true} overflow="auto" margin={{top: "20px"}}>
@@ -168,29 +164,19 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
                   </Text>
                 </Box>
               </Box>
-              {props.profile.has_photo === 1 && (
-                <Image 
-                  style={{position: 'absolute', top: 30, right: 30, aspectRatio: "3/2"}}
-                  src={getProfilePhotoUrl()}
+                <img 
+                  style={{position: 'absolute', top: 15, right: 15, aspectRatio: "3/2", borderRadius: "10px"}}
+                  src={profilePhotoUrl}
                   width="30%"
                 />
-              )}
-              {props.profile.has_photo === 0 && (
-                <Box width="28%" style={{position: 'absolute', top: 30, right: 30}} 
-                  align="center" justify="center"
-                >
-                  <Identicon string={props.profile.user.username} size={100} />
-                </Box>
-              )}
-
             </Box>
 
             {props.profile.presentations.length === 0 && (
               <Box margin={{bottom: "20px", top: "0px"}} gap="5px">
                 <Box direction="row" gap="8px" align="center" margin={{bottom: "10px"}}>
                   <DocumentText size="15px" />
-                  <Text size="12px" style={{fontStyle: "italic"}}> 
-                    Latest papers
+                  <Text size="14px" weight="bold" color="color1"> 
+                    My latest papers:
                   </Text>
                 </Box>
                 {props.profile.papers.slice(0, 3).map((paper: Paper, index: number) => (
@@ -202,8 +188,8 @@ export const ProfileCard:FunctionComponent<Props> = (props) => {
               <Box margin={{bottom: "20px", top: "0px"}} gap="5px">
                 <Box direction="row" gap="8px" align="center" margin={{bottom: "10px"}}>
                   <Workshop size="15px" />
-                  <Text size="12px" style={{fontStyle: "italic"}}> 
-                    Latest presentation
+                  <Text size="16px" weight="bold" color="color1"> 
+                    I want to speak about...
                   </Text>
                 </Box>
                 <PresentationEntry 

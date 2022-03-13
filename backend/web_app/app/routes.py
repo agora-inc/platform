@@ -385,9 +385,6 @@ def profilePhoto():
         return jsonify({"filename": fn})
 
     if request.method == "GET":
-        with open("/home/cloud-user/test/wesh1.txt", "w") as file:
-            file.write(str(request.args))
-
         if "defaultPic" in request.args:
             defaultPicLocation = "/home/cloud-user/plateform/agora/storage/images/profiles/default.jpg"
             return send_file(defaultPicLocation, mimetype="image/jpg") if defaultPicLocation != "" else jsonify("None")

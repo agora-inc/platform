@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Button, Text, TextArea, Layer } from "grommet";
+import { Box, Image, Text, TextArea, Layer } from "grommet";
 import {UserSettings} from "grommet-icons";
 import { Link, Route, Redirect, useHistory } from "react-router-dom";
 import LoginModal from "./LoginModal";
@@ -35,6 +35,7 @@ interface State {
   showCreateChannelOverlay: boolean;
   showDropdown: boolean;
   editingBio: boolean;
+  profilePicUrl: string;
 }
 
 export default class UserManager extends Component<Props, State> {
@@ -49,16 +50,25 @@ export default class UserManager extends Component<Props, State> {
       showCreateChannelOverlay: false,
       showDropdown: false,
       editingBio: false,
+      profilePicUrl: ""
     };
   }
-
-
 
   componentWillMount() {
     this.fetchAdminChannels();
     this.fetchMemberChannels();
     this.fetchFollowingChannels();
+    this.fetchProfilePicUrl();
   }
+
+  fetchProfilePicUrl = () => {
+    this.state.user &&
+      ProfileService.getProfilePhotoUrl(
+        this.state.user!.id,
+        0,
+        (profilePicUrl: string) => this.setState({profilePicUrl})
+      )
+  };
 
   fetchAdminChannels = () => {
     this.state.user &&
@@ -91,7 +101,7 @@ export default class UserManager extends Component<Props, State> {
           this.setState({ memberChannels });
         }
       );
-  };
+  }
 
   toggleDropdown = () => {
     this.setState({ showDropdown: !this.state.showDropdown });
@@ -152,7 +162,7 @@ export default class UserManager extends Component<Props, State> {
       // if yes, redirect. If no, create and redirect
       ProfileService.createProfile(
         this.state.user.id,
-        "CREATION FROM CLICK",
+        "Your name",
         () => {
           return history.push('/profile/' + id)
         }
@@ -515,7 +525,12 @@ export default class UserManager extends Component<Props, State> {
             {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
             <b>{this.state.user?.username}!</b>
           </Text>
-          <UserSettings size="medium"/>
+          {/* <UserSettings size="medium"/> */}
+          <img 
+              style={{maxWidth: "70px", maxHeight: "70px", borderRadius: "200px"}}
+              src={this.state.profilePicUrl}
+              // width="28%"
+            />
         </Box>
       </Box>
       </>

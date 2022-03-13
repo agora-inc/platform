@@ -28,6 +28,7 @@ interface Props {
 
 const ProfilePage = (props: Props) => {
   const [profile, setProfile] = useState<Profile>();
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
   const [presentations, setPresentations] = useState<Presentation[]>([]);
   const [showCreateChannelOverlay, setShowCreateChannelOverlay] = useState<boolean>(false);
   const [papers, setPapers] = useState<Paper[]>([]);
@@ -39,6 +40,15 @@ const ProfilePage = (props: Props) => {
   useEffect(() => {
     ProfileService.getProfile(getUserIdFromUrl(), setProfile);
   }, []);
+
+  useEffect(() => {
+    if(profile){
+      ProfileService.getProfilePhotoUrl(profile.user.id, 0, 
+        (profilePicUrl: string) => {
+          setProfilePhotoUrl(profilePicUrl)
+        })
+      }
+  }, [profile])
 
   useEffect(() => {
     if (profile) {
@@ -68,14 +78,6 @@ const ProfilePage = (props: Props) => {
     }
     return Number(userId);
   };
-
-  function getProfilePhotoUrl(defaultPic: boolean): string {
-    if (profile) {
-      return ProfileService.getProfilePhoto(profile.user.id, 0, defaultPic)
-    } else {
-      return ""
-    }
-  }
 
   function onProfilePhotoUpload(file: File): void {
     if (home && profile) {
@@ -189,11 +191,10 @@ const ProfilePage = (props: Props) => {
           justify="between"
         >
           <Box direction="row" align="center" gap="30px" width="60%" >
-            <Box width="150px" height="150px" round="100px"                   
-              justify="center" align="center" overflow="hidden">
-                <img width={150} height={150} src={getProfilePhotoUrl(!profile.has_photo)} />
-            </Box>
-
+            <img 
+              style={{maxWidth: "150px", maxHeight: "150px", borderRadius: "50px"}}
+              src={profilePhotoUrl}
+            />
             <Box direction="column" gap="6px" align="start">
               <Text 
                   size="26px"
@@ -206,7 +207,6 @@ const ProfilePage = (props: Props) => {
               <Text
                   size="16px"
                   color="color1"
-                  weight="bold"
                   style={{ height: "20px", overflow: "auto" }}
                   margin={{ bottom: "20px"}}
                 >
