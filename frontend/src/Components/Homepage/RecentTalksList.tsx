@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Box, Text } from "grommet";
 
-import PastTalkCard from "../Talks/PastTalkCard";
+import { PastTalkCard } from "../Talks/PastTalkCard";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { useStore } from "../../store";
 

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Grid, Text } from "grommet";
 import DescriptionAndQuestions from "../Components/Streaming/OldStuff/DescriptionAndQuestions";
-import ChatBox from "../Components/Streaming/OldStuff/ChatBox";
+import { ChatBox } from "../Components/Streaming/OldStuff/ChatBox";
 import Loading from "../Components/Core/Loading";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
 import VideoPlayer from "../Components/Streaming/OldStuff/VideoPlayer";

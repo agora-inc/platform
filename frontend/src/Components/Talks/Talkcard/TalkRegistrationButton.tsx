@@ -5,7 +5,7 @@ import { Link, useHistory, Redirect } from "react-router-dom";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import { User } from "../../../Services/UserService";
-import TalkRegistrationFormButton from "../Talkcard/TalkRegistrationFormButton";
+import { TalkRegistrationFormButton } from "../Talkcard/TalkRegistrationFormButton";
 import { ChannelService } from "../../../Services/ChannelService";
 import SignUpButton from "../../Account/SignUpButton";
 import CalendarButtons from "../CalendarButtons";

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { Box, Text, TextInput } from "grommet";
 import { Search } from "grommet-icons";
 // Find another library to make this component work
@@ -7,6 +7,7 @@ import { User } from "../../Services/UserService";
 import { ChannelService } from "../../Services/ChannelService";
 import { SearchService } from "../../Services/SearchService";
 import Identicon from "react-identicons";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface Props {
   role: string;
@@ -21,56 +22,44 @@ interface State {
   expanded: boolean;
 }
 
-export default class AddUsersButton extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      searchResults: [],
-      searchString: "",
-      expanded: false,
-    };
-  }
+export const AddUsersButton = (props: Props) => {
+  const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [searchString, setSearchString] = useState("");
+  const [expanded, setExpanded] = useState(false);
 
-  toggleOverlay = () => {
-    this.setState({ expanded: !this.state.expanded });
-  };
+  const { getAccessTokenSilently } = useAuth0();
 
-  search = (searchString: string) => {
+  useEffect(() => {
     if (searchString === "") {
-      this.setState({ searchString: searchString, searchResults: [] });
-      return;
+      setSearchResults([]);
+    } else {
+      SearchService.search(["user"], searchString, setSearchResults);
     }
-    this.setState({ searchString }, () => {
-      SearchService.search(
-        ["user"],
-        this.state.searchString,
-        (results: { user: User[] }) => {
-          this.setState({ searchResults: results.user });
-        }
-      );
-    });
+  }, [searchString]);
+
+  const toggleOverlay = () => {
+    setExpanded(!expanded);
   };
 
-  onUserSelected = (user: User) => {
+  const onUserSelected = async (user: User) => {
+    const token = await getAccessTokenSilently();
     ChannelService.addUserToChannel(
       user.id,
-      this.props.channelId,
-      this.props.role,
+      props.channelId,
+      props.role,
       () => {
-        this.props.onUserAddedCallback();
-        this.setState({
-          expanded: false,
-          searchResults: [],
-          searchString: "",
-        });
-      }
+        props.onUserAddedCallback();
+        setExpanded(false);
+        setSearchResults([]);
+        setSearchString("");
+      },
+      token
     );
   };
 
-  
-
-  menu = () => {
-    {/*
+  const menu = () => {
+    {
+      /*
     return (
       <Menu
         style={{
@@ -136,35 +125,32 @@ export default class AddUsersButton extends Component<Props, State> {
         })}
       </Menu>
     );
-    */}
+    */
+    }
   };
 
-
-  render() {
-    return (
-          {/*
-      <Dropdown
-        overlay={this.menu()}
-        trigger={["click"]}
-        // overlayStyle={{ width: 250 }}
-        visible={this.state.expanded}
-      >
-        <Box
-          onClick={this.toggleOverlay}
-          focusIndicator={false}
-          width="70px"
-          align="center"
-          background="white"
-          pad={{ horizontal: "small", vertical: "3px" }}
-          round="xsmall"
-          style={{ border: "2px solid black" }}
-        >
-          <Text color="black" style={{ fontWeight: 500 }}>
-            Add
-          </Text>
-        </Box>
-      </Dropdown>
-      */}
-    );
-  } 
-}
+  return (
+    <></>
+    // <Dropdown
+    //   overlay={this.menu()}
+    //   trigger={["click"]}
+    //   // overlayStyle={{ width: 250 }}
+    //   visible={this.state.expanded}
+    // >
+    //   <Box
+    //     onClick={this.toggleOverlay}
+    //     focusIndicator={false}
+    //     width="70px"
+    //     align="center"
+    //     background="white"
+    //     pad={{ horizontal: "small", vertical: "3px" }}
+    //     round="xsmall"
+    //     style={{ border: "2px solid black" }}
+    //   >
+    //     <Text color="black" style={{ fontWeight: 500 }}>
+    //       Add
+    //     </Text>
+    //   </Box>
+    // </Dropdown>
+  );
+};

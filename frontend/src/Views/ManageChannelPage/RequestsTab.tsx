@@ -1,30 +1,25 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { Box, DataTable, Text } from "grommet";
 import { ChannelService } from "../../Services/ChannelService";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const columns: any[] = [
   {
-    property: 'full_name',
+    property: "full_name",
     header: <b>Name</b>,
   },
   {
-    property: 'position',
+    property: "position",
     header: <b>Position</b>,
   },
   {
-    property: 'institution',
+    property: "institution",
     header: <b>Institution</b>,
   },
   {
-    property: 'email',
+    property: "email",
     header: <b>Email</b>,
   },
-  // {
-  //   property: 'date',
-  //   header: <b>Creation Date</b>,
-  //   render: (datum: any) => datum.date && new Date(datum.date).toLocaleDateString('en-US'),
-  //   align: 'end',
-  // },
 ];
 
 export const data: Applicant[] = [];
@@ -36,135 +31,139 @@ type Applicant = {
   position: string;
   user_id: number;
   personal_homepage: string;
-}
+};
 
 interface Props {
-  channelId: number
+  channelId: number;
 }
 
-interface State {
-  applicantList: Applicant[],
-  itemDetail?: Applicant,
-}
+export const RequestsTab = (props: Props) => {
+  const [applicantList, setApplicantList] = useState<Applicant[]>([]);
+  const [itemDetail, setItemDetail] = useState<Applicant | undefined>();
 
-export default class RequestsTab extends Component<Props, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      applicantList: data,
-    };
-    this.fetchMembershipRequests();
-  }
+  const { getAccessTokenSilently } = useAuth0();
 
-  fetchMembershipRequests = () => {
+  useEffect(() => {
+    fetchMembershipRequests();
+  }, []);
 
-    ChannelService.getMembershipApplications(this.props.channelId, 
-      (applicantList: Applicant[]) => {
-        this.setState( {applicantList: applicantList})
-      });
-  }
-
-
-  handleClickRow = (ev: any) => {
-    let item: Applicant = ev.datum;
-    this.setState({ itemDetail: item });
-  }
-
-  accept = () => {
-    const item = this.state.itemDetail!;
-    ChannelService.acceptMembershipApplication(
-      this.props.channelId, 
-      item.user_id,
-      () => {})
-    this.updateState();
-  }
-  
-  refuse = () => {
-    const item = this.state.itemDetail!;
-    ChannelService.cancelMembershipApplication(
-      this.props.channelId, 
-      item.user_id,
-      () => {})
-    this.updateState();
+  const fetchMembershipRequests = async () => {
+    const token = await getAccessTokenSilently();
+    ChannelService.getMembershipApplications(
+      props.channelId,
+      (applicants: Applicant[]) => {
+        setApplicantList(applicants);
+      },
+      token
+    );
   };
 
-  updateState = () => {
-    const item = this.state.itemDetail!;
-    const list = this.state.applicantList.filter(x => x.email !== item.email);
-    this.setState({ applicantList: list });
-    this.setState({ itemDetail: undefined });
-  }
+  const handleClickRow = (e: any) => {
+    setItemDetail(e.datum);
+  };
 
-  render() {
-    const item = this.state.itemDetail!;
-    const showItem = !!this.state.itemDetail;
-
-    return (
-      <Box direction="column">
-        <Box direction="row" gap="small" margin={{ bottom: "12px" }}>
-          <Text size="14px" weight="bold" color="black">
-            Applicant details
-          </Text>
-        </Box>
-        <Box direction="row" 
-          width="60%"
-          background="#e5e5e5"
-          round="7.5px"
-          pad="10px" color="#5A5A5A"
-          style={{ minHeight: "160px" }}
-        >
-          {!showItem &&
-            <Text size="14px">Please select one item from list</Text>
-          }
-          {showItem &&
-            <Box>
-              <ul style={{ listStyle: 'none', padding: 0, fontSize: "14px"}}>
-                <li>
-                  <b>Name: </b>
-                  {item.full_name}
-                </li>
-                <li>
-                  <b>Education: </b>
-                  {item.position}
-                </li>
-                <li>
-                  <b>Institution: </b>
-                  {item.institution}
-                </li>
-                <li>
-                  <b>Homepage: </b>
-                  <a href={item.personal_homepage} target="_blank" rel="noopener noreferrer">
-                    {item.personal_homepage}
-                  </a>
-                </li>
-                <li>
-                 <b>Email: </b>
-                  {item.email}
-                </li>
-              </ul>
-              <Box direction="row" gap="small">
-                <WineButton onClick={this.accept}>Accept</WineButton>
-                <WineButton onClick={this.refuse}>Refuse</WineButton>
-              </Box>
-            </Box>
-          }
-        </Box>
-        <Box direction="row" gap="small" margin={{ top: "24px", bottom: "12px" }}>
-          <Text size="14px" weight="bold" color="black">
-            Applicants
-          </Text>
-        </Box>
-        <DataTable
-          columns={columns}
-          data={this.state.applicantList}
-          step={10}
-          size="medium"
-          onClickRow={this.handleClickRow}
-        />
-      </Box>
+  const accept = async () => {
+    const token = await getAccessTokenSilently();
+    const item = itemDetail!;
+    ChannelService.acceptMembershipApplication(
+      props.channelId,
+      item.user_id,
+      () => {},
+      token
     );
-  }
-}
+    setApplicantList(
+      applicantList.filter((x) => x.email !== itemDetail?.email)
+    );
+    setItemDetail(undefined);
+  };
+
+  const refuse = async () => {
+    const token = await getAccessTokenSilently();
+    const item = itemDetail!;
+    ChannelService.cancelMembershipApplication(
+      props.channelId,
+      item.user_id,
+      () => {},
+      token
+    );
+    setApplicantList(
+      applicantList.filter((x) => x.email !== itemDetail?.email)
+    );
+    setItemDetail(undefined);
+  };
+
+  const item = itemDetail!;
+  const showItem = !!itemDetail;
+
+  return (
+    <Box direction="column">
+      <Box direction="row" gap="small" margin={{ bottom: "12px" }}>
+        <Text size="14px" weight="bold" color="black">
+          Applicant details
+        </Text>
+      </Box>
+      <Box
+        direction="row"
+        width="60%"
+        background="#e5e5e5"
+        round="7.5px"
+        pad="10px"
+        color="#5A5A5A"
+        style={{ minHeight: "160px" }}
+      >
+        {!showItem && <Text size="14px">Please select one item from list</Text>}
+        {showItem && (
+          <Box>
+            <ul style={{ listStyle: "none", padding: 0, fontSize: "14px" }}>
+              <li>
+                <b>Name: </b>
+                {item.full_name}
+              </li>
+              <li>
+                <b>Education: </b>
+                {item.position}
+              </li>
+              <li>
+                <b>Institution: </b>
+                {item.institution}
+              </li>
+              <li>
+                <b>Homepage: </b>
+                <a
+                  href={item.personal_homepage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {item.personal_homepage}
+                </a>
+              </li>
+              <li>
+                <b>Email: </b>
+                {item.email}
+              </li>
+            </ul>
+            <Box direction="row" gap="small">
+              <WineButton onClick={accept}>Accept</WineButton>
+              <WineButton onClick={refuse}>Refuse</WineButton>
+            </Box>
+          </Box>
+        )}
+      </Box>
+      <Box direction="row" gap="small" margin={{ top: "24px", bottom: "12px" }}>
+        <Text size="14px" weight="bold" color="black">
+          Applicants
+        </Text>
+      </Box>
+      <DataTable
+        columns={columns}
+        data={applicantList}
+        step={10}
+        size="medium"
+        onClickRow={handleClickRow}
+      />
+    </Box>
+  );
+};
 
 const WineButton: React.FC<any> = (props) => {
   return (
@@ -182,5 +181,5 @@ const WineButton: React.FC<any> = (props) => {
     >
       <Text size="14px">{props.children}</Text>
     </Box>
-  )
-}
+  );
+};

@@ -549,7 +549,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                   )}
                   {!this.props.disabled &&
                     this.props.channelId &&
-                    this.props.userId &&
                     this.isSubscribedTo("tier1", audienceSize) && (
                       <CancelSubscriptionsButton
                         channelId={this.props.channelId}
@@ -557,10 +556,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                     )}
                   {!this.props.disabled &&
                     this.props.channelId &&
-                    this.props.userId &&
                     !this.isSubscribedTo("tier1", audienceSize) && (
                       <CheckoutPaymentButton
-                        userId={this.props.userId}
                         productId={this.getProductId("tier1", audienceSize)}
                         quantity={1}
                         channelId={this.props.channelId}
@@ -594,7 +591,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                   )}
                   {!this.props.disabled &&
                     this.props.channelId &&
-                    this.props.userId &&
                     this.isSubscribedTo("tier2", audienceSize) && (
                       <CancelSubscriptionsButton
                         channelId={this.props.channelId}
@@ -602,10 +598,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                     )}
                   {!this.props.disabled &&
                     this.props.channelId &&
-                    this.props.userId &&
                     !this.isSubscribedTo("tier2", audienceSize) && (
                       <CheckoutPaymentButton
-                        userId={this.props.userId}
                         productId={this.getProductId("tier2", audienceSize)}
                         quantity={1}
                         channelId={this.props.channelId}

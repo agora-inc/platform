@@ -305,7 +305,7 @@ export const CreatePresentationButton = () => {
                     margin={{ top: "15px", bottom: "18px", right: "5%" }}
                   >
                     <Box
-                      onClick={() => onSignup(history)}
+                      // onClick={() => onSignup(history)}
                       background="#0C385B"
                       hoverIndicator="#BAD6DB"
                       focusIndicator={false}

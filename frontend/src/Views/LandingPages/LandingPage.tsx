@@ -1,74 +1,61 @@
-import React, { Component } from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Box, Text, Layer } from "grommet";
+import { Play, Close, Connect, Announce, Multiple, Group } from "grommet-icons";
+import { useAuth0 } from "@auth0/auth0-react";
 
+import { useStore } from "../../store";
+import FooterComponent from "../../Components/Homepage/FooterComponent";
+import { CreatePresentationButton } from "../../Components/Homepage/CreatePresentationButton";
+import { CreateChannelOverlay } from "../../Components/Channel/CreateChannelButton/CreateChannelOverlay";
+import InstitutionalUsers from "./InstitutionalUsers";
+import SignUpButton from "../../Components/Account/SignUpButton";
 import moraStreamFullLogo from "../../assets/general/mora.stream_logo_v3.svg";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
-import { User, UserService } from "../../Services/UserService";
-import { Play, Close, Connect, Announce, Multiple, Group } from "grommet-icons";
-import FooterComponent from "../../Components/Homepage/FooterComponent";
-import "../../Styles/landing-page.css";
-import { CreatePresentationButton } from "../../Components/Homepage/CreatePresentationButton";
-import CreateChannelOverlay from "../../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 import WavyArrowLeftRight from "../../assets/landing_page/wavy_arrow_left_right.png";
 import WavyArrowTopBot from "../../assets/landing_page/wavy_arrow_top_bot.png";
 import ThreeSidedMarketplaceGraph from "../../assets/landing_page/3_sided_marketplace_graph.jpeg";
-import InstitutionalUsers from "./InstitutionalUsers";
-import SignUpButton from "../../Components/Account/SignUpButton";
+import "../../Styles/landing-page.css";
 
-interface State {
-  user: User | null;
-  showLogin: boolean;
-  colorButton: string;
-  colorHover: string;
-  showModalGiveATalk: boolean;
-  renderMobileView: boolean;
-  showCreateChannelOverlay: boolean;
-}
+export const LandingPage = () => {
+  const [renderMobileView, setRenderMobileView] = useState(
+    window.innerWidth < 1200
+  );
+  const [showLogin, setShowLogin] = useState(
+    new URL(window.location.href).searchParams.get("showLogin") === "true"
+  );
+  const [colorButton, setColorButton] = useState("color1");
+  const [colorHover, setColorHover] = useState("color5");
+  const [showModalGiveATalk, setShowModalGiveATalk] = useState(false);
+  const [showCreateChannelOverlay, setShowCreateChannelOverlay] =
+    useState(false);
 
-export default class LandingPage extends Component<RouteComponentProps, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      renderMobileView: window.innerWidth < 1200,
-      user: UserService.getCurrentUser(),
-      showLogin:
-        new URL(window.location.href).searchParams.get("showLogin") === "true",
-      colorButton: "color1",
-      colorHover: "color5",
-      showModalGiveATalk: false,
-      showCreateChannelOverlay: false,
-    };
-  }
+  const user = useStore((state) => state.loggedInUser);
 
-  componentDidUpdate(prevProps: RouteComponentProps) {
-    if (this.props.location !== prevProps.location) {
-      this.setState({
-        showLogin:
-          new URL(window.location.href).searchParams.get("showLogin") ===
-          "true",
-      });
-    }
-  }
+  const { getAccessTokenSilently } = useAuth0();
 
-  toggleCreateChannelOverlay = () => {
-    this.setState({
-      showCreateChannelOverlay: !this.state.showCreateChannelOverlay,
-    });
+  useEffect(() => {
+    setShowLogin(
+      new URL(window.location.href).searchParams.get("showLogin") === "true"
+    );
+  }, [window.location.href]);
+
+  const toggleCreateChannelOverlay = () => {
+    setShowCreateChannelOverlay(!showCreateChannelOverlay);
   };
 
-  toggleModal = () => {
-    this.setState({ showModalGiveATalk: !this.state.showModalGiveATalk });
+  const toggleModal = () => {
+    setShowModalGiveATalk(!showModalGiveATalk);
   };
 
-  giveATalkOverlay() {
+  const giveATalkOverlay = () => {
     return (
       <Layer
         onEsc={() => {
-          this.toggleModal();
+          toggleModal();
         }}
         onClickOutside={() => {
-          this.toggleModal();
+          toggleModal();
         }}
         modal
         responsive
@@ -102,7 +89,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Text>
             </Box>
             <Box pad="32px" alignSelf="center">
-              <Close onClick={this.toggleModal} />
+              <Close onClick={toggleModal} />
             </Box>
           </Box>
 
@@ -149,9 +136,73 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
       </Layer>
     );
-  }
+  };
 
-  aboveTheFoldMain() {
+  const callToActions = () => {
+    return (
+      <Box
+        direction={renderMobileView ? "column" : "row"}
+        focusIndicator={false}
+        margin={{
+          top: window.innerWidth > 800 ? "40px" : "20px",
+          bottom: window.innerWidth > 800 ? "0px" : "0px",
+        }}
+        justify="start"
+        alignContent="center"
+        gap="medium"
+      >
+        <Link to={{ pathname: "/browse" }} style={{ textDecoration: "none" }}>
+          <Box
+            onClick={toggleModal}
+            background={colorButton}
+            round="xsmall"
+            pad="xsmall"
+            height="80px"
+            width="310px"
+            justify="center"
+            align="center"
+            focusIndicator={false}
+            hoverIndicator={colorHover}
+            margin={{ left: "0px" }}
+            direction="row"
+          >
+            <Play size="30px" />
+            <Text size="18px" margin={{ left: "10px" }}>
+              {" "}
+              <b>Watch</b> trending seminars
+            </Text>
+          </Box>
+        </Link>
+
+        <CreatePresentationButton />
+
+        {/* <Link
+        to={{ pathname: "/organisers" }}
+        style={{ textDecoration: "none" }}
+        >
+        <Box
+          onClick={toggleModal}
+          background={colorButton}
+          round="xsmall"
+          pad="xsmall"
+          height="80px"
+          width="310px"
+          justify="center"
+          align="center"
+          focusIndicator={false}
+          hoverIndicator={colorHover}
+          margin={{ left: "0px" }}
+          direction="row"
+        >
+          <Group size="30px" />
+          <Text size="18px" margin={{left: "10px"}}> <b>Organise</b>  your seminars</Text>
+        </Box>
+      </Link> */}
+      </Box>
+    );
+  };
+
+  const aboveTheFoldMain = () => {
     return (
       <>
         <Box>
@@ -160,7 +211,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
             weight="bold"
             color="color1"
             margin={
-              this.state.renderMobileView
+              renderMobileView
                 ? { top: "80px", bottom: "40px" }
                 : { top: "120px", bottom: "50px" }
             }
@@ -180,27 +231,27 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Text>
           <Box
             margin={
-              this.state.renderMobileView
+              renderMobileView
                 ? { top: "30px", bottom: "30px" }
                 : { top: "0px" }
             }
             height="40%"
           >
-            {this.callToActions()}
+            {callToActions()}
           </Box>
           <InstitutionalUsers />
         </Box>
       </>
     );
-  }
+  };
 
-  aboveTheFoldImage() {
+  const aboveTheFoldImage = () => {
     return (
       <>
         <Box
           direction="column"
           style={
-            this.state.renderMobileView
+            renderMobileView
               ? { width: "90%", alignSelf: "center", marginTop: "20px" }
               : { width: "90%", marginTop: "120px", alignSelf: "center" }
           }
@@ -209,73 +260,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
       </>
     );
-  }
+  };
 
-  callToActions() {
-    return (
-      <Box
-        direction={this.state.renderMobileView ? "column" : "row"}
-        focusIndicator={false}
-        margin={{
-          top: window.innerWidth > 800 ? "40px" : "20px",
-          bottom: window.innerWidth > 800 ? "0px" : "0px",
-        }}
-        justify="start"
-        alignContent="center"
-        gap="medium"
-      >
-        <Link to={{ pathname: "/browse" }} style={{ textDecoration: "none" }}>
-          <Box
-            onClick={this.toggleModal}
-            background={this.state.colorButton}
-            round="xsmall"
-            pad="xsmall"
-            height="80px"
-            width="310px"
-            justify="center"
-            align="center"
-            focusIndicator={false}
-            hoverIndicator={this.state.colorHover}
-            margin={{ left: "0px" }}
-            direction="row"
-          >
-            <Play size="30px" />
-            <Text size="18px" margin={{ left: "10px" }}>
-              {" "}
-              <b>Watch</b> trending seminars
-            </Text>
-          </Box>
-        </Link>
-
-        <CreatePresentationButton />
-
-        {/* <Link
-        to={{ pathname: "/organisers" }}
-        style={{ textDecoration: "none" }}
-        >
-        <Box
-          onClick={this.toggleModal}
-          background={this.state.colorButton}
-          round="xsmall"
-          pad="xsmall"
-          height="80px"
-          width="310px"
-          justify="center"
-          align="center"
-          focusIndicator={false}
-          hoverIndicator={this.state.colorHover}
-          margin={{ left: "0px" }}
-          direction="row"
-        >
-          <Group size="30px" />
-          <Text size="18px" margin={{left: "10px"}}> <b>Organise</b>  your seminars</Text>
-        </Box>
-      </Link> */}
-      </Box>
-    );
-  }
-
-  content1() {
+  const content1 = () => {
     return (
       <>
         <Text
@@ -287,12 +274,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Text>
         <Box
           width="100%"
-          direction={!this.state.renderMobileView ? "row" : "column"}
+          direction={!renderMobileView ? "row" : "column"}
           gap="30px"
         >
           <Box
             width="350px"
-            height={this.state.renderMobileView ? "370px" : "430px"}
+            height={renderMobileView ? "370px" : "430px"}
             background="color2"
             direction="column"
             justify="between"
@@ -337,13 +324,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
           <Box width="190px" direction="column" alignSelf="center">
             <img
-              src={
-                this.state.renderMobileView
-                  ? WavyArrowTopBot
-                  : WavyArrowLeftRight
-              }
+              src={renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
               style={
-                this.state.renderMobileView
+                renderMobileView
                   ? { alignSelf: "center", height: "70px" }
                   : { alignSelf: "center", width: "120px" }
               }
@@ -352,7 +335,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
           <Box
             width="350px"
-            height={this.state.renderMobileView ? "370px" : "430px"}
+            height={renderMobileView ? "370px" : "430px"}
             background="color2"
             direction="column"
             justify="between"
@@ -398,13 +381,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
           <Box width="190px" direction="column" alignSelf="center">
             <img
-              src={
-                this.state.renderMobileView
-                  ? WavyArrowTopBot
-                  : WavyArrowLeftRight
-              }
+              src={renderMobileView ? WavyArrowTopBot : WavyArrowLeftRight}
               style={
-                this.state.renderMobileView
+                renderMobileView
                   ? { alignSelf: "center", height: "70px" }
                   : { alignSelf: "center", width: "120px" }
               }
@@ -413,7 +392,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
           <Box
             width="350px"
-            height={this.state.renderMobileView ? "370px" : "430px"}
+            height={renderMobileView ? "370px" : "430px"}
             background="color2"
             direction="column"
             justify="between"
@@ -458,9 +437,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
       </>
     );
-  }
+  };
 
-  content2() {
+  const content2 = () => {
     return (
       <>
         <Text
@@ -475,7 +454,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           for researchers
         </Text>
 
-        {!this.state.renderMobileView && (
+        {!renderMobileView && (
           <img
             src={ThreeSidedMarketplaceGraph}
             height="40%"
@@ -486,14 +465,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
         <Box
           width="100%"
-          direction={!this.state.renderMobileView ? "row" : "column"}
+          direction={!renderMobileView ? "row" : "column"}
           gap="30px"
           justify="center"
           margin={{ top: "40px" }}
         >
           <Box
             width="420px"
-            height={this.state.renderMobileView ? "250px" : "320px"}
+            height={renderMobileView ? "250px" : "320px"}
             background="color4"
             direction="column"
             pad="medium"
@@ -528,7 +507,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
           <Box
             width="420px"
-            height={this.state.renderMobileView ? "250px" : "320px"}
+            height={renderMobileView ? "250px" : "320px"}
             background="color4"
             direction="column"
             pad="medium"
@@ -563,7 +542,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
 
           <Box
             width="420px"
-            height={this.state.renderMobileView ? "250px" : "320px"}
+            height={renderMobileView ? "250px" : "320px"}
             background="color4"
             direction="column"
             pad="medium"
@@ -601,12 +580,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         </Box>
       </>
     );
-  }
+  };
 
-  callToActionEndpage() {
+  const callToActionEndpage = () => {
     return (
       <>
-        {!this.state.renderMobileView && (
+        {!renderMobileView && (
           <>
             <Box>
               <Text
@@ -628,14 +607,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Box>
               <Box
                 alignSelf="center"
-                margin={this.state.renderMobileView ? { top: "30px" } : {}}
+                margin={renderMobileView ? { top: "30px" } : {}}
               >
                 <InstitutionalUsers />
               </Box>
             </Box>
           </>
         )}
-        {this.state.renderMobileView && (
+        {renderMobileView && (
           <Text
             size="34px"
             margin={{ top: "80px", bottom: "80px" }}
@@ -647,24 +626,23 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Text>
         )}
 
-        {this.state.showCreateChannelOverlay && (
+        {showCreateChannelOverlay && (
           <CreateChannelOverlay
-            onBackClicked={this.toggleCreateChannelOverlay}
+            onBackClicked={toggleCreateChannelOverlay}
             onComplete={() => {
-              this.toggleCreateChannelOverlay();
+              toggleCreateChannelOverlay();
             }}
             visible={true}
-            user={this.state.user}
           />
         )}
       </>
     );
-  }
+  };
 
-  callToActionSocial() {
+  const callToActionSocial = () => {
     return (
       <>
-        {!this.state.renderMobileView && (
+        {!renderMobileView && (
           <>
             <Box>
               <Text
@@ -696,14 +674,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               </Box>
               <Box
                 alignSelf="center"
-                margin={this.state.renderMobileView ? { top: "30px" } : {}}
+                margin={renderMobileView ? { top: "30px" } : {}}
               >
                 <InstitutionalUsers />
               </Box>
             </Box>
           </>
         )}
-        {this.state.renderMobileView && (
+        {renderMobileView && (
           <Text
             size="34px"
             margin={{ top: "80px", bottom: "80px" }}
@@ -715,24 +693,23 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Text>
         )}
 
-        {this.state.showCreateChannelOverlay && (
+        {showCreateChannelOverlay && (
           <CreateChannelOverlay
-            onBackClicked={this.toggleCreateChannelOverlay}
+            onBackClicked={toggleCreateChannelOverlay}
             onComplete={() => {
-              this.toggleCreateChannelOverlay();
+              toggleCreateChannelOverlay();
             }}
             visible={true}
-            user={this.state.user}
           />
         )}
       </>
     );
-  }
+  };
 
-  calltoActionOrganisers() {
+  const calltoActionOrganisers = () => {
     return (
       <>
-        {!this.state.renderMobileView && (
+        {!renderMobileView && (
           <>
             <Box>
               <Text
@@ -760,8 +737,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                   style={{ textDecoration: "none" }}
                 >
                   <Box
-                    onClick={this.toggleModal}
-                    background={this.state.colorButton}
+                    onClick={toggleModal}
+                    background={colorButton}
                     round="xsmall"
                     pad="xsmall"
                     height="80px"
@@ -769,7 +746,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                     justify="center"
                     align="center"
                     focusIndicator={false}
-                    hoverIndicator={this.state.colorHover}
+                    hoverIndicator={colorHover}
                     margin={{ left: "0px" }}
                     direction="row"
                   >
@@ -786,107 +763,105 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         )}
       </>
     );
-  }
+  };
 
-  render() {
-    return (
-      <Box direction="column" align="center">
-        {/* <video
-          autoPlay loop muted id="background-landing"
-          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
+  return (
+    <Box direction="column" align="center">
+      {/* <video
+        autoPlay loop muted id="background-landing"
+        style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
+      >
+        <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
+      </video> */}
+      {/* <img height="200px" src={BackgroundImage}/> */}
+      <img
+        style={{
+          height: "auto",
+          width: "auto",
+          minWidth: "100%",
+          minHeight: "100%",
+        }}
+        id="background-landing"
+        // src={BackgroundImage}
+        src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+      />
+
+      <Box height="100%" width="100%">
+        <Box
+          width="80%"
+          height={renderMobileView ? "1480px" : "750px"}
+          direction={renderMobileView ? "column" : "row"}
+          alignSelf="center"
         >
-          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
-        </video> */}
-        {/* <img height="200px" src={BackgroundImage}/> */}
-        <img
-          style={{
-            height: "auto",
-            width: "auto",
-            minWidth: "100%",
-            minHeight: "100%",
-          }}
-          id="background-landing"
-          // src={BackgroundImage}
-          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
-        />
-
-        <Box height="100%" width="100%">
           <Box
-            width="80%"
-            height={this.state.renderMobileView ? "1480px" : "750px"}
-            direction={this.state.renderMobileView ? "column" : "row"}
-            alignSelf="center"
+            width={renderMobileView ? "100%" : "60%"}
+            height={renderMobileView ? "1250px" : "100%"}
+            style={renderMobileView ? {} : { minWidth: "780px" }}
           >
-            <Box
-              width={this.state.renderMobileView ? "100%" : "60%"}
-              height={this.state.renderMobileView ? "1250px" : "100%"}
-              style={this.state.renderMobileView ? {} : { minWidth: "780px" }}
-            >
-              {this.aboveTheFoldMain()}
-            </Box>
-            <Box
-              width={this.state.renderMobileView ? "100%" : "40%"}
-              height={this.state.renderMobileView ? "500px" : "100%"}
-            >
-              {this.aboveTheFoldImage()}
-            </Box>
+            {aboveTheFoldMain()}
           </Box>
-        </Box>
-
-        <Box height="100%" width="100%" background="color5" id="content">
           <Box
-            width="80%"
-            height={this.state.renderMobileView ? "1750px" : "760px"}
-            direction="column"
-            alignSelf="center"
+            width={renderMobileView ? "100%" : "40%"}
+            height={renderMobileView ? "500px" : "100%"}
           >
-            {this.content1()}
+            {aboveTheFoldImage()}
           </Box>
-        </Box>
-
-        <Box height="100%" width="100%" background="color1">
-          <Box
-            width="80%"
-            height={this.state.renderMobileView ? "1290px" : "1100px"}
-            direction="column"
-            alignSelf="center"
-          >
-            {this.content2()}
-          </Box>
-        </Box>
-
-        <Box height="100%" width="100%">
-          <Box
-            width="80%"
-            height={this.state.renderMobileView ? "450px" : "600px"}
-            direction="column"
-            alignSelf="center"
-          >
-            {this.callToActionSocial()}
-          </Box>
-        </Box>
-
-        {/* <Box height="100%" width="100%" background="color5">
-          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
-            {this.callToActionEndpage()}
-          </Box>
-        </Box> */}
-
-        <Box height="100%" width="100%" background="color5">
-          <Box
-            width="80%"
-            height={this.state.renderMobileView ? "450px" : "400px"}
-            direction="column"
-            alignSelf="center"
-          >
-            {this.calltoActionOrganisers()}
-          </Box>
-        </Box>
-
-        <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
-          <FooterComponent />
         </Box>
       </Box>
-    );
-  }
-}
+
+      <Box height="100%" width="100%" background="color5" id="content">
+        <Box
+          width="80%"
+          height={renderMobileView ? "1750px" : "760px"}
+          direction="column"
+          alignSelf="center"
+        >
+          {content1()}
+        </Box>
+      </Box>
+
+      <Box height="100%" width="100%" background="color1">
+        <Box
+          width="80%"
+          height={renderMobileView ? "1290px" : "1100px"}
+          direction="column"
+          alignSelf="center"
+        >
+          {content2()}
+        </Box>
+      </Box>
+
+      <Box height="100%" width="100%">
+        <Box
+          width="80%"
+          height={renderMobileView ? "450px" : "600px"}
+          direction="column"
+          alignSelf="center"
+        >
+          {callToActionSocial()}
+        </Box>
+      </Box>
+
+      {/* <Box height="100%" width="100%" background="color5">
+        <Box width="80%" height={renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+          {callToActionEndpage()}
+        </Box>
+      </Box> */}
+
+      <Box height="100%" width="100%" background="color5">
+        <Box
+          width="80%"
+          height={renderMobileView ? "450px" : "400px"}
+          direction="column"
+          alignSelf="center"
+        >
+          {calltoActionOrganisers()}
+        </Box>
+      </Box>
+
+      <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
+        <FooterComponent />
+      </Box>
+    </Box>
+  );
+};

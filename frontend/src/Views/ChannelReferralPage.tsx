@@ -3,7 +3,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { Box, Text } from "grommet";
 
 import { Channel, ChannelService } from "../Services/ChannelService";
-import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
+import { CreateChannelOverlay } from "../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 import Loading from "../Components/Core/Loading";
 import ShareButtons from "../Components/Core/ShareButtons";
 import SignUpButton from "../Components/Account/SignUpButton";
@@ -551,7 +551,6 @@ export default class ChannelReferralPage extends Component<
               this.toggleCreateChannelOverlay();
             }}
             visible={true}
-            user={null}
           />
         )}
       </>

@@ -16,7 +16,7 @@ import SignUpButton from "../Account/SignUpButton";
 import ChannelTopicSelector from "../Channel/ChannelTopicSelector";
 import { useStore } from "../../store";
 
-export const _TransportSeminars: FunctionComponent = () => {
+export const TransportSeminars: FunctionComponent = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [url, setUrl] = useState("");
   const [topics, setTopics] = useState<Topic[]>([]);

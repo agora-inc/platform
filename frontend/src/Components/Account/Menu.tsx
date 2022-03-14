@@ -8,7 +8,7 @@ import { useStore } from "../../store";
 import { Channel } from "../../Services/ChannelService";
 import DropdownChannelButton from "../Channel/DropdownChannelButton";
 import CreateChannelButton from "../Channel/CreateChannelButton";
-import CreateChannelOverlay from "../Channel/CreateChannelButton/CreateChannelOverlay";
+import { CreateChannelOverlay } from "../Channel/CreateChannelButton/CreateChannelOverlay";
 import agoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 
 interface Props {
@@ -48,7 +48,6 @@ export const Menu = ({
         onBackClicked={toggleShowOverlay}
         onComplete={onChannelCreated}
         visible={true}
-        user={user}
       />
     </Box>
   ) : (

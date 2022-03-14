@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Box } from "grommet";
-import ChannelPageTalkCard from "./ChannelPageTalkCard";
+import { ChannelPageTalkCard } from "./ChannelPageTalkCard";
 import { User } from "../../Services/UserService";
 import { Talk, TalkService } from "../../Services/TalkService";
 import Loading from "../Core/Loading";
@@ -9,7 +9,6 @@ import "../../Styles/topic-talks-list.css";
 interface Props {
   talks: Talk[];
   channelId: number;
-  user: User | null;
   admin: boolean;
   onEditCallback?: any;
   showTalkId?: number;
@@ -47,7 +46,7 @@ export default class ChannelPageTalkList extends Component<Props, State> {
 
   render() {
     return (
-      <Box 
+      <Box
         // className="talk_cards_outer_box"
         direction="row"
         width="100%"
@@ -55,20 +54,19 @@ export default class ChannelPageTalkList extends Component<Props, State> {
         gap="1.5%"
       >
         {this.props.talks.map((talk: Talk) => (
-            <ChannelPageTalkCard
-              width={(window.innerWidth < 800) ? "99%" : "31.5%"}
-              talk={talk}
-              user={this.props.user}
-              role={this.props.role}
-              admin={this.props.admin}
-              onEditCallback={this.props.onEditCallback}
-              margin={{ bottom: "medium" }}
-              show={this.props.showTalkId === talk.id}
-              following={this.props.following ? this.props.following : false}
-              callback={this.props.callback}
-            />
-          ))}
-    </Box>
+          <ChannelPageTalkCard
+            width={window.innerWidth < 800 ? "99%" : "31.5%"}
+            talk={talk}
+            role={this.props.role}
+            admin={this.props.admin}
+            onEditCallback={this.props.onEditCallback}
+            margin={{ bottom: "medium" }}
+            show={this.props.showTalkId === talk.id}
+            following={this.props.following ? this.props.following : false}
+            callback={this.props.callback}
+          />
+        ))}
+      </Box>
     );
   }
 }

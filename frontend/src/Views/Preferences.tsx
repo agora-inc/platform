@@ -7,18 +7,9 @@ interface Props {
   location: { pathname: string };
 }
 
-interface State {
-  user: User | null;
-  isLoggedIn: boolean;
-}
-
-export default class Preferences extends Component<Props, State> {
+export default class Preferences extends Component<Props, {}> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      isLoggedIn: UserService.isLoggedIn(),
-      user: UserService.getCurrentUser(),
-    };
   }
 
   componentDidMount() {

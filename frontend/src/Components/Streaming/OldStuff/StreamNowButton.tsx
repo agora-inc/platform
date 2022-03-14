@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { Redirect } from "react-router-dom";
 import {
   Box,
@@ -12,7 +12,6 @@ import {
 // Find another library to make this component work
 // import { Steps } from
 import "../../Styles/manage-channel.css";
-import TagSelector from "../../Core/TagSelector";
 import { ReactComponent as TitleImage } from "../title.svg";
 import { ReactComponent as DescriptionImage } from "../description.svg";
 import { ReactComponent as TagImage } from "../tags.svg";
@@ -21,6 +20,7 @@ import { Stream, StreamService } from "../../../Services/StreamService";
 import { Channel } from "../../../Services/ChannelService";
 import { Tag } from "../../../Services/TagService";
 import Loading from "../../Core/Loading";
+import { useAuth0 } from "@auth0/auth0-react";
 
 // const { Step } = Steps;
 
@@ -40,83 +40,64 @@ interface State {
   stream: any;
 }
 
-export default class StreamNowButton extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      showModal: false,
-      modalStep: 0,
-      title: "",
-      description: "",
-      tags: [],
-      loading: false,
-      toStream: false,
-      stream: null,
-    };
-  }
+export const StreamNowButton = (props: Props) => {
+  const [showModal, setShowModal] = useState(false);
+  const [modalStep, setModalStep] = useState(0);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [toStream, setToStream] = useState(false);
+  const [stream, setStream] = useState<any>(null);
 
-  toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal, modalStep: 0 });
+  const { getAccessTokenSilently } = useAuth0();
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+    setModalStep(0);
   };
 
-  advanceStep = () => {
-    console.log(this.state);
-    this.setState({ modalStep: this.state.modalStep + 1 });
+  const advanceStep = () => {
+    setModalStep(modalStep + 1);
   };
 
-  onFinishClicked = () => {
-    this.setState(
-      {
-        loading: true,
-      },
-      () => {
-        this.onFinish();
-      }
-    );
+  const onFinishClicked = () => {
+    setLoading(true);
+    onFinish();
   };
 
-  onFinish = () => {
+  const onFinish = async () => {
+    const token = await getAccessTokenSilently();
     StreamService.createStream(
-      this.props.channel!.id,
-      this.props.channel!.name,
-      this.state.title,
-      this.state.description,
-      this.state.tags,
+      props.channel!.id,
+      props.channel!.name,
+      title,
+      description,
+      tags,
       (stream: Stream) => {
-        this.setState(
-          {
-            loading: false,
-            toStream: true,
-            stream: stream,
-          },
-          () => {
-            this.toggleModal();
-            this.setState({
-              modalStep: 0,
-              title: "",
-              description: "",
-              tags: [],
-              toStream: false,
-            });
-          }
-        );
-      }
+        setLoading(false);
+        setToStream(true);
+        setStream(stream);
+        toggleModal();
+        setModalStep(0);
+        setTitle("");
+        setDescription("");
+        setTags([]);
+        setToStream(false);
+      },
+      token
     );
   };
 
-  selectTag = (tag: Tag) => {
-    this.setState({ tags: [...this.state.tags, tag] });
+  const selectTag = (tag: Tag) => {
+    setTags([...tags, tag]);
   };
 
-  deselectTag = (tag: Tag) => {
-    this.setState({
-      tags: this.state.tags.filter(function (t) {
-        return t !== tag;
-      }),
-    });
+  const deselectTag = (tag: Tag) => {
+    setTags(tags.filter((t) => t !== tag));
   };
 
-  titleStep = () => {
+  const titleStep = () => {
     return (
       <Box
         style={{ width: "85%" }}
@@ -129,7 +110,7 @@ export default class StreamNowButton extends Component<Props, State> {
           <Heading level={4}>Think of a title for your stream</Heading>
           <TextInput
             placeholder="type something"
-            onChange={(e) => this.setState({ title: e.target.value })}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </Box>
         <Button
@@ -143,14 +124,14 @@ export default class StreamNowButton extends Component<Props, State> {
             bottom: 30,
             alignSelf: "center",
           }}
-          onClick={this.advanceStep}
-          disabled={this.state.title === ""}
+          onClick={advanceStep}
+          disabled={title === ""}
         />
       </Box>
     );
   };
 
-  descriptionStep = () => {
+  const descriptionStep = () => {
     return (
       <Box
         style={{ width: "85%" }}
@@ -165,7 +146,7 @@ export default class StreamNowButton extends Component<Props, State> {
           </Heading>
           <TextArea
             placeholder="type something"
-            onChange={(e) => this.setState({ description: e.target.value })}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </Box>
         <Button
@@ -179,14 +160,14 @@ export default class StreamNowButton extends Component<Props, State> {
             bottom: 30,
             alignSelf: "center",
           }}
-          onClick={this.advanceStep}
-          disabled={this.state.description === ""}
+          onClick={advanceStep}
+          disabled={description === ""}
         />
       </Box>
     );
   };
 
-  tagStep = () => {
+  const tagStep = () => {
     return (
       <Box
         style={{ width: "85%" }}
@@ -198,8 +179,8 @@ export default class StreamNowButton extends Component<Props, State> {
         <TagImage height={150} />
         <Box style={{ marginBottom: 20, marginTop: 0, height: "40%" }}>
           {/* <TagSelector
-            onSelectedCallback={this.selectTag}
-            onDeselectedCallback={this.deselectTag}
+            onSelectedCallback={selectTag}
+            onDeselectedCallback={deselectTag}
           /> */}
         </Box>
         <Button
@@ -213,14 +194,14 @@ export default class StreamNowButton extends Component<Props, State> {
             bottom: 30,
             alignSelf: "center",
           }}
-          onClick={this.advanceStep}
-          disabled={this.state.description === ""}
+          onClick={advanceStep}
+          disabled={description === ""}
         />
       </Box>
     );
   };
 
-  finalStep = () => {
+  const finalStep = () => {
     return (
       <Box
         style={{ width: "85%" }}
@@ -245,92 +226,90 @@ export default class StreamNowButton extends Component<Props, State> {
             justifyContent: "center",
             alignItems: "center",
           }}
-          label={this.state.loading ? "" : "Go live"}
+          label={loading ? "" : "Go live"}
           primary
           color="#61EC9F"
-          onClick={this.onFinishClicked}
-          disabled={this.state.description === ""}
+          onClick={onFinishClicked}
+          disabled={description === ""}
         >
-          {this.state.loading && <Loading size={20} color="black" />}
+          {loading && <Loading size={20} color="black" />}
         </Button>
       </Box>
     );
   };
 
-  render() {
-    return (
+  return (
+    <Box
+      margin={props.margin}
+      pad="none"
+      // style={{
+      //   backgroundColor: "moz-linear-gradient(to right, #fd6fff, #ffeaa6);",
+      //   marginTop: -6,
+      // }}
+    >
       <Box
-        margin={this.props.margin}
-        pad="none"
-        // style={{
-        //   backgroundColor: "moz-linear-gradient(to right, #fd6fff, #ffeaa6);",
-        //   marginTop: -6,
-        // }}
+        className="gradient-border"
+        round="8px"
+        align="center"
+        justify="center"
+        onClick={toggleModal}
+        focusIndicator={false}
       >
-        <Box
-          className="gradient-border"
-          round="8px"
-          align="center"
-          justify="center"
-          onClick={this.toggleModal}
-          focusIndicator={false}
-        >
-          <Text color="black" size="16.5px" style={{ fontWeight: 500 }}>
-            Stream now
-          </Text>
-        </Box>
-        {this.state.showModal && (
-          <Layer
-            onEsc={this.toggleModal}
-            onClickOutside={this.toggleModal}
-            modal
-            responsive
-            animation="fadeIn"
-            style={{ width: 500, height: 600, borderRadius: 15 }}
-          >
-            {this.state.toStream ? (
-              <Redirect
-                to={{
-                  pathname: "/streaming",
-                  state: {
-                    stream: this.state.stream,
-                  },
-                }}
-              />
-            ) : (
-              <Box
-                margin="medium"
-                align="center"
-                justify="between"
-                style={{ height: "100%" }}
-              >
-                <Box align="center" width="100%">
-                  <Heading level={2} style={{ marginBottom: 20 }}>
-                    New stream
-                  </Heading>
-                  {/* 
-                  <Steps
-                    // size="small"
-                    current={this.state.modalStep}
-                    labelPlacement="vertical"
-                  >
-                    <Step title="Title" />
-                    <Step title="Description" />
-                    <Step title="Tags" />
-                    <Step title="Finish" />
-                  </Steps> */}
-                </Box>
-                <Box align="center" style={{ width: "100%" }}>
-                  {this.state.modalStep == 0 && this.titleStep()}
-                  {this.state.modalStep == 1 && this.descriptionStep()}
-                  {this.state.modalStep == 2 && this.tagStep()}
-                  {this.state.modalStep == 3 && this.finalStep()}
-                </Box>
-              </Box>
-            )}
-          </Layer>
-        )}
+        <Text color="black" size="16.5px" style={{ fontWeight: 500 }}>
+          Stream now
+        </Text>
       </Box>
-    );
-  }
-}
+      {showModal && (
+        <Layer
+          onEsc={toggleModal}
+          onClickOutside={toggleModal}
+          modal
+          responsive
+          animation="fadeIn"
+          style={{ width: 500, height: 600, borderRadius: 15 }}
+        >
+          {toStream ? (
+            <Redirect
+              to={{
+                pathname: "/streaming",
+                state: {
+                  stream: stream,
+                },
+              }}
+            />
+          ) : (
+            <Box
+              margin="medium"
+              align="center"
+              justify="between"
+              style={{ height: "100%" }}
+            >
+              <Box align="center" width="100%">
+                <Heading level={2} style={{ marginBottom: 20 }}>
+                  New stream
+                </Heading>
+                {/* 
+                <Steps
+                  // size="small"
+                  current={modalStep}
+                  labelPlacement="vertical"
+                >
+                  <Step title="Title" />
+                  <Step title="Description" />
+                  <Step title="Tags" />
+                  <Step title="Finish" />
+                </Steps> */}
+              </Box>
+              <Box align="center" style={{ width: "100%" }}>
+                {modalStep == 0 && titleStep()}
+                {modalStep == 1 && descriptionStep()}
+                {modalStep == 2 && tagStep()}
+                {modalStep == 3 && finalStep()}
+              </Box>
+            </Box>
+          )}
+        </Layer>
+      )}
+    </Box>
+  );
+};

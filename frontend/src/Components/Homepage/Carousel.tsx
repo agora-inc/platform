@@ -2,7 +2,7 @@ import React, { Component, FunctionComponent, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import { Talk, TalkService } from "../../Services/TalkService";
-import TalkCard from "../Talks/TalkCard";
+import { TalkCard } from "../Talks/TalkCard";
 import { User, UserService } from "../../Services/UserService";
 import TrendingTalksList from "../../Components/Homepage/TrendingTalksList";
 import { useStore } from "../../store";
@@ -12,7 +12,7 @@ interface Props {
   gridArea: string;
 }
 
-export const _Carousel: FunctionComponent<Props> = (props) => {
+export const Carousel: FunctionComponent<Props> = (props) => {
   const [talks, setTalks] = useState<Talk[]>([]);
 
   const user = useStore((state) => state.loggedInUser);

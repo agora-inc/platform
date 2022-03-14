@@ -5,28 +5,27 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 import { useStore } from "./store";
 import { User, Auth0UserPayload, UserService } from "./Services/UserService";
-import Home from "./Views/Home";
-import LandingPage from "./Views/LandingPages/LandingPage";
-import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
-import ChannelPage from "./Views/ChannelPage";
+import { Home } from "./Views/Home";
+import { LandingPage } from "./Views/LandingPages/LandingPage";
+import { OrganiserLandingPage } from "./Views/LandingPages/OrganiserLandingPage";
+import { ChannelPage } from "./Views/ChannelPage";
 import AllSpeakersPage from "./Views/AllSpeakersPage";
 import AllVideosPage from "./Views/AllVideosPage";
 import HeaderBar from "./Components/Core/HeaderBar";
 import { Theme } from "./theme";
-import ManageChannelPage from "./Views/ManageChannelPage";
+import { ManageChannelPage } from "./Views/ManageChannelPage";
 import Preferences from "./Views/Preferences";
-import AllPastTalksPage from "./Views/AllPastTalksPage";
-import SavedTalksPage from "./Views/SavedTalksPage";
+import { AllPastTalksPage } from "./Views/AllPastTalksPage";
+import { SavedTalksPage } from "./Views/SavedTalksPage";
 import InformationPage from "./Views/InformationPage";
 import GettingStartedPage from "./Views/GettingStartedPage";
-import TermsOfServicePage from "./Views/TermsOfServicePage";
+import { TermsOfServicePage } from "./Views/TermsOfServicePage";
 import PrivacyPage from "./Views/PrivacyPage";
-import ChangePasswordPage from "./Views/ChangePasswordPage";
 import AllAgorasPage from "./Views/AllAgorasPage";
 import AgoraCreationPage from "./Views/AgoraCreationPage";
-import TalkSharingPage from "./Views/TalkSharingPage";
+import { TalkSharingPage } from "./Views/TalkSharingPage";
 import AvatarPage from "./Views/AvatarPage";
-import LivestreamPage from "./Views/Livestream/LivestreamPage";
+import { LivestreamPage } from "./Views/Livestream/LivestreamPage";
 import AfterTransaction from "./Views/AfterTransaction";
 import { useTracking } from "./Components/Core/Analytics/useTracking";
 import ProfilePage from "./Views/ProfilePage";
@@ -108,7 +107,6 @@ function App() {
         <Route path="/info/getting-started" component={GettingStartedPage} />
         <Route path="/info/tos" component={TermsOfServicePage} />
         <Route path="/info/privacy" component={PrivacyPage} />
-        <Route path="/changepassword" component={ChangePasswordPage} />
         <Route path="*" component={ChannelPage} />
 
         {/* PAYMENT ENDPOINTS: */}
