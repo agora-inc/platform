@@ -21,6 +21,7 @@ import CreateChannelOverlay from "../Components/Channel/CreateChannelButton/Crea
 
 import TopicSelector from "../Components/Talks/TopicSelector";
 import { LinkSecondaryButton } from "../Components/Core/LinkSecondaryButton";
+import { CreatePresentationButton } from "../Components/Homepage/CreatePresentationButton";
 
 interface Props {
   location: { pathname: string }
@@ -218,28 +219,30 @@ const ProfilePage = (props: Props) => {
               </Text>
 
               <Box direction="row" gap="30px">
-                <Box 
-                  direction="row"
-                  align="end"
-                >
-                  <Box data-tip data-for="avatar_info">
-                  <ImageCropUploader
-                    text="Upload new picture"
-                    onUpload={onProfilePhotoUpload}
-                    width="150px"
-                    height="25px"
-                    widthModal={600}
-                    heightModal={600}
-                    textSize="12px"
-                    hideToolTip={true}
-                    aspect={3 / 2}
-                  />
-                    <ReactTooltip id='avatar_info' place="right" effect="solid">
-                      <p>Recommended avatar dim: 400x400px</p>
-                    </ReactTooltip>
+                {home && (
+                  <Box 
+                    direction="row"
+                    align="end"
+                  >
+                    <Box data-tip data-for="avatar_info">
+                    <ImageCropUploader
+                      text="Upload new picture"
+                      onUpload={onProfilePhotoUpload}
+                      width="150px"
+                      height="25px"
+                      widthModal={600}
+                      heightModal={600}
+                      textSize="12px"
+                      hideToolTip={true}
+                      aspect={3 / 2}
+                    />
+                      <ReactTooltip id='avatar_info' place="right" effect="solid">
+                        <p>Recommended avatar dim: 400x400px</p>
+                      </ReactTooltip>
+                    </Box>
                   </Box>
-                </Box>
-                {profile.has_photo === 1 && (
+                )}
+                {(profile.has_photo === 1 && home) && (
                   <Box 
                     style={{ 
                       border: "solid black 1px", cursor: "pointer" 
@@ -295,6 +298,24 @@ const ProfilePage = (props: Props) => {
             )}
 
 
+
+
+
+            <CreatePresentationButton/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <LinkSecondaryButton 
               text="Look for speakers"
               link="speakers"
@@ -339,7 +360,7 @@ const ProfilePage = (props: Props) => {
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                   <Workshop />
                   <Text size="14px"> 
-                    Presentations
+                    Pending applications
                   </Text>
                 </Box>
               </Tab>
@@ -373,41 +394,43 @@ const ProfilePage = (props: Props) => {
 
             <TabPanel style={{width: "78vw", minHeight: "800px"}}>
               {home && (
-                <Box direction="row" gap="30%" margin={{top: "20px", bottom: "30px" }}>
-                  <Box
-                    data-tip data-for='add_presentation'
-                    focusIndicator={false}
-                    background="color1"
-                    round="xsmall"
-                    pad={{ vertical: "2px", horizontal: "xsmall" }}
-                    onClick={createNewPresentation}
-                    style={{
-                      width: "150px",
-                      height: "30px",
-                    }}
-                    hoverIndicator={true}
-                    justify="center"
-                    align="center"
+                <></>
+                // <Box direction="row" gap="30%" margin={{top: "20px", bottom: "30px" }}>
+                //   <Box
+                //     data-tip data-for='add_presentation'
+                //     focusIndicator={false}
+                //     background="color1"
+                //     round="xsmall"
+                //     pad={{ vertical: "2px", horizontal: "xsmall" }}
+                //     onClick={createNewPresentation}
+                //     style={{
+                //       width: "150px",
+                //       height: "30px",
+                //     }}
+                //     hoverIndicator={true}
+                //     justify="center"
+                //     align="center"
                       
-                  >
-                    <Text color="white" size="small"> 
-                      Give a talk
-                    </Text>
-                    <ReactTooltip id="add_presentation" effect="solid">
-                      Fill below to allow seminar organisers to find you!
-                    </ReactTooltip>
-                  </Box>
-                  {/* <LinkSecondaryButton 
-                    text="Give a talk"
-                    link="agoras"
-                    iconSize="18px"
-                    mobile={false}
-                    width="150px"
-                    height="30px" 
-                  /> */}
-                </Box>
+                //   >
+                //     <Text color="white" size="small"> 
+                //       Give a talk
+                //     </Text>
+                //     <ReactTooltip id="add_presentation" effect="solid">
+                //       Fill below to allow seminar organisers to find you!
+                //     </ReactTooltip>
+                //   </Box>
+                //   {/* <LinkSecondaryButton 
+                //     text="Give a talk"
+                //     link="agoras"
+                //     iconSize="18px"
+                //     mobile={false}
+                //     width="150px"
+                //     height="30px" 
+                //   /> */}
+                // </Box>
               )}
               {presentations.length !== 0 && (
+                <>
                 <Box direction="column" gap="48px">
                   {presentations.map((presentation: Presentation, index: number) => (
                     <PresentationEntry 
@@ -421,10 +444,25 @@ const ProfilePage = (props: Props) => {
                     />
                   ))}
                 </Box>
+                {home 
+                  ? (
+                    <Box margin={{top: "50px"}}>
+                      <LinkSecondaryButton 
+                        text="Contact seminar organisers"
+                        link="agoras"
+                        iconSize="18px"
+                        mobile={false}
+                        width="250px"
+                        height="30px" 
+                      />
+                    </Box>)
+                  : (<></>)
+                }
+                </>
               )}
               {presentations.length === 0 && (
                 <Text size="14px" style={{fontStyle: 'italic'}}>
-                  No presentation available
+                  No pending talk applications.
                 </Text>
               )}
             </TabPanel>
