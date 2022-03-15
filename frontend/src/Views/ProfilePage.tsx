@@ -209,6 +209,7 @@ const ProfilePage = (props: Props) => {
                   color="color1"
                   style={{ height: "20px", overflow: "auto" }}
                   margin={{ bottom: "20px"}}
+                  weight="bold"
                 >
                   {profile.user.position}
                   {profile.user.position !== "" && profile.user.institution !== "" 

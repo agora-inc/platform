@@ -51,10 +51,6 @@ import invitationReceivedGif from "../../assets/landing_page/old_vs_new_way/emai
 
 
 
-
-
-
-
 interface State {
   user: User | null
   showLogin: boolean
@@ -92,6 +88,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           "true",
       });
     }
+  }
+
+  // HACK: scroll up when page loads. (Remy)
+  // Origin of hack: see https://github.com/agora-inc/agora/commit/b6a0a0cafbaae0d9ff8a7266705fe22c3ed4bcf6
+  componentDidMount() {
+    let scroll_element = window.document.querySelector('.StyledGrommet-sc-19lkkz7-0');
+    (scroll_element as HTMLInputElement).scrollTo(0,0);
   }
 
   toggleCreateChannelOverlay = () => {
@@ -298,11 +301,15 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
       <>
         <Text 
           size={this.state.titleSize} 
-          weight="bold" color="black" 
+          color="black" 
           margin={this.state.renderMobileView ? {top: "80px", bottom: "80px"} : {top: "140px", bottom: "140px"}}
         >  
-          Seminars have been citation and network boosters since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>.
+          {/* Seminars have been citation and network boosters since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
+          {/* Physical seminars have been the atomic component of academics' social life since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
 
+          Seminars have been mostly attended by local communities since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>.
+
+          {/* Seminars have been limimte since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
           {/* The more people understand your work in a seminar, the more likely you will get cited and find collaborators.  */}
           {/* One's academic reputation is built around papers and seminars since Newton, but today, most of it happens online. */}
           {/* A good article without advertisement is a forgotten article. */}
@@ -317,6 +324,15 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           {/* Seminars have been the bonfire of academics since Newton but finding opportunities have been hard, until now. */}
           {/* Seminars have been the bonfire of academics since Newton. */}
         </Text>
+
+
+
+
+        {/* 
+        #######################
+        # Testimonial: to be added soon (Remy)
+        #######################
+
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
           <Box>
             Martin Hairer, Field Medalist, Imperial College London
@@ -324,9 +340,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <Box background="white" height="150px">
             <Text size={this.state.secondSize}>"Seminars are key to the growth of researchers."</Text>
             </Box>
-
-
-        </Box>
+        </Box> 
+        */}
       </>
     )
   }
@@ -379,7 +394,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 background="color2" direction="column" justify="center" pad="medium" 
                 margin={{left: this.state.renderMobileView ? "0px" : "15px"}}
               >
-                <Text size={sizeText}style={{alignContent: "start"}} color="color7" weight="bold"> 
+                <Text size={sizeText}style={{alignContent: "start"}} color="color7"> 
                   Apply and receive multiple invitations within 30 days
                 </Text>
               </Box>
@@ -407,7 +422,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 margin={{right: this.state.renderMobileView ? "0px" : "15px"}}
               >
                 <Text size={sizeText} style={{alignContent: "start"}} color="#C0C0C0">
-                  Speak once to your local community.  
+                  Speak <u>once</u> to a local physical audience of <u>10 people</u>
                 </Text>
               </Box>
             </Box>
@@ -419,8 +434,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 background="color2" direction="column" justify="center" pad="medium" 
                 margin={{left: this.state.renderMobileView ? "0px" : "15px"}}
               >
-                <Text size={sizeText} style={{alignContent: "start"}} color="color7" weight="bold"> 
-                  Speak multiple times to communities from all around the world.
+                <Text size={sizeText} style={{alignContent: "start"}} color="color7"> 
+                  Spend <u>multiple times</u> to a cumulative international online/hybrid audience of <u>1000 people</u>.
                 </Text>
               </Box>
               <Box width={widthImage} height={heightBox} background="color6">
@@ -448,12 +463,16 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 margin={{right: this.state.renderMobileView ? "0px" : "15px"}}
               >
                 <Text size={sizeSmallText} style={{alignContent: "start"}} color="#C0C0C0">
-                  4 hours of slides preparation for a single talk to get
-                    <ul>
-                      <li> +1 citation</li>
-                      <li> +5 Twitter followers</li>
-                      <li> +2 potential collaborators</li>
-                    </ul>
+                    • +10 reads of your article
+                </Text>
+                <Text size={sizeSmallText} style={{alignContent: "start"}} color="#C0C0C0">
+                    • +1 potential citation
+                </Text>
+                <Text size={sizeSmallText} style={{alignContent: "start"}} color="#C0C0C0">
+                  • +2 Twitter followers
+                </Text>
+                <Text size={sizeSmallText} style={{alignContent: "start"}} color="#C0C0C0">
+                • +2 new collaborators
                 </Text>
               </Box>
             </Box>
@@ -464,12 +483,12 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 background="color2" direction="column" justify="center" pad="medium" 
                 margin={{left: this.state.renderMobileView ? "0px" : "15px"}}
               >
-                <Text size={sizeSmallText} style={{alignContent: "start"}} color="color7" weight="bold"> 
-                  4 hours of slides preparation for multiple talks to get
+                <Text size={sizeSmallText} style={{alignContent: "start", marginLeft: "-25px"}} color="color7"> 
                   <ul>
-                    <li> +15 citations</li>
-                    <li> +100 Twitter followers</li>
-                    <li> +30 potential collaborators</li>
+                    <li> +1000 reads of your article</li>
+                    <li> +100 potential citations</li>
+                    <li> +200 Twitter followers</li>
+                    <li> +200 new collaborators</li>
                   </ul>
                 </Text>
               </Box>
@@ -822,7 +841,7 @@ calltoActionOrganisers() {
         </Box>
 
         <Box height="100%" width="100%" background="color5">
-          <Box width="80%" height={this.state.renderMobileView ? "500px": "600px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "350px": "400px"} direction="column" alignSelf="center">
             {this.contentTrigger()}
           </Box>
         </Box>

@@ -177,12 +177,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           <Text size="48px" weight="bold" color="color2" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
             Get the hottest researchers to speak to your community.
           </Text>
-          <Text size="20px">
+          <Text size="20px" margin={this.state.renderMobileView ? {bottom: "50px"} : {}}>
             <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more, all in one place! </b>
           </Text>
           {/* <Text size="20px">Empower your community by attracting like-minded researchers from all around the world!</Text> */}
           {!this.state.renderMobileView && (
-            <Box direction={this.state.renderMobileView ? "column" : "row"} margin={{bottom: "50px", top: "30px"}}>
+            <Box direction={this.state.renderMobileView ? "column" : "row"} margin={{bottom: "50px", top: "50px"}}>
               <Box>
                 <CreateChannelButton 
                         onClick={this.toggleCreateChannelOverlay} 
@@ -214,10 +214,6 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               </a>
           </Box>
           )}
-
-
-
-
 
 
           <InstitutionalUsers/>
@@ -307,8 +303,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" weight="bold" color="white" margin={{top: "140px", bottom: "140px"}}>
-          Your tech stack to organise seminars has been archaic for too long.
+          Your tech stack to organise seminars has not changed since the 80s.
         </Text>
+        {/* 
+        #######################
+        # Testimonial: to be added soon (Remy)
+        #######################
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
           <Box>
             Martin Hairer, Field Medalist, Imperial College London
@@ -316,9 +316,8 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           <Box background="white" height="150px">
             <Text size="24px">"Seminars are key to the growth of researchers."</Text>
             </Box>
-
-
-        </Box>
+        </Box> 
+        */}
       </>
     )
   }
@@ -723,7 +722,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         </Box> */}
 
         <Box height="100%" width="100%" background="color1">
-          <Box width="80%" height={this.state.renderMobileView ? "450px": "600px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "500px": "600px"} direction="column" alignSelf="center">
             {this.contentTrigger()}
           </Box>
         </Box>
@@ -741,12 +740,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color5" style={{}}>
-          <Box width="80%" height={this.state.renderMobileView ? "1150px": "790px"} direction="column" alignSelf="center">
-            {this.content3()}
+        {(!this.state.renderMobileView) && (
+          <Box height="100%" width="100%" background="color5" style={{}}>
+            <Box width="80%" height={this.state.renderMobileView ? "1150px": "790px"} direction="column" alignSelf="center">
+              {this.content3()}
+            </Box>
           </Box>
-        </Box>
-        
+        )}
 
         <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "300px": "500px"} direction="column" alignSelf="center">
