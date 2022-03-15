@@ -303,6 +303,7 @@ export default class UserManager extends Component<Props, State> {
             {this.state.adminChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
+              isAdmin={true}
               onClick={this.toggleDropdown}
             />
             ))}
@@ -346,6 +347,7 @@ export default class UserManager extends Component<Props, State> {
             {this.state.followingChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
+              isAdmin={false}
               onClick={this.toggleDropdown}
             />
             ))}

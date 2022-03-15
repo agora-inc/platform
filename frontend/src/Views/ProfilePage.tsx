@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Box, CheckBox, Image, Text } from "grommet";
-import { Workshop, DocumentText, Twitter, Configure, Save } from "grommet-icons";
+import { Workshop, DocumentText, Twitter, Configure, Save, Group } from "grommet-icons";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTooltip from "react-tooltip";
 import Identicon from "react-identicons";
+import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 import ImageCropUploader from "../Components/Channel/ImageCropUploader";
 import { BioEntry } from "../Components/Profile/BioEntry";
@@ -12,6 +13,8 @@ import { PresentationEntry } from "../Components/Profile/PresentationEntry";
 import { TagsEntry } from "../Components/Profile/TagsEntry";
 import { Topic } from "../Services/TopicService";
 import { User, UserService } from "../Services/UserService";
+import { Channel, ChannelService } from "../Services/ChannelService";
+import DropdownChannelButton from "../Components/Channel/DropdownChannelButton";
 import { Paper, Profile, ProfileService, Presentation } from "../Services/ProfileService";
 import Loading from "../Components/Core/Loading";
 import "../Styles/all-profiles-page.css";
@@ -37,10 +40,29 @@ const ProfilePage = (props: Props) => {
   const [isPrevTopics, setIsPrevTopics] = useState<boolean[]>([])
   const [home, setHome] = useState<boolean>(false);
   const [user, setUser] = useState<User>();
+  const [adminChannels, setAdminChannels] = useState<Channel[]>([])
+  const [followingChannels, setFollowingChannels] = useState<Channel[]>([]);
 
   useEffect(() => {
     ProfileService.getProfile(getUserIdFromUrl(), setProfile);
   }, []);
+
+  useEffect(() => {
+    ChannelService.getChannelsForUser(
+      getUserIdFromUrl(),
+      ["owner"],
+      (adminChannels: Channel[]) => {
+        setAdminChannels(adminChannels);
+      }
+    );
+    ChannelService.getChannelsForUser(
+      getUserIdFromUrl(),
+      ["follower"],
+      (followingChannels: Channel[]) => {
+        setFollowingChannels(followingChannels);
+      }
+    );
+  }, [])
 
   useEffect(() => {
     if(profile){
@@ -223,6 +245,7 @@ const ProfilePage = (props: Props) => {
                   <Box 
                     direction="row"
                     align="end"
+                    gap="50px"
                   >
                     <Box data-tip data-for="avatar_info">
                     <ImageCropUploader
@@ -239,6 +262,21 @@ const ProfilePage = (props: Props) => {
                       <ReactTooltip id='avatar_info' place="right" effect="solid">
                         <p>Recommended avatar dim: 400x400px</p>
                       </ReactTooltip>
+                    </Box>
+                    <Box
+                      onClick={UserService.logout}
+                      width="150px"
+                      height="25px"
+                      style={{ position: "relative", border: "solid black 1px", cursor: "pointer" }}
+                      round="xsmall"
+                      justify="center"
+                      align="center"
+                      background="#EAF1F1"
+                      focusIndicator={true}
+                      hoverIndicator="#DDDDDD"
+                      gap="xsmall"
+                    >
+                      <Text size="12px" weight="bold" color="black"> Log out </Text>
                     </Box>
                   </Box>
                 )}
@@ -277,7 +315,7 @@ const ProfilePage = (props: Props) => {
                     mobile={false}
                     width="150px"
                     height="30px" 
-              /> */}
+              /> 
 
               <CreateChannelButton
                  onClick={() => {
@@ -295,22 +333,10 @@ const ProfilePage = (props: Props) => {
                   visible={true}
                   user={user}
                 />
-            )}
-
-
-
+            )} */}
 
 
             <CreatePresentationButton/>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -360,7 +386,7 @@ const ProfilePage = (props: Props) => {
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                   <Workshop />
                   <Text size="14px"> 
-                    Pending applications
+                    Talk applications
                   </Text>
                 </Box>
               </Tab>
@@ -380,6 +406,16 @@ const ProfilePage = (props: Props) => {
                   </Text>
                 </Box>
               </Tab>
+              {home && (
+                <Tab>
+                  <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                    <Group color="grey" />
+                    <Text size="14px"> 
+                      Your agoras
+                    </Text>
+                  </Box>
+                </Tab>
+              )}
               {home && (
                 <Tab>
                   <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
@@ -462,7 +498,7 @@ const ProfilePage = (props: Props) => {
               )}
               {presentations.length === 0 && (
                 <Text size="14px" style={{fontStyle: 'italic'}}>
-                  No pending talk applications.
+                  No pending talk application. Click on "Get invited to speak" to create one!
                 </Text>
               )}
             </TabPanel>
@@ -514,6 +550,89 @@ const ProfilePage = (props: Props) => {
 
               </Box>
             </TabPanel>
+
+            {home && (
+              <TabPanel style={{width: "78vw", minHeight: "800px"}}>
+                <Box
+                  margin={{
+                    bottom: "50px",
+                    top: "small",
+                    right: "small",
+                  }}
+                  focusIndicator={false}
+                  justify="center"
+                  gap="xsmall"
+                  width="33%"
+                >
+                  <Text size="14px" weight="bold">
+                    Manage your <img src={agoraLogo} style={{ height: "13px", marginRight: "-1px", marginBottom: "-2.8px"}}/>s
+                  </Text>
+                  {adminChannels.length > 0 && (
+                    <Box
+                      height={{max: "300px"}}
+                      overflow="scroll"
+                      gap="5px"
+                    >
+                      {adminChannels.map((channel: Channel) => (
+                        <DropdownChannelButton
+                          channel={channel}
+                          isAdmin={true}
+                          onClick={() => {}}
+                        />
+                      ))}
+                    </Box>
+                  )}
+                  {adminChannels.length === 0 && (
+                    <Text size="12px">
+                      An agora is where seminar organizers publish the next talks, upload the recordings of the previous seminars, and where potential speakers apply to give a talk!
+                    </Text>
+                  )}
+
+                  <CreateChannelButton
+                    onClick={() => setShowCreateChannelOverlay(true)}
+                    height="40px"
+                  />
+                </Box>
+
+                {showCreateChannelOverlay && user && (
+                  <CreateChannelOverlay
+                    onBackClicked={setShowCreateChannelOverlay(!showCreateChannelOverlay)}
+                    onComplete={() => {
+                      setShowCreateChannelOverlay(!showCreateChannelOverlay);
+                    }}
+                    visible={true}
+                    user={user}
+                  />
+                )}
+
+                <Box
+                  focusIndicator={false}
+                  gap="xsmall"
+                >
+                  <Text size="14px" weight="bold">
+                    Following
+                  </Text>
+                  <Box
+                    height={{max: "300px"}}
+                    overflow="scroll"
+                    align="start"
+                    style={{marginTop: "5px"}}
+                    gap="5px"
+                  >
+                    {followingChannels.length === 0 && (
+                      <Text size="12px" color="#BBBBBB" style={{fontStyle: "italic"}}> The agoras you follow will be displayed here </Text>
+                    )}
+                    {followingChannels.map((channel: Channel) => (
+                    <DropdownChannelButton
+                      channel={channel}
+                      isAdmin={false}
+                      onClick={() => {}}
+                    />
+                    ))}
+                  </Box>
+                </Box>
+              </TabPanel>
+            )}
 
             {home && (
               <TabPanel style={{width: "78vw", minHeight: "800px"}}>
@@ -597,11 +716,7 @@ const ProfilePage = (props: Props) => {
                       Profile picture
                     </Text>
                     <Box direction="row" gap="30px">
-                      <Box 
-                        direction="row"
-                        align="end"
-                      >
-                        <Box data-tip data-for="avatar_info">
+                      <Box data-tip data-for="avatar_info">
                         <ImageCropUploader
                           text="Upload new picture"
                           onUpload={onProfilePhotoUpload}
@@ -616,7 +731,6 @@ const ProfilePage = (props: Props) => {
                           <ReactTooltip id='avatar_info' place="right" effect="solid">
                             <p>Recommended avatar dim: 400x400px</p>
                           </ReactTooltip>
-                        </Box>
                       </Box>
                       {profile.has_photo === 1 && (
                         <Box 

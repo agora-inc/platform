@@ -173,14 +173,13 @@ export const PresentationEntry = (props: Props) => {
                 focusIndicator={false}
                 background="white"
                 round="xsmall"
-                // pad={{ vertical: "2px", horizontal: "xsmall" }}
                 onClick={paperRedirect}
                 style={{
                   width: "25%",
                   height: "28px",
                   border: "1px solid #C2C2C2",
                 }}
-                hoverIndicator={isValid(link) ? true : false}
+                hoverIndicator={true}
                 align="center"
                 justify="center"
               >
@@ -189,6 +188,16 @@ export const PresentationEntry = (props: Props) => {
                   </Text>
               </Box>
             )}
+            {!isValid(link) && (
+              <Box
+                focusIndicator={false}
+                style={{
+                  width: "25%",
+                  height: "28px",
+                }}
+              />
+            )}
+
             <Text size="14px"> 
               Duration: {duration} min.
             </Text>

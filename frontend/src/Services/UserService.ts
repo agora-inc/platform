@@ -1,4 +1,4 @@
-import { baseApiUrl } from "../config";
+import { basePoint, baseApiUrl } from "../config";
 import axios from "axios";
 import { post } from "../Middleware/httpMiddleware";
 
@@ -37,7 +37,8 @@ const register = (
       localStorage.setItem("user", JSON.stringify(response.data));
       callback({status: "ok", userId: response.data.id});
       // getting weird error about expecting no arguments
-      window.location.reload(false);
+      window.location.href = basePoint + "/profile/" + response.data.id
+      // window.location.reload(false);
     })
     .catch(function (error) {
       callback({status: error.response.data, userId: -1});
