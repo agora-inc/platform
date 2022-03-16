@@ -203,9 +203,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Text>
           {/*  paper citations, and more. */}
           <Text size="20px">
-            <b>Get invited to speak to academic communities from all around the world!</b>
+            <b>Get invited to speak to academic communities around the world</b>
           </Text>
-          <Text size="20px">Boost your paper citations and start new collaborations by meeting new teammates!</Text>
+          <Text size="20px">Boost your citations and start exciting collaborations by meeting new teammates</Text>
           <Box 
             margin={this.state.renderMobileView ? {top: "30px", bottom: "0px"} : {top: "0px"}} 
             height={this.state.renderMobileView ? "25%" : "40%"}
@@ -303,11 +303,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           size={this.state.titleSize} 
           color="black" 
           margin={this.state.renderMobileView ? {top: "80px", bottom: "80px"} : {top: "140px", bottom: "140px"}}
-        >  
+        >
+          Seminars are a <u>key component</u> of your research, but they still operate in the <u>20th century</u>.
+
           {/* Seminars have been citation and network boosters since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
           {/* Physical seminars have been the atomic component of academics' social life since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
 
-          Seminars have been mostly attended by local communities since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>.
+          {/* Seminars have been mostly attended by local communities since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
 
           {/* Seminars have been limimte since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
           {/* The more people understand your work in a seminar, the more likely you will get cited and find collaborators.  */}
@@ -682,11 +684,13 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           <>
             <Box width="100%" style={{maxWidth: "2000px"}}>
               <Text size={this.state.titleSize} margin={{top: "80px", bottom: "40px"}} color="color1" weight="bold" alignSelf="center">What are you waiting for? Let the world know about your work!</Text>
-              <Text size="24px" color="color1" alignSelf="center">Join a worldwide community of researchers and leading seminar organisers from all around the world!</Text>
+              <Text size="24px" color="color1" alignSelf="center">
+                Join a leading community of researchers and seminar organisers
+              </Text>
               <Box align="center" margin={{bottom: "90px", top: "40px"}}>
                   <SignUpButton 
                     callback={()=>{}}
-                    height="100px"
+                    height="80px"
                     width="200px"
                     textSize="18px"
                     text="Continue"
@@ -778,7 +782,7 @@ calltoActionOrganisers() {
         margin={{top: "15px", bottom: this.state.renderMobileView ? "50px" : "80px"}} 
         color="black" alignSelf="center"
       >
-        Finding speakers and organising seminars has now been made easy!
+        Finding speakers and organising seminars is now easy!
       </Text>
       
       <Box align="center" margin={{bottom: this.state.renderMobileView ? "50px" : "90px"}}>
@@ -841,7 +845,7 @@ calltoActionOrganisers() {
         </Box>
 
         <Box height="100%" width="100%" background="color5">
-          <Box width="80%" height={this.state.renderMobileView ? "350px": "400px"} direction="column" alignSelf="center">
+          <Box width="80%" height="350px" direction="column" alignSelf="center">
             {this.contentTrigger()}
           </Box>
         </Box>

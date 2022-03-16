@@ -10,7 +10,14 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 
 
-export const CreatePresentationButton = () =>  {
+interface Props {
+  width?: string,
+  height?: string,
+  iconSize?: string,
+  textSize?: string,
+}
+
+export const CreatePresentationButton = (props: Props) =>  {
   const [showFormOverlay, setshowFormOverlay] = useState<boolean>(false);
   const [showSignUpOverlay, setShowSignUpOverlay] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("")
@@ -164,19 +171,24 @@ export const CreatePresentationButton = () =>  {
   return (
     <>
       <Box
-        width={"310px"}
+        width={props.width ? props.width : "310px"}
         onClick={() => setshowFormOverlay(!showFormOverlay)}
         background="#0C385B"
         round="xsmall"
-        height={"80px"}
+        height={props.height ? props.height : "80px"}
         justify="center"
         align="center"
         focusIndicator={false}
         hoverIndicator="#BAD6DB"
         direction="row"
       >
-        <Workshop size="30px" />
-        <Text size="18px" margin={{left: "10px"}}> <b>Get invited</b> to speak</Text>
+        <Workshop size={props.iconSize ? props.iconSize : "30px"} />
+        <Text 
+          size={props.textSize ? props.textSize : "18px"} 
+          margin={{left: "10px"}}
+        > 
+          <b>Get invited</b> to speak
+        </Text>
       </Box>
       <Route render={({history}) => (
         <>

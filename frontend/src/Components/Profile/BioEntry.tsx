@@ -35,12 +35,12 @@ export const BioEntry = (props: Props) => {
       overflow="auto"
     >
       {!isEdit && bio !== "" && (
-        <Text size="14px" style={{width: width}}>
+        <Text size="12px" style={{width: width}}>
           {bio}
         </Text>
       )}
       {!isEdit && bio === "" && (
-        <Text size="14px" style={{width: "7%", fontStyle: "italic"}}>
+        <Text size="12px" style={{width: "7%", fontStyle: "italic"}}>
           {props.bio}
         </Text>
       )}

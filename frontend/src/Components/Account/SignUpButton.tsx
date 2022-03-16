@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { basePoint } from "../../config";
 import { Box, Heading, Button, TextInput, Text } from "grommet";
 import { Link, Route } from "react-router-dom";
 import { StatusCritical } from "grommet-icons";
@@ -67,6 +68,7 @@ export default class SignUpButton extends Component<Props, State> {
             () => {
               this.toggleModal();
               this.props.callback();
+              window.location.href = basePoint + "/profile/" + result.userId
             }
           )
         } else {

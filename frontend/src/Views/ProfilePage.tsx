@@ -197,8 +197,6 @@ const ProfilePage = (props: Props) => {
     }
   }
 
-
-
   if (profile) {
     return (
       <>
@@ -209,7 +207,7 @@ const ProfilePage = (props: Props) => {
       <Box width="80%" margin={{ left: "7.5%" }} style={{ position: "relative", top: "12vh" }} background="color6" pad="small">
         <Box
           direction="row"
-          height="160px"
+          height="150px"
           align="center"
           justify="between"
         >
@@ -307,7 +305,7 @@ const ProfilePage = (props: Props) => {
 
             </Box>
           </Box>
-          <Box width="25%" align="end" direction="column">
+          <Box width="25%" align="end" direction="column" gap="20px">
             {/* <LinkSecondaryButton 
                     text="Give a talk"
                     link="agoras"
@@ -335,27 +333,23 @@ const ProfilePage = (props: Props) => {
                 />
             )} */}
 
-
-            <CreatePresentationButton/>
-
-
-
-
+            <CreatePresentationButton
+              width="200px"
+              height="40px"
+              iconSize="24px"
+              textSize="14px"
+            />
 
             <LinkSecondaryButton 
               text="Look for speakers"
               link="speakers"
               iconSize="24px"
               mobile={false}
-              width="190px"
-              height="35px" 
+              width="200px"
+              height="40px" 
             />
             
-            
           </Box>  
-
-
-
 
           {/* <Box direction="column" gap="10px" width="45%">
             <Box direction="row">
@@ -486,10 +480,10 @@ const ProfilePage = (props: Props) => {
                       <LinkSecondaryButton 
                         text="Contact seminar organisers"
                         link="agoras"
-                        iconSize="18px"
+                        iconSize="24px"
                         mobile={false}
                         width="250px"
-                        height="30px" 
+                        height="40px" 
                       />
                     </Box>)
                   : (<></>)
@@ -497,7 +491,7 @@ const ProfilePage = (props: Props) => {
                 </>
               )}
               {presentations.length === 0 && (
-                <Text size="14px" style={{fontStyle: 'italic'}}>
+                <Text size="12px" color="DDDDDD" style={{fontStyle: 'italic'}}>
                   No pending talk application. Click on "Get invited to speak" to create one!
                 </Text>
               )}
@@ -514,8 +508,8 @@ const ProfilePage = (props: Props) => {
                 </Box>
               )}
               {papers.length === 0 && (
-                <Text size="14px" style={{fontStyle: 'italic'}}>
-                  No paper available
+                <Text size="12px" color="DDDDDD" style={{fontStyle: 'italic'}}>
+                  No paper displayed
                 </Text>
               )}
               {home && (
@@ -562,16 +556,17 @@ const ProfilePage = (props: Props) => {
                   focusIndicator={false}
                   justify="center"
                   gap="xsmall"
-                  width="33%"
+                  width="40%"
                 >
                   <Text size="14px" weight="bold">
                     Manage your <img src={agoraLogo} style={{ height: "13px", marginRight: "-1px", marginBottom: "-2.8px"}}/>s
                   </Text>
                   {adminChannels.length > 0 && (
                     <Box
-                      height={{max: "300px"}}
-                      overflow="scroll"
+                      overflow="auto"
                       gap="5px"
+                      style={{maxHeight: "300px"}}
+                      margin={{top: "10px", bottom: "10px"}}
                     >
                       {adminChannels.map((channel: Channel) => (
                         <DropdownChannelButton
@@ -583,23 +578,23 @@ const ProfilePage = (props: Props) => {
                     </Box>
                   )}
                   {adminChannels.length === 0 && (
-                    <Text size="12px">
-                      An agora is where seminar organizers publish the next talks, upload the recordings of the previous seminars, and where potential speakers apply to give a talk!
+                    <Text size="12px" color="DDDDDD" style={{marginTop: "5px", marginBottom: "5px", fontStyle: "italic" }}>
+                      An agora is where seminar organizers publish the next talks, upload the recordings of the previous seminars, 
+                      and where potential speakers apply to give a talk!
                     </Text>
                   )}
 
                   <CreateChannelButton
                     onClick={() => setShowCreateChannelOverlay(true)}
                     height="40px"
+                    width="200px"
                   />
                 </Box>
 
                 {showCreateChannelOverlay && user && (
                   <CreateChannelOverlay
-                    onBackClicked={setShowCreateChannelOverlay(!showCreateChannelOverlay)}
-                    onComplete={() => {
-                      setShowCreateChannelOverlay(!showCreateChannelOverlay);
-                    }}
+                    onBackClicked={() => setShowCreateChannelOverlay(false)}
+                    onComplete={() => setShowCreateChannelOverlay(false)}
                     visible={true}
                     user={user}
                   />
@@ -613,14 +608,15 @@ const ProfilePage = (props: Props) => {
                     Following
                   </Text>
                   <Box
-                    height={{max: "300px"}}
-                    overflow="scroll"
+                    style={{maxHeight: "300px", marginTop: "5px"}}
+                    overflow="auto"
                     align="start"
-                    style={{marginTop: "5px"}}
                     gap="5px"
                   >
                     {followingChannels.length === 0 && (
-                      <Text size="12px" color="#BBBBBB" style={{fontStyle: "italic"}}> The agoras you follow will be displayed here </Text>
+                      <Text size="12px" color="DDDDDD" style={{fontStyle: "italic"}}> 
+                        The agoras you follow will be displayed here 
+                      </Text>
                     )}
                     {followingChannels.map((channel: Channel) => (
                     <DropdownChannelButton

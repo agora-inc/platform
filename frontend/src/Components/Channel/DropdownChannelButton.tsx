@@ -50,7 +50,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
           background={this.state.hover ? "#f2f2f2" : "color6"}
           round="xsmall"
           pad="xsmall"
-          justify="center"
+          justify="start"
           focusIndicator={false}
         >
           {/*style={{ border: "black 2px solid" }}*/}
