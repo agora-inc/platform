@@ -19,7 +19,7 @@ export default class ImageUploader extends Component<Props> {
         ></input>
         <Box 
           width={this.props.width || "100px"}
-          height="25px"
+          height="30px"
           background="white"
           round="xsmall"
           style={{ border: "solid black 1px", cursor: "pointer" }}

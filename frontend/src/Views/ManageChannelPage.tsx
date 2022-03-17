@@ -645,8 +645,7 @@ export default class ManageChannelPage extends Component<Props, State> {
               <Box 
                 direction="row"
                 align="end"
-                gap="5px"
-                margin={{right: "25px"}}
+                gap="25px"
               >
                 <Box data-tip data-for="avatar_info">
                   <ImageUploader
@@ -657,17 +656,17 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <p>Recommended avatar dim: 400x400px</p>
                   </ReactTooltip>
                 </Box>
+                <ShareButtons
+                  channel={this.state.channel}
+                  width="120px"
+                  height={(window.innerWidth < 800) ? "25px" : "30px"}
+                  onlyShare={true}
+                />
               </Box>
-              <ShareButtons
-                channel={this.state.channel}
-                width="120px"
-                height={(window.innerWidth < 800) ? "25px" : "35px"}
-                onlyShare={true}
-              />
             </Box>
           </Box>
 
-          <Box direction="row" gap="30px" align="end" width="40%">
+          <Box direction="row" align="end" width="25%">
             <LinkSecondaryButton 
               text="Look for speakers"
               link="speakers"
