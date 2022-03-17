@@ -250,7 +250,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           height="70px"
           width="250px"
           textSize="18px"
-          text="Get invited to speak"
+          text="Get started"
           icon={true}
         />
 
@@ -316,7 +316,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         >
           {/* Seminars are a <u>key component</u> of your research, but they still operate in the <u>20th century</u>. */}
           {/* Seminars are <u>essential</u> to every researchers, but nobody has leveraged <u>20th century</u>. */}
-          Seminars are <u>essential</u> in spreading new ideas, but today their reach is <u>bigger than ever</u>. 
+          Seminars are <u>essential</u> in spreading new ideas, and today their reach is <u>bigger than ever</u>. 
 
 
 
@@ -708,7 +708,8 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                     height="80px"
                     width="200px"
                     textSize="18px"
-                    text="Continue"
+                    icon={true}
+                    text="Join your peers"
                   />
               </Box>
               <Box alignSelf="center" margin={this.state.renderMobileView ? {top: "30px"} : {}}>

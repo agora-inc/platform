@@ -303,7 +303,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" weight="bold" color="white" margin={{top: "140px", bottom: "140px"}}>
-          Your tech stack to organise seminars has not changed since the 80s.
+          The tech stack to organise seminars is decentralised, inefficient, and most of it has not changed since the 90s.
         </Text>
         {/* 
         #######################
