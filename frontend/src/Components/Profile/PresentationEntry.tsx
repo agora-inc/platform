@@ -84,8 +84,10 @@ export const PresentationEntry = (props: Props) => {
 
   function deletePresentation(): void {
     if (props.home && props.deletePresentation) {
-      props.deletePresentation(id)
-      ProfileService.deletePresentation(id, () => {})
+      ProfileService.deletePresentation(
+        id, 
+        () => props.deletePresentation(id)
+      )
     }
   }
 
@@ -236,7 +238,7 @@ export const PresentationEntry = (props: Props) => {
               </Box>
             )}
             {!props.isOverlay && !props.home && nDaysLeft > 0 && (
-              <InviteToTalkButton profile={props.profile} presentationName={title} widthButton="200px" heightButton="28px" />
+              <InviteToTalkButton profile={props.profile} presentationName={title} widthButton="35%" heightButton="28px" />
             )}
             {!props.isOverlay && !props.home && nDaysLeft < 1 && (
               <Box

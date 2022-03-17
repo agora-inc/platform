@@ -186,7 +186,9 @@ export default class InviteToTalkButton extends Component<Props, State> {
           {/* IF ADMIN HASN'T SELECTED AN AGORA + ADMIN DOES NOT HAVE AN AGORA */}
           {((!(this.state.content.hostingChannel)) && this.state.ownedChannels.length == 0) && (
             <OverlaySection>
+              <Text size="14px" style={{fontStyle: "italic"}} margin={{top: "25px", bottom: "50px"}}> 
                 You must have a community page so that speakers know who you are. Don't worry, this only takes less than 30 seconds.
+              </Text>
                 <CreateChannelButton
                     // height="50px"
                   onClick={this.toggleCreateChannelOverlay}

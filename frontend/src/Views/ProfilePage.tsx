@@ -129,8 +129,8 @@ const ProfilePage = (props: Props) => {
     setPapers([...papers, {id: -1, title: "", authors: "", publisher: "", year: "", link: ""} ])
   }
 
-  function createNewPresentation(): void {
-    setPresentations([...presentations, {id: -1, user_id: -1, title: "", description: "", link: "", duration: 0, date_created: ""}])
+  function addNewPresentation(new_presentation: Presentation): void {
+    setPresentations([...presentations, new_presentation])
   }
 
   function updatePaper(index: number, new_paper: Paper): void {
@@ -151,6 +151,7 @@ const ProfilePage = (props: Props) => {
 
   function deletePresentation(id: number): void {
     setPresentations(presentations.filter(presentation => presentation.id !== id))
+    window.location.reload() // Alain: couldn't do better. Some weird things happening in the presentations array
   }
 
   function selectTopic(topic: Topic, num: number) : void {
@@ -196,6 +197,8 @@ const ProfilePage = (props: Props) => {
       )
     }
   }
+
+  console.log("PREZZ", presentations)
 
   if (profile) {
     return (
@@ -290,7 +293,8 @@ const ProfilePage = (props: Props) => {
 
             </Box>
           </Box>
-          <Box width="25%" align="end" direction="column" gap="20px">
+          {home && (
+            <Box width="25%" align="end" direction="column" gap="20px">
             {/* <LinkSecondaryButton 
                     text="Give a talk"
                     link="agoras"
@@ -318,23 +322,25 @@ const ProfilePage = (props: Props) => {
                 />
             )} */}
 
-            <CreatePresentationButton
-              width="200px"
-              height="40px"
-              iconSize="24px"
-              textSize="14px"
-            />
+              <CreatePresentationButton
+                width="200px"
+                height="40px"
+                iconSize="24px"
+                textSize="14px"
+                addNewPresentation={addNewPresentation}
+              />
 
-            <LinkSecondaryButton 
-              text="Look for speakers"
-              link="speakers"
-              iconSize="24px"
-              mobile={false}
-              width="200px"
-              height="40px" 
-            />
+              <LinkSecondaryButton 
+                text="Look for speakers"
+                link="speakers"
+                iconSize="24px"
+                mobile={false}
+                width="200px"
+                height="40px" 
+              />
             
-          </Box>  
+            </Box>  
+          )}
 
           {/* <Box direction="column" gap="10px" width="45%">
             <Box direction="row">
@@ -504,7 +510,7 @@ const ProfilePage = (props: Props) => {
                       gap="5px"
                       style={{maxHeight: "300px"}}
                       margin={{top: "10px", bottom: "10px"}}
-                    >
+                    > 
                       {adminChannels.map((channel: Channel) => (
                         <DropdownChannelButton
                           channel={channel}

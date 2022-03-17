@@ -15,6 +15,7 @@ interface Props {
   height?: string,
   iconSize?: string,
   textSize?: string,
+  addNewPresentation?: any,
 }
 
 export const CreatePresentationButton = (props: Props) =>  {
@@ -61,6 +62,10 @@ export const CreatePresentationButton = (props: Props) =>  {
       ProfileService.updatePresentation(
         user.id, temp_presentation, formatDate(now),
         (id: number) => {
+          temp_presentation.id = id
+          if (props.addNewPresentation) {
+            props.addNewPresentation(temp_presentation)
+          }
           return history.push('/profile/' + user.id)
         }
       )
@@ -101,6 +106,10 @@ export const CreatePresentationButton = (props: Props) =>  {
     ProfileService.updatePresentation(
       currentUser.id, temp_presentation, formatDate(now),
       (id: number) => {
+        temp_presentation.id = id
+        if (props.addNewPresentation) {
+          props.addNewPresentation(temp_presentation)
+        }
       }
     )
       
@@ -130,13 +139,17 @@ export const CreatePresentationButton = (props: Props) =>  {
             date_created: formatDate(now),
           }
           ProfileService.createProfile(
-              result.userId, 
-              fullName, 
-              () => {}
-            )
+            result.userId, 
+            fullName, 
+            () => {}
+          )
           ProfileService.updatePresentation(
             result.userId, temp_presentation, formatDate(now),
             (id: number) => {
+              temp_presentation.id = id
+              if (props.addNewPresentation) {
+                props.addNewPresentation(temp_presentation)
+              }
             }
           )
           setShowSignUpOverlay(false)
@@ -197,7 +210,10 @@ export const CreatePresentationButton = (props: Props) =>  {
             onEsc={() => setshowFormOverlay(false)}
             onCancelClick={() => setshowFormOverlay(false)}
             onClickOutside={() => setshowFormOverlay(false)}
-            onSubmitClick={() => submitPresentation(history)}
+            onSubmitClick={() => {
+              submitPresentation(history);
+              setshowFormOverlay(false)
+            }}
             submitButtonText="Continue"
             canProceed={isComplete()}
             isMissing={isMissing()}

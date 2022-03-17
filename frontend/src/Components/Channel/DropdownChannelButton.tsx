@@ -36,7 +36,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
           height="40px"
           onClick={() => {
             this.props.onClick();
-            history.push(`/${this.props.channel.name}` + this.props.isAdmin ? `/manage` : ``)
+            history.push( '/' + this.props.channel.name + (this.props.isAdmin ? '/manage' : ''))
           }}
           onMouseEnter={() => {
             this.setState({ hover: true });

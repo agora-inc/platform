@@ -518,6 +518,7 @@ export default class UserManager extends Component<Props, State> {
         <Box
           margin={{right: "1vw"}}
           round="20px"
+          pad="6px"
           focusIndicator={false}
           hoverIndicator="#BAD6DB"
           onClick={
@@ -527,7 +528,7 @@ export default class UserManager extends Component<Props, State> {
           overflow="hidden"
           >
           <Box direction="row" gap="small" justify="center" align="center" margin={{top: "3px"}}>
-            <Text size="14px" margin={{right: "15px"}} color="grey">
+            <Text size="14px" margin={{left: "4px", right: "15px"}} color="grey">
               {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
               <b>{this.state.user?.username}!</b>
             </Text>
