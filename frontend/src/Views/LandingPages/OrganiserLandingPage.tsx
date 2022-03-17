@@ -208,7 +208,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 margin={{ left: "0px" }}
                 direction="row"
               >
-                <Text size="18px" margin={{left: "10px"}} color="white"> <b>Book</b> a demo with us!</Text>
+                <Text size="18px" margin={{left: "10px"}} color="white"> <b>Grab a coffee</b> with us!</Text>
                 {/* <Text size="22px">🔥</Text> */}
               </Box>
               </a>
@@ -722,7 +722,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
         </Box> */}
 
         <Box height="100%" width="100%" background="color1">
-          <Box width="80%" height={this.state.renderMobileView ? "500px": "600px"} direction="column" alignSelf="center">
+          <Box width="80%" height={this.state.renderMobileView ? "480px": "350px"} direction="column" alignSelf="center">
             {this.contentTrigger()}
           </Box>
         </Box>

@@ -35,6 +35,7 @@ export const CreatePresentationButton = (props: Props) =>  {
   const [email, setEmail] = useState<string>("")
   const [error, setError] = useState<string>("")
 
+
   useEffect(() => {
     setUser(UserService.getCurrentUser())
   }, []);
@@ -76,7 +77,6 @@ export const CreatePresentationButton = (props: Props) =>  {
 
   function onLogin(history: any): void  {
     let currentUser = UserService.getCurrentUser()
-    
     // 1. check if user has a profile; if not, create
     // let profile = ProfileService.getProfile(currentUser.id, ()=>{})
     // if(profile){
@@ -204,7 +204,7 @@ export const CreatePresentationButton = (props: Props) =>  {
             width={600}
             height={450}
             contentHeight="300px"
-            title={"Describe your talk to receive invitations!"}
+            title={"Describe your future talk to receive invitations!"}
           >
             <Box width="100%" gap="10px" margin={{top: "5px"}}>
               <TextInput

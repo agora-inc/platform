@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Box, Text, TextInput, TextArea, Select } from "grommet";
-import { Catalog, ContactInfo } from "grommet-icons";
+import { Catalog, ContactInfo, Group } from "grommet-icons";
 
 
 interface Props {
@@ -22,6 +22,8 @@ export const LinkSecondaryButton = (props: Props) => {
     if (name === "speakers" ) {
       return <ContactInfo size={props.iconSize} />
     }
+    if (name == "browse"){}
+      return <Group size={props.iconSize}/>
   }
 
   return (

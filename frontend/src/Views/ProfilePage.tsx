@@ -261,21 +261,6 @@ const ProfilePage = (props: Props) => {
                         <p>Recommended avatar dim: 400x400px</p>
                       </ReactTooltip>
                     </Box>
-                    <Box
-                      onClick={UserService.logout}
-                      width="150px"
-                      height="25px"
-                      style={{ position: "relative", border: "solid black 1px", cursor: "pointer" }}
-                      round="xsmall"
-                      justify="center"
-                      align="center"
-                      background="#EAF1F1"
-                      focusIndicator={true}
-                      hoverIndicator="#DDDDDD"
-                      gap="xsmall"
-                    >
-                      <Text size="12px" weight="bold" color="black"> Log out </Text>
-                    </Box>
                   </Box>
                 )}
                 {(profile.has_photo === 1 && home) && (
@@ -384,6 +369,16 @@ const ProfilePage = (props: Props) => {
                   </Text>
                 </Box>
               </Tab>
+              {home && (
+                <Tab>
+                  <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                    <Group color="grey" />
+                    <Text size="14px"> 
+                      Your <img src={agoraLogo} style={{ height: "13px", marginRight: "-1px", marginBottom: "-2.8px"}}/>
+                    </Text>
+                  </Box>
+                </Tab>
+              )}
               <Tab>
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                   <DocumentText />
@@ -392,30 +387,20 @@ const ProfilePage = (props: Props) => {
                   </Text>
                 </Box>
               </Tab>
-              <Tab>
+              {/* <Tab>
                 <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                   <Twitter color="grey" />
                   <Text size="14px"> 
                     Tags & Tweets
                   </Text>
                 </Box>
-              </Tab>
-              {home && (
-                <Tab>
-                  <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                    <Group color="grey" />
-                    <Text size="14px"> 
-                      Your agoras
-                    </Text>
-                  </Box>
-                </Tab>
-              )}
+              </Tab> */}
               {home && (
                 <Tab>
                   <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                     <Configure />
                     <Text size="14px"> 
-                      Settings 
+                      Account 
                     </Text>
                   </Box>
                 </Tab>
@@ -478,7 +463,7 @@ const ProfilePage = (props: Props) => {
                   ? (
                     <Box margin={{top: "50px"}}>
                       <LinkSecondaryButton 
-                        text="Contact seminar organisers"
+                        text="Find seminar opportunities"
                         link="agoras"
                         iconSize="24px"
                         mobile={false}
@@ -497,54 +482,6 @@ const ProfilePage = (props: Props) => {
               )}
             </TabPanel>
 
-            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              {papers.length !== 0 && (
-                <Box direction="column" gap="12px">
-                  {papers.map((paper: Paper, index: number) => (
-                    <PaperEntry paper={paper} home={home} userId={profile.user.id} index={index} 
-                      updatePaper={updatePaper} deletePaper={deletePaper} 
-                    />
-                  ))}
-                </Box>
-              )}
-              {papers.length === 0 && (
-                <Text size="12px" color="DDDDDD" style={{fontStyle: 'italic'}}>
-                  No paper displayed
-                </Text>
-              )}
-              {home && (
-                <Box
-                  focusIndicator={false}
-                  background="white"
-                  round="xsmall"
-                  pad={{ vertical: "2px", horizontal: "xsmall" }}
-                  onClick={createNewPaper}
-                  style={{
-                    width: "15%",
-                    border: "1px solid #C2C2C2",
-                  }}
-                  hoverIndicator={true}
-                  align="center"
-                  margin={{top: "20px" }}   
-                >
-                  <Text color="grey" size="small"> 
-                    + Add 
-                  </Text>
-                </Box>
-              )}
-            </TabPanel>
-
-            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-              <Box direction="column" gap="30px">
-                <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} hasTitle={true} />
-
-                <Text size="14px" weight="bold">
-                  Twitter feed
-                </Text>
-
-              </Box>
-            </TabPanel>
-
             {home && (
               <TabPanel style={{width: "78vw", minHeight: "800px"}}>
                 <Box
@@ -559,7 +496,7 @@ const ProfilePage = (props: Props) => {
                   width="40%"
                 >
                   <Text size="14px" weight="bold">
-                    Manage your <img src={agoraLogo} style={{ height: "13px", marginRight: "-1px", marginBottom: "-2.8px"}}/>s
+                    Manage your <img src={agoraLogo} style={{ height: "13px", marginRight: "-1px", marginBottom: "-2.8px"}}/>
                   </Text>
                   {adminChannels.length > 0 && (
                     <Box
@@ -614,9 +551,20 @@ const ProfilePage = (props: Props) => {
                     gap="5px"
                   >
                     {followingChannels.length === 0 && (
-                      <Text size="12px" color="DDDDDD" style={{fontStyle: "italic"}}> 
+                      <>
+                      <Text size="12px" color="DDDDDD" style={{fontStyle: "italic"}} margin={{bottom: "15px"}}> 
                         The agoras you follow will be displayed here 
                       </Text>
+                      <LinkSecondaryButton 
+                        text="Find new agoras"
+                        link="browse"
+                        iconSize="18px"
+                        mobile={false}
+                        width="190px"
+                        height="30px" 
+                      /> 
+                      </>
+
                     )}
                     {followingChannels.map((channel: Channel) => (
                     <DropdownChannelButton
@@ -629,6 +577,54 @@ const ProfilePage = (props: Props) => {
                 </Box>
               </TabPanel>
             )}
+
+            <TabPanel style={{width: "78vw", minHeight: "800px"}}>
+              {papers.length !== 0 && (
+                <Box direction="column" gap="12px">
+                  {papers.map((paper: Paper, index: number) => (
+                    <PaperEntry paper={paper} home={home} userId={profile.user.id} index={index} 
+                      updatePaper={updatePaper} deletePaper={deletePaper} 
+                    />
+                  ))}
+                </Box>
+              )}
+              {papers.length === 0 && (
+                <Text size="12px" color="DDDDDD" style={{fontStyle: 'italic'}}>
+                  Display some of your articles to seminar organisers
+                </Text>
+              )}
+              {home && (
+                <Box
+                  focusIndicator={false}
+                  background="white"
+                  round="xsmall"
+                  pad={{ vertical: "2px", horizontal: "xsmall" }}
+                  onClick={createNewPaper}
+                  style={{
+                    width: "15%",
+                    border: "1px solid #C2C2C2",
+                  }}
+                  hoverIndicator={true}
+                  align="center"
+                  margin={{top: "20px" }}   
+                >
+                  <Text color="grey" size="small"> 
+                    + Add 
+                  </Text>
+                </Box>
+              )}
+            </TabPanel>
+
+            {/* <TabPanel style={{width: "78vw", minHeight: "800px"}}>
+              <Box direction="column" gap="30px">
+                <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} hasTitle={true} />
+
+                <Text size="14px" weight="bold">
+                  Twitter feed
+                </Text> 
+
+              </Box>
+            </TabPanel> */}
 
             {home && (
               <TabPanel style={{width: "78vw", minHeight: "800px"}}>
@@ -674,6 +670,14 @@ const ProfilePage = (props: Props) => {
                       home={home}
                     />
                   </Box>
+
+                  <Box direction="column" gap="30px">
+                    <TagsEntry tags={profile.tags} home={home} userId={profile.user.id} hasTitle={true} />
+                    {/* <Text size="14px" weight="bold">
+                      Twitter feed
+                    </Text> */}
+                  </Box>
+
                   <Box gap="20px">
                     <Box direction="row" align="center" gap="10px">
                       <Text size="14px" weight="bold">
@@ -707,7 +711,7 @@ const ProfilePage = (props: Props) => {
                     />
                   </Box>
 
-                  <Box direction="column" gap="15px">
+                  {/* <Box direction="column" gap="15px">
                     <Text size="14px" weight="bold">
                       Profile picture
                     </Text>
@@ -752,7 +756,7 @@ const ProfilePage = (props: Props) => {
                         </Box>
                       )}
                     </Box>
-                  </Box>
+                  </Box> */}
 
                   <Box direction="column" gap="15px">
                     <Text size="14px" weight="bold">
@@ -778,7 +782,21 @@ const ProfilePage = (props: Props) => {
                   {/* <Text size="14px" weight="bold">
                     Become a verified academic
                       </Text> */}
-
+                  <Box
+                    onClick={UserService.logout}
+                    width="150px"
+                    height="25px"
+                    style={{ position: "relative", border: "solid black 1px", cursor: "pointer" }}
+                    round="xsmall"
+                    justify="center"
+                    align="center"
+                    background="#EAF1F1"
+                    focusIndicator={true}
+                    hoverIndicator="#DDDDDD"
+                    gap="xsmall"
+                  >
+                    <Text size="12px" weight="bold" color="black"> Log out </Text>
+                  </Box>
                 </Box>
               </TabPanel>
             )}

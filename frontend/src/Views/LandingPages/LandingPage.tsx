@@ -203,7 +203,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Text>
           {/*  paper citations, and more. */}
           <Text size="20px">
-            <b>Get invited to speak to academic communities around the world</b>
+            <b>Get invited to speak to academic communities from all around the world</b>
           </Text>
           <Text size="20px">Boost your citations and start exciting collaborations by meeting new teammates</Text>
           <Box 
@@ -245,7 +245,17 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         alignContent="center"
         gap="medium"
         >
-        <CreatePresentationButton />
+        <SignUpButton 
+          callback={()=>{}}
+          height="70px"
+          width="250px"
+          textSize="18px"
+          text="Get invited to speak"
+          icon={true}
+        />
+
+
+        
         {/* <Link
           to={{ pathname: "/organisers" }}
           style={{ textDecoration: "none" }}
@@ -305,12 +315,17 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           margin={this.state.renderMobileView ? {top: "80px", bottom: "80px"} : {top: "140px", bottom: "140px"}}
         >
           Seminars are a <u>key component</u> of your research, but they still operate in the <u>20th century</u>.
+          Seminars are <u>essential</u> to every researchers, but nobody has leveraged <u>20th century</u>.
+
+
+
 
           {/* Seminars have been citation and network boosters since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
+          {/* Seminars have been attended by <u>local</u> audiences since old Greece, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u> */}
+          {/* Seminars are the essence of research,but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u> */}
+          {/* Seminars have been at the core of research since the Ancient Greece, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u> */}
           {/* Physical seminars have been the atomic component of academics' social life since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
-
           {/* Seminars have been mostly attended by local communities since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
-
           {/* Seminars have been limimte since Newton, but today <u>everyone</u> can organise, give, and attend them <u>from everywhere</u>. */}
           {/* The more people understand your work in a seminar, the more likely you will get cited and find collaborators.  */}
           {/* One's academic reputation is built around papers and seminars since Newton, but today, most of it happens online. */}
@@ -532,7 +547,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                 </Box>
               </Box>
               <Text size="18px" style={{alignContent: "start"}}> 
-                Post a brief description of your future talk. Seminar organisers from all around the world will read it for 30 days!
+                Go to your profile and post a description of your future talk. Seminar organisers from everywhere will read it for 30 days!
               </Text>
             </Box>
             <Box height="200px" alignSelf="center" direction="row">

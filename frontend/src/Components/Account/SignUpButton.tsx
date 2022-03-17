@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { basePoint } from "../../config";
 import { Box, Heading, Button, TextInput, Text } from "grommet";
 import { Link, Route } from "react-router-dom";
-import { StatusCritical } from "grommet-icons";
+import { StatusCritical, Group} from "grommet-icons";
 import { UserService } from "../../Services/UserService";
 import { Overlay } from "../Core/Overlay";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import { ProfileService } from "../../Services/ProfileService";
+import { FaThemeisle } from "react-icons/fa";
 
 interface Props {
   channelId?: number;
@@ -15,6 +16,7 @@ interface Props {
   height?: string;
   textSize?: string;
   text?: string;
+  icon?: boolean;
 }
 
 interface State {
@@ -115,7 +117,9 @@ export default class SignUpButton extends Component<Props, State> {
           width={this.state.width}
           height={this.state.height}
           round="xsmall"
+          direction="row"
         >
+          {this.props.icon ? (<Group size="medium" style={{marginRight: "10px"}}/>) : "" }
           <Text size={this.state.textSize} weight="bold"> {this.props.text ? this.props.text : "Sign up"} </Text>
         </Box>
         <Overlay
