@@ -314,9 +314,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           color="black" 
           margin={this.state.renderMobileView ? {top: "80px", bottom: "80px"} : {top: "140px", bottom: "140px"}}
         >
-          Seminars are a <u>key component</u> of your research, but they still operate in the <u>20th century</u>.
-          Seminars are <u>essential</u> to every researchers, but nobody has leveraged <u>20th century</u>.
-
+          {/* Seminars are a <u>key component</u> of your research, but they still operate in the <u>20th century</u>. */}
+          {/* Seminars are <u>essential</u> to every researchers, but nobody has leveraged <u>20th century</u>. */}
+          Seminars are <u>essential</u> in spreading new ideas, but today their reach is <u>bigger than ever</u>. 
 
 
 
