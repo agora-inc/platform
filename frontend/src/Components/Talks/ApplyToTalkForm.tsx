@@ -11,8 +11,7 @@ import { Topic } from "../../Services/TopicService";
 import TopicSelector from "../Talks/TopicSelector";
 import { ChannelService } from "../../Services/ChannelService";
 import ReactTooltip from "react-tooltip";
-import { Info } from "grommet-icons";
-
+import { Info, Workshop } from "grommet-icons";
 
 
 interface Props {
@@ -219,23 +218,22 @@ export default class ApplyToTalkForm extends Component<Props, State> {
     return (
       <Box>
         <Box
+          direction="row"
           focusIndicator={false}
           data-tip data-for='apply_give_talk'
           width={this.props.widthButton ? this.props.widthButton : "185px"}
-          height="30px"
-          background="white"
+          height="35px"
+          background="color1"
           round="xsmall"
           onClick={() => this.setState({ showForm: true })}
-          style={{
-            border: "1px solid #C2C2C2",
-          }}
-          hoverIndicator={true}
+          hoverIndicator="color5"
           justify="center"  
           align="center" 
         >
-          <Text 
-            size="14px" 
-            color="grey"
+          <Workshop size="18px" />
+          <Text
+            margin={{left: "10px"}}
+            size="14px"
             alignSelf="center"
           >
             Apply to give a talk

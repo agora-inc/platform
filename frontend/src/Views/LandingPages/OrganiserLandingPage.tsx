@@ -72,6 +72,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     });
   };
 
+  // HACK: scroll up when page loads. (Remy)
+  // Origin of hack: see https://github.com/agora-inc/agora/commit/b6a0a0cafbaae0d9ff8a7266705fe22c3ed4bcf6
+  componentDidMount() {
+    let scroll_element = window.document.querySelector('.StyledGrommet-sc-19lkkz7-0');
+    (scroll_element as HTMLInputElement).scrollTo(0,0);
+  }
+
   toggleModal = () => {
     this.setState({ showModalGiveATalk: !this.state.showModalGiveATalk });
   };
@@ -167,20 +174,48 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Box direction="column">
-          <Text size="48px" weight="bold" color="color4" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-            Organising seminars made easy, from start to finish
+          <Text size="48px" weight="bold" color="color2" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
+            Get the hottest researchers to speak to your community.
           </Text>
+          <Text size="20px" margin={this.state.renderMobileView ? {bottom: "50px"} : {}}>
+            <b>Deploy your seminar homepage, find future speakers, advertise your events, and much more, all in one place! </b>
+          </Text>
+          {/* <Text size="20px">Empower your community by attracting like-minded researchers from all around the world!</Text> */}
           {!this.state.renderMobileView && (
-            <Box margin={{bottom: "50px"}}>
-              <CreateChannelButton 
-                      onClick={this.toggleCreateChannelOverlay} 
-                      width="400px"
-                      height="90px"
-                      text={"Publish your seminars"}
-                      textSize="18px"
-                    />
-            </Box>
+            <Box direction={this.state.renderMobileView ? "column" : "row"} margin={{bottom: "50px", top: "50px"}}>
+              <Box>
+                <CreateChannelButton 
+                        onClick={this.toggleCreateChannelOverlay} 
+                        width="300px"
+                        height="90px"
+                        text={"Get started for free"}
+                        textSize="18px"
+                      />
+              </Box>
+              <Text margin={{bottom: "50px", top: "30px", left: "25px", right: "25px"}}>  or  </Text> 
+              <a href="https://calendly.com/remymess/morastream" target="_blank" style={{textDecoration: "none"}}>
+              <Box
+                onClick={this.toggleModal}
+                background={this.state.colorButton}
+                round="xsmall"
+                pad="xsmall"
+                height="90px"
+                width="300px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator={this.state.colorHover}
+                margin={{ left: "0px" }}
+                direction="row"
+              >
+                <Text size="18px" margin={{left: "10px"}} color="white"> <b>Grab a coffee</b> with us!</Text>
+                {/* <Text size="22px">🔥</Text> */}
+              </Box>
+              </a>
+          </Box>
           )}
+
+
           <InstitutionalUsers/>
         </Box>
       </>
@@ -264,6 +299,29 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     )
   }
 
+  contentTrigger() {
+    return (
+      <>
+        <Text size="34px" weight="bold" color="white" margin={{top: "140px", bottom: "140px"}}>
+          The tech stack to organise seminars is decentralised, inefficient, and most of it has not changed since the 90s.
+        </Text>
+        {/* 
+        #######################
+        # Testimonial: to be added soon (Remy)
+        #######################
+        <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
+          <Box>
+            Martin Hairer, Field Medalist, Imperial College London
+            </Box>
+          <Box background="white" height="150px">
+            <Text size="24px">"Seminars are key to the growth of researchers."</Text>
+            </Box>
+        </Box> 
+        */}
+      </>
+    )
+  }
+
   brandCurrentOrganisation() {
     return(
       <Box>
@@ -277,7 +335,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
     return (
       <>
         <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">
-          Everything seminar organisers need, all in one place
+          Empowering seminar organisers with tech, from start to finish, in less than a minute.
         </Text>
         {/* First line */}
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px" margin={{bottom: "50px"}}>
@@ -287,12 +345,12 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
                 <Attraction size="large"/>
               </Box>
               {this.state.renderMobileView && (
-                <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">1. Create your agora</Text>
+                <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">1. Launch your seminar homepage</Text>
               )}
               {!this.state.renderMobileView && (
                 <CreateChannelButton 
                   textColor="color7"
-                  text="1. Create your agora"
+                  text="1. Launch your seminar homepage"
                   textSize="20px"
                   onClick={this.toggleCreateChannelOverlay}
                 />
@@ -335,7 +393,7 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
               <Box width="70px">
                 <Share size="large"/>
               </Box>
-              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">3. Publish in a minute
+              <Text size="24px" weight="bold" margin={{left: "8px"}} color="color7">3. Publish
               </Text>
             </Box>
             <Text size="18px">
@@ -555,20 +613,47 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
   }
 
 
+  content4() {
+    return (
+      <>
+        {/* <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">The future of seminars is <b>online and hybrid</b></Text> */}
+        <Text size="34px" margin={{top: "120px", bottom: "80px"}} color="black">Seminars have always been time-consuming to organise, until now.</Text>
+        <Text>
+          <b>We, academics</b>, built a unique streaming technology <b>sculpted for academics</b>. The latter allows you to run online seminars where you can write LateX in chat, go back in the slides as an attendee, clap for the speaker and much more!
+        </Text>
+
+        {/* <PricingPlans 
+            callback={() => {}}
+            channelId={null}
+            userId={null}
+            disabled={true}
+            showDemo={false}
+            headerTitle={true}
+            title={" "}
+        /> */}
+        
+      </>
+    )
+  }
+
+
+
+
 
   callToActionEndpage() {
     return (
       <>
         {!this.state.renderMobileView && (
           <>
-            <Text size="34px" margin={{top: "80px", bottom: "80px"}} color="color1" weight="bold" alignSelf="center">Make your life easier + attract world-leading experts to your events now!</Text>
+            <Text size="34px" margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">What are you waiting for?</Text>
+            <Text size="24px" margin={{top: "15px", bottom: "60px"}} color="black" alignSelf="center">Get started by accessing a complete tech stack sculpted for seminar organisers!</Text>
             {/* <Text>If you already have Zoom or gather.town, it will be completely free!</Text> */}
             <Box align="center" margin={{bottom: "100px"}}>
                 <CreateChannelButton 
                   onClick={this.toggleCreateChannelOverlay} 
                   width="400px"
                   height="90px"
-                  text={"Publish your seminars"}
+                  text={"Continue"}
                   textSize="18px"
                 />
             </Box>
@@ -630,6 +715,19 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           </Box>
         </Box>
 
+        {/* <Box height="100%" width="100%" background="color3" style={{}}>
+          <Box width="80%" height={this.state.renderMobileView ? "350px": "290px"} direction="column" alignSelf="center">
+            {this.content4()}
+          </Box>
+        </Box> */}
+
+        <Box height="100%" width="100%" background="color1">
+          <Box width="80%" height={this.state.renderMobileView ? "480px": "350px"} direction="column" alignSelf="center">
+            {this.contentTrigger()}
+          </Box>
+        </Box>
+
+
         <Box height="100%" width="100%" background="color5" id="content">
           <Box width="80%" height={this.state.renderMobileView ? "2650px": "940px"}  direction="column" alignSelf="center">
             {this.content1()}
@@ -642,12 +740,13 @@ export default class OrganiserLandingPage extends Component<RouteComponentProps,
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color5" style={{}}>
-          <Box width="80%" height={this.state.renderMobileView ? "1150px": "790px"} direction="column" alignSelf="center">
-            {this.content3()}
+        {(!this.state.renderMobileView) && (
+          <Box height="100%" width="100%" background="color5" style={{}}>
+            <Box width="80%" height={this.state.renderMobileView ? "1150px": "790px"} direction="column" alignSelf="center">
+              {this.content3()}
+            </Box>
           </Box>
-        </Box>
-        
+        )}
 
         <Box height="100%" width="100%">
           <Box width="80%" height={this.state.renderMobileView ? "300px": "500px"} direction="column" alignSelf="center">

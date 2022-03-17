@@ -160,9 +160,9 @@ export default class InviteToTalkButton extends Component<Props, State> {
           direction="row"
         >
           <Workshop size="15px" style={{marginRight:"10px"}} />
-            {this.props.textButton ? this.props.textButton : "Invite to speak"}
+            {this.props.textButton ? this.props.textButton : "Invite them!"}
             <ReactTooltip id="invite_speaker" effect="solid">
-              {this.props.profile.full_name} is looking to give talks: invite him!
+              Get {this.props.profile.full_name} to speak and meet with your community!
             </ReactTooltip>
         </Box>
 
@@ -186,7 +186,9 @@ export default class InviteToTalkButton extends Component<Props, State> {
           {/* IF ADMIN HASN'T SELECTED AN AGORA + ADMIN DOES NOT HAVE AN AGORA */}
           {((!(this.state.content.hostingChannel)) && this.state.ownedChannels.length == 0) && (
             <OverlaySection>
-                You must first create your community page before inviting speakers.
+              <Text size="14px" style={{fontStyle: "italic"}} margin={{top: "25px", bottom: "50px"}}> 
+                You must have a community page so that speakers know who you are. Don't worry, this only takes less than 30 seconds.
+              </Text>
                 <CreateChannelButton
                     // height="50px"
                   onClick={this.toggleCreateChannelOverlay}

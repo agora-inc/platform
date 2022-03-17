@@ -176,12 +176,18 @@ const uploadProfilePhoto = (userId: number, image: File, callback: any) => {
   });
 };
 
-const getProfilePhoto = (userId: number, cacheDelay?: number) => {
-  if (cacheDelay) {
-    return baseApiUrl + `/profiles/photo?userId=${userId}&ts=` + cacheDelay;
-  } else {
-    return baseApiUrl + `/profiles/photo?userId=${userId}`;
-  }
+const getProfilePhotoUrl = (userId: number, cacheDelay?: number, callback?: any) => {
+  // check if user has profile_pic
+  var pictureEndpoint = baseApiUrl + `/profiles/photo?userId=${userId}`
+  getProfile(userId, (profile: Profile) => {
+    if(!profile.has_photo){
+      pictureEndpoint = pictureEndpoint  + "&defaultPic=true";
+    }
+    if (cacheDelay) {
+      pictureEndpoint = pictureEndpoint  + "&ts=" + cacheDelay;
+    }
+    callback(pictureEndpoint)
+  })
 };
 
 const removeProfilePhoto = (userId: number, callback: any) => {
@@ -238,7 +244,7 @@ export const ProfileService = {
   updateTopics,
   updateBio,
   uploadProfilePhoto,
-  getProfilePhoto,
+  getProfilePhotoUrl,
   removeProfilePhoto,
   updatePaper,
   deletePaper,

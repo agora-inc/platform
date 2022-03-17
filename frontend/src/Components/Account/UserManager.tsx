@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Box, Button, Text, TextArea, Layer } from "grommet";
+import { Box, Image, Text, TextArea, Layer } from "grommet";
 import {UserSettings} from "grommet-icons";
 import { Link, Route, Redirect, useHistory } from "react-router-dom";
 import LoginModal from "./LoginModal";
@@ -35,6 +35,7 @@ interface State {
   showCreateChannelOverlay: boolean;
   showDropdown: boolean;
   editingBio: boolean;
+  profilePicUrl: string;
 }
 
 export default class UserManager extends Component<Props, State> {
@@ -49,16 +50,25 @@ export default class UserManager extends Component<Props, State> {
       showCreateChannelOverlay: false,
       showDropdown: false,
       editingBio: false,
+      profilePicUrl: ""
     };
   }
-
-
 
   componentWillMount() {
     this.fetchAdminChannels();
     this.fetchMemberChannels();
     this.fetchFollowingChannels();
+    this.fetchProfilePicUrl();
   }
+
+  fetchProfilePicUrl = () => {
+    this.state.user &&
+      ProfileService.getProfilePhotoUrl(
+        this.state.user!.id,
+        0,
+        (profilePicUrl: string) => this.setState({profilePicUrl})
+      )
+  };
 
   fetchAdminChannels = () => {
     this.state.user &&
@@ -91,7 +101,7 @@ export default class UserManager extends Component<Props, State> {
           this.setState({ memberChannels });
         }
       );
-  };
+  }
 
   toggleDropdown = () => {
     this.setState({ showDropdown: !this.state.showDropdown });
@@ -152,7 +162,7 @@ export default class UserManager extends Component<Props, State> {
       // if yes, redirect. If no, create and redirect
       ProfileService.createProfile(
         this.state.user.id,
-        "[your full name]",
+        "Your name",
         () => {
           return history.push('/profile/' + id)
         }
@@ -284,7 +294,7 @@ export default class UserManager extends Component<Props, State> {
           gap="xsmall"
         >
           <Text size="16px" color="grey">
-            Manage your <img src={agoraLogo} style={{ height: "14px", marginBottom: "-3px"}}/>s
+            <img src={agoraLogo} style={{ height: "14px", marginBottom: "-3px"}}/>s you are an admin of
           </Text>
           <Box
             height={{max: "120px"}}
@@ -293,6 +303,7 @@ export default class UserManager extends Component<Props, State> {
             {this.state.adminChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
+              isAdmin={true}
               onClick={this.toggleDropdown}
             />
             ))}
@@ -323,7 +334,7 @@ export default class UserManager extends Component<Props, State> {
           gap="xsmall"
         >
           <Text size="16px" color="grey">
-             Following
+            <img src={agoraLogo} style={{ height: "14px", marginBottom: "-3px"}}/>s you are an admin of
           </Text>
           <Box
             height={{max: "120px"}}
@@ -336,6 +347,7 @@ export default class UserManager extends Component<Props, State> {
             {this.state.followingChannels.map((channel: Channel) => (
             <DropdownChannelButton
               channel={channel}
+              isAdmin={false}
               onClick={this.toggleDropdown}
             />
             ))}
@@ -501,24 +513,34 @@ export default class UserManager extends Component<Props, State> {
 
 
   loggedInStuff = (username: string) => {
-    
     return (
-      <>
-      <Box
-        margin={{right: "1vw"}}
-        focusIndicator={false}
-        onClick={this.toggleDropdown}
-        overflow="hidden"
-      >
-        <Box direction="row" gap="small" justify="center" align="center" margin={{top: "3px"}}>
-          <Text size="14px" margin={{right: "15px"}} color="grey">
-            {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
-            <b>{this.state.user?.username}!</b>
-          </Text>
-          <UserSettings size="medium"/>
+      <Route render={({history}) => ( 
+        <Box
+          margin={{right: "1vw"}}
+          round="20px"
+          pad="6px"
+          focusIndicator={false}
+          hoverIndicator="#BAD6DB"
+          onClick={
+            // this.toggleDropdown
+            () => this.onRedirectProfile(history)
+          }
+          overflow="hidden"
+          >
+          <Box direction="row" gap="small" justify="center" align="center" margin={{top: "3px"}}>
+            <Text size="14px" margin={{left: "4px", right: "15px"}} color="grey">
+              {(window.innerWidth > 800) ? <i>{this.dynamicGreetings()}</i> : ""}
+              <b>{this.state.user?.username}!</b>
+            </Text>
+            {/* <UserSettings size="medium"/> */}
+            <img 
+                style={{maxWidth: "70px", maxHeight: "70px", borderRadius: "200px"}}
+                src={this.state.profilePicUrl}
+                // width="28%"
+                />
+          </Box>
         </Box>
-      </Box>
-      </>
+      )}/>
     );
   };
 
@@ -567,6 +589,7 @@ export default class UserManager extends Component<Props, State> {
           ? this.loggedInStuff(username)
           : this.loggedOutStuff}
         {this.state.showDropdown && (
+          
           <Layer 
             modal={false}
             position="top-right"

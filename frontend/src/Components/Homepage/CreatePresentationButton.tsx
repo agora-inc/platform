@@ -10,7 +10,15 @@ import LoginModal from "../Account/LoginModal";
 import SignUpButton from "../Account/SignUpButton";
 
 
-export const CreatePresentationButton = () =>  {
+interface Props {
+  width?: string,
+  height?: string,
+  iconSize?: string,
+  textSize?: string,
+  addNewPresentation?: any,
+}
+
+export const CreatePresentationButton = (props: Props) =>  {
   const [showFormOverlay, setshowFormOverlay] = useState<boolean>(false);
   const [showSignUpOverlay, setShowSignUpOverlay] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("")
@@ -27,6 +35,7 @@ export const CreatePresentationButton = () =>  {
   // const [confirmPassword, setConfirmPassword] = useState<string>("")
   const [email, setEmail] = useState<string>("")
   const [error, setError] = useState<string>("")
+
 
   useEffect(() => {
     setUser(UserService.getCurrentUser())
@@ -53,6 +62,10 @@ export const CreatePresentationButton = () =>  {
       ProfileService.updatePresentation(
         user.id, temp_presentation, formatDate(now),
         (id: number) => {
+          temp_presentation.id = id
+          if (props.addNewPresentation) {
+            props.addNewPresentation(temp_presentation)
+          }
           return history.push('/profile/' + user.id)
         }
       )
@@ -69,7 +82,6 @@ export const CreatePresentationButton = () =>  {
 
   function onLogin(history: any): void  {
     let currentUser = UserService.getCurrentUser()
-    
     // 1. check if user has a profile; if not, create
     // let profile = ProfileService.getProfile(currentUser.id, ()=>{})
     // if(profile){
@@ -94,6 +106,10 @@ export const CreatePresentationButton = () =>  {
     ProfileService.updatePresentation(
       currentUser.id, temp_presentation, formatDate(now),
       (id: number) => {
+        temp_presentation.id = id
+        if (props.addNewPresentation) {
+          props.addNewPresentation(temp_presentation)
+        }
       }
     )
       
@@ -123,13 +139,17 @@ export const CreatePresentationButton = () =>  {
             date_created: formatDate(now),
           }
           ProfileService.createProfile(
-              result.userId, 
-              fullName, 
-              () => {}
-            )
+            result.userId, 
+            fullName, 
+            () => {}
+          )
           ProfileService.updatePresentation(
             result.userId, temp_presentation, formatDate(now),
             (id: number) => {
+              temp_presentation.id = id
+              if (props.addNewPresentation) {
+                props.addNewPresentation(temp_presentation)
+              }
             }
           )
           setShowSignUpOverlay(false)
@@ -164,19 +184,24 @@ export const CreatePresentationButton = () =>  {
   return (
     <>
       <Box
-        width={"310px"}
+        width={props.width ? props.width : "310px"}
         onClick={() => setshowFormOverlay(!showFormOverlay)}
         background="#0C385B"
         round="xsmall"
-        height={"80px"}
+        height={props.height ? props.height : "80px"}
         justify="center"
         align="center"
         focusIndicator={false}
         hoverIndicator="#BAD6DB"
         direction="row"
       >
-        <Workshop size="30px" />
-        <Text size="18px" margin={{left: "10px"}}> <b>Present your</b> latest work</Text>
+        <Workshop size={props.iconSize ? props.iconSize : "30px"} />
+        <Text 
+          size={props.textSize ? props.textSize : "18px"} 
+          margin={{left: "10px"}}
+        > 
+          <b>Get invited</b> to speak
+        </Text>
       </Box>
       <Route render={({history}) => (
         <>
@@ -185,14 +210,17 @@ export const CreatePresentationButton = () =>  {
             onEsc={() => setshowFormOverlay(false)}
             onCancelClick={() => setshowFormOverlay(false)}
             onClickOutside={() => setshowFormOverlay(false)}
-            onSubmitClick={() => submitPresentation(history)}
-            submitButtonText="Publish"
+            onSubmitClick={() => {
+              submitPresentation(history);
+              setshowFormOverlay(false)
+            }}
+            submitButtonText="Continue"
             canProceed={isComplete()}
             isMissing={isMissing()}
-            width={550}
+            width={600}
             height={450}
             contentHeight="300px"
-            title={"Describe your future talk and get invited!"}
+            title={"Describe your future talk to receive invitations!"}
           >
             <Box width="100%" gap="10px" margin={{top: "5px"}}>
               <TextInput

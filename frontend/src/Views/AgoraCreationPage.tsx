@@ -137,7 +137,7 @@ export default class AgoraCreationPage extends Component<Props, State> {
               </Box>
 
               <Text size="18px" >
-                An agora is a hub for your community. It is the place where you organise and list all your events, past or future.
+                An agora is a hub for your community. It is the place where you organise and advertise all your events, past or future, and where speakers come and apply. Give your community a name and classification before getting started!
               </Text>
 
               <Text size="18px" >

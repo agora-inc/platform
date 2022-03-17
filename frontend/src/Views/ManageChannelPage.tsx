@@ -623,18 +623,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                 />
               }
             </Box>
-
-
-
-
             <Box direction="column" gap="xsmall" align="start" width="70%vw">
               <Text 
-                  size="26px"
-                  color="black"
-                  weight="bold"
-                >
-                  {this.state.channel ?.name}
-                </Text>
+                size="26px"
+                color="black"
+                weight="bold"
+              >
+                {this.state.channel ?.name}
+              </Text>
               {(typeof(this.state.viewerCount) == "number") &&
                 <Text 
                   size="16px"
@@ -646,30 +642,31 @@ export default class ManageChannelPage extends Component<Props, State> {
                 </Text>
               }
 
-            <Box 
-              direction="row"
-              align="end"
-              gap="5px"
-            >
-            <Box data-tip data-for="avatar_info">
-                <ImageUploader
-                  text="Upload avatar"
-                  onUpload={this.onFileChosen}
+              <Box 
+                direction="row"
+                align="end"
+                gap="25px"
+              >
+                <Box data-tip data-for="avatar_info">
+                  <ImageUploader
+                    text="Upload avatar"
+                    onUpload={this.onFileChosen}
                   />
-                    <ReactTooltip id='avatar_info' place="top" effect="solid">
-                      <p>Recommended avatar dim: 400x400px</p>
-                    </ReactTooltip>
+                  <ReactTooltip id='avatar_info' place="top" effect="solid">
+                    <p>Recommended avatar dim: 400x400px</p>
+                  </ReactTooltip>
+                </Box>
+                <ShareButtons
+                  channel={this.state.channel}
+                  width="120px"
+                  height={(window.innerWidth < 800) ? "25px" : "30px"}
+                  onlyShare={true}
+                />
               </Box>
-            </Box>
             </Box>
           </Box>
 
-          <Box direction="row" gap="30px" align="end" width="40%">
-            <ShareButtons
-              channel={this.state.channel}
-              width="120px"
-              onlyShare={true}
-            />
+          <Box direction="row" align="end" width="25%">
             <LinkSecondaryButton 
               text="Look for speakers"
               link="speakers"
@@ -870,16 +867,16 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab>
+
                   <Tab>
-                  <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <MailOption />
                       <Text size="14px"> 
                         Mailing list 
                       </Text>
                     </Box>
-                    
                   </Tab>
+
                   <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <Group />
@@ -890,7 +887,6 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Tab>
 
                   <Tab>
-                    <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
                     <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
                       <DocumentText />
                       <Text size="14px"> 
@@ -938,32 +934,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                       user={this.state.user}
                       onCreatedCallback={this.fetchAllTalks}
                     />
-                    <Link to="/speakers">
-                      <Box
-                        margin={{ top: "20px", bottom: "40px", left: "10px" }}
-                        onClick={() => {
-                        }
-                        }
-                        background="#0C385B"
-                        round="xsmall"
-                        pad={{bottom: "small", top: "small", left: "small", right: "small"}}
-                        height="40px"
-                        width="15vw"
-                        justify="center"
-                        align="center"
-                        focusIndicator={false}
-                        // hoverIndicator="#2433b5"
-                        hoverIndicator="#BAD6DB"
-                        direction="row"
-                      >
-                        <Workshop style={{marginRight:"5px"}} />
-                         Find a speaker
-                      </Box>
-                    </Link>
                   </Box>
-
-
-
                   <Box
                     width="100%"
                     direction="row"
