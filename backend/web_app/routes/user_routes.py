@@ -35,14 +35,16 @@ def addUser():
 
     log_request(request)
     params = request.json
+    auth0Id = params["auth0_id"]
     username = params["username"]
     password = params["password"]
     email = params["email"]
     position = params["position"]
     institution = params["institution"]
     refChannel = params["refChannel"]
+
     user = app.user_repo.addUser(
-        username, password, email, position, institution, refChannel
+        auth0Id, username, password, email, position, institution, refChannel
     )
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
@@ -62,17 +64,7 @@ def addUser():
         f"Successful registration of new user with username {username} and email {email}"
     )
 
-    accessToken = app.user_repo.encodeAuthToken(user["id"], "access")
-    refreshToken = app.user_repo.encodeAuthToken(user["id"], "refresh")
-
-    return jsonify(
-        {
-            "id": user["id"],
-            "username": user["username"],
-            "accessToken": accessToken.decode(),
-            "refreshToken": refreshToken.decode(),
-        }
-    )
+    return jsonify(user)
 
 
 @app.route("/users/update_bio", methods=["POST"])

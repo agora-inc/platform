@@ -54,7 +54,7 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password, email, position, institution, channelId = 0):
+    def addUser(self, auth0Id, username, password, email, position, institution, channelId = 0):
         email = str(email).lower()
 
         if self.getUserByEmail(email):
@@ -66,8 +66,8 @@ class UserRepository:
 
         passwordHash = generate_password_hash(password)
         query = f'''INSERT INTO Users 
-            (username, password_hash, email, position, institution) 
-            VALUES ("{username}", "{passwordHash}", "{email}", "{position}", "{institution}");
+            (auth0_id, username, password_hash, email, position, institution) 
+            VALUES ("{auth0Id}", "{username}", "{passwordHash}", "{email}", "{position}", "{institution}");
         '''
         userId = self.db.run_query(query)[0]
 
@@ -190,44 +190,6 @@ class UserRepository:
             return user 
         else:
             return None
-
-    def encodeAuthToken(self, userId, type):
-        now = datetime.utcnow()
-
-        if type == "refresh":
-            exp = now + timedelta(days=7)
-        elif type == "changePassword":
-            exp = now + timedelta(minutes=15)
-        else:
-            exp = now + timedelta(minutes=30)
-
-        try:
-            payload = {
-                'exp': exp,
-                'iat': now,
-                'sub': userId
-            }
-            return jwt.encode(
-                payload,
-                self.secret,
-                algorithm='HS256'
-            )
-        except Exception as e:
-            return e
-
-    def decodeAuthToken(self, token):
-        try:
-            payload = jwt.decode(token, self.secret)
-            return payload['sub']
-        except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
-        except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
-
-    def changePassword(self, userId, newPassword):
-        passwordHash = generate_password_hash(newPassword)
-        query = f'UPDATE Users SET password_hash = "{passwordHash}" WHERE id = {userId}'
-        self.db.run_query(query)
 
     def updateBio(self, userId, newBio):
         query = f'UPDATE Users SET bio = "{newBio}" WHERE id = {userId}'
