@@ -7,7 +7,7 @@ import { Close } from "grommet-icons";
 import Button from "../Core/Button";
 
 interface State {
-  all: Topic[],
+  all: Topic[];
   topics: Topic[][];
   topicsShown: number[];
   // I don't understand why I need this argument, but it doesn't work without (Alain, Sep 2020)
@@ -43,47 +43,47 @@ export default class TopicSelector extends Component<Props, State> {
   }
 
   onAddTopicShown = (choice: number) => {
-    return ( () => {
+    return () => {
       let tempTopics = this.state.topics;
       let tempTopicsShown = this.state.topicsShown;
-      tempTopics[choice] = []
+      tempTopics[choice] = [];
       tempTopicsShown[choice] = 1;
-      this.setState({ 
+      this.setState({
         topicsShown: tempTopicsShown,
-        topics: tempTopics 
+        topics: tempTopics,
       });
-    })
+    };
   };
 
   onCancelTopicShown = (choice: number) => {
-    return ( () => {
+    return () => {
       let tempTopics = this.state.topics;
       let tempShown = this.state.topicsShown;
-      tempTopics[choice] = []
+      tempTopics[choice] = [];
       tempShown[choice] = 0;
-      this.setState({ 
+      this.setState({
         topicsShown: tempShown,
-        topics: tempTopics 
+        topics: tempTopics,
       });
       if (this.state.isFilledTopics[choice]) {
         let tempIsFilled = this.state.isFilledTopics;
-        tempIsFilled[choice] = false
+        tempIsFilled[choice] = false;
         this.setState({
-          isFilledTopics: tempIsFilled
-        })
+          isFilledTopics: tempIsFilled,
+        });
       }
       this.props.onCanceledCallback(choice);
-    })
+    };
   };
 
   onFieldChoose = (choice: number, topic: Topic, fieldDepth: number) => {
     let tempShown = this.state.topicsShown;
     if (topic.id >= 0) {
       tempShown[choice] = fieldDepth + 1;
-      this.props.onSelectedCallback(topic, choice, fieldDepth+1);
+      this.props.onSelectedCallback(topic, choice, fieldDepth + 1);
     } else {
       tempShown[choice] = fieldDepth;
-      this.props.onSelectedCallback(topic, choice, fieldDepth+1); 
+      this.props.onSelectedCallback(topic, choice, fieldDepth + 1);
     }
     let tempTopics = this.state.topics;
     tempTopics[choice] = tempTopics[choice].slice(0, fieldDepth);
@@ -96,12 +96,14 @@ export default class TopicSelector extends Component<Props, State> {
 
   nameToTopic = (name: string): Topic => {
     if (name == "All") {
-      return {field: "All",
-              id: -1,
-              is_primitive_node: false,
-              parent_1_id: -1,
-              parent_2_id: -1, 
-              parent_3_id: -1}
+      return {
+        field: "All",
+        id: -1,
+        is_primitive_node: false,
+        parent_1_id: -1,
+        parent_2_id: -1,
+        parent_3_id: -1,
+      };
     } else {
       return this.state.all
         .filter(function (topic: Topic) {
@@ -145,8 +147,6 @@ export default class TopicSelector extends Component<Props, State> {
       .map((temp: Topic) => temp.field);
   };
 
-
-
   renderTopicChoice = (choice: number) => {
     if (this.state.isFilledTopics[choice]) {
       return (
@@ -158,15 +158,18 @@ export default class TopicSelector extends Component<Props, State> {
           margin={{ bottom: "15px" }}
         >
           {this.props.isHeader && (
-            <Text size="11px" style={{width: "115px"}}>
-              Topic {choice+1}
+            <Text size="11px" style={{ width: "115px" }}>
+              Topic {choice + 1}
             </Text>
           )}
           <Text size={this.props.size} weight="bold">
             {this.props.prevTopics[choice].field}
           </Text>
-          <Box margin={{left: "10px"}}>
-            <Close size={this.props.size} onClick={this.onCancelTopicShown(choice)} />
+          <Box margin={{ left: "10px" }}>
+            <Close
+              size={this.props.size}
+              onClick={this.onCancelTopicShown(choice)}
+            />
           </Box>
         </Box>
       );
@@ -177,11 +180,11 @@ export default class TopicSelector extends Component<Props, State> {
           direction="row"
           gap="xsmall"
           align="center"
-          margin={{ bottom: "15px"  }}
+          margin={{ bottom: "15px" }}
         >
           {this.props.isHeader && (
-            <Text size="11px" style={{width: "115px"}}>
-              Topic {choice+1}
+            <Text size="11px" style={{ width: "115px" }}>
+              Topic {choice + 1}
             </Text>
           )}
           {this.state.topicsShown[choice] > 0 && (
@@ -196,9 +199,9 @@ export default class TopicSelector extends Component<Props, State> {
           )}
           {this.state.topicsShown[choice] > 1 && (
             <Select
-              options={this.getChildren(
-                this.state.topics[choice][0]
-              ).concat("All")}
+              options={this.getChildren(this.state.topics[choice][0]).concat(
+                "All"
+              )}
               onChange={({ option }) =>
                 this.onFieldChoose(choice, this.nameToTopic(option), 2)
               }
@@ -217,18 +220,27 @@ export default class TopicSelector extends Component<Props, State> {
             />
           )} */}
           {this.state.topicsShown[choice] > 0 && (
-            <Box margin={{left: "10px"}}>
-            <Close size={this.props.size} onClick={this.onCancelTopicShown(choice)} />
+            <Box margin={{ left: "10px" }}>
+              <Close
+                size={this.props.size}
+                onClick={this.onCancelTopicShown(choice)}
+              />
             </Box>
           )}
         </Box>
       );
     } else {
       return (
-        <Box direction="row" align="center" margin={{bottom: this.props.marginBottom ? this.props.marginBottom : "24px"}}  >
+        <Box
+          direction="row"
+          align="center"
+          margin={{
+            bottom: this.props.marginBottom ? this.props.marginBottom : "24px",
+          }}
+        >
           {this.props.isHeader && (
-            <Text size="11px" style={{width: "115px"}}>
-              Topic {choice+1}
+            <Text size="11px" style={{ width: "115px" }}>
+              Topic {choice + 1}
             </Text>
           )}
           <Box
@@ -238,14 +250,14 @@ export default class TopicSelector extends Component<Props, State> {
             pad={{ vertical: "2px", horizontal: "xsmall" }}
             onClick={this.onAddTopicShown(choice)}
             style={{
-              width: "15%",
+              width: "150px",
               border: "1px solid #C2C2C2",
             }}
             hoverIndicator={true}
             align="center"
           >
-            <Text color="grey" size="small"> 
-              + Add 
+            <Text color="grey" size="small">
+              + Add
             </Text>
           </Box>
         </Box>
@@ -255,8 +267,10 @@ export default class TopicSelector extends Component<Props, State> {
 
   render() {
     return (
-      <Box width="100%" direction="column" 
-        margin={{top: this.props.marginTop ? this.props.marginTop : "12px"}}
+      <Box
+        width="100%"
+        direction="column"
+        margin={{ top: this.props.marginTop ? this.props.marginTop : "12px" }}
       >
         {this.renderTopicChoice(0)}
         {this.renderTopicChoice(1)}

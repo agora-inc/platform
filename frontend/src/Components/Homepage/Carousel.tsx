@@ -79,7 +79,7 @@ export default class Carousel extends Component<Props, State> {
 
   ifStreams = () => {
     return (
-      <Box width="100%" margin={{bottom: "20px"}}>
+      <Box width="100%" margin={{ bottom: "20px" }}>
         <Text size="26px" weight="bold" color="color1" margin="none">
           Happening now
         </Text>
@@ -91,7 +91,13 @@ export default class Carousel extends Component<Props, State> {
           margin={{ top: "10px" }}
         >
           {this.state.talks.map((talk: Talk) => (
-            <TalkCard talk={talk} user={this.state.user} width="31.5%" isCurrent={true} />
+            <TalkCard
+              talk={talk}
+              user={this.state.user}
+              width="31.5%"
+              isCurrent={true}
+              windowWidth={window.innerWidth}
+            />
           ))}
         </Box>
       </Box>
@@ -101,7 +107,7 @@ export default class Carousel extends Component<Props, State> {
   render() {
     return (
       <>
-        <Box align="start" margin={{bottom: "20px"}}>
+        <Box align="start" margin={{ bottom: "20px" }}>
           <TrendingTalksList />
         </Box>
         <Box
@@ -111,9 +117,8 @@ export default class Carousel extends Component<Props, State> {
         // margin={{ top: "60px" }}
         >
           {this.state.talks.length != 0 && this.ifStreams()}
-          
         </Box>
-    </>
+      </>
     );
   }
 }

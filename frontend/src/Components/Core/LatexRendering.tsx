@@ -19,29 +19,30 @@ lineBreaks = (text: string) => {
 export const textToLatex = (rawText: string) => {
   rawText.replace("''", "'");
   const textArr = rawText.split("$");
-  if(rawText && rawText.trim()) {
+  if (rawText && rawText.trim()) {
     return (
       <div>
-        {textArr.map((textElement: string, index) => {
+        {textArr.map((textElement: string, index: number) => {
           if (index % 2 == 0) {
             return (
               <Text
                 color="black"
                 style={{
-                //  marginLeft: 3,
-                //  marginRight: 3,
+                  //  marginLeft: 3,
+                  //  marginRight: 3,
                   whiteSpace: "initial",
-                //  overflowWrap: "break-word",
-                //  wordWrap: "break-word"
+                  //  overflowWrap: "break-word",
+                  //  wordWrap: "break-word"
                 }}
                 size="14px"
+                key={index}
               >
                 {textElement}
               </Text>
             );
           } else {
-            if (textElement.length >= 60 ) {
-              const tooLongArray = (textElement.match(/.{1,60}/g) || []);
+            if (textElement.length >= 60) {
+              const tooLongArray = textElement.match(/.{1,60}/g) || [];
               const componentLatex = [];
               tooLongArray.map((segment: string) => {
                 if (segment[0] != "$") {
@@ -51,21 +52,23 @@ export const textToLatex = (rawText: string) => {
                   segment = segment + "$";
                 }
               });
-              for (let i=0; i < tooLongArray.length; i++) {
+              for (let i = 0; i < tooLongArray.length; i++) {
                 if (tooLongArray[i] != "") {
-                  componentLatex.push(<InlineMath math={tooLongArray[i]} />);
+                  componentLatex.push(
+                    <InlineMath math={tooLongArray[i]} key={index} />
+                  );
                 }
               }
               return componentLatex;
             }
             if (textElement != "" && index != textArr.length - 1) {
-              return <InlineMath math={textElement} />;
+              return <InlineMath math={textElement} key={index} />;
             }
           }
         })}
       </div>
     );
   } else {
-    return (<br></br>)
+    return <br></br>;
   }
 };

@@ -5,7 +5,10 @@ import { User, UserService } from "../Services/UserService";
 import { Channel, ChannelService } from "../Services/ChannelService";
 import { Talk, TalkService } from "../Services/TalkService";
 import { ChannelSubscriptionService } from "../Services/ChannelSubscriptionService";
-import { StreamingProductService, StreamingProduct } from "../Services/StreamingProductService";
+import {
+  StreamingProductService,
+  StreamingProduct,
+} from "../Services/StreamingProductService";
 import { Link } from "react-router-dom";
 import Loading from "../Components/Core/Loading";
 import ScheduleTalkButton from "../Components/Talks/ScheduleTalkButton";
@@ -15,7 +18,7 @@ import ChannelPageTalkList from "../Components/Channel/ChannelPageTalkList";
 import AddUsersButton from "../Components/Channel/AddUsersButton";
 import "../Styles/manage-channel.css";
 import ReactTooltip from "react-tooltip";
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import ChannelPageUserCircle from "../Components/Channel/ChannelPageUserCircle";
 import ChannelPageTalkCard from "../Components/Channel/ChannelPageTalkCard";
 import PastTalkCard from "../Components/Talks/PastTalkCard";
@@ -23,8 +26,21 @@ import ImageUploader from "../Components/Core/ImageUploader";
 import PricingPlans from "../Views/PricingPlans";
 import { baseApiUrl, basePoint } from "../config";
 import { CSSProperties } from "styled-components";
-import { FormDown, FormUp, UserAdmin, Workshop, StatusInfo, Checkmark, DocumentTime,
-  MailOption, SettingsOption, Group, DocumentText, Resources, Configure } from "grommet-icons";
+import {
+  FormDown,
+  FormUp,
+  UserAdmin,
+  Workshop,
+  StatusInfo,
+  Checkmark,
+  DocumentTime,
+  MailOption,
+  SettingsOption,
+  Group,
+  DocumentText,
+  Resources,
+  Configure,
+} from "grommet-icons";
 import EnrichedTextEditor from "../Components/Channel/EnrichedTextEditor";
 import EmailContactManagement from "../Components/Channel/EmailContactManagement";
 import DeleteAgoraButton from "../Components/Channel/DeleteAgoraButton";
@@ -114,10 +130,14 @@ export default class ManageChannelPage extends Component<Props, State> {
       showDraftInfo: false,
       showMemberEmailInfo: false,
       topics: this.props.channel ? this.props.channel.topics : [],
-      isPrevTopics: this.props.channel ? this.topicExists(this.props.channel.topics) : [false, false, false],
+      isPrevTopics: this.props.channel
+        ? this.topicExists(this.props.channel.topics)
+        : [false, false, false],
       topicSaved: false,
       saveButtonFade: false,
-      topicId: this.props.channel?.topics[0].id ? this.props.channel?.topics[0].id : 0,
+      topicId: this.props.channel?.topics[0].id
+        ? this.props.channel?.topics[0].id
+        : 0,
       field: "",
       showModalPricing: false,
       allPlansId: [],
@@ -131,21 +151,18 @@ export default class ManageChannelPage extends Component<Props, State> {
     ChannelService.getChannelByName(
       this.props.location.pathname.split("/")[1],
       (channel: Channel) => {
-        this.setState({channelId: channel.id})
+        this.setState({ channelId: channel.id });
       }
     );
     ChannelService.getChannelTopic(
       this.state.channelId,
       (currentTopicId: number) => {
-        this.setState({ topicId:currentTopicId });
+        this.setState({ topicId: currentTopicId });
       }
     );
-    TopicService.getFieldFromId(
-      this.state.topicId,
-      (topicName: string) => {
-        this.setState({field: topicName})
-      }
-    )
+    TopicService.getFieldFromId(this.state.topicId, (topicName: string) => {
+      this.setState({ field: topicName });
+    });
   }
 
   componentWillUnmount() {
@@ -216,34 +233,32 @@ export default class ManageChannelPage extends Component<Props, State> {
   getChannelSubscriptions = () => {
     if (this.props.channel) {
       ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
-        this.props.channel.id, 
+        this.props.channel.id,
         (allPlansId: number[]) => {
-          this.setState({ allPlansId })
+          this.setState({ allPlansId });
           this.setState({
-            subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
-          })
+            subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId),
+          });
         }
       );
     }
-  }
+  };
 
   getChannelSubscriptionTiers = (allPlansId: number[]) => {
-    let tiers: string[] = []
+    let tiers: string[] = [];
     allPlansId.map((id: number) => {
-      StreamingProductService.getStreamingProductById(
-        id, 
-        (product: any) => {
-          tiers.push(product.tier)
-        }
-      )
-    })
-    return tiers
-  }
+      StreamingProductService.getStreamingProductById(id, (product: any) => {
+        tiers.push(product.tier);
+      });
+    });
+    return tiers;
+  };
 
   storeUserData = () => {
     ChannelService.increaseViewCountForChannel(
       this.state.channel!.id,
-      () => {});
+      () => {}
+    );
   };
 
   fetchData = () => {
@@ -315,7 +330,7 @@ export default class ManageChannelPage extends Component<Props, State> {
         this.setState({ listInvitedMembers });
       }
     );
-  }; 
+  };
 
   fetchTalks = () => {
     TalkService.getFutureTalksForChannel(
@@ -341,11 +356,11 @@ export default class ManageChannelPage extends Component<Props, State> {
   };
 
   fetchAllTalks = () => {
-    this.fetchDrafts()
-    this.fetchTalks()
-    this.fetchCurrentTalks()
-    this.fetchPastTalks()
-  }
+    this.fetchDrafts();
+    this.fetchTalks();
+    this.fetchCurrentTalks();
+    this.fetchPastTalks();
+  };
 
   fetchPastTalks = () => {
     TalkService.getPastTalksForChannel(
@@ -364,7 +379,7 @@ export default class ManageChannelPage extends Component<Props, State> {
       this.state.channel!.id,
       (talks: Talk[]) => {
         this.setState({
-          currentTalks: talks
+          currentTalks: talks,
         });
       }
     );
@@ -392,41 +407,47 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   handleMailingList = (e: any) => {
     let value = e.target.value;
-    this.setState({"mailingList": value});
+    this.setState({ mailingList: value });
   };
 
   parseMailingList = () => {
     let listEmailCorrect = [];
     // get all emails constructed using non-alphanumerical characters except "@", ".", "_", and "-"
-    let regExtraction = this.state.mailingList.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
-    if (regExtraction === null){
-      regExtraction = []
+    let regExtraction = this.state.mailingList.match(
+      /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi
+    );
+    if (regExtraction === null) {
+      regExtraction = [];
     }
 
     // filtering new admissibles emails from badly formatted ones
     let strEmailWrong = this.state.mailingList;
-    for (var email of regExtraction){
-      if (!(this.state.listInvitedMembers.includes(email))){
-      listEmailCorrect.push(email.toLowerCase())};
+    for (var email of regExtraction) {
+      if (!this.state.listInvitedMembers.includes(email)) {
+        listEmailCorrect.push(email.toLowerCase());
+      }
       strEmailWrong = strEmailWrong.replace(email, "");
     }
 
     // clean box if empty
-    strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ")
-    if (strEmailWrong.replace(/[\s]/g, "") === ""){
+    strEmailWrong = strEmailWrong.replace(/[/\n\;\,]/g, " ");
+    if (strEmailWrong.replace(/[\s]/g, "") === "") {
       strEmailWrong = "";
     }
 
     // send invitations for admissible emails
-    ChannelService.addFollowingMembersToChannel(    
+    ChannelService.addFollowingMembersToChannel(
       this.state.channel!.id,
       listEmailCorrect,
-      () => {},
+      () => {}
     );
     this.setState({ listEmailCorrect });
-    this.setState({ listInvitedMembers : this.state.listInvitedMembers.concat(listEmailCorrect) });
+    this.setState({
+      listInvitedMembers:
+        this.state.listInvitedMembers.concat(listEmailCorrect),
+    });
     this.setState({ strEmailWrong });
-    this.setState({ mailingList: strEmailWrong})
+    this.setState({ mailingList: strEmailWrong });
     this.fetchMembers();
     this.fetchOwners();
   };
@@ -481,16 +502,17 @@ export default class ManageChannelPage extends Component<Props, State> {
   getImageUrl = (): string | undefined => {
     let current_time = Math.floor(new Date().getTime() / 5000);
     let imageUrl = this.state.channel?.id
-      ? `${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` + current_time
-      // HACK: we add the new time at the end of the URL to avoid caching; 
-      // we divide time by value such that all block of requested image have 
-      // the same name (important for the name to be the same for the styling).
-      : undefined;
+      ? `${baseApiUrl}/channels/cover?channelId=${this.state.channel.id}&ts=` +
+        current_time
+      : // HACK: we add the new time at the end of the URL to avoid caching;
+        // we divide time by value such that all block of requested image have
+        // the same name (important for the name to be the same for the styling).
+        undefined;
     return imageUrl;
-  }
+  };
 
   getCoverBoxStyle = (): CSSProperties => {
-    let background = this.state.channel ?.colour;
+    let background = this.state.channel?.colour;
     let border = "none";
 
     return {
@@ -513,7 +535,7 @@ export default class ManageChannelPage extends Component<Props, State> {
 
   SavedButtonClicked = () => {
     this.setState({ topicSaved: true });
-    this.setState({ saveButtonFade: true});
+    this.setState({ saveButtonFade: true });
     ChannelService.editChannelTopic(
       this.state.channel!.id,
       this.state.topics,
@@ -521,37 +543,33 @@ export default class ManageChannelPage extends Component<Props, State> {
         // console.log("channel topic saved");
       }
     );
-    return (
-      <Box></Box>
-    );
+    return <Box></Box>;
   };
 
   endOfAnimation = () => {
-    this.setState({ saveButtonFade: false});
-    return (
-      <Box></Box>
-    );
-  }
+    this.setState({ saveButtonFade: false });
+    return <Box></Box>;
+  };
 
   topicExists = (topics: Topic[]) => {
     let res = [];
     for (let topic in topics) {
       if (topic) {
-        res.push(true)
+        res.push(true);
       } else {
-        res.push(false)
+        res.push(false);
       }
     }
     return res;
-  }
+  };
 
   selectTopic = (topic: Topic, num: number) => {
     let tempTopics = this.state.topics;
     tempTopics[num] = topic;
     this.setState({
-      topics: tempTopics
+      topics: tempTopics,
     });
-  }
+  };
 
   cancelTopic = (num: number) => {
     let tempTopics = this.state.topics;
@@ -560,13 +578,13 @@ export default class ManageChannelPage extends Component<Props, State> {
       id: 0,
       is_primitive_node: false,
       parent_1_id: -1,
-      parent_2_id: -1, 
+      parent_2_id: -1,
       parent_3_id: -1,
-    }
+    };
     this.setState({
-      topics: tempTopics
+      topics: tempTopics,
     });
-  }
+  };
 
   banner = () => {
     return (
@@ -579,11 +597,11 @@ export default class ManageChannelPage extends Component<Props, State> {
         <Box
           direction="row"
           justify="between"
-          style={{position: 'relative'}}
+          style={{ position: "relative" }}
           height="25vw"
         >
           <Image src={this.getImageUrl()} style={this.getCoverBoxStyle()} />
-          <div style={{position: 'absolute', top: 10, right: 10}}>
+          <div style={{ position: "absolute", top: 10, right: 10 }}>
             <ColorPicker
               selected={this.state.colour}
               callback={this.updateColour}
@@ -614,65 +632,45 @@ export default class ManageChannelPage extends Component<Props, State> {
             >
               {
                 <img
-                  src={
-                    ChannelService.getAvatar(this.state.channel!.id, 1)
-                  }
+                  src={ChannelService.getAvatar(this.state.channel!.id, 1)}
                   height={100}
                   width={100}
                 />
               }
             </Box>
 
-
-
-
             <Box direction="column" gap="xsmall" align="start" width="70%vw">
-              <Text 
-                  size="26px"
-                  color="black"
-                  weight="bold"
-                >
-                  {this.state.channel ?.name}
-                </Text>
-              {(typeof(this.state.viewerCount) == "number") &&
-                <Text 
+              <Text size="26px" color="black" weight="bold">
+                {this.state.channel?.name}
+              </Text>
+              {typeof this.state.viewerCount == "number" && (
+                <Text
                   size="16px"
                   color="#999999"
                   weight="bold"
-                  margin={{bottom: "6px", right: "20px"}}
+                  margin={{ bottom: "6px", right: "20px" }}
                 >
                   {this.state.viewerCount} visits
                 </Text>
-              }
+              )}
 
-            <Box 
-              direction="row"
-              align="end"
-              gap="5px"
-            >
-            <Box data-tip data-for="avatar_info">
-                <ImageUploader
-                  text="Upload avatar"
-                  onUpload={this.onFileChosen}
+              <Box direction="row" align="end" gap="5px">
+                <Box data-tip data-for="avatar_info">
+                  <ImageUploader
+                    text="Upload avatar"
+                    onUpload={this.onFileChosen}
                   />
-                    <ReactTooltip id='avatar_info' place="top" effect="solid">
-                      <p>Recommended avatar dim: 400x400px</p>
-                    </ReactTooltip>
+                  <ReactTooltip id="avatar_info" place="top" effect="solid">
+                    <p>Recommended avatar dim: 400x400px</p>
+                  </ReactTooltip>
+                </Box>
               </Box>
             </Box>
-            </Box>
           </Box>
-
-          
 
           <Box direction="row" gap="xsmall" align="end" width="30%">
-              <ShareButtons
-                channel={this.state.channel}
-              />
+            <ShareButtons channel={this.state.channel} />
           </Box>
-
-
-
 
           {this.state.bannerExtended ? (
             <FormUp
@@ -703,7 +701,6 @@ export default class ManageChannelPage extends Component<Props, State> {
             />
           </>
         )}
-        
       </Box>
     );
   };
@@ -720,69 +717,79 @@ export default class ManageChannelPage extends Component<Props, State> {
     } else {
       return this.isAllowed() ? (
         <>
-        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
-          // src={BackgroundImage}
-          src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
-        />
-        
-        <Box 
-          align="center"
-          style={{
-            position: "absolute",
-            top: "5vw",
-          }}
+          <img
+            style={{
+              height: "auto",
+              width: "auto",
+              minWidth: "100%",
+              minHeight: "100%",
+            }}
+            id="background-landing"
+            // src={BackgroundImage}
+            src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
+          />
 
-        >        
           <Box
-             width="75%"
-            height="100%"
             align="center"
-
+            style={{
+              position: "absolute",
+              top: "5vw",
+            }}
           >
-            <Box align="start">
-              {this.state.role === "owner" && (
-                <Box direction="row" align="center" alignContent="end" gap="17vw">
-                  <ScheduleTalkButton
-                    margin={{ bottom: "10px" }}
-                    channel={this.state.channel}
-                    user={this.state.user}
-                    onCreatedCallback={this.fetchAllTalks}
-                  />
-                  <Box direction="row" alignContent="end">
-                    <Text size="14px" weight="bold" color="grey">
-                      You are an administrator
+            <Box width="75%" height="100%" align="center">
+              <Box align="start">
+                {this.state.role === "owner" && (
+                  <Box
+                    direction="row"
+                    align="center"
+                    alignContent="end"
+                    gap="17vw"
+                  >
+                    <ScheduleTalkButton
+                      margin={{ bottom: "10px" }}
+                      channel={this.state.channel}
+                      user={this.state.user}
+                      onCreatedCallback={this.fetchAllTalks}
+                    />
+                    <Box direction="row" alignContent="end">
+                      <Text size="14px" weight="bold" color="grey">
+                        You are an administrator
+                      </Text>
+                    </Box>
+                  </Box>
+                )}
+                {this.banner()}
+
+                <Box
+                  direction="row"
+                  justify="center"
+                  margin={{ top: "10px", bottom: "10px" }}
+                  width="100%"
+                >
+                  <Box justify="start" width="50%">
+                    <Text size="24px" weight="bold" color="color1">
+                      {<UserAdmin />} {`Administrator panel`}{" "}
                     </Text>
                   </Box>
-                </Box>
-              )}
-              {this.banner()}
-
-              <Box direction="row" justify="center"  margin={{ top: "10px", bottom: "10px" }} width="100%">
-                <Box justify="start" width="50%">
-                  <Text
-                    size="24px"
-                    weight="bold"
-                    color="color1"
-                  >
-                    {<UserAdmin />} {`Administrator panel`}{" "}
-                  </Text>
-                </Box>
-                <Box justify="end" width="50%" direction="row">
-                  <Box
-                    onClick={this.toggleModalPricing}
-                    background="color1"
-                    round="xsmall"
-                    pad="xsmall"
-                    width="200px"
-                    height="40px"
-                    justify="center"
-                    align="center"
-                    focusIndicator={false}
-                    hoverIndicator="color3"
-                  >
-                    <Text size="14px" weight="bold"> Your subscription </Text>
-                  </Box>
-                  {/* 
+                  <Box justify="end" width="50%" direction="row">
+                    <Box
+                      onClick={this.toggleModalPricing}
+                      background="color1"
+                      round="xsmall"
+                      pad="xsmall"
+                      width="200px"
+                      height="40px"
+                      justify="center"
+                      align="center"
+                      focusIndicator={false}
+                      hoverIndicator="color3"
+                    >
+                      <Text size="14px" weight="bold">
+                        {" "}
+                        Your subscription{" "}
+                      </Text>
+                    </Box>
+                    {/* 
                   REFERAL BUTTON: TO UNCOMMENT SOON
                   
                   <a href={basePoint + "/referral/channel/" + this.state.channelId + "?referee=true"} style={{textDecoration: 0}}>
@@ -801,11 +808,10 @@ export default class ManageChannelPage extends Component<Props, State> {
                       <Text size="14px" weight="bold"> Upgrade for free </Text>
                     </Box>
                   </a> */}
+                  </Box>
                 </Box>
-              </Box>
 
-              
-              { /* this.state.user && 
+                {/* this.state.user && 
               (
                 <>
                   <StreamingCheckoutPaymentButton
@@ -824,81 +830,116 @@ export default class ManageChannelPage extends Component<Props, State> {
               </>
               ) */}
 
-              {this.state.showModalPricing && (
-                <Layer
-                  onEsc={this.toggleModalPricing}
-                  onClickOutside={this.toggleModalPricing}
-                  modal
-                  responsive
-                  animation="fadeIn"
-                  style={{
-                    width: "1000px",
-                    height: "65%",
-                    borderRadius: 15,
-                    padding: 0,
-                  }}
-                >
-                  <PricingPlans 
-                    callback={this.toggleModalPricing}
-                    disabled={false}
-                    channelId={this.state.channelId}
-                    userId={this.state.user ? this.state.user.id : null}
-                    showDemo={false}
-                    headerTitle={false} 
-                  />
+                {this.state.showModalPricing && (
+                  <Layer
+                    onEsc={this.toggleModalPricing}
+                    onClickOutside={this.toggleModalPricing}
+                    modal
+                    responsive
+                    animation="fadeIn"
+                    style={{
+                      width: "1000px",
+                      height: "65%",
+                      borderRadius: 15,
+                      padding: 0,
+                    }}
+                  >
+                    <PricingPlans
+                      callback={this.toggleModalPricing}
+                      disabled={false}
+                      channelId={this.state.channelId}
+                      userId={this.state.user ? this.state.user.id : null}
+                      showDemo={false}
+                      headerTitle={false}
+                    />
+                  </Layer>
+                )}
 
-                </Layer>
-              )}
-              
+                <Tabs>
+                  <TabList>
+                    <Tab>
+                      <Box
+                        direction="row"
+                        justify="center"
+                        pad="6px"
+                        gap="18px"
+                        margin={{ left: "6px", right: "6px" }}
+                      >
+                        <DocumentTime />
+                        <Text size="14px">Talks</Text>
+                      </Box>
+                    </Tab>
+                    <Tab>
+                      <Text
+                        textAlign="end"
+                        color="red"
+                        weight="bold"
+                        size="14px"
+                        margin={{ left: "6px" }}
+                      >
+                        {" "}
+                        New!{" "}
+                      </Text>
+                      <Box
+                        direction="row"
+                        justify="center"
+                        pad="6px"
+                        gap="18px"
+                        margin={{ left: "6px", right: "6px" }}
+                      >
+                        <MailOption />
+                        <Text size="14px">Mailing list</Text>
+                      </Box>
+                    </Tab>
+                    <Tab>
+                      <Box
+                        direction="row"
+                        justify="center"
+                        pad="6px"
+                        gap="18px"
+                        margin={{ left: "6px", right: "6px" }}
+                      >
+                        <Group />
+                        <Text size="14px">Community</Text>
+                      </Box>
+                    </Tab>
 
-              <Tabs>
-                <TabList>
-                  <Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <DocumentTime />
-                      <Text size="14px"> 
-                        Talks 
+                    <Tab>
+                      <Text
+                        textAlign="end"
+                        color="red"
+                        weight="bold"
+                        size="14px"
+                        margin={{ left: "6px" }}
+                      >
+                        {" "}
+                        New!{" "}
                       </Text>
-                    </Box>
-                  </Tab>
-                  <Tab>
-                  <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <MailOption />
-                      <Text size="14px"> 
-                        Mailing list 
-                      </Text>
-                    </Box>
-                    
-                  </Tab>
-                  <Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <Group />
-                      <Text size="14px"> 
-                        Community 
-                      </Text>
-                    </Box>
-                  </Tab>
+                      <Box
+                        direction="row"
+                        justify="center"
+                        pad="6px"
+                        gap="15px"
+                        margin={{ left: "6px", right: "6px" }}
+                      >
+                        <DocumentText />
+                        <Text size="14px">Registrations</Text>
+                      </Box>
+                    </Tab>
 
-                  <Tab>
-                    <Text textAlign="end" color="red" weight="bold" size="14px" margin={{left: "6px"}}> New! </Text>
-                    <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
-                      <DocumentText />
-                      <Text size="14px"> 
-                        Registrations 
-                      </Text>
-                    </Box>
-                  </Tab>
-
-                  <Tab>
-                    <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-                      <Configure />
-                      <Text size="14px"> 
-                        Settings 
-                      </Text>
-                    </Box>
-                  </Tab>
-                  {/* 
+                    <Tab>
+                      <Box
+                        direction="row"
+                        justify="center"
+                        pad="6px"
+                        gap="18px"
+                        margin={{ left: "6px", right: "6px" }}
+                      >
+                        <Configure />
+                        <Text size="14px">Settings</Text>
+                      </Box>
+                    </Tab>
+                    {/* 
                     TAB FOR MEMBERSHIP APPLICATION:
                   
                   <Tab>
@@ -910,7 +951,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Tab> */}
 
-                  {/* <Tab>
+                    {/* <Tab>
                     <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
                       <SettingsOption />
                       <Text size="14px"> 
@@ -918,213 +959,214 @@ export default class ManageChannelPage extends Component<Props, State> {
                       </Text>
                     </Box>
                   </Tab> */}
-                </TabList>
-                
+                  </TabList>
 
-                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-                  <Box direction="row">
-                    <ScheduleTalkButton
-                      margin={{ top: "20px", bottom: "40px" }}
-                      channel={this.state.channel}
-                      user={this.state.user}
-                      onCreatedCallback={this.fetchAllTalks}
-                    />
-                    <Link to="/speakers">
+                  <TabPanel style={{ width: "78vw", minHeight: "800px" }}>
+                    <Box direction="row">
+                      <ScheduleTalkButton
+                        margin={{ top: "20px", bottom: "40px" }}
+                        channel={this.state.channel}
+                        user={this.state.user}
+                        onCreatedCallback={this.fetchAllTalks}
+                      />
+                      <Link to="/speakers">
+                        <Box
+                          margin={{ top: "20px", bottom: "40px", left: "10px" }}
+                          onClick={() => {}}
+                          background="#0C385B"
+                          round="xsmall"
+                          pad={{
+                            bottom: "small",
+                            top: "small",
+                            left: "small",
+                            right: "small",
+                          }}
+                          height="40px"
+                          width="15vw"
+                          justify="center"
+                          align="center"
+                          focusIndicator={false}
+                          // hoverIndicator="#2433b5"
+                          hoverIndicator="#BAD6DB"
+                          direction="row"
+                        >
+                          <Workshop style={{ marginRight: "5px" }} />
+                          Find a speaker
+                        </Box>
+                      </Link>
+                    </Box>
+
+                    <Box
+                      width="100%"
+                      direction="row"
+                      gap="small"
+                      margin={{ bottom: "24px" }}
+                    >
+                      <Text size="20px" weight="bold" color="color1">
+                        {`Drafts`}
+                      </Text>
+                      <StatusInfo
+                        data-tip
+                        data-for="draftInfo"
+                        onMouseEnter={() => {
+                          this.setState({ showDraftInfo: true });
+                        }}
+                        onMouseLeave={() => {
+                          this.setState({ showDraftInfo: false });
+                        }}
+                      />
+                      {this.state.showDraftInfo && (
+                        <ReactTooltip
+                          id="draftInfo"
+                          place="right"
+                          effect="solid"
+                        >
+                          These drafts are only visible to you.
+                        </ReactTooltip>
+                      )}
+                    </Box>
+                    {this.state.drafts.length === 0 && (
                       <Box
-                        margin={{ top: "20px", bottom: "40px", left: "10px" }}
-                        onClick={() => {
-                        }
-                        }
-                        background="#0C385B"
-                        round="xsmall"
-                        pad={{bottom: "small", top: "small", left: "small", right: "small"}}
-                        height="40px"
-                        width="15vw"
-                        justify="center"
-                        align="center"
-                        focusIndicator={false}
-                        // hoverIndicator="#2433b5"
-                        hoverIndicator="#BAD6DB"
                         direction="row"
+                        width="100%"
+                        pad="small"
+                        justify="between"
+                        round="xsmall"
+                        align="center"
+                        alignSelf="center"
+                        background="#F3EACE"
+                        margin={{ bottom: "36px" }}
                       >
-                        <Workshop style={{marginRight:"5px"}} />
-                         Find a speaker
+                        <Text size="14px" weight="bold" color="grey">
+                          Future drafts will saved here
+                        </Text>
                       </Box>
-                    </Link>
-                  </Box>
-
-
-
-                  <Box
-                    width="100%"
-                    direction="row"
-                    gap="small"
-                    margin={{ bottom: "24px" }}
-                  >
-                    <Text size="20px" weight="bold" color="color1">
-                      {`Drafts`}
-                    </Text>
-                    <StatusInfo
-                      data-tip data-for='draftInfo'
-                      onMouseEnter={() => {
-                        this.setState({ showDraftInfo: true });
-                      }}
-                      onMouseLeave={() => {
-                        this.setState({ showDraftInfo: false });
-                      }}
-                    />
-                    {this.state.showDraftInfo && (
-                      <ReactTooltip id='draftInfo' place="right" effect="solid">
-                        These drafts are only visible to you.
-                      </ReactTooltip>
                     )}
-                  </Box>
-                  {this.state.drafts.length === 0 && (
+                    <ChannelPageTalkList
+                      talks={this.state.drafts}
+                      channelId={this.state.channel!.id}
+                      user={this.state.user}
+                      admin
+                      onEditCallback={this.fetchAllTalks}
+                    />
+                    {this.state.currentTalks.length > 0 && (
+                      <Box width="100%">
+                        <Text
+                          size="26px"
+                          weight="bold"
+                          color="color1"
+                          margin={{ top: "40px", bottom: "24px" }}
+                        >
+                          {`Happening now`}
+                        </Text>
+                        {this.state.currentTalks.map((talk: Talk) => (
+                          <ChannelPageTalkCard
+                            talk={talk}
+                            user={null}
+                            admin
+                            width="31.5%"
+                            isCurrent={true}
+                            onEditCallback={this.fetchAllTalks}
+                            following={false}
+                          />
+                        ))}
+                      </Box>
+                    )}
+                    <Box width="100%" margin={{ top: "12px", bottom: "12px" }}>
+                      <Text size="20px" weight="bold" color="color1">
+                        {`Upcoming talks`}
+                      </Text>
+                    </Box>
+                    {this.state.talks.length === 0 && (
+                      <Box
+                        direction="row"
+                        width="100%"
+                        pad="small"
+                        justify="between"
+                        round="xsmall"
+                        align="center"
+                        alignSelf="center"
+                        background="#F3EACE"
+                        margin={{ bottom: "36px" }}
+                      >
+                        <Text size="14px" weight="bold" color="grey">
+                          There are no upcoming talks in{" "}
+                          {this.state.channel
+                            ? this.state.channel.name
+                            : "this channel"}
+                        </Text>
+                      </Box>
+                    )}
+                    <ChannelPageTalkList
+                      talks={this.state.talks}
+                      channelId={this.state.channel!.id}
+                      user={this.state.user}
+                      admin
+                      onEditCallback={this.fetchAllTalks}
+                    />
+                    {this.state.pastStreams.length !== 0 && (
+                      <Box
+                        width="100%"
+                        margin={{ top: "12px", bottom: "24px" }}
+                      >
+                        <Text
+                          size="20px"
+                          weight="bold"
+                          color="color1"
+                          margin={{ top: "40px" }}
+                        >
+                          {`Past talks`}
+                        </Text>
+                      </Box>
+                    )}
                     <Box
                       direction="row"
                       width="100%"
-                      pad="small"
-                      justify="between"
-                      round="xsmall"
-                      align="center"
-                      alignSelf="center"
-                      background="#F3EACE"
-                      margin={{ bottom: "36px" }}
+                      wrap
+                      // justify="between"
+                      gap="1.5%"
+                      margin={{ top: "10px" }}
                     >
-                      <Text size="14px" weight="bold" color="grey">
-                        Future drafts will saved here
-                      </Text>
-                    </Box>
-                  )}
-                  <ChannelPageTalkList
-                    talks={this.state.drafts}
-                    channelId={this.state.channel!.id}
-                    user={this.state.user}
-                    admin
-                    onEditCallback={this.fetchAllTalks}
-                  />
-                  {this.state.currentTalks.length > 0 && (
-                    <Box width="100%">
-                      <Text
-                        size="26px"
-                        weight="bold"
-                        color="color1"
-                        margin={{ top: "40px", bottom: "24px" }}
-                      >
-                        {`Happening now`}
-                      </Text>
-                      {this.state.currentTalks.map((talk: Talk) => (
-                        <ChannelPageTalkCard 
-                          talk={talk} 
-                          user={null}
+                      {this.state.pastStreams.map((talk: Talk) => (
+                        <PastTalkCard
+                          width="31.5%"
+                          talk={talk}
                           admin
-                          width="31.5%" 
-                          isCurrent={true}
+                          margin={{ bottom: "medium" }}
+                          onDelete={() => this.fetchPastTalks()}
+                          user={null}
                           onEditCallback={this.fetchAllTalks}
-                          following={false}
+                          windowWidth={window.innerWidth}
                         />
                       ))}
                     </Box>
-                  )}
-                  <Box
-                    width="100%"
-                    margin={{top: "12px", bottom: "12px" }}
-                  >
-                    <Text
-                      size="20px"
-                      weight="bold"
-                      color="color1"
-                    >
-                      {`Upcoming talks`}
-                    </Text>
-                  </Box>
-                  {this.state.talks.length === 0 && (
-                    <Box
-                      direction="row"
-                      width="100%"
-                      pad="small"
-                      justify="between"
-                      round="xsmall"
-                      align="center"
-                      alignSelf="center"
-                      background="#F3EACE"
-                      margin={{ bottom: "36px" }}
-                    >
-                      <Text size="14px" weight="bold" color="grey">
-                        There are no upcoming talks in{" "}
-                        {this.state.channel
-                          ? this.state.channel.name
-                          : "this channel"}
-                      </Text>
-                    </Box>
-                  )}
-                  <ChannelPageTalkList
-                    talks={this.state.talks}
-                    channelId={this.state.channel!.id}
-                    user={this.state.user}
-                    admin
-                    onEditCallback={this.fetchAllTalks}
-                  />
-                  {this.state.pastStreams.length !== 0 && (
-                    <Box
-                      width="100%"
-                      margin={{top: "12px", bottom: "24px" }}
-                    >
-                      <Text
-                        size="20px"
-                        weight="bold"
-                        color="color1"
-                        margin={{ top: "40px" }}
-                      >
-                        {`Past talks`}
-                      </Text>
-                    </Box>
-                  )}
-                  <Box
-                    direction="row"
-                    width="100%"
-                    wrap
-                    // justify="between"
-                    gap="1.5%"
-                    margin={{ top: "10px" }}
-                  >
-                    {this.state.pastStreams.map((talk: Talk) => (
-                      <PastTalkCard
-                        width="31.5%"
-                        talk={talk}
-                        admin
-                        margin={{ bottom: "medium" }}
-                        onDelete={() => this.fetchPastTalks()}
-                        user={null}
-                        onEditCallback={this.fetchAllTalks}
-                      />
-                    ))}
-                  </Box>
-                </TabPanel>
+                  </TabPanel>
 
-                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-                  <EmailsTab channelId={channel!.id} />
-                </TabPanel>
+                  <TabPanel style={{ width: "78vw", minHeight: "800px" }}>
+                    <EmailsTab channelId={channel!.id} />
+                  </TabPanel>
 
-                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-                  <Box direction="column">
-                    <Box 
-                      direction="row" 
-                      width="100%" 
-                      justify="between" 
-                      margin={{bottom: "30px"}}>
+                  <TabPanel style={{ width: "78vw", minHeight: "800px" }}>
+                    <Box direction="column">
                       <Box
-                        width="40%"
-                        height="180px"
-                        background="#e5e5e5"
-                        round="7.5px"
-                        pad="10px"
+                        direction="row"
+                        width="100%"
+                        justify="between"
+                        margin={{ bottom: "30px" }}
                       >
-                        <Box direction="row" justify="between">
-                          <Text weight="bold" size="14px" color="black">
-                          <img src={agoraLogo} style={{ height: "14px"}}/> admins
-                          </Text>
-                          {/* {this.state.role === "owner" && (
+                        <Box
+                          width="40%"
+                          height="180px"
+                          background="#e5e5e5"
+                          round="7.5px"
+                          pad="10px"
+                        >
+                          <Box direction="row" justify="between">
+                            <Text weight="bold" size="14px" color="black">
+                              <img src={agoraLogo} style={{ height: "14px" }} />{" "}
+                              admins
+                            </Text>
+                            {/* {this.state.role === "owner" && (
                             <AddUsersButton
                               role="owner"
                               existingUsers={this.state.channelOwners}
@@ -1136,25 +1178,25 @@ export default class ManageChannelPage extends Component<Props, State> {
                               }}
                             />
                           )} */}
+                          </Box>
+                          <Box
+                            direction="row"
+                            wrap
+                            margin={{ top: "5px" }}
+                            gap="xsmall"
+                          >
+                            {this.state.channelOwners.map((owner: User) => (
+                              <ChannelPageUserCircle
+                                user={owner}
+                                channelId={this.state.channel?.id}
+                                onRemovedCallback={this.fetchOwners}
+                                showRemoveButton={this.state.role === "owner"}
+                              />
+                            ))}
+                          </Box>
                         </Box>
-                        <Box
-                          direction="row"
-                          wrap
-                          margin={{ top: "5px" }}
-                          gap="xsmall"
-                        >
-                          {this.state.channelOwners.map((owner: User) => (
-                            <ChannelPageUserCircle
-                              user={owner}
-                              channelId={this.state.channel?.id}
-                              onRemovedCallback={this.fetchOwners}
-                              showRemoveButton={this.state.role === "owner"}
-                            />
-                          ))}
-                        </Box>
-                      </Box>
 
-                      {/* <Box
+                        {/* <Box
                         width="58%"
                         height="180px"
                         background="#e5e5e5"
@@ -1195,122 +1237,138 @@ export default class ManageChannelPage extends Component<Props, State> {
                         </Box>
                       </Box> */}
 
-
-                      <Box
-                        width="58.5%"
-                        height="180px"
-                        background="#e5e5e5"
-                        round="7.5px"
-                        pad="10px"
-                        >
-                        <Text weight="bold" size="14px" color="black">
-                          Followers
-                        </Text>
                         <Box
-                          direction="row"
-                          wrap
-                          margin={{ top: "5px" }}
-                          gap="xsmall"
+                          width="58.5%"
+                          height="180px"
+                          background="#e5e5e5"
+                          round="7.5px"
+                          pad="10px"
+                        >
+                          <Text weight="bold" size="14px" color="black">
+                            Followers
+                          </Text>
+                          <Box
+                            direction="row"
+                            wrap
+                            margin={{ top: "5px" }}
+                            gap="xsmall"
                           >
-                          {this.state.followers.map((follower: User) => (
-                            <ChannelPageUserCircle
-                            user={follower}
-                            showRemoveButton={false}
-                            />
+                            {this.state.followers.map((follower: User) => (
+                              <ChannelPageUserCircle
+                                user={follower}
+                                showRemoveButton={false}
+                              />
                             ))}
+                          </Box>
                         </Box>
                       </Box>
-                    </Box>
 
-                    <Box 
-                      direction="column"
-                      margin={{bottom: "60px"}}
-                    >
-                      <Box 
-                        direction="row"
-                        gap="small"
-                        margin={{ bottom: "24px" }}
-                      >
-                        <Text size="14px" weight="bold" color="black">
-                          Invite to follow
-                        </Text>
-                        <StatusInfo
-                          data-tip data-for='mailingListInfo'
-                          onMouseEnter={() => {
-                            this.setState({ showMemberEmailInfo: true });
-                          }}
-                          onMouseLeave={() => {
-                            this.setState({ showMemberEmailInfo: false });
-                          }}
-                        />
-                        {this.state.showMemberEmailInfo && (
-                          <ReactTooltip id='mailingListInfo' place="right" effect="solid" multiline={true}>
-                            Enter the emails of the people you want to invite to follow {" "}
-                            {this.state.channel ? this.state.channel.name : "your agora"}. <br />
-                            Example: joe@uni.ac.uk, jack@company.com
-                          </ReactTooltip>
-                        )}
-                      </Box>
-                      
-                      <TextArea
-                        placeholder="joe@uni.ac.uk, jack@company.com"
-                        value={this.state.mailingList}
-                        onChange={(e: any) => this.handleMailingList(e)}
-                        rows={4}
-                        style={{border: this.state.strEmailWrong.length === 0 ? "2px solid black" : "2px solid red"}}
-                        data-tip data-for='email'
-                      />
-                      <Box direction="row" width="100%" margin={{top: "20px"}}>
-                        <Box width="100%"> 
-                          {this.state.listEmailCorrect.length > 0 && (
-                            <Text color="green" size="14px">
-                              Emails successfully extracted from text.
-                            </Text>
+                      <Box direction="column" margin={{ bottom: "60px" }}>
+                        <Box
+                          direction="row"
+                          gap="small"
+                          margin={{ bottom: "24px" }}
+                        >
+                          <Text size="14px" weight="bold" color="black">
+                            Invite to follow
+                          </Text>
+                          <StatusInfo
+                            data-tip
+                            data-for="mailingListInfo"
+                            onMouseEnter={() => {
+                              this.setState({ showMemberEmailInfo: true });
+                            }}
+                            onMouseLeave={() => {
+                              this.setState({ showMemberEmailInfo: false });
+                            }}
+                          />
+                          {this.state.showMemberEmailInfo && (
+                            <ReactTooltip
+                              id="mailingListInfo"
+                              place="right"
+                              effect="solid"
+                              multiline={true}
+                            >
+                              Enter the emails of the people you want to invite
+                              to follow{" "}
+                              {this.state.channel
+                                ? this.state.channel.name
+                                : "your agora"}
+                              . <br />
+                              Example: joe@uni.ac.uk, jack@company.com
+                            </ReactTooltip>
                           )}
-                          {/* {this.state.strEmailWrong.length > 0 && (
+                        </Box>
+
+                        <TextArea
+                          placeholder="joe@uni.ac.uk, jack@company.com"
+                          value={this.state.mailingList}
+                          onChange={(e: any) => this.handleMailingList(e)}
+                          rows={4}
+                          style={{
+                            border:
+                              this.state.strEmailWrong.length === 0
+                                ? "2px solid black"
+                                : "2px solid red",
+                          }}
+                          data-tip
+                          data-for="email"
+                        />
+                        <Box
+                          direction="row"
+                          width="100%"
+                          margin={{ top: "20px" }}
+                        >
+                          <Box width="100%">
+                            {this.state.listEmailCorrect.length > 0 && (
+                              <Text color="green" size="14px">
+                                Emails successfully extracted from text.
+                              </Text>
+                            )}
+                            {/* {this.state.strEmailWrong.length > 0 && (
                             <Text color="red">
                               No emails detected.
                             </Text>
                           )} */}
-                        </Box>
-                        <Box
-                          onClick={this.parseMailingList}
-                          background="#0C385B"
-                          round="xsmall"
-                          // pad="xsmall"
-                          height="30px"
-                          width="18%"
-                          justify="center"
-                          align="center"
-                          focusIndicator={false}
-                          hoverIndicator="#BAD6DB"
-                        >
-                          <Text size="14px"> Add </Text>
+                          </Box>
+                          <Box
+                            onClick={this.parseMailingList}
+                            background="#0C385B"
+                            round="xsmall"
+                            // pad="xsmall"
+                            height="30px"
+                            width="18%"
+                            justify="center"
+                            align="center"
+                            focusIndicator={false}
+                            hoverIndicator="#BAD6DB"
+                          >
+                            <Text size="14px"> Add </Text>
+                          </Box>
                         </Box>
                       </Box>
                     </Box>
-                  </Box>
-                </TabPanel>
+                  </TabPanel>
 
+                  <TabPanel style={{ width: "78vw", minHeight: "800px" }}>
+                    <Box direction="row" margin={{ bottom: "60px" }}>
+                      <RegistrationsTab channelId={channel!.id} />
+                    </Box>
+                  </TabPanel>
 
+                  <TabPanel style={{ width: "78vw", minHeight: "800px" }}>
+                    <Box
+                      direction="row"
+                      margin={{ top: "40px", bottom: "60px" }}
+                    >
+                      <DeleteAgoraButton
+                        name={this.state.channel!.name}
+                        id={this.state.channel!.id}
+                      />
+                    </Box>
+                  </TabPanel>
 
-                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-                  <Box direction="row" margin={{bottom: "60px"}}>
-                    <RegistrationsTab channelId={channel!.id} />
-                  </Box>
-                </TabPanel>
-
-
-                <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-                  <Box direction="row" margin={{top: "40px", bottom: "60px"}}>
-                    <DeleteAgoraButton
-                      name={this.state.channel!.name}
-                      id={this.state.channel!.id}
-                    />
-                  </Box>
-                </TabPanel>
-
-                {/* 
+                  {/* 
                   TAB FOR MEMBERSHIP APPLICATION:
                   
                 <TabPanel style={{width: "78vw", minHeight: "800px"}}>
@@ -1318,8 +1376,8 @@ export default class ManageChannelPage extends Component<Props, State> {
                     <RequestsTab channelId={this.state.channel!.id}/>
                   </Box>
                 </TabPanel> */}
-                
-              {/*   DETAIL SECTION: COMMENTED OUT
+
+                  {/*   DETAIL SECTION: COMMENTED OUT
                 <TabPanel style={{width: "78vw", minHeight: "800px"}}>             
                   <Grid
                     rows={['xxsmall', 'xxsmall']}
@@ -1383,11 +1441,11 @@ export default class ManageChannelPage extends Component<Props, State> {
                     </Box>
                   </Grid>
                 </TabPanel> */}
-              </Tabs>
+                </Tabs>
+              </Box>
             </Box>
           </Box>
-        </Box>
-      </>
+        </>
       ) : (
         <Redirect
           to={{

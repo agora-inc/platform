@@ -10,10 +10,6 @@ import { Multiple } from "grommet-icons";
 import AgoraLogo from "../../assets/general/agora_logo_v2.1.svg";
 import ReactTooltip from "react-tooltip";
 
-
-
-
-
 // type TrendingTalk = {
 //     id: number;
 //     channel_name: string;
@@ -21,66 +17,69 @@ import ReactTooltip from "react-tooltip";
 //     name: string;
 //   };
 
-
-
 interface State {
   trendingTalks: Talk[];
   loading: boolean;
 }
 
-
 export default class TrendingTalksList extends Component<{}, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-        trendingTalks: [],
-        loading: true,
+      trendingTalks: [],
+      loading: true,
     };
   }
 
   componentWillMount() {
     TalkService.getTrendingTalks((rawTrendingTalks: any[]) => {
-      var trendingTalks = []
-      for(let i=0; i<rawTrendingTalks.length; i++){
-        trendingTalks.push(TalkService.polishTalkData(
-          rawTrendingTalks[i], true, true
-        ))
+      var trendingTalks = [];
+      for (let i = 0; i < rawTrendingTalks.length; i++) {
+        trendingTalks.push(
+          TalkService.polishTalkData(rawTrendingTalks[i], true, true)
+        );
       }
-      this.setState({
-        trendingTalks: trendingTalks,
-        loading: false,
-      }, ()=>{
-      });
+      this.setState(
+        {
+          trendingTalks: trendingTalks,
+          loading: false,
+        },
+        () => {}
+      );
     });
   }
   render() {
     return (
       <Box height="100%" width="100%">
-        <Box direction="row" justify="start" style={{minWidth: "50%"}} margin={{bottom: "10px"}}>
+        <Box
+          direction="row"
+          justify="start"
+          style={{ minWidth: "50%" }}
+          margin={{ bottom: "10px" }}
+        >
           <ReactTooltip id="what-is-an-agora" effect="solid">
-          An agora is a hub for a community -- reading group, seminar group, institution, ...
+            An agora is a hub for a community -- reading group, seminar group,
+            institution, ...
           </ReactTooltip>
-          <Text
-            size="26px"
-            alignSelf="start"
-            weight="bold"
-            color="color1"
-          >
+          <Text size="26px" alignSelf="start" weight="bold" color="color1">
             Most popular
           </Text>
-
         </Box>
         {this.state.loading && (
           <Box width="100%" height="80%" justify="center" align="center">
             <Loading color="color1" size={50} />
           </Box>
         )}
-        <Box margin={{ bottom: "15px", left:"8px", top: "8px" }} overflow="auto">
-          {this.state.trendingTalks.map((trendingTalk: any) => (
+        <Box
+          margin={{ bottom: "15px", left: "8px", top: "8px" }}
+          overflow="auto"
+        >
+          {this.state.trendingTalks.map((trendingTalk: any, index: number) => (
             <a
               className="channel"
               href={`/event/${trendingTalk.id}`}
               style={{ textDecoration: "none" }}
+              key={index}
             >
               <Box
                 direction="row"
@@ -102,11 +101,11 @@ export default class TrendingTalksList extends Component<{}, State> {
                     borderRadius: 15,
                   }}
                 >
-                <img
+                  <img
                     src={ChannelService.getAvatar(trendingTalk["Channels.id"])}
                     height={30}
                     width={30}
-                />
+                  />
                 </Box>
                 <Box justify="center">
                   <Text size="14px" color="color1" weight="bold">

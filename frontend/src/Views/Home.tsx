@@ -71,69 +71,10 @@ export default class Home extends Component<{}, State> {
     window.removeEventListener("resize", this.updateResponsiveSettings);
   }
 
-  // componentDidUpdate(prevProps: {}) {
-  //   this.updateResponsiveSettings();
-  // }
-
-  // componentWillMount() {
-  //   // Limit to 1000 talks
-  //   TalkService.getAllFutureTalks(100, 0, (allTalks: Talk[]) => {
-  //     this.setState({
-  //       allTalks: allTalks,
-  //       chosenTalks: allTalks
-  //     });
-  //   });
-  //   TopicService.getAll((allTopics: Topic[]) => {
-  //     this.setState({ allTopics: allTopics });
-  //   });
-
-  //   this.fetchTalks();
-  // }
-
-  // componentWillUpdate() {
-  //   this.fetchTalks();
-  // }
-
-  // fetchTalks = () => {
-  //   if (this.state.chosenTopic.id == -1) {
-  //     TalkService.getAllFutureTalks(6, 0, (talks: Talk[]) => {
-  //       this.setState({
-  //         allTalks: talks
-  //       });
-  //     });
-  //   } else {
-  //     TalkService.getAllFutureTalksForTopicWithChildren(6, 0, this.state.chosenTopic.id, (talks: Talk[]) => {
-  //       this.setState({
-  //         allTalks: talks
-  //       });
-  //     });
-  //   }
-  // };
-
   render() {
+    let windowWidth = this.state.windowWidth;
     return (
-      <Box direction="row" justify="center">
-        {/* Only show side-bar for desktop */}
-        {/*<MediaQuery minDeviceWidth={992}>
-          <CustomSideBar user={this.state.user} />
-          </MediaQuery>*/}
-
-        {/* <Box
-          width="80%"
-          height="100%"
-          overflow="hidden"
-          pad="medium"
-          margin={{ top: "60px" }}
-          style={{ overflowY: "scroll" }}
-          gap="25px"
-        > */}
-        {/* <video
-          autoPlay loop muted id="background-landing"
-          style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }}
-        >
-          <source src="https://video.wixstatic.com/video/9b9d14_37244669d1c749ab8d1bf8b15762c61a/720p/mp4/file.mp4" type="video/mp4"/>
-        </video>
-         */}
+      <>
         <img
           style={{
             height: "auto",
@@ -145,11 +86,10 @@ export default class Home extends Component<{}, State> {
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
         <Box
-          direction="column"
-          style={{
-            maxWidth: "1200px",
-            padding: this.state.isMobile ? "20px 50px" : "120px 50px",
-          }}
+          pad={{ top: "10vh", bottom: "100px" }}
+          align="start"
+          style={{ overflowY: "auto" }}
+          margin={{ left: "8%", right: "8%" }}
         >
           <Carousel gridArea="carousel" />
           {/*<TreeClassification />*/}
@@ -158,6 +98,7 @@ export default class Home extends Component<{}, State> {
             title={true}
             topicSearch={true}
             user={this.state.user}
+            windowWidth={this.state.windowWidth}
           />
           {/*<MediaQuery minDeviceWidth={992}>
               <RecentTalksList user={this.state.user} />
@@ -166,7 +107,7 @@ export default class Home extends Component<{}, State> {
           <FooterComponent />
         </Box>
         {/* </Box> */}
-      </Box>
+      </>
     );
   }
 }

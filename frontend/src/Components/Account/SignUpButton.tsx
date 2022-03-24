@@ -49,6 +49,7 @@ export default class SignUpButton extends Component<Props, State> {
       height: this.props.height ? this.props.height : "35px",
       textSize: this.props.textSize ? this.props.textSize : "14px",
     };
+    console.log("Rendered");
   }
 
   onSubmit = () => {

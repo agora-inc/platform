@@ -187,6 +187,7 @@ export default class UserManager extends Component<Props, State> {
           }}
           visible={true}
           user={this.state.user}
+          windowWidth={window.innerWidth}
         />
       </Box>
     ) : (
@@ -296,10 +297,11 @@ export default class UserManager extends Component<Props, State> {
             s
           </Text>
           <Box height={{ max: "120px" }} overflow="auto">
-            {this.state.adminChannels.map((channel: Channel) => (
+            {this.state.adminChannels.map((channel: Channel, index: number) => (
               <DropdownChannelButton
                 channel={channel}
                 onClick={this.toggleDropdown}
+                key={index}
               />
             ))}
           </Box>
@@ -337,12 +339,15 @@ export default class UserManager extends Component<Props, State> {
                 The agoras you follow will be displayed here{" "}
               </Text>
             )}
-            {this.state.followingChannels.map((channel: Channel) => (
-              <DropdownChannelButton
-                channel={channel}
-                onClick={this.toggleDropdown}
-              />
-            ))}
+            {this.state.followingChannels.map(
+              (channel: Channel, index: number) => (
+                <DropdownChannelButton
+                  channel={channel}
+                  onClick={this.toggleDropdown}
+                  key={index}
+                />
+              )
+            )}
           </Box>
         </Box>
         {/*<Text weight="bold" color="black" margin="small">
@@ -551,45 +556,46 @@ export default class UserManager extends Component<Props, State> {
   };
 
   loggedOutStuff = (
-    <MediaQuery minDeviceWidth={800}>
-      <Box
-        direction="row"
-        align="center"
-        justify="end"
-        gap="xsmall"
-        margin={{ right: "1vw" }}
-      >
-        <LoginModal
-          open={this.props.showLogin}
-          callback={() => {
-            this.setState(
-              {
-                isLoggedIn: UserService.isLoggedIn(),
-                user: UserService.getCurrentUser(),
-              },
-              () => {
-                this.fetchAdminChannels();
-                this.fetchMemberChannels();
-              }
-            );
-          }}
-        />
-        <SignUpButton
-          callback={() => {
-            this.setState(
-              {
-                isLoggedIn: UserService.isLoggedIn(),
-                user: UserService.getCurrentUser(),
-              },
-              () => {
-                this.fetchAdminChannels();
-                this.fetchMemberChannels();
-              }
-            );
-          }}
-        />
-      </Box>
-    </MediaQuery>
+    //<MediaQuery minDeviceWidth={800}>
+    <Box
+      direction="row"
+      align="center"
+      justify={this.props.isMobile ? "center" : "end"}
+      gap="xsmall"
+      margin={{ right: "1vw" }}
+    >
+      <LoginModal
+        open={this.props.showLogin}
+        callback={() => {
+          this.setState(
+            {
+              isLoggedIn: UserService.isLoggedIn(),
+              user: UserService.getCurrentUser(),
+            },
+            () => {
+              this.fetchAdminChannels();
+              this.fetchMemberChannels();
+            }
+          );
+        }}
+      />
+      <SignUpButton
+        callback={() => {
+          this.setState(
+            {
+              isLoggedIn: UserService.isLoggedIn(),
+              user: UserService.getCurrentUser(),
+            },
+            () => {
+              this.fetchAdminChannels();
+              this.fetchMemberChannels();
+            }
+          );
+        }}
+        windowWidth={window.innerWidth}
+      />
+    </Box>
+    //</MediaQuery>
   );
 
   render() {

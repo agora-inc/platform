@@ -31,11 +31,19 @@ interface State {
   showTalkId: number;
   allPlansId: number[];
   subscriptionPlans: string[];
+  isMobile: boolean;
+  isSmallScreen: boolean;
+  windowWidth: number;
 }
 
 export default class TalkSharingPage extends Component<Props, State> {
+  private smallScreenBreakpoint: number;
+  private mobileScreenBreakpoint: number;
+
   constructor(props: Props) {
     super(props);
+    this.mobileScreenBreakpoint = 992;
+    this.smallScreenBreakpoint = 480;
     this.state = {
       channel: null,
       role: "none",
@@ -69,17 +77,30 @@ export default class TalkSharingPage extends Component<Props, State> {
       showTalkId: this.getTalkIdFromUrl(),
       allPlansId: [],
       subscriptionPlans: [],
+      isMobile: window.innerWidth < this.mobileScreenBreakpoint,
+      isSmallScreen: window.innerWidth < this.smallScreenBreakpoint,
+      windowWidth: window.innerWidth,
     };
   }
 
   componentDidMount() {
-    let scroll_element = window.document.querySelector('.StyledGrommet-sc-19lkkz7-0');
-    (scroll_element as HTMLInputElement).scrollTo(0,0);
+    // let scroll_element = window.document.querySelector('.StyledGrommet-sc-19lkkz7-0');
+    // (scroll_element as HTMLInputElement).scrollTo(0,0);
+    window.addEventListener("resize", this.updateResponsiveSettings);
   }
 
   componentWillMount() {
-    this.fetchAll()
+    this.fetchAll();
+    window.removeEventListener("resize", this.updateResponsiveSettings);
   }
+
+  updateResponsiveSettings = () => {
+    this.setState({
+      isMobile: window.innerWidth < this.mobileScreenBreakpoint,
+      isSmallScreen: window.innerWidth < this.smallScreenBreakpoint,
+      windowWidth: window.innerWidth,
+    });
+  };
 
   getTalkIdFromUrl = (): number => {
     let talkId = Number(this.props.location.pathname.split("/")[2]);
@@ -91,56 +112,53 @@ export default class TalkSharingPage extends Component<Props, State> {
 
   getChannelSubscriptions = () => {
     ChannelSubscriptionService.getAllActiveSubscriptionsForChannel(
-      this.state.talk.channel_id, 
+      this.state.talk.channel_id,
       (allPlansId: number[]) => {
-        this.setState({ allPlansId })
+        this.setState({ allPlansId });
         this.setState({
-          subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId)
-        })
+          subscriptionPlans: this.getChannelSubscriptionTiers(allPlansId),
+        });
       }
     );
-  }
+  };
 
   getChannelSubscriptionTiers = (allPlansId: number[]) => {
-    let tiers: string[] = []
+    let tiers: string[] = [];
     allPlansId.map((id: number) => {
-      StreamingProductService.getStreamingProductById(
-        id, 
-        (product: any) => {
-          tiers.push(product.tier)
-        }
-      )
-    })
-    return tiers
-  }
+      StreamingProductService.getStreamingProductById(id, (product: any) => {
+        tiers.push(product.tier);
+      });
+    });
+    return tiers;
+  };
 
   getSpeakerPhotoUrl = (): string | undefined => {
-    return TalkService.getSpeakerPhoto(this.state.talk.id)
-  }
+    return TalkService.getSpeakerPhoto(this.state.talk.id);
+  };
 
   fetchAll = () => {
-    let talkId = this.getTalkIdFromUrl();  
+    let talkId = this.getTalkIdFromUrl();
     TalkService.getTalkById(talkId, (talk: Talk) => {
-        console.log("sa mere")
-        var polishedTalk = TalkService.polishTalkData(talk, true, true)
-        console.log(polishedTalk)
-        this.setState({talk: talk}, 
-          () => {
-            this.fetchUserInfo();
-            this.getChannelSubscriptions();
-            this.setState({talk: TalkService.polishTalkData(this.state.talk, true, true)})
-          }
-        );
+      console.log("sa mere");
+      var polishedTalk = TalkService.polishTalkData(talk, true, true);
+      console.log(polishedTalk);
+      this.setState({ talk: talk }, () => {
+        this.fetchUserInfo();
+        this.getChannelSubscriptions();
+        this.setState({
+          talk: TalkService.polishTalkData(this.state.talk, true, true),
+        });
+      });
     });
-  }
+  };
 
   fetchUserInfo = () => {
     if (this.state.user) {
       ChannelService.getRoleInChannel(
-        this.state.user.id, 
-        this.state.talk.channel_id, 
+        this.state.user.id,
+        this.state.talk.channel_id,
         (role: "none" | "owner" | "member" | "follower") => {
-          this.setState({role: role})
+          this.setState({ role: role });
         }
       );
 
@@ -156,14 +174,14 @@ export default class TalkSharingPage extends Component<Props, State> {
         this.state.talk.id,
         this.state.user.id,
         (status: string) => {
-          this.setState({ 
-            registered: (status === "accepted"),
-            registrationStatus: status 
+          this.setState({
+            registered: status === "accepted",
+            registrationStatus: status,
           });
         }
       );
     }
-  }
+  };
 
   formatDateFull = (s: string, e: string) => {
     const start = new Date(s);
@@ -175,17 +193,17 @@ export default class TalkSharingPage extends Component<Props, State> {
     return `${dateStartStr} ${timeStartStr} - ${timeEndStr} `;
   };
 
-  render() { 
+  render() {
     const talk = this.state.talk;
-    var renderMobileView = (window.innerWidth < 800);
+    var renderMobileView = window.innerWidth < 800;
 
-    console.log(this.state.talk)
-    
-      return(
-        <>
+    console.log(this.state.talk);
+
+    return (
+      <>
         <Helmet>
           <title>{talk.name}</title>
-          <meta name="description" content={talk.description}/>
+          <meta name="description" content={talk.description} />
           <meta property="og:title" content={talk.name} />
           <meta property="og:description" content={talk.description} />
           <meta property="og:type" content="article" />
@@ -196,30 +214,41 @@ export default class TalkSharingPage extends Component<Props, State> {
           <meta name="twitter:description" content={talk.description} />
         </Helmet>
 
-        <img style={{ height: "auto", width: "auto", minWidth: "100%", minHeight: "100%" }} id="background-landing"
+        <img
+          style={{
+            height: "auto",
+            width: "auto",
+            minWidth: "100%",
+            minHeight: "100%",
+          }}
+          id="background-landing"
           // src={BackgroundImage}
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
-        
+
         <Box /* this element is responsible for scrolling */
           margin={{
-            top: "10vh", 
-            left: "20px", 
-            right: "20px"
+            top: this.state.windowWidth < 992 ? "20px" : "10vh",
+            left: "20px",
+            right: "20px",
           }}
           align="center"
         >
           <Box
-            width={renderMobileView ? "100vw" : "60vw"}
-            margin={{left: "20px", right: "20px", bottom: "30px"}}
+            width="100%"
+            style={{ maxWidth: "1200px" }}
+            margin={{ left: "20px", right: "20px", bottom: "30px" }}
           >
-            <Box direction="row" width="100%">
-              <Box direction="column" width={this.state.talk.has_speaker_photo === 1 ? "75%" : "100%"}>
-                <Box 
-                  direction="row" 
-                  gap="xsmall" 
-                  style={{ minHeight: "40px" }}
-                >
+            <Box
+              direction={this.state.windowWidth < 580 ? "column" : "row"}
+              width="100%"
+            >
+              <Box
+                direction="column"
+                style={{ flexGrow: 1 }}
+                // width={this.state.talk.has_speaker_photo === 1 ? "75%" : "100%"}
+              >
+                <Box direction="row" gap="xsmall" style={{ minHeight: "40px" }}>
                   <Link
                     className="channel"
                     to={`/${this.state.talk.channel_name}`}
@@ -238,14 +267,14 @@ export default class TalkSharingPage extends Component<Props, State> {
                         background="#efeff1"
                         overflow="hidden"
                         style={{
-                            minHeight: 30,
-                            minWidth: 30,
-                            borderRadius: 15,
+                          minHeight: 30,
+                          minWidth: 30,
+                          borderRadius: 15,
                         }}
                       >
                         <img
                           src={ChannelService.getAvatar(
-                              this.state.talk.channel_id
+                            this.state.talk.channel_id
                           )}
                           height={30}
                           width={30}
@@ -271,7 +300,7 @@ export default class TalkSharingPage extends Component<Props, State> {
                   margin={{ bottom: "5px", top: "10px" }}
                 >
                   {this.state.talk.name}
-                </Text> 
+                </Text>
 
                 {this.state.talk.talk_speaker_url && (
                   <a href={this.state.talk.talk_speaker_url} target="_blank">
@@ -320,11 +349,16 @@ export default class TalkSharingPage extends Component<Props, State> {
                   </Box>
                 )}
               </Box>
-              
+
               {this.state.talk.has_speaker_photo === 1 && (
-                <Box width="25%" align="end">
-                  <Image 
-                    style={{position: 'relative', top: 10, right: 0, aspectRatio: "3/2"}}
+                <Box align="end" width="200px">
+                  <Image
+                    // style={{
+                    //   position: "relative",
+                    //   top: 10,
+                    //   right: 0,
+                    //   aspectRatio: "3/2",
+                    // }}
                     src={this.getSpeakerPhotoUrl()}
                     width="200px"
                   />
@@ -342,9 +376,9 @@ export default class TalkSharingPage extends Component<Props, State> {
               }}
               margin={{ top: "10px", bottom: "10px" }}
             >
-              {this.state.talk.description.split('\n').map(
-                (item, i) => textToLatex(item)
-              )}
+              {this.state.talk.description
+                .split("\n")
+                .map((item, i) => textToLatex(item))}
             </Text>
 
             <FooterOverlay
@@ -355,17 +389,21 @@ export default class TalkSharingPage extends Component<Props, State> {
               registered={this.state.registered}
               registrationStatus={this.state.registrationStatus}
               isSharingPage={true}
+              windowWidth={this.state.windowWidth}
             />
 
-          <CoffeeHangoutRoom
-            talk={this.state.talk}
-            user={this.state.user}
-            disabled={!this.state.subscriptionPlans.includes("tier1") && 
-              this.state.subscriptionPlans.includes("tier2")}
-          />
+            <CoffeeHangoutRoom
+              talk={this.state.talk}
+              user={this.state.user}
+              disabled={
+                !this.state.subscriptionPlans.includes("tier1") &&
+                this.state.subscriptionPlans.includes("tier2")
+              }
+              windowWidth={this.state.windowWidth}
+            />
           </Box>
         </Box>
       </>
-      )
-    }
+    );
+  }
 }

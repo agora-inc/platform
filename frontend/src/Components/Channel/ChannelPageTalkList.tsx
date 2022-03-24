@@ -4,6 +4,7 @@ import ChannelPageTalkCard from "./ChannelPageTalkCard";
 import { User } from "../../Services/UserService";
 import { Talk, TalkService } from "../../Services/TalkService";
 import Loading from "../Core/Loading";
+import MoraFlexibleGrid from "../../Components/Core/MoraFlexibleGrid";
 import "../../Styles/topic-talks-list.css";
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
   role?: string;
   following?: boolean;
   callback?: any;
+  windowWidth?: number;
 }
 
 interface State {
@@ -46,29 +48,45 @@ export default class ChannelPageTalkList extends Component<Props, State> {
   };
 
   render() {
+    let talks: React.ReactNode[] = this.props.talks.map(
+      (talk: Talk, index: number) => (
+        <ChannelPageTalkCard
+          width={"100%"}
+          talk={talk}
+          user={this.props.user}
+          role={this.props.role}
+          admin={this.props.admin}
+          onEditCallback={this.props.onEditCallback}
+          margin={{ bottom: "medium" }}
+          show={this.props.showTalkId === talk.id}
+          following={this.props.following ? this.props.following : false}
+          callback={this.props.callback}
+          key={index}
+          windowWidth={this.props.windowWidth}
+        />
+      )
+    );
     return (
-      <Box 
+      <Box
         // className="talk_cards_outer_box"
         direction="row"
         width="100%"
         wrap
         gap="1.5%"
       >
-        {this.props.talks.map((talk: Talk) => (
-            <ChannelPageTalkCard
-              width={(window.innerWidth < 800) ? "99%" : "31.5%"}
-              talk={talk}
-              user={this.props.user}
-              role={this.props.role}
-              admin={this.props.admin}
-              onEditCallback={this.props.onEditCallback}
-              margin={{ bottom: "medium" }}
-              show={this.props.showTalkId === talk.id}
-              following={this.props.following ? this.props.following : false}
-              callback={this.props.callback}
-            />
-          ))}
-    </Box>
+        <MoraFlexibleGrid
+          windowWidth={this.props.windowWidth || 769}
+          gridBreakpoints={[
+            { screenSize: 1200, columns: 4 },
+            { screenSize: 960, columns: 3 },
+            { screenSize: 767, columns: 2 },
+            { screenSize: 320, columns: 1 },
+          ]}
+          gap={10}
+          childElements={talks}
+          justify="start"
+        />
+      </Box>
     );
   }
 }

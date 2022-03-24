@@ -196,13 +196,14 @@ export default class ManageChannelPage extends Component<Props, State> {
                 Your current subscription:
               </Text>
 
-              {this.state.allPlansId.map((productId: number) => {
+              {this.state.allPlansId.map((productId: number, index: number) => {
                 return (
                   <Text
                     size="14px"
                     weight="bold"
                     color="#6DA3C7"
                     margin={{ left: "10px" }}
+                    key={index}
                   >
                     {this.showProduct(productId)}
                   </Text>

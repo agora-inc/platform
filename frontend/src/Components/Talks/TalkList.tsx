@@ -63,11 +63,16 @@ export default class TalkList extends Component<Props> {
                 user={this.props.user}
                 onSave={this.props.onSave}
                 onUnsave={this.props.onUnsave}
+                windowWidth={window.innerWidth}
               />
             ))}
           {!this.props.past &&
             this.props.talks.map((talk: Talk) => (
-              <TalkCard talk={talk} user={this.props.user} />
+              <TalkCard
+                talk={talk}
+                user={this.props.user}
+                windowWidth={window.innerWidth}
+              />
             ))}
         </Box>
       </Box>

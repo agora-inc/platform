@@ -73,19 +73,19 @@ export default class LoginModal extends Component<Props, State> {
   };
 
   isMissing = () => {
-    let res: string[] = []
+    let res: string[] = [];
     if (this.state.username === "") {
-      res.push("Username or email address")
+      res.push("Username or email address");
     }
     if (this.state.password === "") {
-      res.push("Password")
+      res.push("Password");
     }
     return res;
-  }
+  };
 
   render() {
     return (
-      <Box style={{maxHeight: "30px"}}>
+      <Box style={{ maxHeight: "30px" }}>
         <Box
           onClick={this.toggleModal}
           background="#F2F2F2"
@@ -97,10 +97,13 @@ export default class LoginModal extends Component<Props, State> {
           height="35px"
           round="xsmall"
         >
-          <Text size="14px" weight="bold"> Log in </Text>
+          <Text size="14px" weight="bold">
+            {" "}
+            Log in{" "}
+          </Text>
         </Box>
         <Overlay
-          width={400}
+          width={window.innerWidth < 768 ? 320 : 500}
           height={this.state.failed ? 420 : 320}
           visible={this.state.showModal}
           title="Log in"
@@ -112,6 +115,7 @@ export default class LoginModal extends Component<Props, State> {
           canProceed={this.isMissing().length === 0}
           isMissing={this.isMissing()}
           contentHeight={this.state.failed ? "255px" : "170px"}
+          windowWidth={window.innerWidth}
         >
           {this.state.failed && (
             <Box
@@ -137,7 +141,7 @@ export default class LoginModal extends Component<Props, State> {
             pad={{ bottom: "30px" }}
             gap="xsmall"
           >
-            <Box width="100%" gap="2px" margin={{"top": "5px"}}>
+            <Box width="100%" gap="2px" margin={{ top: "5px" }}>
               <TextInput
                 placeholder="Username or email address"
                 onChange={(e) => this.setState({ username: e.target.value })}
@@ -155,7 +159,6 @@ export default class LoginModal extends Component<Props, State> {
               direction="row"
               gap="xsmall"
             >
-            
               <Text
                 onClick={this.onForgotPasswordClicked}
                 style={{
@@ -179,8 +182,6 @@ export default class LoginModal extends Component<Props, State> {
               {this.state.forgotPasswordText === "Email sent!" && (
                 <StatusGood size="16px" color="status-ok" />
               )}
-
-
             </Box>
           </Box>
         </Overlay>

@@ -151,7 +151,12 @@ export default class TagPage extends Component<Props, State> {
             margin={{ top: "10px" }}
           >
             {this.state.talks.map((talk: Talk) => (
-              <PastTalkCard width="31.5%" talk={talk} user={this.state.user} />
+              <PastTalkCard
+                width="31.5%"
+                talk={talk}
+                user={this.state.user}
+                windowWidth={window.innerWidth}
+              />
             ))}
           </Box>
         </Box>

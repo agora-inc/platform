@@ -9,17 +9,31 @@ type State = {
   password: string;
   confirmPassword: string;
   redirect: boolean;
+  isMobile: boolean;
+  isSmallScreen: boolean;
+  windowWidth: number;
 };
 
 export default class ChangePasswordPage extends Component<{}, State> {
+  private smallScreenBreakpoint: number;
+  private mobileScreenBreakpoint: number;
   constructor(props: any) {
     super(props);
+    this.mobileScreenBreakpoint = 992;
+    this.smallScreenBreakpoint = 480;
     this.state = {
       code: "",
       password: "",
       confirmPassword: "",
       redirect: false,
+      isMobile: window.innerWidth < this.mobileScreenBreakpoint,
+      isSmallScreen: window.innerWidth < this.smallScreenBreakpoint,
+      windowWidth: window.innerWidth,
     };
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.updateResponsiveSettings);
   }
 
   componentWillMount() {
@@ -28,7 +42,16 @@ export default class ChangePasswordPage extends Component<{}, State> {
     this.setState({
       code,
     });
+    window.removeEventListener("resize", this.updateResponsiveSettings);
   }
+
+  updateResponsiveSettings = () => {
+    this.setState({
+      isMobile: window.innerWidth < this.mobileScreenBreakpoint,
+      isSmallScreen: window.innerWidth < this.smallScreenBreakpoint,
+      windowWidth: window.innerWidth,
+    });
+  };
 
   isComplete = () => {
     return (
@@ -63,14 +86,15 @@ export default class ChangePasswordPage extends Component<{}, State> {
           <Redirect to={{ pathname: "/", search: "?showLogin=true" }} />
         )}
         <Overlay
-          width={400}
-          height={430}
+          width={window.innerWidth < 768 ? 320 : 500}
+          height={450}
           visible={true}
           title="Change password"
           submitButtonText="Submit"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
           contentHeight={"300px"}
+          windowWidth={this.state.windowWidth}
         >
           {/* {this.state.error !== "" && (
             <Box

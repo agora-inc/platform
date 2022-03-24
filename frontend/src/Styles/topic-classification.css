@@ -1,17 +1,21 @@
 .classification_box {
-    margin-bottom: 15px;
-    direction: column;
-    width: 100%;
-    margin-left: 5px
+    /*margin-bottom: 15px;*/
+    /*direction: column;*/
+    /*width: 100%;*/
+    /*margin-left: 5px*/
 }
 
-@media screen and (max-width: 992px){
-    .classification_box {
+.classification_box > button {
+    width: 100%;
+}
+
+@media screen and (max-width: 992px) {
+    /*.classification_box {
         display: flex;
         flex-direction: "column";
         margin-bottom: 15px;
         flex-wrap: wrap;
         flex-direction: column;
         align-content: flex-start;
-    }
+    }*/
 }

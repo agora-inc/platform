@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Text, Button } from "grommet";
 import { CalendarService } from "../../Services/CalendarService";
-import { Google} from "grommet-icons";
+import { Google } from "grommet-icons";
 import { Talk } from "../../Services/TalkService";
 import MediaQuery from "react-responsive";
 import ReactTooltip from "react-tooltip";
@@ -17,10 +17,7 @@ interface State {
   now: Date;
 }
 
-export default class CalendarButtons extends Component<
-  Props,
-  State
-> {
+export default class CalendarButtons extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -49,7 +46,7 @@ export default class CalendarButtons extends Component<
   }
 
   render() {
-    var rendersMobile = (window.innerWidth < 800);
+    var rendersMobile = window.innerWidth < 800;
     return (
       <Box direction="column">
         <Box
@@ -66,18 +63,17 @@ export default class CalendarButtons extends Component<
               this.props.talk.end_date,
               this.props.talk.name,
               this.props.talk.description,
-              `https://mora.stream/event/${
-                this.props.talk.id
-              }`
+              `https://mora.stream/event/${this.props.talk.id}`
             )}
             target="_blank"
           >
             <Box
-              data-tip data-for='google_cal'
+              data-tip
+              data-for="google_cal"
               width="50px"
               height={this.props.height ? this.props.height : "35px"}
               round="xsmall"
-              background={rendersMobile ? "white" : "#F2F2F2"}
+              background={"#d5d5d5"}
               align="center"
               justify="center"
               direction="row"
@@ -100,11 +96,12 @@ export default class CalendarButtons extends Component<
             download="download.ics"
           >
             <Box
-              data-tip data-for='ics'
+              data-tip
+              data-for="ics"
               width="50px"
               height={this.props.height ? this.props.height : "35px"}
               round="xsmall"
-              background={rendersMobile ? "white" : "#F2F2F2"}
+              background={"#d5d5d5"}
               align="center"
               justify="center"
               pad={{ vertical: "2px", horizontal: "xsmall" }}

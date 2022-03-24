@@ -36,7 +36,7 @@ export class Overlay extends Component<OverlayProps> {
     return (
       this.props.visible && (
         <>
-          {windowWidth < 768 && (
+          {windowWidth < 769 && (
             <Box
               style={{
                 position: "absolute",
@@ -63,7 +63,7 @@ export class Overlay extends Component<OverlayProps> {
             //   padding: 0,
             // }}
             style={
-              windowWidth < 768
+              windowWidth < 769
                 ? {
                     width: this.props.width,
                     height:

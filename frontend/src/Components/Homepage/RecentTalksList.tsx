@@ -72,8 +72,14 @@ export default class RecentTalksList extends Component<Props, State> {
           */}
         </Box>
         <Box gap="small" direction="row" width="100%" height="100%" wrap>
-          {this.state.talks.map((talk: Talk) => (
-            <PastTalkCard talk={talk} user={this.props.user} width={"32%"} />
+          {this.state.talks.map((talk: Talk, index: number) => (
+            <PastTalkCard
+              talk={talk}
+              user={this.props.user}
+              width={"32%"}
+              windowWidth={window.innerWidth}
+              key={index}
+            />
           ))}
         </Box>
       </Box>

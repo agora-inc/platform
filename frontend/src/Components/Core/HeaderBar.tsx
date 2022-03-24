@@ -103,8 +103,8 @@ class HeaderBar extends Component<RouteComponentProps, State> {
         pad={{ left: "xsmall", right: "small", vertical: "small" }}
         elevation="none"
         style={{
-          height: "8vh",
-          minHeight: "8vh",
+          // height: "8vh",
+          // minHeight: "8vh",
           width: "100vw",
           padding: "12px 0px",
           color: "black",
@@ -113,8 +113,12 @@ class HeaderBar extends Component<RouteComponentProps, State> {
         }}
         {...this.props}
       >
-        <Box style={{ width: "1170px", margin: "auto" }}>
-          <Box style={{ minWidth: "15%" }}>
+        <Box
+          direction="row"
+          align="center"
+          style={{ width: "1170px", margin: "auto", padding: "0px 15px" }}
+        >
+          <Box style={{ minWidth: "15%", flexGrow: 1 }}>
             <Link to="/" style={{ textDecoration: "none", width: 140 }}>
               <Box direction="row" align="center">
                 <MediaQuery minDeviceWidth={992}>
@@ -206,12 +210,12 @@ class HeaderBar extends Component<RouteComponentProps, State> {
               </Link>
             </Box>
 
-            <MediaQuery minDeviceWidth={992}>
-              <UserManager
-                showLogin={this.state.showLogin}
-                isMobile={this.state.isMobile}
-              />
-            </MediaQuery>
+            {/*<MediaQuery minDeviceWidth={992}>*/}
+            <UserManager
+              showLogin={this.state.showLogin}
+              isMobile={this.state.isMobile}
+            />
+            {/*</MediaQuery>*/}
           </Box>
         </Box>
       </Box>
