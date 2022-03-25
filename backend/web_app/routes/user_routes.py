@@ -35,16 +35,20 @@ def addUser():
 
     log_request(request)
     params = request.json
+
+    print(params)
+
     auth0Id = params["auth0_id"]
     username = params["username"]
-    password = params["password"]
     email = params["email"]
     position = params["position"]
     institution = params["institution"]
     refChannel = params["refChannel"]
 
+    print("adding user")
+
     user = app.user_repo.addUser(
-        auth0Id, username, password, email, position, institution, refChannel
+        auth0Id, username, email, position, institution, refChannel
     )
 
     if type(user) == list and len(user) > 1 and user[1] == 400:
