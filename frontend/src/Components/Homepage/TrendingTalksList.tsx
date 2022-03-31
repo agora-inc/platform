@@ -39,13 +39,7 @@ export default class TrendingTalksList extends Component<{}, State> {
   }
 
   componentWillMount() {
-    TalkService.getTrendingTalks((rawTrendingTalks: any[]) => {
-      var trendingTalks = []
-      for(let i=0; i<rawTrendingTalks.length; i++){
-        trendingTalks.push(TalkService.polishTalkData(
-          rawTrendingTalks[i], true, true
-        ))
-      }
+    TalkService.getTrendingTalks((trendingTalks: any[]) => {
       this.setState({
         trendingTalks: trendingTalks,
         loading: false,

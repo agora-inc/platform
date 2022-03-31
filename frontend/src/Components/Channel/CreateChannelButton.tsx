@@ -50,11 +50,12 @@ export default class CreateChannelButton extends Component<Props, State> {
         focusIndicator={false}
         justify="center"
       >
+        <Group size="medium" style={{marginRight: "10px"}}/>
         <Text 
           size={this.props.textSize ? this.props.textSize : "14px"}  
           color={this.props.textColor ? this.props.textColor : "white"}
           weight="bold"
-        ><Group size="medium" style={{marginRight: "10px"}}/>
+        >
             {this.props.text ? this.props.text : "Create an agora"}
         </Text>
         {/* <Text size="22.5px">🚀</Text> */}

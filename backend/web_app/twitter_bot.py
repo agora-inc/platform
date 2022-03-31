@@ -57,6 +57,7 @@ class TwitterBot:
             access_token=TWITT_ACCESS_TOKEN, 
             access_token_secret=TWITT_ACCESS_TOKEN_SEC
         )
+        self.user = self.twitter_api.get_user(screen_name='morastream')
 
     def _create_api(self):
         # Authenticate to Twitter
@@ -82,8 +83,8 @@ class TwitterBot:
     def run(self):
         try:
             # self._rebalance_remaining_api_calls()
-            self.post_tweets()
-            self.follow_in_mass()
+            # self.post_tweets()
+            # self.follow_in_mass()
             self.mass_unfollow()
 
         except Exception as e:
@@ -335,18 +336,21 @@ class TwitterBot:
         return users
 
     def mass_unfollow(self):
-        # Unfollow everybody following us
+        # Unfollow everybody who is not following us
+        import time
         try:
             print("Retrieving and unfollowing followers")
             n_unfollow = 0
 
-            # get list inversed (oldest following to new)
-            followers = list(tweepy.Cursor(self.twitter_api.get_followers).items())
-            followers.reverse()
-            for follower in followers:
-                self.twitter_api.destroy_friendship(screen_name=follower.screen_name, id=follower.id)
-                print("Unfollowed ", follower.name)
-                n_unfollow += 1
+            followers = self.twitter_api.get_follower_ids()
+            print("Followers", len(followers))
+            friends = self.twitter_api.get_friend_ids()
+            print("You follow:", len(friends))
+
+            for friend_id in friends[::-1]:
+                if friend_id not in followers:
+                    self.twitter_api.destroy_friendship(user_id=friend_id)
+                    print("Unfollowed someone with id:", friend_id)
 
         except Exception as e:
             print("(Unfollow_in_mass). Error:", e)

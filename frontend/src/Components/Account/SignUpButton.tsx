@@ -1,11 +1,13 @@
 import React, { Component } from "react";
+import { basePoint } from "../../config";
 import { Box, Heading, Button, TextInput, Text } from "grommet";
 import { Link, Route } from "react-router-dom";
-import { StatusCritical } from "grommet-icons";
+import { StatusCritical, Group } from "grommet-icons";
 import { UserService } from "../../Services/UserService";
 import { Overlay } from "../Core/Overlay";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 import { ProfileService } from "../../Services/ProfileService";
+import { FaThemeisle } from "react-icons/fa";
 
 interface Props {
   channelId?: number;
@@ -14,6 +16,7 @@ interface Props {
   height?: string;
   textSize?: string;
   text?: string;
+  icon?: boolean;
 }
 
 interface State {
@@ -81,8 +84,9 @@ export default class SignUpButton extends Component<Props, State> {
 
   isComplete = () => {
     return (
-      this.state.username !== "" &&
+      // this.state.username !== "" &&
       this.state.fullName !== "" &&
+      this.state.email !== "" &&
       this.state.position !== "" &&
       this.state.institution !== "" &&
       this.state.password !== "" &&
@@ -109,15 +113,21 @@ export default class SignUpButton extends Component<Props, State> {
           width={this.state.width}
           height={this.state.height}
           round="xsmall"
+          direction="row"
         >
+          {this.props.icon ? (
+            <Group size="medium" style={{ marginRight: "10px" }} />
+          ) : (
+            ""
+          )}
           <Text size={this.state.textSize} weight="bold">
             {" "}
             {this.props.text ? this.props.text : "Sign up"}{" "}
           </Text>
         </Box>
         <Overlay
-          width={500}
-          height={this.state.error !== "" ? 660 : 600}
+          width={400}
+          height={this.state.error !== "" ? 560 : 580}
           visible={this.state.showModal}
           title="Sign up"
           onEsc={this.toggleModal}
@@ -126,7 +136,7 @@ export default class SignUpButton extends Component<Props, State> {
           submitButtonText="Sign up"
           onSubmitClick={this.onSubmit}
           canProceed={this.isComplete()}
-          contentHeight={this.state.error !== "" ? "530px" : "450px"}
+          contentHeight={this.state.error !== "" ? "450px" : "380px"}
         >
           {this.state.error !== "" && (
             <Box
@@ -154,9 +164,9 @@ export default class SignUpButton extends Component<Props, State> {
           >
             <Box width="90%" gap="5px">
               <Text size="14px" color="black" margin={{ bottom: "24px" }}>
-                This account will be associated with you as an individual. After
-                you've signed up you'll be able to fill your profile and
-                advertise your research.
+                This account will be associated with you as an individual. You
+                may also have free access to premium features via your
+                institution.
                 {/*create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
                   <Text color="color1" weight="bold" size="14px">
@@ -165,10 +175,10 @@ export default class SignUpButton extends Component<Props, State> {
                 </Link>
                 . These are what you'll use to organise talks.*/}
               </Text>
-              <TextInput
+              {/* <TextInput
                 placeholder="Username"
                 onChange={(e) => this.setState({ username: e.target.value })}
-              />
+              /> */}
               <TextInput
                 placeholder="Full name"
                 onChange={(e) => this.setState({ fullName: e.target.value })}

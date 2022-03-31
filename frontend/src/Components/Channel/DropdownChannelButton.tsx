@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Route, Link } from "react-router-dom";
 import { Box, Text } from "grommet";
 import Identicon from "react-identicons";
 import { Channel, ChannelService } from "../../Services/ChannelService";
 
 interface Props {
   channel: Channel;
+  isAdmin: boolean;
   onClick: any;
 }
 
@@ -22,17 +23,21 @@ export default class DropdownChannelButton extends Component<Props, State> {
   }
 
   render() {
-    return (
-      <Link
+          {/* <Link
         to={{
           pathname: `/${this.props.channel.name}/manage`,
           state: { channel: this.props.channel },
         }}
         style={{ height: 40 }}
-      >
+      > */}
+    return ( 
+      <Route render={({history}) => ( 
         <Box
           height="40px"
-          onClick={this.props.onClick}
+          onClick={() => {
+            this.props.onClick();
+            history.push( '/' + this.props.channel.name + (this.props.isAdmin ? '/manage' : ''))
+          }}
           onMouseEnter={() => {
             this.setState({ hover: true });
           }}
@@ -42,7 +47,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
           direction="row"
           gap="small"
           align="start"
-          background={this.state.hover ? "#f2f2f2" : "white"}
+          background={this.state.hover ? "#f2f2f2" : "color6"}
           round="xsmall"
           pad="xsmall"
           justify="start"
@@ -54,13 +59,13 @@ export default class DropdownChannelButton extends Component<Props, State> {
             width="30px"
             round="15px"
             justify="center"
-            align="center"
+            align="start"
             overflow="hidden"
           >
             {!this.props.channel.has_avatar && (
               <Identicon string={this.props.channel.name} size={30} />
             )}
-            {!!this.props.channel.has_avatar && (
+            {this.props.channel.has_avatar && (
               <img
                 src={ChannelService.getAvatar(this.props.channel.id)}
                 width={20}
@@ -81,7 +86,7 @@ export default class DropdownChannelButton extends Component<Props, State> {
           </Text>
 
         </Box>
-      </Link>
+      )} /> 
     );
   }
 }

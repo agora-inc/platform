@@ -238,10 +238,25 @@ export default class AllAgorasPage extends Component<Props, State> {
           src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
         />
         <div className="all-agoras-page">
-          <Text weight="bold" size="28px" margin={{ bottom: "15px" }}>
-            Discover new{" "}
-            <img src={agoraLogo} height="20px" style={{ offset: "50px" }} />s
-          </Text>
+          <Box direction="row" align="end" margin={{ bottom: "15px" }}>
+            <Text
+              weight="bold"
+              size="28px"
+              textAlign="center"
+              margin={{ right: "10px" }}
+            >
+              Discover new
+            </Text>
+            <img
+              src={agoraLogo}
+              height="25px"
+              style={{ marginBottom: "0px" }}
+            />
+            <Text size="27.5px" textAlign="center" margin={{ left: "-2px" }}>
+              s
+            </Text>
+          </Box>
+
           <TopicClassification
             topicCallback={this.selectTopic}
             searchType="Agoras"

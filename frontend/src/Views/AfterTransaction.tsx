@@ -64,13 +64,6 @@ export default class AfterTransaction extends Component<Props, State> {
             />
           </Box>
 
-          {/* Restate value of original offer */}
-          <Text size="14px">
-            <b>Your community just got empowered!</b> You can now enjoy the
-            access of unlimited email reminders, hybrid streaming tech sculpted
-            for academics, and much more!
-          </Text>
-
           {/* Clear instructions */}
           <Box margin={{ top: "14px" }}>
             <Text size="14px" weight="bold">
@@ -96,7 +89,7 @@ export default class AfterTransaction extends Component<Props, State> {
           </Box>
           <Text size="14px">
             If you have any questions, please email{" "}
-            <a href="mailto:team@agora.stream">team@agora.stream</a>.
+            <a href="mailto:team@mora.stream">team@mora.stream</a>.
           </Text>
         </Box>
       </Box>

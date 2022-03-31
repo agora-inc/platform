@@ -17,14 +17,18 @@ class ProfileRepository:
         self.topics = TopicRepository(db=self.db)
         self.channels = ChannelRepository(db=self.db)
 
-    def createProfile(self, user_id, full_name):        
+    def createProfile(self, user_id, full_name):
         query_profile = f"SELECT * FROM Profiles WHERE user_id = {user_id};"
-        profile = self.db.run_query(query_profile)     
+        profile = self.db.run_query(query_profile)
+
         if not profile:
             query_create = f'''INSERT INTO Profiles (user_id, has_photo, full_name) 
                 VALUES ({user_id}, 0, "{full_name}");
             '''
-            self.db.run_query(query_create)
+            profile = self.db.run_query(query_create)
+            return "ok"
+        else:
+            return "error: user already has a profile."
 
     def getProfile(self, user_id):
         query_user = f"SELECT id, username, email, bio, institution, position, verified_academic, personal_homepage FROM Users WHERE id = {user_id};"
@@ -186,31 +190,33 @@ class ProfileRepository:
             return int(self.db.run_query(insert_query)[0])
     
     def updatePresentation(self, user_id, presentation, now):
-        if int(presentation['id']) > 0:
-            update_query = f'''UPDATE Presentations SET
-                user_id={user_id},
-                title="{presentation['title']}",
-                description="{presentation['description']}",
-                link="{presentation['link']}",
-                duration={presentation['duration']},
-                date_created="{presentation['date_created']}"
-            WHERE id={presentation['id']}; '''
+        try:
+            if int(presentation['id']) > 0:
+                update_query = f'''UPDATE Presentations SET
+                    user_id={user_id},
+                    title="{presentation['title']}",
+                    description="{presentation['description']}",
+                    link="{presentation['link']}",
+                    duration={presentation['duration']},
+                    date_created="{presentation['date_created']}"
+                WHERE id={presentation['id']}; '''
 
-            with open(f"/home/cloud-user/test/fed.txt", "w") as file:
-                file.write(str(update_query))
+                self.db.run_query(update_query)
+                return int(presentation['id'])
+                
+            else:
+                insert_query = f'''INSERT INTO Presentations (
+                    user_id, title, description, link, duration, date_created
+                ) VALUES (
+                    {user_id}, "{presentation['title']}", "{presentation['description']}",
+                    "{presentation['link']}", {presentation['duration']}, "{now}"
+                ); '''
 
-            self.db.run_query(update_query)
-            return int(presentation['id'])
-            
-        else:
-            insert_query = f'''INSERT INTO Presentations (
-                user_id, title, description, link, duration, date_created
-            ) VALUES (
-                {user_id}, "{presentation['title']}", "{presentation['description']}",
-                "{presentation['link']}", {presentation['duration']}, "{now}"
-            ); '''
+                return int(self.db.run_query(insert_query)[0])
 
-            return int(self.db.run_query(insert_query)[0])
+        except Exception as e:
+            return str(e)
+
 
     def deletePaper(self, paper_id):
         query = f'DELETE FROM ProfilePapers where id = {paper_id}'

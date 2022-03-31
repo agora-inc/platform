@@ -9,7 +9,15 @@ import { LoginButton } from "../Account/LoginButton";
 import { useStore } from "../../store";
 import { useAuth0 } from "@auth0/auth0-react";
 
-export const CreatePresentationButton = () => {
+type Props = {
+  width?: string;
+  height?: string;
+  iconSize?: string;
+  textSize?: string;
+  addNewPresentation?: any;
+};
+
+export const CreatePresentationButton = (props: Props) => {
   const [showFormOverlay, setshowFormOverlay] = useState(false);
   const [showSignUpOverlay, setShowSignUpOverlay] = useState(false);
   const [title, setTitle] = useState("");
@@ -56,6 +64,10 @@ export const CreatePresentationButton = () => {
         temp_presentation,
         formatDate(now),
         (id: number) => {
+          temp_presentation.id = id;
+          if (props.addNewPresentation) {
+            props.addNewPresentation(temp_presentation);
+          }
           return history.push("/profile/" + user.id);
         },
         token
@@ -70,17 +82,52 @@ export const CreatePresentationButton = () => {
     }
   };
 
+  const onLogin = async (history: any) => {
+    if (!user) {
+      return;
+    }
+
+    const token = await getAccessTokenSilently();
+
+    // create presentation
+    let now = new Date();
+    let temp_presentation: Presentation = {
+      id: -1,
+      user_id: user.id,
+      title: title,
+      description: description,
+      link: link,
+      duration: duration,
+      date_created: formatDate(now),
+    };
+    ProfileService.updatePresentation(
+      user.id,
+      temp_presentation,
+      formatDate(now),
+      (id: number) => {
+        temp_presentation.id = id;
+        if (props.addNewPresentation) {
+          props.addNewPresentation(temp_presentation);
+        }
+      },
+      token
+    );
+
+    // move history
+    history.push("/profile/" + String(user.id));
+  };
+
   // function onSignup(history: any): void {
   //   UserService.register(
-  //     username,
+  //     fullName,
   //     password,
   //     email,
   //     position,
   //     institution,
   //     0,
-  //     (result: { status: string; userId: number }) => {
+  //     (result: {status: string, userId: number}) => {
   //       if (result.status === "ok") {
-  //         let now = new Date();
+  //         let now = new Date;
   //         let temp_presentation: Presentation = {
   //           id: -1,
   //           user_id: result.userId,
@@ -89,26 +136,31 @@ export const CreatePresentationButton = () => {
   //           link: link,
   //           duration: duration,
   //           date_created: formatDate(now),
-  //         };
-  //         ProfileService.createProfile(result.userId, fullName, () => {
-  //           ProfileService.updatePresentation(
-  //             result.userId,
-  //             temp_presentation,
-  //             formatDate(now),
-  //             (id: number) => {
-  //               setShowSignUpOverlay(false);
-  //               history.push("/profile/" + result.userId);
+  //         }
+  //         ProfileService.createProfile(
+  //           result.userId,
+  //           fullName,
+  //           () => {}
+  //         )
+  //         ProfileService.updatePresentation(
+  //           result.userId, temp_presentation, formatDate(now),
+  //           (id: number) => {
+  //             temp_presentation.id = id
+  //             if (props.addNewPresentation) {
+  //               props.addNewPresentation(temp_presentation)
   //             }
-  //           );
-  //         });
-  //       } else {
+  //           }
+  //         )
+  //         setShowSignUpOverlay(false)
+  //         history.push('/profile/' + String(result.userId))
+  //         } else {
   //         setError(result.status);
   //       }
   //     }
   //   );
   // }
 
-  const isComplete = (): boolean => {
+  const isComplete = () => {
     return title !== "" && description !== "" && duration > 0;
   };
 
@@ -129,21 +181,23 @@ export const CreatePresentationButton = () => {
   return (
     <>
       <Box
-        width={"310px"}
+        width={props.width ? props.width : "310px"}
         onClick={() => setshowFormOverlay(!showFormOverlay)}
         background="#0C385B"
         round="xsmall"
-        height={"80px"}
+        height={props.height ? props.height : "80px"}
         justify="center"
         align="center"
         focusIndicator={false}
         hoverIndicator="#BAD6DB"
         direction="row"
       >
-        <Workshop size="30px" />
-        <Text size="18px" margin={{ left: "10px" }}>
-          {" "}
-          <b>Create</b> your next presentation{" "}
+        <Workshop size={props.iconSize ? props.iconSize : "30px"} />
+        <Text
+          size={props.textSize ? props.textSize : "18px"}
+          margin={{ left: "10px" }}
+        >
+          <b>Get invited</b> to speak
         </Text>
       </Box>
       <Route
@@ -154,14 +208,17 @@ export const CreatePresentationButton = () => {
               onEsc={() => setshowFormOverlay(false)}
               onCancelClick={() => setshowFormOverlay(false)}
               onClickOutside={() => setshowFormOverlay(false)}
-              onSubmitClick={() => submitPresentation(history)}
-              submitButtonText="Publish"
+              onSubmitClick={() => {
+                submitPresentation(history);
+                setshowFormOverlay(false);
+              }}
+              submitButtonText="Continue"
               canProceed={isComplete()}
               isMissing={isMissing()}
-              width={550}
+              width={600}
               height={450}
               contentHeight="300px"
-              title={"Describe your future talk and get invited!"}
+              title={"Describe your future talk to receive invitations!"}
             >
               <Box width="100%" gap="10px" margin={{ top: "5px" }}>
                 <TextInput
@@ -177,19 +234,32 @@ export const CreatePresentationButton = () => {
                 />
                 <Box direction="row" gap="10px" width="80%" align="center">
                   <TextInput
-                    style={{ width: "200px" }}
-                    placeholder="Link to paper/slides"
-                    value={link}
-                    onChange={(e: any) => setLink(e.target.value)}
+                    placeholder="Title"
+                    value={title}
+                    onChange={(e: any) => setTitle(e.target.value)}
                   />
-                  <Box direction="row" gap="10px" align="center">
+                  <TextArea
+                    placeholder={"Description"}
+                    value={description}
+                    onChange={(e: any) => setDescription(e.target.value)}
+                    rows={8}
+                  />
+                  <Box direction="row" gap="10px" width="80%" align="center">
                     <TextInput
-                      style={{ width: "90px" }}
-                      placeholder="Duration"
-                      value={duration}
-                      onChange={(e: any) => setDuration(e.target.value)}
+                      style={{ width: "200px" }}
+                      placeholder="Link to paper/slides"
+                      value={link}
+                      onChange={(e: any) => setLink(e.target.value)}
                     />
-                    <Text size="14px">minutes</Text>
+                    <Box direction="row" gap="10px" align="center">
+                      <TextInput
+                        style={{ width: "90px" }}
+                        placeholder="Duration"
+                        value={duration}
+                        onChange={(e: any) => setDuration(e.target.value)}
+                      />
+                      <Text size="14px">minutes</Text>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
@@ -291,13 +361,20 @@ export const CreatePresentationButton = () => {
                       placeholder="Password"
                       onChange={(e) => setPassword(e.target.value)}
                     />
-                    <TextInput
-                      type="password"
-                      placeholder="Confirm password"
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
+                    {/* <TextInput
+                    type="password"
+                    placeholder="Confirm password"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  /> */}
                   </Box>
+                </Box>
 
+                <Box
+                  style={{ minHeight: "30px" }}
+                  direction="row"
+                  alignSelf="end"
+                  margin={{ top: "15px", bottom: "18px", right: "5%" }}
+                >
                   <Box
                     style={{ minHeight: "30px" }}
                     direction="row"
@@ -331,20 +408,11 @@ export const CreatePresentationButton = () => {
                     }}
                   />
 
-                  <Box
-                    width="90%"
-                    align="center"
-                    justify="start"
-                    direction="row"
-                    margin={{ top: "24px", bottom: "20px" }}
-                    gap="27.5%"
-                  >
-                    <Text size="12px" color="black" style={{ width: "50%" }}>
-                      If you already have an account, log in to add your new
-                      presentation
-                    </Text>
-                    <LoginButton callback={() => {}} />
-                  </Box>
+                  <Text size="12px" color="black" style={{ width: "50%" }}>
+                    If you already have an account, log in to add your new
+                    presentation
+                  </Text>
+                  <LoginButton callback={() => onLogin(history)} />
                 </Box>
               </Layer>
             )}

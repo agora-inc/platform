@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import TrendingTalksList from "../Components/Homepage/TrendingTalksList";
 import { useStore } from "../store";
 import { useAuth0 } from "@auth0/auth0-react";
+import FooterComponent from "../Components/Homepage/FooterComponent";
 
 const breakpoint_width = 992;
 
@@ -342,7 +343,7 @@ export const AllPastTalksPage = () => {
   };
 
   return (
-    <>
+    <Box justify="center">
       <img
         style={{
           height: "auto",
@@ -354,11 +355,13 @@ export const AllPastTalksPage = () => {
         src="https://i.postimg.cc/RhmJmzM3/mora-social-media-cover-bad6db.jpg"
       />
       <Box
-        pad={{ top: "10vh", bottom: "100px" }}
-        align="start"
+        pad={{ top: "9vh" }}
+        // align="start"
         style={{ overflowY: "auto" }}
         onScroll={handleScroll}
-        margin={{ left: "8%", right: "8%" }}
+        height="100%"
+        width="80%"
+        margin={{ left: "10%", right: "10%" }}
       >
         {/* <video
         autoPlay loop muted id="background-landing"
@@ -369,13 +372,13 @@ export const AllPastTalksPage = () => {
         <Box align="start" margin={{ bottom: "20px" }}>
           <TrendingTalksList />
         </Box>
-        <Box width="90%">
+        <Box width="100%">
           <Box
             direction="row"
             width="100%"
             justify="between"
             align="start"
-            margin={{ bottom: "medium", top: "50px" }}
+            margin={{ bottom: "15px", top: "50px" }}
           >
             <Box width="70%" alignContent="start" direction="row">
               <Link
@@ -390,7 +393,6 @@ export const AllPastTalksPage = () => {
                   height="30px"
                   width={renderMobile ? "150px" : "170px"}
                   justify="center"
-                  align="center"
                   focusIndicator={false}
                   hoverIndicator="color2"
                   margin={{ left: "0px" }}
@@ -478,7 +480,7 @@ export const AllPastTalksPage = () => {
           <MediaQuery minDeviceWidth={992}>
             <Box
               width="100%"
-              margin={{ bottom: "50px" }}
+              margin={{ bottom: "30px" }}
               background="color6"
               direction="row"
               pad="12px"
@@ -687,9 +689,8 @@ export const AllPastTalksPage = () => {
             width="280px"
             margin="none"
             pad="small"
-            justify="between"
+            justify="center"
             round="xsmall"
-            align="center"
             alignSelf="center"
             background="#EEEEEE"
           >
@@ -713,7 +714,8 @@ export const AllPastTalksPage = () => {
           </Text>
         </Box>
       )} */}
+        <FooterComponent />
       </Box>
-    </>
+    </Box>
   );
 };

@@ -35,13 +35,6 @@ export const TalkCard = (props: Props) => {
   const [registrationStatus, setRegistrationStatus] = useState("");
   const [available, setAvailable] = useState(true);
   const [role, setRole] = useState("none");
-  const [processedTalk, setProcessedTalk] = useState(
-    TalkService.polishTalkData(
-      props.talk,
-      props.substituteTbdTba ? props.substituteTbdTba : true,
-      props.addPicture ? props.addPicture : true
-    )
-  );
 
   const user = useStore((state) => state.loggedInUser);
 
@@ -57,7 +50,7 @@ export const TalkCard = (props: Props) => {
     if (user !== null) {
       ChannelService.getRoleInChannel(
         user.id,
-        processedTalk.channel_id,
+        props.talk.channel_id,
         (role: "none" | "owner" | "member" | "follower") => {
           setRole(role);
         },
@@ -72,7 +65,7 @@ export const TalkCard = (props: Props) => {
       const token = await getAccessTokenSilently();
       TalkService.isAvailableToUser(
         user.id,
-        processedTalk.id,
+        props.talk.id,
         (available: boolean) => {
           setAvailable(available);
           if (available) {
@@ -83,8 +76,7 @@ export const TalkCard = (props: Props) => {
       );
     } else {
       setAvailable(
-        processedTalk.visibility === "Everybody" ||
-          processedTalk.visibility === null
+        props.talk.visibility === "Everybody" || props.talk.visibility === null
       );
     }
   };
@@ -94,7 +86,7 @@ export const TalkCard = (props: Props) => {
     if (user) {
       const token = await getAccessTokenSilently();
       TalkService.registrationStatusForTalk(
-        processedTalk.id,
+        props.talk.id,
         user.id,
         (status: string) => {
           setRegistered(status === "accepted");
@@ -123,7 +115,7 @@ export const TalkCard = (props: Props) => {
   };
 
   const getTimeRemaining = (): string => {
-    const end = new Date(processedTalk.end_date);
+    const end = new Date(props.talk.end_date);
     const now = new Date();
     let deltaMin = Math.floor((end.valueOf() - now.valueOf()) / (60 * 1000));
     let message = deltaMin < 0 ? "Finished " : "Finishing in ";
@@ -144,7 +136,7 @@ export const TalkCard = (props: Props) => {
   const toggleModal = () => {
     // track click of the event
     if (!showModal) {
-      TalkService.increaseViewCountForTalk(processedTalk.id, () => {});
+      TalkService.increaseViewCountForTalk(props.talk.id, () => {});
     }
     // toggle Modal
     setShowModal(!showModal);
@@ -152,10 +144,10 @@ export const TalkCard = (props: Props) => {
 
   // method here for mobile
   const register = () => {
-    // user &&
+    // props.talkprops.user &&
     //   TalkService.registerForTalk(
-    //     processedTalk.id,
-    //     user.id,
+    //     props.talkprops.talk.id,
+    //     props.talkprops.user.id,
     //     () => {
     //       // toggleModal();
     //       checkIfRegistered();
@@ -170,7 +162,7 @@ export const TalkCard = (props: Props) => {
   const unregister = () => {
     // user &&
     //   TalkService.unRegisterForTalk(
-    //     processedTalk.id,
+    //     props.talk.id,
     //     user.id,
     //     () => {
     //       // toggleModal();
@@ -183,7 +175,7 @@ export const TalkCard = (props: Props) => {
   };
 
   const getSpeakerPhotoUrl = (): string | undefined => {
-    return TalkService.getSpeakerPhoto(processedTalk.id);
+    return TalkService.getSpeakerPhoto(props.talk.id);
   };
 
   // method here for mobile
@@ -227,7 +219,7 @@ export const TalkCard = (props: Props) => {
         <Box height="100%" pad="10px">
           <Box
             direction="column"
-            width={processedTalk.has_speaker_photo === 1 ? "65%" : "80%"}
+            width={props.talk.has_speaker_photo === 1 ? "65%" : "80%"}
             margin={{ bottom: "10px" }}
           >
             <Box
@@ -246,19 +238,19 @@ export const TalkCard = (props: Props) => {
                 background="#efeff1"
                 overflow="hidden"
               >
-                {!processedTalk.has_avatar && (
+                {!props.talk.has_avatar && (
                   <img src={MoraStreamLogo} height={36} width={36} />
                 )}
-                {!!processedTalk.has_avatar && (
+                {!!props.talk.has_avatar && (
                   <img
-                    src={ChannelService.getAvatar(processedTalk.channel_id)}
+                    src={ChannelService.getAvatar(props.talk.channel_id)}
                     height={30}
                     width={30}
                   />
                 )}
               </Box>
               <Text weight="bold" size="14px" color="color3">
-                {processedTalk.channel_name}
+                {props.talk.channel_name}
               </Text>
             </Box>
 
@@ -268,10 +260,10 @@ export const TalkCard = (props: Props) => {
               weight="bold"
               style={{ minHeight: "60px", overflow: "auto" }}
             >
-              {textToLatex(processedTalk.name)}
+              {textToLatex(props.talk.name)}
             </Text>
           </Box>
-          {processedTalk.has_speaker_photo === 1 && (
+          {props.talk.has_speaker_photo === 1 && (
             <Box width="40%">
               <Image
                 style={{
@@ -297,7 +289,7 @@ export const TalkCard = (props: Props) => {
               }}
               margin={{ bottom: "10px" }}
             >
-              {processedTalk.talk_speaker ? processedTalk.talk_speaker : "TBA"}
+              {props.talk.talk_speaker ? props.talk.talk_speaker : "TBA"}
             </Text>
           </Box>
           <Box direction="row" gap="small">
@@ -319,11 +311,11 @@ export const TalkCard = (props: Props) => {
                   color="black"
                   style={{ height: "20px", fontStyle: "normal" }}
                 >
-                  {formatDate(processedTalk.date)}
+                  {formatDate(props.talk.date)}
                 </Text>
               )}
             </Box>
-            {processedTalk.card_visibility === "Members only" && (
+            {props.talk.card_visibility === "Members only" && (
               <Box
                 round="xsmall"
                 background="#EAF1F1"
@@ -335,7 +327,7 @@ export const TalkCard = (props: Props) => {
                 <Text size="12px">member-only</Text>
               </Box>
             )}
-            {/*processedTalk.card_visibility !== "Members only" && processedTalk.visibility === "Members only" && 
+            {/*props.talk.card_visibility !== "Members only" && props.talk.visibility === "Members only" && 
               <Box
                 round="xsmall"
                 background="#D3F930"
@@ -412,7 +404,7 @@ export const TalkCard = (props: Props) => {
                   >
                     <Link
                       className="channel"
-                      to={`/${processedTalk.channel_name}`}
+                      to={`/${props.talk.channel_name}`}
                       style={{ textDecoration: "none" }}
                     >
                       <Box
@@ -435,7 +427,7 @@ export const TalkCard = (props: Props) => {
                         >
                           <img
                             src={ChannelService.getAvatar(
-                              processedTalk.channel_id
+                              props.talk.channel_id
                             )}
                             height={30}
                             width={30}
@@ -443,7 +435,7 @@ export const TalkCard = (props: Props) => {
                         </Box>
                         <Box justify="between">
                           <Text weight="bold" size="16px" color="color3">
-                            {processedTalk.channel_name}
+                            {props.talk.channel_name}
                           </Text>
                         </Box>
                       </Box>
@@ -460,11 +452,11 @@ export const TalkCard = (props: Props) => {
                     }}
                     margin={{ bottom: "20px", top: "10px" }}
                   >
-                    {textToLatex(processedTalk.name)}
+                    {textToLatex(props.talk.name)}
                   </Text>
 
-                  {processedTalk.talk_speaker_url && (
-                    <a href={processedTalk.talk_speaker_url} target="_blank">
+                  {props.talk.talk_speaker_url && (
+                    <a href={props.talk.talk_speaker_url} target="_blank">
                       <Box direction="row" pad={{ left: "6px", top: "4px" }}>
                         <UserExpert size="16px" />
                         <Text
@@ -476,15 +468,15 @@ export const TalkCard = (props: Props) => {
                             fontStyle: "italic",
                           }}
                         >
-                          {processedTalk.talk_speaker
-                            ? processedTalk.talk_speaker
+                          {props.talk.talk_speaker
+                            ? props.talk.talk_speaker
                             : "TBA"}
                         </Text>
                       </Box>
                     </a>
                   )}
 
-                  {!processedTalk.talk_speaker_url && (
+                  {!props.talk.talk_speaker_url && (
                     <Box direction="row" gap="small">
                       <UserExpert size="16px" />
                       <Text
@@ -497,8 +489,8 @@ export const TalkCard = (props: Props) => {
                         }}
                         margin={{ bottom: "10px" }}
                       >
-                        {processedTalk.talk_speaker
-                          ? processedTalk.talk_speaker
+                        {props.talk.talk_speaker
+                          ? props.talk.talk_speaker
                           : "TBA"}
                       </Text>
                     </Box>
@@ -511,14 +503,14 @@ export const TalkCard = (props: Props) => {
                     }}
                     margin={{ top: "10px", bottom: "10px" }}
                   >
-                    {processedTalk.description
+                    {props.talk.description
                       .split("\n")
                       .map((item, i) => textToLatex(item))}
                   </Box>
                 </Box>
               </Box>
               <FooterOverlay
-                talk={processedTalk}
+                talk={props.talk}
                 role={role}
                 available={available}
                 registered={registered}
@@ -533,7 +525,7 @@ export const TalkCard = (props: Props) => {
         // */}
           <MediaQuery maxDeviceWidth={800}>
             <MobileTalkCardOverlay
-              talk={processedTalk}
+              talk={props.talk}
               pastOrFutureTalk="future"
               registered={registered}
               registrationStatus={registrationStatus}

@@ -136,7 +136,7 @@ export const UserManager = ({ showLogin: boolean }: Props) => {
       // if yes, redirect. If no, create and redirect
       ProfileService.createProfile(
         user.id,
-        "[your full name]",
+        "Your name",
         () => {
           return history.push("/profile/" + id);
         },
@@ -213,6 +213,7 @@ export const UserManager = ({ showLogin: boolean }: Props) => {
   );
 
   const username = user ? user.username : "?";
+
   return (
     <Box direction="row" justify="end">
       {user ? loggedInStuff(username) : loggedOutStuff}

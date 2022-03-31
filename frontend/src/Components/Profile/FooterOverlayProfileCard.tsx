@@ -39,7 +39,7 @@ export const FooterOverlayProfileCard = (props: Props) => {
         >
           <Text size="14px" weight="bold">
             {" "}
-            View more{" "}
+            View profile
           </Text>
         </Box>
         {/* <Box

@@ -49,6 +49,7 @@ import "../Styles/react-tabs.css";
 import { RegistrationsTab } from "./ManageChannelPage/RegistrationsTab";
 import { EmailsTab } from "./ManageChannelPage/EmailsTab";
 import ShareButtons from "../Components/Core/ShareButtons";
+import { LinkSecondaryButton } from "../Components/Core/LinkSecondaryButton";
 import ChannelTopicSelector from "../Components/Channel/ChannelTopicSelector";
 import { Topic, TopicService } from "../Services/TopicService";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
@@ -607,21 +608,32 @@ export const ManageChannelPage = (props: Props) => {
                 </Text>
               )}
 
-              <Box direction="row" align="end" gap="5px">
+              <Box direction="row" align="end" gap="25px">
                 <Box data-tip data-for="avatar_info">
                   <ImageUploader text="Upload avatar" onUpload={onFileChosen} />
                   <ReactTooltip id="avatar_info" place="top" effect="solid">
                     <p>Recommended avatar dim: 400x400px</p>
                   </ReactTooltip>
                 </Box>
+                <ShareButtons
+                  channel={channel}
+                  width="120px"
+                  height={window.innerWidth < 800 ? "25px" : "30px"}
+                  onlyShare={true}
+                />
               </Box>
             </Box>
           </Box>
-
-          <Box direction="row" gap="xsmall" align="end" width="30%">
-            <ShareButtons channel={channel} />
+          <Box direction="row" align="end" width="25%">
+            <LinkSecondaryButton
+              text="Look for speakers"
+              link="speakers"
+              iconSize="24px"
+              mobile={false}
+              width="190px"
+              height="35px"
+            />
           </Box>
-
           {bannerExtended ? (
             <FormUp
               onClick={toggleBanner}
@@ -707,7 +719,6 @@ export const ManageChannelPage = (props: Props) => {
               </Box>
             )}
             {banner()}
-
             <Box
               direction="row"
               justify="center"
@@ -738,45 +749,45 @@ export const ManageChannelPage = (props: Props) => {
                   </Text>
                 </Box>
                 {/* 
-          REFERAL BUTTON: TO UNCOMMENT SOON
-          
-          <a href={basePoint + "/referral/channel/" + channelId + "?referee=true"} style={{textDecoration: 0}}>
-            <Box
-              onClick={() => {setState({loading: false})}}
-              background="color7"
-              round="xsmall"
-              pad="xsmall"
-              width="200px"
-              height="40px"
-              justify="center"
-              align="center"
-              focusIndicator={false}
-              hoverIndicator="#BAD6DB"
-            >
-              <Text size="14px" weight="bold"> Upgrade for free </Text>
-            </Box>
-          </a> */}
+            REFERAL BUTTON: TO UNCOMMENT SOON
+            
+            <a href={basePoint + "/referral/channel/" + channelId + "?referee=true"} style={{textDecoration: 0}}>
+              <Box
+                onClick={() => {setState({loading: false})}}
+                background="color7"
+                round="xsmall"
+                pad="xsmall"
+                width="200px"
+                height="40px"
+                justify="center"
+                align="center"
+                focusIndicator={false}
+                hoverIndicator="#BAD6DB"
+              >
+                <Text size="14px" weight="bold"> Upgrade for free </Text>
+              </Box>
+            </a> */}
               </Box>
             </Box>
 
             {/* user && 
-      (
-        <>
-          <StreamingCheckoutPaymentButton
+        (
+          <>
+            <StreamingCheckoutPaymentButton
+              channelId={channelId}
+              user={user}
+              audienceSize={"big"}
+              tier={"tier1"}
+              productType={"subscription"}
+              quantity={1}
+              text={"vasy subscribe mec"}
+            />
+            <CancelSubscriptionsButton
             channelId={channelId}
-            user={user}
-            audienceSize={"big"}
-            tier={"tier1"}
-            productType={"subscription"}
-            quantity={1}
-            text={"vasy subscribe mec"}
-          />
-          <CancelSubscriptionsButton
-          channelId={channelId}
-          
-          />
-      </>
-      ) */}
+            
+            />
+        </>
+        ) */}
 
             {showModalPricing && (
               <Layer
@@ -816,17 +827,8 @@ export const ManageChannelPage = (props: Props) => {
                     <Text size="14px">Talks</Text>
                   </Box>
                 </Tab>
+
                 <Tab>
-                  <Text
-                    textAlign="end"
-                    color="red"
-                    weight="bold"
-                    size="14px"
-                    margin={{ left: "6px" }}
-                  >
-                    {" "}
-                    New!{" "}
-                  </Text>
                   <Box
                     direction="row"
                     justify="center"
@@ -838,6 +840,7 @@ export const ManageChannelPage = (props: Props) => {
                     <Text size="14px">Mailing list</Text>
                   </Box>
                 </Tab>
+
                 <Tab>
                   <Box
                     direction="row"
@@ -852,16 +855,6 @@ export const ManageChannelPage = (props: Props) => {
                 </Tab>
 
                 <Tab>
-                  <Text
-                    textAlign="end"
-                    color="red"
-                    weight="bold"
-                    size="14px"
-                    margin={{ left: "6px" }}
-                  >
-                    {" "}
-                    New!{" "}
-                  </Text>
                   <Box
                     direction="row"
                     justify="center"
@@ -887,25 +880,25 @@ export const ManageChannelPage = (props: Props) => {
                   </Box>
                 </Tab>
                 {/* 
-            TAB FOR MEMBERSHIP APPLICATION:
-          
-          <Tab>
-            <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
-              <Resources />
-              <Text size="14px"> 
-                Memberships
-              </Text>
-            </Box>
-          </Tab> */}
+              TAB FOR MEMBERSHIP APPLICATION:
+            
+            <Tab>
+              <Box direction="row" justify="center" pad="6px" gap="15px" margin={{left: "6px", right: "6px"}}>
+                <Resources />
+                <Text size="14px"> 
+                  Memberships
+                </Text>
+              </Box>
+            </Tab> */}
 
                 {/* <Tab>
-            <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
-              <SettingsOption />
-              <Text size="14px"> 
-                Details 
-              </Text>
-            </Box>
-          </Tab> */}
+              <Box direction="row" justify="center" pad="6px" gap="18px" margin={{left: "6px", right: "6px"}}>
+                <SettingsOption />
+                <Text size="14px"> 
+                  Details 
+                </Text>
+              </Box>
+            </Tab> */}
               </TabList>
 
               <TabPanel style={{ width: "78vw", minHeight: "800px" }}>
@@ -915,33 +908,7 @@ export const ManageChannelPage = (props: Props) => {
                     channel={channel}
                     onCreatedCallback={fetchAllTalks}
                   />
-                  <Link to="/speakers">
-                    <Box
-                      margin={{ top: "20px", bottom: "40px", left: "10px" }}
-                      onClick={() => {}}
-                      background="#0C385B"
-                      round="xsmall"
-                      pad={{
-                        bottom: "small",
-                        top: "small",
-                        left: "small",
-                        right: "small",
-                      }}
-                      height="40px"
-                      width="15vw"
-                      justify="center"
-                      align="center"
-                      focusIndicator={false}
-                      // hoverIndicator="#2433b5"
-                      hoverIndicator="#BAD6DB"
-                      direction="row"
-                    >
-                      <Workshop style={{ marginRight: "5px" }} />
-                      Find a speaker
-                    </Box>
-                  </Link>
                 </Box>
-
                 <Box
                   width="100%"
                   direction="row"
@@ -1099,17 +1066,17 @@ export const ManageChannelPage = (props: Props) => {
                           admins
                         </Text>
                         {/* {role === "owner" && (
-                    <AddUsersButton
-                      role="owner"
-                      existingUsers={channelOwners}
-                      channelId={channel!.id}
-                      onUserAddedCallback={() => {
-                        fetchMembers();
-                        fetchOwners();
-                        fetchFollowers();
-                      }}
-                    />
-                  )} */}
+                      <AddUsersButton
+                        role="owner"
+                        existingUsers={channelOwners}
+                        channelId={channel!.id}
+                        onUserAddedCallback={() => {
+                          fetchMembers();
+                          fetchOwners();
+                          fetchFollowers();
+                        }}
+                      />
+                    )} */}
                       </Box>
                       <Box
                         direction="row"
@@ -1129,45 +1096,45 @@ export const ManageChannelPage = (props: Props) => {
                     </Box>
 
                     {/* <Box
-                width="58%"
-                height="180px"
-                background="#e5e5e5"
-                round="7.5px"
-                pad="10px"
-              >
-                <Box direction="row" justify="between">
-                  <Text weight="bold" size="14px" color="black">
-                  <img src={agoraLogo} style={{ height: "14px"}}/> members
-                  </Text>
-                  {role === "owner" && (
-                    <AddUsersButton
-                      role="member"
-                      existingUsers={channelMembers}
-                      channelId={channel!.id}
-                      onUserAddedCallback={() => {
-                        fetchMembers();
-                        fetchOwners();
-                        fetchFollowers();
-                      }}
-                    />
-                  )}
-                </Box>
-                <Box
-                  direction="row"
-                  wrap
-                  margin={{ top: "5px" }}
-                  gap="xsmall"
+                  width="58%"
+                  height="180px"
+                  background="#e5e5e5"
+                  round="7.5px"
+                  pad="10px"
                 >
-                  {channelMembers.map((member: User) => (
-                    <ChannelPageUserCircle
-                      user={member}
-                      channelId={channel?.id}
-                      onRemovedCallback={fetchMembers}
-                      showRemoveButton={role === "owner"}
-                    />
-                  ))}
-                </Box>
-              </Box> */}
+                  <Box direction="row" justify="between">
+                    <Text weight="bold" size="14px" color="black">
+                    <img src={agoraLogo} style={{ height: "14px"}}/> members
+                    </Text>
+                    {role === "owner" && (
+                      <AddUsersButton
+                        role="member"
+                        existingUsers={channelMembers}
+                        channelId={channel!.id}
+                        onUserAddedCallback={() => {
+                          fetchMembers();
+                          fetchOwners();
+                          fetchFollowers();
+                        }}
+                      />
+                    )}
+                  </Box>
+                  <Box
+                    direction="row"
+                    wrap
+                    margin={{ top: "5px" }}
+                    gap="xsmall"
+                  >
+                    {channelMembers.map((member: User) => (
+                      <ChannelPageUserCircle
+                        user={member}
+                        channelId={channel?.id}
+                        onRemovedCallback={fetchMembers}
+                        showRemoveButton={role === "owner"}
+                      />
+                    ))}
+                  </Box>
+                </Box> */}
 
                     <Box
                       width="58.5%"
@@ -1251,10 +1218,10 @@ export const ManageChannelPage = (props: Props) => {
                           </Text>
                         )}
                         {/* {strEmailWrong.length > 0 && (
-                    <Text color="red">
-                      No emails detected.
-                    </Text>
-                  )} */}
+                      <Text color="red">
+                        No emails detected.
+                      </Text>
+                    )} */}
                       </Box>
                       <Box
                         onClick={parseMailingList}
@@ -1288,78 +1255,77 @@ export const ManageChannelPage = (props: Props) => {
               </TabPanel>
 
               {/* 
-          TAB FOR MEMBERSHIP APPLICATION:
-          
-        <TabPanel style={{width: "78vw", minHeight: "800px"}}>
-          <Box direction="row" margin={{bottom: "60px"}}>
-            <RequestsTab channelId={channel!.id}/>
-          </Box>
-        </TabPanel> */}
+            TAB FOR MEMBERSHIP APPLICATION:
+            
+          <TabPanel style={{width: "78vw", minHeight: "800px"}}>
+            <Box direction="row" margin={{bottom: "60px"}}>
+              <RequestsTab channelId={channel!.id}/>
+            </Box>
+          </TabPanel> */}
 
               {/*   DETAIL SECTION: COMMENTED OUT
-        <TabPanel style={{width: "78vw", minHeight: "800px"}}>             
-          <Grid
-            rows={['xxsmall', 'xxsmall']}
-            columns={['medium', 'xxsmall']}
-            gap="small"
-            areas={[
-              { name: 'email', start: [0, 0], end: [1, 0]},
-              { name: 'topic_change', start: [0, 1], end: [0, 1] },
-              { name: 'topic_button', start: [1, 1], end: [1, 1]},
-            ]}
-          >
-            <Box gridArea="email">
-              <EmailContactManagement
-                channelId={channel!.id}
-                currentAddress={contactAddresses}
-                onAddAddress={onAddContactAddress}
-                onDeleteAddress={onDeleteContactAddress}
-              />
-            </Box>
-            <Box gridArea="topic_change">
-              <ChannelTopicSelector 
-                onSelectedCallback={selectTopic}
-                onCanceledCallback={cancelTopic}
-                isPrevTopics={isPrevTopics}
-                prevTopics={props.channel ? props.channel.topics : []} 
-                textSize="small"
-              />
-            </Box>
-            <Box gridArea="topic_button">
-              <Box
-                className={"save_Button"}
-                focusIndicator={false}
-                width={"10vw"}
-                background="white"
-                round="xsmall"
-                height={"30px"}
-                pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
-                onClick={SavedButtonClicked}
-                onAnimationEnd={endOfAnimation}
-                style={{
-                  border: "1px solid #C2C2C2",
-                  minWidth: "25px"
-                }}
-                hoverIndicator={true}
-                justify="center"
-              >
-                <Text 
-                  size="14px" 
-                  color="grey"
-                  alignSelf="center"
-                >
-
-              {topicSaved == false && (
-                  "Save"
-              )}
-              {topicSaved == true && (
-                  "Saved"
-              )}
-              </Text>
+          <TabPanel style={{width: "78vw", minHeight: "800px"}}>             
+            <Grid
+              rows={['xxsmall', 'xxsmall']}
+              columns={['medium', 'xxsmall']}
+              gap="small"
+              areas={[
+                { name: 'email', start: [0, 0], end: [1, 0]},
+                { name: 'topic_change', start: [0, 1], end: [0, 1] },
+                { name: 'topic_button', start: [1, 1], end: [1, 1]},
+              ]}
+            >
+              <Box gridArea="email">
+                <EmailContactManagement
+                  channelId={channel!.id}
+                  currentAddress={contactAddresses}
+                  onAddAddress={onAddContactAddress}
+                  onDeleteAddress={onDeleteContactAddress}
+                />
               </Box>
-            </Box>
-          </Grid>
-        </TabPanel> */}
+              <Box gridArea="topic_change">
+                <ChannelTopicSelector 
+                  onSelectedCallback={selectTopic}
+                  onCanceledCallback={cancelTopic}
+                  isPrevTopics={isPrevTopics}
+                  prevTopics={props.channel ? props.channel.topics : []} 
+                  textSize="small"
+                />
+              </Box>
+              <Box gridArea="topic_button">
+                <Box
+                  className={"save_Button"}
+                  focusIndicator={false}
+                  width={"10vw"}
+                  background="white"
+                  round="xsmall"
+                  height={"30px"}
+                  pad={{bottom: "6px", top: "6px", left: "3px", right: "3px"}}
+                  onClick={SavedButtonClicked}
+                  onAnimationEnd={endOfAnimation}
+                  style={{
+                    border: "1px solid #C2C2C2",
+                    minWidth: "25px"
+                  }}
+                  hoverIndicator={true}
+                  justify="center"
+                >
+                  <Text 
+                    size="14px" 
+                    color="grey"
+                    alignSelf="center"
+                  >
+                {topicSaved == false && (
+                    "Save"
+                )}
+                {topicSaved == true && (
+                    "Saved"
+                )}
+                </Text>
+                </Box>
+              </Box>
+            </Grid>
+          </TabPanel> */}
             </Tabs>
           </Box>
         </Box>

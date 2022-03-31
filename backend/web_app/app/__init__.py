@@ -58,8 +58,8 @@ class MoraApp(Flask):
         # initialise mail config
         self.config["MAIL_SERVER"] = "smtp.office365.com"
         self.config["MAIL_PORT"] = 587
-        self.config["MAIL_USERNAME"] = "team@agora.stream"
-        self.config["MAIL_PASSWORD"] = "123.qwe.asd"
+        self.config["MAIL_USERNAME"] = "revolutionising.research@gmail.com"
+        self.config["MAIL_PASSWORD"] = "123.qwe.asd.sendgrid"
         self.config["MAIL_USE_TLS"] = True
         self.config["MAIL_USE_SSL"] = False
 

@@ -131,8 +131,9 @@ export const CreateChannelOverlay: FunctionComponent<Props> = (props) => {
         <>
           <OverlaySection>
             An agora is a hub for your community. It is the place where you
-            organise and list all your events, past or future. Give your
-            community a name and classification before getting started!
+            organise and advertise all your events, past or future, and where
+            speakers come and apply. Give your community a name and
+            classification before getting started!
             <TextInput
               style={{ width: "100%", marginTop: "5px" }}
               placeholder="Your agora name"
