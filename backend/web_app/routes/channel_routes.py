@@ -1,10 +1,14 @@
 from flask import jsonify, request, send_file
 from flask_mail import Message
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from app import app, mail
 from app.auth import requires_auth
 from .helpers import log_request
 
+SENDGRID_API_KEY = "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"
+sg = SendGridAPIClient(SENDGRID_API_KEY)
 
 @app.route("/channels/channel", methods=["GET"])
 def getChannelByName():
@@ -420,11 +424,13 @@ def sendTalkApplicationEmail():
                         <p>Best wishes,</p>
                         <p>The mora.stream Team</p>
                     """
-        for email in administrator_emails:
-            msg = Message(body_msg, sender="team@agora.stream", recipients=[email])
-            msg.html = body_msg
-            msg.subject = email_subject
-            mail.send(msg)
+        message = Mail(
+            from_email="team@mora.stream",
+            to_emails=administrator_emails,
+            subject=email_subject,
+            html_content=body_msg
+        )
+        sg.send(message)
         return "ok"
 
     except Exception as e:

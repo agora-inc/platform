@@ -103,7 +103,11 @@ export const Menu = ({
         </Text>
         <Box height={{ max: "120px" }} overflow="auto">
           {adminChannels.map((channel: Channel) => (
-            <DropdownChannelButton channel={channel} onClick={toggleDropdown} />
+            <DropdownChannelButton
+              channel={channel}
+              onClick={toggleDropdown}
+              isAdmin={true}
+            />
           ))}
         </Box>
         <CreateChannelButton
@@ -141,7 +145,11 @@ export const Menu = ({
             </Text>
           )}
           {followingChannels.map((channel: Channel) => (
-            <DropdownChannelButton channel={channel} onClick={toggleDropdown} />
+            <DropdownChannelButton
+              channel={channel}
+              onClick={toggleDropdown}
+              isAdmin={false}
+            />
           ))}
         </Box>
       </Box>
