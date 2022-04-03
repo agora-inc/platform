@@ -90,7 +90,7 @@ export const TalkSharingPage = (props: Props) => {
   const fetchAll = () => {
     let talkId = getTalkIdFromUrl(props.location.pathname);
     TalkService.getTalkById(talkId, (talk: Talk) => {
-      setTalk(TalkService.polishTalkData(talk, true, true));
+      setTalk(talk);
     });
   };
 

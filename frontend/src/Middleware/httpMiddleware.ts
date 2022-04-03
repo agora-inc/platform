@@ -17,7 +17,7 @@ export const get = (
   onError?: (err: any) => void
 ) => {
   axios
-    .get(`${baseApiUrl}/api/${url}`, {
+    .get(`${baseApiUrl}/${url}`, {
       headers: getRequestHeaders(token),
     })
     .then((response) => {
@@ -36,7 +36,7 @@ export const post = (
   onError?: (err: any) => void
 ) => {
   axios
-    .post(`${baseApiUrl}/api/${url}`, data, {
+    .post(`${baseApiUrl}/${url}`, data, {
       headers: getRequestHeaders(token),
     })
     .then((response) => {
@@ -55,7 +55,7 @@ export const del = (
   onError?: (err: any) => void
 ) => {
   axios
-    .delete(`${baseApiUrl}/api/${url}`, {
+    .delete(`${baseApiUrl}/${url}`, {
       data,
       headers: getRequestHeaders(token),
     })
