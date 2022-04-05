@@ -232,18 +232,22 @@ const uploadProfilePhoto = (
   post("/profiles/photo", data, token, callback);
 };
 
-const getProfilePhotoUrl = (userId: number, cacheDelay?: number, callback?: any) => {
+const getProfilePhotoUrl = (
+  userId: number,
+  cacheDelay?: number,
+  callback?: any
+) => {
   // check if user has profile_pic
-  var pictureEndpoint = baseApiUrl + `/profiles/photo?userId=${userId}`
+  var pictureEndpoint = baseApiUrl + `/profiles/photo?userId=${userId}`;
   getProfile(userId, (profile: Profile) => {
-    if(!profile.has_photo){
-      pictureEndpoint = pictureEndpoint  + "&defaultPic=true";
+    if (!profile.has_photo) {
+      pictureEndpoint = pictureEndpoint + "&defaultPic=true";
     }
     if (cacheDelay) {
-      pictureEndpoint = pictureEndpoint  + "&ts=" + cacheDelay;
+      pictureEndpoint = pictureEndpoint + "&ts=" + cacheDelay;
     }
-    callback(pictureEndpoint)
-  })
+    callback(pictureEndpoint);
+  });
 };
 
 const removeProfilePhoto = (userId: number, callback: any, token: string) => {

@@ -17,9 +17,7 @@ export const get = (
   onError?: (err: any) => void
 ) => {
   axios
-    .get(`${baseApiUrl}/${url}`, {
-      headers: getRequestHeaders(token),
-    })
+    .get(`${baseApiUrl}/${url}`, getRequestHeaders(token))
     .then((response) => {
       callback(response.data);
     })
@@ -36,9 +34,7 @@ export const post = (
   onError?: (err: any) => void
 ) => {
   axios
-    .post(`${baseApiUrl}/${url}`, data, {
-      headers: getRequestHeaders(token),
-    })
+    .post(`${baseApiUrl}/${url}`, data, getRequestHeaders(token))
     .then((response) => {
       callback(response.data);
     })
