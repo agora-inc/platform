@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { Box, Text } from "grommet";
 import { QandAService } from "../../../Services/QandAService";
 import { UserService, User } from "../../../Services/UserService";
@@ -10,6 +10,8 @@ import Identicon from "react-identicons";
 // import { CaretUpOutlined, CaretDownOutlined } from "@ant-design/icons";
 import "../../../Styles/q-and-a.css";
 import { InlineMath } from "react-katex";
+import { useStore } from "../../../store";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type Answer = {
   id: number;
@@ -49,67 +51,62 @@ interface State {
   answeringQuestion: Question | null;
 }
 
-export default class QandA extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      questions: [],
-      sortBy: "top",
-      loading: true,
-      user: UserService.getCurrentUser(),
-      writingQuestion: false,
-      answeringQuestion: null,
-    };
-  }
+export const QandA = (props: Props) => {
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [sortBy, setSortBy] = useState("top");
+  const [loading, setLoading] = useState(true);
+  const [writingQuestion, setWritingQuestion] = useState(false);
+  const [answeringQuestion, setAnsweringQuestion] = useState<Question | null>(
+    null
+  );
 
-  componentWillMount() {
-    this.fetchQuestions();
-  }
+  const user = useStore((state) => state.loggedInUser);
 
-  fetchQuestions = () => {
-    this.setState({ loading: true });
-    if (this.props.streamId) {
+  const { getAccessTokenSilently } = useAuth0();
+
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
+
+  useEffect(() => {
+    if (writingQuestion || answeringQuestion) {
+      document
+        .getElementById("latex-input")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [writingQuestion, answeringQuestion]);
+
+  const fetchQuestions = () => {
+    setLoading(true);
+    if (props.streamId) {
       QandAService.getAllQuestionsForStream({
         callback: (questions: Question[]) => {
-          this.setState({ questions, loading: false });
+          setQuestions(questions);
+          setLoading(false);
         },
-        streamId: this.props.streamId,
+        streamId: props.streamId,
       });
     } else {
       QandAService.getAllQuestionsForStream({
         callback: (questions: Question[]) => {
-          this.setState({ questions, loading: false });
+          setQuestions(questions);
+          setLoading(false);
         },
-        videoId: this.props.videoId,
+        videoId: props.videoId,
       });
     }
   };
 
-  onNewClicked = () => {
-    this.setState(
-      {
-        writingQuestion: true,
-      },
-      () => {
-        document
-          .getElementById("latex-input")
-          ?.scrollIntoView({ behavior: "smooth" });
-      }
-    );
+  const onNewClicked = () => {
+    setWritingQuestion(true);
   };
 
-  onAnswerClicked = (question: Question) => {
-    this.setState(
-      { writingQuestion: false, answeringQuestion: question },
-      () => {
-        document
-          .getElementById("latex-input")
-          ?.scrollIntoView({ behavior: "smooth" });
-      }
-    );
+  const onAnswerClicked = (question: Question) => {
+    setWritingQuestion(false);
+    setAnsweringQuestion(question);
   };
 
-  compareQuestionsByDate = (a: Question, b: Question) => {
+  const compareQuestionsByDate = (a: Question, b: Question) => {
     if (a.posted_at < b.posted_at) {
       return 1;
     }
@@ -119,7 +116,7 @@ export default class QandA extends Component<Props, State> {
     return 0;
   };
 
-  compareQuestionsByScore = (a: Question, b: Question) => {
+  const compareQuestionsByScore = (a: Question, b: Question) => {
     if (a.score < b.score) {
       return 1;
     }
@@ -129,170 +126,135 @@ export default class QandA extends Component<Props, State> {
     return 0;
   };
 
-  sortQuestions = () => {
-    return this.state.sortBy === "top"
-      ? this.state.questions.sort(this.compareQuestionsByScore)
-      : this.state.questions.sort(this.compareQuestionsByDate);
+  const sortQuestions = () => {
+    return sortBy === "top"
+      ? questions.sort(compareQuestionsByScore)
+      : questions.sort(compareQuestionsByDate);
   };
 
-  onUpvoteQuestionClicked = (question: Question) => {
-    if (!this.state.user) {
+  const onUpvoteQuestionClicked = async (question: Question) => {
+    if (!user) {
       return;
     }
-    question.downvoters.includes(this.state.user.username)
+    const token = await getAccessTokenSilently();
+    question.downvoters.includes(user.username)
       ? QandAService.removeQuestionDownvote(
-          this.state.user.id,
+          user.id,
           question.id,
-          (questions: Question[]) => {
-            console.log("user included", questions);
-            this.setState({ questions });
-          }
+          setQuestions,
+          token
         )
-      : question.upvoters.includes(this.state.user.username)
+      : question.upvoters.includes(user.username)
       ? QandAService.removeQuestionUpvote(
-          this.state.user.id,
+          user.id,
           question.id,
-          (questions: Question[]) => {
-            console.log("user included", questions);
-            this.setState({ questions });
-          }
+          setQuestions,
+          token
         )
-      : QandAService.upvoteQuestion(
-          this.state.user.id,
-          question.id,
-          (questions: Question[]) => {
-            console.log("user not included", questions);
-            this.setState({ questions });
-          }
-        );
+      : QandAService.upvoteQuestion(user.id, question.id, setQuestions, token);
   };
 
-  onDownVoteQuestionClicked = (question: Question) => {
-    if (!this.state.user) {
+  const onDownVoteQuestionClicked = async (question: Question) => {
+    if (!user) {
       return;
     }
-    question.upvoters.includes(this.state.user.username)
+    const token = await getAccessTokenSilently();
+    question.upvoters.includes(user.username)
       ? QandAService.removeQuestionUpvote(
-          this.state.user.id,
+          user.id,
           question.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
+          setQuestions,
+          token
         )
-      : question.downvoters.includes(this.state.user.username)
+      : question.downvoters.includes(user.username)
       ? QandAService.removeQuestionDownvote(
-          this.state.user.id,
+          user.id,
           question.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
+          setQuestions,
+          token
         )
       : QandAService.downvoteQuestion(
-          this.state.user.id,
+          user.id,
           question.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
+          setQuestions,
+          token
         );
   };
 
-  onUpvoteAnswerClicked = (answer: Answer) => {
-    if (!this.state.user) {
+  const onUpvoteAnswerClicked = async (answer: Answer) => {
+    if (!user) {
       return;
     }
-    answer.downvoters.includes(this.state.user.username)
+    const token = await getAccessTokenSilently();
+    answer.downvoters.includes(user.username)
       ? QandAService.removeAnswerDownvote(
-          this.state.user.id,
+          user.id,
           answer.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
+          setQuestions,
+          token
         )
-      : answer.upvoters.includes(this.state.user.username)
-      ? QandAService.removeAnswerUpvote(
-          this.state.user.id,
-          answer.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
-        )
-      : QandAService.upvoteAnswer(
-          this.state.user.id,
-          answer.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
-        );
+      : answer.upvoters.includes(user.username)
+      ? QandAService.removeAnswerUpvote(user.id, answer.id, setQuestions, token)
+      : QandAService.upvoteAnswer(user.id, answer.id, setQuestions, token);
   };
 
-  onDownVoteAnswerClicked = (answer: Answer) => {
-    if (!this.state.user) {
+  const onDownVoteAnswerClicked = async (answer: Answer) => {
+    if (!user) {
       return;
     }
-    answer.upvoters.includes(this.state.user.username)
-      ? QandAService.removeAnswerUpvote(
-          this.state.user.id,
-          answer.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
-        )
-      : answer.downvoters.includes(this.state.user.username)
+    const token = await getAccessTokenSilently();
+    answer.upvoters.includes(user.username)
+      ? QandAService.removeAnswerUpvote(user.id, answer.id, setQuestions, token)
+      : answer.downvoters.includes(user.username)
       ? QandAService.removeAnswerDownvote(
-          this.state.user.id,
+          user.id,
           answer.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
+          setQuestions,
+          token
         )
-      : QandAService.downvoteAnswer(
-          this.state.user.id,
-          answer.id,
-          (questions: Question[]) => {
-            this.setState({ questions });
-          }
-        );
+      : QandAService.downvoteAnswer(user.id, answer.id, setQuestions, token);
   };
 
-  onSubmitClicked = (content: string) => {
-    if (!this.state.user) {
+  const onSubmitClicked = async (content: string) => {
+    if (!user) {
       return;
     }
-    const params = this.props.streamId
+    const token = await getAccessTokenSilently();
+    const params = props.streamId
       ? {
-          userId: this.state.user.id,
+          userId: user.id,
           content: content,
-          streamId: this.props.streamId,
+          streamId: props.streamId,
         }
       : {
-          userId: this.state.user.id,
+          userId: user.id,
           content: content,
-          videoId: this.props.videoId,
+          videoId: props.videoId,
         };
-    console.log("submitted content: ", content);
-    this.state.writingQuestion
-      ? QandAService.askQuestion(params, (questions: Question[]) => {
-          this.setState({
-            questions,
-            writingQuestion: false,
-            answeringQuestion: null,
-          });
-        })
+    writingQuestion
+      ? QandAService.askQuestion(
+          params,
+          (questions: Question[]) => {
+            setQuestions(questions);
+            setWritingQuestion(false);
+            setAnsweringQuestion(null);
+          },
+          token
+        )
       : QandAService.answerQuestion(
-          this.state.user.id,
-          this.state.answeringQuestion!.id,
+          user.id,
+          answeringQuestion!.id,
           content,
           (questions: Question[]) => {
-            this.setState({
-              questions,
-              writingQuestion: false,
-              answeringQuestion: null,
-            });
-          }
+            setQuestions(questions);
+            setWritingQuestion(false);
+            setAnsweringQuestion(null);
+          },
+          token
         );
   };
 
-  renderQuestionOrAnswerContent = (content: string) => {
+  const renderQuestionOrAnswerContent = (content: string) => {
     if (!content.includes("$")) {
       return (
         <Text size="18px" weight="bold">
@@ -339,20 +301,16 @@ export default class QandA extends Component<Props, State> {
     }
   };
 
-  renderQuestion = (question: Question) => {
+  const renderQuestion = (question: Question) => {
     const upvoteColor =
-      this.state.user && question.upvoters.includes(this.state.user.username)
-        ? "#61EC9F"
-        : "black";
+      user && question.upvoters.includes(user.username) ? "#61EC9F" : "black";
     const downvoteColor =
-      this.state.user && question.downvoters.includes(this.state.user.username)
-        ? "#61EC9F"
-        : "black";
+      user && question.downvoters.includes(user.username) ? "#61EC9F" : "black";
     return (
       <Box>
         <Box direction="row" justify="between" align="center" id="question">
           <Box direction="row" gap="small">
-            {this.state.user && (
+            {user && (
               <Box
                 height="100%"
                 justify="between"
@@ -368,11 +326,11 @@ export default class QandA extends Component<Props, State> {
                     marginBottom: 5,
                     color: upvoteColor,
                   }}
-                  onClick={() => this.onUpvoteQuestionClicked(question)}
+                  onClick={() => onUpvoteQuestionClicked(question)}
                 />
                 <CaretDownOutlined
                   style={{ fontSize: 35, color: downvoteColor }}
-                  onClick={() => this.onDownVoteQuestionClicked(question)}
+                  onClick={() => onDownVoteQuestionClicked(question)}
                 /> */}
               </Box>
             )}
@@ -401,10 +359,10 @@ export default class QandA extends Component<Props, State> {
                   </Text>
                 </Box>
               </Box>
-              <Box>{this.renderQuestionOrAnswerContent(question.content)}</Box>
+              <Box>{renderQuestionOrAnswerContent(question.content)}</Box>
             </Box>
           </Box>
-          {this.state.user && (
+          {user && (
             <Box
               className="hides"
               direction="row"
@@ -416,7 +374,7 @@ export default class QandA extends Component<Props, State> {
               justify="center"
               align="center"
               gap="small"
-              onClick={() => this.onAnswerClicked(question)}
+              onClick={() => onAnswerClicked(question)}
               focusIndicator={false}
             >
               <Text color="white" weight="bold">
@@ -430,24 +388,20 @@ export default class QandA extends Component<Props, State> {
           direction="column"
           gap="small"
         >
-          {question.answers.map((answer) => this.renderAnswer(answer))}
+          {question.answers.map((answer) => renderAnswer(answer))}
         </Box>
       </Box>
     );
   };
 
-  renderAnswer = (answer: Answer) => {
+  const renderAnswer = (answer: Answer) => {
     const upvoteColor =
-      this.state.user && answer.upvoters.includes(this.state.user.username)
-        ? "#61EC9F"
-        : "black";
+      user && answer.upvoters.includes(user.username) ? "#61EC9F" : "black";
     const downvoteColor =
-      this.state.user && answer.downvoters.includes(this.state.user.username)
-        ? "#61EC9F"
-        : "black";
+      user && answer.downvoters.includes(user.username) ? "#61EC9F" : "black";
     return (
       <Box direction="row" gap="small">
-        {this.state.user && (
+        {user && (
           <Box
             height="100%"
             justify="between"
@@ -463,11 +417,11 @@ export default class QandA extends Component<Props, State> {
                 marginBottom: 5,
                 color: upvoteColor,
               }}
-              onClick={() => this.onUpvoteAnswerClicked(answer)}
+              onClick={() => onUpvoteAnswerClicked(answer)}
             />
             <CaretDownOutlined
               style={{ fontSize: 35, color: downvoteColor }}
-              onClick={() => this.onDownVoteAnswerClicked(answer)}
+              onClick={() => onDownVoteAnswerClicked(answer)}
             /> */}
           </Box>
         )}
@@ -488,100 +442,96 @@ export default class QandA extends Component<Props, State> {
               </Text>
             </Box>
           </Box>
-          <Box>{this.renderQuestionOrAnswerContent(answer.content)}</Box>
+          <Box>{renderQuestionOrAnswerContent(answer.content)}</Box>
         </Box>
       </Box>
     );
   };
 
-  render() {
-    return (
-      <Box
-        height="100%"
-        background="white"
-        round="small"
-        style={{
-          minWidth: "100%",
-        }}
-        pad="small"
-      >
-        <Box direction="row" justify="between" align="start">
-          <Box direction="row" margin="small" gap="small">
-            <Text
-              size="20px"
-              weight="bold"
-              color={this.state.sortBy === "top" ? "black" : "grey"}
-              onClick={() => this.setState({ sortBy: "top" })}
-              style={{ cursor: "pointer" }}
-            >
-              Top
-            </Text>
-            <Text
-              size="20px"
-              weight="bold"
-              color={this.state.sortBy === "new" ? "black" : "grey"}
-              onClick={() => this.setState({ sortBy: "new" })}
-              style={{ cursor: "pointer" }}
-            >
-              New
-            </Text>
-          </Box>
-          <Box direction="row" align="center" margin="small" gap="xsmall">
-            {!this.props.streamer && this.state.user && (
-              <Box
-                direction="row"
-                width="100px"
-                height="40px"
-                round="small"
-                background="#606EEB"
-                // margin="small"
-                justify="center"
-                align="center"
-                gap="small"
-                onClick={this.onNewClicked}
-                focusIndicator={false}
-              >
-                <Text color="white" weight="bold">
-                  New
-                </Text>
-                <Add color="white" size="16px" fontWeight="bold" />
-              </Box>
-            )}
+  return (
+    <Box
+      height="100%"
+      background="white"
+      round="small"
+      style={{
+        minWidth: "100%",
+      }}
+      pad="small"
+    >
+      <Box direction="row" justify="between" align="start">
+        <Box direction="row" margin="small" gap="small">
+          <Text
+            size="20px"
+            weight="bold"
+            color={sortBy === "top" ? "black" : "grey"}
+            onClick={() => setSortBy("top")}
+            style={{ cursor: "pointer" }}
+          >
+            Top
+          </Text>
+          <Text
+            size="20px"
+            weight="bold"
+            color={sortBy === "new" ? "black" : "grey"}
+            onClick={() => setSortBy("new")}
+            style={{ cursor: "pointer" }}
+          >
+            New
+          </Text>
+        </Box>
+        <Box direction="row" align="center" margin="small" gap="xsmall">
+          {!props.streamer && user && (
             <Box
-              onClick={this.fetchQuestions}
+              direction="row"
+              width="100px"
+              height="40px"
+              round="small"
+              background="#606EEB"
+              // margin="small"
+              justify="center"
+              align="center"
+              gap="small"
+              onClick={onNewClicked}
               focusIndicator={false}
-              margin="none"
-              pad="none"
             >
-              <Refresh size="40px" />
+              <Text color="white" weight="bold">
+                New
+              </Text>
+              <Add color="white" size="16px" fontWeight="bold" />
             </Box>
+          )}
+          <Box
+            onClick={fetchQuestions}
+            focusIndicator={false}
+            margin="none"
+            pad="none"
+          >
+            <Refresh size="40px" />
           </Box>
         </Box>
-        {this.state.loading && (
-          <Box width="100%" height="100%" align="center" justify="center">
-            <Loading size={50} color="black" />
-          </Box>
-        )}
-        {!this.state.loading && (
-          <Box margin="small" gap="medium">
-            {this.sortQuestions().map((question) =>
-              this.renderQuestion(question)
-            )}
-          </Box>
-        )}
-        {(this.state.writingQuestion || this.state.answeringQuestion) && (
-          <LatexInput
-            title={
-              this.state.writingQuestion
-                ? "New question"
-                : `Answering @${this.state.answeringQuestion?.username}`
-            }
-            callback={(content: string) => {
-              this.onSubmitClicked(content);
-            }}
-          />
-        )}
       </Box>
-    );
-  }
-}
+      {loading && (
+        <Box width="100%" height="100%" align="center" justify="center">
+          <Loading size={50} color="black" />
+        </Box>
+      )}
+      {!loading && (
+        <Box margin="small" gap="medium">
+          {sortQuestions().map((question) => renderQuestion(question))}
+        </Box>
+      )}
+      {(writingQuestion || answeringQuestion) && (
+        <LatexInput
+          title={
+            writingQuestion
+              ? "New question"
+              : `Answering @${answeringQuestion?.username}`
+          }
+          callback={(content: string) => {
+            onSubmitClicked(content);
+          }}
+        />
+      )}
+    </Box>
+  );
+};

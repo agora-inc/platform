@@ -5,30 +5,28 @@ import { Link, useHistory, Redirect } from "react-router-dom";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { Talk, TalkService } from "../../../Services/TalkService";
 import { User } from "../../../Services/UserService";
-import TalkRegistrationFormButton from "../Talkcard/TalkRegistrationFormButton";
+import { TalkRegistrationFormButton } from "../Talkcard/TalkRegistrationFormButton";
 import { ChannelService } from "../../../Services/ChannelService";
-import LoginModal from "../../Account/LoginModal";
 import SignUpButton from "../../Account/SignUpButton";
 import CalendarButtons from "../CalendarButtons";
 import ShareButtons from "../../Core/ShareButtons";
 import ReactTooltip from "react-tooltip";
 
 interface Props {
-  talk: Talk,
-  user: User | null;
+  talk: Talk;
   role: string | undefined;
   registered: boolean;
   registrationStatus: string;
 }
 
 interface State {
-    feedbackMsg: {
-      confirmationMsg: string;
-      errorMsg: string
-    },
-    showForm: boolean;
-    feedbackModal: boolean;
-    joinLobby: boolean;
+  feedbackMsg: {
+    confirmationMsg: string;
+    errorMsg: string;
+  };
+  showForm: boolean;
+  feedbackModal: boolean;
+  joinLobby: boolean;
 }
 
 export default class TalkRegistrationButton extends Component<Props, State> {
@@ -36,46 +34,58 @@ export default class TalkRegistrationButton extends Component<Props, State> {
     super(props);
     this.state = {
       feedbackMsg: {
-        confirmationMsg: "Successful registration. You will automatically receive the information regarding that event by email as soon as an administrator treated your request.",
-        errorMsg: ""
+        confirmationMsg:
+          "Successful registration. You will automatically receive the information regarding that event by email as soon as an administrator treated your request.",
+        errorMsg: "",
       },
       showForm: false,
       feedbackModal: false,
       joinLobby: false,
     };
   }
-  
 
   returnRestrictedAndTitle = () => {
     if (this.props.talk.visibility === "Everybody") {
-      return {restricted: false, mainTitle: "This event is public"}
+      return { restricted: false, mainTitle: "This event is public" };
     } else {
       if (this.props.role === "owner") {
-        return {restricted: false, mainTitle: "You are an administrator of this agora"}
+        return {
+          restricted: false,
+          mainTitle: "You are an administrator of this agora",
+        };
       } else if (this.props.role === "member") {
-        return {restricted: false, mainTitle: "You are a member of this agora"}
+        return {
+          restricted: false,
+          mainTitle: "You are a member of this agora",
+        };
       } else if (this.props.registered) {
-        return {restricted: false, mainTitle: "You are already registered to this event"}
+        return {
+          restricted: false,
+          mainTitle: "You are already registered to this event",
+        };
       } else if (this.props.registrationStatus === "pending") {
-        return {restricted: true, mainTitle: "Registration pending"}
+        return { restricted: true, mainTitle: "Registration pending" };
       } else {
-        return {restricted: true, mainTitle: "This event has a controlled audience"}
+        return {
+          restricted: true,
+          mainTitle: "This event has a controlled audience",
+        };
       }
     }
-  }
+  };
 
   toggleModal = () => {
     this.setState({ showForm: !this.state.showForm });
   };
 
   render() {
-    const {restricted, mainTitle} = this.returnRestrictedAndTitle()
+    const { restricted, mainTitle } = this.returnRestrictedAndTitle();
     if (this.state.joinLobby) {
       window.scrollTo(0, 0);
-      return <Redirect to={`/event/${this.props.talk.id}`} push={true} />
+      return <Redirect to={`/event/${this.props.talk.id}`} push={true} />;
     } else {
       return (
-        <Box style={{maxHeight: "35px"}}>
+        <Box style={{ maxHeight: "35px" }}>
           {/*<Button
             data-tip data-for='apply_give_talk'
             label="Register"
@@ -93,11 +103,17 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             }}
           />*/}
           <Box
-            data-tip data-for='apply_give_talk'
-            onClick={restricted ? this.toggleModal : () => this.setState({joinLobby: true})}
+            data-tip
+            data-for="apply_give_talk"
+            onClick={
+              restricted
+                ? this.toggleModal
+                : () => this.setState({ joinLobby: true })
+            }
             background="white"
             round="xsmall"
-            width="160px" height="35px"
+            width="160px"
+            height="35px"
             justify="center"
             align="center"
             focusIndicator={true}
@@ -106,10 +122,10 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             <Text weight="bold" size="15px">
               Enter
             </Text>
-          </Box> 
+          </Box>
           <ReactTooltip id="apply_give_talk" effect="solid">
-              Click to join the lobby
-            </ReactTooltip>
+            Click to join the lobby
+          </ReactTooltip>
 
           {restricted && (
             <Overlay
@@ -117,7 +133,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
               onEsc={this.toggleModal}
               onCancelClick={this.toggleModal}
               onClickOutside={this.toggleModal}
-              onSubmitClick={()=>{}}
+              onSubmitClick={() => {}}
               submitButtonText="Register"
               canProceed={false}
               disableSubmitButton={true}
@@ -128,7 +144,7 @@ export default class TalkRegistrationButton extends Component<Props, State> {
               title={"How to attend"}
             >
               <OverlaySection>
-          {/* !restricted && (
+                {/* !restricted && (
             <>
             <Grid
               rows={['80px', '30px', '40px', '40px']}
@@ -186,38 +202,50 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             </>
           )*/}
 
-            {this.props.registrationStatus !== "pending" && (
-              <>
-              <Grid
-                rows={['80px', "60px", "40px", "40px"]}
-                columns={['430px']}
-                // gap="small"
-                areas={[
-                    { name: 'info', start: [0, 0], end: [0, 0] },
-                    { name: 'fill-in', start: [0, 1], end: [0, 1] },
-                    { name: 'member_info', start: [0, 2], end: [0, 2] },
-                    { name: 'sign-in', start: [0, 3], end: [0, 3] },
+                {this.props.registrationStatus !== "pending" && (
+                  <>
+                    <Grid
+                      rows={["80px", "60px", "40px", "40px"]}
+                      columns={["430px"]}
+                      // gap="small"
+                      areas={[
+                        { name: "info", start: [0, 0], end: [0, 0] },
+                        { name: "fill-in", start: [0, 1], end: [0, 1] },
+                        { name: "member_info", start: [0, 2], end: [0, 2] },
+                        { name: "sign-in", start: [0, 3], end: [0, 3] },
+                      ]}
+                    >
+                      <Box
+                        gridArea="info"
+                        direction="column"
+                        align="start"
+                        justify="start"
+                        gap="10px"
+                      >
+                        <Text weight="bold" size="20px" textAlign="start">
+                          {mainTitle}
+                        </Text>
+                        <Box
+                          direction="row"
+                          align="center"
+                          pad="1px"
+                          justify="start"
+                        >
+                          <Text size="14px">
+                            {" "}
+                            To receive via email the link to the seminar:{" "}
+                          </Text>
+                        </Box>
+                      </Box>
 
-                ]}
-              >
-                <Box gridArea="info" direction="column" align="start" justify="start" gap="10px" >
-                  <Text weight="bold" size="20px" textAlign="start"> 
-                    {mainTitle}
-                  </Text>
-                  <Box direction="row" align="center" pad="1px" justify="start">
-                    <Text size="14px">  To receive via email the link to the seminar: </Text>
-                  </Box>
-                </Box>
-                
-                <Box gridArea="fill-in" pad="xsmall" align="center">
-                  <TalkRegistrationFormButton
-                    text="Fill in this form"
-                    talk={this.props.talk}
-                    user={this.props.user}
-                    callback={this.toggleModal}
-                  />
-                </Box>
-                {/* <Box gridArea="member_info" direction="column" align="start" justify="start" gap="10px" >
+                      <Box gridArea="fill-in" pad="xsmall" align="center">
+                        <TalkRegistrationFormButton
+                          text="Fill in this form"
+                          talk={this.props.talk}
+                          callback={this.toggleModal}
+                        />
+                      </Box>
+                      {/* <Box gridArea="member_info" direction="column" align="start" justify="start" gap="10px" >
                   <Box direction="row" align="center" pad="1px" justify="start">
                     <Text size="14px">If you are a member of <b>{this.props.talk.channel_name}</b>, simply</Text>
                   </Box>
@@ -232,10 +260,10 @@ export default class TalkRegistrationButton extends Component<Props, State> {
                     }}
                   />
                 </Box> */}
-              </Grid>  
-              </>
+                    </Grid>
+                  </>
 
-            /*<>
+                  /*<>
             <Grid
               rows={['90px', '20px', '40px', '40px', '40px']}
               columns={['430px']}
@@ -311,112 +339,144 @@ export default class TalkRegistrationButton extends Component<Props, State> {
             </Grid>        
             </>
             */
-          )}
+                )}
 
-          {this.props.registrationStatus === "pending" && (
-            <>
-            <Grid
-              rows={['80px', '30px', '85px', '40px', '40px']}
-              columns={['430px']}
-              // gap="small"
-              areas={[
-                  { name: 'info', start: [0, 0], end: [0, 0] },
-                  { name: 'you-can-also', start: [0, 1], end: [0, 1] },
-                  { name: 'agora-member', start: [0, 2], end: [0, 2] },
-                  { name: 'calendar', start: [0, 3], end: [0, 3] },
-                  { name: 'share', start: [0, 4], end: [0, 4] },
-              ]}
-            >
-              <Box gridArea="info" direction="column" align="start" gap="10px" >  
-                <Text weight="bold" size="20px"> 
-                  {mainTitle}
-                </Text>
-                <Box direction="row" align="center" pad="xsmall">
-                  <FormNext size="20px" />
-                  <Text size="14px"> Please wait for the approval from the event organiser </Text>
-                </Box>
-              </Box>
-
-              <Box gridArea="you-can-also" align="start" pad="12px">
-                <Text
-                  weight="bold"
-                  size="14px"
-                >
-                  Next steps
-                </Text>
-              </Box>
-
-              <Box gridArea="agora-member" gap="2px" pad="xsmall" direction="column" align="start" justify="center">
-                <Box direction="row" align="center"> 
-                  <FormNext size="20px" />
-                  <Text size="14px"> Apply to become a member of </Text>
-                </Box>
-                <Link
-                  className="channel"
-                  to={`/${this.props.talk.channel_name}`}
-                  style={{ textDecoration: "none" }}
-                  
-                >
-                  <Box
-                    direction="row"
-                    gap="xsmall"
-                    align="center"
-                    round="xsmall"
-                    pad={{ vertical: "6px", horizontal: "6px" }}
-                    margin={{start: "25px"}}
-                    
-                  >
-                    <Box
-                      justify="center"
-                      align="center"
-                      background="#efeff1"
-                      overflow="hidden"
-                      style={{
-                          minHeight: 14,
-                          minWidth: 14,
-                          borderRadius: 7,
-                      }}
+                {this.props.registrationStatus === "pending" && (
+                  <>
+                    <Grid
+                      rows={["80px", "30px", "85px", "40px", "40px"]}
+                      columns={["430px"]}
+                      // gap="small"
+                      areas={[
+                        { name: "info", start: [0, 0], end: [0, 0] },
+                        { name: "you-can-also", start: [0, 1], end: [0, 1] },
+                        { name: "agora-member", start: [0, 2], end: [0, 2] },
+                        { name: "calendar", start: [0, 3], end: [0, 3] },
+                        { name: "share", start: [0, 4], end: [0, 4] },
+                      ]}
                     >
-                      <img
-                        src={ChannelService.getAvatar(
-                            this.props.talk.channel_id
-                        )}
-                        height={14}
-                        width={14}
-                      />
-                    </Box>
-                    <Box justify="between">
-                      <Text weight="bold" size="14px" color="black">
-                        {this.props.talk.channel_name}
-                      </Text>
-                    </Box>
-                  </Box>
-                </Link>
-                <Text size="14px" margin={{start: "20px"}}> for an easier access to future seminars </Text>
-              </Box>
+                      <Box
+                        gridArea="info"
+                        direction="column"
+                        align="start"
+                        gap="10px"
+                      >
+                        <Text weight="bold" size="20px">
+                          {mainTitle}
+                        </Text>
+                        <Box direction="row" align="center" pad="xsmall">
+                          <FormNext size="20px" />
+                          <Text size="14px">
+                            {" "}
+                            Please wait for the approval from the event
+                            organiser{" "}
+                          </Text>
+                        </Box>
+                      </Box>
 
-              <Box gridArea="calendar" pad="xsmall" direction="row" align="center">
-                <FormNext size="20px" />
-                <Text size="14px" margin={{right: "10px"}}> Add this event to your calendar </Text>
-                <Box pad="xsmall">
-                  <CalendarButtons talk={this.props.talk} height="30px" />
-                </Box>
-              </Box>
+                      <Box gridArea="you-can-also" align="start" pad="12px">
+                        <Text weight="bold" size="14px">
+                          Next steps
+                        </Text>
+                      </Box>
 
-              <Box gridArea="share" direction="row" pad="xsmall" align="center">
-                <FormNext size="20px" />
-                <Text size="14px" margin={{right: "10px"}}> Share it </Text> 
-                <Box align="center" pad="xsmall">
-                  <ShareButtons talk={this.props.talk} height="30px"/>
-                </Box>
-              </Box>
+                      <Box
+                        gridArea="agora-member"
+                        gap="2px"
+                        pad="xsmall"
+                        direction="column"
+                        align="start"
+                        justify="center"
+                      >
+                        <Box direction="row" align="center">
+                          <FormNext size="20px" />
+                          <Text size="14px"> Apply to become a member of </Text>
+                        </Box>
+                        <Link
+                          className="channel"
+                          to={`/${this.props.talk.channel_name}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Box
+                            direction="row"
+                            gap="xsmall"
+                            align="center"
+                            round="xsmall"
+                            pad={{ vertical: "6px", horizontal: "6px" }}
+                            margin={{ start: "25px" }}
+                          >
+                            <Box
+                              justify="center"
+                              align="center"
+                              background="#efeff1"
+                              overflow="hidden"
+                              style={{
+                                minHeight: 14,
+                                minWidth: 14,
+                                borderRadius: 7,
+                              }}
+                            >
+                              <img
+                                src={ChannelService.getAvatar(
+                                  this.props.talk.channel_id
+                                )}
+                                height={14}
+                                width={14}
+                              />
+                            </Box>
+                            <Box justify="between">
+                              <Text weight="bold" size="14px" color="black">
+                                {this.props.talk.channel_name}
+                              </Text>
+                            </Box>
+                          </Box>
+                        </Link>
+                        <Text size="14px" margin={{ start: "20px" }}>
+                          {" "}
+                          for an easier access to future seminars{" "}
+                        </Text>
+                      </Box>
 
-            </Grid>  
-            </>
+                      <Box
+                        gridArea="calendar"
+                        pad="xsmall"
+                        direction="row"
+                        align="center"
+                      >
+                        <FormNext size="20px" />
+                        <Text size="14px" margin={{ right: "10px" }}>
+                          {" "}
+                          Add this event to your calendar{" "}
+                        </Text>
+                        <Box pad="xsmall">
+                          <CalendarButtons
+                            talk={this.props.talk}
+                            height="30px"
+                          />
+                        </Box>
+                      </Box>
+
+                      <Box
+                        gridArea="share"
+                        direction="row"
+                        pad="xsmall"
+                        align="center"
+                      >
+                        <FormNext size="20px" />
+                        <Text size="14px" margin={{ right: "10px" }}>
+                          {" "}
+                          Share it{" "}
+                        </Text>
+                        <Box align="center" pad="xsmall">
+                          <ShareButtons talk={this.props.talk} height="30px" />
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </>
+                )}
+              </OverlaySection>
+            </Overlay>
           )}
-            </OverlaySection>
-          </Overlay>
-        )}
         </Box>
       );
     }

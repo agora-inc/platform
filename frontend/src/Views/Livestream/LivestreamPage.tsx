@@ -1,185 +1,130 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import LivestreamAdminPage from "./LivestreamAdminPage";
 import LivestreamAudiencePage from "./LivestreamAudiencePage";
 import LivestreamSpeakerPage from "./LivestreamSpeakerPage";
 import LivestreamErrorPage from "./LivestreamErrorPage";
 import { UrlEncryption } from "../../Components/Core/Encryption/UrlEncryption";
 import { TalkService, Talk } from "../../Services/TalkService";
-import { UserService, User } from "../../Services/UserService";
 import { ChannelService } from "../../Services/ChannelService";
-import { Box, Text, Image } from "grommet";
+import { useStore } from "../../store";
+import { useAuth0 } from "@auth0/auth0-react";
 
+const nullTalk: Talk = {
+  id: NaN,
+  channel_id: NaN,
+  channel_name: "",
+  channel_colour: "",
+  has_avatar: false,
+  name: "",
+  date: "",
+  end_date: "",
+  description: "",
+  link: "",
+  recording_link: "",
+  tags: [],
+  show_link_offset: NaN,
+  visibility: "",
+  card_visibility: "",
+  topics: [],
+  talk_speaker: "",
+  talk_speaker_url: "",
+  published: 0,
+  audience_level: "All",
+  has_speaker_photo: 0,
+};
 
 interface Props {
-    location: { pathname: string; 
-    };
-    // match: {params: {encoded_endpoint: string}};
-    // NOTE on why we dont use this.props.match.params.encoded_endpoint: 
-    //    As the encoded endpoint contains many "/" because of AES, 
-    //    calling this.props.encoded_endpoint does not grab the full endpoint.
-  }
-
-interface State {
-  talk: Talk;
-  talkId: number;
-  talkRole: "admin" | "speaker" | "audience";
-  channelRole: "owner" | "member" | any;
-  user: User | null;
-  talkNotFound: boolean;
-  talkErrorMsg: string
+  location: { pathname: string };
+  // match: {params: {encoded_endpoint: string}};
+  // NOTE on why we dont use props.match.params.encoded_endpoint:
+  //    As the encoded endpoint contains many "/" because of AES,
+  //    calling props.encoded_endpoint does not grab the full endpoint.
 }
 
+export const LivestreamPage = (props: Props) => {
+  const [talkId, setTalkId] = useState(-1);
+  const [talkRole, setTalkRole] = useState<"admin" | "speaker" | "audience">(
+    "admin"
+  );
+  const [talk, setTalk] = useState(nullTalk);
+  const [channelRole, setChannelRole] = useState<"owner" | "member" | any>("");
+  const [talkNotFound, setTalkNotFound] = useState(false);
+  const [talkErrorMsg, setTalkErrorMsg] = useState("");
 
-export default class LivestreamPage extends Component<Props, State> {
-    constructor(props: Props) {
-      super(props);
-      
-      this.state = {
-          talkId: -1,
-          talkRole: "admin",
-          talk: {
-              id: NaN,
-              channel_id: NaN,
-              channel_name: "",
-              channel_colour: "",
-              has_avatar: false,
-              name: "",
-              date: "",
-              end_date: "",
-              description: "",
-              link: "",
-              recording_link: "",
-              tags: [],
-              show_link_offset: NaN,
-              visibility: "",
-              card_visibility: "",
-              topics: [],
-              talk_speaker: "",
-              talk_speaker_url: "",
-              published: 0,
-              audience_level: "All",
-              has_speaker_photo: 0, 
-            },
-            user: UserService.getCurrentUser(),
-            channelRole: "",
-            talkNotFound: false,
-            talkErrorMsg: ""
-        };
-        //   console.log("talkId extracted")
-        //   console.log(UrlEncryption.getIdFromEncryptedEndpoint(this.props.location.pathname.replace("/livestream/", "")))
-        //   console.log("extracted stream role")
-        //   console.log(UrlEncryption.getRoleFromEncryptedEndpoint(this.props.location.pathname.replace("/livestream/", "")))
-    }
-    
-    componentDidMount() {
-        this.fetchAll()
-    }
+  const user = useStore((state) => state.loggedInUser);
 
-    readUrl(callback: any){
-        try{
-            this.setState({
-                talkId: Number(UrlEncryption.getIdFromEncryptedEndpoint(this.props.location.pathname.replace("/livestream/", ""))),
-                talkRole: UrlEncryption.getRoleFromEncryptedEndpoint(this.props.location.pathname.replace("/livestream/", "")),
-            }, () => {
-                    console.log("ID = ");
-                    console.log(this.state.talkId);
-                    if (!(this.state.talkId == 0)){
-                        callback()
-                        }
-                    else {
-                        this.setState({
-                            talkNotFound: true,
-                            talkErrorMsg: "Badly formatted URL. Could not extract ID."
-                            }
-                        )
-                    }
-                }   
-            )
+  const { getAccessTokenSilently } = useAuth0();
+
+  useEffect(() => {
+    fetchAll();
+  }, []);
+
+  const fetchAll = async () => {
+    // decode URL
+    const token = await getAccessTokenSilently();
+    readUrl(() => {
+      // fetch talk info
+      TalkService.getTalkById(talkId, (talk: Talk) => {
+        if (talk !== null) {
+          setTalk(talk);
+          user &&
+            ChannelService.getRoleInChannel(
+              user!.id,
+              talk.channel_id,
+              (channelRole: string) => {
+                setChannelRole(channelRole);
+              },
+              token
+            );
+        } else {
+          setTalkNotFound(true);
+          setTalkErrorMsg(
+            "This event has been modified or no longer exists. Contact an organiser for a new URL."
+          );
         }
-        catch(e){
-            console.log(e);
-            this.setState({
-                talkNotFound: true,
-                talkErrorMsg: "Badly formatted URL. Could not extract ID."
-                }
-            )
-        }
-    }
+      });
+    });
+  };
 
-    fetchAll() {
-        // decode URL
-        this.readUrl(() => {
-            // fetch talk info
-            TalkService.getTalkById(this.state.talkId, (talk: Talk) => {
-                // console.log("test")
-                // console.log(talk)
-                if (!(talk == null)){
-                    this.setState({talk: talk}, 
-                        () => {
-                            // fetch user info
-                            if (!(this.state.user === null)){
-                                ChannelService.getRoleInChannel(
-                                    this.state.user!.id,
-                                    talk.channel_id,
-                                    (channelRole: string) => {
-                                        this.setState({ channelRole: channelRole }, 
-                                            () => {
-                                                // console.log("Channel role:")
-                                                // console.log(channelRole)
-                                        });
-                                    }
-                                    );
-                                }
-                            }
-                            );
-                } else {
-                    this.setState({
-                        talkNotFound: true,
-                        talkErrorMsg: "This event has been modified or no longer exists. Contact an organiser for a new URL."
-                    })
-                }
-            
-            });
-            }
+  const readUrl = (callback: any) => {
+    try {
+      setTalkId(
+        Number(
+          UrlEncryption.getIdFromEncryptedEndpoint(
+            props.location.pathname.replace("/livestream/", "")
+          )
         )
+      );
+      setTalkRole(
+        UrlEncryption.getRoleFromEncryptedEndpoint(
+          props.location.pathname.replace("/livestream/", "")
+        )
+      );
+      if (talkId !== 0) {
+        callback();
+      } else {
+        setTalkNotFound(true);
+        setTalkErrorMsg("Badly formatted URL. Could not extract ID.");
+      }
+    } catch (e) {
+      console.log(e);
+      setTalkNotFound(true);
+      setTalkErrorMsg("Badly formatted URL. Could not extract ID.");
     }
-    
-    
-    render() {
-        if (!(this.state.talkNotFound)){
-            if (this.state.talkRole == "speaker"){
-                console.log("speaker")
-                return (
-                    <LivestreamSpeakerPage
-                        talkId={this.state.talkId}
-                    />
-                )
-            } else if (
-                (this.state.talkRole == "admin") || (this.state.channelRole == "owner")
-                ){
-                console.log("admin")
+  };
 
-                return (
-                    <LivestreamAdminPage
-                        talkId={this.state.talkId}
-                    />
-                )
-            } else {
-                console.log("audience")
-
-                return (
-                    <LivestreamAudiencePage
-                        talkId={this.state.talkId}
-                    />
-                )
-            }
-        }
-        else {
-            return (
-                <LivestreamErrorPage
-                    errorMessage={this.state.talkErrorMsg}
-                />
-            )
-        }
+  if (!talkNotFound) {
+    if (talkRole == "speaker") {
+      console.log("speaker");
+      return <LivestreamSpeakerPage talkId={talkId} />;
+    } else if (talkRole == "admin" || channelRole == "owner") {
+      console.log("admin");
+      return <LivestreamAdminPage talkId={talkId} />;
+    } else {
+      console.log("audience");
+      return <LivestreamAudiencePage talkId={talkId} />;
     }
-}
+  } else {
+    return <LivestreamErrorPage errorMessage={talkErrorMsg} />;
+  }
+};

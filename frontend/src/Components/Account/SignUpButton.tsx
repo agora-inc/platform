@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { basePoint } from "../../config";
 import { Box, Heading, Button, TextInput, Text } from "grommet";
 import { Link, Route } from "react-router-dom";
-import { StatusCritical, Group} from "grommet-icons";
+import { StatusCritical, Group } from "grommet-icons";
 import { UserService } from "../../Services/UserService";
 import { Overlay } from "../Core/Overlay";
 import { Channel, ChannelService } from "../../Services/ChannelService";
@@ -32,11 +32,10 @@ interface State {
   width: string;
   height: string;
   textSize: string;
-
 }
 
 export default class SignUpButton extends Component<Props, State> {
-  constructor(props: Props ) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showModal: false,
@@ -50,36 +49,34 @@ export default class SignUpButton extends Component<Props, State> {
       email: "",
       width: this.props.width ? this.props.width : "100px",
       height: this.props.height ? this.props.height : "35px",
-      textSize: this.props.textSize ? this.props.textSize : "14px"
+      textSize: this.props.textSize ? this.props.textSize : "14px",
     };
   }
 
   onSubmit = () => {
-    UserService.register(
-      this.state.email,
-      this.state.password,
-      this.state.email,
-      this.state.position,
-      this.state.institution,
-      this.props.channelId !== undefined ? this.props.channelId : 0,
-      (result: {status: string, userId: number}) => {
-        if (result.status === "ok") {
-          ProfileService.createProfile(
-            result.userId, 
-            this.state.fullName, 
-            () => {
-              this.toggleModal();
-              this.props.callback();
-              window.location.href = basePoint + "/profile/" + result.userId
-            }
-          )
-        } else {
-          this.setState({ error: result.status });
-        }
-      }
-    );
+    // UserService.register(
+    //   this.state.username,
+    //   this.state.password,
+    //   this.state.email,
+    //   this.state.position,
+    //   this.state.institution,
+    //   this.props.channelId !== undefined ? this.props.channelId : 0,
+    //   (result: {status: string, userId: number}) => {
+    //     if (result.status === "ok") {
+    //       ProfileService.createProfile(
+    //         result.userId,
+    //         this.state.fullName,
+    //         () => {
+    //           this.toggleModal();
+    //           this.props.callback();
+    //         }
+    //       )
+    //     } else {
+    //       this.setState({ error: result.status });
+    //     }
+    //   }
+    // );
   };
-
 
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal, error: "" });
@@ -103,10 +100,9 @@ export default class SignUpButton extends Component<Props, State> {
     return re.test(email);
   };
 
-  
   render() {
     return (
-      <Box style={this.props.height ? {} : {maxHeight: "30px"}}>
+      <Box style={this.props.height ? {} : { maxHeight: "30px" }}>
         <Box
           onClick={this.toggleModal}
           background="#0C385B"
@@ -119,8 +115,15 @@ export default class SignUpButton extends Component<Props, State> {
           round="xsmall"
           direction="row"
         >
-          {this.props.icon ? (<Group size="medium" style={{marginRight: "10px"}}/>) : "" }
-          <Text size={this.state.textSize} weight="bold"> {this.props.text ? this.props.text : "Sign up"} </Text>
+          {this.props.icon ? (
+            <Group size="medium" style={{ marginRight: "10px" }} />
+          ) : (
+            ""
+          )}
+          <Text size={this.state.textSize} weight="bold">
+            {" "}
+            {this.props.text ? this.props.text : "Sign up"}{" "}
+          </Text>
         </Box>
         <Overlay
           width={400}
@@ -144,7 +147,7 @@ export default class SignUpButton extends Component<Props, State> {
               gap="small"
               direction="row"
             >
-              <StatusCritical/>
+              <StatusCritical />
               <Heading level={5} margin="none" color="grey">
                 {/*Error: {this.state.error}*/}
                 Error: Username or email already taken.
@@ -161,7 +164,9 @@ export default class SignUpButton extends Component<Props, State> {
           >
             <Box width="90%" gap="5px">
               <Text size="14px" color="black" margin={{ bottom: "24px" }}>
-                This account will be associated with you as an individual. You may also have free access to premium features via your institution.
+                This account will be associated with you as an individual. You
+                may also have free access to premium features via your
+                institution.
                 {/*create one or more{" "}
                 <Link to={"/info/welcome"} onClick={this.toggleModal}>
                   <Text color="color1" weight="bold" size="14px">

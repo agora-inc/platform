@@ -1,22 +1,21 @@
 import { baseApiUrl } from "../config";
-import axios from "axios";
 import { Topic } from "../Services/TopicService";
-import { get, post } from "../Middleware/httpMiddleware";
+import { get, post, del } from "../Middleware/httpMiddleware";
 
 const getAllChannels = (limit: number, offset: number, callback: any) => {
-  get(`channels/all?limit=${limit}&offset=${offset}`, callback);
+  get(`channels/all?limit=${limit}&offset=${offset}`, "", callback);
 };
 
 const getTrendingChannels = (callback: any) => {
-  get("channels/trending", callback);
+  get("channels/trending", "", callback);
 };
 
 const getChannelByName = (name: string, callback: any) => {
-  get(`channels/channel?name=${name}`, callback);
+  get(`channels/channel?name=${name}`, "", callback);
 };
 
 const getChannelById = (id: number, callback: any) => {
-  get(`channels/channel?id=${id}`, callback);
+  get(`channels/channel?id=${id}`, "", callback);
 };
 
 const createChannel = (
@@ -25,6 +24,7 @@ const createChannel = (
   userId: number,
   callback: any,
   topics: Topic[],
+  token: string
 ) => {
   // default description if none
   if (description == "") {
@@ -36,90 +36,111 @@ const createChannel = (
 
   post(
     `channels/create`,
-    { name: name,
+    {
+      name: name,
       description: description,
       userId: userId,
       topic1Id: topics.length > 0 ? topics[0].id : null,
     },
+    token,
     callback
   );
 };
 
-const addToMailingList = (channelId: number, emails: string[], callback: any) => {
-  axios
-    .post(
-      baseApiUrl + `/channels/mailinglist/add`,
-      { channelId: channelId, emails: emails },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then(function (response) {
+const addToMailingList = (
+  channelId: number,
+  emails: string[],
+  callback: any,
+  token: string
+) => {
+  post(
+    "/channels/mailinglist/add",
+    { channelId: channelId, emails: emails },
+    token,
+    () => {
       callback("ok");
-    })
-    .catch(function (error) {
-      callback(error.response.data);
-    });
+    }
+  );
 };
 
-const getMailingList = (channelId: number, callback: any) => { 
-  const url = `channels/mailinglist?channelId=${channelId}`;
-  get(url, callback)
+const getMailingList = (channelId: number, callback: any, token: string) => {
+  get(`channels/mailinglist?channelId=${channelId}`, token, callback);
 };
 
-const removeFromMailingList = (channelId: number, emails: string[], callback: any) => {
+const removeFromMailingList = (
+  channelId: number,
+  emails: string[],
+  callback: any
+) => {};
 
-}
-
-const addInvitedMembersToChannel = (channelId: number, emails: string[], callback: any) => {
-  axios
-    .post(
-      baseApiUrl + `/channels/invite/add/member`,
-      { channelId: channelId, emails: emails },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then(function (response) {
+const addInvitedMembersToChannel = (
+  channelId: number,
+  emails: string[],
+  callback: any,
+  token: string
+) => {
+  post(
+    "/channels/invite/add/member",
+    { channelId: channelId, emails: emails },
+    token,
+    () => {
       callback("ok");
-    })
-    .catch(function (error) {
-      callback(error.response.data);
-    });
+    }
+  );
 };
 
-const addFollowingMembersToChannel = (channelId: number, emails: string[], callback: any) => {
-  axios
-    .post(
-      baseApiUrl + `/channels/invite/add/follower`,
-      { channelId: channelId, emails: emails },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then(function (response) {
+const addFollowingMembersToChannel = (
+  channelId: number,
+  emails: string[],
+  callback: any,
+  token: string
+) => {
+  post(
+    "/channels/invite/add/follower",
+    { channelId: channelId, emails: emails },
+    token,
+    () => {
       callback("ok");
-    })
-    .catch(function (error) {
-      callback(error.response.data);
-    });
+    }
+  );
 };
 
-const getInvitedMembersForChannel = (channelId: number, callback: any) => {
-  const url = `channels/invite?channelId=${channelId}`;
-  get(url, callback)
-}
+const getInvitedMembersForChannel = (
+  channelId: number,
+  callback: any,
+  token: string
+) => {
+  get(`channels/invite?channelId=${channelId}`, token, callback);
+};
 
-const getChannelsForUser = (userId: number, roles: string[], callback: any) => {
-  const url = `channels/foruser?userId=${userId}&role=${roles.reduce(
-    (acc, curr) => acc + `&role=${curr}`
-  )}`;
-  get(url, callback);
+const getChannelsForUser = (
+  userId: number,
+  roles: string[],
+  callback: any,
+  token: string
+) => {
+  get(
+    `channels/foruser?userId=${userId}&role=${roles.reduce(
+      (acc, curr) => acc + `&role=${curr}`
+    )}`,
+    token,
+    callback
+  );
 };
 
 const getUsersForChannel = (
   channelId: number,
   roles: string[],
-  callback: any
+  callback: any,
+  token: string
 ) => {
-  const url = `channels/users?channelId=${channelId}&role=${roles.reduce(
-    (acc, curr) => acc + `&role=${curr}`
-  )}`;
-  get(url, callback);
+  get(
+    `channels/users?channelId=${channelId}&role=${roles.reduce(
+      (acc, curr) => acc + `&role=${curr}`
+    )}`,
+    token,
+    callback
+  );
 };
 
 const getContactAddresses = (
@@ -127,19 +148,20 @@ const getContactAddresses = (
   channelId: number,
   callback: any
 ) => {
-  const url = `channels/contacts?channelId=${channelId}`;
-  get(url, callback);
+  get(`channels/contacts?channelId=${channelId}`, "", callback);
 };
 
 const addContactAddress = (
   channelId: number,
   contactAddress: string,
   userId: number,
-  callback: any
+  callback: any,
+  token: string
 ) => {
   post(
     `channels/contact/add?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`,
     { contactAddress: contactAddress, channelId: channelId, userId: userId },
+    token,
     callback
   );
 };
@@ -149,12 +171,14 @@ const removeContactAddress = (
   channelId: number,
   contactAddress: string,
   userId: number,
-  callback: any
+  callback: any,
+  token: string
 ) => {
-  const url =
-    baseApiUrl +
-    `/channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`;
-  get(url, callback);
+  get(
+    `/channels/contact/delete?channelId=${channelId}&contactAddress=${contactAddress}&userId=${userId}`,
+    token,
+    callback
+  );
 };
 
 const sendTalkApplicationEmail = (
@@ -172,65 +196,70 @@ const sendTalkApplicationEmail = (
   personal_message: string,
   callback: any
 ) => {
-  const url = baseApiUrl + "/channel/apply/talk";
-  axios
-    .post(
-      url,
-      {
-        channel_id,
-        agora_name,
-        speaker_name,
-        speaker_title,
-        speaker_affiliation,
-        speaker_personal_website,
-        speaker_email,
-        talk_title,
-        talk_abstract,
-        talk_topics,
-        personal_message,
-      },
-      {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
-    )
-    .then(function (response) {
-      console.log("Response: ", response)
+  post(
+    "/channel/apply/talk",
+    {
+      channel_id,
+      agora_name,
+      speaker_name,
+      speaker_title,
+      speaker_affiliation,
+      speaker_personal_website,
+      speaker_email,
+      talk_title,
+      talk_abstract,
+      talk_topics,
+      personal_message,
+    },
+    "",
+    () => {
       callback(true);
-    })
-    .catch(function (error) {
-      console.log("Error: ", error)
+    },
+    () => {
       callback(false);
-    });
+    }
+  );
 };
 
-const getRoleInChannel = (userId: number, channelId: number, callback: any) => {
-  const url = `channels/user/role?channelId=${channelId}&userId=${userId}`;
-  get(url, callback);
+const getRoleInChannel = (
+  userId: number,
+  channelId: number,
+  callback: any,
+  token: string
+) => {
+  get(
+    `channels/user/role?channelId=${channelId}&userId=${userId}`,
+    token,
+    callback
+  );
 };
 
 const addUserToChannel = (
   userId: number,
   channelId: number,
   role: string,
-  callback: any
+  callback: any,
+  token: string
 ) => {
   post(
     "channels/users/add",
     { userId: userId, channelId: channelId, role: role },
+    token,
     callback
   );
 };
 
+// TODO: make DELETE request
 const removeUserFromChannel = (
   userId: number,
   channelId: number,
-  callback: any
+  callback: any,
+  token: string
 ) => {
   post(
     "channels/users/remove",
     { userId: userId, channelId: channelId },
+    token,
     callback
   );
 };
@@ -246,17 +275,19 @@ const removeUserFromChannel = (
 // };
 
 const getFollowerCountForChannel = (channelId: number, callback: any) => {
-  get(`channels/followercount?channelId=${channelId}`, callback);
+  get(`channels/followercount?channelId=${channelId}`, "", callback);
 };
 
 const updateChannelDescription = (
   channelId: number,
   newDescription: string,
-  callback: any
+  callback: any,
+  token: string
 ) => {
   post(
     "channels/updatedescription",
-    { channelId: channelId, newDescription: newDescription},
+    { channelId: channelId, newDescription: newDescription },
+    token,
     callback
   );
 };
@@ -264,11 +295,13 @@ const updateChannelDescription = (
 const updateLongChannelDescription = (
   channelId: number,
   newDescription: string,
-  callback: any
+  callback: any,
+  token: string
 ) => {
   post(
     "channels/updatelongdescription",
     { channelId: channelId, newDescription: newDescription },
+    token,
     callback
   );
 };
@@ -276,90 +309,82 @@ const updateLongChannelDescription = (
 const updateChannelColour = (
   channelId: number,
   newColour: string,
-  callback: any
+  callback: any,
+  token: string
 ) => {
   post(
     "channels/updatecolour",
     { channelId: channelId, newColour: newColour },
+    token,
     callback
   );
 };
 
-const uploadAvatar = (channelId: number, image: File, callback: any) => {
+const uploadAvatar = (
+  channelId: number,
+  image: File,
+  callback: any,
+  token: string
+) => {
   const data = new FormData();
   data.append("channelId", channelId.toString());
   data.append("image", image);
-  // console.log(data.get("image"));
-  // HACK: we had the ts argument to prevent from caching.
   let current_time = Math.floor(new Date().getTime() / 5000);
-  axios.post(baseApiUrl + "/channels/avatar?ts=" + current_time, data).then(function (response) {
-    callback(response.data);
-  });
+  post("/channels/avatar?ts=" + current_time, data, token, callback);
 };
 
 const getAvatar = (channelId: number, cacheDelay?: number) => {
   // HACK: we had the ts argument to prevent from caching.
   if (cacheDelay) {
     let current_time = Math.floor(new Date().getTime() / 1000) * cacheDelay;
-    return baseApiUrl + `/channels/avatar?channelId=${channelId}&ts=` + current_time;
+    return (
+      baseApiUrl + `/channels/avatar?channelId=${channelId}&ts=` + current_time
+    );
   } else {
     return baseApiUrl + `/channels/avatar?channelId=${channelId}`;
   }
-  
 };
 
-const uploadCover = (channelId: number, image: File, callback: any) => {
+const uploadCover = (
+  channelId: number,
+  image: File,
+  callback: any,
+  token: string
+) => {
   const data = new FormData();
   data.append("channelId", channelId.toString());
   data.append("image", image);
-  // console.log(data.get("image"));
-
-  // const options = {
-  //   method: 'POST',
-  //   body: data,
-  //   // If you add this, upload won't work
-  //   headers: {
-  //     'Content-Type': 'multipart/form-data',
-  //   }
-  // };
-
-  // fetch(baseApiUrl + "/channels/cover", options);
-
-  axios.post(baseApiUrl + "/channels/cover", data,       {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  }).then(function (response) {
-    callback(response.data);
-  });
+  post("/channels/cover", data, token, callback);
 };
 
 const getCover = (channelId: number, cacheDelay?: number) => {
   if (cacheDelay) {
-    return baseApiUrl + `/channels/cover?channelId=${channelId}&ts=` + cacheDelay;
+    return (
+      baseApiUrl + `/channels/cover?channelId=${channelId}&ts=` + cacheDelay
+    );
   } else {
     return baseApiUrl + `/channels/cover?channelId=${channelId}`;
   }
-  
 };
 
 const getDefaultCover = () => {
   return baseApiUrl + `/channels/cover?default=1`;
 };
 
-const removeCover = (channelId: number, callback: any) => {
-  axios
-    .delete(baseApiUrl + "/channels/cover", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-      data: {
-        channelId: channelId,
-      },
-    })
-    .then(() => callback());
+const removeCover = (channelId: number, callback: any, token: string) => {
+  del(
+    "/channels/cover",
+    {
+      channelId: channelId,
+    },
+    token,
+    callback
+  );
 };
 
-const deleteAgora = (id: number, callback: any) => {
-  post("channels/delete", { id }, callback);
+// TODO: make delete request
+const deleteAgora = (id: number, callback: any, token: string) => {
+  post("channels/delete", { id }, token, callback);
 };
 
 ////////////////////////
@@ -369,26 +394,37 @@ const deleteAgora = (id: number, callback: any) => {
 const editChannelTopic = (
   channelId: Number,
   topics: Topic[],
-  callback: any
+  callback: any,
+  token: string
 ) => {
   post(
-    '/channel/edit/topic',
+    "/channel/edit/topic",
     {
-    channelId: channelId,
-    topic1Id: topics.length > 0 ? topics[0].id : null,
-    topic2Id: topics.length > 1 ? topics[1].id : null,
-    topic3Id: topics.length > 2 ? topics[2].id : null,
+      channelId: channelId,
+      topic1Id: topics.length > 0 ? topics[0].id : null,
+      topic2Id: topics.length > 1 ? topics[1].id : null,
+      topic3Id: topics.length > 2 ? topics[2].id : null,
     },
+    token,
     callback
   );
 };
 
 const getChannelTopic = (channelId: Number, callback: any) => {
-  get(`channels/topics/fetch?channelId=${channelId}`, callback);
+  get(`channels/topics/fetch?channelId=${channelId}`, "", callback);
 };
 
-const getChannelsWithTopic = (limit: number, topicId: number, offset: number, callback: any) => {
-  get(`channels/topics/all?limit=${limit}&topicId=${topicId}&offset=${offset}`, callback);
+const getChannelsWithTopic = (
+  limit: number,
+  topicId: number,
+  offset: number,
+  callback: any
+) => {
+  get(
+    `channels/topics/all?limit=${limit}&topicId=${topicId}&offset=${offset}`,
+    "",
+    callback
+  );
 };
 
 /*const getChannelTopic = (channelId: number) => {
@@ -406,91 +442,86 @@ const applyMembership = (
   institution: string,
   email: string,
   personalHomepage: string,
-  callback: any) => {
-    post(
-      "channel/membership/apply", 
-      {
-        id: id, 
-        userId: userId,
-        fullName: fullName,
-        position: position,
-        institution: institution,
-        email: email,
-        personalHomepage: personalHomepage
-      }, 
-    callback);
+  callback: any,
+  token: string
+) => {
+  post(
+    "channel/membership/apply",
+    {
+      id: id,
+      userId: userId,
+      fullName: fullName,
+      position: position,
+      institution: institution,
+      email: email,
+      personalHomepage: personalHomepage,
+    },
+    token,
+    callback
+  );
 };
 
 const cancelMembershipApplication = (
   id: number,
-  userId: number, 
-  callback: any) => {
+  userId: number,
+  callback: any,
+  token: string
+) => {
   post(
-    "channel/membership/cancel", 
+    "channel/membership/cancel",
     {
       id: id,
-      userId: userId
-    }, callback);
+      userId: userId,
+    },
+    token,
+    callback
+  );
 };
 
 const acceptMembershipApplication = (
   id: number,
-  userId: number, 
-  callback: any) => {
+  userId: number,
+  callback: any,
+  token: string
+) => {
   post(
-    "channel/membership/accept", 
+    "channel/membership/accept",
     {
       id: id,
-      userId: userId
-     }, 
-    callback);
+      userId: userId,
+    },
+    token,
+    callback
+  );
 };
 
 const getMembershipApplications = (
-  channelId: number, 
+  channelId: number,
   callback: any,
-  userId?: number) => {
-  if (userId === undefined){
-    get(
-      `channel/membership/list?channelId=${channelId}`, 
-      callback);
-  }
-  else {
-    get(
-      `channel/membership/list?channelId=${channelId}&userId=${userId}`, 
-      callback);
-  }
-}
-
-const getViewCountForChannel = (
-  channelId: number,
-  callback: any
+  token: string,
+  userId?: number
 ) => {
-  get(
-    `channels/viewcount/get?channelId=${channelId}`,
-    callback
-  );
+  if (userId === undefined) {
+    get(`channel/membership/list?channelId=${channelId}`, token, callback);
+  } else {
+    get(
+      `channel/membership/list?channelId=${channelId}&userId=${userId}`,
+      token,
+      callback
+    );
+  }
 };
 
-const increaseViewCountForChannel = (
-  channelId: number,
-  callback: any
-) => {
-  post(
-    "channels/viewcount/add",
-    { channelId: channelId},
-    callback
-  );
+const getViewCountForChannel = (channelId: number, callback: any) => {
+  get(`channels/viewcount/get?channelId=${channelId}`, "", callback);
 };
 
-const getReferralsForChannel = (
-  channelId: number,
-  callback: any
-) => {
-  get(
-    `channels/referralscount/get?channelId=${channelId}`,
-    callback
-  );
+const increaseViewCountForChannel = (channelId: number, callback: any) => {
+  post("channels/viewcount/add", { channelId: channelId }, "", callback);
+};
+
+const getReferralsForChannel = (channelId: number, callback: any) => {
+  get(`channels/referralscount/get?channelId=${channelId}`, "", callback);
 };
 
 export type Channel = {
@@ -556,5 +587,5 @@ export const ChannelService = {
   getMembershipApplications,
   getViewCountForChannel,
   increaseViewCountForChannel,
-  getReferralsForChannel
+  getReferralsForChannel,
 };

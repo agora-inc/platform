@@ -1,7 +1,7 @@
 import React, { useRef, useReducer, Component } from "react";
 import { Box, Grid, Text, Layer, Button } from "grommet";
 import DescriptionAndQuestions from "../Components/Streaming/OldStuff/DescriptionAndQuestions";
-import ChatBox from "../Components/Streaming/OldStuff/ChatBox";
+import { ChatBox } from "../Components/Streaming/OldStuff/ChatBox";
 import ChannelIdCard from "../Components/Channel/ChannelIdCard";
 import Tag from "../Components/Core/Tag";
 import Loading from "../Components/Core/Loading";
@@ -71,11 +71,8 @@ export default class VideoPage extends Component<Props, State> {
   render() {
     return (
       <Box align="center">
-                <video 
-              autoPlay loop muted
-              style={{ height: "100%", width: "auto"}}
-              >
-              <source src="/videos/talk_application.mp4" type="video/mp4"/> 
+        <video autoPlay loop muted style={{ height: "100%", width: "auto" }}>
+          <source src="/videos/talk_application.mp4" type="video/mp4" />
         </video>
         <Grid
           margin={{ top: "xlarge", bottom: "none" }}

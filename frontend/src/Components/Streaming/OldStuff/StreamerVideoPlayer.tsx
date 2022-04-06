@@ -7,6 +7,7 @@ import { faVideo } from "@fortawesome/free-solid-svg-icons";
 import { faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import { faClone } from "@fortawesome/free-solid-svg-icons";
 import { faSlash } from "@fortawesome/free-solid-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 interface Props {
   width: string;
@@ -133,7 +134,11 @@ export default class StreamerVideoPlayer extends Component<Props, State> {
         // hoverIndicator={true}
       >
         <FontAwesomeIcon
-          icon={this.state.audioEnabled ? faMicrophoneSlash : faMicrophone}
+          icon={
+            (this.state.audioEnabled
+              ? faMicrophoneSlash
+              : faMicrophone) as IconProp
+          }
           color="white"
         />
       </Box>
@@ -155,7 +160,7 @@ export default class StreamerVideoPlayer extends Component<Props, State> {
         focusIndicator={false}
       >
         <FontAwesomeIcon
-          icon={this.state.videoEnabled ? faVideoSlash : faVideo}
+          icon={(this.state.videoEnabled ? faVideoSlash : faVideo) as IconProp}
           color="white"
         />
       </Box>
@@ -177,9 +182,9 @@ export default class StreamerVideoPlayer extends Component<Props, State> {
         focusIndicator={false}
       >
         <span className="fa-layers fa-fw">
-          <FontAwesomeIcon icon={faClone} color="white" />
+          <FontAwesomeIcon icon={faClone as IconProp} color="white" />
           {this.state.screenSharingEnabled && (
-            <FontAwesomeIcon icon={faSlash} color="white" />
+            <FontAwesomeIcon icon={faSlash as IconProp} color="white" />
           )}
         </span>
       </Box>

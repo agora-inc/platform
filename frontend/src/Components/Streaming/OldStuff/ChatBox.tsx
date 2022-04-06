@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { Box, Text, TextInput, Keyboard } from "grommet";
 import Loading from "../../Core/Loading";
 import { Send, Emoji } from "grommet-icons";
@@ -10,6 +10,7 @@ import "../../../Styles/emoji-picker.css";
 import { Picker } from "emoji-mart";
 import { InlineMath } from "react-katex";
 import { chatUrl } from "../../../config";
+import { useStore } from "../../../store";
 
 type Message = {
   username: string;
@@ -31,123 +32,98 @@ interface State {
   loading: boolean;
 }
 
-export default class ChatBox extends Component<Props, State> {
-  private ws: Sockette | null;
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      messages: [],
-      newMessageContent: "",
-      loggedInUser: UserService.getCurrentUser(),
-      showEmojiPicker: false,
-      pingIntervalId: null,
-      loading: true,
+export const ChatBox = (props: Props) => {
+  const [ws, setWs] = useState<Sockette | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessageContent, setNewMessageContent] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [pingIntervalId, setPingIntervalId] = useState<NodeJS.Timeout>();
+  const [loading, setLoading] = useState(true);
+
+  const user = useStore((state) => state.loggedInUser);
+
+  useEffect(() => {
+    setWs(
+      new Sockette(chatUrl, {
+        maxAttempts: 10,
+        onopen: (e) => {
+          console.log("connected:", e);
+          joinChatRoom();
+        },
+        onmessage: (e) => handleIncomingWebsocketMessage(e),
+        onerror: (e) => console.log("error:", e),
+      })
+    );
+    setPingIntervalId(setInterval(pingChat, 3000));
+
+    // cleanup function
+    return () => {
+      pingIntervalId && clearInterval(pingIntervalId);
+      ws && ws.close();
     };
-    this.ws = null;
-  }
+  }, []);
 
-  componentDidMount() {
-    this.ws = new Sockette(chatUrl, {
-      maxAttempts: 10,
-      onopen: (e) => {
-        console.log("connected:", e);
-        this.joinChatRoom();
-      },
-      onmessage: (e) => this.handleIncomingWebsocketMessage(e),
-      onerror: (e) => console.log("error:", e),
-    });
-    this.setState({ pingIntervalId: setInterval(this.pingChat, 3000) });
-  }
+  useEffect(() => {
+    let messagesDiv = document.getElementById("messages");
+    messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
+  }, [messages]);
 
-  componentWillUnmount() {
-    clearInterval(this.state.pingIntervalId);
-    this.ws && this.ws.close();
-  }
-
-  pingChat = () => {
-    // this.ws!.json({
+  const pingChat = () => {
+    // ws!.json({
     //   statusCode: 200,
     //   action: "ping",
     //   utc_ts_in_s: Math.floor(Date.now() / 1000),
     // });
   };
 
-  joinChatRoom = () => {
-    this.ws?.json({
+  const joinChatRoom = () => {
+    ws?.json({
       action: "join",
-      chatId: this.props.chatId,
+      chatId: props.chatId,
     });
   };
 
-  addEmoji = (e: any) => {
+  const handleIncomingWebsocketMessage = (message: any) => {
+    const data = JSON.parse(message.data);
+    if (data.type === "history") {
+      setMessages(data.data);
+      setLoading(false);
+    } else if (data.type === "message") {
+      setMessages([...messages, data.data]);
+    } else if (data.type === "views") {
+      props.viewerCountCallback(data.data.views);
+    }
+  };
+
+  const onMessageReceived = ({ data }: any) => {
+    const message = JSON.parse(data);
+    setMessages([...messages, message]);
+  };
+
+  const sendMessage = () => {
+    if (newMessageContent === "" || !user) {
+      return;
+    }
+    ws &&
+      ws.json({
+        action: "onMessage",
+        message: newMessageContent,
+        username: user.username,
+        chatId: props.chatId,
+      });
+    setShowEmojiPicker(false);
+    setNewMessageContent("");
+  };
+
+  const addEmoji = (e: any) => {
     let sym = e.unified.split("-");
     let codesArray: any[] = [];
     sym.forEach((e: any) => codesArray.push("0x" + e));
     let emoji = String.fromCodePoint(...codesArray);
-    this.setState({
-      newMessageContent: this.state.newMessageContent + emoji,
-    });
+    setNewMessageContent(newMessageContent + emoji);
   };
 
-  handleIncomingWebsocketMessage = (message: any) => {
-    const data = JSON.parse(message.data);
-    if (data.type === "history") {
-      this.setState(
-        {
-          messages: data.data,
-          loading: false,
-        },
-        () => {
-          let messagesDiv = document.getElementById("messages");
-          messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
-        }
-      );
-    } else if (data.type === "message") {
-      this.setState(
-        {
-          messages: [...this.state.messages, data.data],
-        },
-        () => {
-          let messagesDiv = document.getElementById("messages");
-          messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
-        }
-      );
-    } else if (data.type === "views") {
-      this.props.viewerCountCallback(data.data.views);
-    }
-  };
-
-  onMessageReceived = ({ data }: any) => {
-    const message = JSON.parse(data);
-    this.setState(
-      {
-        messages: [...this.state.messages, message],
-      },
-      () => {
-        let messagesDiv = document.getElementById("messages");
-        messagesDiv!.scrollTop = messagesDiv!.scrollHeight;
-      }
-    );
-  };
-
-  sendMessage = () => {
-    if (this.state.newMessageContent === "" || !this.state.loggedInUser) {
-      return;
-    }
-    this.ws &&
-      this.ws.json({
-        action: "onMessage",
-        message: this.state.newMessageContent,
-        username: this.state.loggedInUser.username,
-        chatId: this.props.chatId,
-      });
-    this.setState({
-      showEmojiPicker: false,
-      newMessageContent: "",
-    });
-  };
-
-  renderMessageContent = (content: string) => {
+  const renderMessageContent = (content: string) => {
     if (!content.includes("$")) {
       return (
         <Text size="16px" color="black">
@@ -194,8 +170,8 @@ export default class ChatBox extends Component<Props, State> {
     }
   };
 
-  renderMessage = (message: Message) => {
-    const selfUserName = this.state.loggedInUser?.username;
+  const renderMessage = (message: Message) => {
+    const selfUserName = user?.username;
     return (
       <Box
         style={{ minHeight: 40 }}
@@ -221,7 +197,7 @@ export default class ChatBox extends Component<Props, State> {
             color="black"
             textAlign={message.username == selfUserName ? "end" : "start"}
           >
-            {this.renderMessageContent(message.content)}
+            {renderMessageContent(message.content)}
           </Text>
         </Box>
         {message.username === selfUserName && (
@@ -231,9 +207,9 @@ export default class ChatBox extends Component<Props, State> {
     );
   };
 
-  renderInputBox = () => {
+  const renderInputBox = () => {
     return (
-      <Keyboard onEnter={this.sendMessage}>
+      <Keyboard onEnter={sendMessage}>
         <Box
           margin="25px"
           direction="row"
@@ -247,10 +223,8 @@ export default class ChatBox extends Component<Props, State> {
           <TextInput
             height="36px"
             placeholder="send a message"
-            value={this.state.newMessageContent}
-            onChange={(event) =>
-              this.setState({ newMessageContent: event.target.value })
-            }
+            value={newMessageContent}
+            onChange={(e) => setNewMessageContent(e.target.value)}
             plain
             style={{
               backgroundColor: "#f2f2f2",
@@ -265,11 +239,11 @@ export default class ChatBox extends Component<Props, State> {
             justify="center"
             align="center"
             onClick={() => {
-              this.setState({ showEmojiPicker: !this.state.showEmojiPicker });
+              setShowEmojiPicker(!showEmojiPicker);
             }}
             //   margin={{ horizontal: "xsmall" }}
             focusIndicator={false}
-            background={this.state.showEmojiPicker ? "#e6e6e6" : "none"}
+            background={showEmojiPicker ? "#e6e6e6" : "none"}
           >
             <Emoji color="black" />
           </Box>
@@ -279,7 +253,7 @@ export default class ChatBox extends Component<Props, State> {
             hoverIndicator="background"
             justify="center"
             align="center"
-            onClick={this.sendMessage}
+            onClick={sendMessage}
             focusIndicator={false}
           >
             <Send color="black" />
@@ -289,7 +263,7 @@ export default class ChatBox extends Component<Props, State> {
     );
   };
 
-  renderLoginMessage = () => {
+  const renderLoginMessage = () => {
     return (
       <Box
         margin="25px"
@@ -304,70 +278,64 @@ export default class ChatBox extends Component<Props, State> {
     );
   };
 
-  render() {
-    return (
-      <Box
-        style={{ position: "relative" }}
-        background="white"
-        // pad="25px"
-        justify="between"
-        round="small"
-        gridArea={this.props.gridArea}
-      >
-        <Box width="100%" pad="25px" height="90%" style={{ paddingBottom: 0 }}>
-          <Text
-            color="black"
-            weight="bold"
-            size="24px"
-            margin={{ bottom: "medium" }}
-          >
-            Live chat
-          </Text>
-          {this.state.loading && (
-            <Box
-              height="80%"
-              width="100%"
-              justify="center"
-              align="center"
-              style={{ minHeight: "80%" }}
-            >
-              <Loading color="black" size={50} />
-            </Box>
-          )}
+  return (
+    <Box
+      style={{ position: "relative" }}
+      background="white"
+      // pad="25px"
+      justify="between"
+      round="small"
+      gridArea={props.gridArea}
+    >
+      <Box width="100%" pad="25px" height="90%" style={{ paddingBottom: 0 }}>
+        <Text
+          color="black"
+          weight="bold"
+          size="24px"
+          margin={{ bottom: "medium" }}
+        >
+          Live chat
+        </Text>
+        {loading && (
           <Box
-            height="95%"
-            gap="small"
+            height="80%"
             width="100%"
-            id="messages"
-            style={{
-              maxHeight: "95%",
-              overflowX: "hidden",
-              overflowY: "scroll",
-            }}
+            justify="center"
+            align="center"
+            style={{ minHeight: "80%" }}
           >
-            {this.state.messages.map((message: Message) =>
-              this.renderMessage(message)
-            )}
+            <Loading color="black" size={50} />
           </Box>
-        </Box>
-        {this.state.loggedInUser
-          ? this.renderInputBox()
-          : this.renderLoginMessage()}
-        {this.state.showEmojiPicker && (
-          <Picker
-            emoji="clap"
-            color="#61EC9F"
-            onSelect={this.addEmoji}
-            style={{
-              position: "absolute",
-              bottom: 75,
-              zIndex: 10,
-              alignSelf: "center",
-              width: "20.83vw",
-            }}
-          />
         )}
+        <Box
+          height="95%"
+          gap="small"
+          width="100%"
+          id="messages"
+          style={{
+            maxHeight: "95%",
+            overflowX: "hidden",
+            overflowY: "scroll",
+          }}
+        >
+          {messages.map((message: Message) => renderMessage(message))}
+        </Box>
       </Box>
-    );
-  }
-}
+      {user ? renderInputBox() : renderLoginMessage()}
+      {showEmojiPicker && (
+        <Picker
+          emoji="clap"
+          color="#61EC9F"
+          onSelect={addEmoji}
+          style={{
+            position: "absolute",
+            bottom: 75,
+            zIndex: 10,
+            alignSelf: "center",
+            width: "20.83vw",
+          }}
+        />
+      )}
+    </Box>
+  );
+};

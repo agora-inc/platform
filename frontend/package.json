@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^1.9.0",
     "@ckeditor/ckeditor5-build-classic": "^20.0.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "@dicebear/avatars": "^4.1.0",
@@ -74,7 +75,8 @@
     "styled-components": "^5.1.0",
     "video.js": "^7.7.6",
     "webpack": "^4.46.0",
-    "webrtc-adapter": "^7.6.0"
+    "webrtc-adapter": "^7.6.0",
+    "zustand": "^3.7.0"
   },
   "scripts": {
     "start": "react-app-rewired start",

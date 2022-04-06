@@ -1,38 +1,17 @@
-import { baseApiUrl } from "../config";
-import axios from "axios";
 import { Tag } from "./TagService";
 import { ArtService } from "./ArtService";
 import { get, post } from "../Middleware/httpMiddleware";
 
-
 const getAllStreams = (limit: number, offset: number, callback: any) => {
-  axios
-    .get(`${baseApiUrl}/streams/all?limit=${limit}&offset=${offset}`, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then(function (response) {
-      callback(response.data);
-    });
+  get(`streams/all?limit=${limit}&offset=${offset}`, "", callback);
 };
 
 const getStreamsForChannel = (channelId: number, callback: any) => {
-  axios
-    .get(baseApiUrl + "/streams/channel?channelId=" + channelId, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then(function (response) {
-      callback(response.data);
-    });
+  get(`streams/channel?channelId=${channelId}`, "", callback);
 };
 
 const getStreamById = (id: number, callback: any) => {
-  axios
-    .get(baseApiUrl + "/streams/stream?id=" + id.toString(), {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then(function (response) {
-      callback(response.data);
-    });
+  get(`streams/stream?id=${id}`, "", callback);
 };
 
 const createStream = (
@@ -41,65 +20,58 @@ const createStream = (
   streamName: string,
   streamDescription: string,
   streamTags: Tag[],
-  callback: any
+  callback: any,
+  token: string
 ) => {
   // const imageUrl = ArtService.generateRandomArt(200, 278);
-  axios
-    .post(
-      baseApiUrl + "/streams/create",
-      {
-        channelId: channelId,
-        channelName: channelName,
-        streamName: streamName,
-        streamDescription: streamDescription,
-        streamTags: streamTags,
-        imageUrl: "",
-      },
-    )
-    .then(function (response) {
-      callback(response.data);
-    });
-  // .catch(function (error) {
-  //   callback(false);
-  // });
+  post(
+    "/streams/create",
+    {
+      channelId: channelId,
+      channelName: channelName,
+      streamName: streamName,
+      streamDescription: streamDescription,
+      streamTags: streamTags,
+      imageUrl: "",
+    },
+    token,
+    callback
+  );
 };
 
-const archiveStream = (streamId: number, del: boolean, callback: any) => {
-  axios
-    .post(
-      baseApiUrl + "/streams/archive",
-      {
-        streamId: streamId,
-        delete: del,
-      },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then(function (response) {
-      callback(response.data);
-    });
-  // .catch(function (error) {
-  //   callback(false);
-  // });
+const archiveStream = (
+  streamId: number,
+  del: boolean,
+  callback: any,
+  token: string
+) => {
+  post(
+    "/streams/archive",
+    {
+      streamId: streamId,
+      delete: del,
+    },
+    token,
+    callback
+  );
 };
 
 const getToken = (
-    channelName: string, 
-    roleAttendee: number,
-    expireTimeInSec: number,
-    userAccount: any,
-    uid: any,
-    callback: any) => {
-      let url = "";
-      if (uid){
-        url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&uid=${uid}`
-      }
-      else if (userAccount){
-        url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&user_account=${userAccount}`
-      }
-      get(url, callback);
+  channelName: string,
+  roleAttendee: number,
+  expireTimeInSec: number,
+  userAccount: any,
+  uid: any,
+  callback: any
+) => {
+  let url = "";
+  if (uid) {
+    url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&uid=${uid}`;
+  } else if (userAccount) {
+    url = `tokens/streaming?channel_name=${channelName}&role_attendee=${roleAttendee}&expire_time_in_sec=${expireTimeInSec}&user_account=${userAccount}`;
+  }
+  get(url, "", callback);
 };
-
-
 
 export const StreamService = {
   getToken,

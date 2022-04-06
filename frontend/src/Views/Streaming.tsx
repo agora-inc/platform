@@ -1,137 +1,126 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { Box, Heading, Button, Grid, Text } from "grommet";
 import { View } from "grommet-icons";
 import { UserService } from "../Services/UserService";
-import { StreamService } from "../Services/StreamService";
+import { Stream, StreamService } from "../Services/StreamService";
 import StreamerVideoPlayer from "../Components/Streaming/OldStuff/StreamerVideoPlayer";
 import DescriptionAndQuestions from "../Components/Streaming/OldStuff/DescriptionAndQuestions";
-import ChatBox from "../Components/Streaming/OldStuff/ChatBox";
+import { ChatBox } from "../Components/Streaming/OldStuff/ChatBox";
 import AsyncButton from "../Components/Core/AsyncButton";
 import "../../Styles/streaming.css";
 import adapter from "webrtc-adapter";
 import { WebRTCAdaptor } from "../Streaming/webrtc_adaptor";
 import { antmediaWebSocketUrl } from "../config";
 import Loading from "../Components/Core/Loading";
+import { useStore } from "../store";
+import { useAuth0 } from "@auth0/auth0-react";
 
-const users = UserService;
+const initializeWebRTCAdaptor = () => {
+  const mediaConstraints = {
+    video: {
+      width: 1280,
+      height: 720,
+    },
+    audio: true,
+  };
+  const pc_config = null;
+  const sdpConstraints = {
+    OfferToReceiveAudio: false,
+    OfferToReceiveVideo: false,
+  };
 
-interface Props {
-  location: any;
-}
-
-interface State {
-  title: string;
-  description: string;
-  streamId: number;
-  tags: string[];
-  streaming: boolean;
-  username: string | null;
-  toHome: boolean;
-  viewCount: number;
-}
+  return new WebRTCAdaptor({
+    websocket_url: antmediaWebSocketUrl,
+    mediaConstraints: mediaConstraints,
+    peerconnection_config: pc_config,
+    sdp_constraints: sdpConstraints,
+    localVideoId: "local",
+    debug: true,
+    callback: (info: any, obj: any) => {
+      // console.log(info, obj);
+    },
+    callbackError: (error: any, message: any) => {
+      // console.log(error, message);
+    },
+  });
+};
 
 interface MediaDevices {
   getDisplayMedia(constraints?: MediaStreamConstraints): Promise<MediaStream>;
 }
 
-export default class Streaming extends Component<Props, State> {
-  private webrtc: WebRTCAdaptor | null;
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      title: this.props.location.state.stream.name,
-      description: this.props.location.state.stream.description,
-      streamId: this.props.location.state.stream.id,
-      tags: this.props.location.state.stream.tags,
-      streaming: false,
-      username: users.getCurrentUser(),
-      toHome: false,
-      viewCount: -1,
-    };
-    this.webrtc = null;
-  }
+interface Props {
+  location: { state: { stream: Stream } };
+}
 
-  componentWillMount() {
-    this.initializeWebRTCAdaptor();
-  }
+export const Streaming = (props: Props) => {
+  const [webrtc, setWebrtc] = useState<WebRTCAdaptor | null>(null);
+  const [title, setTitle] = useState(props.location.state.stream.name);
+  const [description, setDesciption] = useState(
+    props.location.state.stream.description
+  );
+  const [tags, setTags] = useState(props.location.state.stream.tags);
+  const [streamId, setStreamId] = useState(props.location.state.stream.id);
+  const [streaming, setStreaming] = useState(false);
+  const [toHome, setToHome] = useState(false);
+  const [viewCount, setViewCount] = useState(-1);
 
-  componentWillUnmount() {
-    // console.log("UNMOUNTING");
-    this.webrtc?.closeStream();
-    this.webrtc?.closeWebSocket();
-    StreamService.archiveStream(
-      this.state.streamId,
-      !this.state.streaming,
-      () => {}
-    );
-  }
+  const user = useStore((state) => state.loggedInUser);
 
-  initializeWebRTCAdaptor = () => {
-    const mediaConstraints = {
-      video: {
-        width: 1280,
-        height: 720,
-      },
-      audio: true,
-    };
-    const pc_config = null;
-    const sdpConstraints = {
-      OfferToReceiveAudio: false,
-      OfferToReceiveVideo: false,
-    };
+  const { getAccessTokenSilently } = useAuth0();
 
-    this.webrtc = new WebRTCAdaptor({
-      websocket_url: antmediaWebSocketUrl,
-      mediaConstraints: mediaConstraints,
-      peerconnection_config: pc_config,
-      sdp_constraints: sdpConstraints,
-      localVideoId: "local",
-      debug: true,
-      callback: (info: any, obj: any) => {
-        // console.log(info, obj);
-      },
-      callbackError: (error: any, message: any) => {
-        // console.log(error, message);
-      },
-    });
+  useEffect(() => {
+    setWebrtc(initializeWebRTCAdaptor());
+    return cleanup;
+  }, []);
+
+  const archive = async (callback: () => void, del?: boolean) => {
+    if (del === undefined) {
+      del = !streaming;
+    }
+    const token = await getAccessTokenSilently();
+    StreamService.archiveStream(streamId, del, callback, token);
   };
 
-  startStreaming = (callback: any) => {
-    this.setState({ streaming: true }, () => {
-      callback();
-      this.webrtc?.publish(this.state.streamId.toString(), null);
-    });
-    // users.goLive(this.state.username, () => {
-    //   this.setState({ streaming: true }, () => {
+  const cleanup = (callback?: () => void) => {
+    if (callback === undefined) {
+      callback = () => {};
+    }
+    webrtc && webrtc.closeStream && webrtc.closeStream();
+    webrtc && webrtc.closeWebSocket && webrtc.closeWebSocket();
+    archive(callback);
+  };
+
+  const startStreaming = (callback: any) => {
+    setStreaming(true);
+    callback();
+    webrtc && webrtc.publish && webrtc.publish(streamId.toString(), null);
+    // users.goLive(username, () => {
+    //   setState({ streaming: true }, () => {
     //     callback();
     //   });
     // });
   };
 
-  stopStreaming = (callback: any) => {
-    this.setState({ streaming: false }, () => {
-      this.webrtc?.stop("agora1");
-      this.webrtc?.closeStream();
-      this.webrtc?.closeWebSocket();
-      StreamService.archiveStream(this.state.streamId, false, () => {
-        callback();
-        this.setState({
-          toHome: true,
-        });
-      });
+  const stopStreaming = (callback: any) => {
+    setStreaming(false);
+    webrtc && webrtc.stop && webrtc.stop("agora1");
+    cleanup(() => {
+      callback();
+      setToHome(true);
     });
-    // StreamService.archiveStream(this.state.streamId, () => {
-    //   this.setState({ streaming: false }, () => {
+    // StreamService.archiveStream(streamId, () => {
+    //   setState({ streaming: false }, () => {
     //     callback();
-    //     this.setState({
+    //     setState({
     //       toHome: true,
     //     });
     //   });
     // });
   };
 
-  startRecording = async () => {
+  const startRecording = async () => {
     const localStream = await navigator.mediaDevices.getUserMedia({
       video: {
         width: 1280,
@@ -139,12 +128,11 @@ export default class Streaming extends Component<Props, State> {
       },
       audio: true,
     });
-    (document.querySelector(
-      "video#local"
-    ) as HTMLMediaElement).srcObject = localStream;
+    (document.querySelector("video#local") as HTMLMediaElement).srcObject =
+      localStream;
   };
 
-  stopRecording = () => {
+  const stopRecording = () => {
     const videoElem = document.querySelector("video#local") as HTMLMediaElement;
     const stream = videoElem.srcObject;
     const tracks = (stream as MediaStream).getTracks();
@@ -157,14 +145,15 @@ export default class Streaming extends Component<Props, State> {
     videoElem.srcObject = null;
   };
 
-  startSharingScreen = async () => {
-    const screenStream = await ((navigator.mediaDevices as unknown) as MediaDevices).getDisplayMedia();
-    (document.querySelector(
-      "video#screen"
-    ) as HTMLMediaElement).srcObject = screenStream;
+  const startSharingScreen = async () => {
+    const screenStream = await (
+      navigator.mediaDevices as unknown as MediaDevices
+    ).getDisplayMedia();
+    (document.querySelector("video#screen") as HTMLMediaElement).srcObject =
+      screenStream;
   };
 
-  stopSharingScreen = () => {
+  const stopSharingScreen = () => {
     const videoElem = document.querySelector(
       "video#screen"
     ) as HTMLMediaElement;
@@ -174,16 +163,15 @@ export default class Streaming extends Component<Props, State> {
       // console.log(track);
       track.stop();
     });
-
     // videoElem.srcObject = null;
   };
 
-  goLiveButton = () => {
+  const goLiveButton = () => {
     return (
       <AsyncButton
         color="#61EC9F"
         label="Go live"
-        onClick={this.startStreaming}
+        onClick={startStreaming}
         height="40px"
         width="130px"
         fontColor="black"
@@ -191,29 +179,29 @@ export default class Streaming extends Component<Props, State> {
     );
   };
 
-  viewerCountAndStopButton = () => {
+  const viewerCountAndStopButton = () => {
     return (
       <Box direction="row" align="center" gap="xsmall">
         <AsyncButton
           color="#FF4040"
           label="End stream"
-          onClick={this.stopStreaming}
+          onClick={stopStreaming}
           height="40px"
           width="150px"
           fontColor="white"
         />
         <View color="black" size="40px" />
-        {this.state.viewCount === -1 && <Loading color="grey" size={34} />}
-        {this.state.viewCount !== -1 && (
+        {viewCount === -1 && <Loading color="grey" size={34} />}
+        {viewCount !== -1 && (
           <Text size="34px" weight="bold">
-            {this.state.viewCount}
+            {viewCount}
           </Text>
         )}
       </Box>
     );
   };
 
-  blinkingRedLight = () => {
+  const blinkingRedLight = () => {
     return (
       <div
         className="blink"
@@ -229,59 +217,55 @@ export default class Streaming extends Component<Props, State> {
     );
   };
 
-  render() {
-    return this.state.toHome ? (
-      <Redirect to="/" />
-    ) : (
-      <Box align="center" margin={{ bottom: "small" }}>
-        <Grid
-          margin={{ top: "xlarge", bottom: "medium" }}
-          // rows={["streamViewRow1", "medium"]}
-          rows={["streamViewRow1"]}
-          columns={["streamViewColumn1", "streamViewColumn2"]}
-          gap="medium"
-          areas={[
-            { name: "player", start: [0, 0], end: [0, 0] },
-            { name: "chat", start: [1, 0], end: [1, 0] },
-            // { name: "questions", start: [0, 1], end: [1, 1] },
-          ]}
-        >
-          <Box gridArea="player" justify="between" gap="small">
-            <StreamerVideoPlayer
-              width="100%"
-              height="90%"
-              onScreenSharingEnabled={this.startSharingScreen}
-              onScreenSharingDisabled={this.stopSharingScreen}
-            />
-            <Box direction="row" justify="between" align="start">
-              <Box gap="xsmall" direction="row" align="center">
-                {this.state.streaming && this.blinkingRedLight()}
-                <Text size="34px" weight="bold">
-                  {this.state.title}
-                </Text>
-              </Box>
-              {this.state.streaming
-                ? this.viewerCountAndStopButton()
-                : this.goLiveButton()}
-            </Box>
-          </Box>
-          <ChatBox
-            gridArea="chat"
-            chatId={this.state.streamId}
-            viewerCountCallback={(viewCount: number) =>
-              this.setState({ viewCount })
-            }
-          />
-        </Grid>
-        <DescriptionAndQuestions
-          gridArea="questions"
-          description={this.state.description}
-          streamId={1}
-          streamer={true}
-          tags={this.state.tags.map((t: any) => t.name)}
-          margin={{ top: "-20px" }}
-        />
-      </Box>
-    );
+  if (toHome) {
+    return <Redirect to="/" />;
   }
-}
+
+  return (
+    <Box align="center" margin={{ bottom: "small" }}>
+      <Grid
+        margin={{ top: "xlarge", bottom: "medium" }}
+        // rows={["streamViewRow1", "medium"]}
+        rows={["streamViewRow1"]}
+        columns={["streamViewColumn1", "streamViewColumn2"]}
+        gap="medium"
+        areas={[
+          { name: "player", start: [0, 0], end: [0, 0] },
+          { name: "chat", start: [1, 0], end: [1, 0] },
+          // { name: "questions", start: [0, 1], end: [1, 1] },
+        ]}
+      >
+        <Box gridArea="player" justify="between" gap="small">
+          <StreamerVideoPlayer
+            width="100%"
+            height="90%"
+            onScreenSharingEnabled={startSharingScreen}
+            onScreenSharingDisabled={stopSharingScreen}
+          />
+          <Box direction="row" justify="between" align="start">
+            <Box gap="xsmall" direction="row" align="center">
+              {streaming && blinkingRedLight()}
+              <Text size="34px" weight="bold">
+                {title}
+              </Text>
+            </Box>
+            {streaming ? viewerCountAndStopButton() : goLiveButton()}
+          </Box>
+        </Box>
+        <ChatBox
+          gridArea="chat"
+          chatId={streamId}
+          viewerCountCallback={setViewCount}
+        />
+      </Grid>
+      <DescriptionAndQuestions
+        gridArea="questions"
+        description={description}
+        streamId={1}
+        streamer={true}
+        tags={tags.map((t: any) => t.name)}
+        margin={{ top: "-20px" }}
+      />
+    </Box>
+  );
+};

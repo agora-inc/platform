@@ -1,25 +1,13 @@
-import { baseApiUrl } from "../config";
-import axios from "axios";
+import { get, post } from "../Middleware/httpMiddleware";
+
 import { Tag } from "./TagService";
 
 const getAllVideos = (limit: number, offset: number, callback: any) => {
-  axios
-    .get(`${baseApiUrl}/videos/all?limit=${limit}&offset=${offset}`, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then(function (response) {
-      callback(response.data);
-    });
+  get(`videos/all?limit=${limit}&offset=${offset}`, "", callback);
 };
 
 const getRecentVideos = (callback: any) => {
-  axios
-    .get(baseApiUrl + "/videos/recent", {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then(function (response) {
-      callback(response.data);
-    });
+  get("videos/recent", "", callback);
 };
 
 const getAllVideosForChannel = (
@@ -28,16 +16,11 @@ const getAllVideosForChannel = (
   offset: number,
   callback: any
 ) => {
-  axios
-    .get(
-      `${baseApiUrl}/videos/channel?channelId=${channelId}&limit=${limit}&offset=${offset}`,
-      {
-        headers: { "Access-Control-Allow-Origin": "*" },
-      }
-    )
-    .then(function (response) {
-      callback(response.data);
-    });
+  get(
+    `videos/channel?channelId=${channelId}&limit=${limit}&offset=${offset}`,
+    "",
+    callback
+  );
 };
 
 const getAllVideosWithTag = (
@@ -46,26 +29,15 @@ const getAllVideosWithTag = (
   offset: number,
   callback: any
 ) => {
-  axios
-    .get(
-      `${baseApiUrl}/videos/tag?tagName=${tagName}&limit=${limit}&offset=${offset}`,
-      {
-        headers: { "Access-Control-Allow-Origin": "*" },
-      }
-    )
-    .then(function (response) {
-      callback(response.data);
-    });
+  get(
+    `videos/tag?tagName=${tagName}&limit=${limit}&offset=${offset}`,
+    "",
+    callback
+  );
 };
 
 const getVideoById = (id: number, callback: any) => {
-  axios
-    .get(baseApiUrl + "/videos/video?id=" + id.toString(), {
-      headers: { "Access-Control-Allow-Origin": "*" },
-    })
-    .then(function (response) {
-      callback(response.data);
-    });
+  get(`videos/video?id=${id}`, "", callback);
 };
 
 export const VideoService = {

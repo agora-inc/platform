@@ -4,6 +4,7 @@ import { Box, Text, TextInput, Layer } from "grommet";
 import { Close } from "grommet-icons";
 
 import { ChannelService } from "../../Services/ChannelService";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type Props = {
   name: string;
@@ -15,10 +16,17 @@ const DeleteAgoraButton = ({ name, id }: Props) => {
   const [typedName, setTypedName] = useState("");
   const [finished, setFinished] = useState(false);
 
-  const onDeleteClicked = () => {
-    ChannelService.deleteAgora(id, () => {
-      setFinished(true);
-    });
+  const { getAccessTokenSilently } = useAuth0();
+
+  const onDeleteClicked = async () => {
+    const token = await getAccessTokenSilently();
+    ChannelService.deleteAgora(
+      id,
+      () => {
+        setFinished(true);
+      },
+      token
+    );
   };
 
   return finished ? (

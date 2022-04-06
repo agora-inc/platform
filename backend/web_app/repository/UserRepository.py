@@ -1,20 +1,15 @@
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timedelta
-import os
-import jwt
 from repository.InstitutionRepository import InstitutionRepository
 from mailing.sendgridApi import sendgridApi
 from app.databases import agora_db
 # for emails
 from flask_mail import Message
-from flask import render_template
 
 mail_sys = sendgridApi()
 
-class User:
-    def __init__(self, username, password):
-        self.username = username
-        self.password = generate_password_hash(password)
+# class User:
+#     def __init__(self, username, password):
+#         self.username = username
+#         self.password = generate_password_hash(password)
 
 class UserRepository:
     def __init__(self, db=agora_db, mail_sys=mail_sys):
@@ -54,7 +49,7 @@ class UserRepository:
             return None
         return result[0]
 
-    def addUser(self, username, password, email, position, institution, channelId = 0):
+    def addUser(self, auth0Id, username, email, position, institution, channelId = 0):
         email = str(email).lower()
 
         if self.getUserByEmail(email):
@@ -64,10 +59,9 @@ class UserRepository:
         if self.getUser(username):
             return "Username already in use", 400
 
-        passwordHash = generate_password_hash(password)
         query = f'''INSERT INTO Users 
-            (username, password_hash, email, position, institution) 
-            VALUES ("{username}", "{passwordHash}", "{email}", "{position}", "{institution}");
+            (auth0_id, username, email, position, institution) 
+            VALUES ("{auth0Id}", "{username}", "{email}", "{position}", "{institution}");
         '''
         
         userId = self.db.run_query(query)[0]
@@ -180,55 +174,6 @@ class UserRepository:
             return False
         else:
             return self.institutions.isEmailVerifiedAcademicEmail(email)
-
-    def authenticate(self, credential, password):
-        if "@" in credential:
-            user = self.getUserByEmail(credential)
-        else:
-            user = self.getUser(credential)
-
-        if user != None and check_password_hash(user["password_hash"], password):
-            return user 
-        else:
-            return None
-
-    def encodeAuthToken(self, userId, type):
-        now = datetime.utcnow()
-
-        if type == "refresh":
-            exp = now + timedelta(days=7)
-        elif type == "changePassword":
-            exp = now + timedelta(minutes=15)
-        else:
-            exp = now + timedelta(minutes=30)
-
-        try:
-            payload = {
-                'exp': exp,
-                'iat': now,
-                'sub': userId
-            }
-            return jwt.encode(
-                payload,
-                self.secret,
-                algorithm='HS256'
-            )
-        except Exception as e:
-            return e
-
-    def decodeAuthToken(self, token):
-        try:
-            payload = jwt.decode(token, self.secret)
-            return payload['sub']
-        except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
-        except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
-
-    def changePassword(self, userId, newPassword):
-        passwordHash = generate_password_hash(newPassword)
-        query = f'UPDATE Users SET password_hash = "{passwordHash}" WHERE id = {userId}'
-        self.db.run_query(query)
 
     def updateBio(self, userId, newBio):
         query = f'UPDATE Users SET bio = "{newBio}" WHERE id = {userId}'

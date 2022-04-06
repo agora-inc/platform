@@ -4,7 +4,7 @@ import { Video, VideoService } from "../Services/VideoService";
 import SmallSelector from "../Components/Core/SmallSelector";
 import VideoCard from "../Components/Streaming/OldStuff/VideoCard";
 import { Talk, TalkService } from "../Services/TalkService";
-import PastTalkCard from "../Components/Talks/PastTalkCard";
+import { PastTalkCard } from "../Components/Talks/PastTalkCard";
 import { User, UserService } from "../Services/UserService";
 
 interface Props {
@@ -19,7 +19,6 @@ interface State {
   loading: boolean;
   // totalNumberOfVideos: number;
   // sortBy: string;
-  user: User | null;
 }
 
 export default class TagPage extends Component<Props, State> {
@@ -33,7 +32,6 @@ export default class TagPage extends Component<Props, State> {
       // totalNumberOfVideos: 0,
       // sortBy: "date",
       loading: true,
-      user: UserService.getCurrentUser(),
     };
   }
 
@@ -151,7 +149,7 @@ export default class TagPage extends Component<Props, State> {
             margin={{ top: "10px" }}
           >
             {this.state.talks.map((talk: Talk) => (
-              <PastTalkCard width="31.5%" talk={talk} user={this.state.user} />
+              <PastTalkCard width="31.5%" talk={talk} />
             ))}
           </Box>
         </Box>

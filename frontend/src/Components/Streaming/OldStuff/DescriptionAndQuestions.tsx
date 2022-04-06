@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Box, Tabs, Tab, Text } from "grommet";
-import QandA from "./QandA";
+import { QandA } from "./QandA";
 import Tag from "../../Core/Tag";
 
 interface Props {
@@ -22,9 +22,7 @@ export default class DescriptionAndQuestions extends Component<Props> {
     return (
       <Box width="72%" margin={this.props.margin} pad="none">
         <Tabs justify="start" style={{ marginBottom: 12 }}>
-          <Tab
-            title="Description"
-          >
+          <Tab title="Description">
             <Box
               height="100%"
               width="100%"

@@ -1,10 +1,21 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { Box, DropButton, Text } from "grommet";
 import { FormDown, FormUp } from "grommet-icons";
 import ImageCropUploader from "./ImageCropUploader";
 import { ChannelService } from "../../Services/ChannelService";
 import ReactTooltip from "react-tooltip";
 import { StatusInfo } from "grommet-icons";
+import { useAuth0 } from "@auth0/auth0-react";
+
+const options = [
+  "white",
+  "orange",
+  "goldenrod",
+  "teal",
+  "aquamarine",
+  "mediumslateblue",
+  "blueviolet",
+];
 
 interface Props {
   callback: any;
@@ -12,83 +23,71 @@ interface Props {
   channelId?: number;
   hasCover: boolean;
   width?: string;
-  height?: string
+  height?: string;
 }
 
-interface State {
-  open: boolean;
-  options: string[];
-  selected: string;
-}
+export const ColorPicker = (props: Props) => {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(props.selected);
 
-export default class ColorPicker extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      selected: this.props.selected,
-      open: false,
-      options: [
-        // "white",
-        // "orange",
-        // "goldenrod",
-        // "teal",
-        // "aquamarine",
-        // "mediumslateblue",
-        // "blueviolet",
-      ],
-    };
-  }
+  const { getAccessTokenSilently } = useAuth0();
 
-  select = (option: string) => {
-    this.setState({ selected: option }, () => {
-      this.toggle();
-      this.props.callback(option);
-    });
+  const select = (option: string) => {
+    setSelected(option);
+    toggle();
+    props.callback(option);
   };
 
-  toggle = () => {
-    this.setState({ open: !this.state.open });
+  const toggle = () => {
+    setOpen(!open);
   };
 
-  onCoverUpload = (file: File) => {
-    this.props.channelId &&
+  const onCoverUpload = async (file: File) => {
+    const token = await getAccessTokenSilently();
+    props.channelId &&
       ChannelService.uploadCover(
-        this.props.channelId,
+        props.channelId,
         file,
         () => {
           window.location.reload();
-        }
+        },
+        token
       );
   };
 
-  onDeleteCoverClicked = () => {
-    this.props.channelId &&
-      ChannelService.removeCover(this.props.channelId, () => {
-        window.location.reload();
-      });
+  const onDeleteCoverClicked = async () => {
+    const token = await getAccessTokenSilently();
+    props.channelId &&
+      ChannelService.removeCover(
+        props.channelId,
+        () => {
+          window.location.reload();
+        },
+        token
+      );
   };
 
-  renderDropContent = () => {
-    {/* let remove_button;
-    if (this.props.hasCover){
-    remove_button =
-      <Box
-        onClick={this.onDeleteCoverClicked}
-        background="#FF4040"
-        // background="#F2F2F2"
-        round="xsmall"
-        width={this.props.width ? this.props.width : "100px"}
-        height={this.props.height ? this.props.height : "35px"}
-        justify="center"
-        align="center"
-        focusIndicator={true}
-        hoverIndicator="#DDDDDD"
-      >
-        <Text size="13px" weight="bold" color="white">
-          Remove header
-        </Text>
-      </Box>
-    } */}
+  const renderDropContent = () => {
+    /* let remove_button;
+  if (props.hasCover){
+  remove_button =
+    <Box
+      onClick={onDeleteCoverClicked}
+      background="#FF4040"
+      // background="#F2F2F2"
+      round="xsmall"
+      width={props.width ? props.width : "100px"}
+      height={props.height ? props.height : "35px"}
+      justify="center"
+      align="center"
+      focusIndicator={true}
+      hoverIndicator="#DDDDDD"
+    >
+      <Text size="13px" weight="bold" color="white">
+        Remove header
+      </Text>
+    </Box>
+  } */
 
     return (
       <Box
@@ -98,12 +97,12 @@ export default class ColorPicker extends Component<Props, State> {
         background="#f2f2f2"
       >
         <Box direction="row" wrap>
-          {this.state.options.map((option: string, index: number) => (
+          {options.map((option: string, index: number) => (
             <Box
-              onClick={() => this.select(option)}
+              onClick={() => select(option)}
               round="xsmall"
-              width={this.props.width ? this.props.width : "30px"}
-              height={this.props.height ? this.props.height : "30px"}
+              width={props.width ? props.width : "30px"}
+              height={props.height ? props.height : "30px"}
               justify="center"
               align="center"
               focusIndicator={true}
@@ -112,105 +111,83 @@ export default class ColorPicker extends Component<Props, State> {
           ))}
         </Box>
         {/* <Box gap="4px">
-          <ImageCropUploader
-            text="Upload header"
-            onUpload={this.onCoverUpload}
-            width="100%"
-          /> 
-          {remove_button}
-        </Box>*/}
+        <ImageCropUploader
+          text="Upload header"
+          onUpload={onCoverUpload}
+          width="100%"
+        /> 
+        {remove_button}
+      </Box>*/}
       </Box>
     );
   };
 
-  render() {
-    {/* let remove_button;
-    if (this.props.hasCover){
-    remove_button =
-      <Box
-        round="xsmall"
-        width={this.props.width ? this.props.width : "150px"}
-        height={this.props.height ? this.props.height : "30px"}
-        justify="center"
-        align="center"
-        background="#FF4040"
-        focusIndicator={true}
-        hoverIndicator="#DDDDDD"
-        onClick={this.onDeleteCoverClicked}
-      >
-        <Text size="13px" weight="bold" color="white">
-          Remove header
-        </Text>
-      </Box>
-    } */}
-    return (
-      <>
+  return (
+    <>
       {/* <Box
-        width={this.state.open ? "139px" : "120px"}
-        background="#f2f2f2"
-        direction="row"
-        justify="between"
-        align="center"
-        round="xsmall"
-        style={
-          this.state.open
-            ? {
-                borderBottomRightRadius: 0,
-                borderBottomLeftRadius: 0,
-                transition: "width 75ms ease-in-out",
-              }
-            : {
-                transition: "width 75ms ease-in-out",
-              }
-        }
-        pad={{ left: "10px", vertical: "10px" }}
-      >
-        <Box
-          width="50px"
-          height="30px"
-          round="xsmall"
-          // background={this.state.selected}
-          // style={{ zIndex: 100 }}
-        >
-          <Text weight="bold" size="14">
-            Header
-             <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
-                      <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
-                       <p>Recommended dim: 1500x500px</p>
-                      </ReactTooltip>
-          </Text>
-        </Box>
-        <DropButton
-          reverse
-          // label={this.state.selected}
-          color="#f2f2f2"
-          style={{
-            paddingTop: 0,
-            paddingBottom: 0,
-            paddingRight: 10,
-            background: "#f2f2f2",
-          }}
-          primary
-          dropAlign={{ top: "bottom", right: "right" }}
-          dropContent={this.renderDropContent()}
-          icon={this.state.open ? <FormUp /> : <FormDown />}
-          open={this.state.open}
-          onOpen={this.toggle}
-          onClose={this.toggle}
-        />
-      </Box> */}
+    width={open ? "139px" : "120px"}
+    background="#f2f2f2"
+    direction="row"
+    justify="between"
+    align="center"
+    round="xsmall"
+    style={
+      open
+        ? {
+            borderBottomRightRadius: 0,
+            borderBottomLeftRadius: 0,
+            transition: "width 75ms ease-in-out",
+          }
+        : {
+            transition: "width 75ms ease-in-out",
+          }
+    }
+    pad={{ left: "10px", vertical: "10px" }}
+  >
+    <Box
+      width="50px"
+      height="30px"
+      round="xsmall"
+      // background={selected}
+      // style={{ zIndex: 100 }}
+    >
+      <Text weight="bold" size="14">
+        Header
+         <StatusInfo size="small" data-tip data-for='link_to_talk_info'/>
+                  <ReactTooltip id='link_to_talk_info' place="right" effect="solid">
+                   <p>Recommended dim: 1500x500px</p>
+                  </ReactTooltip>
+      </Text>
+    </Box>
+    <DropButton
+      reverse
+      // label={selected}
+      color="#f2f2f2"
+      style={{
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingRight: 10,
+        background: "#f2f2f2",
+      }}
+      primary
+      dropAlign={{ top: "bottom", right: "right" }}
+      dropContent={renderDropContent()}
+      icon={open ? <FormUp /> : <FormDown />}
+      open={open}
+      onOpen={toggle}
+      onClose={toggle}
+    />
+  </Box> */}
       {/* This is a workaround because Modal don't work with DropButton */}
       <Box direction="row">
         <ImageCropUploader
           text="Upload header"
-          onUpload={this.onCoverUpload}
+          onUpload={onCoverUpload}
           width="150px"
         />
         {/* <Box margin= {{ right: "xsmall" }}/>
-        {remove_button} */}
-
+    {remove_button} */}
       </Box>
-      </>
-    );
-  }
-}
+    </>
+  );
+};

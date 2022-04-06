@@ -1,27 +1,17 @@
 import React, { Component } from "react";
-import {
-  Box,
-  Button,
-  Text,
-  TextInput,
-  Grid,
-  Layer,
-} from "grommet";
+import { Box, Button } from "grommet";
 import { Overlay, OverlaySection } from "../../Core/Overlay";
 import { Talk } from "../../../Services/TalkService";
 import { User } from "../../../Services/UserService";
-import LoginModal from "../../Account/LoginModal";
+import { LoginButton } from "../../Account/LoginButton";
 import SignUpButton from "../../Account/SignUpButton";
-import CalendarButtons from "../CalendarButtons";
-import ShareButtons from "../../Core/ShareButtons";
 
 interface Props {
-  talk: Talk,
-  user: User | null;
+  talk: Talk;
 }
 
 interface State {
-    showForm: boolean;
+  showForm: boolean;
 }
 
 export default class SaveForLaterButton extends Component<Props, State> {
@@ -32,7 +22,6 @@ export default class SaveForLaterButton extends Component<Props, State> {
     };
   }
 
-  
   toggleModal = () => {
     this.setState({ showForm: !this.state.showForm });
   };
@@ -40,7 +29,7 @@ export default class SaveForLaterButton extends Component<Props, State> {
   render() {
     // TO ADD: logic if user is already registered and event is already added
     return (
-      <Box style={{maxHeight: "30px"}}>
+      <Box style={{ maxHeight: "30px" }}>
         <Button
           label="Save for later"
           onClick={this.toggleModal}
@@ -71,25 +60,26 @@ export default class SaveForLaterButton extends Component<Props, State> {
           contentHeight="200px"
           title={"Add this talk in your 'Saved talks'"}
         >
-        <OverlaySection>
+          <OverlaySection>
             <Box direction="column" align="center">
-                <Box direction="row" height="60px" gap="xsmall">
-                  <LoginModal
-                        // open={this.props.showLogin}
-                        callback={() => {
-                        // this.setState(
-                        //     {
-                        //     isLoggedIn: UserService.isLoggedIn(),
-                        //     user: UserService.getCurrentUser(),
-                        //     },
-                        //     () => {
-                        //     this.fetchChannels();
-                        //     }
-                        // );
-                        }}
-                    />  /  <SignUpButton callback={() => {}} />                    
-                        to use this feature.
-                </Box>            
+              <Box direction="row" height="60px" gap="xsmall">
+                <LoginButton
+                  // open={this.props.showLogin}
+                  callback={() => {
+                    // this.setState(
+                    //     {
+                    //     isLoggedIn: UserService.isLoggedIn(),
+                    //     user: UserService.getCurrentUser(),
+                    //     },
+                    //     () => {
+                    //     this.fetchChannels();
+                    //     }
+                    // );
+                  }}
+                />{" "}
+                / <SignUpButton callback={() => {}} />
+                to use this feature.
+              </Box>
             </Box>
           </OverlaySection>
         </Overlay>

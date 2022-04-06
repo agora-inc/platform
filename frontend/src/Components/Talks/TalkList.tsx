@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Box, Heading, Text } from "grommet";
-import TalkCard from "./TalkCard";
-import PastTalkCard from "./PastTalkCard";
+import { TalkCard } from "./TalkCard";
+import { PastTalkCard } from "./PastTalkCard";
 import { Talk, TalkService } from "../../Services/TalkService";
 import { FormNextLink } from "grommet-icons";
 import "../../Styles/home.css";
@@ -18,7 +18,6 @@ interface Props {
   talks: Talk[];
   title: boolean;
   seeMore: boolean;
-  user: User | null;
 }
 
 export default class TalkList extends Component<Props> {
@@ -60,15 +59,12 @@ export default class TalkList extends Component<Props> {
             this.props.talks.map((talk: Talk) => (
               <PastTalkCard
                 talk={talk}
-                user={this.props.user}
                 onSave={this.props.onSave}
                 onUnsave={this.props.onUnsave}
               />
             ))}
           {!this.props.past &&
-            this.props.talks.map((talk: Talk) => (
-              <TalkCard talk={talk} user={this.props.user} />
-            ))}
+            this.props.talks.map((talk: Talk) => <TalkCard talk={talk} />)}
         </Box>
       </Box>
     );

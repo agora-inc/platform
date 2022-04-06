@@ -2,8 +2,18 @@ import React, { Component } from "react";
 import { User, UserService } from "../Services/UserService";
 import { Box, Text, TextArea } from "grommet";
 import { Link } from "react-router-dom";
-import { Launch, CircleQuestion, FormUp, FormDown, Test, Schedules, Help, Channel, PersonalComputer} from "grommet-icons";
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {
+  Launch,
+  CircleQuestion,
+  FormUp,
+  FormDown,
+  Test,
+  Schedules,
+  Help,
+  Channel,
+  PersonalComputer,
+} from "grommet-icons";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import agoraLogo from "../assets/general/agora_logo_v2.1.svg";
 
 import adding_email_addresses_registered from "../assets/getting-started/adding_members/adding_email_addresses_registered.png";
@@ -13,7 +23,6 @@ import registration from "../assets/getting-started/adding_members/registration.
 import email_registration from "../assets/getting-started/adding_members/email_registration.png";
 import member_got_added_after_registration from "../assets/getting-started/adding_members/member_got_added_after_registration.png";
 import membership_top_right from "../assets/getting-started/adding_members/membership_top_right.png";
-
 
 import accessing_link from "../assets/getting-started/accessing_link.png";
 // import agora_created_done from "../assets/getting-started/agora_created_done.png";
@@ -32,21 +41,19 @@ import accessing_link from "../assets/getting-started/accessing_link.png";
 // import top_right_panel_select_agora from "../assets/getting-started/top_right_panel_select_agora.png";
 // import watch_past_talk from "../assets/getting-started/watch_past_talk.png";
 // import LatexInput from "../Components/Streaming/LatexInput";
-import ReactPlayer from "react-player"
+import ReactPlayer from "react-player";
 import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
-
 
 interface Props {
   location: { state: { user: User } };
 }
 
 interface State {
-  user: User;
   loading: boolean;
   text: string;
   sizeHeader: string;
-  sizeItem: string,
+  sizeItem: string;
   sizeText: string;
 }
 
@@ -54,9 +61,6 @@ export default class GettingStartedPage extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      user: this.props.location.state
-        ? this.props.location.state.user
-        : UserService.getCurrentUser(),
       loading: true,
       text: "",
       sizeHeader: "28px",
@@ -65,8 +69,7 @@ export default class GettingStartedPage extends Component<Props, State> {
     };
   }
 
-  componentWillMount() {
-  }
+  componentWillMount() {}
 
   updateText = (e: any) => {
     this.setState({
@@ -122,14 +125,10 @@ export default class GettingStartedPage extends Component<Props, State> {
   };
 
   render() {
-    let path_image = "/home/cloud-user/plateform/agora/frontend/media/tutorial/adding_members/";
+    let path_image =
+      "/home/cloud-user/plateform/agora/frontend/media/tutorial/adding_members/";
     return (
-      <Box
-        width="100vw"
-        height="100vh"
-        align="center"
-        margin={{ top: "10vh" }}
-      >
+      <Box width="100vw" height="100vh" align="center" margin={{ top: "10vh" }}>
         <Box width="70%" direction="column">
           {/* <Box
             width="98.25%"
@@ -139,148 +138,213 @@ export default class GettingStartedPage extends Component<Props, State> {
             pad="small"
             // gap="xsmall"
           > */}
-          <Box direction="row" gap="small" margin={{bottom: "72px"}}>
+          <Box direction="row" gap="small" margin={{ bottom: "72px" }}>
             <Launch size="large" />
-            <Text size={this.state.sizeHeader} weight="bold"> Getting started </Text>
+            <Text size={this.state.sizeHeader} weight="bold">
+              {" "}
+              Getting started{" "}
+            </Text>
           </Box>
-          <Box margin={{bottom: "32px"}}>
-            <Text size={this.state.sizeText} > Welcome to <b>mora.stream</b>, the centralized platform to advertise and attend academic seminars!
-             </Text>
-          {/* <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
+          <Box margin={{ bottom: "32px" }}>
+            <Text size={this.state.sizeText}>
+              {" "}
+              Welcome to <b>mora.stream</b>, the centralized platform to
+              advertise and attend academic seminars!
+            </Text>
+            {/* <Text size={this.state.sizeText} style={{fontStyle:"italic", marginTop:"10px", marginBottom: "10px"}}>
             PS: while we try to update this page as often as possible, some parts might be outdated or missing due to a recent explosive growth of this website and the evergrowing speed of its development.
           </Text> */}
           </Box>
 
-
-
-          <Box direction="row" gap="small" margin={{top: "22px", bottom: "48px"}}>
-            <PersonalComputer size="medium"/>
-            <Text size={this.state.sizeItem} weight="bold"> For participants </Text>
+          <Box
+            direction="row"
+            gap="small"
+            margin={{ top: "22px", bottom: "48px" }}
+          >
+            <PersonalComputer size="medium" />
+            <Text size={this.state.sizeItem} weight="bold">
+              {" "}
+              For participants{" "}
+            </Text>
           </Box>
 
           <Tabs>
-            <TabList style={{marginBottom: "24px"}}>
+            <TabList style={{ marginBottom: "24px" }}>
               <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
-                    Browse the site
-                  </Text>
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>Browse the site</Text>
                 </Box>
               </Tab>
               <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>
                     Register and go to a talk
                   </Text>
                 </Box>
               </Tab>
               <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>
                     Become a member of an agora
                   </Text>
                 </Box>
               </Tab>
               <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
-                    Apply to give a talk
-                  </Text>
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>Apply to give a talk</Text>
                 </Box>
               </Tab>
             </TabList>
 
             <TabPanel>
               <Text size={this.state.sizeText}>
-                  You can use the filters in the homepage to select the talks of interest to you. Click on the talk card to see more information,
-                  like the speaker's website and the abstract.
-                  If you want to see the talks given by an agora, click on its name. This will redirect you to the agora's main page.
+                You can use the filters in the homepage to select the talks of
+                interest to you. Click on the talk card to see more information,
+                like the speaker's website and the abstract. If you want to see
+                the talks given by an agora, click on its name. This will
+                redirect you to the agora's main page.
               </Text>
             </TabPanel>
 
             <TabPanel>
               <Text size={this.state.sizeText}>
-                You can register to a talk and put it in your Google or Apple calendar by click on the talk card.
-                The list of your registered talk will appear in your{" "}
+                You can register to a talk and put it in your Google or Apple
+                calendar by click on the talk card. The list of your registered
+                talk will appear in your{" "}
                 <Link to={"/schedule"}>
-                    <Text color="color1" weight="bold" size={this.state.sizeText}>
-                      schedule
-                    </Text>
-                  </Link>
+                  <Text color="color1" weight="bold" size={this.state.sizeText}>
+                    schedule
+                  </Text>
+                </Link>
                 . The link to the streaming will be there as well.
               </Text>
             </TabPanel>
 
             <TabPanel>
               <Text size={this.state.sizeText}>
-                You can become a member of an agora in two ways: either (1) you log on your account, 
-                go on the agora you want to be a member of and apply using the form; an administrator of the <img src={agoraLogo} style={{ height: "14px"}}/> will review your application and accept/refuse you. 
-                (2) the administrator of an agora can directly invit you using your email address. 
-                If this email is associated to an agora account, the membership will be automatically granted. Else, you will have to create an account with that address to claim the membership that was given to you.
+                You can become a member of an agora in two ways: either (1) you
+                log on your account, go on the agora you want to be a member of
+                and apply using the form; an administrator of the{" "}
+                <img src={agoraLogo} style={{ height: "14px" }} /> will review
+                your application and accept/refuse you. (2) the administrator of
+                an agora can directly invit you using your email address. If
+                this email is associated to an agora account, the membership
+                will be automatically granted. Else, you will have to create an
+                account with that address to claim the membership that was given
+                to you.
               </Text>
             </TabPanel>
 
             <TabPanel>
               <Text size={this.state.sizeText}>
-                Click on the button "Give a talk!" on the top left corner of an agora's main page, and fill in the form with
-                all the relevant details of your talk.
+                Click on the button "Give a talk!" on the top left corner of an
+                agora's main page, and fill in the form with all the relevant
+                details of your talk.
               </Text>
             </TabPanel>
-
           </Tabs>
 
-          <Box direction="row" gap="small" margin={{top: "48px", bottom: "48px"}}>
+          <Box
+            direction="row"
+            gap="small"
+            margin={{ top: "48px", bottom: "48px" }}
+          >
             <Schedules size="medium" />
-            <Text size={this.state.sizeItem} weight="bold"> For organisers </Text>
+            <Text size={this.state.sizeItem} weight="bold">
+              {" "}
+              For organisers{" "}
+            </Text>
           </Box>
 
           <Tabs>
-            <TabList style={{marginBottom: "24px"}}>
+            <TabList style={{ marginBottom: "24px" }}>
               <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
-                    Create an <img src={agoraLogo} style={{ height: "14px"}}/>
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>
+                    Create an <img src={agoraLogo} style={{ height: "14px" }} />
                   </Text>
                 </Box>
               </Tab>
               <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
-                    Customize
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>Customize</Text>
+                </Box>
+              </Tab>
+              <Tab>
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>Invite members</Text>
+                </Box>
+              </Tab>
+              <Tab>
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>
+                    Talk scheduling and privacy
                   </Text>
                 </Box>
               </Tab>
               <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
-                    Invite members
-                  </Text>
-                </Box>
-              </Tab>
-              <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
-                    Talk scheduling and privacy 
-                  </Text>
-                </Box>
-              </Tab>
-              <Tab>
-                <Box direction="row" justify="center" pad="3px" margin={{left: "3px", right: "3px"}}>
-                  <Text size={this.state.sizeText}> 
-                    Manage recordings 
-                  </Text>
+                <Box
+                  direction="row"
+                  justify="center"
+                  pad="3px"
+                  margin={{ left: "3px", right: "3px" }}
+                >
+                  <Text size={this.state.sizeText}>Manage recordings</Text>
                 </Box>
               </Tab>
             </TabList>
 
             <TabPanel>
               <Text size={this.state.sizeText}>
-                First, you need to log in or sign up. Once done, click on the user panel on the top right corner of the homepage and click on "Create Agora".
-                Enter the name you want and you will be redirected to the agora's main page. You are automatically an
-                administrator of the <img src={agoraLogo} style={{ height: "14px"}}/>, meaning that you can customize it.
-
+                First, you need to log in or sign up. Once done, click on the
+                user panel on the top right corner of the homepage and click on
+                "Create Agora". Enter the name you want and you will be
+                redirected to the agora's main page. You are automatically an
+                administrator of the{" "}
+                <img src={agoraLogo} style={{ height: "14px" }} />, meaning that
+                you can customize it.
               </Text>
-              <Box margin={{top: "24px", bottom: "36px"}} wrap >
+              <Box margin={{ top: "24px", bottom: "36px" }} wrap>
                 <ReactPlayer
                   url="https://youtu.be/AEfXHxQtdeo"
                   playing={false}
@@ -292,9 +356,10 @@ export default class GettingStartedPage extends Component<Props, State> {
             </TabPanel>
             <TabPanel>
               <Text size={this.state.sizeText}>
-                You can change the banner, the avatar, the description and the email of contact of your agora.
+                You can change the banner, the avatar, the description and the
+                email of contact of your agora.
               </Text>
-              <Box margin={{top: "24px", bottom: "36px"}} wrap >
+              <Box margin={{ top: "24px", bottom: "36px" }} wrap>
                 <ReactPlayer
                   url="https://youtu.be/jFRGK_kPHPs"
                   playing={false}
@@ -306,13 +371,14 @@ export default class GettingStartedPage extends Component<Props, State> {
             </TabPanel>
             <TabPanel>
               <Text size={this.state.sizeText}>
-                You can manage the members of your agora under the "Community" tab.
-                Enter the emails of the people you want to invite.
-                If the person already has an agora account, he/she will instantly be a member.
-                If the person does not have an account, he will feature in the "Invited members" 
-                section and an invitation will be sent to this person via email.
+                You can manage the members of your agora under the "Community"
+                tab. Enter the emails of the people you want to invite. If the
+                person already has an agora account, he/she will instantly be a
+                member. If the person does not have an account, he will feature
+                in the "Invited members" section and an invitation will be sent
+                to this person via email.
               </Text>
-              <Box margin={{top: "24px", bottom: "36px"}} wrap >
+              <Box margin={{ top: "24px", bottom: "36px" }} wrap>
                 <ReactPlayer
                   url="https://youtu.be/WF6elpIwsYs"
                   playing={false}
@@ -324,11 +390,13 @@ export default class GettingStartedPage extends Component<Props, State> {
             </TabPanel>
             <TabPanel>
               <Text size={this.state.sizeText}>
-                You can schedule a new talk by going on the top left corner of your agora's main page.
-                You can save your new talk as a draft if some information is missing and you do not want it to be public yet.
-                You can choose who sees the advertisement for your upcoming talk, and who has access to the livestream.
+                You can schedule a new talk by going on the top left corner of
+                your agora's main page. You can save your new talk as a draft if
+                some information is missing and you do not want it to be public
+                yet. You can choose who sees the advertisement for your upcoming
+                talk, and who has access to the livestream.
               </Text>
-              <Box margin={{top: "24px", bottom: "36px"}} wrap >
+              <Box margin={{ top: "24px", bottom: "36px" }} wrap>
                 <ReactPlayer
                   url="https://youtu.be/aEMpHZ4yNBg"
                   playing={false}
@@ -340,10 +408,12 @@ export default class GettingStartedPage extends Component<Props, State> {
             </TabPanel>
             <TabPanel>
               <Text size={this.state.sizeText}>
-                After the event, you can enter the link to the recording of the talk by going on the "Past talk" section in your agora 
-                and clicking on the corresponding talk. Only the people that had access to the livestream will have access to the recording.
+                After the event, you can enter the link to the recording of the
+                talk by going on the "Past talk" section in your agora and
+                clicking on the corresponding talk. Only the people that had
+                access to the livestream will have access to the recording.
               </Text>
-              <Box margin={{top: "24px", bottom: "36px"}} wrap >
+              <Box margin={{ top: "24px", bottom: "36px" }} wrap>
                 <ReactPlayer
                   url="https://youtu.be/_B9Hpy1VY9E"
                   playing={false}
@@ -355,20 +425,29 @@ export default class GettingStartedPage extends Component<Props, State> {
             </TabPanel>
           </Tabs>
 
-          <Box direction="row" gap="small" margin={{top: "48px", bottom: "60px"}}>
+          <Box
+            direction="row"
+            gap="small"
+            margin={{ top: "48px", bottom: "60px" }}
+          >
             <CircleQuestion size="large" />
-            <Text size={this.state.sizeHeader} weight="bold"> Any questions? Reach out! </Text>
+            <Text size={this.state.sizeHeader} weight="bold">
+              {" "}
+              Any questions? Reach out!{" "}
+            </Text>
           </Box>
 
-          <Text margin={{bottom: "60px"}} size={this.state.sizeText}>
-            Do you have any question, inquery, or feedback? If yes, please reach out to us using the "Give feedback" button, 
-            or drop us a message at agora.stream.inquiries(.at.)gmail.com! For more information, check our{" "} 
+          <Text margin={{ bottom: "60px" }} size={this.state.sizeText}>
+            Do you have any question, inquery, or feedback? If yes, please reach
+            out to us using the "Give feedback" button, or drop us a message at
+            agora.stream.inquiries(.at.)gmail.com! For more information, check
+            our{" "}
             <Link to={"/info/tos"}>
               <Text weight="bold" color="color1" size={this.state.sizeText}>
                 Term of services
               </Text>
-            </Link>
-            {" "} and {" "} 
+            </Link>{" "}
+            and{" "}
             <Link to={"/info/privacy"}>
               <Text weight="bold" color="color1" size={this.state.sizeText}>
                 data privacy policies
@@ -601,9 +680,7 @@ export default class GettingStartedPage extends Component<Props, State> {
             />
             <br></br> */}
 
-
-
-            {/* <h2><strong>6. Can I watch previous talks?</strong></h2>
+          {/* <h2><strong>6. Can I watch previous talks?</strong></h2>
             <p>i) Yes! You can if the organiser decided to record it and make it public. To see the recording of a past talk, go on the "Recent talk" section on the homepage or simply on the hosting agora page. Click then on the event in question and then on "Watch talk".</p>
             <img src={}
               width="1150vw" 
@@ -624,13 +701,9 @@ export default class GettingStartedPage extends Component<Props, State> {
             />
             <br></br> */}
 
-
-
-
-            {/* </Text> */}
+          {/* </Text> */}
 
           {/* </Box> */}
-
         </Box>
       </Box>
     );

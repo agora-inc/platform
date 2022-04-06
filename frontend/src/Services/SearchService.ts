@@ -1,22 +1,15 @@
-import { baseApiUrl } from "../config";
-import axios from "axios";
+import { post } from "../Middleware/httpMiddleware";
 
 const search = (objectTypes: string[], searchString: string, callback: any) => {
-  axios
-    .post(
-      baseApiUrl + "/search",
-      {
-        objectTypes: objectTypes,
-        searchString: searchString,
-      },
-      { headers: { "Access-Control-Allow-Origin": "*" } }
-    )
-    .then(function (response) {
-      callback(response.data);
-    });
-  // .catch(function (error) {
-  //   callback(false);
-  // });
+  post(
+    "/search",
+    {
+      objectTypes: objectTypes,
+      searchString: searchString,
+    },
+    "",
+    callback
+  );
 };
 
 export const SearchService = {
