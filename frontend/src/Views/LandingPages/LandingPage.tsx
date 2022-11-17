@@ -245,14 +245,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         alignContent="center"
         gap="medium"
         >
-        <SignUpButton 
+        {/* <SignUpButton 
           callback={()=>{}}
           height="70px"
           width="250px"
           textSize="18px"
           text="Get started"
           icon={true}
-        />
+        /> */}
 
 
         

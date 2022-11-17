@@ -109,7 +109,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
 
 
         <Link
-          to={{ pathname: "/browse" }}
+          to={{ pathname: "/b" }}
           style={{ textDecoration: "none" }}
         >
           <Box
@@ -151,7 +151,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             </a>
           </Box>
 
-          <Box
+          {/* <Box
             width="40px"
             height="30px"
             round="7px"
@@ -162,7 +162,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             >
                 <Slack color='plain'/>
             </a>
-          </Box>
+          </Box> */}
 
 
             <MediaQuery minDeviceWidth={992}>
