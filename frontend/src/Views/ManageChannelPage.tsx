@@ -774,7 +774,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                   </Text>
                 </Box>
                 <Box justify="end" width="50%" direction="row">
-                  <Box
+                  {/* <Box
                     onClick={this.toggleModalPricing}
                     background="color1"
                     round="xsmall"
@@ -787,7 +787,7 @@ export default class ManageChannelPage extends Component<Props, State> {
                     hoverIndicator="color3"
                   >
                     <Text size="14px" weight="bold"> Your subscription </Text>
-                  </Box>
+                  </Box> */}
                   {/* 
                   REFERAL BUTTON: TO UNCOMMENT SOON
                   
