@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Box, Image, Text, TextArea, Layer } from "grommet";
 import {UserSettings} from "grommet-icons";
-import { Link, Route, Redirect, useHistory } from "react-router-dom";
+import { Link, Route, Redirect, useHistory, useLocation } from "react-router-dom";
 import LoginModal from "./LoginModal";
 import { UserService } from "../../Services/UserService";
 import { ProfileService } from "../../Services/ProfileService";
@@ -563,7 +563,7 @@ export default class UserManager extends Component<Props, State> {
               );
             }}
           />
-          {/* <SignUpButton
+          {useLocation().pathname == "/cassyni" ? <SignUpButton
             callback={() => {
               this.setState(
                 {
@@ -576,7 +576,7 @@ export default class UserManager extends Component<Props, State> {
                 }
               );
             }}
-          /> */}
+          /> : null }
       </Box>
     </MediaQuery>
   );
