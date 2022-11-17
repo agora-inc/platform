@@ -31,7 +31,7 @@ import ThreeSidedMarketplaceGraph from "../../assets/landing_page/3_sided_market
 
 import InstitutionalUsers from "./InstitutionalUsers";
 import LoginModal from "../../Components/Account/LoginModal";
-import SignUpButton from "../../Components/Account/SignUpButton";
+// import SignUpButton from "../../Components/Account/SignUpButton";
 
 
 
@@ -702,7 +702,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               <Text size="24px" color="color1" alignSelf="center">
                 Join a leading community of researchers and seminar organisers
               </Text>
-              <Box align="center" margin={{bottom: "90px", top: "40px"}}>
+              {/* <Box align="center" margin={{bottom: "90px", top: "40px"}}>
                   <SignUpButton 
                     callback={()=>{}}
                     height="80px"
@@ -711,7 +711,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                     icon={true}
                     text="Join your peers"
                   />
-              </Box>
+              </Box> */}
               <Box alignSelf="center" margin={this.state.renderMobileView ? {top: "30px"} : {}}>
                 <InstitutionalUsers/>
               </Box>
@@ -749,14 +749,14 @@ contentTestimonial() {
             <Text size={this.state.titleSize} margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Built by academics, for academics</Text>
             <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">mora.stream is built around what our community wants. Sign up and join the conversation!</Text>
             
-            <Box align="center" margin={{bottom: "90px"}}>
+            {/* <Box align="center" margin={{bottom: "90px"}}>
                 <SignUpButton 
                   callback={()=>{}}
                   height="100px"
                   width="200px"
                   textSize="18px"
                 />
-            </Box>
+            </Box> */}
             <Box alignSelf="center" margin={this.state.renderMobileView ? {top: "30px"} : {}}>
               <InstitutionalUsers/>
             </Box>
