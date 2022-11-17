@@ -41,7 +41,7 @@ function App() {
       <HeaderBar />
         <Switch>
           {/* LANDING PAGES */}
-          <Route exact path="/" component={LandingPage} />
+          <Route exact path="/cassyni" component={LandingPage} />
           <Route exact path="/organisers" component={OrganiserLandingPage} />
 
           {/* KEY CTA ENDPOINTS */}
