@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch} from "react-router-dom";
 import { Grommet } from "grommet";
 import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPages/LandingPage";
+import CassyniLandingPage from "./Views/LandingPages/CassyniLandingPage";
 import OrganiserLandingPage from "./Views/LandingPages/OrganiserLandingPage";
 import ChannelReferralPage from "./Views/ChannelReferralPage";
 import ChannelPage from "./Views/ChannelPage";
@@ -42,6 +43,7 @@ function App() {
         <Switch>
           {/* LANDING PAGES */}
           <Route exact path="/" component={LandingPage} />
+          <Route exact path="/cassyni" component={CassyniLandingPage} />
           <Route exact path="/organisers" component={OrganiserLandingPage} />
 
           {/* KEY CTA ENDPOINTS */}

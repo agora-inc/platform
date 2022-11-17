@@ -19,9 +19,9 @@ import CreateChannelButton from "../../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
 
-import ZoomLogo from "../../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
-import YoutubeLogo from "../../assets/competitors_logo/YouTube_Logo_2017.svg.png";
-import MicrosoftTeams from "../../assets/competitors_logo/youtube_logo.jpeg";
+// import ZoomLogo from "../../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
+// import YoutubeLogo from "../../assets/competitors_logo/YouTube_Logo_2017.svg.png";
+// import MicrosoftTeams from "../../assets/competitors_logo/youtube_logo.jpeg";
 import BackgroundImage from "../../assets/general/mora_social_media_cover_#bad6db.jpg"
 import WavyArrowLeftRight from "../../assets/landing_page/wavy_arrow_left_right.png"
 import WavyArrowTopBot from "../../assets/landing_page/wavy_arrow_top_bot.png"
@@ -63,7 +63,7 @@ interface State {
   showCreateChannelOverlay: boolean
 }
 
-export default class LandingPage extends Component<RouteComponentProps, State> {
+export default class CassyniLandingPage extends Component<RouteComponentProps, State> {
   constructor(props: any) {
     super(props);
     var maxWidthMobile = 1000;
@@ -349,6 +349,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         #######################
         # Testimonial: to be added soon (Remy)
         #######################
+
         <Box width="100%" direction={!this.state.renderMobileView ? "row" : "column" } gap="30px">
           <Box>
             Martin Hairer, Field Medalist, Imperial College London
@@ -701,7 +702,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
               <Text size="24px" color="color1" alignSelf="center">
                 Join a leading community of researchers and seminar organisers
               </Text>
-              <Box align="center" margin={{bottom: "90px", top: "40px"}}>
+              {/* <Box align="center" margin={{bottom: "90px", top: "40px"}}>
                   <SignUpButton 
                     callback={()=>{}}
                     height="80px"
@@ -710,7 +711,7 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
                     icon={true}
                     text="Join your peers"
                   />
-              </Box>
+              </Box> */}
               <Box alignSelf="center" margin={this.state.renderMobileView ? {top: "30px"} : {}}>
                 <InstitutionalUsers/>
               </Box>
@@ -748,14 +749,14 @@ contentTestimonial() {
             <Text size={this.state.titleSize} margin={{top: "80px", bottom: "15px"}} color="color1" weight="bold" alignSelf="center">Built by academics, for academics</Text>
             <Text size="24px" margin={{top: "15px", bottom: "80px"}} color="black" alignSelf="center">mora.stream is built around what our community wants. Sign up and join the conversation!</Text>
             
-            <Box align="center" margin={{bottom: "90px"}}>
+            {/* <Box align="center" margin={{bottom: "90px"}}>
                 <SignUpButton 
                   callback={()=>{}}
                   height="100px"
                   width="200px"
                   textSize="18px"
                 />
-            </Box>
+            </Box> */}
             <Box alignSelf="center" margin={this.state.renderMobileView ? {top: "30px"} : {}}>
               <InstitutionalUsers/>
             </Box>
@@ -871,11 +872,11 @@ calltoActionOrganisers() {
           </Box>
         </Box>
 
-        <Box height="100%" width="100%" background="color1">
+        {/* <Box height="100%" width="100%" background="color1">
           <Box width="80%" height={this.state.renderMobileView ? (600 + window.innerWidth * 2) + "px" : "1200px"} direction="column" alignSelf="center">
             {this.contentHeroHow()}
           </Box>
-        </Box>
+        </Box> */}
 
 
         {/* <Box height="100%" width="100%" background="color4">
@@ -891,17 +892,17 @@ calltoActionOrganisers() {
           </Box>
         </Box> */}
 
-        <Box height="100%" width="100%" background="color5">
+        {/* <Box height="100%" width="100%" background="color5">
           <Box width="80%" height={this.state.renderMobileView ? "250px": "600px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
           </Box>
-        </Box>
+        </Box> */}
 
-        <Box height="100%" width="100%">
+        {/* <Box height="100%" width="100%">
           <Box width="80%" height="400px" direction="column" alignSelf="center">
             {this.calltoActionOrganisers()}
           </Box>
-        </Box>
+        </Box> */}
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />
