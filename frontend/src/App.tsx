@@ -12,6 +12,7 @@ import AllSpeakersPage from "./Views/AllSpeakersPage";
 import TagPage from "./Views/TagPage";
 import AllVideosPage from "./Views/AllVideosPage";
 import HeaderBar from "./Components/Core/HeaderBar";
+import CassyniHeaderBar from "./Components/Core/CassyniHeaderBar";
 import { Theme } from "./theme";
 import ManageChannelPage from "./Views/ManageChannelPage";
 import Preferences from "./Views/Preferences";
@@ -39,8 +40,8 @@ function App() {
   return (
     
       <Grommet theme={Theme} full>
-      {console.log(useLocation())}
-      <HeaderBar />
+      {useLocation().pathname == "/cassyni" ? <CassyniHeaderBar/> : <HeaderBar/> }
+      {/* <HeaderBar /> */}
         <Switch>
           {/* LANDING PAGES */}
           <Route exact path="/" component={LandingPage} />
