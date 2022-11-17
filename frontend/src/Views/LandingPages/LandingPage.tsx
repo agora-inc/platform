@@ -19,9 +19,9 @@ import CreateChannelButton from "../../Components/Channel/CreateChannelButton";
 import CreateChannelOverlay from "../../Components/Channel/CreateChannelButton/CreateChannelOverlay";
 
 
-import ZoomLogo from "../../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
-import YoutubeLogo from "../../assets/competitors_logo/YouTube_Logo_2017.svg.png";
-import MicrosoftTeams from "../../assets/competitors_logo/youtube_logo.jpeg";
+// import ZoomLogo from "../../assets/competitors_logo/427px-Zoom_Communications_Logo.png";
+// import YoutubeLogo from "../../assets/competitors_logo/YouTube_Logo_2017.svg.png";
+// import MicrosoftTeams from "../../assets/competitors_logo/youtube_logo.jpeg";
 import BackgroundImage from "../../assets/general/mora_social_media_cover_#bad6db.jpg"
 import WavyArrowLeftRight from "../../assets/landing_page/wavy_arrow_left_right.png"
 import WavyArrowTopBot from "../../assets/landing_page/wavy_arrow_top_bot.png"
@@ -31,7 +31,7 @@ import ThreeSidedMarketplaceGraph from "../../assets/landing_page/3_sided_market
 
 import InstitutionalUsers from "./InstitutionalUsers";
 import LoginModal from "../../Components/Account/LoginModal";
-// import SignUpButton from "../../Components/Account/SignUpButton";
+import SignUpButton from "../../Components/Account/SignUpButton";
 
 
 
@@ -245,14 +245,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         alignContent="center"
         gap="medium"
         >
-        {/* <SignUpButton 
+        <SignUpButton 
           callback={()=>{}}
           height="70px"
           width="250px"
           textSize="18px"
           text="Get started"
           icon={true}
-        /> */}
+        />
 
 
         
