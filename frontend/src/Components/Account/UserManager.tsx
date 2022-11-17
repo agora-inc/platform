@@ -563,7 +563,7 @@ export default class UserManager extends Component<Props, State> {
               );
             }}
           />
-          <SignUpButton
+          {/* <SignUpButton
             callback={() => {
               this.setState(
                 {
@@ -576,7 +576,7 @@ export default class UserManager extends Component<Props, State> {
                 }
               );
             }}
-          />
+          /> */}
       </Box>
     </MediaQuery>
   );
