@@ -39,6 +39,7 @@ function App() {
   return (
     
       <Grommet theme={Theme} full>
+      console.log(useLocation())
       <HeaderBar />
         <Switch>
           {/* LANDING PAGES */}

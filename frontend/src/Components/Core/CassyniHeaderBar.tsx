@@ -15,7 +15,7 @@ type State = {
   showLogin: boolean;
 };
 
-class HeaderBar extends Component<RouteComponentProps, State> {
+class CassyniHeaderBar extends Component<RouteComponentProps, State> {
   constructor(props: RouteComponentProps) {
     super(props);
     this.state = {
@@ -108,8 +108,8 @@ class HeaderBar extends Component<RouteComponentProps, State> {
 
 
 
-        <Link
-          to={{ pathname: "/browse" }}
+        {/* <Link
+          to={{ pathname: "/b" }}
           style={{ textDecoration: "none" }}
         >
           <Box
@@ -125,13 +125,13 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             focusIndicator={false}
             margin={{ left: "0px" }}
             direction="row"
-          >
+          > */}
             {/* <Play size="30px" /> */}
-            <Text size="14px" margin={{left: "10px"}}> 
+            {/* <Text size="14px" margin={{left: "10px"}}> 
               <b> {renderMobileView ? "Browse seminars" : "Browse trending seminars"} </b>
             </Text>
           </Box>
-        </Link>
+        </Link> */}
 
 
 
@@ -151,7 +151,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             </a>
           </Box>
 
-          <Box
+          {/* <Box
             width="40px"
             height="30px"
             round="7px"
@@ -162,7 +162,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             >
                 <Slack color='plain'/>
             </a>
-          </Box>
+          </Box> */}
 
 
             <MediaQuery minDeviceWidth={992}>
@@ -175,4 +175,4 @@ class HeaderBar extends Component<RouteComponentProps, State> {
   } 
 }
 
-export default withRouter(HeaderBar);
+export default withRouter(CassyniHeaderBar);
