@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Switch} from "react-router-dom";
+import { BrowserRouter, Route, Switch, useLocation} from "react-router-dom";
 import { Grommet } from "grommet";
 import Home from "./Views/Home";
 import LandingPage from "./Views/LandingPages/LandingPage";
@@ -39,7 +39,7 @@ function App() {
   return (
     
       <Grommet theme={Theme} full>
-      console.log(useLocation())
+      {console.log(useLocation())}
       <HeaderBar />
         <Switch>
           {/* LANDING PAGES */}
