@@ -24,6 +24,7 @@ const makeProfilePublicInfo = "Making your profile public means that it will be 
 
 interface Props {
   showLogin: boolean;
+  isCassyni?: boolean;
 }
 
 interface State {
@@ -50,7 +51,7 @@ export default class UserManager extends Component<Props, State> {
       showCreateChannelOverlay: false,
       showDropdown: false,
       editingBio: false,
-      profilePicUrl: ""
+      profilePicUrl: "",
     };
   }
 
@@ -563,7 +564,7 @@ export default class UserManager extends Component<Props, State> {
               );
             }}
           />
-          {useLocation().pathname == "/cassyni" ? <SignUpButton
+          {this.props.isCassyni && <SignUpButton
             callback={() => {
               this.setState(
                 {
@@ -576,7 +577,8 @@ export default class UserManager extends Component<Props, State> {
                 }
               );
             }}
-          /> : null }
+          /> 
+          }
       </Box>
     </MediaQuery>
   );

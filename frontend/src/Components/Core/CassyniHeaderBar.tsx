@@ -166,7 +166,7 @@ class CassyniHeaderBar extends Component<RouteComponentProps, State> {
 
 
             <MediaQuery minDeviceWidth={992}>
-              <UserManager showLogin={this.state.showLogin} />
+              <UserManager showLogin={this.state.showLogin} isCassyni={true} />
             </MediaQuery> 
           </Box>
 
