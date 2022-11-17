@@ -199,7 +199,7 @@ export default class CassyniLandingPage extends Component<RouteComponentProps, S
       <>
         <Box>
           <Text size={this.state.renderMobileView ? "36px" : "48px"} weight="bold" color="color1" margin={this.state.renderMobileView ? {top: "80px", bottom: "40px"} : {top: "120px", bottom: "50px"}}>
-          <Link to={'/'}> Mora.stream </Link> is joining forces with Cassyni!
+          Mora.stream is joining forces with Cassyni!
           </Text>
           {/*  paper citations, and more. */}
           <Text size="20px">
