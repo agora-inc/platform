@@ -866,11 +866,11 @@ calltoActionOrganisers() {
           </Box>
         </Box>
 
-        {/* <Box height="100%" width="100%" background="color3" id="content">
+        <Box height="100%" width="100%" background="color3" id="content">
           <Box width="80%" height={this.state.renderMobileView ? "1650px": "760px"}  direction="column" alignSelf="center">
             {this.contentHowDoesItWork()}
           </Box>
-        </Box> */}
+        </Box>
 
         {/* <Box height="100%" width="100%" background="color1">
           <Box width="80%" height={this.state.renderMobileView ? (600 + window.innerWidth * 2) + "px" : "1200px"} direction="column" alignSelf="center">
