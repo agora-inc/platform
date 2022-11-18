@@ -139,7 +139,7 @@ contentTrigger() {
         gap="medium"
         >
         <Box>
-          <a href="https://cassyni.com/mora">
+          <a href="https://cassyni.com/mora?utm_source=mora&utm_medium=cta&utm_campaign=welcome&ref=mora">
             <Box
               background="#0C385B"
               hoverIndicator="#BAD6DB"
