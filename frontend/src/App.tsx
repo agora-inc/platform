@@ -40,7 +40,7 @@ function App() {
   return (
     
       <Grommet theme={Theme} full>
-      {useLocation().pathname == "/cassyni" ? <CassyniHeaderBar/> : <HeaderBar/> }
+      <CassyniHeaderBar/>
       {/* <HeaderBar /> */}
         <Switch>
           {/* LANDING PAGES */}
