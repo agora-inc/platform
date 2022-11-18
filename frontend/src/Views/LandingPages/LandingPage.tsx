@@ -245,14 +245,14 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
         alignContent="center"
         gap="medium"
         >
-        <SignUpButton 
+        {/* <SignUpButton 
           callback={()=>{}}
           height="70px"
           width="250px"
           textSize="18px"
           text="Get started"
           icon={true}
-        />
+        /> */}
 
 
         
@@ -871,11 +871,11 @@ calltoActionOrganisers() {
           </Box>
         </Box> */}
 
-        <Box height="100%" width="100%" background="color1">
+        {/* <Box height="100%" width="100%" background="color1">
           <Box width="80%" height={this.state.renderMobileView ? (600 + window.innerWidth * 2) + "px" : "1200px"} direction="column" alignSelf="center">
             {this.contentHeroHow()}
           </Box>
-        </Box>
+        </Box> */}
 
 
         {/* <Box height="100%" width="100%" background="color4">
@@ -891,17 +891,17 @@ calltoActionOrganisers() {
           </Box>
         </Box> */}
 
-        <Box height="100%" width="100%" background="color5">
+        {/* <Box height="100%" width="100%" background="color5">
           <Box width="80%" height={this.state.renderMobileView ? "250px": "600px"} direction="column" alignSelf="center">
             {this.callToActionEndpage()}
           </Box>
-        </Box>
+        </Box> */}
 
-        <Box height="100%" width="100%">
+        {/* <Box height="100%" width="100%">
           <Box width="80%" height="400px" direction="column" alignSelf="center">
             {this.calltoActionOrganisers()}
           </Box>
-        </Box>
+        </Box> */}
 
         <Box width={window.innerWidth > 800 ? "80%" : "90%"} align="center">
           <FooterComponent />
