@@ -108,7 +108,7 @@ class HeaderBar extends Component<RouteComponentProps, State> {
 
 
 
-        <Link
+        {/* <Link
           to={{ pathname: "/browse" }}
           style={{ textDecoration: "none" }}
         >
@@ -125,13 +125,13 @@ class HeaderBar extends Component<RouteComponentProps, State> {
             focusIndicator={false}
             margin={{ left: "0px" }}
             direction="row"
-          >
+          > */}
             {/* <Play size="30px" /> */}
-            <Text size="14px" margin={{left: "10px"}}> 
+            {/* <Text size="14px" margin={{left: "10px"}}> 
               <b> {renderMobileView ? "Browse seminars" : "Browse trending seminars"} </b>
             </Text>
           </Box>
-        </Link>
+        </Link> */}
 
 
 
