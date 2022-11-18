@@ -203,9 +203,9 @@ export default class LandingPage extends Component<RouteComponentProps, State> {
           </Text>
           {/*  paper citations, and more. */}
           <Text size="20px">
-            <b>Get invited to speak to academic communities from all around the world</b>
+            <b>Join academic communities from all around the world</b>
           </Text>
-          <Text size="20px">Boost your citations and start exciting collaborations by meeting new teammates</Text>
+          <Text size="20px">Watch live seminars and start exciting collaborations by meeting new teammates</Text>
           <Box 
             margin={this.state.renderMobileView ? {top: "30px", bottom: "0px"} : {top: "0px"}} 
             height={this.state.renderMobileView ? "25%" : "40%"}
