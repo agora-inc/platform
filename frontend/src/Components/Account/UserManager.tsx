@@ -564,7 +564,7 @@ export default class UserManager extends Component<Props, State> {
               );
             }}
           />
-          {this.props.isCassyni && <SignUpButton
+          {!this.props.isCassyni && <SignUpButton
             callback={() => {
               this.setState(
                 {
